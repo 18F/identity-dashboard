@@ -151,6 +151,9 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rack-timeout (0.4.2)
+    rack_session_access (0.1.1)
+      builder (>= 2.0.0)
+      rack (>= 1.0.0)
     rails (4.2.6)
       actionmailer (= 4.2.6)
       actionpack (= 4.2.6)
@@ -201,6 +204,8 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    ruby_regex (0.1.1)
+      rake
     safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -291,11 +296,13 @@ DEPENDENCIES
   rack-canonical-host
   rack-mini-profiler
   rack-timeout
+  rack_session_access
   rails (~> 4.2.0)
   rails_12factor
   recipient_interceptor
   refills
   rspec-rails (~> 3.4.0)
+  ruby_regex
   sass-rails (~> 5.0)
   shoulda-matchers
   simple_form

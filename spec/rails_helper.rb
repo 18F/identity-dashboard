@@ -20,3 +20,5 @@ RSpec.configure do |config|
 end
 
 ActiveRecord::Migration.maintain_test_schema!
+
+puts "loaded rails_helper"
