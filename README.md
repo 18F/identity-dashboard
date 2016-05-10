@@ -6,16 +6,13 @@ An admin dashboard for the Identity project.
 
 ## Getting Started Locally
 
-1. Make sure Postgres and Redis are running.  For example, on OS X:
+1. Make sure Postgres is running.  For example, on OS X:
 
-    $ brew services start redis postgres
+    $ brew services start postgres
 
 1. Run the following command to set up the environment:
 
     $ bin/setup
-
-This command copies sample configuration files, installs required gems
-and sets up the database.
 
 1. Run the app server with:
 
