@@ -129,7 +129,7 @@ en:
       applications: 
         mine: My Applications
         new: Create new application
-        edit: Edit application %{name}
+        edit: 'Edit: %{name}'
         show: 'Application: %{name}'
       app_settings:
         edit: Editing %{app_setting}
