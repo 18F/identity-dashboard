@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   before_create :create_uuid
 
   def create_uuid
-    if self.uuid.empty?
+    unless self.uuid.present?
       self.uuid = SecureRandom.uuid
     end
   end
