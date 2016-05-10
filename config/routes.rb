@@ -16,5 +16,10 @@ Rails.application.routes.draw do
     patch '/confirm' => 'users/confirmations#confirm'
   end
 
+  namespace :users do
+    resources :applications do
+    end
+  end
+
   root to: 'home#index'
 end

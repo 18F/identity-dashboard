@@ -1,0 +1,28 @@
+h1 = t('dashboard.headings.applications.show', name: application.name)
+
+.wrapper
+  = button_to t('dashboard.forms.buttons.edit_application'), edit_users_application_url(application), 
+    class: 'usa-button-primary', method: :get
+
+table
+  tr
+    th Name
+    td.name = application.name
+  tr
+    th Description
+    td.description = application.description
+  tr
+    th Metadata URL
+    td.metadata_url = application.metadata_url
+  tr
+    th ACS URL
+    td.acs_url = application.acs_url
+  tr
+    th Assertion Consumer Logout Service URL
+    td.assertion_consumer_logout_service_url = application.assertion_consumer_logout_service_url
+  tr
+    th SAML Client Cert
+    td.saml_client_cert = application.saml_client_cert
+  tr
+    th Block Encryption
+    td.block_encryption = application.block_encryption

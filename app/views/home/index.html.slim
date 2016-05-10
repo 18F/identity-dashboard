@@ -1,3 +1,10 @@
-h1 Hello Identity Developer!
+- if user_signed_in?
+  h1
+    = current_user.name
 
-= link_to t('dashboard.links.sign_in'), '/users/auth/saml'
+  = link_to t('dashboard.links.applications'), users_applications_path
+
+- else
+  h1 Welcome to the Identity Dashboard
+ 
+  = link_to t('dashboard.links.sign_in'), '/users/auth/saml'

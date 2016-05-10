@@ -9,4 +9,16 @@ class User < ActiveRecord::Base
       self.uuid = SecureRandom.uuid
     end
   end
+
+  def name
+    if first_name.present? || last_name.present?
+      [first_name, last_name].join(' ')
+    else
+      email
+    end
+  end
+
+  def admin?
+    false  # TODO roles
+  end
 end

@@ -1,0 +1,12 @@
+h1
+  = t('dashboard.headings.applications.mine')
+
+.wrapper
+  = button_to t('dashboard.forms.buttons.create_application'), new_users_application_url, 
+    class: 'usa-button-primary', method: :get
+
+ul
+  - current_user.applications.each do |app|
+    li
+      = link_to(app.name, users_applications_edit_path(app))
+

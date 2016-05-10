@@ -1,0 +1,5 @@
+h1 = t('dashboard.headings.applications.new')
+
+= simple_form_for(:application, html: { autocomplete: 'off', role: 'form' }, url: users_applications_path) do |form|
+  == render 'form', { form: form }
+  = form.button :submit, 'Create'

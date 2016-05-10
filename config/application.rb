@@ -23,5 +23,18 @@ module IdentityDashboard
     config.action_controller.action_on_unpermitted_parameters = :raise
     config.active_record.raise_in_transactional_callbacks = true
     config.active_job.queue_adapter = :delayed_job
+
+    # Set the number of seconds the timeout warning should occur before
+    # login session is timed out.
+    config.session_timeout_warning_seconds = 120
+    # Set the number of seconds in which to delay the start of the
+    # PeriodicalQuery() call. Make sure the sum of this value and
+    # session_timeout_warning_seconds is a multiple of 60 seconds.
+    config.session_check_delay             = 60
+    # Set the frequency of the PeriodicalQuery() call in seconds.
+    # Make sure the sum of this value and session_timeout_warning_seconds
+    # is a multiple of 60 seconds.
+    config.session_check_frequency         = 60
+
   end
 end
