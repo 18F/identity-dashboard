@@ -2,17 +2,31 @@
 
 An admin dashboard for the Identity project.
 
-## Getting Started
+## Getting Started Locally
 
-After you have cloned this repo, run this setup script to set up your machine
-with the necessary dependencies to run and test this app:
+1. Make sure Postgres and Redis are running.  For example, on OS X:
 
-    % ./bin/setup
+    $ brew services start redis postgres
 
-It assumes you have a machine equipped with Ruby, Postgres, etc. If not, set up
-your machine with [this script].
+1. Run the following command to set up the environment:
 
-[this script]: https://github.com/thoughtbot/laptop
+    $ bin/setup
+
+This command copies sample configuration files, installs required gems
+and sets up the database.
+
+1. Run the app server with:
+
+    $ foreman start
+
+## Running Tests
+
+To run all the tests:
+
+    $ bundle exec rspec
+
+See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
+more information.
 
 ## License
 

@@ -1,0 +1,10 @@
+- unless flash.empty?
+  .mb3
+    - flash.each do |name, msg|
+      - if msg.is_a?(String)
+        - good_msg = name.to_s.match(/notice|success/)
+        div class="p2 alert alert-#{good_msg ? 'success' : 'danger'}"
+          button type="button" class="close" data-dismiss="true" aria-label="Close"
+            '&times;
+          = msg
+    #session_warning_container
