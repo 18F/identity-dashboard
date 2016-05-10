@@ -1,0 +1,15 @@
+language: ruby
+before_script:
+- bundle exec rake db:setup
+rvm:
+- 2.3.0
+cache: bundler
+script:
+- bundle exec rspec spec
+addons:
+  postgresql: "9.3"
+services:
+  - postgresql
+env:
+  - RACK_ENV=test
+  - RAILS_ENV=test
