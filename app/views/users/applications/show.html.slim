@@ -1,10 +1,15 @@
 h1 = t('dashboard.headings.applications.show', name: application.name)
 
-.wrapper
-  = button_to t('dashboard.forms.buttons.edit_application'), edit_users_application_url(application), 
+.wrapper.actions
+  = button_to t('dashboard.forms.buttons.edit_application'), edit_users_application_url(application),
     class: 'usa-button-primary', method: :get
+  = button_to t('dashboard.forms.buttons.delete_application'), users_application_url(application),
+    class: 'usa-button-secondary', method: :delete, data: {confirm: "Are you sure?"}
 
 table
+  tr
+    th Issuer
+    td.issuer = application.issuer
   tr
     th Name
     td.name = application.name

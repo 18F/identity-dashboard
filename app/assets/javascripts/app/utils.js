@@ -1,6 +1,3 @@
-import $ from 'jquery';
-
-
 // Removing element from DOM (on click containing appropriate data attribute)
 const dismiss = '[data-dismiss="true"]';
 $(document).on('click', dismiss, (e) => { $(e.target).parent().remove(); });
@@ -8,8 +5,7 @@ $(document).on('click', dismiss, (e) => { $(e.target).parent().remove(); });
 
 // Safari & IE 8/9 do not support client side handling of `required` attribute on
 // form inputs; this adds basic messaging and styling fallback for these browsers
-// "page:load" event needed because of turbolinks, which overrides normal loading process
-$(document).on('ready page:load', () => {
+$(document).on('ready', () => {
   const message = '<div class="bold mb2">Please fill in all required fields.</div>';
 
   $('form').on('submit', function(e) {

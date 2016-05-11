@@ -10,4 +10,8 @@ class Application < ActiveRecord::Base
       self.issuer = SecureRandom.uuid
     end
   end
+
+  def to_param
+    issuer
+  end
 end

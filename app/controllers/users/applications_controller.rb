@@ -17,10 +17,12 @@ module Users
 
     def destroy
       application.destroy
+      flash[:success] = I18n.t('dashboard.notices.application_deleted', issuer: application.issuer)
       redirect_to users_applications_path
     end
 
     def new
+      @application = Application.new
     end
 
     def edit
@@ -32,12 +34,13 @@ module Users
     private
 
     def application
-      @application ||= Application.find(params[:id])
+      @application ||= Application.find_by(issuer: params[:id])
     end
 
     def validate_and_save_application(render_on_error)
       if application.valid?
         application.save!
+        flash[:success] = I18n.t('dashboard.notices.application_saved', issuer: application.issuer)
         redirect_to users_application_path(application)
       else
         flash[:error] = error_messages

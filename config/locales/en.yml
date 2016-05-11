@@ -33,7 +33,8 @@ en:
         resend_confirmation: Resend confirmation instructions
         no_accounts: Not accepting new accounts
         create_application: Create new application
-        edit_application: Edit application settings
+        edit_application: Edit
+        delete_application: Delete
         cancel: Cancel
       required_field: Indicates a required field.
       registration:
@@ -71,6 +72,8 @@ en:
     notices:
       app_setting_created: AppSetting was successfully created.
       app_setting_updated: AppSetting was successfully updated.
+      application_saved: 'Success! You have saved application %{issuer}'
+      application_deleted: 'Success! You have deleted application %{issuer}'
       account_created: >
         You have successfully created your account. Upaya password policy
         requires you to change your password at least once every 365 days.

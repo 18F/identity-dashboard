@@ -21,4 +21,8 @@ class User < ActiveRecord::Base
   def admin?
     false  # TODO roles
   end
+
+  def to_param
+    uuid
+  end
 end

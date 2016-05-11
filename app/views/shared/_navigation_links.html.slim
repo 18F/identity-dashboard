@@ -6,6 +6,8 @@
       .left
         span.caps.bold dashboard.login.gov
       .right
+        = link_to t('dashboard.links.applications'), users_applications_path
+        '&nbsp;&middot;&nbsp;
         = link_to t('dashboard.links.sign_out'), '/TODO/logout', method: 'delete'
 - else
   .clearfix.px2.py1.bg-white

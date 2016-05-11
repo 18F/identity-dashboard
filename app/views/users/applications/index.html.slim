@@ -8,5 +8,5 @@ h1
 ul
   - current_user.applications.each do |app|
     li
-      = link_to(app.name, users_applications_edit_path(app))
+      = link_to(app.name, users_application_path(app))
 
