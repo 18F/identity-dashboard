@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/amoose/simple_form.git
+  remote: https://github.com/amoose/simple_form.git
   revision: 7f70e35f772e0e806407592af260bda48f5f08ea
   branch: feature/aria-invalid
   specs:
