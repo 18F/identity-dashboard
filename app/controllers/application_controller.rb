@@ -14,4 +14,8 @@ class ApplicationController < ActionController::Base
   def user_signed_in?
     ENV['FORCE_USER'].present? || super
   end
+
+  def new_session_path(scope)
+    new_user_session_path
+  end
 end

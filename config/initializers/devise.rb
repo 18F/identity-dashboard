@@ -242,9 +242,10 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  idp_config = YAML.load_file("#{Rails.root}/config/idp.yml").fetch(Rails.env, {}).symbolize_keys
   config.omniauth :saml,
-    idp_cert_fingerprint: ENV.fetch('IDP_CERT_FINGERPRINT'),
-    idp_sso_target_url: ENV.fetch('IDP_SSO_URL', 'http://localhost:3001/sso')
+    idp_cert: ENV.fetch('IDP_CERT', idp_config[:cert]),
+    idp_sso_target_url: ENV.fetch('IDP_SSO_URL', idp_config[:sso_url])
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

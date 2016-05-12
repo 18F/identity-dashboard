@@ -7,8 +7,9 @@ Rails.application.routes.draw do
   }
 
   devise_scope :user do
-    #get '/' => 'users/sessions#new', as: :new_user_session
-    post '/' => 'users/sessions#create', as: :user_session
+    get '/users/sessions' => 'users/sessions#new', as: :new_user_session
+    post '/users/sessions' => 'users/sessions#create', as: :user_session
+    delete '/users/sessions' => 'users/sessions#destroy'
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'

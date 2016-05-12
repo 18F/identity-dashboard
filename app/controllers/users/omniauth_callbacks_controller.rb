@@ -3,28 +3,32 @@ module Users
     skip_before_action :verify_authenticity_token
 
     def saml
-      authorize :omniauth_callback, :saml?
-
-      OmniauthAuthorizer.new(auth_hash, session).perform do |user, action|
-        @user = user
-        send(action)
+      @user = User.from_omniauth(auth_hash)
+      if @user.persisted?
+        sign_in @user
+        redirect_to users_applications_path
       end
+    end
+
+    def failure
+      if params[:SAMLResponse]
+        saml_resp = params[:SAMLResponse]
+        saml_resp_decoded = Base64.decode64(saml_resp)
+        Rails.logger.warn("SAML: #{saml_resp}")
+        Rails.logger.warn("SAML: #{saml_resp_decoded}")
+      end
+      flash[:alert] = env['omniauth.error'].to_s
+    end
+
+    def after_omniauth_failure_path_for(scope)
+      Rails.logger.warn("scope => #{scope}")
+      super
     end
 
     private
 
     def auth_hash
       request.env['omniauth.auth']
-    end
-
-    def process_valid_authorization
-      sign_in_and_redirect @user
-      set_flash_message(:notice, :success)
-    end
-
-    def process_invalid_authorization
-      set_flash_message(:alert, :failure, reason: 'Invalid email')
-      redirect_to root_url
     end
   end
 end
