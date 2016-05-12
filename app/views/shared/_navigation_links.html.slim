@@ -1,17 +1,14 @@
-- if user_signed_in?
-  - if current_user.admin?
-    = render 'dashboard/admin/navigation'
-  - else
-    .clearfix.px2.py1.bg-white
-      .left
-        span.caps.bold dashboard.login.gov
-      .right
-        = link_to t('dashboard.links.applications'), users_applications_path
-        '&nbsp;&middot;&nbsp;
-        = link_to t('dashboard.links.sign_out'), users_sessions_path, method: 'delete'
-- else
-  .clearfix.px2.py1.bg-white
-    .left
-      span.bold.navy dashboard.login.gov
-    .right
-      = link_to t('dashboard.links.sign_in'), '/users/auth/saml'
+nav.usa-site-navbar
+  .usa-grid
+    .usa-width-one-half
+      h1
+        .logo = link_to 'dashboard.login.gov', root_path
+
+    .usa-width-one-half.text-right
+
+      - if user_signed_in?
+        = link_to t('dashboard.links.applications'), users_applications_path, class: 'usa-button'
+        = link_to t('dashboard.links.sign_out'), users_sessions_path, method: 'delete', class: 'usa-button usa-button-outline'
+
+      - else
+        = link_to t('dashboard.links.sign_in'), '/users/auth/saml'

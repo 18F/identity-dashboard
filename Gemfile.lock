@@ -7,6 +7,15 @@ GIT
       actionpack (~> 4.0)
       activemodel (~> 4.0)
 
+GIT
+  remote: https://github.com/jessieay/us_web_design_standards_gem.git
+  revision: 0d777d5ee7c486e64733944cce5ab4d35c6f6c95
+  branch: rails-assets-fixes
+  specs:
+    us_web_design_standards (0.0.2)
+      railties
+      sass (~> 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -407,6 +416,7 @@ DEPENDENCIES
   spring-commands-rspec
   timecop
   uglifier
+  us_web_design_standards!
   web-console
   webmock
 

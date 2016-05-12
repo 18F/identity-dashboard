@@ -30,6 +30,7 @@ gem 'secure_headers', '~> 3.0.0'
 gem 'simple_form', git: 'https://github.com/amoose/simple_form.git', branch: 'feature/aria-invalid'
 gem 'slim-rails'
 gem 'uglifier'
+gem 'us_web_design_standards', git: 'https://github.com/jessieay/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
 
 group :development do
   gem 'quiet_assets'

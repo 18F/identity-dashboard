@@ -26,9 +26,11 @@ html lang="#{I18n.locale}"
     <![endif]-->
 
   body class="#{Rails.env}-env site"
-    .site-wrap
+    header.usa-site-header role="banner"
       = render 'shared/usa_disclaimer'
       = render 'shared/navigation_links'
+
+    .site-wrap
       = render 'layouts/messages'
       = render 'shared/branding'
 
