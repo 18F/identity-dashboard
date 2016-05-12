@@ -9,10 +9,9 @@ module Users
       request.env['devise.skip_trackable'] = true
     end
 
-    def create
-      logger.info '[Authentication Attempt]'
-      super
-      session[:forced_idv_sign_out] = current_user.ial_token
+    def new
+      flash.clear
+      redirect_to user_saml_omniauth_authorize_path
     end
 
     def active

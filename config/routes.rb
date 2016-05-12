@@ -13,8 +13,6 @@ Rails.application.routes.draw do
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
-
-    patch '/confirm' => 'users/confirmations#confirm'
   end
 
   namespace :users do
