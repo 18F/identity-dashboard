@@ -11,4 +11,4 @@ nav.usa-site-navbar
         = link_to t('dashboard.links.sign_out'), users_sessions_path, method: 'delete', class: 'usa-button usa-button-outline'
 
       - else
-        = link_to t('dashboard.links.sign_in'), '/users/auth/saml'
+        = link_to t('dashboard.links.sign_in'), '/users/auth/saml', class: 'usa-button'
