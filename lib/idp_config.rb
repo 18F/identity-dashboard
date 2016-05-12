@@ -1,9 +1,11 @@
 module IdP
   class Config
-    attr_reader :settings
-
     def initialize
-      @settings = build_settings
+     @@settings ||= build_settings.freeze
+    end
+
+    def settings
+      @@settings
     end
 
     def build_settings
@@ -25,6 +27,10 @@ module IdP
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
         }
       }
+    end
+
+    def logout_url
+      settings[:idp_sso_target_url].gsub(/auth$/, 'logout')
     end
   end
 end
