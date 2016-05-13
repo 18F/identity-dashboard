@@ -7,3 +7,10 @@
   float: left;
   display: inline;
 }
+
+.alert button.close {
+  margin-top: 0;
+  border: 1px solid #aaa;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
