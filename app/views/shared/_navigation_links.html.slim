@@ -8,7 +8,7 @@ nav.usa-site-navbar
 
       - if user_signed_in?
         = link_to t('dashboard.links.applications'), users_applications_path, class: 'usa-button'
-        = link_to t('dashboard.links.sign_out'), users_sessions_path, method: 'delete', class: 'usa-button usa-button-outline'
+        = link_to t('dashboard.links.sign_out'), destroy_user_session_path(), method: 'delete', class: 'usa-button usa-button-outline'
 
       - else
         = link_to t('dashboard.links.sign_in'), '/users/auth/saml', class: 'usa-button'
