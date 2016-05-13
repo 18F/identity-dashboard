@@ -379,6 +379,7 @@ DEPENDENCIES
   factory_girl_rails
   flutie
   formulaic
+  hashie
   high_voltage
   honeybadger
   jquery-rails
