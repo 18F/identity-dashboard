@@ -1,5 +1,5 @@
-require 'idp_config'
+require 'saml_config'
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :saml, IdP::Config.new.settings
+  provider :saml, Saml::Config.new.settings
 end
