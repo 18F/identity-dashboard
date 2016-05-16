@@ -6,7 +6,7 @@ h1 = t('dashboard.headings.applications.show', name: application.name)
   = button_to t('dashboard.forms.buttons.delete_application'), users_application_url(application),
     class: 'usa-button-secondary', method: :delete, data: {confirm: "Are you sure?"}
 
-table
+table.horizontal-headers
   tr
     th Issuer
     td.issuer = application.issuer
