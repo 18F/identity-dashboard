@@ -53,7 +53,7 @@ module Users
     end
 
     def application_params
-      params.require(:application).permit(:name, :description, :metadata_url, :acs_url, :assertion_consumer_logout_service_url, :saml_client_cert, :block_encryption)
+      params.require(:application).permit(:name, :description, :metadata_url, :acs_url, :assertion_consumer_logout_service_url, :saml_client_cert, :block_encryption, :active)
     end
 
     helper_method :application
