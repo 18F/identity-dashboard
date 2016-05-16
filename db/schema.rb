@@ -11,23 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509215026) do
+ActiveRecord::Schema.define(version: 20160516150051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "applications", force: :cascade do |t|
-    t.integer  "user_id",                                           null: false
-    t.uuid     "issuer",                                            null: false
+    t.integer  "user_id",                                               null: false
+    t.uuid     "issuer",                                                null: false
     t.string   "name"
     t.text     "description"
     t.text     "metadata_url"
     t.text     "acs_url"
     t.text     "assertion_consumer_logout_service_url"
     t.text     "saml_client_cert"
-    t.integer  "block_encryption",                      default: 1, null: false
+    t.integer  "block_encryption",                      default: 1,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",                                default: false, null: false
   end
 
   add_index "applications", ["issuer"], name: "index_applications_on_issuer", unique: true, using: :btree
