@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
+gem 'actionmailer-text'
 gem 'autoprefixer-rails'
 gem 'bourbon', '5.0.0.beta.5'
 gem 'coffee-rails', '~> 4.1.0'
