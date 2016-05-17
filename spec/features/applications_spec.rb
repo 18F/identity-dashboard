@@ -78,11 +78,12 @@ end
 
 feature 'Admin User Approval' do
   scenario 'new application' do
-    ActionMailer::Base.deliveries.clear
 
     # create as normal user
     user = create(:user)
     login_as(user)
+
+    ActionMailer::Base.deliveries.clear
 
     visit new_users_application_path
 
@@ -100,6 +101,8 @@ feature 'Admin User Approval' do
     admin_user = create(:user, admin: true)
     login_as(admin_user)
 
+    ActionMailer::Base.deliveries.clear
+
     visit edit_users_application_path(app)
 
     expect(page).to have_content('Approved')
@@ -110,6 +113,6 @@ feature 'Admin User Approval' do
     expect(page).to have_content('Success')
     app.reload
     expect(app.approved?).to eq true
-    expect(ActionMailer::Base.deliveries.count).to eq(4)
+    expect(ActionMailer::Base.deliveries.count).to eq(2)
   end
 end 
