@@ -11,11 +11,13 @@ module Users
     end
 
     def update
+      authorize application
       application.assign_attributes(application_params)
       validate_and_save_application(:edit)
     end
 
     def destroy
+      authorize application
       application.destroy
       flash[:success] = I18n.t('dashboard.notices.application_deleted', issuer: application.issuer)
       redirect_to users_applications_path
@@ -26,9 +28,11 @@ module Users
     end
 
     def edit
+      authorize application
     end
 
     def show
+      authorize application
     end
 
     private

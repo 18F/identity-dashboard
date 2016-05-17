@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
+  include Pundit
+
   protect_from_forgery with: :exception
+
+  rescue_from Pundit::NotAuthorizedError, with: :render_401
 
   def current_user
     if ENV['FORCE_USER']
@@ -17,5 +19,9 @@ class ApplicationController < ActionController::Base
 
   def new_session_path(scope)
     new_user_session_path
+  end
+
+  def render_401
+    render file: 'public/401.html', status: 401
   end
 end
