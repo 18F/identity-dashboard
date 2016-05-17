@@ -3,9 +3,14 @@
   width: 100%;
 }
 
-.wrapper.actions form {
+.wrapper.actions form, .wrapper.actions .action {
   float: left;
   display: inline;
+}
+
+.wrapper.actions .action a {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5em;
 }
 
 .alert button.close {

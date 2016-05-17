@@ -5,8 +5,9 @@ h1
   = button_to t('dashboard.forms.buttons.create_application'), new_users_application_url, 
     class: 'usa-button-primary', method: :get
 
-ul
+table
   - current_user.applications.each do |app|
-    li
-      = link_to(app.name, users_application_path(app), { title: app.issuer })
-
+    tr
+      td = link_to(app.name, users_application_path(app))
+      td = app.issuer
+      td = app.active? ? 'Active' : 'Inactive'
