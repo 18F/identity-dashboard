@@ -14,4 +14,8 @@ class Application < ActiveRecord::Base
   def to_param
     issuer
   end
+
+  def recently_approved?
+    previous_changes.key?(:approved) && previous_changes[:approved].last == true
+  end
 end

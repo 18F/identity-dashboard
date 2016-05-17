@@ -41,6 +41,7 @@ module Users
       if application.valid?
         application.save!
         flash[:success] = I18n.t('dashboard.notices.application_saved', issuer: application.issuer)
+        notify_users(application, render_on_error)
         redirect_to users_application_path(application)
       else
         flash[:error] = error_messages
@@ -48,12 +49,40 @@ module Users
       end
     end
 
+    def notify_users(application, render_on_error)
+      if render_on_error == :new
+        notify_users_new_application(application)
+      elsif application.recently_approved?
+        notify_users_approved_application(application)
+      end
+    end
+
+    def notify_users_new_application(application)
+      UserMailer.admin_new_application(application).deliver_later
+      UserMailer.user_new_application(application).deliver_later
+    end
+
+    def notify_users_approved_application(application)
+      UserMailer.admin_approved_application(application).deliver_later
+      UserMailer.user_approved_application(application).deliver_later
+    end
+
     def error_messages
       [[@errors] + [application.errors.full_messages]].flatten.compact.to_sentence
     end
 
     def application_params
-      params.require(:application).permit(:name, :description, :metadata_url, :acs_url, :assertion_consumer_logout_service_url, :saml_client_cert, :block_encryption, :active)
+      params.require(:application).permit(
+        :name,
+        :description,
+        :metadata_url,
+        :acs_url,
+        :assertion_consumer_logout_service_url,
+        :saml_client_cert,
+        :block_encryption,
+        :active,
+        :approved
+      )
     end
 
     helper_method :application
