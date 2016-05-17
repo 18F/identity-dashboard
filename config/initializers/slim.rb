@@ -1,1 +1,1 @@
-Slim::Engine.set_default_options pretty: false
+Slim::Engine.set_options pretty: false
