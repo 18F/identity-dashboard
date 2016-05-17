@@ -4,10 +4,16 @@ class User < ActiveRecord::Base
 
   before_create :create_uuid
 
+  after_create :send_welcome
+
   def create_uuid
     unless self.uuid.present?
       self.uuid = SecureRandom.uuid
     end
+  end
+
+  def send_welcome
+    UserMailer.welcome_new_user(self).deliver_later
   end
 
   def name

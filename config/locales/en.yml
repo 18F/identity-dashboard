@@ -173,3 +173,9 @@ en:
     mailer:
       password_expires_soon:
         subject: Password Expiration Notice
+      welcome:
+        subject: Welcome to dashboard.login.gov
+      new_application:
+        subject: 'New Identity application %{id}'
+      approved_application:
+        subject: 'Identity application approved %{id}'

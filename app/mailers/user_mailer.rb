@@ -4,11 +4,18 @@ class UserMailer < ApplicationMailer
     ENV['ADMIN_EMAIL'] || 'identity-dashboard-admin@18f.gov'
   end
 
+  def welcome_new_user(user)
+    mail(
+      to: user.email,
+      subject: I18n.t('dashboard.mailer.welcome.subject')
+    )
+  end
+
   def admin_new_application(app)
     @application = app
     mail(
       to: admin_email_address,
-      subject: "New Identity application #{app.issuer}"
+      subject: I18n.t('dashboard.mailer.new_application', id: app.issuer)
     )
   end
 
@@ -16,7 +23,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: app.user.email,
-      subject: "New Identity application #{app.issuer}"
+      subject: I18n.t('dashboard.mailer.new_application', id: app.issuer)
     )
   end
 
@@ -24,7 +31,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: admin_email_address,
-      subject: "Identity application approved #{app.issuer}"
+      subject: I18n.t('dashboard.mailer.approved_application', id: app.issuer)
     )
   end
 
@@ -32,7 +39,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: app.user.email,
-      subject: "Identity application approved #{app.issuer}"
+      subject: I18n.t('dashboard.mailer.approved_application', id: app.issuer)
     )
   end
 end

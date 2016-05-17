@@ -14,4 +14,14 @@ describe User do
       expect(user.uuid).to match(RubyRegex::UUID)
     end
   end
+
+  describe "#after_create" do
+    it 'sends welcome email' do
+      ActionMailer::Base.deliveries.clear
+      expect(ActionMailer::Base.deliveries.count).to eq(0)
+      user.save
+      expect(ActionMailer::Base.deliveries.count).to eq(1)
+      expect(ActionMailer::Base.deliveries.first.subject).to eq(I18n.t('dashboard.mailer.welcome.subject'))
+    end
+  end
 end
