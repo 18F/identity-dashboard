@@ -6,10 +6,9 @@ nav.usa-site-navbar
 
     .usa-width-one-half.text-right
 
-      - if current_user.admin?
-        .admin-nav You are an admin
-
       - if user_signed_in?
+        - if current_user.admin?
+          .admin-nav You are an admin
         = link_to t('dashboard.links.applications'), users_applications_path, class: 'usa-button'
         = link_to t('dashboard.links.sign_out'), destroy_user_session_path(), method: 'delete', class: 'usa-button usa-button-outline'
 
