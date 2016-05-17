@@ -12,6 +12,7 @@ module Users
 
     def update
       authorize application
+      authorize_approval
       application.assign_attributes(application_params)
       validate_and_save_application(:edit)
     end
@@ -39,6 +40,12 @@ module Users
 
     def application
       @application ||= Application.find_by(issuer: params[:id])
+    end
+
+    def authorize_approval
+      if params.require(:application).key?(:approved) && !current_user.admin?
+        raise Pundit::NotAuthorizedError, I18n.t('dashboard.errors.not_authorized')
+      end
     end
 
     def validate_and_save_application(render_on_error)
