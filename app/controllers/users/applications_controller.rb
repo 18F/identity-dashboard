@@ -1,5 +1,7 @@
 module Users
   class ApplicationsController < AuthenticatedController
+    before_action :authorize_application, only: [:update, :edit, :show, :destroy]
+    before_action :authorize_approval, only: [:update]
 
     def index
     end
@@ -11,14 +13,11 @@ module Users
     end
 
     def update
-      authorize application
-      authorize_approval
       application.assign_attributes(application_params)
       validate_and_save_application(:edit)
     end
 
     def destroy
-      authorize application
       application.destroy
       flash[:success] = I18n.t('dashboard.notices.application_deleted', issuer: application.issuer)
       redirect_to users_applications_path
@@ -29,14 +28,16 @@ module Users
     end
 
     def edit
-      authorize application
     end
 
     def show
-      authorize application
     end
 
     private
+
+    def authorize_application
+      authorize application
+    end
 
     def application
       @application ||= Application.find_by(issuer: params[:id])

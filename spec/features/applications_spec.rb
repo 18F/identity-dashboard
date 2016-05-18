@@ -54,65 +54,25 @@ feature 'Applications CRUD' do
 
     expect(page).to have_content('Success')
   end
-
-  scenario 'non-owner attempts to view' do
-    user = create(:user)
-    app = create(:application)
-    login_as(user)
-
-    visit users_application_path(app)
-
-    expect(page.status_code).to eq(401)
-  end
-
-  scenario 'admin attempts to view' do
-    admin_user = create(:user, admin: true)
-    app = create(:application)
-    login_as(admin_user)
-
-    visit users_application_path(app)
-
-    expect(page.status_code).to eq(200)
-  end
 end
 
 feature 'Admin User Approval' do
-  scenario 'new application' do
-
-    # create as normal user
+  scenario 'only admin user has option to approve application' do
     user = create(:user)
     login_as(user)
-
-    ActionMailer::Base.deliveries.clear
 
     visit new_users_application_path
 
     expect(page).to_not have_content('Approved')
+  end
 
-    fill_in 'Name', with: 'test application'
-    click_on 'Create'
-
-    expect(ActionMailer::Base.deliveries.count).to eq(2)
-    expect(page).to have_content('Success')
-
-    app = Application.all.last
-
-    # update as admin user
+  scenario 'admin user has option to approve application' do
+    app = create(:application)
     admin_user = create(:user, admin: true)
     login_as(admin_user)
-
-    ActionMailer::Base.deliveries.clear
 
     visit edit_users_application_path(app)
 
     expect(page).to have_content('Approved')
-
-    choose('application_approved_true', option: 'true')
-    click_on 'Update'
-
-    expect(page).to have_content('Success')
-    app.reload
-    expect(app.approved?).to eq true
-    expect(ActionMailer::Base.deliveries.count).to eq(2)
   end
-end 
+end

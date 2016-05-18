@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe User do
+  include MailerSpecHelper
+
   describe "Associations" do
      it { should have_many(:applications) }
   end
@@ -17,11 +19,11 @@ describe User do
 
   describe "#after_create" do
     it 'sends welcome email' do
-      ActionMailer::Base.deliveries.clear
-      expect(ActionMailer::Base.deliveries.count).to eq(0)
+      deliveries.clear
+      expect(deliveries.count).to eq(0)
       user.save
-      expect(ActionMailer::Base.deliveries.count).to eq(1)
-      expect(ActionMailer::Base.deliveries.first.subject).to eq(I18n.t('dashboard.mailer.welcome.subject'))
+      expect(deliveries.count).to eq(1)
+      expect(deliveries.first.subject).to eq(I18n.t('dashboard.mailer.welcome.subject'))
     end
   end
 end
