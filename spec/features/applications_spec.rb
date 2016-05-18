@@ -54,26 +54,6 @@ feature 'Applications CRUD' do
 
     expect(page).to have_content('Success')
   end
-
-  scenario 'non-owner attempts to view' do
-    user = create(:user)
-    app = create(:application)
-    login_as(user)
-
-    visit users_application_path(app)
-
-    expect(page.status_code).to eq(401)
-  end
-
-  scenario 'admin attempts to view' do
-    admin_user = create(:user, admin: true)
-    app = create(:application)
-    login_as(admin_user)
-
-    visit users_application_path(app)
-
-    expect(page.status_code).to eq(200)
-  end
 end
 
 feature 'Admin User Approval' do
