@@ -14,4 +14,13 @@ describe Application do
       expect(application.issuer).to match(RubyRegex::UUID)
     end
   end
+
+  describe "#recently_approved?" do
+    it "detects when flag toggles to true" do
+      expect(application.recently_approved?).to eq false
+      application.approved = true
+      application.save!
+      expect(application.recently_approved?).to eq true
+    end
+  end
 end

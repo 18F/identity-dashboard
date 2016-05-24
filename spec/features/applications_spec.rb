@@ -7,6 +7,8 @@ feature 'Applications CRUD' do
 
     visit new_users_application_path
 
+    expect(page).to_not have_content('Approved')
+
     fill_in 'Name', with: 'test application'
     click_on 'Create'
 
@@ -15,11 +17,13 @@ feature 'Applications CRUD' do
   end
 
   scenario 'Update' do
-    app = create(:application)
     user = create(:user)
+    app = create(:application, user: user)
     login_as(user)
 
     visit edit_users_application_path(app)
+
+    expect(page).to_not have_content('Approved')
 
     fill_in 'Name', with: 'change application name'
     fill_in 'Description', with: 'app description foobar'
@@ -31,8 +35,8 @@ feature 'Applications CRUD' do
   end
 
   scenario 'Read' do
-    app = create(:application)
     user = create(:user)
+    app = create(:application, user: user)
     login_as(user)
 
     visit users_application_path(app)
@@ -41,14 +45,65 @@ feature 'Applications CRUD' do
   end
 
   scenario 'Delete' do
-    app = create(:application)
     user = create(:user)
+    app = create(:application, user: user)
     login_as(user)
 
     visit users_application_path(app)
     click_on 'Delete'
 
     expect(page).to have_content('Success')
-  end 
+  end
 end
-    
+
+feature 'Admin User Approval' do
+  scenario 'only admin user has option to approve application' do
+    user = create(:user)
+    login_as(user)
+
+    visit new_users_application_path
+
+    expect(page).to_not have_content('Approved')
+  end
+
+  scenario 'admin user has option to approve application' do
+    app = create(:application)
+    admin_user = create(:user, admin: true)
+    login_as(admin_user)
+
+    visit edit_users_application_path(app)
+
+    expect(page).to have_content('Approved')
+  end
+end
+
+feature 'Email notification' do
+  scenario 'app creation generates email to owner and admin' do
+    user = create(:user)
+    login_as(user)
+
+    deliveries.clear # do not count User welcome
+
+    visit new_users_application_path
+    fill_in 'Name', with: 'test application'
+    click_on 'Create'
+
+    expect(deliveries.count).to eq(2)
+    expect(page).to have_content('Success')
+  end
+
+  scenario 'approval generates email to owner and admin' do
+    app = create(:application)
+    admin_user = create(:user, admin: true)
+    login_as(admin_user)
+
+    deliveries.clear # do not count User welcome
+
+    visit edit_users_application_path(app)
+    choose('application_approved_true', option: 'true')
+    click_on 'Update'
+
+    expect(page).to have_content('Success')
+    expect(deliveries.count).to eq(2)
+  end
+end

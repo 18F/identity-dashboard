@@ -1,4 +1,8 @@
 = form.error_notification
+
+- if current_user.admin?
+  = form.input :approved, as: :radio_buttons
+
 = form.input :name
 = form.input :description
 = form.input :metadata_url, label: 'Metadata URL'

@@ -4,6 +4,7 @@ require File.expand_path("../../config/environment", __FILE__)
 abort("DATABASE_URL environment variable is set") if ENV["DATABASE_URL"]
 
 require "rspec/rails"
+require "pundit/rspec"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |file| require file }
 
@@ -34,5 +35,3 @@ RSpec.configure do |config|
 end
 
 ActiveRecord::Migration.maintain_test_schema!
-
-puts "loaded rails_helper"
