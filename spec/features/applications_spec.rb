@@ -76,34 +76,3 @@ feature 'Admin User Approval' do
     expect(page).to have_content('Approved')
   end
 end
-
-feature 'Email notification' do
-  scenario 'app creation generates email to owner and admin' do
-    user = create(:user)
-    login_as(user)
-
-    deliveries.clear # do not count User welcome
-
-    visit new_users_application_path
-    fill_in 'Name', with: 'test application'
-    click_on 'Create'
-
-    expect(deliveries.count).to eq(2)
-    expect(page).to have_content('Success')
-  end
-
-  scenario 'approval generates email to owner and admin' do
-    app = create(:application)
-    admin_user = create(:user, admin: true)
-    login_as(admin_user)
-
-    deliveries.clear # do not count User welcome
-
-    visit edit_users_application_path(app)
-    choose('application_approved_true', option: 'true')
-    click_on 'Update'
-
-    expect(page).to have_content('Success')
-    expect(deliveries.count).to eq(2)
-  end
-end
