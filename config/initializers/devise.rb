@@ -245,9 +245,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   saml_config = Saml::Config.new
-  config.omniauth :saml,
-    idp_cert: saml_config.settings[:idp_cert],
-    idp_sso_target_url: saml_config.settings[:idp_sso_target_url]
+  config.omniauth :saml, saml_config.settings.dup
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
