@@ -2,7 +2,7 @@
 
 An admin dashboard for the Identity project.
 
-[![Build Status](https://travis-ci.org/18F/identity-dashboard.svg?branch=master)](https://travis-ci.org/18F/identity-dashboard)
+[![Build Status](https://travis-ci.org/18F/identity-dashboard.svg?branch=master)](https://travis-ci.org/18F/identity-dashboard)[![security](https://hakiri.io/github/18F/identity-dashboard/master.svg)](https://hakiri.io/github/18F/identity-dashboard/master)
 
 ## Getting Started Locally
 
