@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:sessions], controllers: {

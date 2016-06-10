@@ -6,9 +6,7 @@ class Application < ActiveRecord::Base
   before_create :create_issuer
 
   def create_issuer
-    unless self.issuer.present?
-      self.issuer = SecureRandom.uuid
-    end
+    self.issuer = SecureRandom.uuid unless issuer.present?
   end
 
   def to_param

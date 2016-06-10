@@ -1,5 +1,4 @@
 class UserMailer < ApplicationMailer
-
   def admin_email_address
     ENV['ADMIN_EMAIL'] || 'identity-dashboard-admin@18f.gov'
   end

@@ -41,11 +41,7 @@ module Users
     def idp_logout_request
       settings = Saml::Config.new.settings
       logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest], settings: settings)
-      unless logout_request.is_valid?
-        error_msg = "IdP initiated LogoutRequest was not valid: #{logout_request.errors}"
-        Rails.logger.error error_msg
-        render :inline => error_msg
-      else
+      if logout_request.is_valid?
         Rails.logger.info "IdP initiated Logout for #{logout_request.nameid}"
 
         # delete our local Devise session
@@ -58,6 +54,10 @@ module Users
           RelayState: params[:RelayState]
         )
         redirect_to logout_response
+      else
+        error_msg = "IdP initiated LogoutRequest was not valid: #{logout_request.errors}"
+        Rails.logger.error error_msg
+        render inline: error_msg
       end
     end
   end
