@@ -1,0 +1,100 @@
+AllCops:
+  Include:
+    - '**/Gemfile'
+    - '**/Rakefile'
+  Exclude:
+    - 'bin/**/*'
+  UseCache: true
+
+Metrics/AbcSize:
+  Description: A calculated magnitude based on number of assignments, branches, and
+    conditions.
+  Enabled: true
+  Max: 15
+  Exclude:
+  - spec/**/*
+
+Metrics/ClassLength:
+  Description: Avoid classes longer than 100 lines of code.
+  Enabled: true
+  CountComments: false
+  Max: 100
+  Exclude:
+  - spec/**/*
+
+Metrics/LineLength:
+  Description: Limit lines to 80 characters.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
+  Enabled: true
+  Max: 100
+  AllowURI: true
+  URISchemes:
+  - http
+  - https
+
+Metrics/MethodLength:
+  Description: Avoid methods longer than 10 lines of code.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
+  Enabled: true
+  CountComments: false
+  Max: 10
+  Exclude:
+  - spec/**/*
+
+Metrics/ModuleLength:
+  CountComments: false
+  Max: 100
+  Description: Avoid modules longer than 100 lines of code.
+  Enabled: true
+  Exclude:
+  - spec/**/*
+
+Rails/TimeZone:
+  # The value `strict` means that `Time` should be used with `zone`.
+  # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
+  Enabled: true
+  EnforcedStyle: flexible
+  SupportedStyles:
+    - strict
+    - flexible
+
+Style/AndOr:
+  Description: Use &&/|| instead of and/or.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
+  Enabled: true
+  EnforcedStyle: conditionals
+  SupportedStyles:
+  - always
+  - conditionals
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Style/DotPosition:
+  Description: Checks the position of the dot in multi-line method calls.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
+  Enabled: true
+  EnforcedStyle: trailing
+  SupportedStyles:
+  - leading
+  - trailing
+
+Style/IfUnlessModifier:
+  Description: Favor modifier if/unless usage when you have a single-line body.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
+  Enabled: true
+  MaxLineLength: 100
+
+Style/StringLiterals:
+  Description: Checks if uses of quotes match the configured preference.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
+  Enabled: true
+  EnforcedStyle: single_quotes
+  SupportedStyles:
+  - single_quotes
+  - double_quotes
+  ConsistentQuotesInMultiline: true
