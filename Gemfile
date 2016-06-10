@@ -38,6 +38,7 @@ gem 'us_web_design_standards', git: 'https://github.com/jessieay/us_web_design_s
 
 group :development do
   gem 'quiet_assets'
+  gem 'rubocop'
   gem 'slim_lint'
   gem 'spring'
   gem 'spring-commands-rspec'

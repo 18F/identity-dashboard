@@ -1,0 +1,4 @@
+linters:
+  Comment:
+    exclude:
+      - 'app/assets/stylesheets/application.css'

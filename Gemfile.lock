@@ -416,6 +416,7 @@ DEPENDENCIES
   rails_12factor
   recipient_interceptor
   rspec-rails (~> 3.4.0)
+  rubocop
   ruby_regex
   sass-rails (~> 5.0)
   secure_headers (~> 3.0.0)
@@ -431,9 +432,6 @@ DEPENDENCIES
   us_web_design_standards!
   web-console
   webmock
-
-RUBY VERSION
-   ruby 2.3.0p0
 
 BUNDLED WITH
    1.12.1
