@@ -6,7 +6,7 @@ describe 'Users::Applications' do
       app = create(:application)
       login_as(app.user)
 
-      put users_application_path(app), { application: { approved: 'true' } }
+      put users_application_path(app), application: { approved: 'true' }
 
       expect(response.status).to eq(401)
     end
@@ -16,7 +16,7 @@ describe 'Users::Applications' do
       user = create(:user)
       login_as(user)
 
-      put users_application_path(app), { application: { approved: 'true' } }
+      put users_application_path(app), application: { approved: 'true' }
 
       expect(response.status).to eq(401)
     end
@@ -26,9 +26,9 @@ describe 'Users::Applications' do
       admin_user = create(:user, admin: true)
       login_as(admin_user)
 
-      put users_application_path(app), { application: { approved: 'true' } }
+      put users_application_path(app), application: { approved: 'true' }
 
-      expect(response.status).to eq(302)  # redirect on success
+      expect(response.status).to eq(302) # redirect on success
       app.reload
       expect(app.approved?).to eq(true)
     end

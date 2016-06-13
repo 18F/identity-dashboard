@@ -26,13 +26,13 @@ describe ApplicationPolicy do
       expect(ApplicationPolicy).to permit(owner, app)
       expect(ApplicationPolicy).to permit(admin_user, app)
       expect(ApplicationPolicy).to_not permit(other_user, app)
-    end 
+    end
   end
 
   permissions :new? do
     it 'allows any user to initiate' do
       expect(ApplicationPolicy).to permit(user, app)
-    end 
+    end
   end
 
   permissions :destroy? do
@@ -50,4 +50,4 @@ describe ApplicationPolicy do
       expect(ApplicationPolicy).to_not permit(other_user, app)
     end
   end
-end 
+end

@@ -7,9 +7,7 @@ class User < ActiveRecord::Base
   after_create :send_welcome
 
   def create_uuid
-    unless self.uuid.present?
-      self.uuid = SecureRandom.uuid
-    end
+    self.uuid = SecureRandom.uuid unless uuid.present?
   end
 
   def send_welcome
@@ -43,18 +41,10 @@ class User < ActiveRecord::Base
   def sync_with_auth_hash!(auth_hash)
     info = auth_hash.info
     new_uuid = auth_hash.uid
-    if uuid != new_uuid
-      self.uuid = new_uuid
-    end
-    if first_name.blank? || first_name != info.first_name
-      self.first_name = info.first_name
-    end
-    if last_name.blank? || last_name != info.last_name
-      self.last_name = info.last_name
-    end
-    if self.changed.any?
-      self.save!
-    end
+    self.uuid = new_uuid if uuid != new_uuid
+    self.first_name = info.first_name if first_name.blank? || first_name != info.first_name
+    self.last_name = info.last_name if last_name.blank? || last_name != info.last_name
+    save! if changed.any?
     self
   end
 end

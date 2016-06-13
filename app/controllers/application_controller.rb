@@ -10,14 +10,14 @@ class ApplicationController < ActionController::Base
       User.find ENV['FORCE_USER']
     else
       super
-    end 
-  end 
+    end
+  end
 
   def user_signed_in?
     ENV['FORCE_USER'].present? || super
   end
 
-  def new_session_path(scope)
+  def new_session_path(_scope)
     new_user_session_path
   end
 

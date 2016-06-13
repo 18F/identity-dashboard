@@ -27,7 +27,7 @@ module Users
       redirect_to root_url
     end
 
-    def after_sign_out_path_for(user)
+    def after_sign_out_path_for(_user)
       Saml::Config.new.logout_url
     end
   end
