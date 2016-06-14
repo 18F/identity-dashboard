@@ -61,6 +61,7 @@ group :development, :staging do
 end
 
 group :test do
+  gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
   gem 'formulaic'
   gem 'launchy'

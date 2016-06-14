@@ -83,6 +83,8 @@ GEM
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
     cliver (0.3.2)
+    codeclimate-test-reporter (0.5.1)
+      simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -379,6 +381,7 @@ DEPENDENCIES
   bourbon (= 5.0.0.beta.5)
   bullet
   bundler-audit (>= 0.5.0)
+  codeclimate-test-reporter
   coffee-rails (~> 4.1.0)
   database_cleaner
   delayed_job_active_record
