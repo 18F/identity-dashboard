@@ -1,11 +1,8 @@
-if ENV.fetch('COVERAGE', false)
+if ENV['TRAVIS']
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
+elsif ENV['COVERAGE']
   require 'simplecov'
-
-  if ENV['CIRCLE_ARTIFACTS']
-    dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
-    SimpleCov.coverage_dir(dir)
-  end
-
   SimpleCov.start 'rails'
 end
 
@@ -26,4 +23,4 @@ RSpec.configure do |config|
   config.order = :random
 end
 
-WebMock.disable_net_connect!(allow_localhost: true)
+WebMock.disable_net_connect!(allow: [/localhost/, /127\.0\.0\.1/, /codeclimate.com/])
