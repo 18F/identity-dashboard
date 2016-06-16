@@ -62,6 +62,7 @@ end
 
 group :test do
   gem 'codeclimate-test-reporter', require: nil
+  gem 'climate_control'
   gem 'database_cleaner'
   gem 'formulaic'
   gem 'launchy'

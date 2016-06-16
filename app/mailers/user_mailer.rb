@@ -14,7 +14,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: admin_email_address,
-      subject: I18n.t('dashboard.mailer.new_application', id: app.issuer)
+      subject: I18n.t('dashboard.mailer.new_application.subject', id: app.issuer)
     )
   end
 
@@ -22,7 +22,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: app.user.email,
-      subject: I18n.t('dashboard.mailer.new_application', id: app.issuer)
+      subject: I18n.t('dashboard.mailer.new_application.subject', id: app.issuer)
     )
   end
 
@@ -30,7 +30,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: admin_email_address,
-      subject: I18n.t('dashboard.mailer.approved_application', id: app.issuer)
+      subject: I18n.t('dashboard.mailer.approved_application.subject', id: app.issuer)
     )
   end
 
@@ -38,7 +38,7 @@ class UserMailer < ApplicationMailer
     @application = app
     mail(
       to: app.user.email,
-      subject: I18n.t('dashboard.mailer.approved_application', id: app.issuer)
+      subject: I18n.t('dashboard.mailer.approved_application.subject', id: app.issuer)
     )
   end
 end
