@@ -82,6 +82,8 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
     cliver (0.3.2)
     codeclimate-test-reporter (0.5.1)
       simplecov (>= 0.7.1, < 1.0.0)
@@ -381,6 +383,7 @@ DEPENDENCIES
   bourbon (= 5.0.0.beta.5)
   bullet
   bundler-audit (>= 0.5.0)
+  climate_control
   codeclimate-test-reporter
   coffee-rails (~> 4.1.0)
   database_cleaner
@@ -435,6 +438,9 @@ DEPENDENCIES
   us_web_design_standards!
   web-console
   webmock
+
+RUBY VERSION
+   ruby 2.3.0p0
 
 BUNDLED WITH
    1.12.1
