@@ -18,7 +18,7 @@ module Saml
       Hashie::Mash.new(issuer:                        'https://dashboard.login.gov',
                        idp_sso_target_url:            ENV.fetch('IDP_SSO_URL', saml_env_config[:sso_url]),
                        idp_slo_target_url:            ENV.fetch('IDP_SLO_URL', saml_env_config[:slo_url]),
-                       idp_cert:                      ENV.fetch('IDP_CERT', saml_env_config[:cert]),
+                       idp_cert_fingerprint:          ENV.fetch('IDP_FINGERPRINT', saml_env_config[:idp_fingerprint]),
                        name_identifier_format:        ENV.fetch('IDP_NAME_ID_FORMAT', saml_env_config[:name_id_format]),
                        certificate:                   ENV.fetch('SP_CERTIFICATE', saml_env_config[:sp_certificate]),
                        private_key:                   OpenSSL::PKey::RSA.new(
