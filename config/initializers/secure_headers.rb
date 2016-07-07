@@ -33,3 +33,13 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
+
+SecureHeaders::Configuration.override(:saml) do |config|
+  saml_config = Saml::Config.new
+  idp_sso_domain = saml_config.settings.idp_sso_target_url
+  idp_slo_domain = saml_config.logout_url
+  whitelisted_domains = [idp_sso_domain, idp_slo_domain].map do |url|
+    url.split('//')[1].split('/')[0]
+  end
+  whitelisted_domains.each { |domain| config.csp[:form_action] << domain }
+end
