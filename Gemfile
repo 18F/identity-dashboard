@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.0'
+ruby '2.3.1'
 
 gem 'actionmailer-text'
 gem 'autoprefixer-rails'
@@ -11,9 +11,9 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'enum_help'
 gem 'flutie'
+gem 'foreman', require: false
 gem 'hashie'
 gem 'high_voltage'
-gem 'honeybadger'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'kaminari-bootstrap', '~> 3.0.1'

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+set -x
+
+PORT=${PORT-3000}
+
+bundle exec rake cf:on_first_instance db:migrate db:seed
+foreman start -f Procfile.cf

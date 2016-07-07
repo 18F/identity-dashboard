@@ -1,6 +1,7 @@
 development: &default
   name_id_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
   idp_fingerprint: '8B:D5:C2:E8:9A:2B:CE:B7:4B:95:50:BA:16:79:05:27:17:D1:D3:67'
+  sp_issuer: 'https://dashboard.login.gov'
   sp_certificate: |
     -----BEGIN CERTIFICATE-----
     MIIFLjCCAxYCCQD/dXjTvpnD0jANBgkqhkiG9w0BAQsFADBZMQswCQYDVQQGEwJV

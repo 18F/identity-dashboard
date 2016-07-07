@@ -128,6 +128,8 @@ GEM
       factory_girl (~> 4.7.0)
       railties (>= 3.0.0)
     flutie (2.0.0)
+    foreman (0.82.0)
+      thor (~> 0.19.1)
     formulaic (0.3.0)
       activesupport
       capybara
@@ -137,7 +139,6 @@ GEM
     hashdiff (0.3.0)
     hashie (3.4.4)
     high_voltage (3.0.0)
-    honeybadger (2.6.0)
     htmlentities (4.3.4)
     httparty (0.13.7)
       json (~> 1.8)
@@ -408,10 +409,10 @@ DEPENDENCIES
   enum_help
   factory_girl_rails
   flutie
+  foreman
   formulaic
   hashie
   high_voltage
-  honeybadger
   jquery-rails
   jquery-ui-rails
   kaminari-bootstrap (~> 3.0.1)
@@ -459,4 +460,4 @@ RUBY VERSION
    ruby 2.3.0p0
 
 BUNDLED WITH
-   1.12.1
+   1.12.5
