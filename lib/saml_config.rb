@@ -18,7 +18,7 @@ module Saml
         saml_env_config[:sp_private_key] = File.read("#{Rails.root}/config/saml_private.key")
       end
       Hashie::Mash.new(
-        issuer: 'https://dashboard.login.gov',
+        issuer: ENV.fetch('SP_ISSUER', saml_env_config[:sp_issuer]),
         idp_sso_target_url: ENV.fetch('IDP_SSO_URL', saml_env_config[:sso_url]),
         idp_slo_target_url: ENV.fetch('IDP_SLO_URL', saml_env_config[:slo_url]),
         idp_cert_fingerprint: ENV.fetch('IDP_FINGERPRINT', saml_env_config[:idp_fingerprint]),

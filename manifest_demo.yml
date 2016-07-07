@@ -1,0 +1,12 @@
+---
+applications:
+- name: identity-dashboard-demo
+  memory: 512M
+  instances: 1
+  host: identity-dashboard-demo
+  domain: apps.cloud.gov
+  command: bin/cf-start
+  services:
+  - id-dashboard-psql-demo
+  env:
+    RAILS_ENV: production

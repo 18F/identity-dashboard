@@ -5,6 +5,11 @@ class ApplicationController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :render_401
 
+  if Rails.env.production?
+    http_basic_authenticate_with name: Rails.application.secrets.http_auth_username,
+                                 password: Rails.application.secrets.http_auth_password
+  end
+
   def current_user
     if ENV['FORCE_USER']
       User.find ENV['FORCE_USER']
