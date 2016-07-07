@@ -3,7 +3,7 @@
 *.swo
 *.swp
 /.bundle
-/.env.local
+/.env*
 /coverage/*
 /db/*.sqlite3
 /log/*
