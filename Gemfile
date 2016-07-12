@@ -50,6 +50,7 @@ group :development, :test do
   gem 'bullet'
   gem 'bundler-audit', '>= 0.5.0', require: false
   gem 'factory_girl_rails'
+  gem 'i18n-tasks'
   gem 'mailcatcher', '0.6.3'
   gem 'pry-byebug'
   gem 'pry-rails'

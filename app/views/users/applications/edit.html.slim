@@ -1,9 +1,0 @@
-h1 = t('dashboard.headings.applications.edit', name: application.name)
-
-= simple_form_for(application, html: { autocomplete: 'off', role: 'form' }, url: users_application_path(application)) do |form|
-  == render 'form', { form: form }
-  .wrapper.actions
-    .action
-      = form.button :submit, 'Update'
-    .action
-      = link_to t('dashboard.forms.buttons.cancel'), users_application_url(application), class: 'usa-button usa-button-outline use-button-secondary', role: :button

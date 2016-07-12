@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   end
 
   namespace :users do
-    resources :applications do
+    resources :service_providers do
     end
   end
 

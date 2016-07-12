@@ -1,0 +1,9 @@
+h1 = t('headings.service_providers.edit', name: service_provider.name)
+
+= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form' }, url: users_service_provider_path(service_provider)) do |form|
+  == render 'form', { form: form }
+  .wrapper.actions
+    .action
+      = form.button :submit, 'Update'
+    .action
+      = link_to t('forms.buttons.cancel'), users_service_provider_url(service_provider), class: 'usa-button usa-button-outline use-button-secondary', role: :button

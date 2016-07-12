@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   devise :trackable, :timeoutable, :omniauthable, omniauth_providers: [:saml]
-  has_many :applications
+  has_many :service_providers
 
   before_create :create_uuid
 
