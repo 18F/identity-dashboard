@@ -4,6 +4,9 @@ AllCops:
     - '**/Rakefile'
   Exclude:
     - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'spec/i18n_spec.rb'
+    - 'config/initializers/devise.rb'
   UseCache: true
 
 Metrics/AbcSize:

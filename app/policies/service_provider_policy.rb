@@ -1,9 +1,9 @@
-class ApplicationPolicy < BasePolicy
-  attr_reader :current_user, :app
+class ServiceProviderPolicy < BasePolicy
+  attr_reader :current_user, :sp
 
   def initialize(current_user, model)
     @current_user = current_user
-    @app = model
+    @sp = model
   end
 
   def index?
@@ -37,7 +37,7 @@ class ApplicationPolicy < BasePolicy
   private
 
   def owner?
-    app.user == current_user
+    sp.user == current_user
   end
 
   def admin?

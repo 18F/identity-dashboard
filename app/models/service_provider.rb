@@ -1,4 +1,4 @@
-class Application < ActiveRecord::Base
+class ServiceProvider < ActiveRecord::Base
   belongs_to :user
 
   enum block_encryption: { 'aes256-cbc' => 1 }

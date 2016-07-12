@@ -4,7 +4,7 @@ describe User do
   include MailerSpecHelper
 
   describe 'Associations' do
-    it { should have_many(:applications) }
+    it { should have_many(:service_providers) }
   end
 
   let(:user) { build(:user) }
@@ -23,7 +23,7 @@ describe User do
       expect(deliveries.count).to eq(0)
       user.save
       expect(deliveries.count).to eq(1)
-      expect(deliveries.first.subject).to eq(I18n.t('dashboard.mailer.welcome.subject'))
+      expect(deliveries.first.subject).to eq(I18n.t('mailer.welcome.subject'))
     end
   end
 end

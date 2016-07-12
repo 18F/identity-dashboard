@@ -1,0 +1,36 @@
+h1 = t('headings.service_providers.show', name: service_provider.name)
+
+.wrapper.actions
+  = button_to t('forms.buttons.edit_service_provider'), edit_users_service_provider_url(service_provider),
+    class: 'usa-button-primary', method: :get
+  = button_to t('forms.buttons.delete_service_provider'), users_service_provider_url(service_provider),
+    class: 'usa-button-secondary', method: :delete, data: {confirm: "Are you sure?"}
+
+table.horizontal-headers
+  tr
+    th Issuer
+    td.issuer = service_provider.issuer
+  tr
+    th Name
+    td.name = service_provider.name
+  tr
+    th Description
+    td.description = service_provider.description
+  tr
+    th Metadata URL
+    td.metadata_url = service_provider.metadata_url
+  tr
+    th Assertion Consumer Service URL
+    td.acs_url = service_provider.acs_url
+  tr
+    th Assertion Consumer Logout Service URL
+    td.assertion_consumer_logout_service_url = service_provider.assertion_consumer_logout_service_url
+  tr
+    th SAML Client Cert
+    td.saml_client_cert.verbatim = service_provider.saml_client_cert
+  tr
+    th Block Encryption
+    td.block_encryption = service_provider.block_encryption
+  tr
+    th Active?
+    td.active_flag = (service_provider.active? ? 'Yes' : 'No')
