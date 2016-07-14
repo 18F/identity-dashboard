@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     post '/users/sessions' => 'users/sessions#create', as: :user_session
     delete '/users/sessions' => 'users/sessions#destroy', as: :destroy_user_session
     post '/users/auth/saml/logout' => 'users/omniauth_callbacks#logout'
+    get '/users/logout' => 'users/sessions#destroy'
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
   end

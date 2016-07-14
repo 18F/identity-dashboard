@@ -2,7 +2,7 @@ nav.usa-site-navbar
   .usa-grid
     .usa-width-one-half
       h1
-        .logo = link_to 'login.gov', root_path
+        .logo = link_to 'Home', root_path
 
     .usa-width-one-half.text-right
 
@@ -10,7 +10,7 @@ nav.usa-site-navbar
         - if current_user.admin?
           .admin-nav You are an admin
         = link_to t('links.service_providers'), users_service_providers_path, class: 'usa-button'
-        = link_to t('links.sign_out'), destroy_user_session_path(), method: 'delete', class: 'usa-button usa-button-outline'
+        = link_to t('links.sign_out'), '/users/logout', class: 'usa-button usa-button-outline'
 
       - else
         = link_to t('links.sign_in'), '/users/auth/saml', class: 'usa-button'
