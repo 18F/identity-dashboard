@@ -8,9 +8,8 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/users/sessions' => 'users/sessions#new', as: :new_user_session
     post '/users/sessions' => 'users/sessions#create', as: :user_session
-    delete '/users/sessions' => 'users/sessions#destroy', as: :destroy_user_session
     post '/users/auth/saml/logout' => 'users/omniauth_callbacks#logout'
-    get '/users/logout' => 'users/sessions#destroy'
+    get '/users/logout' => 'users/sessions#destroy', as: :destroy_user_session
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
   end
