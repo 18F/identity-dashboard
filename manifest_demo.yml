@@ -10,3 +10,6 @@ applications:
   - id-dashboard-psql-demo
   env:
     RAILS_ENV: production
+    IDP_SSO_URL: https://upaya-idp-demo.18f.gov/api/saml/auth
+    IDP_SLO_URL: https://upaya-idp-demo.18f.gov/api/saml/logout
+    SP_ISSUER: urn:gov:gsa:SAML:2.0.profiles:sp:sso:dashboard-demo

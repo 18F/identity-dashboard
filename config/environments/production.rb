@@ -1,4 +1,5 @@
 require Rails.root.join('config/smtp')
+require Rails.root.join('lib/cloud_foundry')
 Rails.application.configure do
   config.cache_classes = true
   config.eager_load = true
@@ -13,6 +14,9 @@ Rails.application.configure do
   config.action_controller.asset_host = ENV['ASSET_HOST']
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = SMTP_SETTINGS
+  config.action_mailer.default_url_options = {
+    host: "https://#{CloudFoundry.vcap_data['uris'][0]}"
+  }
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.log_formatter = ::Logger::Formatter.new

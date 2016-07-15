@@ -14,9 +14,6 @@ module Saml
     def build_settings
       config_file = "#{Rails.root}/config/saml.yml"
       saml_env_config = Hashie::Mash.new(YAML.load_file(config_file).fetch(Rails.env, {}))
-      if Rails.env.test? || Rails.env.development?
-        saml_env_config[:sp_private_key] = File.read("#{Rails.root}/config/saml_private.key")
-      end
       Hashie::Mash.new(
         issuer: ENV.fetch('SP_ISSUER', saml_env_config[:sp_issuer]),
         idp_sso_target_url: ENV.fetch('IDP_SSO_URL', saml_env_config[:sso_url]),
@@ -34,7 +31,7 @@ module Saml
         double_quote_xml_attribute_values: true,
         security: {
           authn_requests_signed: true,
-          embed_sign: true,
+          embed_sign: false,
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
         }
