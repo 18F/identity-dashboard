@@ -14,9 +14,15 @@ Rails.application.configure do
   config.action_controller.asset_host = ENV['ASSET_HOST']
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = SMTP_SETTINGS
-  config.action_mailer.default_url_options = {
-    host: "https://#{CloudFoundry.vcap_data['uris'][0]}"
-  }
+  if CloudFoundry.cf_environment?
+    config.action_mailer.default_url_options = {
+      host: "https://#{CloudFoundry.vcap_data['uris'][0]}"
+    }
+  else
+    config.action_mailer.default_url_options = {
+      host: ENV.fetch('DEFAULT_URL_BASE', 'https://dashboard.login.gov')
+    }
+  end
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.log_formatter = ::Logger::Formatter.new
