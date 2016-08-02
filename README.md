@@ -15,11 +15,11 @@ An admin dashboard for the Identity project.
 
 1. Run the following command to set up the environment:
 
-    $ bin/setup
+    $ make setup
 
 1. Run the app server with:
 
-    $ foreman start
+    $ make run
 
 Note that the web server runs at http://localhost:3001/ by default (not the default Rails port 3000).
 This is to make it possible to easily run https://github.com/18F/identity-idp and https://github.com/18F/identity-dashboard
@@ -29,7 +29,7 @@ on the same development machine.
 
 To run all the tests:
 
-    $ bundle exec rspec
+    $ make test
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
