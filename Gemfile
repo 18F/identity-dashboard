@@ -36,6 +36,11 @@ gem 'slim-rails'
 gem 'uglifier'
 gem 'us_web_design_standards', git: 'https://github.com/jessieay/us_web_design_standards_gem.git', branch: 'rails-assets-fixes'
 
+group :deploy do
+  gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano-rails' # , '~> 1.1', require: false
+end
+
 group :development do
   gem 'quiet_assets'
   gem 'rubocop'
