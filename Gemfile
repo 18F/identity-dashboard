@@ -52,14 +52,8 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'i18n-tasks'
   gem 'mailcatcher', '0.6.3'
-  gem 'pry-byebug'
-  gem 'pry-rails'
   gem 'rspec-rails', '~> 3.4.0'
   gem 'saml_idp'
-end
-
-group :development, :staging do
-  gem 'rack-mini-profiler', require: false
 end
 
 group :test do
@@ -76,7 +70,7 @@ group :test do
   gem 'webmock'
 end
 
-group :staging, :production do
+group :production do
   gem 'rack-timeout'
   gem 'rails_12factor'
 end
