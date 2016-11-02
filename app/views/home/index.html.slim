@@ -8,3 +8,5 @@
   h1 Welcome to the Identity Dashboard
  
   = link_to t('links.sign_in'), '/users/auth/saml', class: 'usa-button'
+
+= render partial: 'home/deploy', locals: { deploy_statuses: @deploy_statuses }
