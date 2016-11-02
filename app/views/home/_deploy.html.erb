@@ -1,0 +1,21 @@
+<%# locals: deploy_statuses %>
+
+<% deploy_statuses.each_slice(2) do |pair| %>
+  <div class="usa-grid-full">
+    <% pair.each do |status| %>
+      <div class="deploy-box usa-width-one-half <%= status.status_class %>">
+        <h3><%= status.env %></h3>
+
+        <% if status.error %>
+          <%= status.error %>
+        <% else %>
+          <h4><%= status.branch %> @ <%= link_to status.short_sha, status.commit_url %></h4>
+
+          Deployed by <%= status.user %>
+          <%= time_ago_in_words(status.timestamp) %> ago
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <br />
+<% end %>

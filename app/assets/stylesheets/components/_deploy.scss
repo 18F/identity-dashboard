@@ -1,0 +1,19 @@
+.deploy-hidden {
+  display: none;
+}
+
+.deploy-box {
+  min-height: 200px;
+}
+
+.deploy-bg-loading {
+  background: $gray-light;
+}
+
+.deploy-bg-error {
+  background: $red;
+}
+
+.deploy-bg-success {
+  background: $green;
+}
