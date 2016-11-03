@@ -38,6 +38,7 @@ gem 'us_web_design_standards', git: 'https://github.com/jessieay/us_web_design_s
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano-passenger'
   gem 'capistrano-rails' # , '~> 1.1', require: false
 end
 

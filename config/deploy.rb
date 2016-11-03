@@ -13,6 +13,9 @@ set :linked_files, %w(.env
                       config/saml.yml
                       config/secrets.yml)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
+set :passenger_roles, [:app, :web]
+set :passenger_restart_wait, 5
+set :passenger_restart_runner, :sequence
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-dashboard.git'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
@@ -22,10 +25,4 @@ set :tmp_dir, '/srv/idp'
 # TASKS
 #########
 namespace :deploy do
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      execute :touch, release_path.join('tmp/restart.txt')
-    end
-  end
 end
