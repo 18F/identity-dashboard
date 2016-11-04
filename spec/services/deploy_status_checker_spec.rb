@@ -11,6 +11,7 @@ RSpec.describe DeployStatusChecker do
       DeployStatusChecker::Status.new.tap do |status|
         status.env = 'prod'
         status.host = host
+        status.app = 'identity-idp'
         status.sha = '1234567890abcdef'
         status.error = error
       end
@@ -32,16 +33,16 @@ RSpec.describe DeployStatusChecker do
     describe '#status_class' do
       context 'with no host' do
         let(:host) { nil }
-        it { expect(status.status_class).to eq('deploy-bg-loading') }
+        it { expect(status.status_class).to eq('deploy-disabled') }
       end
 
       context 'with an error' do
         let(:error) { 'error' }
-        it { expect(status.status_class).to eq('deploy-bg-error') }
+        it { expect(status.status_class).to eq('deploy-error') }
       end
 
       context 'with a host and no error' do
-        it { expect(status.status_class).to eq('deploy-bg-success') }
+        it { expect(status.status_class).to eq('deploy-success') }
       end
     end
   end
@@ -57,11 +58,11 @@ RSpec.describe DeployStatusChecker do
     end
 
     before do
-      stub_request(:get, 'https://idp.demo.login.gov/api/deploy').
+      stub_request(:get, %r{https://.*\.demo\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
-      stub_request(:get, 'https://idp.dev.login.gov/api/deploy').
+      stub_request(:get, %r{https://.*\.dev\.login\.gov/api/deploy\.json}).
         to_return(status: 404)
-      stub_request(:get, 'https://idp.qa.login.gov/api/deploy').
+      stub_request(:get, %r{https://.*\.qa\.login\.gov/api/deploy\.json}).
         to_timeout
     end
 
@@ -69,19 +70,23 @@ RSpec.describe DeployStatusChecker do
       statuses = checker.check!
 
       prod = statuses.find { |status| status.env == 'prod' }
-      expect(prod.host).to be_nil
-      expect(prod.error).to eq('no host')
+      prod_status = prod.statuses.first
+      expect(prod_status.host).to be_nil
+      expect(prod_status.error).to eq('no host')
 
       demo = statuses.find { |status| status.env == 'demo' }
-      expect(demo.sha).to eq(status_json['sha'])
+      demo_status = demo.statuses.first
+      expect(demo_status.sha).to eq(status_json['sha'])
 
       dev = statuses.find { |status| status.env == 'dev' }
-      expect(dev.sha).to be_nil
-      expect(dev.error).to eq('404')
+      dev_status = dev.statuses.first
+      expect(dev_status.sha).to be_nil
+      expect(dev_status.error).to eq('404')
 
       qa = statuses.find { |status| status.env == 'qa' }
-      expect(qa.sha).to be_nil
-      expect(qa.error).to eq('execution expired')
+      qa_status = qa.statuses.first
+      expect(qa_status.sha).to be_nil
+      expect(qa_status.error).to eq('execution expired')
     end
   end
 
