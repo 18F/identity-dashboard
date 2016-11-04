@@ -17,8 +17,8 @@ class DeployStatusChecker
 
     Deploy.new('identity-idp', 'dev', 'idp.dev.login.gov'),
     Deploy.new('identity-sp-rails', 'dev', 'sp.dev.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'dev', 'sp-sinatra.demo.login.gov'),
-    Deploy.new('identity-dashboard', 'dev', 'dashboard.demo.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'dev', 'sp-sinatra.dev.login.gov'),
+    Deploy.new('identity-dashboard', 'dev', 'dashboard.dev.login.gov'),
 
     Deploy.new('identity-idp', 'qa', 'idp.qa.login.gov'),
     Deploy.new('identity-sp-rails', 'qa', 'sp.qa.login.gov'),
