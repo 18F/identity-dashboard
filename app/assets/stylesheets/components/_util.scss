@@ -1,39 +1,16 @@
-.text-over-line {
-  position: relative;
-  text-align: center;
+// supplemental utility classes
 
-  span {
-    background: $white;
-    padding: 0 1rem;
-    position: relative;
-    z-index: 2;
-  }
-}
+.w-60p { width: 60px; }
 
-.text-over-line::before {
-  border-top: solid 3px $gray-light;
-  content: '';
-  display: block;
-  height: 3px;
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  z-index: 1;
-}
+.bg-light-blue { background-color: $blue-light; }
 
-.text-left {
-  text-align: left;
-}
+.no-hover-decoration:hover { text-decoration: none; }
 
-.text-center {
-  text-align: center;
-}
+@media #{$breakpoint-sm} {
+  .sm-maxw-190p { max-width: 190px; }
 
-.text-right {
-  text-align: right;
-}
+  .sm-bg-light-blue { background-color: $blue-light; }
 
-.verbatim {
-  white-space: pre;
-  font-family: monospace;
+  .sm-left-align { text-align: left; }
+  .sm-right-align { text-align: right; }
 }

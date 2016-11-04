@@ -34,9 +34,8 @@ html lang="#{I18n.locale}"
       = render 'layouts/messages'
       = render 'shared/branding'
 
-      .container.px2
-        #start-of-content
-          == yield
+      .container.px2.py3
+        == yield
 
     .footer
 

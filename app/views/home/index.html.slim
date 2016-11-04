@@ -1,12 +1,1 @@
-- if user_signed_in?
-  h1
-    = current_user.name
-
-  = link_to t('links.service_providers'), users_service_providers_path
-
-- else
-  h1 Welcome to the Identity Dashboard
- 
-  = link_to t('links.sign_in'), '/users/auth/saml', class: 'usa-button'
-
 = render partial: 'home/deploy', locals: { deploy_statuses: @deploy_statuses }

@@ -1,0 +1,10 @@
+.card {
+  background-color: $white;
+  max-width: $container-skinny-width;
+
+  &-wide { max-width: 100%; }
+
+  @media #{$breakpoint-sm} {
+    border-radius: 5px;
+  }
+}
