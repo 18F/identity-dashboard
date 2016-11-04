@@ -1,22 +1,39 @@
 # Loads data from the /api/deploy endpoint in our deploys of identity-idp
 class DeployStatusChecker
-  Deploy = Struct.new(:env, :host)
+  Deploy = Struct.new(:app, :env, :host)
+
+  Environment = Struct.new(:env, :statuses)
 
   DEPLOYS = [
-    Deploy.new('prod'),
-    Deploy.new('demo', 'idp.demo.login.gov'),
-    Deploy.new('dev', 'idp.dev.login.gov'),
-    Deploy.new('qa', 'idp.qa.login.gov')
+    Deploy.new('identity-idp', 'prod'),
+    Deploy.new('identity-sp-rails', 'prod'),
+    Deploy.new('identity-sp-sinatra', 'prod'),
+    Deploy.new('identity-dashboard', 'prod'),
+
+    Deploy.new('identity-idp', 'demo', 'idp.demo.login.gov'),
+    Deploy.new('identity-sp-rails', 'demo', 'sp.demo.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'demo', 'sp-sinatra.demo.login.gov'),
+    Deploy.new('identity-dashboard', 'demo', 'dashboard.demo.login.gov'),
+
+    Deploy.new('identity-idp', 'dev', 'idp.dev.login.gov'),
+    Deploy.new('identity-sp-rails', 'dev', 'sp.dev.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'dev', 'sp-sinatra.demo.login.gov'),
+    Deploy.new('identity-dashboard', 'dev', 'dashboard.demo.login.gov'),
+
+    Deploy.new('identity-idp', 'qa', 'idp.qa.login.gov'),
+    Deploy.new('identity-sp-rails', 'qa', 'sp.qa.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'qa', 'sp-sinatra.qa.login.gov'),
+    Deploy.new('identity-dashboard', 'qa', 'dashboard.qa.login.gov')
   ].freeze
 
-  Status = Struct.new(:env, :host, :sha, :branch, :user, :timestamp, :error) do
+  Status = Struct.new(:app, :env, :host, :sha, :branch, :user, :timestamp, :error) do
     def status_class
       if !host
-        'deploy-bg-loading'
+        'deploy-disabled'
       elsif error
-        'deploy-bg-error'
+        'deploy-error'
       else
-        'deploy-bg-success'
+        'deploy-success'
       end
     end
 
@@ -25,13 +42,15 @@ class DeployStatusChecker
     end
 
     def commit_url
-      "https://github.com/18F/identity-idp/commits/#{sha}"
+      "https://github.com/18F/#{app}/commits/#{sha}"
     end
   end
 
-  # @return [Array<Status>]
+  # @return [Array<Environment>]
   def check!
-    DEPLOYS.map { |deploy| Thread.new { status(deploy) } }.map(&:value)
+    deploys = DEPLOYS.map { |deploy| Thread.new { status(deploy) } }.map(&:value)
+
+    deploys.group_by(&:env).map { |env, statuses| Environment.new(env, statuses) }
   end
 
   # @return [Status]
@@ -63,7 +82,7 @@ class DeployStatusChecker
   # @return [URI]
   def deploy_uri(deploy)
     use_ssl = (deploy.env != 'local')
-    URI("#{use_ssl ? 'https' : 'http'}://#{deploy.host}/api/deploy")
+    URI("#{use_ssl ? 'https' : 'http'}://#{deploy.host}/api/deploy.json")
   end
 
   def basic_auth(request)
@@ -74,6 +93,7 @@ class DeployStatusChecker
   # @return [Status]
   def status_from_json(deploy, json)
     Status.new.tap do |status|
+      status.app = deploy.app
       status.env = deploy.env
       status.host = deploy.host
       status.sha = json['sha']
@@ -86,6 +106,7 @@ class DeployStatusChecker
   # @return [Status]
   def status_from_error(deploy, message)
     Status.new.tap do |status|
+      status.app = deploy.app
       status.env = deploy.env
       status.host = deploy.host
       status.error = message

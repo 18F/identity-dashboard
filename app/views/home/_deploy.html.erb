@@ -1,21 +1,25 @@
 <%# locals: deploy_statuses %>
 
-<% deploy_statuses.each_slice(2) do |pair| %>
-  <div class="usa-grid-full">
-    <% pair.each do |status| %>
-      <div class="deploy-box usa-width-one-half <%= status.status_class %>">
-        <h3><%= status.env %></h3>
+<% deploy_statuses.each do |environment| %>
+  <h2 class='h3 sans-serif caps'><%= environment.env %></h2>
+  <div class="flex flex-wrap mxn2 mb4">
+    <% environment.statuses.each do |status| %>
+      <div class='col col-12 sm-col-6 md-col-3 px2'>
+        <div class='mb2 p2 h6 border rounded <%= status.status_class %>'>
+          <div class='mb1 bold'><%= status.app %></div>
+          <% if status.error %>
+            <%= status.error %>
+          <% else %>
+            <div class='mb1 monospace'>
+              <%= status.branch %> @
+              <%= link_to status.short_sha, status.commit_url %>
+            </div>
 
-        <% if status.error %>
-          <%= status.error %>
-        <% else %>
-          <h4><%= status.branch %> @ <%= link_to status.short_sha, status.commit_url %></h4>
-
-          Deployed by <%= status.user %>
-          <%= time_ago_in_words(status.timestamp) %> ago
-        <% end %>
+            Deployed by <em><%= status.user %></em>
+            <%= time_ago_in_words(status.timestamp) %> ago
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>
-  <br />
 <% end %>

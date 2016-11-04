@@ -1,8 +1,10 @@
-/*
- * = require us_web_design_standards
- * = require us_web_design_standards_fonts
- */
+@import 'fonts';
 
-@import 'variables';
-@import 'base';
+@import 'variables/colors';
+@import 'variables/web';
+
+@import 'normalize';
+
+@import 'basscss/basscss';
+
 @import 'components/all';

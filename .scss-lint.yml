@@ -1,4 +1,7 @@
+exclude:
+  - 'vendor/assets/stylesheets/**'
+  - 'node_modules/**'
+
 linters:
-  Comment:
-    exclude:
-      - 'app/assets/stylesheets/application.css'
+  ColorVariable:
+    enabled: false
