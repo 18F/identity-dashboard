@@ -2,7 +2,7 @@ language: ruby
 before_script:
 - bundle exec rake db:setup
 rvm:
-- 2.3.1
+- 2.3.3
 cache: bundler
 script:
 - bundle exec rspec spec
