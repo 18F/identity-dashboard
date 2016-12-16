@@ -10,20 +10,20 @@ class DeployStatusChecker
     Deploy.new('identity-sp-sinatra', 'prod'),
     Deploy.new('identity-dashboard', 'prod'),
 
-    Deploy.new('identity-idp', 'demo', 'idp.demo.login.gov'),
-    Deploy.new('identity-sp-rails', 'demo', 'sp.demo.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'demo', 'sp-sinatra.demo.login.gov'),
-    Deploy.new('identity-dashboard', 'demo', 'dashboard.demo.login.gov'),
+    Deploy.new('identity-idp', 'demo', 'https://idp.demo.login.gov'),
+    Deploy.new('identity-sp-rails', 'demo', 'https://sp.demo.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'demo', 'https://sp-sinatra.demo.login.gov'),
+    Deploy.new('identity-dashboard', 'demo', 'https://dashboard.demo.login.gov'),
 
-    Deploy.new('identity-idp', 'qa', 'idp.qa.login.gov'),
-    Deploy.new('identity-sp-rails', 'qa', 'sp.qa.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'qa', 'sp-sinatra.qa.login.gov'),
-    Deploy.new('identity-dashboard', 'qa', 'dashboard.qa.login.gov'),
+    Deploy.new('identity-idp', 'qa', 'https://idp.qa.login.gov'),
+    Deploy.new('identity-sp-rails', 'qa', 'https://sp.qa.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'qa', 'https://sp-sinatra.qa.login.gov'),
+    Deploy.new('identity-dashboard', 'qa', 'https://dashboard.qa.login.gov'),
 
-    Deploy.new('identity-idp', 'dev', 'idp.dev.login.gov'),
-    Deploy.new('identity-sp-rails', 'dev', 'sp.dev.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'dev', 'sp-sinatra.dev.login.gov'),
-    Deploy.new('identity-dashboard', 'dev', 'dashboard.dev.login.gov')
+    Deploy.new('identity-idp', 'dev', 'https://idp.dev.login.gov'),
+    Deploy.new('identity-sp-rails', 'dev', 'https://sp.dev.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'dev', 'https://sp-sinatra.dev.login.gov'),
+    Deploy.new('identity-dashboard', 'dev', 'https://dashboard.dev.login.gov')
   ].freeze
 
   Status = Struct.new(:app, :env, :host, :sha, :branch, :user, :timestamp, :error) do
@@ -43,6 +43,10 @@ class DeployStatusChecker
 
     def commit_url
       "https://github.com/18F/#{app}/commits/#{sha}"
+    end
+
+    def pending_url
+      "https://github.com/18F/#{app}/compare/#{sha}...master"
     end
   end
 
@@ -70,19 +74,13 @@ class DeployStatusChecker
 
   # @return [Net::HTTPResponse]
   def load_status(deploy)
-    uri = deploy_uri(deploy)
+    uri = URI.join(deploy.host, '/api/deploy.json')
 
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       request = Net::HTTP::Get.new(uri)
       basic_auth(request)
       http.request(request)
     end
-  end
-
-  # @return [URI]
-  def deploy_uri(deploy)
-    use_ssl = (deploy.env != 'local')
-    URI("#{use_ssl ? 'https' : 'http'}://#{deploy.host}/api/deploy.json")
   end
 
   def basic_auth(request)

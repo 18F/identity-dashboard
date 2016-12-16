@@ -6,17 +6,25 @@
     <% environment.statuses.each do |status| %>
       <div class='col col-12 sm-col-6 md-col-3 px2'>
         <div class='mb2 p2 h6 border rounded <%= status.status_class %>'>
-          <div class='mb1 bold'><%= status.app %></div>
+          <div class='mb1 bold'>
+            <% if status.host %>
+              <%= link_to status.app, status.host %>
+            <% else %>
+              <%= status.app %>
+            <% end %>
+          </div>
           <% if status.error %>
             <%= status.error %>
           <% else %>
-            <div class='mb1 monospace'>
-              <%= status.branch %> @
-              <%= link_to status.short_sha, status.commit_url %>
+            <div class='mb1'>
+              <span class='monospace'>
+                <%= status.branch %> @
+                <%= link_to status.short_sha, status.commit_url %>
+              </span>
             </div>
-
             Deployed by <em><%= status.user %></em>
-            <%= time_ago_in_words(status.timestamp) %> ago
+            <%= time_ago_in_words(status.timestamp) %> ago.
+            View <%= link_to 'pending changes', status.pending_url %>.
           <% end %>
         </div>
       </div>
