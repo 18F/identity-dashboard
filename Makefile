@@ -20,7 +20,7 @@ lint:
 	bundle exec reek
 
 test:
-	rspec
+	bundle exec rspec
 
 run:
 	foreman start
