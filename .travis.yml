@@ -5,7 +5,8 @@ rvm:
 - 2.3.3
 cache: bundler
 script:
-- bundle exec rspec spec
+  - make test
+  - bundle exec codeclimate-test-reporter
 addons:
   postgresql: "9.3"
 services:
