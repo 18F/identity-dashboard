@@ -9,8 +9,9 @@ AllCops:
     - '**/Gemfile'
     - '**/Rakefile'
   Exclude:
-    - 'db/schema.rb'
     - 'bin/**/*'
+    - 'db/**/*'
+    - 'spec/i18n_spec.rb'
     - 'config/initializers/devise.rb'
     - 'db/migrate/*'
   TargetRubyVersion: 2.3

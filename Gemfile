@@ -55,7 +55,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'mailcatcher', '0.6.3'
   gem 'rspec-rails', '~> 3.4.0'
-  gem 'saml_idp'
+  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 end
 
 group :test do
