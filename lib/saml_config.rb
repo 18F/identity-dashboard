@@ -31,6 +31,7 @@ module Saml
         double_quote_xml_attribute_values: true,
         security: {
           authn_requests_signed: true,
+          logout_requests_signed: true,
           embed_sign: false,
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'

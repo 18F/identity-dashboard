@@ -28,20 +28,19 @@ class User < ActiveRecord::Base
 
   def self.from_omniauth(auth_hash)
     info = auth_hash.info
-    new_uuid = auth_hash.uid
-    new_email = info.email
-    find_or_create_by(email: new_email) do |user|
-      user.email = new_email
+    uid = auth_hash.uid
+    where(uuid: uid).first_or_create do |user|
+      user.email = info.email
       user.last_name = info.last_name
       user.first_name = info.first_name
-      user.uuid = new_uuid
+      user.uuid = uid
     end.sync_with_auth_hash!(auth_hash)
   end
 
   def sync_with_auth_hash!(auth_hash)
     info = auth_hash.info
-    new_uuid = auth_hash.uid
-    self.uuid = new_uuid if uuid != new_uuid
+    uid = auth_hash.uid
+    self.uuid = uid if uuid != uid
     self.first_name = info.first_name if first_name.blank? || first_name != info.first_name
     self.last_name = info.last_name if last_name.blank? || last_name != info.last_name
     save! if changed.any?

@@ -27,8 +27,15 @@ module Users
       redirect_to root_url
     end
 
+    def destroy
+      @_user_uuid = current_user.uuid
+      super
+    end
+
     def after_sign_out_path_for(_user)
-      Saml::Config.new.logout_url
+      saml_settings = OneLogin::RubySaml::Settings.new(Saml::Config.new.settings.dup)
+      saml_settings.name_identifier_value = @_user_uuid
+      OneLogin::RubySaml::Logoutrequest.new.create(saml_settings)
     end
   end
 end
