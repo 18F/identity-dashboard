@@ -76,8 +76,10 @@ class DeployStatusChecker
   def load_status(deploy)
     uri = URI.join(deploy.host, '/api/deploy.json')
 
-    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
-      request = Net::HTTP::Get.new(uri)
+    Net::HTTP.start(uri.host, uri.port,
+                    use_ssl: uri.scheme == 'https',
+                    open_timeout: 2) do |http|
+      request = Net::HTTP::Get.new(uri.request_uri)
       basic_auth(request)
       http.request(request)
     end
