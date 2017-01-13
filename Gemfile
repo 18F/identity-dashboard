@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 
 gem 'actionmailer-text'
+gem 'active_model_serializers'
 gem 'bourbon', '5.0.0.beta.5'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'delayed_job_active_record'

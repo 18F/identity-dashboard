@@ -14,10 +14,18 @@ Rails.application.routes.draw do
     get 'timeout' => 'users/sessions#timeout'
   end
 
-  namespace :users do
-    resources :service_providers do
-    end
-  end
+  get '/users/service_providers' => 'users/service_providers#index', as: 'users_service_providers'
+  post '/users/service_providers' => 'users/service_providers#create'
+  get '/users/service_providers/new' => 'users/service_providers#new',
+      as: 'new_users_service_provider'
+  get '/users/service_providers/:id/edit' => 'users/service_providers#edit',
+      as: 'edit_users_service_provider'
+  get '/users/service_providers/:id' => 'users/service_providers#show', as: 'users_service_provider'
+  patch '/users/service_providers/:id' => 'users/service_providers#update'
+  put '/users/service_providers/:id' => 'users/service_providers#update'
+  delete '/users/service_providers/:id' => 'users/service_providers#destroy'
+
+  get '/api/service_providers' => 'api/service_providers#index'
 
   root to: 'home#index'
 end
