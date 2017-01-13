@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160715161608) do
+ActiveRecord::Schema.define(version: 20170113162235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,8 +34,8 @@ ActiveRecord::Schema.define(version: 20160715161608) do
 
   create_table "service_providers", force: :cascade do |t|
     t.integer  "user_id",                                               null: false
-    t.uuid     "issuer",                                                null: false
-    t.string   "name"
+    t.string   "issuer",                                                null: false
+    t.string   "friendly_name"
     t.text     "description"
     t.text     "metadata_url"
     t.text     "acs_url"
@@ -46,6 +46,9 @@ ActiveRecord::Schema.define(version: 20160715161608) do
     t.datetime "updated_at"
     t.boolean  "active",                                default: false, null: false
     t.boolean  "approved",                              default: false, null: false
+    t.string   "agency"
+    t.text     "sp_initiated_login_url"
+    t.text     "return_to_sp_url"
   end
 
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree

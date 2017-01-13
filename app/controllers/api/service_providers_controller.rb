@@ -14,7 +14,7 @@ module Api
     end
 
     def approved_service_providers
-      ServiceProvider.where(active: true, approved: true)
+      ServiceProvider.where(active: true)
     end
   end
 end

@@ -90,13 +90,19 @@ module Users
     # rubocop:disable MethodLength
     def service_provider_params
       params.require(:service_provider).permit(
-        :name,
+        :friendly_name,
         :description,
+        :issuer,
+        :agency,
+        # :logo,
         :metadata_url,
         :acs_url,
         :assertion_consumer_logout_service_url,
-        :saml_client_cert,
+        :sp_initiated_login_url,
         :block_encryption,
+        :saml_client_cert,
+        :return_to_sp_url,
+        # :attribute_bundle,
         :active,
         :approved
       )

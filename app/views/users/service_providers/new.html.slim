@@ -1,5 +1,7 @@
 h1 = t('headings.service_providers.new')
 
+p For a description of these attributes, see the #{link_to 'developer documentation', 'https://pages.18f.gov/identity-dev-docs'}.
+
 = simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }, url: users_service_providers_path) do |form|
   == render 'form', { form: form }
   = form.button :submit, 'Create'

@@ -4,13 +4,13 @@ en:
   forms:
     buttons:
       continue_browsing: Continue browsing?
-      create_service_provider: Create new Service Provider
+      create_service_provider: Create a new service provider
       edit_service_provider: Edit
       delete_service_provider: Delete
       cancel: Cancel
     required_field: Indicates a required field.
   links:
-    service_providers: 'My Service Providers'
+    service_providers: 'My service providers'
     sign_out: 'Sign out'
     sign_in: 'Log in'
   notices:
@@ -24,11 +24,11 @@ en:
     logout_fail: 'Logout failed'
 
   headings:
-    service_providers: 
-      mine: My Service Providers
-      new: Create new Service Provider
-      edit: 'Edit: %{name}'
-      show: 'Service Provider: %{name}'
+    service_providers:
+      mine: My service providers
+      new: Create a new service provider
+      edit: 'Edit service provider'
+      show: 'Service Provider: %{friendly_name}'
     session_timeout_warning: Session Timeout
 
   mailer:

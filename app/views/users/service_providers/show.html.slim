@@ -1,4 +1,4 @@
-h1 = t('headings.service_providers.show', name: service_provider.name)
+h1 = t('headings.service_providers.show', friendly_name: service_provider.friendly_name)
 
 .wrapper.actions
   = button_to t('forms.buttons.edit_service_provider'), edit_users_service_provider_url(service_provider),
@@ -8,17 +8,20 @@ h1 = t('headings.service_providers.show', name: service_provider.name)
 
 table.horizontal-headers
   tr
-    th Issuer
-    td.issuer = service_provider.issuer
-  tr
-    th Name
-    td.name = service_provider.name
+    th Friendly Name
+    td.friendly_name = service_provider.friendly_name
   tr
     th Description
     td.description = service_provider.description
   tr
-    th Metadata URL
-    td.metadata_url = service_provider.metadata_url
+    th Issuer
+    td.issuer = service_provider.issuer
+  tr
+    th Agency
+    td.agency = service_provider.agency
+  tr
+    th Logo
+    td.logo = ''
   tr
     th Assertion Consumer Service URL
     td.acs_url = service_provider.acs_url
@@ -26,11 +29,20 @@ table.horizontal-headers
     th Assertion Consumer Logout Service URL
     td.assertion_consumer_logout_service_url = service_provider.assertion_consumer_logout_service_url
   tr
-    th SAML Client Cert
-    td.saml_client_cert.verbatim = service_provider.saml_client_cert
+    th SP Initiated Login URL
+    td.sp_initiated_login_url = service_provider.sp_initiated_login_url
   tr
     th Block Encryption
     td.block_encryption = service_provider.block_encryption
   tr
-    th Active?
+    th SAML Client Cert
+    td.saml_client_cert.verbatim = service_provider.saml_client_cert
+  tr
+    th Return to SP URL
+    td.return_to_sp_url = service_provider.return_to_sp_url
+  tr
+    th Attribute Bundle
+    td.attribute_bundle = ''
+  tr
+    th Active
     td.active_flag = (service_provider.active? ? 'Yes' : 'No')

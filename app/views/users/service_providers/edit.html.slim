@@ -1,4 +1,4 @@
-h1 = t('headings.service_providers.edit', name: service_provider.name)
+h1 = t('headings.service_providers.edit')
 
 = simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form' }, url: users_service_provider_path(service_provider)) do |form|
   == render 'form', { form: form }

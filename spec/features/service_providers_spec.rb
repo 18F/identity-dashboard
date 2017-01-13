@@ -9,7 +9,8 @@ feature 'ServiceProviders CRUD' do
 
     expect(page).to_not have_content('Approved')
 
-    fill_in 'Name', with: 'test service_provider'
+    fill_in 'Friendly name', with: 'test service_provider'
+    fill_in 'Issuer', with: 'test service_provider'
     click_on 'Create'
 
     expect(page).to have_content('Success')
@@ -25,7 +26,7 @@ feature 'ServiceProviders CRUD' do
 
     expect(page).to_not have_content('Approved')
 
-    fill_in 'Name', with: 'change service_provider name'
+    fill_in 'Friendly name', with: 'change service_provider name'
     fill_in 'Description', with: 'app description foobar'
     click_on 'Update'
 
@@ -41,7 +42,7 @@ feature 'ServiceProviders CRUD' do
 
     visit users_service_provider_path(app)
 
-    expect(page).to have_content(app.name)
+    expect(page).to have_content(app.friendly_name)
   end
 
   scenario 'Delete' do

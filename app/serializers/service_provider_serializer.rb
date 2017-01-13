@@ -1,28 +1,19 @@
 class ServiceProviderSerializer < ActiveModel::Serializer
   attributes(
+    :friendly_name,
     :issuer,
     :agency,
-    :friendly_name,
-    :metadata_url,
     :acs_url,
     :assertion_consumer_logout_service_url,
-    :cert,
+    :sp_initiated_login_url,
     :block_encryption,
-    #:redirect_url,
-    #:return_to_sp_url,
+    :cert,
+    :return_to_sp_url,
     #:logo,
     #:attribute_bundle,
     :updated_at,
     :signature
   )
-
-  def agency
-    object.name
-  end
-
-  def friendly_name
-    object.description
-  end
 
   def cert
     object.saml_client_cert
