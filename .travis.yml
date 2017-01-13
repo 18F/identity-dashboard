@@ -4,6 +4,8 @@ before_script:
 rvm:
 - 2.3.3
 cache: bundler
+notifications:
+  email: false
 script:
   - make test
   - bundle exec codeclimate-test-reporter
