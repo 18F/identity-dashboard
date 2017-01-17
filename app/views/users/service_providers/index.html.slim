@@ -2,12 +2,12 @@ h1
   = t('headings.service_providers.mine')
 
 .wrapper
-  = button_to t('forms.buttons.create_service_provider'), new_users_service_provider_url, 
+  = button_to t('forms.buttons.create_service_provider'), new_users_service_provider_url,
     class: 'usa-button-primary', method: :get
 
 table
   - current_user.service_providers.each do |app|
     tr
-      td = link_to(app.name, users_service_provider_path(app))
+      td = link_to(app.friendly_name, users_service_provider_path(app))
       td = app.issuer
       td = app.active? ? 'Active' : 'Inactive'

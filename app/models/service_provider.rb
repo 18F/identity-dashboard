@@ -3,11 +3,7 @@ class ServiceProvider < ActiveRecord::Base
 
   enum block_encryption: { 'aes256-cbc' => 1 }
 
-  before_create :create_issuer
-
-  def create_issuer
-    self.issuer = SecureRandom.uuid unless issuer.present?
-  end
+  validates :issuer, presence: true, uniqueness: true
 
   def to_param
     issuer

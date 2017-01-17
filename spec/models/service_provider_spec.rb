@@ -11,7 +11,6 @@ describe ServiceProvider do
     it 'assigns uuid on create' do
       service_provider.save
       expect(service_provider.issuer).to_not be_nil
-      expect(service_provider.issuer).to match(RubyRegex::UUID)
     end
   end
 
