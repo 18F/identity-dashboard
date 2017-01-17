@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170113162235) do
+ActiveRecord::Schema.define(version: 20170117193703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "agencies", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "agencies", ["name"], name: "index_agencies_on_name", unique: true, using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
@@ -46,9 +54,9 @@ ActiveRecord::Schema.define(version: 20170113162235) do
     t.datetime "updated_at"
     t.boolean  "active",                                default: false, null: false
     t.boolean  "approved",                              default: false, null: false
-    t.string   "agency"
     t.text     "sp_initiated_login_url"
     t.text     "return_to_sp_url"
+    t.integer  "agency_id",                                             null: false
   end
 
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
@@ -71,4 +79,5 @@ ActiveRecord::Schema.define(version: 20170113162235) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
+  add_foreign_key "service_providers", "agencies"
 end
