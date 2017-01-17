@@ -42,7 +42,7 @@ table.horizontal-headers
     td.return_to_sp_url = service_provider.return_to_sp_url
   tr
     th Attribute Bundle
-    td.attribute_bundle = ''
+    td.attribute_bundle = (service_provider.attribute_bundle || []).sort.join(', ')
   tr
     th Active
     td.active_flag = (service_provider.active? ? 'Yes' : 'No')

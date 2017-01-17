@@ -102,9 +102,9 @@ module Users
         :block_encryption,
         :saml_client_cert,
         :return_to_sp_url,
-        # :attribute_bundle,
         :active,
-        :approved
+        :approved,
+        attribute_bundle: []
       )
     end
     # rubocop:enable MethodLength

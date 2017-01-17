@@ -13,8 +13,7 @@
 = form.input :block_encryption, as: :radio_buttons, label: 'Block Encryption'
 = form.input :saml_client_cert, label: 'SAML Client Cert (PEM encoded)'
 = form.input :return_to_sp_url, label: 'Return to SP URL'
-
-p
-  b Attribute Bundle
+= form.input :attribute_bundle, collection: ServiceProvider.possible_attributes,
+  input_html: { class: 'multiselectuser', multiple: true}
 
 = form.input :active, as: :radio_buttons
