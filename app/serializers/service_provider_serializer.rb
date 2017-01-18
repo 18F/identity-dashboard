@@ -10,7 +10,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :cert,
     :return_to_sp_url,
     #:logo,
-    #:attribute_bundle,
+    :attribute_bundle,
     :updated_at,
     :signature
   )
