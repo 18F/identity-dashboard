@@ -93,7 +93,7 @@ module Users
         :friendly_name,
         :description,
         :issuer,
-        :agency,
+        :agency_id,
         # :logo,
         :metadata_url,
         :acs_url,
