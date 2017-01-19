@@ -14,6 +14,6 @@
 = form.input :saml_client_cert, label: 'SAML Client Cert (PEM encoded)'
 = form.input :return_to_sp_url, label: 'Return to SP URL'
 = form.input :attribute_bundle, collection: ServiceProvider.possible_attributes,
-  input_html: { class: 'multiselectuser', multiple: true}
+  input_html: { class: 'multiselectuser', multiple: true, size: ServiceProvider.possible_attributes.keys.count }
 
 = form.input :active, as: :radio_buttons
