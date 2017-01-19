@@ -4,23 +4,14 @@ ruby '2.3.3'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
-gem 'bourbon', '5.0.0.beta.5'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'enum_help'
-gem 'flutie'
 gem 'foreman', require: false
 gem 'hashie'
-gem 'high_voltage'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-gem 'kaminari-bootstrap', '~> 3.0.1'
-gem 'neat', '~> 1.7.0'
 gem 'newrelic_rpm', '>= 3.9.8'
 gem 'nokogiri', '>= 1.6.8'
-gem 'normalize-rails', '~> 3.0.0'
 gem 'omniauth-saml'
 gem 'pg'
 gem 'puma'
@@ -49,9 +40,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'awesome_print'
   gem 'bullet'
-  gem 'bundler-audit', '>= 0.5.0', require: false
   gem 'factory_girl_rails'
   gem 'i18n-tasks'
   gem 'mailcatcher', '0.6.3'
@@ -63,12 +52,9 @@ group :test do
   gem 'codeclimate-test-reporter', require: nil
   gem 'climate_control'
   gem 'database_cleaner'
-  gem 'formulaic'
-  gem 'launchy'
   gem 'poltergeist'
   gem 'rack_session_access'
   gem 'shoulda-matchers'
-  gem 'simplecov', require: false
   gem 'timecop'
   gem 'webmock'
 end

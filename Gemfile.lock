@@ -62,18 +62,11 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arel (6.0.3)
     ast (2.3.0)
-    awesome_print (1.7.0)
     bcrypt (3.1.11)
-    bourbon (5.0.0.beta.5)
-      sass (~> 3.4)
-      thor (~> 0.19)
     builder (3.2.2)
     bullet (5.4.3)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bundler-audit (0.5.0)
-      bundler (~> 1.2)
-      thor (~> 0.18)
     capistrano (3.7.1)
       airbrussh (>= 1.0.0)
       capistrano-harrow
@@ -103,13 +96,6 @@ GEM
     cliver (0.3.2)
     codeclimate-test-reporter (1.0.3)
       simplecov
-    coffee-rails (4.1.1)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.1.x)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     concurrent-ruby (1.0.3)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -146,18 +132,12 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    flutie (2.0.0)
     foreman (0.82.0)
       thor (~> 0.19.1)
-    formulaic (0.3.0)
-      activesupport
-      capybara
-      i18n
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashdiff (0.3.1)
     hashie (3.4.6)
-    high_voltage (3.0.0)
     highline (1.7.8)
     htmlentities (4.3.4)
     httparty (0.14.0)
@@ -173,26 +153,12 @@ GEM
       parser (>= 2.2.3.0)
       term-ansicolor (>= 1.3.2)
       terminal-table (>= 1.5.1)
-    jquery-rails (4.2.1)
-      rails-dom-testing (>= 1, < 3)
-      railties (>= 4.2.0)
-      thor (>= 0.14, < 2.0)
-    jquery-ui-rails (6.0.1)
-      railties (>= 3.2.16)
     json (1.8.3)
     jsonapi (0.1.1.beta6)
       jsonapi-parser (= 0.1.1.beta3)
       jsonapi-renderer (= 0.1.1.beta1)
     jsonapi-parser (0.1.1.beta3)
     jsonapi-renderer (0.1.1.beta1)
-    kaminari (0.17.0)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
-    kaminari-bootstrap (3.0.1)
-      kaminari (>= 0.13.0)
-      rails
-    launchy (2.4.3)
-      addressable (~> 2.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     macaddr (1.7.1)
@@ -213,16 +179,12 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multi_xml (0.6.0)
-    neat (1.7.4)
-      bourbon (>= 4.0)
-      sass (>= 3.3)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.2.0)
     newrelic_rpm (3.17.2.327)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    normalize-rails (3.0.3)
     omniauth (1.3.1)
       hashie (>= 1.2, < 4)
       rack (>= 1.0, < 3)
@@ -417,37 +379,24 @@ PLATFORMS
 DEPENDENCIES
   actionmailer-text
   active_model_serializers
-  awesome_print
-  bourbon (= 5.0.0.beta.5)
   bullet
-  bundler-audit (>= 0.5.0)
   capistrano
   capistrano-passenger
   capistrano-rails
   climate_control
   codeclimate-test-reporter
-  coffee-rails (~> 4.1.0)
   database_cleaner
   delayed_job_active_record
   devise
   dotenv-rails
   enum_help
   factory_girl_rails
-  flutie
   foreman
-  formulaic
   hashie
-  high_voltage
   i18n-tasks
-  jquery-rails
-  jquery-ui-rails
-  kaminari-bootstrap (~> 3.0.1)
-  launchy
   mailcatcher (= 0.6.3)
-  neat (~> 1.7.0)
   newrelic_rpm (>= 3.9.8)
   nokogiri (>= 1.6.8)
-  normalize-rails (~> 3.0.0)
   omniauth-saml
   pg
   poltergeist
@@ -468,7 +417,6 @@ DEPENDENCIES
   secure_headers (~> 3.0.0)
   shoulda-matchers
   simple_form
-  simplecov
   slim-rails
   slim_lint
   timecop
