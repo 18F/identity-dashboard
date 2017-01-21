@@ -60,6 +60,8 @@ RSpec.describe DeployStatusChecker do
     before do
       stub_request(:get, %r{https://.*\.demo\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
+      stub_request(:get, %r{https://.*\.int\.login\.gov/api/deploy\.json}).
+        to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.dev\.login\.gov/api/deploy\.json}).
         to_return(status: 404)
       stub_request(:get, %r{https://.*\.qa\.login\.gov/api/deploy\.json}).
@@ -69,10 +71,9 @@ RSpec.describe DeployStatusChecker do
     it 'loads statuses from the environments and swallows error' do
       statuses = checker.check!
 
-      prod = statuses.find { |status| status.env == 'prod' }
-      prod_status = prod.statuses.first
-      expect(prod_status.host).to be_nil
-      expect(prod_status.error).to eq('no host')
+      int = statuses.find { |status| status.env == 'int' }
+      int_status = int.statuses.first
+      expect(int_status.sha).to eq(status_json['sha'])
 
       demo = statuses.find { |status| status.env == 'demo' }
       demo_status = demo.statuses.first
