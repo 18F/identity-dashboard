@@ -5,15 +5,15 @@ class DeployStatusChecker
   Environment = Struct.new(:env, :statuses)
 
   DEPLOYS = [
-    Deploy.new('identity-idp', 'prod'),
-    Deploy.new('identity-sp-rails', 'prod'),
-    Deploy.new('identity-sp-sinatra', 'prod'),
-    Deploy.new('identity-dashboard', 'prod'),
-
     Deploy.new('identity-idp', 'demo', 'https://idp.demo.login.gov'),
     Deploy.new('identity-sp-rails', 'demo', 'https://sp.demo.login.gov'),
     Deploy.new('identity-sp-sinatra', 'demo', 'https://sp-sinatra.demo.login.gov'),
     Deploy.new('identity-dashboard', 'demo', 'https://dashboard.demo.login.gov'),
+
+    Deploy.new('identity-idp', 'int', 'https://idp.int.login.gov'),
+    Deploy.new('identity-sp-rails', 'int', 'https://sp.int.login.gov'),
+    Deploy.new('identity-sp-sinatra', 'int', 'https://sp-sinatra.int.login.gov'),
+    Deploy.new('identity-dashboard', 'int', 'https://dashboard.int.login.gov'),
 
     Deploy.new('identity-idp', 'qa', 'https://idp.qa.login.gov'),
     Deploy.new('identity-sp-rails', 'qa', 'https://sp.qa.login.gov'),
