@@ -393,6 +393,7 @@ DEPENDENCIES
   factory_girl_rails
   foreman
   hashie
+  httparty
   i18n-tasks
   mailcatcher (= 0.6.3)
   newrelic_rpm (>= 3.9.8)
