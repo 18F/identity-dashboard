@@ -8,8 +8,7 @@ set :bundle_without, 'deploy development doc test'
 set :deploy_to, '/srv/dashboard'
 set :deploy_via, :remote_cache
 set :keep_releases, 5
-set :linked_files, %w(.env
-                      config/database.yml
+set :linked_files, %w(config/database.yml
                       config/saml.yml
                       config/secrets.yml)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
