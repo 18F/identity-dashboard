@@ -7,8 +7,11 @@ module Api
     end
 
     def update
-      ServiceProviderUpdater.new.delay.ping
-      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      if ServiceProviderUpdater.new.ping
+        flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      else
+        flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+      end
       redirect_to users_service_providers_path
     end
 
