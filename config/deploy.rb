@@ -19,7 +19,7 @@ set :passenger_restart_runner, :sequence
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-dashboard.git'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
-set :tmp_dir, '/srv/idp'
+set :tmp_dir, '/tmp'
 
 #########
 # TASKS
