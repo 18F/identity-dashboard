@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   delete '/users/service_providers/:id' => 'users/service_providers#destroy'
 
   get '/api/service_providers' => 'api/service_providers#index'
+  post '/api/service_providers' => 'api/service_providers#update'
 
   root to: 'home#index'
 end

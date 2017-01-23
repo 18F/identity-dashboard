@@ -5,6 +5,11 @@ require 'saml_idp/logout_request_builder'
 class FakeSamlIdp < Sinatra::Base
   include SamlIdp::Controller
 
+  post '/api/service_provider' do
+    content_type :json
+    { status: 'thanks' }.to_json
+  end
+
   get '/saml/auth' do
     build_configs
     validate_saml_request
