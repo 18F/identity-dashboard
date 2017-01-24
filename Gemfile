@@ -38,6 +38,7 @@ group :development do
   gem 'rubocop'
   gem 'slim_lint'
   gem 'web-console'
+  gem 'pry'
 end
 
 group :development, :test do
