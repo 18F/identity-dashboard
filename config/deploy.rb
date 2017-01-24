@@ -50,5 +50,14 @@ namespace :deploy do
     end
   end
 
+
+  desc 'Modify permissions on /srv/dashboard'
+  task :mod_perms do
+    on roles(:web), in: :parallel do
+      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to
+    end
+  end
+
   after 'deploy:log_revision', :deploy_json
+  after :deploy, 'deploy:mod_perms'
 end
