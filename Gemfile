@@ -38,7 +38,6 @@ group :development do
   gem 'rubocop'
   gem 'slim_lint'
   gem 'web-console'
-  gem 'pry'
 end
 
 group :development, :test do
@@ -46,6 +45,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'i18n-tasks'
   gem 'mailcatcher', '0.6.3'
+  gem 'pry'
   gem 'rspec-rails', '~> 3.4.0'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
 end

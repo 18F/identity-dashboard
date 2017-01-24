@@ -50,7 +50,6 @@ namespace :deploy do
     end
   end
 
-
   desc 'Modify permissions on /srv/dashboard'
   task :mod_perms do
     on roles(:web), in: :parallel do
