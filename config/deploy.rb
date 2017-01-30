@@ -8,8 +8,7 @@ set :bundle_without, 'deploy development doc test'
 set :deploy_to, '/srv/dashboard'
 set :deploy_via, :remote_cache
 set :keep_releases, 5
-set :linked_files, %w(.env
-                      config/database.yml
+set :linked_files, %w(config/database.yml
                       config/saml.yml
                       config/secrets.yml)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
@@ -19,7 +18,7 @@ set :passenger_restart_runner, :sequence
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-dashboard.git'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
-set :tmp_dir, '/srv/idp'
+set :tmp_dir, '/tmp'
 
 #########
 # TASKS
@@ -51,5 +50,13 @@ namespace :deploy do
     end
   end
 
+  desc 'Modify permissions on /srv/dashboard'
+  task :mod_perms do
+    on roles(:web), in: :parallel do
+      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to
+    end
+  end
+
   after 'deploy:log_revision', :deploy_json
+  after :deploy, 'deploy:mod_perms'
 end
