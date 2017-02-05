@@ -4,6 +4,7 @@ module Users
     before_action :authorize_approval, only: [:update]
 
     def index
+      @service_providers = ServiceProvider.all if current_user.admin?
     end
 
     def create
