@@ -1,38 +1,38 @@
-[![Code Climate](https://codeclimate.com/github/18F/identity-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-dashboard)
-[![Test Coverage](https://codeclimate.com/github/18F/identity-dashboard/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-dashboard/coverage)
+# Identity Dashboard
 
-# Identity-dashboard
+[![Build Status](https://travis-ci.org/18F/identity-dashboard.svg?branch=master)](https://travis-ci.org/18F/identity-dashboard) [![Code Climate](https://codeclimate.com/github/18F/identity-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-dashboard) [![Test Coverage](https://codeclimate.com/github/18F/identity-dashboard/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-dashboard/coverage) [![security](https://hakiri.io/github/18F/identity-dashboard/master.svg)](https://hakiri.io/github/18F/identity-dashboard/master)
 
 An admin dashboard for the Identity project.
 
-[![Build Status](https://travis-ci.org/18F/identity-dashboard.svg?branch=master)](https://travis-ci.org/18F/identity-dashboard)[![security](https://hakiri.io/github/18F/identity-dashboard/master.svg)](https://hakiri.io/github/18F/identity-dashboard/master)
+## Running locally
 
-## Getting Started Locally
+These instructions assume [`identity-idp`](https://github.com/18F/identity-idp) is also running locally at `http://localhost:3000`. This dashboard is configured to run on `http://localhost:3001`.
 
-1. Make sure Postgres is running.  For example, on OS X:
+1. Make sure Postgres is running. For example, on macOS:
 
-    $ brew services start postgres
+  ```
+  $ brew services start postgres
+  ```
 
-1. Run the following command to set up the environment:
+2. Set up the environment with:
 
-    $ make setup
+  ```
+  $ make setup
+  ```
 
-1. Run the app server with:
+3. And run the app server:
 
-    $ make run
+  ```
+  $ make run
+  ```
 
-Note that the web server runs at http://localhost:3001/ by default (not the default Rails port 3000).
-This is to make it possible to easily run https://github.com/18F/identity-idp and https://github.com/18F/identity-dashboard
-on the same development machine.
+## Running tests
 
-## Running Tests
+Run RSpec tests using:
 
-To run all the tests:
-
-    $ make test
-
-See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
-more information.
+```
+$ make test
+```
 
 ## License
 
