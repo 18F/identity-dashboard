@@ -91,6 +91,8 @@ development: &default
     -----END RSA PRIVATE KEY-----
 
   sp_private_key_password: foobar
+  sso_url: 'http://localhost:3000/api/saml/auth'
+  slo_url: 'http://localhost:3000/api/saml/logout'
 
 test:
   <<: *default
