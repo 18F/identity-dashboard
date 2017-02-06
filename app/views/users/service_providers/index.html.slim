@@ -15,3 +15,13 @@ table
       td = link_to(app.friendly_name, users_service_provider_path(app))
       td = app.issuer
       td = app.active? ? 'Active' : 'Inactive'
+
+- if current_user.admin?
+  h3 = 'All service providers'
+  table
+    - @service_providers.each do |sp|
+      tr
+        td = link_to(sp.friendly_name, users_service_provider_path(sp))
+        td = sp.agency.name
+        td = sp.issuer
+        td = sp.active? ? 'Active' : 'Inactive'

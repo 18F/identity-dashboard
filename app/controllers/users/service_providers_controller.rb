@@ -4,6 +4,7 @@ module Users
     before_action :authorize_approval, only: [:update]
 
     def index
+      @service_providers = ServiceProvider.all if current_user.admin?
     end
 
     def create
@@ -40,7 +41,7 @@ module Users
     end
 
     def service_provider
-      @service_provider ||= ServiceProvider.find_by(issuer: params[:id])
+      @service_provider ||= ServiceProvider.find(params[:id])
     end
 
     def authorize_approval

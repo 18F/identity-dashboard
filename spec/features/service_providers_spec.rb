@@ -45,6 +45,7 @@ feature 'ServiceProviders CRUD' do
     visit users_service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
+    expect(page).to_not have_content('All service providers')
   end
 
   scenario 'Delete' do
