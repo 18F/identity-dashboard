@@ -24,13 +24,13 @@ describe Api::ServiceProvidersController do
       expect(response_from_json).to_not include serialized_sp
     end
 
-    it 'does not return non-active SPs' do
+    it 'includes non-active SPs' do
       sp = create(:service_provider, active: false, approved: true)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
 
-      expect(response_from_json).to_not include serialized_sp
+      expect(response_from_json).to include serialized_sp
     end
   end
 

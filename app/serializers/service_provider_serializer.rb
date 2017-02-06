@@ -12,7 +12,8 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     #:logo,
     :attribute_bundle,
     :updated_at,
-    :signature
+    :signature,
+    :active
   )
 
   def agency
