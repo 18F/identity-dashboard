@@ -40,7 +40,7 @@ module Users
     end
 
     def service_provider
-      @service_provider ||= ServiceProvider.find_by(issuer: params[:id])
+      @service_provider ||= ServiceProvider.find(params[:id])
     end
 
     def authorize_approval
