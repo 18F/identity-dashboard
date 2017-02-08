@@ -19,19 +19,18 @@ set :passenger_restart_runner, :sequence
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-dashboard.git'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
-set :bastion_user, 'ubuntu'
+set :bastion_user, ENV['BASTION_USER'] || 'ubuntu'
 set :tmp_dir, '/tmp'
 
 set :ssh_options do
   ssh_command = "ssh -A #{fetch(:bastion_user)}@#{fetch(:bastion_host)} -W %h:%p"
-    {
+  {
     proxy: Net::SSH::Proxy::Command.new(ssh_command),
-    user: 'ubuntu',
+    user: 'ubuntu'
   }
 end
 
 server 'apps_host', roles: %w(web app db)
-
 
 #########
 # TASKS
