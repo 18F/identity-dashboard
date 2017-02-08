@@ -1,1 +1,1 @@
-server 'dashboard.tf.login.gov', roles: %w(app web db)
+set :bastion_host, 'jumphost.tf.login.gov'

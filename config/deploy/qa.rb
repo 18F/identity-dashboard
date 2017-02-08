@@ -1,1 +1,1 @@
-server 'dashboard.qa.login.gov', roles: %w(web app db)
+set :bastion_host, 'jumphost.qa.login.gov'
