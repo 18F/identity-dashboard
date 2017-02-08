@@ -13,6 +13,10 @@ require 'capistrano/rails'
 # support for new relic deploy updates
 require 'new_relic/recipes'
 
+# support for git
+require "capistrano/scm/git"
+install_plugin Capistrano::SCM::Git
+
 # support for whenever
 # require 'whenever/capistrano'
 
