@@ -1,19 +1,20 @@
 class ServiceProviderSerializer < ActiveModel::Serializer
   attributes(
-    :friendly_name,
-    :issuer,
-    :agency,
     :acs_url,
+    :active,
+    :agency,
     :assertion_consumer_logout_service_url,
-    :sp_initiated_login_url,
+    :attribute_bundle,
     :block_encryption,
     :cert,
+    :friendly_name,
+    :issuer,
+    # :logo,
+    :redirect_uri,
     :return_to_sp_url,
-    #:logo,
-    :attribute_bundle,
-    :updated_at,
     :signature,
-    :active
+    :sp_initiated_login_url,
+    :updated_at
   )
 
   def agency

@@ -16,4 +16,6 @@
 = form.input :attribute_bundle, collection: ServiceProvider.possible_attributes,
   input_html: { class: 'multiselectuser', multiple: true, size: ServiceProvider.possible_attributes.keys.count }
 
+= form.input :redirect_uri, label: 'Redirect URI (for OpenID Connect)'
+
 = form.input :active, as: :radio_buttons
