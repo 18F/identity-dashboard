@@ -43,6 +43,9 @@ table.horizontal-headers
     th Attribute Bundle
     td.attribute_bundle = (service_provider.attribute_bundle || []).sort.join(', ')
   tr
+    th Redirect URI (For OpenID Connect)
+    td.attribute_bundle = service_provider.redirect_uri
+  tr
     th Active
     td.active_flag = (service_provider.active? ? 'Yes' : 'No')
 
