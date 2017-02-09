@@ -13,10 +13,16 @@ feature 'ServiceProviders CRUD' do
     fill_in 'Friendly name', with: 'test service_provider'
     fill_in 'Issuer', with: 'test service_provider'
     select agency.name, from: 'service_provider[agency_id]'
+    check 'email'
+    check 'first_name'
     click_on 'Create'
 
     expect(page).to have_content('Success')
-    expect(page).to have_content('test service_provider')
+    within('table.horizontal-headers') do
+      expect(page).to have_content('test service_provider')
+      expect(page).to have_content('email')
+      expect(page).to have_content('first_name')
+    end
   end
 
   scenario 'Update' do
@@ -30,11 +36,15 @@ feature 'ServiceProviders CRUD' do
 
     fill_in 'Friendly name', with: 'change service_provider name'
     fill_in 'Description', with: 'app description foobar'
+    check 'last_name'
     click_on 'Update'
 
     expect(page).to have_content('Success')
-    expect(page).to have_content('app description foobar')
-    expect(page).to have_content('change service_provider name')
+    within('table.horizontal-headers') do
+      expect(page).to have_content('app description foobar')
+      expect(page).to have_content('change service_provider name')
+      expect(page).to have_content('last_name')
+    end
   end
 
   scenario 'Read' do

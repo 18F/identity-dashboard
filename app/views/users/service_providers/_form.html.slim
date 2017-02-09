@@ -13,9 +13,12 @@
 = form.input :block_encryption, as: :radio_buttons, label: 'Block Encryption'
 = form.input :saml_client_cert, label: 'SAML Client Cert (PEM encoded)'
 = form.input :return_to_sp_url, label: 'Return to SP URL'
-= form.input :attribute_bundle, collection: ServiceProvider.possible_attributes,
-  input_html: { class: 'multiselectuser', multiple: true, size: ServiceProvider.possible_attributes.keys.count }
-
+fieldset.usa-fieldset-inputs.usa-sans
+  legend Attribute bundle
+  ul
+    = collection_check_boxes(:service_provider, :attribute_bundle, ServiceProvider.possible_attributes, :first, :last) do |b|
+      li
+        = b.check_box
+        = b.label
 = form.input :redirect_uri, label: 'Redirect URI (for OpenID Connect)'
-
 = form.input :active, as: :radio_buttons
