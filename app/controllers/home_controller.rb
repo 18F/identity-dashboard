@@ -9,3 +9,4 @@ class HomeController < ApplicationController
     @deploy_status_checker ||= DeployStatusChecker.new
   end
 end
+# remove later
