@@ -1,0 +1,18 @@
+h2 Organization
+= link_to "Edit", edit_organization_path(@organization)
+br
+= link_to "Delete", organization_path(@organization), method: :delete
+table
+  tbody
+    tr
+      th scope="row" Agency
+      td
+        = @organization.agency
+    tr
+      th scope="row" Department
+      td
+        = @organization.department
+    tr
+      th scope="row" Team
+      td
+        = @organization.team

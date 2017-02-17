@@ -12,6 +12,7 @@ en:
     required_field: Indicates a required field.
   links:
     service_providers: 'My service providers'
+    organizations: 'Manage organizations'
     sign_out: 'Sign out'
     sign_in: 'Log in'
   notices:

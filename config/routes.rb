@@ -28,5 +28,7 @@ Rails.application.routes.draw do
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
 
+  resources :organizations
+
   root to: 'home#index'
 end

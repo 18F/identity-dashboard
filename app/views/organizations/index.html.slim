@@ -1,0 +1,8 @@
+h2 Organizations
+= link_to "Create new organization", new_organization_path
+
+h3 Manage Organizations
+ul
+  - @organizations.each do |org|
+    li
+      = link_to org.structured_name, organization_path(org)
