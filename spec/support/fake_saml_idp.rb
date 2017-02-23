@@ -6,8 +6,10 @@ class FakeSamlIdp < Sinatra::Base
   include SamlIdp::Controller
 
   post '/api/service_provider' do
-    content_type :json
-    { status: 'thanks' }.to_json
+    authorize do
+      content_type :json
+      { status: 'thanks' }.to_json
+    end
   end
 
   get '/saml/auth' do
@@ -27,6 +29,18 @@ class FakeSamlIdp < Sinatra::Base
   end
 
   private
+
+  def authorize
+    if authorization_token == ENV['LOGIN_DASHBOARD_TOKEN']
+      yield
+    else
+      status 401
+    end
+  end
+
+  def authorization_token
+    env['HTTP_X_LOGIN_DASHBOARD_TOKEN']
+  end
 
   def logout_request_builder
     session_index = SecureRandom.uuid
