@@ -29,6 +29,10 @@ Rails.application.routes.draw do
   post '/api/service_providers' => 'api/service_providers#update'
 
   resources :organizations
+  patch '/organizations/:id/new_user' => 'organizations#new_user', as: 'new_organization_user'
+  patch '/organizations/:id/new_service_provider' => 'organizations#new_service_provider', as: 'new_organization_service_provider'
+  delete '/organizations/:id/remove_user/:user_id' => 'organizations#remove_user', as: 'remove_organization_user'
+  delete '/organizations/:id/remove_service_provider/:service_provider_id' => 'organizations#remove_service_provider', as: 'remove_organization_service_provider'
 
   root to: 'home#index'
 end

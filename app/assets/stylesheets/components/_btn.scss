@@ -7,3 +7,18 @@
   min-width: 220px;
   text-align: center;
 }
+
+.btn-delete {
+  color: #000000;
+  background-color: #FF7665;
+  border-radius: 3px;
+  margin: 5px;
+  padding: 3px;
+  box-shadow: 0 0 2px 1px #000000;
+  font-weight: bold;
+  &:hover{
+    text-decoration: none;
+    background-color: #ED6A5A;
+  }
+}
+

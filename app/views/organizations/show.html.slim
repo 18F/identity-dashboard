@@ -1,7 +1,7 @@
 h2 Organization
 = link_to "Edit", edit_organization_path(@organization)
 br
-= link_to "Delete", organization_path(@organization), method: :delete
+= link_to "Delete", organization_path(@organization), method: :delete, data: { confirm: "Are you sure?"}
 table
   tbody
     tr
@@ -16,3 +16,6 @@ table
       th scope="row" Team
       td
         = @organization.team
+hr
+== render 'organization_service_providers'
+== render 'organization_users'

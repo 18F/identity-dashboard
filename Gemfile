@@ -26,6 +26,7 @@ gem 'secure_headers', '~> 3.0.0'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'uglifier'
+gem 'jquery-rails'
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'

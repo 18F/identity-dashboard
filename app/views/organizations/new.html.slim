@@ -1,5 +1,5 @@
 h2 Edit a new organization
 
 = simple_form_for(:organization, html: { autocomplete: 'off', role: 'form' }, url: organizations_path) do |form|
-  == render 'form', { form: form }
+  == render 'organization_form', { form: form }
   = form.button :submit, 'Create'
