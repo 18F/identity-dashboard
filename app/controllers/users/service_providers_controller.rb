@@ -10,6 +10,7 @@ module Users
     def create
       @service_provider = ServiceProvider.new(service_provider_params)
       service_provider.user = current_user
+      service_provider.organization = current_user.organization
       validate_and_save_service_provider(:new)
     end
 

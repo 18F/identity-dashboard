@@ -49,8 +49,6 @@ class User < ActiveRecord::Base
   end
 
   def all_service_providers
-    # sps = self.service_providers + ServiceProvider.where(user_id: self.id)
     ServiceProvider.where("user_id = ? OR organization_id = ?", self.id, self.organization_id)
-    # sps.uniq
   end
 end
