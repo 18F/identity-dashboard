@@ -8,6 +8,7 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'enum_help'
+gem 'figaro'
 gem 'foreman', require: false
 gem 'hashie'
 gem 'httparty'
