@@ -11,6 +11,9 @@ gem install bundler --conservative
 gem install foreman --conservative && gem update foreman
 bundle check || bundle install
 
+# Copy application.yml
+cp config/application.yml.example config/application.yml
+
 # Set up database and add any development seed data
 bin/rake dev:prime
 

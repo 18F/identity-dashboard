@@ -1,3 +1,3 @@
 class AuthenticatedController < ApplicationController
-  before_action :authenticate_user! unless ENV['FORCE_USER']
+  before_action :authenticate_user! unless Figaro.env.force_user
 end

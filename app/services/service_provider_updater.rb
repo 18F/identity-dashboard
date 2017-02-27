@@ -7,10 +7,10 @@ class ServiceProviderUpdater
   private
 
   def idp_url
-    ENV['IDP_SP_URL'] || 'https://login.gov/api/service_provider'
+    Figaro.env.idp_sp_url
   end
 
   def token_header
-    { 'X-LOGIN-DASHBOARD-TOKEN' => ENV['LOGIN_DASHBOARD_TOKEN'] }
+    { 'X-LOGIN-DASHBOARD-TOKEN' => Figaro.env.login_dashboard_token }
   end
 end

@@ -134,6 +134,7 @@ GEM
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
     foreman (0.83.0)
+    figaro (1.1.1)
       thor (~> 0.19.1)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -400,6 +401,7 @@ DEPENDENCIES
   dotenv-rails
   enum_help
   factory_girl_rails
+  figaro
   foreman
   hashie
   httparty
