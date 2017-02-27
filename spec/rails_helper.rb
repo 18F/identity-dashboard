@@ -2,7 +2,7 @@ ENV['RACK_ENV'] = 'test'
 
 require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
-# abort('DATABASE_URL environment variable is set') if Figaro.env.database_url
+abort('DATABASE_URL environment variable is set') if Figaro.env.database_url
 
 require 'rspec/rails'
 require 'pundit/rspec'
