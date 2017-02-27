@@ -30,7 +30,7 @@ module Saml
         },
       )
     end
-    # rubocop:enable AbcSize, MethodLength
+    # rubocop:enable AbcSize, MethodLength, CyclomaticComplexity, PerceivedComplexity
 
     SETTINGS = build_settings.freeze
 
