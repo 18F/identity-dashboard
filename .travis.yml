@@ -3,6 +3,7 @@ services:
   - postgresql
 before_script:
 - bundle exec rake db:setup
+- cp config/application.yml.example config/application.yml
 rvm:
 - 2.3.3
 cache: bundler
