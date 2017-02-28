@@ -41,9 +41,19 @@ class User < ActiveRecord::Base
     info = auth_hash.info
     uid = auth_hash.uid
     self.uuid = uid if uuid != uid
-    self.first_name = info.first_name if first_name.blank? || first_name != info.first_name
-    self.last_name = info.last_name if last_name.blank? || last_name != info.last_name
+    self.first_name = first_name_from(info)
+    self.last_name = last_name_from(info)
     save! if changed.any?
     self
+  end
+
+  private
+
+  def first_name_from(info)
+    info.first_name if first_name.blank? || first_name != info.first_name
+  end
+
+  def last_name_from(info)
+    info.last_name if last_name.blank? || last_name != info.last_name
   end
 end

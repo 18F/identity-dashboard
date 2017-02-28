@@ -51,8 +51,8 @@ group :development, :test do
 end
 
 group :test do
-  gem 'codeclimate-test-reporter', require: nil
   gem 'climate_control'
+  gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'rack_session_access'

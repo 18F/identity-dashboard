@@ -70,8 +70,8 @@ class FakeSamlIdp < Sinatra::Base
       config.single_logout_service_post_location = "#{idp_base_url}/saml/logout"
 
       config.name_id.formats = {
-        persistent: -> (principal) { principal.uuid },
-        email_address: -> (principal) { principal.email }
+        persistent: ->(principal) { principal.uuid },
+        email_address: ->(principal) { principal.email }
       }
 
       config.attributes = {
