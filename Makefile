@@ -4,6 +4,8 @@
 # than one or two lines should live in script files of their own in the
 # bin/ directory.
 
+PORT ?= 3001
+
 all: check
 
 setup:
@@ -23,6 +25,6 @@ test:
 	bundle exec rspec
 
 run:
-	foreman start
+	foreman start -p $(PORT)
 
 .PHONY: setup all lint run test check
