@@ -33,7 +33,7 @@ module Users
     private
 
     def saml_settings
-      @_saml_settings ||= OneLogin::RubySaml::Settings.new(Saml::Config.new.settings.dup)
+      @_saml_settings ||= OneLogin::RubySaml::Settings.new(Saml::Config::SETTINGS.dup)
     end
 
     def auth_hash
