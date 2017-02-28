@@ -1,0 +1,14 @@
+Figaro.require_keys(
+  'dashboard_secret_key_base',
+  'idp_slo_url',
+  'idp_sp_url',
+  'idp_sso_url',
+  'login_dashboard_token',
+  'new_relic_license_key',
+  'smtp_address',
+  'smtp_domain',
+  'smtp_password',
+  'smtp_username',
+  'sp_name',
+  'sp_pass'
+)
