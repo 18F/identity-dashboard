@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   devise :trackable, :timeoutable, :omniauthable, omniauth_providers: [:saml]
+  belongs_to :organization
   has_many :service_providers
 
   before_create :create_uuid
@@ -45,5 +46,9 @@ class User < ActiveRecord::Base
     self.last_name = info.last_name if last_name.blank? || last_name != info.last_name
     save! if changed.any?
     self
+  end
+
+  def all_service_providers
+    ServiceProvider.where("user_id = ? OR organization_id = ?", self.id, self.organization_id)
   end
 end

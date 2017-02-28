@@ -1,0 +1,18 @@
+h3 Users
+div.wrapper
+  table.org-table
+    - @organization.users.each do |user|
+      tr
+        td
+          = user.email
+        td 
+          = link_to "Remove", remove_organization_user_path(@organization, user.id), method: :delete, class: 'btn-delete'
+
+hr
+= form_for(@organization, url: {action: :new_user}) do |f|
+  fieldset
+    legend Add a user
+    span
+      = collection_select(:user, :id, User.all, :id, :email, prompt: true)
+    span
+      = f.submit "Add to organization"

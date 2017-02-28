@@ -1,0 +1,6 @@
+h2
+  = "Edit #{@organization.structured_name}"
+
+= simple_form_for(@organization, html: { autocomplete: 'off', role: 'form' }, url: organization_path(@organization)) do |form|
+  == render 'organization_form', { form: form }
+  = form.button :submit, 'Update'

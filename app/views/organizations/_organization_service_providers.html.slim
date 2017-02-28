@@ -1,0 +1,17 @@
+h3 Service Providers
+div.wrapper
+  table.org-table
+    - @organization.service_providers.each do |sp|
+      tr
+        td
+          = link_to(sp.friendly_name, users_service_provider_path(sp))
+        td
+          = link_to "Remove", remove_organization_service_provider_path(@organization, sp.id), method: :delete, class: 'btn-delete'
+div.wrapper
+  = form_for(@organization, url: {action: :new_service_provider}) do |f|
+    fieldset
+      legend Add a service provider
+      = f.label :service_provider
+        span
+          = collection_select(:service_provider, :id, ServiceProvider.all, :id, :friendly_name, prompt: true)
+      = f.submit "Add to organization"

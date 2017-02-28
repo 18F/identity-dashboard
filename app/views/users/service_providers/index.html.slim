@@ -10,7 +10,7 @@ h2 = t('headings.service_providers.mine')
 hr
 
 table
-  - current_user.service_providers.each do |app|
+  - current_user.all_service_providers.each do |app|
     tr
       td = link_to(app.friendly_name, users_service_provider_path(app))
       td = app.issuer
@@ -19,9 +19,21 @@ table
 - if current_user.admin?
   h3 = 'All service providers'
   table
+    thead
+      tr
+        th Service Provider
+        th Agency Name
+        th Issuer
+        th Active?
+        th Organization
     - @service_providers.each do |sp|
       tr
         td = link_to(sp.friendly_name, users_service_provider_path(sp))
         td = sp.agency.name
         td = sp.issuer
         td = sp.active? ? 'Active' : 'Inactive'
+        td
+          - if sp.organization
+            = link_to sp.organization.structured_name, organization_path(sp.organization)
+          - else
+            = "None"
