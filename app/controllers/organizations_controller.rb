@@ -17,67 +17,70 @@ class OrganizationsController < ApplicationController
   end
 
   def update
-    @organization = Organization.find(params[:id])
-    if @organization.update(organiztion_params)
-      redirect_to @organization
+    if organization.update(organiztion_params)
+      redirect_to organization
     else
       render 'edit'
     end
   end
 
   def show
-    @organization = Organization.find(params[:id])
+    organization
   end
 
   def edit
-    @organization = Organization.find(params[:id])
+    organization
   end
 
   def destroy
-    @organization = Organization.find(params[:id])
-    @organization.destroy
-    redirect_to organizations_path
+    if organization.service_providers.empty? && organization.users.empty?
+      organization.destroy
+      redirect_to organizations_path
+    else
+      flash[:error] = "You must remove all users and service providers before deleting an organization."
+      redirect_to organization
+    end
   end
 
   def new_user
-    org = Organization.find(params[:id])
     user = User.find(params.require(:user).require(:id))
-    user.organization_id = org.id
+    user.organization = organization
     user.save!
-    redirect_to org
+    redirect_to organization
   end
 
   def new_service_provider
-    org = Organization.find(params[:id])
     sp = find_sp(params)
     if sp
-      sp.organization_id = org.id
+      sp.organization = organization
       sp.save!
     end
-    redirect_to org
+    redirect_to organization
   end
 
   def remove_user
-    org = Organization.find(params[:id])
     user = User.find(params.require(:user_id))
     if user
-      user.organization_id = nil
+      user.organization = nil
       user.save!
     end
-    redirect_to org
+    redirect_to organization
   end
 
   def remove_service_provider
-    org = Organization.find(params[:id])
     sp = ServiceProvider.find(params.require(:service_provider_id))
     if sp
-      sp.organization_id = nil
+      sp.organization = nil
       sp.save!
     end
-    redirect_to org
+    redirect_to organization
   end
 
   private
+  def organization
+    @organization ||= Organization.find(params[:id])
+  end
+
   def find_sp(params)
     if params[:service_provider][:id].present?
       ServiceProvider.find(params.require(:service_provider).require(:id))

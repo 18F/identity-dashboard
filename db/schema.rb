@@ -44,9 +44,12 @@ ActiveRecord::Schema.define(version: 20170221201649) do
     t.string   "agency"
     t.string   "department"
     t.string   "team"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.integer  "service_provider_id"
   end
+
+  add_index "organizations", ["service_provider_id"], name: "index_organizations_on_service_provider_id", using: :btree
 
   create_table "service_providers", force: :cascade do |t|
     t.integer  "user_id",                                               null: false
@@ -67,11 +70,9 @@ ActiveRecord::Schema.define(version: 20170221201649) do
     t.integer  "agency_id",                                             null: false
     t.json     "attribute_bundle"
     t.string   "redirect_uri"
-    t.integer  "organization_id"
   end
 
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
-  add_index "service_providers", ["organization_id"], name: "index_service_providers_on_organization_id", using: :btree
 
   create_table "team_members", force: :cascade do |t|
     t.integer  "user_id"
@@ -100,7 +101,7 @@ ActiveRecord::Schema.define(version: 20170221201649) do
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
+  add_foreign_key "organizations", "service_providers"
   add_foreign_key "service_providers", "agencies"
-  add_foreign_key "service_providers", "organizations"
   add_foreign_key "users", "organizations"
 end
