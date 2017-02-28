@@ -12,7 +12,7 @@ set :keep_releases, 5
 set :linked_files, %w(config/database.yml
                       config/saml.yml
                       config/secrets.yml)
-set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
+set :linked_dirs, %w(log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :passenger_roles, [:app, :web]
 set :passenger_restart_wait, 5
 set :passenger_restart_runner, :sequence
