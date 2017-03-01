@@ -2,7 +2,7 @@ require 'hashie/mash'
 
 module Saml
   class Config
-    # rubocop:disable AbcSize, MethodLength
+    # rubocop:disable AbcSize, MethodLength, CyclomaticComplexity, PerceivedComplexity
     def self.build_settings
       config_file = "#{Rails.root}/config/saml.yml"
       saml_env_config = Hashie::Mash.new(YAML.load_file(config_file).fetch(Rails.env, {}))
