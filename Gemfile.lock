@@ -207,7 +207,6 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     public_suffix (2.0.4)
-    puma (3.6.2)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     quiet_assets (1.1.0)
@@ -409,7 +408,6 @@ DEPENDENCIES
   pg
   poltergeist
   pry
-  puma
   pundit
   quiet_assets
   rack-canonical-host
