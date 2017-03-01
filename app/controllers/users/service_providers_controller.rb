@@ -103,7 +103,7 @@ module Users
         :return_to_sp_url,
         :saml_client_cert,
         :sp_initiated_login_url,
-        attribute_bundle: []
+        attribute_bundle: [],
       )
     end
     # rubocop:enable MethodLength
