@@ -2,109 +2,124 @@ require 'rails_helper'
 
 feature 'Organizations CRUD' do
   scenario 'Create' do
-    user = create(:user)
+    admin = create(:admin)
     agency = create(:agency)
-    login_as(user)
+    login_as(admin)
 
-    visit new_users_service_provider_path
+    visit new_organization_path
 
-    expect(page).to_not have_content('Approved')
-
-    fill_in 'Friendly name', with: 'test service_provider'
-    fill_in 'Issuer', with: 'test service_provider'
-    select agency.name, from: 'service_provider[agency_id]'
-    check 'email'
-    check 'first_name'
+    fill_in 'Agency', with: 'agency name'
+    fill_in 'Department', with: 'department name'
+    fill_in 'Team', with: 'team name'
+    
     click_on 'Create'
 
     expect(page).to have_content('Success')
-    within('table.horizontal-headers') do
-      expect(page).to have_content('test service_provider')
-      expect(page).to have_content('email')
-      expect(page).to have_content('first_name')
-    end
-    expect(true).to eq(false)
+    expect(page).to have_content('agency name')
+    expect(page).to have_content('department name')
+    expect(page).to have_content('team name')
   end
 
   scenario 'Update' do
-    user = create(:user)
-    app = create(:service_provider, user: user)
-    login_as(user)
+    admin = create(:admin)
+    org = create(:organization)
+    login_as(admin)
 
-    visit edit_users_service_provider_path(app)
+    visit edit_organization_path(org)
 
-    expect(page).to_not have_content('Approved')
-
-    fill_in 'Friendly name', with: 'change service_provider name'
-    fill_in 'Description', with: 'app description foobar'
-    check 'last_name'
+    fill_in 'Agency', with: 'updated agency'
+    fill_in 'Department', with: 'updated department'
+    fill_in 'Team', with: 'updated team'
     click_on 'Update'
 
     expect(page).to have_content('Success')
-    within('table.horizontal-headers') do
-      expect(page).to have_content('app description foobar')
-      expect(page).to have_content('change service_provider name')
-      expect(page).to have_content('last_name')
-    end
-
-    expect(true).to eq(false)
+    expect(page).to have_content('updated agency')
+    expect(page).to have_content('updated department')
+    expect(page).to have_content('updated team')
   end
 
   scenario 'Read' do
-    user = create(:user)
-    app = create(:service_provider, user: user)
-    login_as(user)
+    admin = create(:admin)
+    org = create(:organization)
+    login_as(admin)
 
-    visit users_service_provider_path(app)
+    visit organization_path(org)
 
-    expect(page).to have_content(app.friendly_name)
-    expect(page).to_not have_content('All service providers')
-
-    expect(true).to eq(false)
+    expect(page).to have_content(org.agency)
+    expect(page).to have_content(org.department)
+    expect(page).to have_content(org.team)
   end
 
   scenario 'Delete' do
-    user = create(:user)
-    app = create(:service_provider, user: user)
-    login_as(user)
+    admin = create(:admin)
+    org = create(:organization)
+    login_as(admin)
 
-    visit users_service_provider_path(app)
+    visit organization_path(org)
     click_on 'Delete'
 
     expect(page).to have_content('Success')
-
-    expect(true).to eq(false)
   end
 end
 
 feature 'user must be an admin to access' do
-  scenario 'only admin user has option to approve service_provider' do
+  scenario 'only admin users are able to view organizations' do
     user = create(:user)
+    create(:organization)
     login_as(user)
 
-    visit new_users_service_provider_path
+    visit organizations_path
 
-    expect(page).to_not have_content('Approved')
+    expect(page).to have_content('You are not authorized to perform this action.')
   end
 
-  scenario 'admin user has option to approve service_provider' do
-    app = create(:service_provider)
-    admin_user = create(:user, admin: true)
-    login_as(admin_user)
+  scenario 'only admin users are able to edit organizations' do
+    user = create(:user)
+    org = create(:organization)
+    login_as(user)
 
-    visit edit_users_service_provider_path(app)
+    visit edit_organization_path(org)
 
-    expect(page).to have_content('Approved')
+    expect(page).to have_content('You are not authorized to perform this action.')
+  end
+
+  scenario 'only admin users are able to view an organization' do
+    user = create(:user)
+    org = create(:organization)
+    login_as(user)
+
+    visit organization_path(org)
+
+    expect(page).to have_content('You are not authorized to perform this action.')
   end
 end
 
 feature 'admin can add service providers to an organization' do
   scenario 'admin adds a service_provider to an organization' do
-    expect(true).to eq(false)
+    admin = create(:admin)
+    sp = create(:service_provider, user: admin)
+    org = create(:organization)
+    login_as(admin)
+    visit organization_path(org)
+    select sp.friendly_name, from: 'service_provider[id]'
+    within('.organization_service_proivders') do
+      click_on 'Add to organization'
+      expect(page).to have_content(sp.friendly_name)
+    end
   end
 
   scenario 'admin removes a service_provider from an organization' do
-    expect(true).to eq(false)
+    admin = create(:admin)
+    org = create(:organization)
+    sp = create(:service_provider, user: admin, organization_id: org.id)
+    login_as(admin)
+    visit organization_path(org)
+    within('.org-sp-table') do
+      click_on 'Remove'
+    end
+    within('.org-sp-table') do
+      expect(page).to_not have_content(sp.friendly_name)
+    end
   end
 end
 

@@ -10,6 +10,7 @@ class OrganizationsController < ApplicationController
   def create
     @organization = Organization.new(organiztion_params)
     if @organization.save!
+      flash[:success] = I18n.t('notices.organization_saved', org: @organization.structured_name)
       redirect_to @organization
     else
       render 'new'
@@ -18,6 +19,7 @@ class OrganizationsController < ApplicationController
 
   def update
     if organization.update(organiztion_params)
+      flash[:success] = I18n.t('notices.organization_saved', org: @organization.structured_name)
       redirect_to organization
     else
       render 'edit'
@@ -34,7 +36,9 @@ class OrganizationsController < ApplicationController
 
   def destroy
     if organization.service_providers.empty? && organization.users.empty?
+      structured_name = organization.structured_name
       organization.destroy
+      flash[:success] = I18n.t('notices.organization_deleted', org: structured_name)
       redirect_to organizations_path
     else
       flash[:error] = "You must remove all users and service providers before deleting an organization."

@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :organization do
-    agency "MyString"
-    department "MyString"
-    team "MyString"
+    agency "OrgAgency"
+    department "OrgDepartment"
+    team "OrgTeam"
   end
 end
