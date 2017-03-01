@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   put '/users/service_providers/:id' => 'users/service_providers#update'
   delete '/users/service_providers/:id' => 'users/service_providers#destroy'
 
+  resources :organizations, only: [:new, :create, :show, :edit, :update, :destroy, :index]
+
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
 

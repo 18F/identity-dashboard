@@ -13,7 +13,7 @@ $ico-offset: -10px;
   position: relative;
 
   &::before {
-    background-image: url(image-path('alert/ico-warning.svg'));
+    background-image: url(image-path('alerts/warning.svg'));
     background-repeat: no-repeat;
     content: '';
     height: $ico-size;
@@ -28,12 +28,12 @@ $ico-offset: -10px;
 .alert-success {
   background-color: #f0faed;
 
-  &::before { background-image: url(image-path('alert/ico-check.svg')); }
+  &::before { background-image: url(image-path('alerts/success.svg')); }
 }
 
 .alert-error,
 .alert-alert {
   background-color: #fff0f2;
 
-  &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
+  &::before { background-image: url(image-path('alerts/error.svg')); }
 }
