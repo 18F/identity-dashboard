@@ -28,11 +28,9 @@ module Users
       @service_provider = ServiceProvider.new
     end
 
-    def edit
-    end
+    def edit; end
 
-    def show
-    end
+    def show; end
 
     private
 
@@ -45,9 +43,8 @@ module Users
     end
 
     def authorize_approval
-      if params.require(:service_provider).key?(:approved) && !current_user.admin?
-        raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
-      end
+      return unless params.require(:service_provider).key?(:approved) && !current_user.admin?
+      raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
     end
 
     def validate_and_save_service_provider(initial_action)

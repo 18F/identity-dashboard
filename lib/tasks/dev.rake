@@ -8,7 +8,7 @@ if Rails.env.development? || Rails.env.test?
 
       user = create(:user, email: "user@example.com")
 
-      dashboard_saml_config = Saml::Config.new.settings
+      dashboard_saml_config = Saml::Config::SETTINGS
       uuid = SecureRandom.uuid
       create(:service_provider,
         user: user,

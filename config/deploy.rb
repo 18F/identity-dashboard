@@ -31,9 +31,6 @@ end
 
 server 'apps_host', roles: %w(web app db)
 
-#########
-# TASKS
-#########
 namespace :deploy do
   desc 'Write deploy information to deploy.json'
   task :deploy_json do

@@ -2,16 +2,8 @@ require 'hashie/mash'
 
 module Saml
   class Config
-    def initialize
-      @@settings ||= build_settings.freeze
-    end
-
-    def settings
-      @@settings
-    end
-
     # rubocop:disable AbcSize, MethodLength
-    def build_settings
+    def self.build_settings
       config_file = "#{Rails.root}/config/saml.yml"
       saml_env_config = Hashie::Mash.new(YAML.load_file(config_file).fetch(Rails.env, {}))
       Hashie::Mash.new(
@@ -39,6 +31,8 @@ module Saml
       )
     end
     # rubocop:enable AbcSize, MethodLength
+
+    SETTINGS = build_settings.freeze
 
     def logout_url
       settings[:idp_slo_target_url] || settings[:idp_sso_target_url].gsub(/auth$/, 'logout')

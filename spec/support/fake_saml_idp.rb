@@ -54,7 +54,7 @@ class FakeSamlIdp < Sinatra::Base
   end
 
   def build_configs
-    sp_config = Saml::Config.new
+    sp_config_settings = Saml::Config::SETTINGS
     SamlIdp.configure do |config|
       idp_base_url = 'http://idp.example.com'
 
@@ -62,16 +62,16 @@ class FakeSamlIdp < Sinatra::Base
       # but in real-life these would be different.
       # NOTE that x509_certificate is also in test env in config/saml.yml
       # so that the SP can correctly decode our response.
-      config.x509_certificate = sp_config.settings.certificate
-      config.secret_key = sp_config.settings.private_key
+      config.x509_certificate = sp_config_settings.certificate
+      config.secret_key = sp_config_settings.private_key
 
       config.base_saml_location = "#{idp_base_url}/saml"
       config.single_service_post_location = "#{idp_base_url}/saml/auth"
       config.single_logout_service_post_location = "#{idp_base_url}/saml/logout"
 
       config.name_id.formats = {
-        persistent: -> (principal) { principal.uuid },
-        email_address: -> (principal) { principal.email }
+        persistent: ->(principal) { principal.uuid },
+        email_address: ->(principal) { principal.email }
       }
 
       config.attributes = {

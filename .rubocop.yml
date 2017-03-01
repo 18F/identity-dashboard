@@ -12,10 +12,16 @@ AllCops:
     - 'bin/**/*'
     - 'db/**/*'
     - 'spec/i18n_spec.rb'
+    - 'config/deploy.rb'
     - 'config/initializers/devise.rb'
     - 'db/migrate/*'
   TargetRubyVersion: 2.3
   UseCache: true
+
+Lint/PercentStringArray:
+  Enabled: true
+  Exclude:
+    - 'config/initializers/secure_headers.rb'
 
 Metrics/AbcSize:
   Description: A calculated magnitude based on number of assignments, branches, and

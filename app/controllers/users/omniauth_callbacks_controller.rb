@@ -4,10 +4,9 @@ module Users
 
     def saml
       @user = User.from_omniauth(auth_hash)
-      if @user.persisted?
-        sign_in @user
-        redirect_to root_path
-      end
+      return unless @user.persisted?
+      sign_in @user
+      redirect_to root_path
     end
 
     def failure
@@ -34,7 +33,7 @@ module Users
     private
 
     def saml_settings
-      @_saml_settings ||= OneLogin::RubySaml::Settings.new(Saml::Config.new.settings.dup)
+      @_saml_settings ||= OneLogin::RubySaml::Settings.new(Saml::Config::SETTINGS.dup)
     end
 
     def auth_hash
