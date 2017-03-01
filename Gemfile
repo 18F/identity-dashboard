@@ -11,6 +11,7 @@ gem 'enum_help'
 gem 'foreman', require: false
 gem 'hashie'
 gem 'httparty'
+gem 'jquery-rails'
 gem 'newrelic_rpm', '>= 3.9.8'
 gem 'nokogiri', '>= 1.6.8'
 gem 'omniauth-saml'
