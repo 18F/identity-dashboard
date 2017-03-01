@@ -84,8 +84,7 @@ class DeployStatusChecker
   end
 
   def basic_auth(request)
-    request.basic_auth Rails.application.secrets.http_auth_username,
-                       Rails.application.secrets.http_auth_password
+    request.basic_auth(ENV['SP_NAME'], ENV['SP_PASS'])
   end
 
   # @return [Status]
