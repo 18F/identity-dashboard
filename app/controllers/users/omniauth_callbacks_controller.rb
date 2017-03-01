@@ -54,7 +54,7 @@ module Users
     def idp_logout_request
       logout_request = OneLogin::RubySaml::SloLogoutrequest.new(
         params[:SAMLRequest],
-        settings: saml_settings
+        settings: saml_settings,
       )
       if logout_request.is_valid?
         redirect_to_idp_logout(logout_request)
@@ -73,7 +73,7 @@ module Users
         saml_settings,
         logout_request.id,
         nil,
-        RelayState: params[:RelayState]
+        RelayState: params[:RelayState],
       )
       redirect_to logout_response
     end

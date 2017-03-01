@@ -15,7 +15,7 @@ module Saml
         certificate: ENV.fetch('SP_CERTIFICATE', saml_env_config[:sp_certificate]),
         private_key: OpenSSL::PKey::RSA.new(
           ENV.fetch('SP_PRIVATE_KEY', saml_env_config[:sp_private_key]),
-          ENV.fetch('SP_PRIVATE_KEY_PASSWORD', saml_env_config[:sp_private_key_password])
+          ENV.fetch('SP_PRIVATE_KEY_PASSWORD', saml_env_config[:sp_private_key_password]),
         ).to_s,
         allowed_clock_drift: 5.minutes,
         authn_context: 'http://idmanagement.gov/ns/assurance/loa/1',
@@ -27,7 +27,7 @@ module Saml
           embed_sign: false,
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
-        }
+        },
       )
     end
     # rubocop:enable AbcSize, MethodLength

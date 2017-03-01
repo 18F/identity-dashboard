@@ -49,7 +49,7 @@ class FakeSamlIdp < Sinatra::Base
       SamlIdp.config.base_saml_location,
       'foo/bar/logout',
       user.uuid,
-      OpenSSL::Digest::SHA256
+      OpenSSL::Digest::SHA256,
     )
   end
 
