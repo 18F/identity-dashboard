@@ -1,0 +1,6 @@
+h2 Edit a organization
+
+= simple_form_for(@organization, html: { autocomplete: 'off', role: 'form' }) do |form|
+  = form.error_notification
+  = render 'form', form: form
+  = form.button :submit, 'Update'

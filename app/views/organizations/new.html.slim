@@ -1,0 +1,6 @@
+h2 Create a new organization
+
+= simple_form_for(@organization, html: { autocomplete: 'off', role: 'form' }, url: organizations_path) do |form|
+  = form.error_notification
+  = render 'form', form: form
+  = form.button :submit, 'Create'
