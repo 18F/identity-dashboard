@@ -21,6 +21,7 @@ fieldset.usa-fieldset-inputs.usa-sans
       ServiceProvider.possible_attributes, :first, :last) do |b|
       li.list-reset
         = b.check_box
-        = b.label
+        .ml1.inline-block
+          = b.label
 = form.input :redirect_uri, label: 'Redirect URI (for OpenID Connect)'
 = form.input :active, as: :radio_buttons
