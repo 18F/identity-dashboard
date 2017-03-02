@@ -31,7 +31,7 @@ class FakeSamlIdp < Sinatra::Base
   private
 
   def authorize
-    if authorization_token == Figaro.env.login_dashboard_token
+    if authorization_token == Figaro.env.LOGIN_DASHBOARD_TOKEN
       yield
     else
       status 401

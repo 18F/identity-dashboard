@@ -1,14 +1,14 @@
 Figaro.require_keys(
-  'dashboard_secret_key_base',
-  'idp_slo_url',
-  'idp_sp_url',
-  'idp_sso_url',
-  'login_dashboard_token',
-  'new_relic_license_key',
-  'smtp_address',
-  'smtp_domain',
-  'smtp_password',
-  'smtp_username',
-  'sp_name',
-  'sp_pass'
+  'DASHBOARD_SECRET_KEY_BASE',
+  'IDP_SLO_URL',
+  'IDP_SP_URL',
+  'IDP_SSO_URL',
+  'LOGIN_DASHBOARD_TOKEN',
+  'NEW_RELIC_LICENSE_KEY',
+  'SMTP_ADDRESS',
+  'SMTP_DOMAIN',
+  'SMTP_PASSWORD',
+  'SMTP_USERNAME',
+  'SP_NAME',
+  'SP_PASS'
 )

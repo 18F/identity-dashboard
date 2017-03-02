@@ -4,7 +4,7 @@ describe 'SLO' do
   describe 'IdP-initiated' do
     it 'uses external SAML IdP' do
       # ask the IdP to initiate a SLO
-      idp_uri = URI(Figaro.env.idp_slo_url)
+      idp_uri = URI(Figaro.env.IDP_SLO_URL)
       saml_idp_resp = Net::HTTP.get(idp_uri)
 
       # send the SAMLRequest to our logout endpoint
@@ -15,7 +15,7 @@ describe 'SLO' do
     end
 
     it 'renders failure correctly' do
-      idp_uri = URI(Figaro.env.idp_slo_url)
+      idp_uri = URI(Figaro.env.IDP_SLO_URL)
       saml_idp_resp = Net::HTTP.get(idp_uri)
 
       # mangle the SAML payload a little to trigger error

@@ -5,7 +5,7 @@ describe 'SSO' do
     expect(User.count).to eq 0
 
     get '/users/auth/saml'
-    expect(response).to redirect_to(/#{Figaro.env.idp_sso_url}/)
+    expect(response).to redirect_to(/#{Figaro.env.IDP_SSO_URL}/)
 
     idp_uri = URI(response.headers['Location'])
     saml_idp_resp = Net::HTTP.get(idp_uri)
