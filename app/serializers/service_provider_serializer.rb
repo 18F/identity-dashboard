@@ -17,10 +17,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :updated_at,
   )
 
-  def agency
-    object.agency.name
-  end
-
   def cert
     object.saml_client_cert
   end

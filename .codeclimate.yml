@@ -14,6 +14,7 @@ engines:
       - javascript
     exclude_paths:
     - 'spec/**/*'
+    - 'db/migrate/*'
   eslint:
     enabled: true
   fixme:
