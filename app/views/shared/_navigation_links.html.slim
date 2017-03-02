@@ -3,7 +3,7 @@ nav.clearfix.border-bottom
     = link_to 'Dashboard', root_path, class: 'btn py2'
   .sm-col-right
     - if user_signed_in?
-      = link_to t('links.service_providers'), users_service_providers_path, class: 'btn py2 h5'
+      = link_to t('links.service_providers'), service_providers_path, class: 'btn py2 h5'
       = link_to t('links.sign_out'), '/users/logout', class: 'btn py2 h5'
     - else
       = link_to t('links.sign_in'), '/users/auth/saml', class: 'btn py2 h5'
