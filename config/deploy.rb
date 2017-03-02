@@ -4,7 +4,7 @@ require 'net/ssh/proxy/command'
 #################
 set :application, 'dashboard'
 # set branch based on env var or ask with the default set to the current local branch
-set :branch, ENV['branch'] || ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
+set :branch, ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
 set :bundle_without, 'deploy development doc test'
 set :deploy_to, '/srv/dashboard'
 set :deploy_via, :remote_cache

@@ -1,13 +1,13 @@
 SMTP_SETTINGS = {
-  address: ENV.fetch('SMTP_ADDRESS'), # example: "smtp.mandrillapp.com"
+  address: Figaro.env.SMTP_ADDRESS,
   authentication: 'login',
-  domain: ENV.fetch('SMTP_DOMAIN'), # example: "18f.gsa.gov"
+  domain: Figaro.env.SMTP_DOMAIN,
   enable_starttls_auto: true,
-  password: ENV.fetch('SMTP_PASSWORD'),
+  password: Figaro.env.SMTP_PASSWORD,
   port: '587',
-  user_name: ENV.fetch('SMTP_USERNAME')
+  user_name: Figaro.env.SMTP_USERNAME
 }.freeze
 
-if ENV['EMAIL_RECIPIENTS'].present?
-  Mail.register_interceptor RecipientInterceptor.new(ENV['EMAIL_RECIPIENTS'])
+if Figaro.env.EMAIL_RECIPIENTS.present?
+  Mail.register_interceptor RecipientInterceptor.new(Figaro.env.email_recipients)
 end
