@@ -2,7 +2,7 @@ h2 = t('headings.service_providers.show', friendly_name: service_provider.friend
 
 .wrapper.actions
   .action
-    = button_to t('forms.buttons.edit_service_provider'), edit_users_service_provider_url(service_provider),
+    = button_to t('forms.buttons.edit_service_provider'), edit_service_provider_path(service_provider),
       class: 'btn btn-primary btn-wide p0 w-60p regular border-box center', method: :get
 
 table.horizontal-headers
@@ -51,5 +51,6 @@ table.horizontal-headers
 
 .wrapper.actions
   .action
-    = button_to t('forms.buttons.delete_service_provider'), users_service_provider_url(service_provider),
+    = button_to t('forms.buttons.delete_service_provider'),
+      service_provider_path(service_provider),
       class: 'btn btn-wide p0 w-60p bg-light-blue blue regular border-box center', method: :delete

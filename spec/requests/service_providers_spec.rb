@@ -6,7 +6,7 @@ describe 'Users::ServiceProviders' do
       app = create(:service_provider)
       login_as(app.user)
 
-      put users_service_provider_path(app), service_provider: { approved: 'true' }
+      put service_provider_path(app), service_provider: { approved: 'true' }
 
       expect(response.status).to eq(401)
     end
@@ -16,7 +16,7 @@ describe 'Users::ServiceProviders' do
       user = create(:user)
       login_as(user)
 
-      put users_service_provider_path(app), service_provider: { approved: 'true' }
+      put service_provider_path(app), service_provider: { approved: 'true' }
 
       expect(response.status).to eq(401)
     end
@@ -35,7 +35,7 @@ describe 'Users::ServiceProviders' do
           with(anything).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
-        put users_service_provider_path(app), service_provider: { approved: 'true' }
+        put service_provider_path(app), service_provider: { approved: 'true' }
 
         expect(response.status).to eq(302) # redirect on success
         app.reload
@@ -60,7 +60,7 @@ describe 'Users::ServiceProviders' do
         allow(UserMailer).to receive(:user_new_service_provider).with(anything).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
-        post users_service_providers_path, service_provider: { friendly_name: 'test' }
+        post service_providers_path, service_provider: { friendly_name: 'test' }
 
         app = ServiceProvider.last
 
@@ -79,7 +79,7 @@ describe 'Users::ServiceProviders' do
       app = create(:service_provider)
       login_as(app.user)
 
-      get users_service_provider_path(app)
+      get service_provider_path(app)
 
       expect(response.status).to eq(200)
     end
@@ -89,7 +89,7 @@ describe 'Users::ServiceProviders' do
       app = create(:service_provider)
       login_as(user)
 
-      get users_service_provider_path(app)
+      get service_provider_path(app)
 
       expect(response.status).to eq(401)
     end
@@ -99,7 +99,7 @@ describe 'Users::ServiceProviders' do
       app = create(:service_provider)
       login_as(admin_user)
 
-      get users_service_provider_path(app)
+      get service_provider_path(app)
 
       expect(response.status).to eq(200)
     end

@@ -6,7 +6,7 @@ feature 'ServiceProviders CRUD' do
     agency = create(:agency)
     login_as(user)
 
-    visit new_users_service_provider_path
+    visit new_service_provider_path
 
     expect(page).to_not have_content('Approved')
 
@@ -30,7 +30,7 @@ feature 'ServiceProviders CRUD' do
     app = create(:service_provider, user: user)
     login_as(user)
 
-    visit edit_users_service_provider_path(app)
+    visit edit_service_provider_path(app)
 
     expect(page).to_not have_content('Approved')
 
@@ -52,7 +52,7 @@ feature 'ServiceProviders CRUD' do
     app = create(:service_provider, user: user)
     login_as(user)
 
-    visit users_service_provider_path(app)
+    visit service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
     expect(page).to_not have_content('All service providers')
@@ -63,7 +63,7 @@ feature 'ServiceProviders CRUD' do
     app = create(:service_provider, user: user)
     login_as(user)
 
-    visit users_service_provider_path(app)
+    visit service_provider_path(app)
     click_on 'Delete'
 
     expect(page).to have_content('Success')
@@ -75,7 +75,7 @@ feature 'Admin User Approval' do
     user = create(:user)
     login_as(user)
 
-    visit new_users_service_provider_path
+    visit new_service_provider_path
 
     expect(page).to_not have_content('Approved')
   end
@@ -85,7 +85,7 @@ feature 'Admin User Approval' do
     admin_user = create(:user, admin: true)
     login_as(admin_user)
 
-    visit edit_users_service_provider_path(app)
+    visit edit_service_provider_path(app)
 
     expect(page).to have_content('Approved')
   end

@@ -2,17 +2,17 @@ h2 = t('headings.service_providers.mine')
 
 .wrapper.actions
   p.action
-    = button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_url,
+    = button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path,
       class: 'btn btn-link h4 p0 blue regular border-box center', method: :post
   .action
-    = link_to t('forms.buttons.create_service_provider'), new_users_service_provider_url
+    = link_to t('forms.buttons.create_service_provider'), new_service_provider_path
 
 hr
 
 table
   - current_user.service_providers.each do |app|
     tr
-      td = link_to(app.friendly_name, users_service_provider_path(app))
+      td = link_to(app.friendly_name, service_provider_path(app))
       td = app.issuer
       td = app.active? ? 'Active' : 'Inactive'
 
@@ -21,7 +21,7 @@ table
   table
     - @service_providers.each do |sp|
       tr
-        td = link_to(sp.friendly_name, users_service_provider_path(sp))
+        td = link_to(sp.friendly_name, service_provider_path(sp))
         td = sp.agency.name
         td = sp.issuer
         td = sp.active? ? 'Active' : 'Inactive'

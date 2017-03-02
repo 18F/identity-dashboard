@@ -12,7 +12,7 @@ module Api
       else
         flash[:error] = I18n.t('notices.service_providers_refresh_failed')
       end
-      redirect_to users_service_providers_path
+      redirect_to service_providers_path
     end
 
     private

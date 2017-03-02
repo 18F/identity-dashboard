@@ -54,7 +54,7 @@ describe Api::ServiceProvidersController do
 
         post :update
 
-        expect(response).to redirect_to users_service_providers_path
+        expect(response).to redirect_to service_providers_path
         expect(Delayed::Job.count).to eq 1
       end
     end
