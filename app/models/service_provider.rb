@@ -1,6 +1,5 @@
 class ServiceProvider < ActiveRecord::Base
   belongs_to :user
-  belongs_to :agency
 
   enum block_encryption: { 'aes256-cbc' => 1 }
 

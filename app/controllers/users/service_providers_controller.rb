@@ -90,7 +90,7 @@ module Users
       params.require(:service_provider).permit(
         :acs_url,
         :active,
-        :agency_id,
+        :agency,
         :approved,
         :assertion_consumer_logout_service_url,
         :block_encryption,

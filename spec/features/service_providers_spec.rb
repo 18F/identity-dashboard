@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'ServiceProviders CRUD' do
   scenario 'Create' do
     user = create(:user)
-    agency = create(:agency)
     login_as(user)
 
     visit new_users_service_provider_path
@@ -12,7 +11,7 @@ feature 'ServiceProviders CRUD' do
 
     fill_in 'Friendly name', with: 'test service_provider'
     fill_in 'Issuer', with: 'test service_provider'
-    select agency.name, from: 'service_provider[agency_id]'
+    fill_in 'Agency', with: 'Test agency'
     check 'email'
     check 'first_name'
     click_on 'Create'
