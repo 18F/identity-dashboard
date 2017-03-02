@@ -23,6 +23,12 @@ describe OrganizationsController do
       get :index
       expect(response.status).to eq(401)
     end
+
+    it 'requires user to be signed in' do
+      allow(controller).to receive(:current_user).and_return(nil)
+      get :index
+      expect(response.status).to eq(401)
+    end
   end
 
   describe '#create' do
