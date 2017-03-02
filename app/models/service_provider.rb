@@ -5,6 +5,7 @@ class ServiceProvider < ActiveRecord::Base
   enum block_encryption: { 'aes256-cbc' => 1 }
 
   validates :issuer, presence: true, uniqueness: true
+  validates :agency, presence: true
 
   before_validation(on: [:create, :update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
