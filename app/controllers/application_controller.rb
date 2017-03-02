@@ -6,15 +6,15 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :render_401
 
   def current_user
-    if Figaro.env.force_user
-      User.find(Figaro.env.force_user)
+    if Figaro.env.FORCE_USER
+      User.find(Figaro.env.FORCE_USER)
     else
       super
     end
   end
 
   def user_signed_in?
-    Figaro.env.force_user.present? || super
+    Figaro.env.FORCE_USER.present? || super
   end
 
   def new_session_path(_scope)
