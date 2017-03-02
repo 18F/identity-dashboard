@@ -4,7 +4,7 @@ require 'net/ssh/proxy/command'
 #################
 set :application, 'dashboard'
 # set branch based on env var or ask with the default set to the current local branch
-set :branch, Figaro.env.BRANCH || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
+set :branch, ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
 set :bundle_without, 'deploy development doc test'
 set :deploy_to, '/srv/dashboard'
 set :deploy_via, :remote_cache
@@ -20,7 +20,7 @@ set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-dashboard.git'
 set :tmp_dir, '/tmp'
 
-set :bastion_user, Figaro.env.BASTION_USER || 'ubuntu'
+set :bastion_user, ENV['BASTION_USER'] || 'ubuntu'
 set :ssh_options do
   ssh_command = "ssh -A #{fetch(:bastion_user)}@#{fetch(:bastion_host)} -W %h:%p"
   {
