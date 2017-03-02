@@ -16,8 +16,10 @@
 fieldset.usa-fieldset-inputs.usa-sans
   legend Attribute bundle
   ul
-    = collection_check_boxes(:service_provider, :attribute_bundle, ServiceProvider.possible_attributes, :first, :last) do |b|
-      li
+    = collection_check_boxes(:service_provider,
+      :attribute_bundle,
+      ServiceProvider.possible_attributes, :first, :last) do |b|
+      li.list-reset
         = b.check_box
         = b.label
 = form.input :redirect_uri, label: 'Redirect URI (for OpenID Connect)'
