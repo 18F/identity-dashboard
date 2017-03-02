@@ -10,5 +10,5 @@ Figaro.require_keys(
   'SMTP_PASSWORD',
   'SMTP_USERNAME',
   'SP_NAME',
-  'SP_PASS'
+  'SP_PASS',
 )
