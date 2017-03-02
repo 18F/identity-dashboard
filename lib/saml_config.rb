@@ -15,7 +15,7 @@ module Saml
         certificate: Figaro.env.SP_CERTIFICATE || saml_env_config[:sp_certificate],
         private_key: OpenSSL::PKey::RSA.new(
           Figaro.env.SP_PRIVATE_KEY || saml_env_config[:sp_private_key],
-          Figaro.env.SP_PRIVATE_KEY_PASSWORD || saml_env_config[:sp_private_key_password]
+          Figaro.env.SP_PRIVATE_KEY_PASSWORD || saml_env_config[:sp_private_key_password],
         ).to_s,
         allowed_clock_drift: 5.minutes,
         authn_context: 'http://idmanagement.gov/ns/assurance/loa/1',
