@@ -1,6 +1,6 @@
 module Api
   class ServiceProvidersController < ApplicationController
-    before_action(:authenticate_user!, only: [:update]) unless Figaro.env.FORCE_USER
+    before_action(:authenticate_user!, only: [:update])
 
     def index
       render json: serialized_service_providers(approved_service_providers)
