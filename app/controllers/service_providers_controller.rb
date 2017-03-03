@@ -98,6 +98,7 @@ class ServiceProvidersController < AuthenticatedController
       :issuer,
       # :logo,
       :metadata_url,
+      :organization_id,
       :redirect_uri,
       :return_to_sp_url,
       :saml_client_cert,

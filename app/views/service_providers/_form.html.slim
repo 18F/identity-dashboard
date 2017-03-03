@@ -2,6 +2,7 @@
 
 - if current_user.admin?
   = form.input :approved, as: :radio_buttons
+  = form.association :organization
 
 = form.input :friendly_name
 = form.input :description

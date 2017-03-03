@@ -1,27 +1,52 @@
 require 'rails_helper'
 
 feature 'ServiceProviders CRUD' do
-  scenario 'Create' do
-    user = create(:user)
-    agency = create(:agency)
-    login_as(user)
+  context 'Regular user' do
+    scenario 'can create service provider' do
+      user = create(:user)
+      agency = create(:agency)
+      login_as(user)
 
-    visit new_service_provider_path
+      visit new_service_provider_path
 
-    expect(page).to_not have_content('Approved')
+      expect(page).to_not have_content('Approved')
+      expect(page).to_not have_select('service_provider_organization_id')
 
-    fill_in 'Friendly name', with: 'test service_provider'
-    fill_in 'Issuer', with: 'test service_provider'
-    select agency.name, from: 'service_provider[agency_id]'
-    check 'email'
-    check 'first_name'
-    click_on 'Create'
+      fill_in 'Friendly name', with: 'test service_provider'
+      fill_in 'Issuer', with: 'test service_provider'
+      select agency.name, from: 'service_provider[agency_id]'
+      check 'email'
+      check 'first_name'
+      click_on 'Create'
 
-    expect(page).to have_content('Success')
-    within('table.horizontal-headers') do
-      expect(page).to have_content('test service_provider')
-      expect(page).to have_content('email')
-      expect(page).to have_content('first_name')
+      expect(page).to have_content('Success')
+      within('table.horizontal-headers') do
+        expect(page).to have_content('test service_provider')
+        expect(page).to have_content('email')
+        expect(page).to have_content('first_name')
+      end
+    end
+
+    context 'admin user' do
+      scenario 'can create service provider with org and approval' do
+        admin = create(:admin)
+        agency = create(:agency)
+        org = create(:organization)
+        login_as(admin)
+
+        visit new_service_provider_path
+
+        choose('service_provider_approved_true')
+        select org, from: 'service_provider[organization_id]'
+        fill_in 'Friendly name', with: 'test service_provider'
+        fill_in 'Issuer', with: 'test service_provider'
+        select agency.name, from: 'service_provider[agency_id]'
+        check 'email'
+        check 'first_name'
+        click_on 'Create'
+
+        expect(page).to have_content('Success')
+      end
     end
   end
 
@@ -49,12 +74,14 @@ feature 'ServiceProviders CRUD' do
 
   scenario 'Read' do
     user = create(:user)
-    app = create(:service_provider, user: user)
+    org = create(:organization)
+    app = create(:service_provider, organization: org, user: user)
     login_as(user)
 
     visit service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
+    expect(page).to have_content(org)
     expect(page).to_not have_content('All service providers')
   end
 

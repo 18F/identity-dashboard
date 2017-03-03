@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301184735) do
+ActiveRecord::Schema.define(version: 20170302011548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,9 +69,11 @@ ActiveRecord::Schema.define(version: 20170301184735) do
     t.integer  "agency_id",                                             null: false
     t.json     "attribute_bundle"
     t.string   "redirect_uri"
+    t.integer  "organization_id"
   end
 
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
+  add_index "service_providers", ["organization_id"], name: "index_service_providers_on_organization_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "uuid",                               null: false
@@ -92,4 +94,5 @@ ActiveRecord::Schema.define(version: 20170301184735) do
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
   add_foreign_key "service_providers", "agencies"
+  add_foreign_key "service_providers", "organizations"
 end
