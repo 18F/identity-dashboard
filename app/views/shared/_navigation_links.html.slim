@@ -4,6 +4,9 @@ nav.clearfix.border-bottom
   .sm-col-right
     - if user_signed_in?
       = link_to t('links.service_providers'), service_providers_path, class: 'btn py2 h5'
+      - if current_user.admin?
+        = link_to t('links.user_groups'),
+          organizations_path, class: 'btn py2 h5'
       = link_to t('links.sign_out'), '/users/logout', class: 'btn py2 h5'
     - else
       = link_to t('links.sign_in'), '/users/auth/saml', class: 'btn py2 h5'
