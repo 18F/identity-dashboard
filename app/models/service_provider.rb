@@ -1,7 +1,7 @@
 class ServiceProvider < ActiveRecord::Base
   belongs_to :user
   belongs_to :agency
-  belongs_to :organization
+  belongs_to :user_group
 
   enum block_encryption: { 'aes256-cbc' => 1 }
 

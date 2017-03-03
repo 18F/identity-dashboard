@@ -98,11 +98,11 @@ class ServiceProvidersController < AuthenticatedController
       :issuer,
       # :logo,
       :metadata_url,
-      :organization_id,
       :redirect_uri,
       :return_to_sp_url,
       :saml_client_cert,
       :sp_initiated_login_url,
+      :user_group_id,
       attribute_bundle: [],
     )
   end

@@ -10,7 +10,7 @@ feature 'ServiceProviders CRUD' do
       visit new_service_provider_path
 
       expect(page).to_not have_content('Approved')
-      expect(page).to_not have_select('service_provider_organization_id')
+      expect(page).to_not have_select('service_provider_user_group_id')
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'test service_provider'
@@ -28,16 +28,16 @@ feature 'ServiceProviders CRUD' do
     end
 
     context 'admin user' do
-      scenario 'can create service provider with org and approval' do
+      scenario 'can create service provider with user group and approval' do
         admin = create(:admin)
         agency = create(:agency)
-        org = create(:organization)
+        group = create(:user_group)
         login_as(admin)
 
         visit new_service_provider_path
 
         choose('service_provider_approved_true')
-        select org, from: 'service_provider[organization_id]'
+        select group, from: 'service_provider[user_group_id]'
         fill_in 'Friendly name', with: 'test service_provider'
         fill_in 'Issuer', with: 'test service_provider'
         select agency.name, from: 'service_provider[agency_id]'
@@ -74,14 +74,14 @@ feature 'ServiceProviders CRUD' do
 
   scenario 'Read' do
     user = create(:user)
-    org = create(:organization)
-    app = create(:service_provider, organization: org, user: user)
+    group = create(:user_group)
+    app = create(:service_provider, user_group: group, user: user)
     login_as(user)
 
     visit service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
-    expect(page).to have_content(org)
+    expect(page).to have_content(group)
     expect(page).to_not have_content('All service providers')
   end
 

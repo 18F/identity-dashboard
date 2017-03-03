@@ -1,4 +1,4 @@
-class OrganizationPolicy < BasePolicy
+class UserGroupPolicy < BasePolicy
   attr_reader :current_user
 
   def initialize(current_user, _model)
