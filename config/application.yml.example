@@ -14,9 +14,9 @@ test:
 
 development:
   DASHBOARD_SECRET_KEY_BASE: 'changeme'
-  IDP_SLO_URL: 'changeme'
-  IDP_SP_URL: 'changeme'
-  IDP_SSO_URL: 'changme'
+  IDP_SLO_URL: 'http://localhost:3000/saml/logout'
+  IDP_SP_URL: 'http://localhost:3000/api/service_provider'
+  IDP_SSO_URL: 'http://localhost:3000/api/saml/auth'
   LOGIN_DASHBOARD_TOKEN: 'sekret'
   NEW_RELIC_LICENSE_KEY: 'changeme'
   SMTP_ADDRESS: 'changeme'
