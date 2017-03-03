@@ -1,0 +1,9 @@
+h2 User groups
+= link_to "Create new user_group", new_user_group_path
+
+h3 Manage User Groups
+ul
+  - @user_groups.each do |user_group|
+    li
+      = user_group.name
+      = user_group.description

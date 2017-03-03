@@ -1,0 +1,12 @@
+h2 User group
+= link_to "Delete", user_group_path(@user_group), method: :delete, data: { confirm: "Are you sure?"}
+table
+  tbody
+    tr
+      th scope="row" Name
+      td
+        = @user_group.name
+    tr
+      th scope="row" Description
+      td
+        = @user_group.description

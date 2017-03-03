@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe OrganizationsController do
+describe UserGroupsController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:org) { create(:organization) }
+  let(:org) { create(:user_group) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -39,7 +39,7 @@ describe OrganizationsController do
 
     it 'renders #new if it fails to create' do
       user.admin = true
-      post :create, organization: { team_name: '' }
+      post :create, user_group: { name: '' }
       expect(response).to render_template(:new)
     end
   end
@@ -66,7 +66,7 @@ describe OrganizationsController do
 
     it 'renders #edit if it fails to create' do
       user.admin = true
-      patch :update, id: org.id, organization: { agency_name: '' }
+      patch :update, id: org.id, user_group: { name: '' }
       expect(response).to render_template(:edit)
     end
   end

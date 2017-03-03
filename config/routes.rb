@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   end
 
   resources :service_providers
-  resources :organizations
+  resources :user_groups
 
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'

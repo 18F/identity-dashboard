@@ -7,9 +7,9 @@ class CreateOrganizations < ActiveRecord::Migration
       t.string :team_name, null: false
     end
 
-    add_index :organizations, 
-      [:department_name, :agency_name, :team_name], 
+    add_index :organizations,
+      [:department_name, :agency_name, :team_name],
       unique: true,
-      name: :index_organizations_on_name_fields 
+      name: :index_organizations_on_name_fields
   end
 end

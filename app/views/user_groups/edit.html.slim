@@ -1,0 +1,6 @@
+h2 Edit a user group
+
+= simple_form_for(@user_group, html: { autocomplete: 'off', role: 'form' }) do |form|
+  = form.error_notification
+  = render 'form', form: form
+  = form.button :submit, 'Update'
