@@ -24,6 +24,7 @@ module Saml
         security: {
           authn_requests_signed: true,
           logout_requests_signed: true,
+          logout_responses_signed: true,
           embed_sign: false,
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
