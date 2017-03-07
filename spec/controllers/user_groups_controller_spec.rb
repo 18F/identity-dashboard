@@ -70,11 +70,4 @@ describe UserGroupsController do
       expect(response).to render_template(:edit)
     end
   end
-
-  describe '#show' do
-    it 'requires user to be an admin' do
-      get :show, id: org.id
-      expect(response.status).to eq(401)
-    end
-  end
 end

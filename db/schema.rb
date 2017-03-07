@@ -66,10 +66,10 @@ ActiveRecord::Schema.define(version: 20170303182534) do
   add_index "service_providers", ["user_group_id"], name: "index_service_providers_on_user_group_id", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.string   "name",        null: false
-    t.text     "description", null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "name",                     null: false
+    t.text     "description", default: "", null: false
   end
 
   add_index "user_groups", ["name"], name: "index_user_groups_on_name", unique: true, using: :btree
