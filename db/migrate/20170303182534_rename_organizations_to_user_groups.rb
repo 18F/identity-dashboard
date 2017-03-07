@@ -6,7 +6,7 @@ class RenameOrganizationsToUserGroups < ActiveRecord::Migration
     remove_column :organizations, :department_name
     remove_column :organizations, :agency_name
 
-    add_column :organizations, :description, :text, null: false
+    add_column :organizations, :description, :text, null: false, default: ''
 
     rename_table :organizations, :user_groups
     rename_column :service_providers, :organization_id, :user_group_id
