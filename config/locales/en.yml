@@ -15,6 +15,9 @@ en:
     user_groups: 'Manage user groups'
     sign_out: 'Sign out'
     sign_in: 'Log in'
+    aria:
+      edit: 'Edit %{name}'
+      delete: 'Delete %{name}'
   notices:
     service_provider_saved: 'Success! You have saved %{issuer}'
     service_provider_deleted: 'Success! You have deleted %{issuer}'
