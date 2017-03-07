@@ -11,7 +11,7 @@ feature 'User groups CRUD' do
     fill_in 'Name', with: 'team name'
 
     click_on 'Create'
-    expect(current_path).to eq(user_group_path(UserGroup.last))
+    expect(current_path).to eq(user_groups_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
     expect(page).to have_content('department name')
@@ -22,27 +22,19 @@ feature 'User groups CRUD' do
     org = create(:user_group)
     login_as(admin)
 
-    visit edit_user_group_path(org)
+    visit user_groups_path
+    find("a[aria-label='#{t('links.aria.edit', name: org.name)}']").click
+
+    expect(current_path).to eq(edit_user_group_path(org))
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
     click_on 'Update'
 
-    expect(current_path).to eq(user_group_path(org))
+    expect(current_path).to eq(user_groups_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
-  end
-
-  scenario 'Read' do
-    admin = create(:admin)
-    org = create(:user_group)
-    login_as(admin)
-
-    visit user_group_path(org)
-
-    expect(page).to have_content(org.name)
-    expect(page).to have_content(org.description)
   end
 
   scenario 'View Index' do
@@ -64,8 +56,8 @@ feature 'User groups CRUD' do
     org = create(:user_group)
     login_as(admin)
 
-    visit user_group_path(org)
-    click_on 'Delete'
+    visit user_groups_path
+    find("a[aria-label='#{t('links.aria.delete', name: org.name)}']").click
 
     expect(current_path).to eq(user_groups_path)
     expect(page).to have_content('Success')

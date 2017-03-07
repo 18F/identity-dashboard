@@ -1,9 +1,23 @@
 h2 User groups
-= link_to "Create new user_group", new_user_group_path
+= link_to "Create new user group", new_user_group_path
 
 h3 Manage User Groups
-ul
+table
+  thead
+    tr
+      th scope="col"
+        | Name
+      th scope="col"
+        | Description
+      th
+  tbody
   - @user_groups.each do |user_group|
-    li
-      = user_group.name
-      = user_group.description
+    tr
+      th scope="row"
+        = user_group.name
+      td
+        = user_group.description
+      td
+        = link_to "Edit", edit_user_group_path(user_group),'aria-label'=> t('links.aria.edit', name: user_group.name)
+      td
+        = link_to "Delete", user_group_path(user_group), method: :delete, data: { confirm: "Are you sure?"}, 'aria-label'=> t('links.aria.delete', name: user_group.name)

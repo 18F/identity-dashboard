@@ -11,20 +11,18 @@ class UserGroupsController < ApplicationController
 
     if @user_group.save
       flash[:success] = 'Success'
-      redirect_to @user_group
+      redirect_to user_groups_path
     else
       render :new
     end
   end
-
-  def show; end
 
   def edit; end
 
   def update
     if @user_group.update(user_group_params)
       flash[:success] = 'Success'
-      redirect_to @user_group
+      redirect_to user_groups_path
     else
       render :edit
     end
