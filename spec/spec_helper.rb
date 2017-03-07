@@ -1,6 +1,8 @@
-require 'simplecov'
-SimpleCov.start 'rails' do
-  add_filter '/config/'
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails' do
+    add_filter '/config/'
+  end
 end
 
 ENV['RAILS_ENV'] ||= 'test'

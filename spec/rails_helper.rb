@@ -16,7 +16,6 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
 
   config.before(:suite) do
-    Rails.application.load_seed
     Warden.test_mode!
   end
 
