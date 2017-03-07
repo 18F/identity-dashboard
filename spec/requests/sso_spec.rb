@@ -10,6 +10,12 @@ describe 'SSO' do
     idp_uri = URI(response.headers['Location'])
     saml_idp_resp = Net::HTTP.get(idp_uri)
 
+    resp_xml = Base64.decode64(saml_idp_resp)
+
+    expect(resp_xml).to match(
+      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/,
+    )
+
     post '/users/auth/saml/callback', SAMLResponse: saml_idp_resp
 
     expect(response).to redirect_to('http://www.example.com/')

@@ -12,6 +12,11 @@ describe 'SLO' do
 
       # redirect to complete the sign-out at the IdP
       expect(response).to redirect_to(%r{idp.example.com/saml/logout})
+
+      idp_logout_uri = URI(response.headers['Location'])
+      idp_logout_params = CGI.parse(idp_logout_uri.query)
+
+      expect(idp_logout_params[:Signature]).to_not be_nil
     end
 
     it 'renders failure correctly' do
@@ -39,6 +44,10 @@ describe 'SLO' do
 
       # send the SAMLRequest to IdP
       idp_uri = URI(response.headers['Location'])
+
+      idp_logout_params = CGI.parse(idp_uri.query)
+      expect(idp_logout_params[:Signature]).to_not be_nil
+
       saml_idp_resp = Net::HTTP.get(idp_uri)
 
       # send the SAMLResponse back to our SP
