@@ -86,3 +86,15 @@ feature 'Nav links include link to User Groups' do
     end
   end
 end
+
+feature 'Index page includes related service providers' do
+  scenario 'User group has a service provider' do
+    admin = create(:admin)
+    ug = create(:user_group)
+    sp = create(:service_provider, user_group: ug)
+    login_as(admin)
+
+    visit user_groups_path
+    expect(page).to have_content(sp.friendly_name)
+  end
+end

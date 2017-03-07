@@ -1,0 +1,15 @@
+.user-group-table {
+  th,
+  tr,
+  td,
+  th {
+    vertical-align: top;
+    border-bottom: 1px solid #000;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
