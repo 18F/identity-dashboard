@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 describe UserGroup do
+  describe 'Associations' do
+    it { should have_many(:users) }
+    it { should have_many(:service_providers) }
+  end
+
   describe 'Validations' do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:description) }
