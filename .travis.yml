@@ -13,8 +13,8 @@ script:
   - make test
   - bundle exec codeclimate-test-reporter
 env:
-  - RACK_ENV=test
-  - RAILS_ENV=test
+  global:
+    - COVERAGE=true
 addons:
   postgresql: 9.3
   code_climate:

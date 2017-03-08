@@ -3,6 +3,7 @@ require 'rails_helper'
 describe UserGroup do
   describe 'Associations' do
     it { should have_many(:users) }
+    it { should have_many(:service_providers) }
   end
 
   describe 'Validations' do

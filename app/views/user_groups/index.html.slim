@@ -2,13 +2,16 @@ h2 User groups
 = link_to "Create new user group", new_user_group_path
 
 h3 Manage User Groups
-table
+table.user-group-table
   thead
     tr
       th scope="col"
         | Name
       th scope="col"
         | Description
+      th scope="col"
+        | Service Providers
+      th
       th
   tbody
   - @user_groups.each do |user_group|
@@ -17,6 +20,11 @@ table
         = user_group.name
       td
         = user_group.description
+      td
+        ul
+          - user_group.service_providers.each do |sp|
+            li
+              = link_to sp.friendly_name, service_provider_path(sp)
       td
         = link_to "Edit", edit_user_group_path(user_group),'aria-label'=> t('links.aria.edit', name: user_group.name)
       td
