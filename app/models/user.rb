@@ -4,7 +4,6 @@ class User < ActiveRecord::Base
   belongs_to :user_group
 
   before_create :create_uuid
-
   after_create :send_welcome
 
   def create_uuid
@@ -13,6 +12,10 @@ class User < ActiveRecord::Base
 
   def send_welcome
     UserMailer.welcome_new_user(self).deliver_later
+  end
+
+  def to_s
+    "#{first_name} #{last_name} #{email}"
   end
 
   def name

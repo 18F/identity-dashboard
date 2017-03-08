@@ -1,0 +1,1 @@
+$('.js-selectize').selectize();
