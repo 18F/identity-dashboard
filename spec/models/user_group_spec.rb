@@ -25,9 +25,7 @@ describe UserGroup do
       c_user = create(:user, email: 'c@example.com')
       a_user = create(:user, email: 'a@example.com')
 
-      expect(User.sorted).to eq([
-        a_user, b_user, c_user
-      ])
+      expect(User.sorted).to eq([a_user, b_user, c_user])
     end
   end
 end
