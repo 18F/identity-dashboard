@@ -93,7 +93,7 @@ GEM
       activesupport
     climate_control (0.1.0)
     cliver (0.3.2)
-    codeclimate-test-reporter (1.0.6)
+    codeclimate-test-reporter (1.0.7)
       simplecov
     coderay (1.1.1)
     concurrent-ruby (1.0.3)
