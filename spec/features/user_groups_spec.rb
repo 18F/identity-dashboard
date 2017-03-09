@@ -3,18 +3,21 @@ require 'rails_helper'
 feature 'User groups CRUD' do
   scenario 'Create' do
     admin = create(:admin)
-    login_as(admin)
+    user = create(:user)
 
+    login_as(admin)
     visit new_user_group_path
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
+    select user.email, from: 'Users'
 
     click_on 'Create'
     expect(current_path).to eq(user_groups_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
     expect(page).to have_content('department name')
+    expect(page).to have_content(user.email)
   end
 
   scenario 'Update' do

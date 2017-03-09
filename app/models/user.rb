@@ -4,8 +4,9 @@ class User < ActiveRecord::Base
   belongs_to :user_group
 
   before_create :create_uuid
-
   after_create :send_welcome
+
+  scope :sorted, -> { order(email: :asc) }
 
   def create_uuid
     self.uuid = SecureRandom.uuid unless uuid.present?
@@ -13,6 +14,10 @@ class User < ActiveRecord::Base
 
   def send_welcome
     UserMailer.welcome_new_user(self).deliver_later
+  end
+
+  def to_s
+    "#{first_name} #{last_name} #{email}"
   end
 
   def name
