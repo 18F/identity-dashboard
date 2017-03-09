@@ -10,7 +10,7 @@ h2 = t('headings.service_providers.mine')
 hr
 
 table
-  - current_user.service_providers.each do |app|
+  - current_user.scoped_service_providers.each do |app|
     tr
       td = link_to(app.friendly_name, service_provider_path(app))
       td = app.issuer
