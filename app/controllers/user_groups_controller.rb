@@ -35,7 +35,7 @@ class UserGroupsController < ApplicationController
   end
 
   def index
-    @user_groups = UserGroup.all
+    @user_groups = UserGroup.includes(:users).all
   end
 
   private

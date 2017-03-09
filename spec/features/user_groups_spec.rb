@@ -17,6 +17,7 @@ feature 'User groups CRUD' do
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
     expect(page).to have_content('department name')
+    expect(page).to have_content(user.email)
   end
 
   scenario 'Update' do

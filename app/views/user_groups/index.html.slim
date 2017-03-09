@@ -12,6 +12,9 @@ table.user-group-table
       th scope="col"
         | Service Providers
       th
+      th scope="col"
+        | Users
+      th
       th
   tbody
   - @user_groups.each do |user_group|
@@ -25,6 +28,11 @@ table.user-group-table
           - user_group.service_providers.each do |sp|
             li
               = link_to sp.friendly_name, service_provider_path(sp)
+      td
+        ul
+          - user_group.users.each do |user|
+            li
+              = user.email
       td
         = link_to "Edit", edit_user_group_path(user_group),'aria-label'=> t('links.aria.edit', name: user_group.name)
       td

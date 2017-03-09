@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   before_create :create_uuid
   after_create :send_welcome
 
+  scope :sorted, -> { order(email: :asc) }
+
   def create_uuid
     self.uuid = SecureRandom.uuid unless uuid.present?
   end
