@@ -1,6 +1,8 @@
 h2 Create a new user group
 
-= simple_form_for(@user_group, html: { autocomplete: 'off', role: 'form' }, url: user_groups_path) do |form|
+= simple_form_for(@user_group,
+  html: { autocomplete: 'off', role: 'form' },
+  url: user_groups_path) do |form|
   = form.error_notification
   = render 'form', form: form
   = form.button :submit, 'Create'

@@ -40,7 +40,7 @@ Metrics/ClassLength:
   - spec/**/*
 
 Metrics/LineLength:
-  Description: Limit lines to 80 characters.
+  Description: Limit lines to 100 characters.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
   Enabled: true
   Max: 100

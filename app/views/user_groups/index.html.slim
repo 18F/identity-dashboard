@@ -1,5 +1,5 @@
 h2 User groups
-= link_to "Create new user group", new_user_group_path
+= link_to 'Create new user group', new_user_group_path
 
 h3 Manage User Groups
 table.user-group-table
@@ -34,6 +34,12 @@ table.user-group-table
             li
               = user.email
       td
-        = link_to "Edit", edit_user_group_path(user_group),'aria-label'=> t('links.aria.edit', name: user_group.name)
+        = link_to 'Edit',
+          edit_user_group_path(user_group),
+          'aria-label' => t('links.aria.edit', name: user_group.name)
       td
-        = link_to "Delete", user_group_path(user_group), method: :delete, data: { confirm: "Are you sure?"}, 'aria-label'=> t('links.aria.delete', name: user_group.name)
+        = link_to 'Delete',
+        user_group_path(user_group),
+        method: :delete,
+        data: { confirm: 'Are you sure?' },
+        'aria-label' => t('links.aria.delete', name: user_group.name)

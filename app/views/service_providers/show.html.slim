@@ -2,8 +2,10 @@ h2 = t('headings.service_providers.show', friendly_name: service_provider.friend
 
 .wrapper.actions
   .action
-    = button_to t('forms.buttons.edit_service_provider'), edit_service_provider_path(service_provider),
-      class: 'btn btn-primary btn-wide p0 w-60p regular border-box center', method: :get
+    = button_to t('forms.buttons.edit_service_provider'),
+      edit_service_provider_path(service_provider),
+      class: 'btn btn-primary btn-wide p0 w-60p regular border-box center',
+      method: :get
 
 table.horizontal-headers
   tr
@@ -29,7 +31,8 @@ table.horizontal-headers
     td.acs_url = service_provider.acs_url
   tr
     th Assertion Consumer Logout Service URL
-    td.assertion_consumer_logout_service_url = service_provider.assertion_consumer_logout_service_url
+    td.assertion_consumer_logout_service_url
+      = service_provider.assertion_consumer_logout_service_url
   tr
     th SP Initiated Login URL
     td.sp_initiated_login_url = service_provider.sp_initiated_login_url
