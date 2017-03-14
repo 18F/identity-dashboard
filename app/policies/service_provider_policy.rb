@@ -11,19 +11,19 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def show?
-    owner_or_admin?
+    member_or_admin?
   end
 
   def update?
-    owner_or_admin?
+    member_or_admin?
   end
 
   def edit?
-    owner_or_admin?
+    member_or_admin?
   end
 
   def destroy?
-    owner_or_admin?
+    member_or_admin?
   end
 
   def create?
@@ -44,7 +44,11 @@ class ServiceProviderPolicy < BasePolicy
     current_user.admin?
   end
 
-  def owner_or_admin?
-    owner? || admin?
+  def member?
+    sp.user_group.present? && sp.user_group == current_user.user_group
+  end
+
+  def member_or_admin?
+    owner? || admin? || member?
   end
 end

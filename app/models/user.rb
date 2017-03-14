@@ -1,10 +1,12 @@
 class User < ActiveRecord::Base
   devise :trackable, :timeoutable, :omniauthable, omniauth_providers: [:saml]
   has_many :service_providers
+  belongs_to :user_group
 
   before_create :create_uuid
-
   after_create :send_welcome
+
+  scope :sorted, -> { order(email: :asc) }
 
   def create_uuid
     self.uuid = SecureRandom.uuid unless uuid.present?
@@ -12,6 +14,10 @@ class User < ActiveRecord::Base
 
   def send_welcome
     UserMailer.welcome_new_user(self).deliver_later
+  end
+
+  def to_s
+    "#{first_name} #{last_name} #{email}"
   end
 
   def name
@@ -47,7 +53,18 @@ class User < ActiveRecord::Base
     self
   end
 
+  def scoped_service_providers
+    (
+      service_providers +
+      member_service_providers
+    ).uniq
+  end
+
   private
+
+  def member_service_providers
+    user_group ? user_group.service_providers : []
+  end
 
   def first_name_from(info)
     info.first_name if first_name.blank? || first_name != info.first_name

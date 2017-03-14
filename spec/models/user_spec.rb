@@ -26,4 +26,17 @@ describe User do
       expect(deliveries.first.subject).to eq(I18n.t('mailer.welcome.subject'))
     end
   end
+
+  describe '#scoped_service_providers' do
+    it 'returns user created sps and the users user_group sps' do
+      group = create(:user_group)
+      user.user_group = group
+      user.save
+      user_sp = create(:service_provider, user: user)
+      group_sp = create(:service_provider, user_group: group)
+      create(:service_provider)
+
+      expect(user.scoped_service_providers).to eq([user_sp, group_sp])
+    end
+  end
 end

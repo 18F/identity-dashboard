@@ -35,7 +35,7 @@ class UserGroupsController < ApplicationController
   end
 
   def index
-    @user_groups = UserGroup.all
+    @user_groups = UserGroup.includes(:users).all
   end
 
   private
@@ -45,6 +45,6 @@ class UserGroupsController < ApplicationController
   end
 
   def user_group_params
-    params.require(:user_group).permit(:name, :description)
+    params.require(:user_group).permit(:name, :description, user_ids: [])
   end
 end

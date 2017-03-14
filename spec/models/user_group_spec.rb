@@ -18,4 +18,14 @@ describe UserGroup do
       expect(duplicate).not_to be_valid
     end
   end
+
+  describe '.sorted' do
+    it 'returns users in alpha ordered by email' do
+      b_user = create(:user, email: 'b@example.com')
+      c_user = create(:user, email: 'c@example.com')
+      a_user = create(:user, email: 'a@example.com')
+
+      expect(User.sorted).to eq([a_user, b_user, c_user])
+    end
+  end
 end
