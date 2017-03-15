@@ -1,7 +1,7 @@
 h2 = t('headings.service_providers.edit')
 
 = simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
-  == render 'form', { form: form }
+  == render 'form', form: form
   .wrapper.actions
     .action
       = form.button :submit, 'Update'
