@@ -20,6 +20,19 @@ feature 'User groups CRUD' do
     expect(page).to have_content(user.email)
   end
 
+  context 'User already in a user group' do
+    scenario 'User does not show up as option for new group' do
+      admin = create(:admin)
+      user = create(:user)
+      _user_group = create(:user_group, users: [user])
+
+      login_as(admin)
+      visit new_user_group_path
+
+      expect(page).not_to have_content(user.email)
+    end
+  end
+
   scenario 'Update' do
     admin = create(:admin)
     org = create(:user_group)
