@@ -31,6 +31,17 @@ feature 'User groups CRUD' do
 
       expect(page).not_to have_content(user.email)
     end
+
+    scenario 'User does show up in user group that they are assigned to' do
+      admin = create(:admin)
+      user = create(:user)
+      user_group = create(:user_group, users: [user])
+
+      login_as(admin)
+      visit edit_user_group_path(user_group)
+
+      expect(page).to have_content(user.email)
+    end
   end
 
   scenario 'Update' do
