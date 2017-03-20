@@ -9,6 +9,7 @@ table.outlined-table
         | Email
       th scope='col'
         | Admin?
+      th
   tbody
     - User.all.each do |user|
       tr
@@ -18,3 +19,7 @@ table.outlined-table
           = user.email
         td
           = user.admin?
+        td
+          = link_to 'Edit',
+          edit_user_path(user),
+          'aria-label' => t('links.aria.edit', name: user.email)

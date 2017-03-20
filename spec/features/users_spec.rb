@@ -24,4 +24,22 @@ feature 'admin manages users' do
       expect(page).to have_content(user.last_name)
     end
   end
+
+  scenario 'admin edits users' do
+    admin = create(:admin)
+    user = create(:user)
+
+    login_as(admin)
+    visit users_path
+    find("a[aria-label='#{t('links.aria.edit', name: user.email)}']").click
+
+    expect(current_path).to eq(edit_user_path(user))
+    expect(page).to have_content(user.email)
+
+    check('Admin')
+    click_on 'Update'
+
+    expect(current_path).to eq(users_path)
+    expect(find('tr', text: user.email)).to have_content('true')
+  end
 end

@@ -38,6 +38,8 @@ en:
       edit: 'Edit service provider'
       show: 'Service Provider: %{friendly_name}'
     session_timeout_warning: Session Timeout
+    users:
+      edit: 'Edit %{name}'
 
   mailer:
     welcome:
