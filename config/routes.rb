@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   resources :service_providers
   resources :user_groups, except: [:show]
-  resources :users, only: [:index]
+  resources :users, only: [:index, :edit, :update]
 
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'

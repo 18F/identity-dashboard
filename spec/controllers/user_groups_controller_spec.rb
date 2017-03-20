@@ -4,7 +4,6 @@ describe UserGroupsController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
   let(:org) { create(:user_group) }
 
   before do
