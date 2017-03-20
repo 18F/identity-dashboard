@@ -1,0 +1,20 @@
+h2 Users
+
+table.outlined-table
+  thead
+    tr
+      th scope='col'
+        | Name
+      th scope='col'
+        | Email
+      th scope='col'
+        | Admin?
+  tbody
+    - User.all.each do |user|
+      tr
+        th scope='row'
+          = "#{user.first_name} #{user.last_name}"
+        td
+          = user.email
+        td
+          = user.admin?

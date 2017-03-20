@@ -7,6 +7,8 @@ nav.clearfix.border-bottom
       - if current_user.admin?
         = link_to t('links.user_groups'),
           user_groups_path, class: 'btn py2 h5'
+        = link_to t('links.users'),
+          users_path, class: 'btn py2 h5'
       = link_to t('links.sign_out'), '/users/logout', class: 'btn py2 h5'
     - else
       = link_to t('links.sign_in'), '/users/auth/saml', class: 'btn py2 h5'
