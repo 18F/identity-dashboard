@@ -13,6 +13,7 @@ en:
   links:
     service_providers: 'My service providers'
     user_groups: 'Manage user groups'
+    users: 'Manage users'
     sign_out: 'Sign out'
     sign_in: 'Log in'
     aria:
