@@ -1,5 +1,4 @@
-h2
-  = t('headings.users.edit', name: @user.email)
+h2 = t('headings.users.edit', name: @user.email)
 
 = simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form|
   = form.error_notification
