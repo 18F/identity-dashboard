@@ -16,6 +16,7 @@ en:
     users: 'Manage users'
     sign_out: 'Sign out'
     sign_in: 'Log in'
+
     aria:
       edit: 'Edit %{name}'
       delete: 'Delete %{name}'
@@ -39,7 +40,13 @@ en:
       show: 'Service Provider: %{friendly_name}'
     session_timeout_warning: Session Timeout
     users:
+      index: 'Users'
       edit: 'Edit %{name}'
+    user_groups:
+      index: 'User groups'
+      sub_index: 'Manage user groups'
+      edit: 'Edit user group'
+      new: 'Create new user group'
 
   mailer:
     welcome:
