@@ -7,7 +7,10 @@ class User < ActiveRecord::Base
   after_create :send_welcome
 
   scope :sorted, -> { order(email: :asc) }
-  scope :without_user_group, -> { where(user_group: nil) }
+
+  def self.without_other_user_group(user_group_id: nil)
+    where(user_group_id: [nil, user_group_id])
+  end
 
   def create_uuid
     self.uuid = SecureRandom.uuid unless uuid.present?
