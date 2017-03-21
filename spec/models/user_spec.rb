@@ -18,7 +18,7 @@ describe User do
         user_group = create(:user_group, users: users_in_group)
 
         expect(User.without_other_user_group(user_group_id: user_group.id)).to match_array(
-          users_in_group + [user_without_group]
+          users_in_group + [user_without_group],
         )
       end
     end
@@ -29,7 +29,7 @@ describe User do
         user_without_group = create(:user)
 
         expect(User.without_other_user_group(user_group_id: nil)).to match_array(
-          [user_without_group]
+          [user_without_group],
         )
       end
     end
