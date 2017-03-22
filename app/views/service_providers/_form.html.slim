@@ -8,14 +8,14 @@
 = form.input :description
 = form.input :issuer
 = form.association :agency
-= form.input :acs_url, label: 'Assertion Consumer Service URL'
-= form.input :assertion_consumer_logout_service_url, label: 'Assertion Consumer Logout Service URL'
-= form.input :sp_initiated_login_url, label: 'SP Initiated Login URL'
-= form.input :block_encryption, as: :radio_buttons, label: 'Block Encryption'
-= form.input :saml_client_cert, label: 'SAML Client Cert (PEM encoded)'
-= form.input :return_to_sp_url, label: 'Return to SP URL'
+= form.input :acs_url
+= form.input :assertion_consumer_logout_service_url
+= form.input :sp_initiated_login_url
+= form.input :block_encryption, as: :radio_buttons
+= form.input :saml_client_cert
+= form.input :return_to_sp_url
 fieldset.usa-fieldset-inputs.usa-sans
-  legend Attribute bundle
+  legend = t('simple_form.labels.service_provider.attribute_bundle')
   ul
     = collection_check_boxes(:service_provider,
       :attribute_bundle,
@@ -24,5 +24,5 @@ fieldset.usa-fieldset-inputs.usa-sans
         = b.check_box
         .ml1.inline-block
           = b.label
-= form.input :redirect_uri, label: 'Redirect URI (for OpenID Connect)'
+= form.input :redirect_uri
 = form.input :active, as: :radio_buttons

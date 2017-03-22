@@ -4,11 +4,11 @@ table.outlined-table
   thead
     tr
       th scope='col'
-        | Name
+        = t('simple_form.labels.user.name')
       th scope='col'
-        | Email
+        = t('simple_form.labels.user.email')
       th scope='col'
-        | Admin?
+        = t('simple_form.labels.user.admin')
       th
   tbody
     - User.all.each do |user|
@@ -20,6 +20,6 @@ table.outlined-table
         td
           = user.admin?
         td
-          = link_to 'Edit',
+          = link_to t('links.edit'),
           edit_user_path(user),
           'aria-label' => t('links.aria.edit', name: user.email)

@@ -24,9 +24,12 @@
                 <%= link_to status.short_sha, status.commit_url %>
               </span>
             </div>
-            Deployed by <em><%= status.user %></em>
-            <%= time_ago_in_words(status.timestamp) %> ago.
-            View <%= link_to 'pending changes', status.pending_url %>.
+            <%= t('home.deployed_by_html',
+              user: content_tag(:em, status.user),
+              time: time_ago_in_words(status.timestamp),
+              href: link_to(t('links.pending_changes'), status.pending_url)
+              )
+            %>
           <% end %>
         </div>
       </div>
