@@ -58,6 +58,12 @@ RSpec.describe DeployStatusChecker do
     end
 
     before do
+      stub_request(:get, %r{https://.*\.prod\.login\.gov/api/deploy\.json}).
+        to_return(body: status_json.to_json)
+      stub_request(:get, %r{https://.*\.staging\.login\.gov/api/deploy\.json}).
+        to_return(body: status_json.to_json)
+      stub_request(:get, %r{https://.*\.pt\.login\.gov/api/deploy\.json}).
+        to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.demo\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.int\.login\.gov/api/deploy\.json}).
