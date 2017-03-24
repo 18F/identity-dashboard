@@ -9,50 +9,50 @@ h2 = t('headings.service_providers.show', friendly_name: service_provider.friend
 
 table.horizontal-headers
   tr
-    th Friendly Name
+    th = t('simple_form.labels.service_provider.friendly_name')
     td.friendly_name = service_provider.friendly_name
   tr
-    th Description
+    th = t('simple_form.labels.service_provider.description')
     td.description = service_provider.description
   tr
-    th Issuer
+    th = t('simple_form.labels.service_provider.issuer')
     td.issuer = service_provider.issuer
   tr
-    th Agency
+    th = t('simple_form.labels.service_provider.agency')
     td.agency = service_provider.agency.name
   tr
-    th User Group
+    th = t('simple_form.labels.service_provider.user_group')
     td.user_group = service_provider.user_group
   tr
-    th Logo
+    th = t('simple_form.labels.service_provider.logo')
     td.logo = ''
   tr
-    th Assertion Consumer Service URL
+    th = t('simple_form.labels.service_provider.acs_url')
     td.acs_url = service_provider.acs_url
   tr
-    th Assertion Consumer Logout Service URL
+    th = t('simple_form.labels.service_provider.assertion_consumer_logout_service_url')
     td.assertion_consumer_logout_service_url
       = service_provider.assertion_consumer_logout_service_url
   tr
-    th SP Initiated Login URL
+    th = t('simple_form.labels.service_provider.sp_initiated_login_url')
     td.sp_initiated_login_url = service_provider.sp_initiated_login_url
   tr
-    th Block Encryption
+    th = t('simple_form.labels.service_provider.block_encryption')
     td.block_encryption = service_provider.block_encryption
   tr
-    th SAML Client Cert
+    th = t('simple_form.labels.service_provider.saml_client_cert')
     td.saml_client_cert.verbatim = service_provider.saml_client_cert
   tr
-    th Return to SP URL
+    th = t('simple_form.labels.service_provider.return_to_sp_url')
     td.return_to_sp_url = service_provider.return_to_sp_url
   tr
-    th Attribute Bundle
+    th = t('simple_form.labels.service_provider.attribute_bundle')
     td.attribute_bundle = (service_provider.attribute_bundle || []).sort.join(', ')
   tr
-    th Redirect URI (For OpenID Connect)
+    th = t('simple_form.labels.service_provider.redirect_uri')
     td.attribute_bundle = service_provider.redirect_uri
   tr
-    th Active
+    th = t('simple_form.labels.service_provider.active')
     td.active_flag = (service_provider.active? ? 'Yes' : 'No')
 
 .wrapper.actions

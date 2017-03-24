@@ -1,4 +1,4 @@
-h2 = t('headings.service_providers.mine')
+h2 = t('headings.service_providers.main')
 
 .wrapper.actions
   p.action
@@ -17,7 +17,7 @@ table
       td = app.active? ? 'Active' : 'Inactive'
 
 - if current_user.admin?
-  h3 = 'All service providers'
+  h3 = t('headings.service_providers.index')
   table
     - @service_providers.each do |sp|
       tr

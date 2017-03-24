@@ -1,4 +1,15 @@
-h2 = t('headings.users.edit', name: @user.email)
+h2 = t('headings.users.edit')
+
+ul.list-style-none
+  li
+    b = t('simple_form.labels.user.email')
+    = ": #{@user.email}"
+  li
+    b = t('simple_form.labels.user.first_name')
+    = ": #{@user.first_name}"
+  li
+    b = t('simple_form.labels.user.last_name')
+    = ": #{@user.last_name}"
 
 = simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form|
   = form.error_notification

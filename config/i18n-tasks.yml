@@ -15,6 +15,8 @@ data:
 
   # Locale files or `File.find` patterns where translations are read from:
   read:
+    - config/locales/%{locale}.yml
+    - config/locales/simple_form.%{locale}.yml
     ## Default:
     # - config/locales/%{locale}.yml
     ## More files:
@@ -25,6 +27,8 @@ data:
   # Locale files to write new keys to, based on a list of key pattern => file rules. Matched from top to bottom:
   # `i18n-tasks normalize -p` will force move the keys according to these rules
   write:
+    - config/locales/%{locale}.yml
+    - config/locales/simple_form.%{locale}.yml
     ## For example, write devise and simple form keys to their respective files:
     # - ['{devise, simple_form}.*', 'config/locales/\1.%{locale}.yml']
     ## Catch-all default:
