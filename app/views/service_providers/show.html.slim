@@ -59,4 +59,5 @@ table.horizontal-headers
   .action
     = button_to t('forms.buttons.delete_service_provider'),
       service_provider_path(service_provider),
-      class: 'btn btn-wide p0 w-60p bg-light-blue blue regular border-box center', method: :delete
+      class: 'btn btn-wide p0 w-60p bg-light-blue blue regular border-box center', method: :delete,
+        data: { confirm: t('forms.confirm_service_provider') }
