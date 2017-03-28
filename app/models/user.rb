@@ -12,6 +12,14 @@ class User < ActiveRecord::Base
     where(user_group_id: [nil, user_group_id])
   end
 
+  def scoped_user_groups
+    if admin?
+      UserGroup.all
+    else
+      [user_group]
+    end
+  end
+
   def create_uuid
     self.uuid = SecureRandom.uuid unless uuid.present?
   end

@@ -5,5 +5,6 @@ p = t('links.attr_description_html',
     'https://pages.18f.gov/identity-dev-docs'))
 
 = simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
-  == render 'form', form: form
+  - selected_user_group = current_user.user_group_id
+  == render 'form', form: form, selected_user_group: selected_user_group
   = form.button :submit, 'Create'
