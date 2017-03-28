@@ -10,7 +10,6 @@ feature 'Service Providers CRUD' do
       visit new_service_provider_path
 
       expect(page).to_not have_content('Approved')
-      expect(page).to_not have_select('service_provider_user_group_id')
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'test service_provider'
@@ -27,48 +26,76 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    context 'admin user' do
-      scenario 'can create service provider with user group and approval' do
-        admin = create(:admin)
-        agency = create(:agency)
-        group = create(:user_group)
-        login_as(admin)
+    scenario 'user group defaults to users user group' do
+      ug = create(:user_group)
+      user = create(:user, user_group: ug)
+      login_as(user)
 
-        visit new_service_provider_path
+      visit new_service_provider_path
+      expect(page).to have_select('service_provider_user_group_id', selected: ug.name)
 
-        choose('service_provider_approved_true')
-        select group, from: 'service_provider[user_group_id]'
-        fill_in 'Friendly name', with: 'test service_provider'
-        fill_in 'Issuer', with: 'test service_provider'
-        select agency.name, from: 'service_provider[agency_id]'
-        check 'email'
-        check 'first_name'
-        click_on 'Create'
-
-        expect(page).to have_content('Success')
-      end
+      click_on 'Create'
+      expect(page).to have_content(ug.name)
     end
   end
 
-  scenario 'Update' do
-    user = create(:user)
-    app = create(:service_provider, user: user)
-    login_as(user)
+  context 'admin user' do
+    scenario 'can create service provider with user group and approval' do
+      admin = create(:admin)
+      agency = create(:agency)
+      group = create(:user_group)
+      login_as(admin)
 
-    visit edit_service_provider_path(app)
+      visit new_service_provider_path
 
-    expect(page).to_not have_content('Approved')
+      choose('service_provider_approved_true')
+      select group, from: 'service_provider[user_group_id]'
+      fill_in 'Friendly name', with: 'test service_provider'
+      fill_in 'Issuer', with: 'test service_provider'
+      select agency.name, from: 'service_provider[agency_id]'
+      check 'email'
+      check 'first_name'
+      click_on 'Create'
 
-    fill_in 'Friendly name', with: 'change service_provider name'
-    fill_in 'Description', with: 'app description foobar'
-    check 'last_name'
-    click_on 'Update'
+      expect(page).to have_content('Success')
+    end
+  end
 
-    expect(page).to have_content('Success')
-    within('table.horizontal-headers') do
-      expect(page).to have_content('app description foobar')
-      expect(page).to have_content('change service_provider name')
-      expect(page).to have_content('last_name')
+  context 'Update' do
+    scenario 'user updates service provider' do
+      user = create(:user)
+      app = create(:service_provider, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(app)
+
+      expect(page).to_not have_content('Approved')
+
+      fill_in 'Friendly name', with: 'change service_provider name'
+      fill_in 'Description', with: 'app description foobar'
+      check 'last_name'
+      click_on 'Update'
+
+      expect(page).to have_content('Success')
+      within('table.horizontal-headers') do
+        expect(page).to have_content('app description foobar')
+        expect(page).to have_content('change service_provider name')
+        expect(page).to have_content('last_name')
+      end
+    end
+
+    context 'service provider does not have a user group' do
+      scenario 'user group defaults to nil' do
+        ug = create(:user_group)
+        user = create(:user, user_group: ug)
+
+        app = create(:service_provider, user: user)
+        login_as(user)
+
+        visit edit_service_provider_path(app)
+        click_on 'Update'
+        expect(page).to_not have_content(ug.name)
+      end
     end
   end
 

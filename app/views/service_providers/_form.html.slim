@@ -2,7 +2,12 @@
 
 - if current_user.admin?
   = form.input :approved, as: :radio_buttons
-  = form.association :user_group
+
+= form.association :user_group,
+  as: :collection_select,
+  collection: current_user.scoped_user_groups,
+  include_blank: '',
+  selected: selected_user_group
 
 = form.input :friendly_name
 = form.input :description
