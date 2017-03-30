@@ -6,6 +6,7 @@ SimpleForm.setup do |config|
 
   config.wrappers :base do |b|
     b.use :html5
+    b.use :hint,  wrap_with: { tag: :span, class: :hint }
     b.use :input, class: 'field'
   end
 

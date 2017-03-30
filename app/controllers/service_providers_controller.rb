@@ -96,7 +96,7 @@ class ServiceProvidersController < AuthenticatedController
       :description,
       :friendly_name,
       :issuer,
-      # :logo,
+      :logo,
       :metadata_url,
       :redirect_uri,
       :return_to_sp_url,

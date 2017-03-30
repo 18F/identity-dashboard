@@ -21,11 +21,12 @@ table.horizontal-headers
     th = t('simple_form.labels.service_provider.agency')
     td.agency = service_provider.agency.name
   tr
+    th = t('simple_form.labels.service_provider.logo')
+    td.logo
+      = image_tag("https://raw.githubusercontent.com/18F/identity-idp/master/app/assets/images/sp-logos/#{service_provider.logo}")
+  tr
     th = t('simple_form.labels.service_provider.user_group')
     td.user_group = service_provider.user_group
-  tr
-    th = t('simple_form.labels.service_provider.logo')
-    td.logo = ''
   tr
     th = t('simple_form.labels.service_provider.acs_url')
     td.acs_url = service_provider.acs_url

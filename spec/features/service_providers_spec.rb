@@ -12,8 +12,9 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content('Approved')
 
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer', with: 'test service_provider'
+      fill_in 'service_provider_issuer', with: 'test service_provider'
       select agency.name, from: 'service_provider[agency_id]'
+      fill_in 'service_provider_logo', with: 'test.png'
       check 'email'
       check 'first_name'
       click_on 'Create'
@@ -23,6 +24,7 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content('test service_provider')
         expect(page).to have_content('email')
         expect(page).to have_content('first_name')
+        expect(page).to have_css('img[src*=sp-logos]')
       end
     end
 
