@@ -65,4 +65,24 @@ describe User do
       expect(user.scoped_service_providers).to eq([user_sp, group_sp])
     end
   end
+
+  describe '#scoped_user_groups' do
+    it 'returns collection of users user groups' do
+      group = create(:user_group)
+      user.user_group = group
+      user.save
+
+      expect(user.scoped_user_groups).to eq([group])
+    end
+
+    it 'returns all user groups for admins' do
+      2.times do
+        create(:user_group)
+      end
+      user.admin = true
+      user.save
+
+      expect(user.scoped_user_groups).to eq(UserGroup.all)
+    end
+  end
 end

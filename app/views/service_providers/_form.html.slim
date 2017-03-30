@@ -7,7 +7,8 @@
   as: :collection_select,
   collection: current_user.scoped_user_groups,
   include_blank: '',
-  selected: selected_user_group
+  selected: selected_user_group,
+  disabled: !can_edit_user_groups?(current_user)
 
 = form.input :friendly_name
 = form.input :description
