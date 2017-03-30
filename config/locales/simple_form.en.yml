@@ -1,6 +1,9 @@
 ---
 en:
   simple_form:
+    placeholders:
+      service_provider:
+       logo: 'generic.svg'
     labels:
       service_provider:
         acs_url: Assertion Consumer Service URL
