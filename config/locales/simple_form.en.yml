@@ -15,7 +15,7 @@ en:
         description: Description
         friendly_name: Friendly name
         issuer: Issuer
-        logo: 'Logo (make sure you include the file name of a file in https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos)'
+        logo: Logo
         redirect_uri: Redirect URI (for OpenID Connect)
         return_to_sp_url: Return to SP URL
         saml_client_cert: SAML Client Cert (PEM encoded)
