@@ -58,13 +58,11 @@ RSpec.describe DeployStatusChecker do
     end
 
     before do
-      stub_request(:get, %r{https://.*\.prod\.login\.gov/api/deploy\.json}).
+      stub_request(:get, %r{https://secure\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.staging\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.pt\.login\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.demo\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.int\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
@@ -80,10 +78,6 @@ RSpec.describe DeployStatusChecker do
       int = statuses.find { |status| status.env == 'int' }
       int_status = int.statuses.first
       expect(int_status.sha).to eq(status_json['sha'])
-
-      demo = statuses.find { |status| status.env == 'demo' }
-      demo_status = demo.statuses.first
-      expect(demo_status.sha).to eq(status_json['sha'])
 
       dev = statuses.find { |status| status.env == 'dev' }
       dev_status = dev.statuses.first
