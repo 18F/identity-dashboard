@@ -9,7 +9,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :cert,
     :friendly_name,
     :issuer,
-    # :logo,
+    :logo,
     :redirect_uri,
     :return_to_sp_url,
     :signature,
