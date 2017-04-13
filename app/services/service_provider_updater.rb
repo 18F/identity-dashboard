@@ -7,10 +7,10 @@ class ServiceProviderUpdater
   private
 
   def idp_url
-    Figaro.env.IDP_SP_URL
+    Figaro.env.idp_sp_url
   end
 
   def token_header
-    { 'X-LOGIN-DASHBOARD-TOKEN' => Figaro.env.LOGIN_DASHBOARD_TOKEN }
+    { 'X-LOGIN-DASHBOARD-TOKEN' => Figaro.env.dashboard_api_token }
   end
 end

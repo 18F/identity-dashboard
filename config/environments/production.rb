@@ -14,7 +14,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = SMTP_SETTINGS
   config.action_mailer.default_url_options = {
-    host: Figaro.env.DEFAULT_URL_BASE || 'https://dashboard.int.login.gov'
+    host: Figaro.env.mailer_domain
   }
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
