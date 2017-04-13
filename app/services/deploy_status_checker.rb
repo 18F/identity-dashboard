@@ -95,7 +95,8 @@ class DeployStatusChecker
   end
 
   def basic_auth(request)
-    request.basic_auth(ENV['SP_NAME'], ENV['SP_PASS'])
+    request.basic_auth(Figaro.env.basic_auth_username,
+                       Figaro.env.basic_auth_password)
   end
 
   # @return [Status]
