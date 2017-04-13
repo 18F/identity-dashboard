@@ -2,7 +2,7 @@ require 'hashie/mash'
 
 module Saml
   class Config
-    # rubocop:disable AbcSize, MethodLength, CyclomaticComplexity, PerceivedComplexity
+    # rubocop:disable AbcSize, MethodLength
     def self.build_settings
       Hashie::Mash.new(
         issuer:                     Figaro.env.saml_sp_issuer,
@@ -12,8 +12,8 @@ module Saml
         name_identifier_format:     Figaro.env.saml_name_id_format,
         certificate:                Figaro.env.saml_sp_certificate,
         private_key: OpenSSL::PKey::RSA.new(
-                                    Figaro.env.saml_sp_private_key,
-                                    Figaro.env.saml_sp_private_key_password
+          Figaro.env.saml_sp_private_key,
+          Figaro.env.saml_sp_private_key_password,
         ).to_s,
         allowed_clock_drift: 5.minutes,
         authn_context: 'http://idmanagement.gov/ns/assurance/loa/1',
