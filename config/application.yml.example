@@ -1,14 +1,13 @@
-development: &default
-  admin_email: 'partners@login.gov'
+test: &default
   basic_auth_password: ''
   basic_auth_username: ''
   dashboard_api_token: 'sekret'
-  idp_sp_url: 'http://localhost:3000/api/service_provider'
+  idp_sp_url: 'http://idp.example.com/api/service_provider'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
-  saml_idp_fingerprint: '8B:D5:C2:E8:9A:2B:CE:B7:4B:95:50:BA:16:79:05:27:17:D1:D3:67'
-  saml_idp_slo_url: 'http://localhost:3000/api/saml/logout'
-  saml_idp_sso_url: 'http://localhost:3000/api/saml/auth'
+  saml_idp_fingerprint: '01:29:C9:8F:31:9C:06:EC:25:9E:3C:17:D1:38:C6:5D:C9:D5:0B:58'
+  saml_idp_slo_url: 'http://idp.example.com/saml/logout'
+  saml_idp_sso_url: 'http://idp.example.com/saml/auth'
   saml_name_id_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:persistent'
   saml_sp_certificate: |
     -----BEGIN CERTIFICATE-----
@@ -106,12 +105,12 @@ development: &default
   smtp_password: 'changeme'
   smtp_username: 'changeme'
 
-test:
+development:
   <<: *default
-  idp_sp_url: 'http://idp.example.com/api/service_provider'
-  saml_idp_fingerprint: '01:29:C9:8F:31:9C:06:EC:25:9E:3C:17:D1:38:C6:5D:C9:D5:0B:58'
-  saml_idp_slo_url: 'http://idp.example.com/saml/logout'
-  saml_idp_sso_url: 'http://idp.example.com/saml/auth'
+  idp_sp_url: 'http://localhost:3000/api/service_provider'
+  saml_idp_fingerprint: '8B:D5:C2:E8:9A:2B:CE:B7:4B:95:50:BA:16:79:05:27:17:D1:D3:67'
+  saml_idp_slo_url: 'http://localhost:3000/api/saml/logout'
+  saml_idp_sso_url: 'http://localhost:3000/api/saml/auth'
 
 production:
   <<: *default

@@ -22,7 +22,7 @@ describe 'Users::ServiceProviders' do
     end
 
     it 'allows admin to approve' do
-      ClimateControl.modify ADMIN_EMAIL: 'partners@login.gov' do
+      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
         app = create(:service_provider)
         admin_user = create(:user, admin: true)
         deliveries.clear
@@ -50,7 +50,7 @@ describe 'Users::ServiceProviders' do
 
   describe 'notifications' do
     pending 'sends email to admin requesting approval' do
-      ClimateControl.modify ADMIN_EMAIL: 'partners@login.gov' do
+      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
         user = create(:user)
         deliveries.clear
         login_as(user)

@@ -19,8 +19,8 @@ describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.admin_new_service_provider(app) }
 
     it 'sends to ADMIN_EMAIL' do
-      ClimateControl.modify ADMIN_EMAIL: 'partners@login.gov' do
-        expect(mail.to).to eq ['partners@login.gov']
+      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
+        expect(mail.to).to eq ['identity-admin@example.com']
       end
     end
 
@@ -45,8 +45,8 @@ describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.admin_approved_service_provider(app) }
 
     it 'sends to ADMIN_EMAIL' do
-      ClimateControl.modify ADMIN_EMAIL: 'partners@login.gov' do
-        expect(mail.to).to eq ['partners@login.gov']
+      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
+        expect(mail.to).to eq ['identity-admin@example.com']
       end
     end
 
