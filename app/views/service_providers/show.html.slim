@@ -23,7 +23,7 @@ table.horizontal-headers
   tr
     th = t('simple_form.labels.service_provider.logo')
     td.logo
-      = image_tag(sp_logo_path(service_provider.logo))
+      = sp_logo(service_provider.logo)
   tr
     th = t('simple_form.labels.service_provider.user_group')
     td.user_group = service_provider.user_group
