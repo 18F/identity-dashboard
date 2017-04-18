@@ -10,7 +10,7 @@ common: &default_settings
     capture_source: true
     enabled: true
     ignore_errors: "ActionController::RoutingError,Sinatra::NotFound"
-  license_key: "<%= Figaro.env.new_relic_license_key %>"
+  license_key: "<%= Figaro.env.newrelic_license_key %>"
   log_level: info
   monitor_mode: true
   transaction_tracer:

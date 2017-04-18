@@ -1,13 +1,13 @@
 SMTP_SETTINGS = {
-  address: Figaro.env.SMTP_ADDRESS,
+  address: Figaro.env.smtp_address,
   authentication: 'login',
-  domain: Figaro.env.SMTP_DOMAIN,
+  domain: Figaro.env.smtp_domain,
   enable_starttls_auto: true,
-  password: Figaro.env.SMTP_PASSWORD,
+  password: Figaro.env.smtp_password,
   port: '587',
-  user_name: Figaro.env.SMTP_USERNAME
+  user_name: Figaro.env.smtp_username
 }.freeze
 
-if Figaro.env.EMAIL_RECIPIENTS.present?
+if Figaro.env.email_recipients.present?
   Mail.register_interceptor RecipientInterceptor.new(Figaro.env.email_recipients)
 end
