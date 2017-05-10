@@ -3,6 +3,8 @@
 - if current_user.admin?
   = form.input :approved, as: :radio_buttons
 
+= form.input :identity_protocol, as: :radio_buttons
+
 = form.association :user_group,
   as: :collection_select,
   collection: current_user.scoped_user_groups,

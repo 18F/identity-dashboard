@@ -25,6 +25,7 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content('email')
         expect(page).to have_content('first_name')
         expect(page).to have_css('img[src*=sp-logos]')
+        expect(page).to have_content('Openid connect')
       end
     end
 
@@ -75,6 +76,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
+      choose 'Saml'
       check 'last_name'
       click_on 'Update'
 
@@ -83,6 +85,7 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content('app description foobar')
         expect(page).to have_content('change service_provider name')
         expect(page).to have_content('last_name')
+        expect(page).to have_content('Identity ProtocolSaml')
       end
     end
 
