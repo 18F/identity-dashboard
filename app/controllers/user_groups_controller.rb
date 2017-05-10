@@ -1,6 +1,6 @@
 class UserGroupsController < ApplicationController
   before_action -> { authorize UserGroup }
-  before_action :find_user_group, only: [:show, :edit, :update, :destroy]
+  before_action :find_user_group, only: %i(show edit update destroy)
 
   def new
     @user_group = UserGroup.new

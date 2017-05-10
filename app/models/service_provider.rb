@@ -8,7 +8,7 @@ class ServiceProvider < ActiveRecord::Base
   validates :issuer, presence: true, uniqueness: true
   validates :agency, presence: true
 
-  before_validation(on: [:create, :update]) do
+  before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 
