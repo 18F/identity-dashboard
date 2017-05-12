@@ -4,6 +4,7 @@ class ServiceProvider < ActiveRecord::Base
   belongs_to :user_group
 
   enum block_encryption: { 'aes256-cbc' => 1 }
+  enum identity_protocol: { openid_connect: 0, saml: 1 }
 
   validates :issuer, presence: true, uniqueness: true
   validates :agency, presence: true

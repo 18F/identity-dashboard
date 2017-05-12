@@ -9,6 +9,9 @@ h2 = t('headings.service_providers.show', friendly_name: service_provider.friend
 
 table.horizontal-headers
   tr
+    th = t('simple_form.labels.service_provider.identity_protocol')
+    td.identity_protocol = service_provider.identity_protocol.humanize
+  tr
     th = t('simple_form.labels.service_provider.friendly_name')
     td.friendly_name = service_provider.friendly_name
   tr
