@@ -2,10 +2,11 @@ h2 = t('headings.service_providers.edit')
 
 = simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
   - selected_user_group = @service_provider.user_group_id
-  == render 'form', form: form, selected_user_group: selected_user_group
-  .wrapper.actions
-    .action
-      = form.button :submit, 'Update'
-    .action
-      = link_to t('forms.buttons.cancel'), service_provider_path(service_provider),
-        class: 'usa-button usa-button-outline use-button-secondary', role: :button
+  .service-provider-form
+    == render 'form', form: form, selected_user_group: selected_user_group
+    .wrapper.actions
+      .action
+        = form.button :submit, 'Update'
+      .action
+        = link_to t('forms.buttons.cancel'), service_provider_path(service_provider),
+          class: 'usa-button usa-button-outline use-button-secondary', role: :button

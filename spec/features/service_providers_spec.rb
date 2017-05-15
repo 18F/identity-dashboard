@@ -40,6 +40,34 @@ feature 'Service Providers CRUD' do
       click_on 'Create'
       expect(page).to have_content(ug.name)
     end
+
+    scenario 'saml fields are shown when saml is selected', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+      choose 'Saml'
+      saml_attributes =
+        %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url)
+      saml_attributes.each do |atr|
+        expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
+      end
+      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uri'))
+    end
+
+    scenario 'oidc fields are shown when oidc is selected', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+      choose 'Openid connect'
+      saml_attributes =
+        %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url)
+      saml_attributes.each do |atr|
+        expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
+      end
+      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uri'))
+    end
   end
 
   context 'admin user' do

@@ -6,5 +6,6 @@ p = t('links.attr_description_html',
 
 = simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
   - selected_user_group = current_user.user_group_id
-  == render 'form', form: form, selected_user_group: selected_user_group
-  = form.button :submit, 'Create'
+  .service-provider-form
+    == render 'form', form: form, selected_user_group: selected_user_group
+    = form.button :submit, 'Create'
