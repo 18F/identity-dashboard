@@ -3,26 +3,28 @@
 - if current_user.admin?
   = form.input :approved, as: :radio_buttons
 
-= form.input :identity_protocol, as: :radio_buttons
-
 = form.association :user_group,
   as: :collection_select,
   collection: current_user.scoped_user_groups,
   include_blank: '',
   selected: selected_user_group,
   disabled: !can_edit_user_groups?(current_user)
-
-= form.input :friendly_name
-= form.input :description
-= form.input :issuer
-= form.association :agency
-= form.input :logo
-= form.input :acs_url
-= form.input :assertion_consumer_logout_service_url
-= form.input :sp_initiated_login_url
-= form.input :block_encryption, as: :radio_buttons
-= form.input :saml_client_cert
-= form.input :return_to_sp_url
+.common-fields
+  = form.input :friendly_name
+  = form.input :description
+  = form.input :issuer
+  = form.association :agency
+  = form.input :logo
+  = form.input :block_encryption, as: :radio_buttons
+  = form.input :saml_client_cert
+= form.input :identity_protocol, as: :radio_buttons
+.saml-fields
+  = form.input :acs_url
+  = form.input :assertion_consumer_logout_service_url
+  = form.input :sp_initiated_login_url
+  = form.input :return_to_sp_url
+.oidc-fields
+  = form.input :redirect_uri
 fieldset.usa-fieldset-inputs.usa-sans
   legend = t('simple_form.labels.service_provider.attribute_bundle')
   ul
@@ -33,5 +35,4 @@ fieldset.usa-fieldset-inputs.usa-sans
         = b.check_box
         .ml1.inline-block
           = b.label
-= form.input :redirect_uri
 = form.input :active, as: :radio_buttons
