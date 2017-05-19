@@ -1,9 +1,10 @@
 h2 = t('headings.service_providers.main')
 
 .wrapper.actions
-  p.action
-    = button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path,
-      class: 'btn btn-link h4 p0 blue regular border-box center', method: :post
+  - if current_user.admin?
+    p.action
+      = button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path,
+        class: 'btn btn-link h4 p0 blue regular border-box center', method: :post
   .action
     = link_to t('forms.buttons.create_service_provider'), new_service_provider_path
 

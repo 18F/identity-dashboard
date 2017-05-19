@@ -22,6 +22,10 @@ $ico-offset: -10px;
     top: $ico-offset;
     width: $ico-size;
   }
+
+  + .alert {
+    margin-top: - $space-3;
+  }
 }
 
 .alert-notice,

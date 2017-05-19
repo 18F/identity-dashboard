@@ -20,6 +20,7 @@ feature 'Service Providers CRUD' do
       click_on 'Create'
 
       expect(page).to have_content('Success')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       within('table.horizontal-headers') do
         expect(page).to have_content('test service_provider')
         expect(page).to have_content('email')
@@ -90,6 +91,16 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
     end
+
+    scenario 'can publish service providers' do
+      admin = create(:admin)
+      login_as(admin)
+
+      visit service_providers_path
+
+      click_on t('forms.buttons.trigger_idp_refresh')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
+    end
   end
 
   context 'Update' do
@@ -109,6 +120,7 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to have_content('Success')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       within('table.horizontal-headers') do
         expect(page).to have_content('app description foobar')
         expect(page).to have_content('change service_provider name')
