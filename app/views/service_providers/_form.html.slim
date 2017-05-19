@@ -1,3 +1,7 @@
+p = t('links.attr_description_html',
+    href: link_to(t('links.attr_description_href'),
+    'https://developers.login.gov/register/', target: :_blank))
+
 = form.error_notification
 
 - if current_user.admin?
