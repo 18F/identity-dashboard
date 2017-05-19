@@ -1,9 +1,5 @@
 h2 = t('headings.service_providers.new')
 
-p = t('links.attr_description_html',
-    href: link_to(t('links.attr_description_href'),
-    'https://pages.18f.gov/identity-dev-docs'))
-
 = simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
   - selected_user_group = current_user.user_group_id
   .service-provider-form
