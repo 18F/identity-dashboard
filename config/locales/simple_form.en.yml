@@ -16,7 +16,7 @@ en:
         friendly_name: Friendly name
         issuer: Issuer
         logo: Logo
-        redirect_uri: Redirect URI (for OpenID Connect)
+        redirect_uris: Redirect URIs (for OpenID Connect)
         return_to_sp_url: Return to SP URL
         saml_client_cert: SAML Client Cert (PEM encoded)
         sp_initiated_login_url: SP Initiated Login URL

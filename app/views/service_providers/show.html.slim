@@ -53,8 +53,8 @@ table.horizontal-headers
     th = t('simple_form.labels.service_provider.attribute_bundle')
     td.attribute_bundle = (service_provider.attribute_bundle || []).sort.join(', ')
   tr
-    th = t('simple_form.labels.service_provider.redirect_uri')
-    td.attribute_bundle = service_provider.redirect_uri
+    th = t('simple_form.labels.service_provider.redirect_uris')
+    td.attribute_bundle = (service_provider.redirect_uris || []).sort.join(' ')
   tr
     th = t('simple_form.labels.service_provider.active')
     td.active_flag = (service_provider.active? ? 'Yes' : 'No')
