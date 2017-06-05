@@ -9,7 +9,6 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'enum_help'
 gem 'figaro'
-gem 'foreman', require: false
 gem 'httparty'
 gem 'jquery-rails'
 gem 'newrelic_rpm', '>= 3.9.8'
