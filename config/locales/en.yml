@@ -20,7 +20,7 @@ en:
       new: Create a new service provider
       show: 'Service Provider: %{friendly_name}'
     session_timeout_warning: Session Timeout
-    user_groups:
+    groups:
       edit: Edit user group
       index: User groups
       new: Create new user group
@@ -41,7 +41,7 @@ en:
     service_providers: My service providers
     sign_in: Log in
     sign_out: Sign out
-    user_groups: Manage user groups
+    groups: Manage user groups
     users: Manage users
   mailer:
     approved_service_provider:

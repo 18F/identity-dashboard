@@ -1,22 +1,19 @@
 class User < ActiveRecord::Base
   devise :trackable, :timeoutable, :omniauthable, omniauth_providers: [:saml]
-  has_many :service_providers
-  belongs_to :user_group
+  has_many :user_groups
+  has_many :groups, through: :user_groups
+  has_many :service_providers, through: :groups
 
   before_create :create_uuid
   after_create :send_welcome
 
   scope :sorted, -> { order(email: :asc) }
 
-  def self.without_other_user_group(user_group_id: nil)
-    where(user_group_id: [nil, user_group_id])
-  end
-
-  def scoped_user_groups
+  def scoped_groups
     if admin?
-      UserGroup.all
+      Group.all
     else
-      [user_group]
+      groups
     end
   end
 
@@ -67,15 +64,15 @@ class User < ActiveRecord::Base
 
   def scoped_service_providers
     (
-      service_providers +
-      member_service_providers
+      member_service_providers +
+      service_providers
     ).uniq
   end
 
   private
 
   def member_service_providers
-    user_group ? user_group.service_providers : []
+    ServiceProvider.where(user_id: id)
   end
 
   def first_name_from(info)

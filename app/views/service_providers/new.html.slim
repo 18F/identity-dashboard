@@ -1,7 +1,6 @@
 h2 = t('headings.service_providers.new')
 
 = simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
-  - selected_user_group = current_user.user_group_id
   .service-provider-form
-    == render 'form', form: form, selected_user_group: selected_user_group
+    == render 'form', form: form
     = form.button :submit, 'Create'

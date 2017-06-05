@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ServiceProvider do
   describe 'Associations' do
     it { should belong_to(:user) }
-    it { should belong_to(:user_group) }
+    it { should belong_to(:group) }
   end
 
   describe 'Validations' do
