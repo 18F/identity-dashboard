@@ -107,13 +107,13 @@ class ServiceProvidersController < AuthenticatedController
       :issuer,
       :logo,
       :metadata_url,
-      :redirect_uri,
       :return_to_sp_url,
       :saml_client_cert,
       :sp_initiated_login_url,
       :user_group_id,
       :identity_protocol,
       attribute_bundle: [],
+      redirect_uris: [],
     )
   end
   # rubocop:enable MethodLength

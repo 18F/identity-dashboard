@@ -53,7 +53,7 @@ feature 'Service Providers CRUD' do
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
-      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uri'))
+      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
 
     scenario 'oidc fields are shown when oidc is selected', :js do
@@ -67,7 +67,7 @@ feature 'Service Providers CRUD' do
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
-      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uri'))
+      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
   end
 
