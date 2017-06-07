@@ -1,40 +1,11 @@
-# Loads data from the /api/deploy endpoint in our deploys of identity-idp
+# Loads data from the /api/deploy endpoint in our apps
 class DeployStatusChecker
   Deploy = Struct.new(:app, :env, :host)
 
   Environment = Struct.new(:env, :statuses)
 
-  DEPLOYS = [
-    Deploy.new('identity-idp', 'prod', 'https://secure.login.gov'),
-    Deploy.new('identity-sp-rails', 'prod'),
-    Deploy.new('identity-sp-sinatra', 'prod'),
-    Deploy.new('identity-dashboard', 'prod'),
-
-    Deploy.new('identity-idp', 'staging', 'https://idp.staging.login.gov'),
-    Deploy.new('identity-sp-rails', 'staging'),
-    Deploy.new('identity-sp-sinatra', 'staging'),
-    Deploy.new('identity-dashboard', 'staging'),
-
-    Deploy.new('identity-idp', 'pt', 'https://idp.pt.login.gov'),
-    Deploy.new('identity-sp-rails', 'pt', 'https://sp.pt.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'pt', 'https://sp-sinatra.pt.login.gov'),
-    Deploy.new('identity-dashboard', 'pt', 'https://dashboard.pt.login.gov'),
-
-    Deploy.new('identity-idp', 'int', 'https://idp.int.login.gov'),
-    Deploy.new('identity-sp-rails', 'int', 'https://sp.int.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'int', 'https://sp-sinatra.int.login.gov'),
-    Deploy.new('identity-dashboard', 'int', 'https://dashboard.int.login.gov'),
-
-    Deploy.new('identity-idp', 'qa', 'https://idp.qa.login.gov'),
-    Deploy.new('identity-sp-rails', 'qa', 'https://sp.qa.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'qa', 'https://sp-sinatra.qa.login.gov'),
-    Deploy.new('identity-dashboard', 'qa', 'https://dashboard.qa.login.gov'),
-
-    Deploy.new('identity-idp', 'dev', 'https://idp.dev.login.gov'),
-    Deploy.new('identity-sp-rails', 'dev', 'https://sp.dev.login.gov'),
-    Deploy.new('identity-sp-sinatra', 'dev', 'https://sp-sinatra.dev.login.gov'),
-    Deploy.new('identity-dashboard', 'dev', 'https://dashboard.dev.login.gov')
-  ].freeze
+  DEPLOYS = YAML.load_file(Rails.root.join('config', 'status_checks.yml'))['deploys'].
+            map { |deploy| Deploy.new(deploy['app'], deploy['env'], deploy['host']) }.freeze
 
   Status = Struct.new(:app, :env, :host, :sha, :branch, :user, :timestamp, :error) do
     def status_class
@@ -45,6 +16,10 @@ class DeployStatusChecker
       else
         'deploy-success'
       end
+    end
+
+    def short_name
+      app.gsub('identity-', '')
     end
 
     def short_sha
