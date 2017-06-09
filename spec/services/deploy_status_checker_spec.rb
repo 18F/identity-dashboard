@@ -23,6 +23,12 @@ RSpec.describe DeployStatusChecker do
       end
     end
 
+    describe '#short_name' do
+      it 'remove the identity- part of the app name' do
+        expect(status.short_name).to eq('idp')
+      end
+    end
+
     describe '#commit_url' do
       it 'links to the the commit on Github' do
         expect(status.commit_url).
