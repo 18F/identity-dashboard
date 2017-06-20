@@ -12,7 +12,8 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content('Approved')
 
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'service_provider_issuer', with: 'test service_provider'
+      fill_in 'Issuer department', with: 'GSA'
+      fill_in 'Issuer app', with: 'app-prod'
       select agency.name, from: 'service_provider[agency_id]'
       fill_in 'service_provider_logo', with: 'test.png'
       check 'email'
@@ -23,6 +24,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       within('table.horizontal-headers') do
         expect(page).to have_content('test service_provider')
+        expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
         expect(page).to have_content('email')
         expect(page).to have_content('first_name')
         expect(page).to have_css('img[src*=sp-logos]')
@@ -48,11 +50,13 @@ feature 'Service Providers CRUD' do
 
       visit new_service_provider_path
       choose 'Saml'
+
       saml_attributes =
         %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url)
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
+
       expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
 
@@ -61,13 +65,46 @@ feature 'Service Providers CRUD' do
       login_as(user)
 
       visit new_service_provider_path
+
       choose 'Openid connect'
+
       saml_attributes =
         %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url)
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
+
       expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
+    end
+
+    scenario 'issuer is updated when department or app is updated', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+
+      choose 'Openid connect'
+      fill_in 'Issuer department', with: 'ABC'
+      fill_in 'Issuer app', with: 'my-cool-app'
+
+      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
+      )
+    end
+
+    scenario 'issuer protocol is changed when oidc or saml is selected', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+
+      choose 'Saml'
+      fill_in 'Issuer department', with: 'ABC'
+      fill_in 'Issuer app', with: 'my-cool-app'
+
+      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
+        'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:my-cool-app',
+      )
     end
   end
 
@@ -83,7 +120,8 @@ feature 'Service Providers CRUD' do
       choose('service_provider_approved_true')
       select group, from: 'service_provider[user_group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer', with: 'test service_provider'
+      fill_in 'Issuer department', with: 'GSA'
+      fill_in 'Issuer app', with: 'app-prod'
       select agency.name, from: 'service_provider[agency_id]'
       check 'email'
       check 'first_name'
@@ -112,6 +150,8 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(app)
 
       expect(page).to_not have_content('Approved')
+      expect(page).to_not have_content('Issuer department')
+      expect(page).to_not have_content('Issuer app')
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'

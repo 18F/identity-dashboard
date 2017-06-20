@@ -16,7 +16,10 @@ p = t('links.attr_description_html',
 .common-fields
   = form.input :friendly_name
   = form.input :description
-  = form.input :issuer
+  = form.input :issuer, disabled: true, hint: form.object.new_record?
+  - if form.object.new_record?
+    = form.input :issuer_department
+    = form.input :issuer_app
   = form.association :agency
   = form.input :logo
   = form.input :block_encryption, as: :radio_buttons

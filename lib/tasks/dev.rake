@@ -9,13 +9,13 @@ if Rails.env.development? || Rails.env.test?
       user = create(:user, email: 'user@example.com')
 
       dashboard_saml_config = Saml::Config::SETTINGS
-      uuid = SecureRandom.uuid
+      issuer = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local'
       create(:service_provider,
              user: user,
-             issuer: uuid,
+             issuer: issuer,
              friendly_name: 'login.gov Dashboard',
              description: 'user friendly login.gov dashboard',
-             metadata_url: "http://localhost:3001/api/service_providers/#{uuid}",
+             metadata_url: "http://localhost:3001/api/service_providers/#{issuer}",
              acs_url: 'http://localhost:3001/users/auth/saml/callback',
              assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout',
              # sp_initiated_login_url: 'add once db is updated http://localhost:3001/users/auth/saml',

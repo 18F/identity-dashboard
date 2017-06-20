@@ -1,0 +1,9 @@
+---
+en:
+  activerecord:
+    errors:
+      models:
+        service_provider:
+          attributes:
+            issuer:
+              invalid: is not formatted correctly
