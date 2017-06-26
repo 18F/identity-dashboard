@@ -7,12 +7,11 @@ p = t('links.attr_description_html',
 - if current_user.admin?
   = form.input :approved, as: :radio_buttons
 
-= form.association :user_group,
+= form.association :group,
   as: :collection_select,
-  collection: current_user.scoped_user_groups,
+  collection: current_user.scoped_groups,
   include_blank: '',
-  selected: selected_user_group,
-  disabled: !can_edit_user_groups?(current_user)
+  disabled: !can_edit_groups?(current_user)
 .common-fields
   = form.input :friendly_name
   = form.input :description

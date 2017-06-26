@@ -4,10 +4,10 @@ feature 'Users can access service providers that belong to their user group' do
   context 'user is not the creator of the service provider' do
     context 'Index' do
       scenario 'users in the related user group can see the service provider' do
-        group = create(:user_group)
-        user1 = create(:user, user_group: group)
+        group = create(:group)
+        user1 = create(:user, groups: [group])
         user2 = create(:user)
-        user_group_app = create(:service_provider, user_group: group, user: user2)
+        user_group_app = create(:service_provider, group: group, user: user2)
         user_created_app = create(:service_provider, user: user1)
         na_app = create(:service_provider)
 
@@ -22,10 +22,10 @@ feature 'Users can access service providers that belong to their user group' do
 
     context 'Edit' do
       scenario 'user can edit a service provider from their user group' do
-        group = create(:user_group)
-        user1 = create(:user, user_group: group)
+        group = create(:group)
+        user1 = create(:user, groups: [group])
         user2 = create(:user)
-        app = create(:service_provider, user_group: group, user: user2)
+        app = create(:service_provider, group: group, user: user2)
         new_name = 'New Service Name'
         new_description = 'New Description'
 

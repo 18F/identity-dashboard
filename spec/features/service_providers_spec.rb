@@ -32,18 +32,6 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    scenario 'user group defaults to users user group' do
-      ug = create(:user_group)
-      user = create(:user, user_group: ug)
-      login_as(user)
-
-      visit new_service_provider_path
-      expect(page).to have_select('service_provider_user_group_id', selected: ug.name)
-
-      click_on 'Create'
-      expect(page).to have_content(ug.name)
-    end
-
     scenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
@@ -112,13 +100,13 @@ feature 'Service Providers CRUD' do
     scenario 'can create service provider with user group and approval' do
       admin = create(:admin)
       agency = create(:agency)
-      group = create(:user_group)
+      group = create(:group)
       login_as(admin)
 
       visit new_service_provider_path
 
       choose('service_provider_approved_true')
-      select group, from: 'service_provider[user_group_id]'
+      select group, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer department', with: 'GSA'
       fill_in 'Issuer app', with: 'app-prod'
@@ -171,8 +159,8 @@ feature 'Service Providers CRUD' do
 
     context 'service provider does not have a user group' do
       scenario 'user group defaults to nil' do
-        ug = create(:user_group)
-        user = create(:user, user_group: ug)
+        ug = create(:group)
+        user = create(:user, groups: [ug])
 
         app = create(:service_provider, user: user)
         login_as(user)
@@ -186,8 +174,8 @@ feature 'Service Providers CRUD' do
 
   scenario 'Read' do
     user = create(:user)
-    group = create(:user_group)
-    app = create(:service_provider, user_group: group, user: user)
+    group = create(:group)
+    app = create(:service_provider, group: group, user: user)
     login_as(user)
 
     visit service_provider_path(app)

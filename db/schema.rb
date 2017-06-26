@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531194154) do
+ActiveRecord::Schema.define(version: 20170623192352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,15 @@ ActiveRecord::Schema.define(version: 20170531194154) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "groups", force: :cascade do |t|
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "name",                     null: false
+    t.text     "description", default: "", null: false
+  end
+
+  add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
+
   create_table "service_providers", force: :cascade do |t|
     t.integer  "user_id",                                               null: false
     t.string   "issuer",                                                null: false
@@ -59,23 +68,24 @@ ActiveRecord::Schema.define(version: 20170531194154) do
     t.integer  "agency_id",                                             null: false
     t.json     "attribute_bundle"
     t.string   "redirect_uri"
-    t.integer  "user_group_id"
+    t.integer  "group_id"
     t.string   "logo"
     t.integer  "identity_protocol",                     default: 0
     t.json     "redirect_uris"
   end
 
+  add_index "service_providers", ["group_id"], name: "index_service_providers_on_group_id", using: :btree
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
-  add_index "service_providers", ["user_group_id"], name: "index_service_providers_on_user_group_id", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "name",                     null: false
-    t.text     "description", default: "", null: false
+    t.integer  "user_id"
+    t.integer  "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "user_groups", ["name"], name: "index_user_groups_on_name", unique: true, using: :btree
+  add_index "user_groups", ["group_id"], name: "index_user_groups_on_group_id", using: :btree
+  add_index "user_groups", ["user_id"], name: "index_user_groups_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "uuid",                               null: false
@@ -90,13 +100,13 @@ ActiveRecord::Schema.define(version: 20170531194154) do
     t.inet     "current_sign_in_ip"
     t.inet     "last_sign_in_ip"
     t.boolean  "admin",              default: false, null: false
-    t.integer  "user_group_id"
+    t.integer  "group_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["user_group_id"], name: "index_users_on_user_group_id", using: :btree
+  add_index "users", ["group_id"], name: "index_users_on_group_id", using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
   add_foreign_key "service_providers", "agencies"
-  add_foreign_key "service_providers", "user_groups"
+  add_foreign_key "service_providers", "groups"
 end

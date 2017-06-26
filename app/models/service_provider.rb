@@ -9,7 +9,7 @@ class ServiceProvider < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :agency
-  belongs_to :user_group
+  belongs_to :group
 
   enum block_encryption: { 'aes256-cbc' => 1 }
   enum identity_protocol: { openid_connect: 0, saml: 1 }

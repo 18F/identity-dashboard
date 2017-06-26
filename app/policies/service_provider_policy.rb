@@ -45,7 +45,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def member?
-    sp.user_group.present? && sp.user_group == current_user.user_group
+    sp.group.present? && current_user.groups.include?(sp.group)
   end
 
   def member_or_admin?

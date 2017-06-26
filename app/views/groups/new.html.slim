@@ -1,8 +1,8 @@
-h2 = t('headings.user_groups.new')
+h2 = t('headings.groups.new')
 
-= simple_form_for(@user_group,
+= simple_form_for(@group,
   html: { autocomplete: 'off', role: 'form' },
-  url: user_groups_path) do |form|
+  url: groups_path) do |form|
   = form.error_notification
   = render 'form', form: form
   = form.button :submit, 'Create'
