@@ -66,7 +66,7 @@ GEM
     bullet (5.5.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bummr (0.2.0)
+    bummr (0.1.8)
       rainbow
       thor
     capistrano (3.8.1)
@@ -386,7 +386,7 @@ DEPENDENCIES
   actionmailer-text
   active_model_serializers
   bullet
-  bummr
+  bummr (= 0.1.8)
   capistrano
   capistrano-passenger
   capistrano-rails
