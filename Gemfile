@@ -33,7 +33,7 @@ group :deploy do
 end
 
 group :development do
-  gem 'bummr', require: false
+  gem 'bummr', '0.1.8', require: false
   gem 'quiet_assets'
   gem 'rubocop'
   gem 'slim_lint'
