@@ -6,6 +6,7 @@ development: &default
   pool: <%= Integer(Figaro.env.db_pool || 5) %>
   reaping_frequency: <%= Integer(Figaro.env.dp_reaping_frequency || 10) %>
   timeout: 5000
+  host: localhost
 
 test:
   <<: *default

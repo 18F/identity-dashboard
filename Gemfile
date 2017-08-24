@@ -36,7 +36,6 @@ group :development do
   gem 'bummr', require: false
   gem 'quiet_assets'
   gem 'rubocop'
-  gem 'slim_lint'
   gem 'web-console'
 end
 
@@ -48,6 +47,7 @@ group :development, :test do
   gem 'pry'
   gem 'rspec-rails', '~> 3.4.0'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
+  gem 'slim_lint'
 end
 
 group :test do
