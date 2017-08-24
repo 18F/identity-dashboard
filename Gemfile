@@ -43,7 +43,6 @@ group :development, :test do
   gem 'bullet'
   gem 'factory_girl_rails'
   gem 'i18n-tasks'
-  gem 'mailcatcher', '0.6.3'
   gem 'pry'
   gem 'rspec-rails', '~> 3.4.0'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
@@ -57,6 +56,7 @@ group :test do
   gem 'poltergeist'
   gem 'rack_session_access'
   gem 'shoulda-matchers'
+  gem 'sinatra'
   gem 'timecop'
   gem 'webmock'
 end
