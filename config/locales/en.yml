@@ -29,7 +29,7 @@ en:
       edit: Edit user
       index: Users
   home:
-    deployed_by_html: Deployed by %{user} %{time} ago. View %{href}.
+    deployed_by_html: Chef run %{time} ago. View %{href}.
   links:
     aria:
       delete: Delete %{name}
