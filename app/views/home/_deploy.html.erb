@@ -25,7 +25,6 @@
               </span>
             </div>
             <%= t('home.deployed_by_html',
-              user: content_tag(:em, status.user),
               time: time_ago_in_words(status.timestamp),
               href: link_to(t('links.pending_changes'), status.pending_url)
               )
