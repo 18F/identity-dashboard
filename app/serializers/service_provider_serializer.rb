@@ -10,7 +10,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :friendly_name,
     :issuer,
     :logo,
-    :redirect_uri,
     :redirect_uris,
     :return_to_sp_url,
     :signature,
@@ -32,10 +31,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def signature
     Digest::SHA256.hexdigest unique_identifier
-  end
-
-  def redirect_uri
-    (object.redirect_uris || []).first
   end
 
   private
