@@ -17,9 +17,5 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:redirect_uris]).to eq(service_provider.redirect_uris)
       end
     end
-
-    it 'is backwards compatible with (singular) redirect_uri' do
-      expect(as_json[:redirect_uri]).to eq(service_provider.redirect_uris.first)
-    end
   end
 end
