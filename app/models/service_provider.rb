@@ -19,6 +19,7 @@ class ServiceProvider < ActiveRecord::Base
   validates :issuer_department, presence: true, on: :create
   validates :issuer_app, presence: true, on: :create
   validates :agency, presence: true
+  validate :redirect_uris_are_parsable
 
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
@@ -57,10 +58,31 @@ class ServiceProvider < ActiveRecord::Base
     previous_changes.key?(:approved) && previous_changes[:approved].last == true
   end
 
+  def redirect_uris=(uris)
+    super uris.select(&:present?)
+  end
+
   private
 
   def build_issuer
     return unless issuer_department && issuer_app
     self.issuer = ServiceProviderIssuerBuilder.new(self).build_issuer
+  end
+
+  def redirect_uris_are_parsable
+    return if redirect_uris.blank?
+
+    redirect_uris.each do |uri|
+      next if redirect_uri_valid?(uri)
+      errors.add(:redirect_uris, :invalid)
+      break
+    end
+  end
+
+  def redirect_uri_valid?(redirect_uri)
+    parsed_uri = URI.parse(redirect_uri)
+    parsed_uri.scheme.present? || parsed_uri.host.present?
+  rescue URI::BadURIError, URI::InvalidURIError
+    false
   end
 end
