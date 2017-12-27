@@ -5,12 +5,13 @@ module Saml
     # rubocop:disable AbcSize, MethodLength
     def self.build_settings
       Hashie::Mash.new(
-        issuer:                     Figaro.env.saml_sp_issuer,
-        idp_sso_target_url:         Figaro.env.saml_idp_sso_url,
-        idp_slo_target_url:         Figaro.env.saml_idp_slo_url,
-        idp_cert_fingerprint:       Figaro.env.saml_idp_fingerprint,
-        name_identifier_format:     Figaro.env.saml_name_id_format,
-        certificate:                Figaro.env.saml_sp_certificate,
+        issuer:                         Figaro.env.saml_sp_issuer,
+        assertion_consumer_service_url: Figaro.env.saml_sp_acs_url,
+        idp_sso_target_url:             Figaro.env.saml_idp_sso_url,
+        idp_slo_target_url:             Figaro.env.saml_idp_slo_url,
+        idp_cert_fingerprint:           Figaro.env.saml_idp_fingerprint,
+        name_identifier_format:         Figaro.env.saml_name_id_format,
+        certificate:                    Figaro.env.saml_sp_certificate,
         private_key: OpenSSL::PKey::RSA.new(
           Figaro.env.saml_sp_private_key,
           Figaro.env.saml_sp_private_key_password,
