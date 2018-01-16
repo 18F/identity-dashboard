@@ -3,7 +3,6 @@ module Users
     include ::ActionView::Helpers::DateHelper
 
     prepend_before_action :skip_timeout, only: [:active]
-    skip_before_action :session_expires_at, only: [:active]
 
     def skip_timeout
       request.env['devise.skip_trackable'] = true
