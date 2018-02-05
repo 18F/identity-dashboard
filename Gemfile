@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '~> 2.3.5'
 
-gem 'rails', '~> 5.1.3'
+gem 'rails', '~> 5.1'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
@@ -20,16 +20,16 @@ gem 'pundit'
 gem 'rack-canonical-host'
 gem 'recipient_interceptor'
 gem 'ruby_regex'
-gem 'sass-rails', '~> 5.0'
-gem 'secure_headers', '~> 3.0'
+gem 'sass-rails'
+gem 'secure_headers'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'uglifier'
 
 group :deploy do
-  gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano'
   gem 'capistrano-passenger'
-  gem 'capistrano-rails' # , '~> 1.1', require: false
+  gem 'capistrano-rails'
 end
 
 group :development do
@@ -43,7 +43,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'i18n-tasks'
   gem 'pry'
-  gem 'rspec-rails', '~> 3.5.2'
+  gem 'rspec-rails'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
 end

@@ -33,7 +33,7 @@ describe 'SLO' do
   end
 
   describe 'SP-initiated' do
-    it 'uses external SAML IdP' do
+    pending 'uses external SAML IdP' do
       user = create(:user)
       login_as(user)
 
