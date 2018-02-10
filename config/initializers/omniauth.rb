@@ -1,5 +1,5 @@
-require 'saml_config'
+require 'oidc_config'
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :saml, Saml::Config::SETTINGS
+  provider :OpenIDConnect, OIDC::Config::SETTINGS
 end

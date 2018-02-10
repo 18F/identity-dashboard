@@ -2,7 +2,16 @@ module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     skip_before_action :verify_authenticity_token
 
-    def saml
+    def login
+      "http://localhost:3000/openid_connect/authorize?acr_values=http%3A%2F%2Fidmanagement.gov%2Fns%2Fassurance%2Floa%2F1&client_id=urn%3Agov%3Agsa%3Aopenidconnect%3Asp%3Adashboard&nonce=abcdefghijklmnopabcdefghijklmnop&prompt=select_account&redirect_uri=http%3A%2F%2Flocalhost%3A3001&response_type=code&scope=openid+email&state=abcdefghijklmnopabcdefghijklmnop"
+    end
+
+    def result
+      Rails.logger.debug "params: #{params}"
+      token_response = token(params[:code])
+    end
+
+    def oidc
       @user = User.from_omniauth(auth_hash)
       return unless @user.persisted?
       sign_in @user
@@ -83,5 +92,53 @@ module Users
       Rails.logger.error error_msg
       render inline: error_msg, status: 400
     end
+
+    def client_assertion_jwt
+      jwt_payload = {
+        iss: CLIENT_ID,
+        sub: CLIENT_ID,
+        aud: http://localhost:3000/api/openid_connect/token,
+        jti: SecureRandom.hex,
+        nonce: SecureRandom.hex,
+        exp: Time.now.to_i + 1000,
+      }
+      JWT.encode(jwt_payload, sp_private_key, 'RS256')
+    end
+
+    def token(code)
+      json HTTParty.post(
+        'http://localhost:3000/api/openid_connect/token',
+        body: {
+          grant_type: 'authorization_code',
+          code: code,
+          client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+          client_assertion: client_assertion_jwt,
+        }
+      ).body
+    end
+
+    def logout_uri(id_token)
+      openid_configuration[:end_session_endpoint] + '?' + {
+        id_token_hint: id_token,
+        post_logout_redirect_uri: REDIRECT_URI,
+        state: SecureRandom.hex,
+      }.to_query
+    end
+
+    def json(response)
+      JSON.parse(response.to_s).with_indifferent_access
+    end
+
+    def idp_public_key
+      certs_response = json(
+        HTTParty.get(openid_configuration[:jwks_uri]).body
+      )
+      JSON::JWK.new(certs_response[:keys].first).to_key
+    end
+
+    def private_key
+      @private_key ||= OpenSSL::PKey::RSA.new(File.read('config/dashboard.key'))
+    end
+
   end
 end

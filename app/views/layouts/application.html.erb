@@ -1,0 +1,158 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login.gov Dashboard</title>
+    <link rel="stylesheet" href="/assets/uswds/css/uswds.min.css">
+    <%= stylesheet_link_tag 'application' %>
+  </head>
+
+  <body>
+  <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+  <header class="usa-header usa-header-basic" role="banner">
+    <!-- Gov banner BEGIN -->
+    <div class="usa-banner">
+      <div class="usa-accordion">
+        <header class="usa-banner-header">
+          <div class="usa-grid usa-banner-inner">
+          <img src="/assets/uswds/img/favicons/favicon-57.png" alt="U.S. flag">
+          <p>An official website of the United States government</p>
+          <button class="usa-accordion-button usa-banner-button"
+            aria-expanded="false" aria-controls="gov-banner">
+            <span class="usa-banner-button-text">Here's how you know</span>
+          </button>
+          </div>
+        </header>
+        <div class="usa-banner-content usa-grid usa-accordion-content" id="gov-banner">
+          <div class="usa-banner-guidance-gov usa-width-one-half">
+            <img class="usa-banner-icon usa-media_block-img" src="/assets/uswds/img/icon-dot-gov.svg" alt="Dot gov">
+            <div class="usa-media_block-body">
+              <p>
+                <strong>The .gov means it’s official.</strong>
+                <br>
+                Federal government websites always use a .gov or .mil domain. Before sharing sensitive information online, make sure you’re on a .gov or .mil site by inspecting your browser’s address (or “location”) bar.
+              </p>
+            </div>
+          </div>
+          <div class="usa-banner-guidance-ssl usa-width-one-half">
+            <img class="usa-banner-icon usa-media_block-img" src="/assets/uswds/img/icon-https.svg" alt="SSL">
+            <div class="usa-media_block-body">
+              <p>This site is also protected by an SSL (Secure Sockets Layer) certificate that’s been signed by the U.S. government. The <strong>https://</strong> means all transmitted data is encrypted  — in other words, any information or browsing history that you provide is transmitted securely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Gov banner END -->
+    <div class="usa-nav-container">
+      <div class="usa-navbar">
+        <button class="usa-menu-btn">Menu</button>
+        <div class="usa-logo" id="logo">
+          <em class="usa-logo-text">
+            <a href="/" accesskey="1" title="Home" aria-label="login.gov dashboard">
+              <img src="/assets/img/logo.svg" alt="login.gov logo"><span>Dashboard</span>
+            </a>
+          </em>
+        </div>
+      </div>
+      <nav role="navigation" class="usa-nav">
+        <button class="usa-nav-close">
+          <img src="/assets/uswds/img/close.svg" alt="close">
+        </button>
+        <ul class="usa-nav-primary usa-accordion">
+          <% if user_signed_in? %>
+            <% if current_user.admin? %>
+            <li>
+              <button class="usa-accordion-button usa-nav-link" aria-expanded="false" aria-controls="side-nav-1">
+                <span>Admin</span>
+              </button>
+              <ul id="side-nav-1" class="usa-nav-submenu">
+                <li><a href="/apps"></a>Apps</li>
+                <li><a href="/users">Users</a></li>
+                <li><a href="/groups">Groups</a></li>
+              </ul>
+            </li>
+            <% end %>
+          <li>
+            <a class="usa-nav-link" href="/users/auth/logout">
+              <span>Log out</span>
+            </a>
+          </li>
+          <% else %>
+          <li>
+            <a class="usa-nav-link" href="/users/auth/login">
+              <span>Log in</span>
+            </a>
+          </li>
+          <% end %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="usa-overlay"></div>
+
+  <main class="usa-grid usa-section usa-content usa-layout-docs" id="main-content">
+    <div class="usa-layout-docs-main_content">
+      <%= yield %>
+    </div>
+  </main>
+
+  <footer class="usa-footer usa-footer-medium" role="contentinfo">
+    <div class="usa-grid usa-footer-return-to-top">
+      <a href="#">Return to top</a>
+    </div>
+    <div class="usa-footer-secondary_section">
+      <div class="usa-grid">
+        <div class="usa-footer-logo">
+          <a href="https://18f.gsa.gov"><img class="usa-footer-slim-logo-img" src="/assets/img/18f-logo.svg" alt="18F logo image"></a>
+          <a href="https://www.gsa.gov"><img class="usa-footer-slim-logo-img" src="/assets/img/gsa-logo.svg" alt="GSA logo image"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/uswds/js/uswds.min.js"></script>
+  <%= javascript_include_tag 'application' %>
+  </body>
+</html>
+
+
+
+<!--
+doctype html
+html lang="#{I18n.locale}"
+
+  head
+    meta charset='utf-8'
+    meta[
+      name='description'
+      content="#{content_for?(:description) ? yield(:description) : 'Identity Dashboard'}"
+    ]
+    meta http-equiv='X-UA-Compatible' content='IE=edge'
+    meta name='msapplication-config' content='none'
+    meta name='viewport' content='width=device-width, initial-scale=1.0'
+
+    title
+      = content_for?(:title) ? 'Identity Dashboard - ' + yield(:title) : 'Identity Dashboard'
+
+    == stylesheet_link_tag 'application', media: 'all'
+    link rel='stylesheet' href='uswds/css/uswds.min.css' type='text/css'
+    == javascript_include_tag 'application'
+    == csrf_meta_tags
+    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
+    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
+
+  body class="#{Rails.env}-env site"
+    header.usa-site-header role="banner"
+      = render 'shared/navigation'
+
+    .site-wrap
+      = render 'layouts/messages'
+
+      .container.px2
+        == yield
+
+    .footer
+ -->

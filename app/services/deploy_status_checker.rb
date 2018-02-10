@@ -38,7 +38,6 @@ class DeployStatusChecker
   # @return [Array<Environment>]
   def check!
     deploys = DEPLOYS.map { |deploy| Thread.new { status(deploy) } }.map(&:value)
-
     deploys.group_by(&:env).map { |env, statuses| Environment.new(env, statuses) }
   end
 

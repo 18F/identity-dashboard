@@ -22,7 +22,6 @@ module IdentityDashboard
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
     config.active_job.queue_adapter = :delayed_job
-
     # Set the number of seconds the timeout warning should occur before
     # login session is timed out.
     config.session_timeout_warning_seconds = 120
