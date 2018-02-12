@@ -57,11 +57,11 @@ ActiveRecord::Schema.define(version: 20171016184947) do
     t.integer "block_encryption", default: 1, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "active", default: false, null: false
+    t.boolean "active", default: true, null: false
     t.boolean "approved", default: false, null: false
     t.text "sp_initiated_login_url"
     t.text "return_to_sp_url"
-    t.integer "agency_id", null: false
+    t.integer "agency_id"
     t.json "attribute_bundle"
     t.integer "group_id"
     t.string "logo"

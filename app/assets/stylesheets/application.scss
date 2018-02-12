@@ -4,6 +4,66 @@ html {
   background-color: #d6d7d9;
 }
 
+.bold {
+  font-weight: bold;
+}
+
+.bold-th th {
+  font-weight: bold;
+}
+
+.ma0 {
+  margin: 0;
+}
+
+.mv075 {
+  margin: 0.75rem 0;
+}
+
+.ml2 {
+  margin-left: 2rem;
+}
+
+.pa135 {
+  padding: 1.35rem;
+}
+
+.fl {
+  float: left;
+}
+
+form .fma0 {
+  margin: 0
+}
+
+.sp-form-fields {
+  label {
+    margin-bottom: 1rem;
+    line-height: 2.7rem;
+  }
+
+  label, input, select, textarea {
+    max-width: 100%;
+  }
+
+  .collection_radio_buttons {
+    display: inline;
+    margin-right: 3rem;
+  }
+
+  fieldset {
+    margin-top: 3rem;
+
+    legend {
+      font-size: 1.7rem;
+    }
+  }
+}
+
+form .fmr1 {
+  margin-right: 1rem;
+}
+
 .usa-section {
   margin-top: 0;
 }

@@ -58,7 +58,6 @@ class ServiceProvidersController < AuthenticatedController
   def save_service_provider(initial_action)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    notify_users(service_provider, initial_action)
     publish_service_providers
     redirect_to service_provider_path(service_provider)
   end
@@ -69,24 +68,6 @@ class ServiceProvidersController < AuthenticatedController
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
-  end
-
-  def notify_users(service_provider, initial_action)
-    if initial_action == :new
-      notify_users_new_service_provider(service_provider)
-    elsif service_provider.recently_approved?
-      notify_users_approved_service_provider(service_provider)
-    end
-  end
-
-  def notify_users_new_service_provider(service_provider)
-    UserMailer.admin_new_service_provider(service_provider).deliver_later
-    UserMailer.user_new_service_provider(service_provider).deliver_later
-  end
-
-  def notify_users_approved_service_provider(service_provider)
-    UserMailer.admin_approved_service_provider(service_provider).deliver_later
-    UserMailer.user_approved_service_provider(service_provider).deliver_later
   end
 
   def error_messages
@@ -104,8 +85,7 @@ class ServiceProvidersController < AuthenticatedController
       :block_encryption,
       :description,
       :friendly_name,
-      :issuer_department,
-      :issuer_app,
+      :issuer,
       :logo,
       :metadata_url,
       :return_to_sp_url,

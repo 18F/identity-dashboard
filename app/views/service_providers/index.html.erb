@@ -1,0 +1,51 @@
+<h1>My apps</h1>
+
+<% if current_user.admin? %>
+  <%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path,
+      class: 'btn btn-link h4 p0 blue regular border-box center', method: :post %>
+<% end %>
+
+<%= link_to 'Create a new test app', new_service_provider_path %> ✏️
+
+<table class="usa-table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Friendly name</th>
+      <th scope="col">Issuer</th>
+      <th scope="col">Active</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% current_user.scoped_service_providers.each do |app| %>
+    <tr>
+      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
+      <td><%= app.issuer %></td>
+      <td><%= app.active? ? '✔' : '❌' %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if current_user.admin? %>
+  <hr>
+  <h3><%= t('headings.service_providers.index') %></h3>
+
+  <table class="usa-table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Friendly name</th>
+        <th scope="col">Issuer</th>
+        <th scope="col">Active</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @service_providers.each do |sp| %>
+      <tr>
+        <th scope="row"><%= link_to(sp.friendly_name, service_provider_path(sp)) %></th>
+        <td><%= app.issuer %></td>
+        <td><%= app.active? ? 'Active' : 'Inactive' %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

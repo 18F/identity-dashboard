@@ -2,6 +2,6 @@
   .mb3
     - flash.each do |name, msg|
       - if msg.is_a?(String)
-        div class="p2 alert alert-#{name}"
+        div class="alert alert-#{name}"
           = msg
     #session_warning_container

@@ -1,30 +1,30 @@
 ---
 en:
   simple_form:
-    placeholders:
-      service_provider:
-       logo: 'generic.svg'
-    hints:
-      service_provider:
-        issuer: Enter department and app to generate uid
+    # placeholders:
+      # service_provider:
+       # logo: 'generic.svg'
+    # hints:
+      # service_provider:
+        # issuer: Enter department and app to generate uid
     labels:
       service_provider:
-        acs_url: Assertion Consumer Service URL
+        acs_url: Assertion consumer service URL
         active: Active
         agency: Agency
-        assertion_consumer_logout_service_url: Assertion Consumer Logout Service URL
+        assertion_consumer_logout_service_url: Assertion consumer logout service URL
         attribute_bundle: Attribute bundle
-        block_encryption: Block Encryption
+        block_encryption: Block encryption
         description: Description
         friendly_name: Friendly name
         issuer: Issuer
         logo: Logo
-        redirect_uris: Redirect URIs (for OpenID Connect)
+        redirect_uris: Redirect URIs
         return_to_sp_url: Return to SP URL
-        saml_client_cert: SAML Client Cert (PEM encoded)
-        sp_initiated_login_url: SP Initiated Login URL
-        identity_protocol: Identity Protocol
-        group: User Group
+        saml_client_cert: Public key
+        sp_initiated_login_url: SP initiated login URL
+        identity_protocol: Identity protocol
+        group: User group
       user:
         admin: Admin?
         email: Email
@@ -34,5 +34,5 @@ en:
       group:
         description: Description
         name: Name
-        service_providers: Service Providers
+        service_providers: Service providers
         users: Users
