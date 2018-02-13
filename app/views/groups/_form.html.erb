@@ -1,0 +1,10 @@
+<div class="form-fields">
+
+<%= form.input :name %>
+<%= form.input :description %>
+<%= form.association :users,
+    label_method: :email,
+    collection: User.all.sorted,
+    input_html: { class: 'h16' } %>
+
+</div>

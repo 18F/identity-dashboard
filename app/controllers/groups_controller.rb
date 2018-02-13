@@ -2,6 +2,10 @@ class GroupsController < ApplicationController
   before_action -> { authorize Group }
   before_action :find_group, only: %i(show edit update destroy)
 
+  def index
+    @groups = Group.includes(:users).all
+  end
+
   def new
     @group = Group.new
   end
@@ -32,10 +36,6 @@ class GroupsController < ApplicationController
     return unless @group.destroy
     flash[:success] = 'Success'
     redirect_to groups_path
-  end
-
-  def index
-    @groups = Group.includes(:users).all
   end
 
   private

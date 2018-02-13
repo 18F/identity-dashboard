@@ -11,12 +11,14 @@ Rails.application.routes.draw do
     get 'timeout' => 'users/sessions#timeout'
   end
 
-  resources :service_providers
-  resources :groups, except: [:show]
-  resources :users, only: %i(index edit update)
-
+  get '/service_providers/all' => 'service_providers#all'
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
+  resources :service_providers
+
+  resources :groups, except: [:show]
+  get 'users/none' => 'users#none'
+  resources :users
 
   root to: 'home#index'
 end

@@ -3,8 +3,8 @@ class Group < ActiveRecord::Base
   has_many :user_groups
   has_many :users, through: :user_groups
 
-  validates :description, presence: true
   validates :name, presence: true, uniqueness: true
+  validate :description
 
   def to_s
     name

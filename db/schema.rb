@@ -41,14 +41,14 @@ ActiveRecord::Schema.define(version: 20171016184947) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", null: false
-    t.text "description", default: "", null: false
+    t.text "description", default: ""
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
   create_table "service_providers", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "issuer", null: false
-    t.string "friendly_name"
+    t.string "friendly_name", null: false
     t.text "description"
     t.text "metadata_url"
     t.text "acs_url"

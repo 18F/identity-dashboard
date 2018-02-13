@@ -20,11 +20,9 @@ gem 'pg', '~> 0.21'
 gem 'pundit'
 gem 'rack-canonical-host'
 gem 'recipient_interceptor'
-gem 'ruby_regex'
 gem 'sass-rails'
 gem 'secure_headers'
 gem 'simple_form'
-gem 'slim-rails'
 
 group :deploy do
   gem 'capistrano'

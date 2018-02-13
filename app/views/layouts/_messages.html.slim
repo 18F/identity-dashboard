@@ -1,7 +1,0 @@
-- unless flash.empty?
-  .mb3
-    - flash.each do |name, msg|
-      - if msg.is_a?(String)
-        div class="alert alert-#{name}"
-          = msg
-    #session_warning_container

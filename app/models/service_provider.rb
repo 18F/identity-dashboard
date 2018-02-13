@@ -8,6 +8,7 @@ class ServiceProvider < ActiveRecord::Base
   enum block_encryption: { 'aes256-cbc' => 1 }
   enum identity_protocol: { openid_connect: 0, saml: 1 }
 
+  validates :friendly_name, presence: true
   validates :issuer, presence: true, uniqueness: true
   validate :redirect_uris_are_parsable
 

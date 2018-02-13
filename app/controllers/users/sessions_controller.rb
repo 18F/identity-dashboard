@@ -38,22 +38,20 @@ module Users
       puts "id_token[:sub]: #{id_token[:sub]}"
       puts "id_token[:email]: #{id_token[:email]}"
 
-      # See if user exists, log them in
-      @user = User.find_by(uuid: id_token[:sub])
+      # See if admin has created user an account
+      @user = User.find_by_email(id_token[:email])
       if @user
+        unless @user.uuid
+          @user.uuid = id_token[:sub]
+          @user.save
+        end
         sign_in @user
+        redirect_to service_providers_path
 
-      # No user, create account
+      # Can't find an account, tell user to contact login.gov team
       else
-        puts "No user with UUID: #{id_token[:sub]}"
-        puts "Creating user..."
-        @user = User.new(uuid: id_token[:sub], email: id_token[:email])
-        @user.save
-        puts "User created: #{@user}"
-        sign_in @user
+        redirect_to users_none_path
       end
-
-      redirect_to root_path
     end
 
     def token(code)

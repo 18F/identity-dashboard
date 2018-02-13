@@ -1,32 +1,32 @@
 👈 <%= link_to 'Back to apps', '/service_providers' %>
 
-<h2>Details for "<%= service_provider.friendly_name %>"</h2>
+<h1>Details for "<%= service_provider.friendly_name %>"</h1>
 
 <table class="usa-table-borderless bold-th">
   <tbody>
     <tr class="usa-color-gold-lightest">
-      <th scope="row">Friendly_name</th>
+      <th scope="row">Friendly name</th>
       <td><%= service_provider.friendly_name %></td>
-    </tr>
-    <tr>
-      <th scope="row">Identity protocol</th>
-      <td><%= service_provider.identity_protocol %></td>
     </tr>
     <tr>
       <th scope="row">Description</th>
       <td><%= service_provider.description %></td>
     </tr>
     <tr>
+      <th scope="row">Group</th>
+      <td><%= service_provider.group %></td>
+    </tr>
+    <tr>
+      <th scope="row">Identity protocol</th>
+      <td><%= service_provider.identity_protocol %></td>
+    </tr>
+    <tr>
       <th scope="row">Issuer</th>
-      <td></code><%= service_provider.issuer %></code></td>
+      <td><code><%= service_provider.issuer %></code></td>
     </tr>
     <tr>
       <th scope="row">Logo</th>
       <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>"><%= service_provider.logo %></a></td>
-    </tr>
-    <tr>
-      <th scope="row">Group</th>
-      <td><%= service_provider.group %></td>
     </tr>
 
     <% if service_provider.identity_protocol == 'saml' %>
@@ -52,10 +52,6 @@
       <th scope="row">Return to App URL</th>
       <td><%= service_provider.return_to_sp_url %></td>
     </tr>
-    <tr>
-      <th scope="row">Attribute bundle</th>
-      <td><%= (service_provider.attribute_bundle || []).sort.join(', ') %></td>
-    </tr>
 
     <% if service_provider.identity_protocol == 'openid_connect' %>
     <tr>
@@ -64,6 +60,10 @@
     </tr>
     <% end %>
 
+    <tr>
+      <th scope="row">Attribute bundle</th>
+      <td><%= (service_provider.attribute_bundle || []).sort.join(', ') %></td>
+    </tr>
     <tr>
       <th scope="row">Active</th>
       <td><%= (service_provider.active? ? '✔️' : '❌') %></td>

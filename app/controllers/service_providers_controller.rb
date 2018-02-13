@@ -2,8 +2,10 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i(update edit show destroy)
   before_action :authorize_approval, only: [:update]
 
-  def index
-    @service_providers = ServiceProvider.all if current_user.admin?
+  def index; end
+
+  def new
+    @service_provider = ServiceProvider.new
   end
 
   def create
@@ -12,9 +14,17 @@ class ServiceProvidersController < AuthenticatedController
     validate_and_save_service_provider(:new)
   end
 
+  def edit; end
+
   def update
     service_provider.assign_attributes(service_provider_params)
     validate_and_save_service_provider(:edit)
+  end
+
+  def show; end
+
+  def all
+    @service_providers = ServiceProvider.all if current_user.admin?
   end
 
   def destroy
@@ -22,14 +32,6 @@ class ServiceProvidersController < AuthenticatedController
     flash[:success] = I18n.t('notices.service_provider_deleted', issuer: service_provider.issuer)
     redirect_to service_providers_path
   end
-
-  def new
-    @service_provider = ServiceProvider.new
-  end
-
-  def edit; end
-
-  def show; end
 
   private
 

@@ -1,5 +1,6 @@
 test: &default
   dashboard_api_token: 'sekret'
+  idp_sp_url: 'http://idp.example.com/api/service_provider'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
   dashboard_certificate: |
@@ -99,6 +100,7 @@ test: &default
 
 development:
   <<: *default
+  idp_sp_url: 'http://localhost:3000/api/service_provider'
 
 production:
   <<: *default

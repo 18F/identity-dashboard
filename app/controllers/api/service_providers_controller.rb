@@ -8,11 +8,11 @@ module Api
 
     def update
       if ServiceProviderUpdater.ping
-        flash[:notice] = I18n.t('notices.service_providers_refreshed')
+        flash[:notice] = "Apps pushed!"
       else
-        flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+        flash[:error] = "Push failed!"
       end
-      redirect_to service_providers_path
+      redirect_to service_providers_all_path
     end
 
     private

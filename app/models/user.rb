@@ -14,10 +14,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def to_param
-    uuid
-  end
-
   def scoped_service_providers
     (member_service_providers + service_providers).uniq
   end

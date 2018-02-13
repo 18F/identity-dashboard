@@ -1,6 +1,6 @@
-<h1>My apps</h1>
+<h1>All apps</h1>
 
-<%= link_to 'Create a new test app', new_service_provider_path %> 🚀
+<%= button_to "Publish to IdP", api_service_providers_path, method: :post %>
 
 <table class="usa-table-borderless">
   <thead>
@@ -11,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    <% current_user.scoped_service_providers.each do |app| %>
+    <% @service_providers.each do |app| %>
     <tr>
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
       <td><%= app.issuer %></td>
