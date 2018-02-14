@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action -> { authorize User }
+
   def index; end
 
   def edit

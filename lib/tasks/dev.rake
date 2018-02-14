@@ -8,7 +8,6 @@ if Rails.env.development? || Rails.env.test?
 
       user = create(:user, email: 'user@example.com')
 
-      dashboard_oidc_config = OIDC::Config::SETTINGS
       issuer = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local'
       create(:service_provider,
              user: user,

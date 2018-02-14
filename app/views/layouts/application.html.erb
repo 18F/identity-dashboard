@@ -7,6 +7,7 @@
     <title>login.gov Dashboard</title>
     <link rel="stylesheet" href="/assets/uswds/css/uswds.min.css">
     <%= stylesheet_link_tag 'application' %>
+    <%= csrf_meta_tags %>
   </head>
 
   <body>
@@ -63,26 +64,30 @@
         </button>
         <ul class="usa-nav-primary usa-accordion">
           <% if user_signed_in? %>
+            <li>
+              <a class="usa-nav-link" href="<%= service_providers_path %>">
+                <span>Apps</span>
+              </a>
+            </li>
             <% if current_user.admin? %>
             <li>
               <button class="usa-accordion-button usa-nav-link" aria-expanded="false" aria-controls="side-nav-1">
                 <span>Admin</span>
               </button>
               <ul id="side-nav-1" class="usa-nav-submenu">
-                <li><a href="/apps"></a>Apps</li>
                 <li><a href="/users">Users</a></li>
                 <li><a href="/groups">Groups</a></li>
               </ul>
             </li>
             <% end %>
           <li>
-            <a class="usa-nav-link" href="/users/auth/logout">
+            <a class="usa-nav-link" href="<%= destroy_user_session_path %>">
               <span>Log out</span>
             </a>
           </li>
           <% else %>
           <li>
-            <a class="usa-nav-link" href="/users/auth/login">
+            <a class="usa-nav-link" href="<%= new_user_session_path %>">
               <span>Log in</span>
             </a>
           </li>
@@ -117,42 +122,3 @@
   <%= javascript_include_tag 'application' %>
   </body>
 </html>
-
-
-
-<!--
-doctype html
-html lang="#{I18n.locale}"
-
-  head
-    meta charset='utf-8'
-    meta[
-      name='description'
-      content="#{content_for?(:description) ? yield(:description) : 'Identity Dashboard'}"
-    ]
-    meta http-equiv='X-UA-Compatible' content='IE=edge'
-    meta name='msapplication-config' content='none'
-    meta name='viewport' content='width=device-width, initial-scale=1.0'
-
-    title
-      = content_for?(:title) ? 'Identity Dashboard - ' + yield(:title) : 'Identity Dashboard'
-
-    == stylesheet_link_tag 'application', media: 'all'
-    link rel='stylesheet' href='uswds/css/uswds.min.css' type='text/css'
-    == javascript_include_tag 'application'
-    == csrf_meta_tags
-    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
-    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
-
-  body class="#{Rails.env}-env site"
-    header.usa-site-header role="banner"
-      = render 'shared/navigation'
-
-    .site-wrap
-      = render 'layouts/messages'
-
-      .container.px2
-        == yield
-
-    .footer
- -->

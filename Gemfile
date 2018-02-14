@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '~> 2.3.5'
+ruby '~> 2.5.0'
 
 gem 'rails', '~> 5.1'
 
@@ -16,8 +16,6 @@ gem 'jquery-rails'
 gem 'json-jwt'
 gem 'jwt'
 gem 'newrelic_rpm'
-gem 'omniauth'
-gem 'openid_connect'
 gem 'pg', '~> 0.21'
 gem 'pundit'
 gem 'rack-canonical-host'
@@ -27,7 +25,6 @@ gem 'sass-rails'
 gem 'secure_headers'
 gem 'simple_form'
 gem 'slim-rails'
-gem 'uglifier'
 
 group :deploy do
   gem 'capistrano'
@@ -47,7 +44,6 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'pry'
   gem 'rspec-rails'
-  gem 'slim_lint'
 end
 
 group :test do

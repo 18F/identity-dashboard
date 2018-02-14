@@ -52,7 +52,6 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
     ast (2.4.0)
-    attr_required (1.0.1)
     bcrypt (3.1.11)
     bindata (2.4.2)
     bindex (0.5.0)
@@ -118,7 +117,6 @@ GEM
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
     erubi (1.7.0)
-    execjs (2.7.0)
     factory_bot (4.8.2)
       activesupport (>= 3.0.0)
     factory_bot_rails (4.8.2)
@@ -130,12 +128,10 @@ GEM
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
-    hashie (3.5.7)
     highline (1.7.10)
     htmlentities (4.3.4)
     httparty (0.15.7)
       multi_xml (>= 0.5.2)
-    httpclient (2.8.3)
     i18n (0.9.4)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.20)
@@ -169,7 +165,6 @@ GEM
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
-    multi_json (1.13.1)
     multi_xml (0.6.0)
     mustermann (1.0.1)
     net-scp (1.2.1)
@@ -179,20 +174,6 @@ GEM
     nio4r (2.2.0)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
-    omniauth (1.8.1)
-      hashie (>= 3.4.6, < 3.6.0)
-      rack (>= 1.6.2, < 3)
-    openid_connect (1.1.3)
-      activemodel
-      attr_required (>= 1.0.0)
-      json (>= 1.4.3)
-      json-jwt (>= 1.5.0)
-      rack-oauth2 (>= 1.6.1)
-      swd (>= 1.0.0)
-      tzinfo
-      validate_email
-      validate_url
-      webfinger (>= 1.0.1)
     orm_adapter (0.5.0)
     parallel (1.12.1)
     parser (2.4.0.2)
@@ -213,12 +194,6 @@ GEM
     rack-canonical-host (0.2.3)
       addressable (> 0, < 3)
       rack (>= 1.0.0, < 3)
-    rack-oauth2 (1.7.0)
-      activesupport (>= 2.3)
-      attr_required (>= 0.0.5)
-      httpclient (>= 2.4)
-      multi_json (>= 1.3.6)
-      rack (>= 1.1)
     rack-protection (2.0.0)
       rack
     rack-test (0.8.2)
@@ -329,11 +304,6 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (~> 3.0)
-    slim_lint (0.15.1)
-      rake (>= 10, < 13)
-      rubocop (>= 0.50.0)
-      slim (~> 3.0)
-      sysexits (~> 1.1)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -344,11 +314,6 @@ GEM
     sshkit (1.16.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    swd (1.1.2)
-      activesupport (>= 3)
-      attr_required (>= 0.0.5)
-      httpclient (>= 2.4)
-    sysexits (1.2.0)
     temple (0.8.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
@@ -359,18 +324,10 @@ GEM
     timecop (0.9.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.6)
-      execjs (>= 0.3.0, < 3)
     unicode-display_width (1.3.0)
     uniform_notifier (1.11.0)
     url_safe_base64 (0.2.2)
     useragent (0.16.9)
-    validate_email (0.1.6)
-      activemodel (>= 3.0)
-      mail (>= 2.2.5)
-    validate_url (1.0.2)
-      activemodel (>= 3.0.0)
-      addressable
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.5.1)
@@ -378,9 +335,6 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webfinger (1.1.0)
-      activesupport
-      httpclient (>= 2.4)
     webmock (3.3.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -417,8 +371,6 @@ DEPENDENCIES
   json-jwt
   jwt
   newrelic_rpm
-  omniauth
-  openid_connect
   pg (~> 0.21)
   poltergeist
   pry
@@ -438,14 +390,12 @@ DEPENDENCIES
   simple_form
   sinatra
   slim-rails
-  slim_lint
   timecop
-  uglifier
   web-console
   webmock
 
 RUBY VERSION
-   ruby 2.3.5p376
+   ruby 2.5.0p0
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
