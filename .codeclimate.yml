@@ -3,8 +3,6 @@ engines:
     enabled: true
   bundler-audit:
     enabled: true
-  csslint:
-    enabled: true
   duplication:
     enabled: true
     config:
@@ -14,13 +12,9 @@ engines:
       - javascript
     exclude_paths:
     - 'spec/**/*'
-  eslint:
-    enabled: true
   fixme:
     enabled: true
   rubocop:
-    enabled: true
-  scss-lint:
     enabled: true
 
 ratings:
