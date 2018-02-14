@@ -6,10 +6,6 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.serve_static_files = Figaro.env.serve_static_files == 'true'
   config.middleware.use Rack::Deflater
-<<<<<<< HEAD
-  config.assets.js_compressor = Uglifier.new(harmony: true)
-=======
->>>>>>> c16533c... Get OIDC working
   config.assets.compile = false
   config.assets.digest = true
   config.log_level = :debug

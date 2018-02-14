@@ -62,9 +62,7 @@ jobs:
           command: |
             mkdir /tmp/test-results
             ./cc-test-reporter before-build
-
             make test
-            bundle exec slim-lint app/views
 
       - run:
           name: Upload Test Results to Code Climate
