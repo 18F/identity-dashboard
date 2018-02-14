@@ -4,6 +4,12 @@ html {
   background-color: #d6d7d9;
 }
 
+hr {
+  border: 0;
+  height: .2rem;
+  background-color: #aeb0b5;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -74,6 +80,14 @@ form .fmr1 {
 
 .usa-section {
   margin-top: 0;
+}
+
+table.groups {
+  hr {
+    border: none;
+    height: 1px;
+    background-color: #5b616b;
+  }
 }
 
 .usa-content ol:not(.usa-accordion):not(.usa-accordion-bordered), .usa-content p, .usa-content ul:not(.usa-accordion):not(.usa-accordion-bordered) {

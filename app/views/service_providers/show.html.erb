@@ -56,7 +56,7 @@
     <% if service_provider.identity_protocol == 'openid_connect' %>
     <tr>
       <th scope="row">Redirect URIs</th>
-      <td><%= (service_provider.redirect_uris || []).sort.join(' ') %></td>
+      <td><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></td>
     </tr>
     <% end %>
 
@@ -79,4 +79,4 @@
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),
   class: 'fma0 fmr1 fl',
-  method: :delete, data: { confirm: t('forms.confirm_service_provider') } %>
+  method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>

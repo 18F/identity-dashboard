@@ -2,7 +2,7 @@
 
 <%= link_to 'Create new group', new_group_path %> 🍇
 
-<table class="usa-table-borderless">
+<table class="usa-table-borderless groups">
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -19,17 +19,17 @@
       <td><%= group.description %></td>
       <td>
         <% group.service_providers.each do |sp| %>
-          <%= link_to sp.friendly_name, service_provider_path(sp) %>
+          <%= link_to sp.friendly_name, service_provider_path(sp) %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
         <% end %>
       </td>
       <td>
         <% group.users.each do |user| %>
-          <%= user.email %>
+          <a href="<%= edit_user_path(user.id) %>"><%= user.email %></a><br>
         <% end %>
       </td>
       <td>
         <%= link_to 'edit', edit_group_path(group) %><br>
-        <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure?' } %>
+        <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure you want to delete this group?' } %>
       </td>
     </tr>
     <% end %>

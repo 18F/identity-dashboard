@@ -1,9 +1,7 @@
 <div class="form-fields">
 
-<% if @user.new_record? %>
-  <%= form.input :email,
+<%= form.input :email,
       label: "<b>Email</b>".html_safe %>
-<% end %>
 
 <%= form.input :admin,
     as: :radio_buttons,

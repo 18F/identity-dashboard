@@ -32,6 +32,7 @@
 
 <div class="oidc-fields">
   <%= form.input :redirect_uris, label: "<b>Redirect URIs</b> — <i>OpenID Connect only</i><br>One or more URI login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>x-example-app:/result</code>".html_safe %>
+  <button id="add-redirect-uri-field" class="usa-button" type="button">Add another URI</button>
 </div>
 
 <fieldset class="usa-fieldset-inputs">
@@ -44,19 +45,6 @@
         <%= b.label %>
     <% end %>
 </fieldset>
-
-<!--
-fieldset.usa-fieldset-inputs.usa-sans
-  legend = t('simple_form.labels.service_provider.attribute_bundle')
-  ul
-    = collection_check_boxes(:service_provider,
-      :attribute_bundle,
-      ServiceProvider.possible_attributes, :first, :last) do |b|
-      li.list-reset
-        = b.check_box
-        .ml1.inline-block
-          = b.label
--->
 
 <%= form.input :active, as: :radio_buttons, label: "<b>Active</b><br>Use to activate or deactivate the app.<br>".html_safe %>
 

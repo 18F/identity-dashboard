@@ -5,7 +5,3 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-
-%w(DHS GSA RRB).each do |str|
-  Agency.find_or_create_by(name: str)
-end
