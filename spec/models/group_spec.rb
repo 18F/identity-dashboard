@@ -6,7 +6,7 @@ describe Group do
     it { should have_many(:service_providers) }
   end
 
-  describe 'Validations' do
+  xdescribe 'Validations' do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:description) }
 

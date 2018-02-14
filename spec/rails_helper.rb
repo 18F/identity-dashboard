@@ -19,10 +19,6 @@ RSpec.configure do |config|
     Warden.test_mode!
   end
 
-  config.before(:each) do
-    stub_request(:any, /idp.example.com/).to_rack(FakeSamlIdp)
-  end
-
   config.after(:each) do
     Warden.test_reset!
   end

@@ -7,4 +7,4 @@ development:
 
 production:
   <<: *default
-  idp_url: https://idp.int.login.gov
+  idp_url: https://idp.int.identitysandbox.gov

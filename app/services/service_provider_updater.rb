@@ -1,6 +1,5 @@
 class ServiceProviderUpdater
   def self.ping
-    puts "idp_url: #{idp_url}"
     resp = HTTParty.post(idp_url, headers: token_header)
     resp.code == 200
   end

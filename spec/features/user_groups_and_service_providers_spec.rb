@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Users can access service providers that belong to their user group' do
-  context 'user is not the creator of the service provider' do
+  xcontext 'user is not the creator of the service provider' do
     context 'Index' do
       scenario 'users in the related user group can see the service provider' do
         group = create(:group)

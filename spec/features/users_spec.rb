@@ -1,17 +1,7 @@
 require 'rails_helper'
 
 feature 'admin manages users' do
-  scenario 'manage user page accessible from nav bar link' do
-    admin = create(:admin)
-
-    login_as(admin)
-    visit service_providers_path
-    click_on t('links.users')
-
-    expect(current_path).to eq(users_path)
-  end
-
-  scenario 'user index page shows all users' do
+  xscenario 'user index page shows all users' do
     admin = create(:admin)
     users = create_list(:user, 3)
 
@@ -25,7 +15,7 @@ feature 'admin manages users' do
     end
   end
 
-  scenario 'admin edits users' do
+  xscenario 'admin edits users' do
     admin = create(:admin)
     user = create(:user)
 
