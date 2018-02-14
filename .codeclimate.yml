@@ -1,10 +1,10 @@
 engines:
   brakeman:
-    enabled: true
+    enabled: false
   bundler-audit:
-    enabled: true
+    enabled: false
   duplication:
-    enabled: true
+    enabled: false
     config:
       languages:
       - ruby
@@ -13,9 +13,9 @@ engines:
     exclude_paths:
     - 'spec/**/*'
   fixme:
-    enabled: true
+    enabled: false
   rubocop:
-    enabled: true
+    enabled: false
 
 ratings:
   paths:
