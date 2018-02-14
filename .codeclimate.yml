@@ -11,14 +11,15 @@ engines:
       - javascript
     exclude_paths:
     - 'spec/**/*'
-    - 'public/**/*'
   fixme:
     enabled: false
   rubocop:
     enabled: false
-
 ratings:
   paths:
   - app/**
   - lib/**
   - '**.rb'
+exclude_patterns:
+  - 'public/'
+  - 'spec/'
