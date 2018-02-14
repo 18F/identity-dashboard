@@ -8,10 +8,10 @@ engines:
     config:
       languages:
       - ruby
-        # mass_threshold: 30
       - javascript
     exclude_paths:
     - 'spec/**/*'
+    - 'public/**/*'
   fixme:
     enabled: false
   rubocop:
