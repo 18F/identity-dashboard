@@ -79,8 +79,8 @@ module Users
           exp: Time.now.to_i + 1000
         },
         OpenSSL::PKey::RSA.new(
-          Figaro.env.dashboard_private_key,
-          Figaro.env.dashboard_private_key_password
+          Figaro.env.saml_sp_private_key,
+          Figaro.env.saml_sp_private_key_password
         ),
         'RS256'
       )
@@ -110,6 +110,7 @@ module Users
 
     def destroy
       # TODO: log out of IdP using OIDC logout endpoint
+      #   https://developers.login.gov/oidc/#logout
       super
     end
 

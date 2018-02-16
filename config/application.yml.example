@@ -3,7 +3,7 @@ test: &default
   idp_sp_url: 'http://idp.example.com/api/service_provider'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
-  dashboard_certificate: |
+  saml_sp_certificate: |
     -----BEGIN CERTIFICATE-----
     MIIFLjCCAxYCCQD/dXjTvpnD0jANBgkqhkiG9w0BAQsFADBZMQswCQYDVQQGEwJV
     UzETMBEGA1UECBMKV2FzaGluZ3RvbjELMAkGA1UEBxMCREMxDDAKBgNVBAoTAzE4
@@ -35,7 +35,7 @@ test: &default
     6czR3hR8eGhocSy2VSoSymE2DlBF/Jt5Pwa8SzSHw/5/8g==
     -----END CERTIFICATE-----
 
-  dashboard_private_key: |
+  saml_sp_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
     Proc-Type: 4,ENCRYPTED
     DEK-Info: DES-EDE3-CBC,3BBA2AE203104123
@@ -91,7 +91,7 @@ test: &default
     fLCnOrXnlA44sn4sHuoSO7gWZcgvkjB6HL8HShOIO3kwbB0tcl8MX8/P4kyE/OCB
     -----END RSA PRIVATE KEY-----
 
-  dashboard_private_key_password: foobar
+  saml_sp_private_key_password: foobar
   secret_key_base: 'changeme'
   smtp_address: 'changeme'
   smtp_domain: 'changeme'
