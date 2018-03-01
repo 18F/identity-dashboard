@@ -59,7 +59,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
-    scenario 'saml fields are shown when saml is selected', :js do
+    xscenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
 
@@ -75,7 +75,7 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
 
-    scenario 'oidc fields are shown when oidc is selected', :js do
+    xscenario 'oidc fields are shown when oidc is selected', :js do
       user = create(:user)
       login_as(user)
 
@@ -92,7 +92,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
 
-    scenario 'issuer is updated when department or app is updated', :js do
+    xscenario 'issuer is updated when department or app is updated', :js do
       user = create(:user)
       login_as(user)
 
@@ -107,7 +107,7 @@ feature 'Service Providers CRUD' do
       )
     end
 
-    scenario 'issuer protocol is changed when oidc or saml is selected', :js do
+    xscenario 'issuer protocol is changed when oidc or saml is selected', :js do
       user = create(:user)
       login_as(user)
 

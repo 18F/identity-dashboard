@@ -49,7 +49,7 @@ describe 'Users::ServiceProviders' do
   end
 
   describe 'notifications' do
-    pending 'sends email to admin requesting approval' do
+    xit 'sends email to admin requesting approval' do
       ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
         user = create(:user)
         deliveries.clear
