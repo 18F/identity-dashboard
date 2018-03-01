@@ -1,9 +1,5 @@
 Figaro.require_keys(
-  'saml_idp_fingerprint',
-  'saml_idp_sso_url',
-  'saml_idp_slo_url',
-  'saml_sp_issuer',
   'saml_sp_certificate',
   'saml_sp_private_key',
-  'saml_sp_private_key_password',
+  'saml_sp_private_key_password'
 )

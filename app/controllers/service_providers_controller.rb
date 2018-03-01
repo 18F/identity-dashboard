@@ -2,8 +2,10 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i(update edit show destroy)
   before_action :authorize_approval, only: [:update]
 
-  def index
-    @service_providers = ServiceProvider.all if current_user.admin?
+  def index; end
+
+  def new
+    @service_provider = ServiceProvider.new
   end
 
   def create
@@ -12,9 +14,17 @@ class ServiceProvidersController < AuthenticatedController
     validate_and_save_service_provider(:new)
   end
 
+  def edit; end
+
   def update
     service_provider.assign_attributes(service_provider_params)
     validate_and_save_service_provider(:edit)
+  end
+
+  def show; end
+
+  def all
+    @service_providers = ServiceProvider.all if current_user.admin?
   end
 
   def destroy
@@ -22,14 +32,6 @@ class ServiceProvidersController < AuthenticatedController
     flash[:success] = I18n.t('notices.service_provider_deleted', issuer: service_provider.issuer)
     redirect_to service_providers_path
   end
-
-  def new
-    @service_provider = ServiceProvider.new
-  end
-
-  def edit; end
-
-  def show; end
 
   private
 
@@ -58,7 +60,6 @@ class ServiceProvidersController < AuthenticatedController
   def save_service_provider(initial_action)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    notify_users(service_provider, initial_action)
     publish_service_providers
     redirect_to service_provider_path(service_provider)
   end
@@ -69,24 +70,6 @@ class ServiceProvidersController < AuthenticatedController
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
-  end
-
-  def notify_users(service_provider, initial_action)
-    if initial_action == :new
-      notify_users_new_service_provider(service_provider)
-    elsif service_provider.recently_approved?
-      notify_users_approved_service_provider(service_provider)
-    end
-  end
-
-  def notify_users_new_service_provider(service_provider)
-    UserMailer.admin_new_service_provider(service_provider).deliver_later
-    UserMailer.user_new_service_provider(service_provider).deliver_later
-  end
-
-  def notify_users_approved_service_provider(service_provider)
-    UserMailer.admin_approved_service_provider(service_provider).deliver_later
-    UserMailer.user_approved_service_provider(service_provider).deliver_later
   end
 
   def error_messages
@@ -104,8 +87,7 @@ class ServiceProvidersController < AuthenticatedController
       :block_encryption,
       :description,
       :friendly_name,
-      :issuer_department,
-      :issuer_app,
+      :issuer,
       :logo,
       :metadata_url,
       :return_to_sp_url,

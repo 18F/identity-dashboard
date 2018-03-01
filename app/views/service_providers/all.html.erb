@@ -1,0 +1,22 @@
+<h1>Apps</h1>
+
+<%= button_to "Publish to IdP", api_service_providers_path, method: :post %>
+
+<table class="usa-table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Friendly name</th>
+      <th scope="col">Issuer</th>
+      <th scope="col">Active</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @service_providers.each do |app| %>
+    <tr>
+      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
+      <td><%= app.issuer %></td>
+      <td><%= app.active? ? '✔' : '❌' %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

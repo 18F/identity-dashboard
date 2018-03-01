@@ -1,30 +1,25 @@
 engines:
   brakeman:
-    enabled: true
+    enabled: false
   bundler-audit:
-    enabled: true
-  csslint:
-    enabled: true
+    enabled: false
   duplication:
-    enabled: true
+    enabled: false
     config:
       languages:
       - ruby
-        # mass_threshold: 30
       - javascript
     exclude_paths:
     - 'spec/**/*'
-  eslint:
-    enabled: true
   fixme:
-    enabled: true
+    enabled: false
   rubocop:
-    enabled: true
-  scss-lint:
-    enabled: true
-
+    enabled: false
 ratings:
   paths:
   - app/**
   - lib/**
   - '**.rb'
+exclude_patterns:
+  - 'public/'
+  - 'spec/'

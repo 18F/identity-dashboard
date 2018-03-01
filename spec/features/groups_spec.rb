@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'User groups CRUD' do
-  scenario 'Create' do
+  xscenario 'Create' do
     admin = create(:admin)
     user = create(:user)
 
@@ -20,7 +20,7 @@ feature 'User groups CRUD' do
     expect(page).to have_content(user.email)
   end
 
-  context 'User already in a group' do
+  xcontext 'User already in a group' do
     scenario 'User does show up in user group that they are assigned to' do
       admin = create(:admin)
       user = create(:user)
@@ -46,7 +46,7 @@ feature 'User groups CRUD' do
     end
   end
 
-  scenario 'Update' do
+  xscenario 'Update' do
     admin = create(:admin)
     org = create(:group)
     login_as(admin)
@@ -66,7 +66,7 @@ feature 'User groups CRUD' do
     expect(page).to have_content('updated team')
   end
 
-  scenario 'Index' do
+  xscenario 'Index' do
     admin = create(:admin)
     org1 = create(:group)
     org2 = create(:group)
@@ -83,7 +83,7 @@ feature 'User groups CRUD' do
     expect(page).to have_content(sp.friendly_name)
   end
 
-  scenario 'Delete' do
+  xscenario 'Delete' do
     admin = create(:admin)
     org = create(:group)
     login_as(admin)

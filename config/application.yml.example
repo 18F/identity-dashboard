@@ -1,14 +1,8 @@
 test: &default
-  basic_auth_password: ''
-  basic_auth_username: ''
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
-  saml_idp_fingerprint: '01:29:C9:8F:31:9C:06:EC:25:9E:3C:17:D1:38:C6:5D:C9:D5:0B:58'
-  saml_idp_slo_url: 'http://idp.example.com/saml/logout'
-  saml_idp_sso_url: 'http://idp.example.com/saml/auth'
-  saml_name_id_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:persistent'
   saml_sp_certificate: |
     -----BEGIN CERTIFICATE-----
     MIIFLjCCAxYCCQD/dXjTvpnD0jANBgkqhkiG9w0BAQsFADBZMQswCQYDVQQGEwJV
@@ -41,12 +35,11 @@ test: &default
     6czR3hR8eGhocSy2VSoSymE2DlBF/Jt5Pwa8SzSHw/5/8g==
     -----END CERTIFICATE-----
 
-  saml_sp_issuer: 'https://dashboard.login.gov'
   saml_sp_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
     Proc-Type: 4,ENCRYPTED
     DEK-Info: DES-EDE3-CBC,3BBA2AE203104123
-    
+
     OP57tGYQbWtS7uQaTLRjqp+ZvuSp3eOYqHiakpGh/aLZfOrs751y0Qj51b/QXEdV
     YSRsg7xdm7MIttiYMln23JAU8gBiUGFfDzMC65I+WLDSiHFBVQ7s8aJoU9o4li08
     1/37pQ3Z2aZ0k4oPKr3iQuilFeCdJ8yFJlZ070SRGyI/8ui2T2UPDmVenF8ZTLJ8
@@ -108,9 +101,6 @@ test: &default
 development:
   <<: *default
   idp_sp_url: 'http://localhost:3000/api/service_provider'
-  saml_idp_fingerprint: '8B:D5:C2:E8:9A:2B:CE:B7:4B:95:50:BA:16:79:05:27:17:D1:D3:67'
-  saml_idp_slo_url: 'http://localhost:3000/api/saml/logout'
-  saml_idp_sso_url: 'http://localhost:3000/api/saml/auth'
 
 production:
   <<: *default

@@ -1,6 +1,0 @@
-h2 = t('headings.service_providers.new')
-
-= simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form|
-  .service-provider-form
-    == render 'form', form: form
-    = form.button :submit, 'Create'

@@ -9,12 +9,24 @@ class UserPolicy < BasePolicy
     admin?
   end
 
+  def new?
+    admin?
+  end
+
+  def create?
+    admin?
+  end
+
   def update?
     admin?
   end
 
   def edit?
     admin?
+  end
+
+  def none?
+    true
   end
 
   private
