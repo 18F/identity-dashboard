@@ -3,8 +3,6 @@ engines:
     enabled: true
   bundler-audit:
     enabled: true
-  csslint:
-    enabled: true
   duplication:
     enabled: true
     config:
@@ -20,11 +18,13 @@ engines:
     enabled: true
   rubocop:
     enabled: true
-  scss-lint:
-    enabled: true
 
 ratings:
   paths:
   - app/**
   - lib/**
   - '**.rb'
+
+exclude_patterns:
+  - 'public/'
+  - 'spec/'

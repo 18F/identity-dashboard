@@ -6,7 +6,7 @@ feature 'admin manages users' do
 
     login_as(admin)
     visit service_providers_path
-    click_on t('links.users')
+    click_on 'Users'
 
     expect(current_path).to eq(users_path)
   end

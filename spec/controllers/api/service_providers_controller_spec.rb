@@ -15,7 +15,7 @@ describe Api::ServiceProvidersController do
       expect(response_from_json).to include serialized_sp
     end
 
-    pending 'does not return un-approved SPs' do
+    xit 'does not return un-approved SPs' do
       sp = create(:service_provider, active: true, approved: false)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
