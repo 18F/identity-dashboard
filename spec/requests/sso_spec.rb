@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'SSO' do
+xdescribe 'SSO' do
   it 'uses external SAML IdP' do
     expect(User.count).to eq 0
 

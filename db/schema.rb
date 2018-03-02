@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171016184947) do
+ActiveRecord::Schema.define(version: 20180302220332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,12 @@ ActiveRecord::Schema.define(version: 20171016184947) do
   end
 
   add_index "agencies", ["name"], name: "index_agencies_on_name", unique: true, using: :btree
+
+  create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
+    t.string   "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
@@ -87,7 +93,7 @@ ActiveRecord::Schema.define(version: 20171016184947) do
   add_index "user_groups", ["user_id"], name: "index_user_groups_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "uuid",                               null: false
+    t.string   "uuid"
     t.string   "email",                              null: false
     t.string   "first_name"
     t.string   "last_name"

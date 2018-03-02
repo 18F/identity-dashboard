@@ -1,0 +1,10 @@
+test: &default
+  idp_url: http://localhost:3000
+  client_id: urn:gov:gsa:openidconnect:sp:dashboard
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+  idp_url: https://idp.int.identitysandbox.gov

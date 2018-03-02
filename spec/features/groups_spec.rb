@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User groups CRUD' do
+xfeature 'User groups CRUD' do
   scenario 'Create' do
     admin = create(:admin)
     user = create(:user)

@@ -1,14 +1,10 @@
 Rails.application.routes.draw do
-  # Devise handles login itself. It's first in the chain to avoid a redirect loop during
-  # authentication failure.
-  devise_for :users, skip: [:sessions], controllers: {
-    omniauth_callbacks: 'users/omniauth_callbacks'
-  }
+  devise_for :users, skip: [:sessions]
 
   devise_scope :user do
     get '/users/sessions' => 'users/sessions#new', as: :new_user_session
     post '/users/sessions' => 'users/sessions#create', as: :user_session
-    post '/users/auth/saml/logout' => 'users/omniauth_callbacks#logout'
+    get '/users/result' => 'users/sessions#result'
     get '/users/logout' => 'users/sessions#destroy', as: :destroy_user_session
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
@@ -17,6 +13,7 @@ Rails.application.routes.draw do
   resources :service_providers
   resources :groups, except: [:show]
   resources :users, only: %i[index edit update]
+  get 'users/none' => 'users#none'
 
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
