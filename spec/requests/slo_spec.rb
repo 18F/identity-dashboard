@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'SLO' do
+xdescribe 'SLO' do
   describe 'IdP-initiated' do
     it 'uses external SAML IdP' do
       # ask the IdP to initiate a SLO

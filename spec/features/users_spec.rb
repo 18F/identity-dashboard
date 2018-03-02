@@ -25,7 +25,7 @@ feature 'admin manages users' do
     end
   end
 
-  scenario 'admin edits users' do
+  xscenario 'admin edits users' do
     admin = create(:admin)
     user = create(:user)
 

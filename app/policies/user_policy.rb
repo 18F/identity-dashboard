@@ -17,6 +17,10 @@ class UserPolicy < BasePolicy
     admin?
   end
 
+  def none?
+    true
+  end
+
   private
 
   def admin?

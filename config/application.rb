@@ -10,6 +10,7 @@ require 'sprockets/railtie'
 Bundler.require(*Rails.groups)
 module IdentityDashboard
   class Application < Rails::Application
+    config.oidc = config_for(:oidc)
     config.quiet_assets = true
     config.generators do |generate|
       generate.helper false
