@@ -6,21 +6,21 @@ SecureHeaders::Configuration.default do |config|
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
   config.csp = {
-    default_src: %w('self'),
+    default_src: %w['self'],
     report_only: Rails.env.development? ? true : false,
-    frame_src: %w('self'), # deprecated in CSP 2.0
-    child_src: %w('self'), # CSP 2.0 only; replaces frame_src
+    frame_src: %w['self'], # deprecated in CSP 2.0
+    child_src: %w['self'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
-    form_action: %w('self'), # CSP 2.0 only
+    form_action: %w['self'], # CSP 2.0 only
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: %w('self'),
-    font_src: %w('self' data:),
-    img_src: %w('self' data:),
-    media_src: %w('self'),
-    object_src: %w('none'),
-    script_src: %w('self' *.newrelic.com *.nr-data.net),
-    style_src: %w('self'),
-    base_uri: %w('self')
+    connect_src: %w['self'],
+    font_src: %w['self' data:],
+    img_src: %w['self' data:],
+    media_src: %w['self'],
+    object_src: %w['none'],
+    script_src: %w['self' *.newrelic.com *.nr-data.net],
+    style_src: %w['self'],
+    base_uri: %w['self']
   }
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
