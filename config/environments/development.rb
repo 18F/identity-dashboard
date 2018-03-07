@@ -24,4 +24,6 @@ Rails.application.configure do
     port: Figaro.env.smtp_port || 2025
   }
   config.action_mailer.perform_deliveries = true
+
+  $stdout.sync = true
 end

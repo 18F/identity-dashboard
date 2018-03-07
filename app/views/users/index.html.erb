@@ -1,0 +1,24 @@
+<h1>Users</h1>
+
+<%= link_to 'Create a new user', new_user_path %> 👋
+
+<table class="usa-table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Email</th>
+      <th scope="col">Signed in</th>
+      <th scope="col">Admin</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+    <tr>
+      <th scope="row"><%= user.email %></th>
+      <td><%= user.uuid? ? '✔️' : '❌' %></td>
+      <td><%= user.admin? ? '💪' : '' %></td>
+      <td><%= link_to 'edit', edit_user_path(user.id) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
