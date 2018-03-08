@@ -22,13 +22,10 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
-      within('table.horizontal-headers') do
+      within('table') do
         expect(page).to have_content('test service_provider')
         expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
         expect(page).to have_content('email')
-        expect(page).to have_content('first_name')
-        expect(page).to have_css('img[src*=sp-logos]')
-        expect(page).to have_content('Openid connect')
       end
     end
 
@@ -124,7 +121,7 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can create service provider with user group and approval' do
+    scenario 'can create service provider with user group' do
       admin = create(:admin)
       agency = create(:agency)
       group = create(:group)
@@ -132,7 +129,6 @@ feature 'Service Providers CRUD' do
 
       visit new_service_provider_path
 
-      choose('service_provider_approved_true')
       select group, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer department', with: 'GSA'
@@ -149,7 +145,7 @@ feature 'Service Providers CRUD' do
       admin = create(:admin)
       login_as(admin)
 
-      visit service_providers_path
+      visit service_providers_all_path
 
       click_on t('forms.buttons.trigger_idp_refresh')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
@@ -176,11 +172,10 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
-      within('table.horizontal-headers') do
+      within('table') do
         expect(page).to have_content('app description foobar')
         expect(page).to have_content('change service_provider name')
         expect(page).to have_content('last_name')
-        expect(page).to have_content('Identity ProtocolSaml')
       end
     end
 

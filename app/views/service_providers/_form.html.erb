@@ -1,0 +1,49 @@
+<%= form.error_notification %>
+
+<div class="form-fields">
+
+<div class="common-fields">
+  <%= form.input :friendly_name, label: "<b>Friendly name</b><br>The name of your app that will get displayed to users when logging in.".html_safe %>
+  <%= form.input :description, label: "<b>Description</b><br>A description of the app (may be helpful for your colleagues).<br>".html_safe %>
+  <%= form.association :group,
+      as: :collection_select,
+      collection: current_user.scoped_groups,
+      label: "<b>Group</b><br>The agency group you would like this client to be assigned to.".html_safe,
+      disabled: !can_edit_groups?(current_user) %>
+  <%= form.input :identity_protocol, as: :radio_buttons, label: "<b>Identity protocol</b><br>We highly recommend using OpenID Connect, unless a technical reason prevents you.<br>".html_safe %>
+  <%= form.input :issuer, disabled: true, hint: form.object.new_record? %>
+  <% if form.object.new_record? %>
+    <%= form.input :issuer_department %>
+    <%= form.input :issuer_app %>
+  <% end %>
+  <%= form.association :agency %>
+  <%= form.input :logo, placeholder: 'generic.svg', label: "<b>Logo</b><br>The name of the <a href='https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos' target='_blank'>logo image file</a> in the IdP. The login.gov team can add this image for you.".html_safe %>
+  <%= form.input :saml_client_cert, label: "<b>Public key</b><br>Your public key, needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail' target='_blank'>PEM encoded</a>, for example in the form:<br><pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>".html_safe %>
+<div>
+
+<div class="saml-fields">
+  <%= form.input :acs_url, input_html: { class: 'h4p4' }, label: "<b>Assertion Consumer Service URL</b> — <i>SAML only</i><br>Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>".html_safe %>
+  <%= form.input :assertion_consumer_logout_service_url, input_html: { class: 'h4p4' }, label: "<b>Assertion Consumer Logout Service URL</b> — <i>SAML only</i><br>The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>".html_safe %>
+  <%= form.input :sp_initiated_login_url, input_html: { class: 'h4p4' }, label: "<b>SP Initiated Login URL</b> — <i>SAML only</i><br>The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>".html_safe %>
+</div>
+
+<%= form.input :return_to_sp_url, input_html: { class: 'h4p4' }, label: "<b>Return to App URL</b><br>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
+
+<div class="oidc-fields">
+  <%= form.input :redirect_uris, label: "<b>Redirect URIs</b> — <i>OpenID Connect only</i><br>One or more URI login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>x-example-app:/result</code>".html_safe %>
+</div>
+
+<fieldset class="usa-fieldset-inputs">
+  <legend>Attribute bundle</legend>
+  <p>The possible <a href="https://developers.login.gov/attributes" target="_blank">user attributes</a> to be requested by your app. Note for LOA1, only UUID and email can be requested.</p>
+    <%= collection_check_boxes(:service_provider,
+        :attribute_bundle,
+        ServiceProvider.possible_attributes, :first, :last) do |b| %>
+        <%= b.check_box %>
+        <%= b.label %>
+    <% end %>
+</fieldset>
+
+<%= form.input :active, as: :radio_buttons, label: "<b>Active</b><br>Use to activate or deactivate the app.<br>".html_safe %>
+
+</div>

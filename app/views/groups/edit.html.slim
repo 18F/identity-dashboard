@@ -1,6 +1,0 @@
-h2 = t('headings.groups.edit')
-
-= simple_form_for(@group, html: { autocomplete: 'off', role: 'form' }) do |form|
-  = form.error_notification
-  = render 'form', form: form
-  = form.button :submit, 'Update'

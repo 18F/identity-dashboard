@@ -1,0 +1,11 @@
+<div class="form-fields">
+
+<%= form.input :name, label: "<b>Name</b>".html_safe %>
+<%= form.input :description, label: "<b>Description</b>".html_safe %>
+<%= form.association :users,
+    label_method: :email,
+    collection: User.all.sorted,
+    input_html: { class: 'h16' },
+    label: "<b>Users</b><br>Hold the <code>command</code> key and click on macOS to select multiple users.".html_safe %>
+
+</div>
