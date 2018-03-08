@@ -68,13 +68,11 @@ RSpec.describe DeployStatusChecker do
         to_return(body: status_json.to_json)
       stub_request(:get, %r{https://.*\.staging\.login\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.pt\.login\.gov/api/deploy\.json}).
+      stub_request(:get, %r{https://.*\.int\.identitysandbox\.gov/api/deploy\.json}).
         to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.int\.login\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.dev\.login\.gov/api/deploy\.json}).
+      stub_request(:get, %r{https://.*\.dev\.identitysandbox\.gov/api/deploy\.json}).
         to_return(status: 404)
-      stub_request(:get, %r{https://.*\.qa\.login\.gov/api/deploy\.json}).
+      stub_request(:get, %r{https://.*\.qa\.identitysandbox\.gov/api/deploy\.json}).
         to_timeout
     end
 

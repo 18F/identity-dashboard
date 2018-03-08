@@ -2,9 +2,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i(update edit show destroy)
   before_action :authorize_approval, only: [:update]
 
-  def index
-    @service_providers = ServiceProvider.all if current_user.admin?
-  end
+  def index; end
 
   def create
     @service_provider = ServiceProvider.new(service_provider_params)
@@ -30,6 +28,10 @@ class ServiceProvidersController < AuthenticatedController
   def edit; end
 
   def show; end
+
+  def all
+    @service_providers = ServiceProvider.all if current_user.admin?
+  end
 
   private
 

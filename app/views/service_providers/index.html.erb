@@ -1,0 +1,22 @@
+<h1>My apps</h1>
+
+<%= link_to 'Create a new test app', new_service_provider_path %> 🚀
+
+<table class="usa-table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Friendly name</th>
+      <th scope="col">Issuer</th>
+      <th scope="col">Active</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% current_user.scoped_service_providers.each do |app| %>
+    <tr>
+      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
+      <td><%= app.issuer %></td>
+      <td><%= app.active? ? '✔' : '❌' %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

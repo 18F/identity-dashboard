@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Service Provider approval' do
+xfeature 'Service Provider approval' do
   context 'user is an admin' do
     scenario 'has option to approve service provider' do
       admin_user = create(:user, admin: true)

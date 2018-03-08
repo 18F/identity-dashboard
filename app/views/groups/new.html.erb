@@ -1,0 +1,9 @@
+<h1>New group</h1>
+
+<%= simple_form_for(@group,
+    html: { autocomplete: 'off', role: 'form' },
+    url: groups_path) do |form| %>
+  <%= form.error_notification %>
+  <%= render 'form', form: form %>
+  <%= form.button :submit, 'Create' %>
+<% end %>
