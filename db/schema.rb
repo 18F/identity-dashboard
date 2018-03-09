@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180302220332) do
+ActiveRecord::Schema.define(version: 20180309010908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20180302220332) do
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.string   "name",                     null: false
-    t.text     "description", default: "", null: false
+    t.text     "description", default: ""
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20180302220332) do
   create_table "service_providers", force: :cascade do |t|
     t.integer  "user_id",                                               null: false
     t.string   "issuer",                                                null: false
-    t.string   "friendly_name"
+    t.string   "friendly_name",                                         null: false
     t.text     "description"
     t.text     "metadata_url"
     t.text     "acs_url"
@@ -67,11 +67,11 @@ ActiveRecord::Schema.define(version: 20180302220332) do
     t.integer  "block_encryption",                      default: 1,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                                default: false, null: false
+    t.boolean  "active",                                default: true,  null: false
     t.boolean  "approved",                              default: false, null: false
     t.text     "sp_initiated_login_url"
     t.text     "return_to_sp_url"
-    t.integer  "agency_id",                                             null: false
+    t.integer  "agency_id"
     t.json     "attribute_bundle"
     t.integer  "group_id"
     t.string   "logo"

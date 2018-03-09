@@ -1,3 +1,6 @@
+// Note: We've temporarily disabled validation of the issuer. Calls to
+// `update_issuer` have been commented out.
+
 var SERVICE_PROVIDER_ISSUER_TEMPLATE = 'urn:gov:gsa:{protocol}.profiles:sp:sso:{department}:{app}'
 
 $(function(){
@@ -53,9 +56,9 @@ $(function(){
 
   $('input[name="service_provider[identity_protocol]"]').click(function(){
     toggle_form_fields(id_protocol());
-    update_issuer();
+    // update_issuer();
   });
 
-  $('input[name="service_provider[issuer_department]"]').keyup(update_issuer);
-  $('input[name="service_provider[issuer_app]"]').keyup(update_issuer);
+  // $('input[name="service_provider[issuer_department]"]').keyup(update_issuer);
+  // $('input[name="service_provider[issuer_app]"]').keyup(update_issuer);
 });
