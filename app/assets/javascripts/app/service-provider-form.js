@@ -61,4 +61,9 @@ $(function(){
 
   // $('input[name="service_provider[issuer_department]"]').keyup(update_issuer);
   // $('input[name="service_provider[issuer_app]"]').keyup(update_issuer);
+
+  // Add another Redirect URI
+  $("#add-redirect-uri-field").click(function() {
+    $(".service_provider_redirect_uris input:last-child").clone().appendTo(".service_provider_redirect_uris");
+  });
 });

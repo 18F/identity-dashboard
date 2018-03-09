@@ -26,6 +26,7 @@
 
 <div class="oidc-fields">
   <%= form.input :redirect_uris, label: "<b>Redirect URIs</b> — <i>OpenID Connect only</i><br>One or more URI login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>x-example-app:/result</code>".html_safe %>
+  <button id="add-redirect-uri-field" class="usa-button" type="button">Add another URI</button>
 </div>
 
 <fieldset class="usa-fieldset-inputs">

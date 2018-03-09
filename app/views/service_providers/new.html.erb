@@ -1,9 +1,7 @@
 <h1>New test app</h1>
 
-<div class="service-provider-form">
-  <%= simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form' }) do |form| %>
-    <%= render 'form', form: form %>
-    <br>
-    <%= form.button :submit, 'Create test app' %>
-  <% end %>
-<div>
+<%= simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form' }) do |form| %>
+  <%= render 'form', form: form %>
+  <br>
+  <%= form.button :submit, 'Create test app' %>
+<% end %>
