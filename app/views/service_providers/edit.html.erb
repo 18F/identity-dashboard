@@ -1,6 +1,6 @@
 <h1>Editing "<%= service_provider.friendly_name %>"</h1>
 
-<%= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form' }) do |form| %>
+<%= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form' }) do |form| %>
   <% selected_group = @service_provider.group_id %>
   <%= render 'form', form: form, selected_group: selected_group %>
     <br><br>
@@ -8,5 +8,4 @@
         class: 'fma0 fmr1 fl' %>
     <%= link_to t('forms.buttons.cancel'), service_provider_path(service_provider),
         class: 'usa-button usa-button-secondary ma0 pa135', role: :button %>
-
 <% end %>
