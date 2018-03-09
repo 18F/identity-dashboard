@@ -1,4 +1,7 @@
 class ServiceProvider < ActiveRecord::Base
+  # Note: We've temporarily disabled validation of the issuer. Validations have
+  # been commented out.
+
   ISSUER_FORMAT_REGEXP = /
     \Aurn:gov:gsa:(?<protocol>SAML:2\.0|openidconnect)
     \.profiles:sp:sso:(?<department>.+):(?<app>.+)\z
@@ -14,17 +17,18 @@ class ServiceProvider < ActiveRecord::Base
   enum block_encryption: { 'aes256-cbc' => 1 }
   enum identity_protocol: { openid_connect: 0, saml: 1 }
 
+  validates :friendly_name, presence: true
   validates :issuer, presence: true, uniqueness: true
-  validates :issuer, format: { with: ISSUER_FORMAT_REGEXP }, on: :create
-  validates :issuer_department, presence: true, on: :create
-  validates :issuer_app, presence: true, on: :create
-  validates :agency, presence: true
+  # validates :issuer, format: { with: ISSUER_FORMAT_REGEXP }, on: :create
+  # validates :issuer_department, presence: true, on: :create
+  # validates :issuer_app, presence: true, on: :create
+  # validates :agency
   validate :redirect_uris_are_parsable
 
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
-  before_validation :build_issuer, on: :create
+  # before_validation :build_issuer, on: :create
 
   def issuer_department
     @issuer_department || ServiceProviderIssuerParser.new(issuer).parse[:department]

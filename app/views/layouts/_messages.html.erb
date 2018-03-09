@@ -1,10 +1,12 @@
 <% unless flash.empty? %>
   <% flash.each do |name, msg| %>
     <% if msg.is_a?(String) %>
-      <div div class="alert alert-#{name}">
-        <%= msg %>
+      <% if name == 'notice' then name = 'info' end %>
+      <div class="usa-alert usa-alert-<%= name %>" >
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-text"><%= msg %></h3>
+        </div>
       </div>
     <% end %>
   <% end %>
-  <div id="session_warning_container"></div>
 <% end %>

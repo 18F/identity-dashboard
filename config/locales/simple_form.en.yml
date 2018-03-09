@@ -4,9 +4,6 @@ en:
     placeholders:
       service_provider:
        logo: 'generic.svg'
-    hints:
-      service_provider:
-        issuer: Enter department and app to generate uid
     labels:
       service_provider:
         acs_url: Assertion Consumer Service URL

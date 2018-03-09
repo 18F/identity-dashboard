@@ -12,9 +12,7 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content('Approved')
 
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer department', with: 'GSA'
-      fill_in 'Issuer app', with: 'app-prod'
-      select agency.name, from: 'service_provider[agency_id]'
+      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       fill_in 'service_provider_logo', with: 'test.png'
       check 'email'
       check 'first_name'
@@ -131,9 +129,7 @@ feature 'Service Providers CRUD' do
 
       select group, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer department', with: 'GSA'
-      fill_in 'Issuer app', with: 'app-prod'
-      select agency.name, from: 'service_provider[agency_id]'
+      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app'
       check 'email'
       check 'first_name'
       click_on 'Create'

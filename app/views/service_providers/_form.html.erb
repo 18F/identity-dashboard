@@ -11,12 +11,7 @@
       label: "<b>Group</b><br>The agency group you would like this client to be assigned to.".html_safe,
       disabled: !can_edit_groups?(current_user) %>
   <%= form.input :identity_protocol, as: :radio_buttons, label: "<b>Identity protocol</b><br>We highly recommend using OpenID Connect, unless a technical reason prevents you.<br>".html_safe %>
-  <%= form.input :issuer, disabled: true, hint: form.object.new_record? %>
-  <% if form.object.new_record? %>
-    <%= form.input :issuer_department %>
-    <%= form.input :issuer_app %>
-  <% end %>
-  <%= form.association :agency %>
+  <%= form.input :issuer, label: "<b>Issuer</b><br>A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br><i>For OpenID Connect:</i><br><code class='ml2'>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br><i>For SAML:</i><br><code class='ml2'>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>".html_safe %>
   <%= form.input :logo, placeholder: 'generic.svg', label: "<b>Logo</b><br>The name of the <a href='https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos' target='_blank'>logo image file</a> in the IdP. The login.gov team can add this image for you.".html_safe %>
   <%= form.input :saml_client_cert, label: "<b>Public key</b><br>Your public key, needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail' target='_blank'>PEM encoded</a>, for example in the form:<br><pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>".html_safe %>
 <div>
