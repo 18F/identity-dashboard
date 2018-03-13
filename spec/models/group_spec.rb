@@ -8,7 +8,6 @@ describe Group do
 
   describe 'Validations' do
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:description) }
 
     it 'validates uniqueness of name' do
       name = 'good name'
