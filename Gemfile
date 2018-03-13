@@ -14,40 +14,35 @@ gem 'jquery-rails'
 gem 'json-jwt'
 gem 'jwt'
 gem 'newrelic_rpm', '>= 3.9.8'
-gem 'nokogiri', '>= 1.7.1'
 gem 'pg'
 gem 'pundit'
 gem 'rack-canonical-host'
-gem 'rails', '~> 4.2.0'
+gem 'rails', '~> 5.1'
 gem 'recipient_interceptor'
 gem 'ruby_regex'
-gem 'sass-rails', '~> 5.0'
-gem 'secure_headers', '~> 3.0.0'
+gem 'sass-rails'
+gem 'secure_headers'
 gem 'simple_form'
-gem 'slim-rails'
-gem 'uglifier'
 
 group :deploy do
-  gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano'
   gem 'capistrano-passenger'
-  gem 'capistrano-rails' # , '~> 1.1', require: false
+  gem 'capistrano-rails'
 end
 
 group :development do
   gem 'bummr', require: false
-  gem 'quiet_assets'
   gem 'rubocop'
   gem 'web-console'
 end
 
 group :development, :test do
   gem 'bullet'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'i18n-tasks'
-  gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.4.0'
+  gem 'pry'
+  gem 'rspec-rails'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
-  gem 'slim_lint'
 end
 
 group :test do
@@ -56,6 +51,7 @@ group :test do
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'rack_session_access'
+  gem 'rails-controller-testing'
   gem 'shoulda-matchers'
   gem 'sinatra'
   gem 'timecop'

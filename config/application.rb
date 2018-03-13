@@ -22,7 +22,6 @@ module IdentityDashboard
       generate.view_specs false
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
-    config.active_record.raise_in_transactional_callbacks = true
     config.active_job.queue_adapter = :delayed_job
 
     # Set the number of seconds the timeout warning should occur before

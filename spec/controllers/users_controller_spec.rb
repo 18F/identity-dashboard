@@ -24,14 +24,14 @@ describe UsersController do
 
   xdescribe '#edit' do
     it 'requires user to be an admin' do
-      get :edit, id: user.uuid
+      get :edit, params: { id: user.uuid }
       expect(response.status).to eq(401)
     end
   end
 
   xdescribe '#update' do
     it 'requires user to be an admin' do
-      patch :update, id: user.uuid, user: { admin: 'true' }
+      patch :update, params: { id: user.uuid, user: { admin: 'true' } }
       expect(response.status).to eq(401)
     end
   end
