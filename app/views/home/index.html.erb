@@ -23,11 +23,18 @@
 
   <% environment.statuses.each do |status| %>
     <div>
+      <% if status.status_class == 'deploy-success' %>
+        💚
+      <% elsif status.status_class == 'deploy-error' %>
+        💔
+      <% elsif status.status_class == 'disabled' %>
+        🚫
+      <% end %>
 
       <% if status.host %>
-        💚 <%= link_to status.short_name, status.host %> —
+        <%= link_to status.short_name, status.host %> —
       <% else %>
-        💔 <%= status.short_name %> —
+        <%= status.short_name %> —
       <% end %>
 
       <% if status.error %>
@@ -38,7 +45,6 @@
             time: time_ago_in_words(status.timestamp),
             href: link_to(t('links.pending_changes'), status.pending_url) %>
       <% end %>
-
     </div>
   <% end %>
 
