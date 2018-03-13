@@ -1,6 +1,6 @@
 test: &default
   idp_url: http://localhost:3000
-  client_id: urn:gov:gsa:openidconnect:sp:dashboard
+  client_id: urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard
 
 development:
   <<: *default
