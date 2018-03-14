@@ -16,7 +16,7 @@ module Users
         "&client_id=" + CGI.escape(Rails.configuration.oidc['client_id']) +
         "&nonce=#{SecureRandom.hex}" +
         "&prompt=select_account" +
-        "&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fusers%2Fresult" +
+        "&redirect_uri=" + CGI.escape(Rails.configuration.oidc['dashboard_url'] + '/users/result') +
         "&response_type=code" +
         "&scope=openid+email" +
         "&state=#{SecureRandom.hex}"
