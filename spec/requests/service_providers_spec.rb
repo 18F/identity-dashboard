@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Users::ServiceProviders' do
-  describe 'approve on update' do
+  xdescribe 'approve on update' do
     it 'disallows app owner from approving the app' do
       app = create(:service_provider)
       login_as(app.user)

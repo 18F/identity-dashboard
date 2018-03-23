@@ -70,6 +70,7 @@ GEM
     bummr (0.2.1)
       rainbow
       thor
+    byebug (10.0.1)
     capistrano (3.10.1)
       airbrussh (>= 1.0.0)
       i18n
@@ -199,6 +200,9 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-byebug (3.6.0)
+      byebug (~> 10.0)
+      pry (~> 0.10)
     public_suffix (3.0.1)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
@@ -398,7 +402,7 @@ DEPENDENCIES
   nokogiri (>= 1.7.1)
   pg
   poltergeist
-  pry
+  pry-byebug
   pundit
   quiet_assets
   rack-canonical-host
