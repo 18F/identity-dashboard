@@ -156,10 +156,6 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(app)
 
-      expect(page).to_not have_content('Approved')
-      expect(page).to_not have_content('Issuer department')
-      expect(page).to_not have_content('Issuer app')
-
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
       choose 'Saml'

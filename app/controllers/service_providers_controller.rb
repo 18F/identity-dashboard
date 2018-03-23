@@ -60,7 +60,6 @@ class ServiceProvidersController < AuthenticatedController
   def save_service_provider(initial_action)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    notify_users(service_provider, initial_action)
     publish_service_providers
     redirect_to service_provider_path(service_provider)
   end
