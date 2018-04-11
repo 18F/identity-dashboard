@@ -38,34 +38,34 @@ describe GroupsController do
 
     it 'renders #new if it fails to create' do
       user.admin = true
-      post :create, group: { name: '' }
+      post :create, params: { group: { name: '' } }
       expect(response).to render_template(:new)
     end
   end
 
   describe '#destroy' do
     it 'requires user to be an admin' do
-      delete :destroy, id: org.id
+      delete :destroy, params: { id: org.id }
       expect(response.status).to eq(401)
     end
   end
 
   describe '#edit' do
     it 'requires user to be an admin' do
-      get :edit, id: org.id
+      get :edit, params: { id: org.id }
       expect(response.status).to eq(401)
     end
   end
 
   describe '#update' do
     it 'requires user to be an admin' do
-      patch :update, id: org.id
+      patch :update, params: { id: org.id }
       expect(response.status).to eq(401)
     end
 
     it 'renders #edit if it fails to create' do
       user.admin = true
-      patch :update, id: org.id, group: { name: '' }
+      patch :update, params: { id: org.id, group: { name: '' } }
       expect(response).to render_template(:edit)
     end
   end

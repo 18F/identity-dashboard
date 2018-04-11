@@ -16,8 +16,6 @@ check: lint test
 lint:
 	@echo "--- rubocop ---"
 	bundle exec rubocop
-	@echo "--- slim-lint ---"
-	bundle exec slim-lint app/views
 	@echo "--- reek ---"
 	bundle exec reek
 

@@ -6,7 +6,6 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.serve_static_files = Figaro.env.serve_static_files == 'true'
   config.middleware.use Rack::Deflater
-  config.assets.js_compressor = Uglifier.new(harmony: true)
   config.assets.compile = false
   config.assets.digest = true
   config.log_level = :debug

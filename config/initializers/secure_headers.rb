@@ -7,7 +7,6 @@ SecureHeaders::Configuration.default do |config|
   config.x_permitted_cross_domain_policies = 'none'
   config.csp = {
     default_src: %w['self'],
-    report_only: Rails.env.development? ? true : false,
     frame_src: %w['self'], # deprecated in CSP 2.0
     child_src: %w['self'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
