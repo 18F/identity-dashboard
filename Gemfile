@@ -18,7 +18,7 @@ gem 'nokogiri', '>= 1.7.1'
 gem 'pg'
 gem 'pundit'
 gem 'rack-canonical-host'
-gem 'rails', '~> 4.2.0'
+gem 'rails', '~> 5.0.7'
 gem 'recipient_interceptor'
 gem 'ruby_regex'
 gem 'sass-rails', '~> 5.0'
@@ -35,7 +35,6 @@ end
 
 group :development do
   gem 'bummr', require: false
-  gem 'quiet_assets'
   gem 'rubocop'
   gem 'web-console'
 end
@@ -56,10 +55,12 @@ group :test do
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'rack_session_access'
+  gem 'rails-controller-testing'
   gem 'shoulda-matchers'
   gem 'sinatra'
   gem 'timecop'
   gem 'webmock'
+  gem 'websocket-driver', '=0.6.5'
 end
 
 group :production do
