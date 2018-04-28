@@ -42,7 +42,7 @@ end
 
 group :development, :test do
   gem 'bullet'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'i18n-tasks'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.4.0'

@@ -103,7 +103,7 @@ class FakeSamlIdp < Sinatra::Base
     if saml_request && saml_request.name_id
       User.find_by_uuid(saml_request.name_id)
     else
-      FactoryGirl.build(:user, uuid: SecureRandom.uuid)
+      FactoryBot.build(:user, uuid: SecureRandom.uuid)
     end
   end
 end
