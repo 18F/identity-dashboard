@@ -4,7 +4,6 @@ ruby '~> 2.3.5'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
-gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'enum_help'

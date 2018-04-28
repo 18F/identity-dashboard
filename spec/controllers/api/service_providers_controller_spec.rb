@@ -49,13 +49,10 @@ describe Api::ServiceProvidersController do
         sign_in(user)
       end
 
-      xit 'creates delayed job' do
-        expect(Delayed::Job.count).to eq 0
-
+      it 'redirects to service_providers_path' do
         post :update
 
         expect(response).to redirect_to service_providers_path
-        expect(Delayed::Job.count).to eq 1
       end
     end
   end
