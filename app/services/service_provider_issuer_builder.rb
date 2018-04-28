@@ -12,7 +12,7 @@ class ServiceProviderIssuerBuilder
       ISSUER_TEMPLATE,
       protocol: protocol_substring,
       department: service_provider.issuer_department,
-      app: service_provider.issuer_app,
+      app: service_provider.issuer_app
     )
   end
 

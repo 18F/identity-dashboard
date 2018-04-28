@@ -15,18 +15,18 @@ describe ServiceProvider do
     xit 'validate that issuer is formatted correctly' do
       valid_service_provider = build(
         :service_provider,
-        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app',
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
       )
       invalid_service_provider = build(
         :service_provider,
-        issuer: 'i-dont-care-about-your-rules',
+        issuer: 'i-dont-care-about-your-rules'
       )
 
       expect(valid_service_provider.valid?).to eq(true)
       expect(invalid_service_provider.valid?).to eq(false)
       expect(invalid_service_provider.errors).to include(:issuer)
       expect(invalid_service_provider.errors[:issuer]).to include(
-        t('activerecord.errors.models.service_provider.attributes.issuer.invalid'),
+        t('activerecord.errors.models.service_provider.attributes.issuer.invalid')
       )
     end
 

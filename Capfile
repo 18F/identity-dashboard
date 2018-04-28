@@ -14,7 +14,7 @@ require 'capistrano/rails'
 require 'new_relic/recipes'
 
 # support for git
-require "capistrano/scm/git"
+require 'capistrano/scm/git'
 install_plugin Capistrano::SCM::Git
 
 # support for whenever

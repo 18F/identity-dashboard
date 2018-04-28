@@ -53,7 +53,7 @@ class DeployStatusChecker
     else
       status_from_error(deploy, response.code)
     end
-  rescue => error
+  rescue StandardError => error
     status_from_error(deploy, error.message)
   end
 

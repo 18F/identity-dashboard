@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action :authorize_service_provider, only: %i(update edit show destroy)
+  before_action :authorize_service_provider, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
 
   def index; end
@@ -57,7 +57,7 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-  def save_service_provider(initial_action)
+  def save_service_provider(_initial_action)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_providers
@@ -114,7 +114,7 @@ class ServiceProvidersController < AuthenticatedController
       :group_id,
       :identity_protocol,
       attribute_bundle: [],
-      redirect_uris: [],
+      redirect_uris: []
     )
   end
   # rubocop:enable MethodLength

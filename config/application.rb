@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 require 'rails'
 require 'active_model/railtie'
 require 'active_job/railtie'

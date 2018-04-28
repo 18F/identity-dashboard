@@ -6,7 +6,7 @@ describe ServiceProviderIssuerBuilder do
       build(
         :service_provider,
         issuer_department: 'ABC',
-        issuer_app: 'app-name',
+        issuer_app: 'app-name'
       )
     end
 
@@ -16,7 +16,7 @@ describe ServiceProviderIssuerBuilder do
         issuer = ServiceProviderIssuerBuilder.new(service_provider).build_issuer
 
         expect(issuer).to eq(
-          'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:app-name',
+          'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:app-name'
         )
       end
     end
@@ -27,7 +27,7 @@ describe ServiceProviderIssuerBuilder do
         issuer = ServiceProviderIssuerBuilder.new(service_provider).build_issuer
 
         expect(issuer).to eq(
-          'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:app-name',
+          'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:app-name'
         )
       end
     end

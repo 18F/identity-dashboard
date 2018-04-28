@@ -21,7 +21,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'localhost:3001' }
   config.action_mailer.smtp_settings = {
     address: Figaro.env.smtp_host || 'localhost',
-    port: Figaro.env.smtp_port || 2025
+    port: Figaro.env.smtp_port || 2025,
   }
   config.action_mailer.perform_deliveries = true
 

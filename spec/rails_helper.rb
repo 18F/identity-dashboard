@@ -1,12 +1,12 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'spec_helper'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 
 require 'rspec/rails'
 require 'pundit/rspec'
 
-Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |file| require file }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false

@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action -> { authorize Group }
-  before_action :find_group, only: %i(show edit update destroy)
+  before_action :find_group, only: %i[edit update destroy]
 
   def new
     @group = Group.new

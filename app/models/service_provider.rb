@@ -25,7 +25,7 @@ class ServiceProvider < ApplicationRecord
   # validates :agency
   validate :redirect_uris_are_parsable
 
-  before_validation(on: %i(create update)) do
+  before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
   # before_validation :build_issuer, on: :create
@@ -40,7 +40,7 @@ class ServiceProvider < ApplicationRecord
 
   # rubocop:disable MethodLength
   def self.possible_attributes
-    possible = %w(
+    possible = %w[
       email
       first_name
       middle_name
@@ -53,10 +53,10 @@ class ServiceProvider < ApplicationRecord
       dob
       ssn
       phone
-    )
+    ]
     Hash[*possible.collect { |v| [v, v] }.flatten]
   end
-  # rubocop:ensable MethodLength
+  # rubocop:enable MethodLength
 
   def recently_approved?
     previous_changes.key?(:approved) && previous_changes[:approved].last == true

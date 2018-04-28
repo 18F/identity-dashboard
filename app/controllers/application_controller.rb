@@ -10,6 +10,6 @@ class ApplicationController < ActionController::Base
   end
 
   def render_401
-    render file: 'public/401.html', status: 401
+    render file: 'public/401.html', status: :unauthorized
   end
 end

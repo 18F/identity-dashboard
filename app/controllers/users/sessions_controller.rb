@@ -10,20 +10,23 @@ module Users
 
     def new
       flash.clear
-      redirect_to "" +
-        Rails.configuration.oidc['idp_url'] + "/openid_connect/authorize?" +
-        "&acr_values=http%3A%2F%2Fidmanagement.gov%2Fns%2Fassurance%2Floa%2F1" +
-        "&client_id=" + CGI.escape(Rails.configuration.oidc['client_id']) +
-        "&nonce=#{SecureRandom.hex}" +
-        "&prompt=select_account" +
-        "&redirect_uri=" + CGI.escape(Rails.configuration.oidc['dashboard_url'] + '/users/result') +
-        "&response_type=code" +
-        "&scope=openid+email" +
-        "&state=#{SecureRandom.hex}"
+
+      dashboard_url = CGI.escape(Rails.configuration.oidc['dashboard_url'])
+      idp_url = Rails.configuration.oidc['idp_url']
+
+      redirect_to "#{idp_url}/openid_connect/authorize?" \
+                  "&acr_values=http%3A%2F%2Fidmanagement.gov%2Fns%2Fassurance%2Floa%2F1" \
+                  "&client_id=" + CGI.escape(Rails.configuration.oidc['client_id']) +
+                  "&nonce=#{SecureRandom.hex}" \
+                  "&prompt=select_account" \
+                  "&redirect_uri=#{dashboard_url}/users/result" \
+                  "&response_type=code" \
+                  "&scope=openid+email" \
+                  "&state=#{SecureRandom.hex}"
     end
 
     def result
-      unless params[:code] then redirect_to root_path end
+      redirect_to root_path unless params[:code]
 
       token_response = token(params[:code])
 
@@ -35,11 +38,8 @@ module Users
         leeway: 5
       ).first.with_indifferent_access
 
-      puts "id_token[:sub]: #{id_token[:sub]}"
-      puts "id_token[:email]: #{id_token[:email]}"
-
       # See if admin has created user an account
-      @user = User.find_by_email(id_token[:email])
+      @user = User.find_by(email: id_token[:email])
       if @user
         unless @user.uuid
           @user.uuid = id_token[:sub]
@@ -76,7 +76,7 @@ module Users
           aud: Rails.configuration.oidc['idp_url'] + '/api/openid_connect/token',
           jti: SecureRandom.hex,
           nonce: SecureRandom.hex,
-          exp: Time.now.to_i + 1000
+          exp: Time.zone.now.to_i + 1000,
         },
         OpenSSL::PKey::RSA.new(
           Figaro.env.saml_sp_private_key,
@@ -87,7 +87,9 @@ module Users
     end
 
     def idp_public_key
-      certs_response = parse_json(HTTParty.get(Rails.configuration.oidc['idp_url'] + '/api/openid_connect/certs').body)
+      certs_response = parse_json(
+        HTTParty.get(Rails.configuration.oidc['idp_url'] + '/api/openid_connect/certs').body
+      )
       JSON::JWK.new(certs_response[:keys].first).to_key
     end
 
@@ -103,7 +105,7 @@ module Users
     def timeout
       flash[:notice] = I18n.t(
         'session_timedout',
-        session_timeout: distance_of_time_in_words(Devise.timeout_in),
+        session_timeout: distance_of_time_in_words(Devise.timeout_in)
       )
       redirect_to root_url
     end

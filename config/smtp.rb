@@ -5,7 +5,7 @@ SMTP_SETTINGS = {
   enable_starttls_auto: true,
   password: Figaro.env.smtp_password,
   port: '587',
-  user_name: Figaro.env.smtp_username
+  user_name: Figaro.env.smtp_username,
 }.freeze
 
 if Figaro.env.email_recipients.present?

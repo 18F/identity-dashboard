@@ -35,7 +35,7 @@ end
 
 group :development do
   gem 'bummr', require: false
-  gem 'rubocop'
+  gem 'rubocop', '=0.54'
   gem 'web-console'
 end
 

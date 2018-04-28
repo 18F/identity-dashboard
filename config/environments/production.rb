@@ -1,4 +1,5 @@
-require Rails.root.join('config/smtp')
+require Rails.root.join('config', 'smtp')
+
 Rails.application.configure do
   config.cache_classes = true
   config.eager_load = true
@@ -14,7 +15,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = SMTP_SETTINGS
   config.action_mailer.default_url_options = {
-    host: Figaro.env.mailer_domain
+    host: Figaro.env.mailer_domain,
   }
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify

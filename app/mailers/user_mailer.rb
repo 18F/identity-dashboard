@@ -6,7 +6,7 @@ class UserMailer < ApplicationMailer
   def welcome_new_user(user)
     mail(
       to: user.email,
-      subject: I18n.t('mailer.welcome.subject'),
+      subject: I18n.t('mailer.welcome.subject')
     )
   end
 
@@ -14,7 +14,7 @@ class UserMailer < ApplicationMailer
     @service_provider = app
     mail(
       to: admin_email_address,
-      subject: I18n.t('mailer.new_service_provider.subject', id: app.issuer),
+      subject: I18n.t('mailer.new_service_provider.subject', id: app.issuer)
     )
   end
 
@@ -22,7 +22,7 @@ class UserMailer < ApplicationMailer
     @service_provider = app
     mail(
       to: app.user.email,
-      subject: I18n.t('mailer.new_service_provider.subject', id: app.issuer),
+      subject: I18n.t('mailer.new_service_provider.subject', id: app.issuer)
     )
   end
 
@@ -30,7 +30,7 @@ class UserMailer < ApplicationMailer
     @service_provider = app
     mail(
       to: admin_email_address,
-      subject: I18n.t('mailer.approved_service_provider.subject', id: app.issuer),
+      subject: I18n.t('mailer.approved_service_provider.subject', id: app.issuer)
     )
   end
 
@@ -38,7 +38,7 @@ class UserMailer < ApplicationMailer
     @service_provider = app
     mail(
       to: app.user.email,
-      subject: I18n.t('mailer.approved_service_provider.subject', id: app.issuer),
+      subject: I18n.t('mailer.approved_service_provider.subject', id: app.issuer)
     )
   end
 end

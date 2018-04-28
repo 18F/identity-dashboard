@@ -13,7 +13,7 @@ xdescribe 'SSO' do
     resp_xml = Base64.decode64(saml_idp_resp)
 
     expect(resp_xml).to match(
-      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/,
+      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/
     )
 
     post '/users/auth/saml/callback', params: { SAMLResponse: saml_idp_resp }

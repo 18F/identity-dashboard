@@ -59,7 +59,7 @@ RSpec.describe DeployStatusChecker do
         sha: 'sha',
         branch: 'branch',
         user: 'user',
-        timestamp: '20161102201213'
+        timestamp: '20161102201213',
       }.as_json
     end
 
@@ -104,7 +104,7 @@ RSpec.describe DeployStatusChecker do
         branch: 'master',
         user: 'user',
         sha: '5184dcc8c413adffd7cd622ab55ac36b4b219163',
-        timestamp: '20161102201213'
+        timestamp: '20161102201213',
       }.as_json
     end
 
