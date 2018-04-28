@@ -1,4 +1,4 @@
-class ServiceProvider < ActiveRecord::Base
+class ServiceProvider < ApplicationRecord
   # Note: We've temporarily disabled validation of the issuer. Validations have
   # been commented out.
 

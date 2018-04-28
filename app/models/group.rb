@@ -1,4 +1,4 @@
-class Group < ActiveRecord::Base
+class Group < ApplicationRecord
   has_many :service_providers
   has_many :user_groups
   has_many :users, through: :user_groups

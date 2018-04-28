@@ -16,7 +16,7 @@ xdescribe 'SSO' do
       /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/,
     )
 
-    post '/users/auth/saml/callback', SAMLResponse: saml_idp_resp
+    post '/users/auth/saml/callback', params: { SAMLResponse: saml_idp_resp }
 
     expect(response).to redirect_to('http://www.example.com/')
     expect(User.count).to eq 1
