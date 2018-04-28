@@ -203,7 +203,7 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
-    public_suffix (3.0.1)
+    public_suffix (3.0.2)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     quiet_assets (1.1.0)
@@ -361,7 +361,7 @@ GEM
       activemodel (>= 4.2)
       debug_inspector
       railties (>= 4.2)
-    webmock (3.1.1)
+    webmock (3.3.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
