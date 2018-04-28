@@ -1,2 +1,2 @@
-class Agency < ActiveRecord::Base
+class Agency < ApplicationRecord
 end

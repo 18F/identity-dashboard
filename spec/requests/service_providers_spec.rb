@@ -6,7 +6,7 @@ describe 'Users::ServiceProviders' do
       app = create(:service_provider)
       login_as(app.user)
 
-      put service_provider_path(app), service_provider: { approved: 'true' }
+      put service_provider_path(app), params: { service_provider: { approved: 'true' } }
 
       expect(response.status).to eq(401)
     end
@@ -16,7 +16,7 @@ describe 'Users::ServiceProviders' do
       user = create(:user)
       login_as(user)
 
-      put service_provider_path(app), service_provider: { approved: 'true' }
+      put service_provider_path(app), params: { service_provider: { approved: 'true' } }
 
       expect(response.status).to eq(401)
     end
@@ -35,7 +35,7 @@ describe 'Users::ServiceProviders' do
           with(anything).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
-        put service_provider_path(app), service_provider: { approved: 'true' }
+        put service_provider_path(app), params: { service_provider: { approved: 'true' } }
 
         expect(response.status).to eq(302) # redirect on success
         app.reload
@@ -60,7 +60,7 @@ describe 'Users::ServiceProviders' do
         allow(UserMailer).to receive(:user_new_service_provider).with(anything).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
-        post service_providers_path, service_provider: { friendly_name: 'test' }
+        post service_providers_path, params: { service_provider: { friendly_name: 'test' } }
 
         app = ServiceProvider.last
 
