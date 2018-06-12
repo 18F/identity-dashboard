@@ -56,7 +56,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
-  gem 'sinatra'
+  gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
   gem 'webmock'
   gem 'websocket-driver', '=0.6.5'
