@@ -40,7 +40,7 @@ class ServiceProvider < ApplicationRecord
 
   # rubocop:disable MethodLength
   def self.possible_attributes
-    possible = %w(
+    possible = %w[
       email
       first_name
       middle_name
@@ -53,7 +53,9 @@ class ServiceProvider < ApplicationRecord
       dob
       ssn
       phone
-    )
+      x509_subject
+      x509_presented
+    ]
     Hash[*possible.collect { |v| [v, v] }.flatten]
   end
   # rubocop:ensable MethodLength
