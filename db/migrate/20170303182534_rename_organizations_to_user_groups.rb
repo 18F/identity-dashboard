@@ -1,4 +1,4 @@
-class RenameOrganizationsToUserGroups < ActiveRecord::Migration
+class RenameOrganizationsToUserGroups < ActiveRecord::Migration[4.2]
   def up
     rename_column :organizations, :team_name, :name
     add_index :organizations, :name, unique: true

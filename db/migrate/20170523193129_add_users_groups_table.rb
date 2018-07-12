@@ -1,4 +1,4 @@
-class AddUsersGroupsTable < ActiveRecord::Migration
+class AddUsersGroupsTable < ActiveRecord::Migration[4.2]
   def change
     create_table :groups_users, id: false do |t|
       t.belongs_to :user, index: true
