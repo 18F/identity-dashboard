@@ -1,4 +1,6 @@
-<% unless user_signed_in? %>
+<% if user_signed_in? %>
+  <p>Signed in as <% user.email %> </p>    
+<% else %>
   <p>Log in to manage your test applications.</p>
 <% end %>
 
