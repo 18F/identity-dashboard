@@ -1,4 +1,4 @@
-class AddMultipleRedirectUris < ActiveRecord::Migration
+class AddMultipleRedirectUris < ActiveRecord::Migration[4.2]
   def up
     add_column :service_providers, :redirect_uris, :json
 

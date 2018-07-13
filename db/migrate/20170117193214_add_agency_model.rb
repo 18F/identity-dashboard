@@ -1,4 +1,4 @@
-class AddAgencyModel < ActiveRecord::Migration
+class AddAgencyModel < ActiveRecord::Migration[4.2]
   def change
     create_table :agencies do |t|
       t.string :name, null: false

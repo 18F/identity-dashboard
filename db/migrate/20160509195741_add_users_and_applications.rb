@@ -1,4 +1,4 @@
-class AddUsersAndApplications < ActiveRecord::Migration
+class AddUsersAndApplications < ActiveRecord::Migration[4.2]
   def change
     create_table :users do |tbl|
       tbl.uuid :uuid, null: false

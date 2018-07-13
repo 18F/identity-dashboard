@@ -1,4 +1,4 @@
-class ChangeUserGroupToGroups < ActiveRecord::Migration
+class ChangeUserGroupToGroups < ActiveRecord::Migration[4.2]
   def change
     rename_table :user_groups, :groups
     rename_column :users, :user_group_id, :group_id

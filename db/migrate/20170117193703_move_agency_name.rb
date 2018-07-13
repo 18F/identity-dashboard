@@ -1,4 +1,4 @@
-class MoveAgencyName < ActiveRecord::Migration
+class MoveAgencyName < ActiveRecord::Migration[4.2]
   class ServiceProvider < ActiveRecord::Base
   end
 
