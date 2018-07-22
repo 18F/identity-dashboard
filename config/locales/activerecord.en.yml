@@ -7,3 +7,5 @@ en:
           attributes:
             issuer:
               invalid: is not formatted correctly
+            saml_client_cert:
+              invalid: is not valid

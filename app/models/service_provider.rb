@@ -24,6 +24,7 @@ class ServiceProvider < ApplicationRecord
   # validates :issuer_app, presence: true, on: :create
   # validates :agency
   validate :redirect_uris_are_parsable
+  validate :saml_client_cert_is_x509_if_present
 
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
@@ -90,5 +91,15 @@ class ServiceProvider < ApplicationRecord
     parsed_uri.scheme.present? || parsed_uri.host.present?
   rescue URI::BadURIError, URI::InvalidURIError
     false
+  end
+
+  def saml_client_cert_is_x509_if_present
+    return if saml_client_cert.blank?
+
+    begin
+      OpenSSL::X509::Certificate.new(saml_client_cert)
+    rescue OpenSSL::X509::CertificateError
+      errors.add(:saml_client_cert, :invalid)
+    end
   end
 end
