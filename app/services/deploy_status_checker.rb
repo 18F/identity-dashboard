@@ -1,3 +1,5 @@
+require 'rest-client'
+
 # Loads data from the /api/deploy endpoint in our apps
 class DeployStatusChecker
   Deploy = Struct.new(:app, :env, :host)
@@ -47,31 +49,19 @@ class DeployStatusChecker
     return status_from_error(deploy, 'no host') if deploy.host.nil?
 
     response = load_status(deploy)
-
-    if response.code.to_i == 200
-      status_from_json(deploy, JSON.parse(response.body))
-    else
-      status_from_error(deploy, response.code)
-    end
-  rescue => error
-    status_from_error(deploy, error.message)
+    status_from_json(deploy, JSON.parse(response.body))
+  rescue StandardError => error
+    status_from_error(deploy, "#{error.class}: #{error.message}")
   end
 
   # @return [Net::HTTPResponse]
   def load_status(deploy)
     uri = URI.join(deploy.host, '/api/deploy.json')
 
-    options = { use_ssl: uri.scheme == 'https', open_timeout: 2, read_timeout: 2 }
-    Net::HTTP.start(uri.host, uri.port, options) do |http|
-      request = Net::HTTP::Get.new(uri.request_uri)
-      basic_auth(request)
-      http.request(request)
-    end
-  end
-
-  def basic_auth(request)
-    request.basic_auth(Figaro.env.basic_auth_username,
-                       Figaro.env.basic_auth_password)
+    req = RestClient::Request.new(url: uri.to_s, method: :get, timeout: 2,
+                                  user: Figaro.env.basic_auth_username,
+                                  password: Figaro.env.basic_auth_password)
+    req.execute
   end
 
   # @return [Status]
