@@ -36,6 +36,13 @@ RSpec.describe DeployStatusChecker do
       end
     end
 
+    describe '#pending_url' do
+      it 'links to the compare link on Github' do
+        expect(status.pending_url).
+          to eq('https://github.com/18F/identity-idp/compare/1234567890abcdef...master')
+      end
+    end
+
     describe '#status_class' do
       context 'with no host' do
         let(:host) { nil }
