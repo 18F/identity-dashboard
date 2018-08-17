@@ -86,12 +86,12 @@ RSpec.describe DeployStatusChecker do
       dev = statuses.find { |status| status.env == 'dev' }
       dev_status = dev.statuses.first
       expect(dev_status.sha).to be_nil
-      expect(dev_status.error).to eq('404')
+      expect(dev_status.error).to eq('RestClient::NotFound: 404 Not Found')
 
       qa = statuses.find { |status| status.env == 'qa' }
       qa_status = qa.statuses.first
       expect(qa_status.sha).to be_nil
-      expect(qa_status.error).to eq('execution expired')
+      expect(qa_status.error).to include('Timeout')
     end
   end
 
