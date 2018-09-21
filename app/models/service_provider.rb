@@ -14,7 +14,7 @@ class ServiceProvider < ApplicationRecord
   belongs_to :agency
   belongs_to :group
 
-  enum block_encryption: { 'aes256-cbc' => 1 }
+  enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
 
   validates :friendly_name, presence: true
