@@ -209,6 +209,8 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     public_suffix (3.0.2)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
@@ -414,6 +416,7 @@ DEPENDENCIES
   pg
   poltergeist
   pry-byebug
+  pry-rails
   pundit
   rack-canonical-host
   rack-timeout
