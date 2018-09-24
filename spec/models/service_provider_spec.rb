@@ -178,4 +178,24 @@ describe ServiceProvider do
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'http://bar.com'])
     end
   end
+
+  describe '#block_encryption' do
+    it 'should default to aes256-cbc' do
+      sp = build(:service_provider)
+      expect(sp.block_encryption).to eq('aes256-cbc')
+    end
+
+    it 'allows setting to none' do
+      sp = build(:service_provider)
+      sp.block_encryption = 'none'
+      expect(sp.block_encryption).to eq('none')
+    end
+
+    it 'rejects nonsense encryption values' do
+      sp = build(:service_provider)
+      expect {
+        sp.block_encryption = 'someinvalidthing'
+      }.to raise_error(ArgumentError, /not a valid block_encryption/)
+    end
+  end
 end
