@@ -2,14 +2,14 @@ source 'https://rubygems.org'
 
 ruby '~> 2.3.5'
 
-gem 'actionmailer-text'
-gem 'active_model_serializers'
-gem 'devise'
-gem 'dotenv-rails'
+gem 'actionmailer-text', '>= 0.1.1'
+gem 'active_model_serializers', '>= 0.10.7'
+gem 'devise', '>= 4.4.3'
+gem 'dotenv-rails', '>= 2.4.0'
 gem 'enum_help'
 gem 'figaro'
 gem 'httparty'
-gem 'jquery-rails'
+gem 'jquery-rails', '>= 4.3.3'
 gem 'json-jwt', '>= 1.9.4'
 gem 'jwt'
 gem 'newrelic_rpm', '>= 3.9.8'
@@ -24,8 +24,8 @@ gem 'rest-client', '~> 2.0'
 gem 'ruby_regex'
 gem 'sass-rails', '~> 5.0', '>= 5.0.7'
 gem 'secure_headers', '~> 3.0'
-gem 'simple_form'
-gem 'slim-rails'
+gem 'simple_form', '>= 3.5.0'
+gem 'slim-rails', '>= 3.1.3'
 gem 'uglifier'
 
 group :deploy do
@@ -37,15 +37,15 @@ end
 group :development do
   gem 'bummr', require: false
   gem 'rubocop'
-  gem 'web-console'
+  gem 'web-console', '>= 3.3.0'
 end
 
 group :development, :test do
   gem 'bullet'
-  gem 'factory_bot_rails'
+  gem 'factory_bot_rails', '>= 4.8.2'
   gem 'i18n-tasks'
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 3.7', '>= 3.7.2'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
 end
@@ -56,7 +56,7 @@ group :test do
   gem 'database_cleaner'
   gem 'poltergeist'
   gem 'rack_session_access'
-  gem 'rails-controller-testing'
+  gem 'rails-controller-testing', '>= 1.0.2'
   gem 'shoulda-matchers'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
