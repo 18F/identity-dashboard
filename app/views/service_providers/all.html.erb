@@ -8,6 +8,7 @@
       <th scope="col">Friendly name</th>
       <th scope="col">Issuer</th>
       <th scope="col">Active</th>
+      <th scope="col">Created</th>
     </tr>
   </thead>
   <tbody>
@@ -16,6 +17,7 @@
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.active? ? '✔' : '❌' %></td>
+      <td><%= app.created_at.localtime.strftime("%F %T") %></td>
     </tr>
     <% end %>
   </tbody>

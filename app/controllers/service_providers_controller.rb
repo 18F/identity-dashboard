@@ -30,7 +30,8 @@ class ServiceProvidersController < AuthenticatedController
   def show; end
 
   def all
-    @service_providers = ServiceProvider.all if current_user.admin?
+    return unless current_user.admin?
+    @service_providers = ServiceProvider.all.sort_by(&:created_at).reverse
   end
 
   private
