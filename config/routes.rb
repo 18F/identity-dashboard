@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   resources :groups, except: [:show]
 
+  get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'

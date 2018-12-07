@@ -1,0 +1,16 @@
+<h1>Emails</h1>
+
+<table class="usa-table-borderless">
+  <thead>
+    <tr>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+    <tr>
+      <th scope="row"><%= user.email %></th>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
