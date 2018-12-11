@@ -18,6 +18,10 @@ class User < ApplicationRecord
     (member_service_providers + service_providers).uniq
   end
 
+  def domain
+    email.to_s.split('@')[1].to_s
+  end
+
   private
 
   def member_service_providers
