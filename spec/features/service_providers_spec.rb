@@ -129,7 +129,8 @@ feature 'Service Providers CRUD' do
 
       select group, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app'
+      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
+              :match => :prefer_exact
       check 'email'
       check 'first_name'
       click_on 'Create'
