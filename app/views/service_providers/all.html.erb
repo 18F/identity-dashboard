@@ -9,6 +9,7 @@
       <th scope="col">Issuer</th>
       <th scope="col">Active</th>
       <th scope="col">Created</th>
+      <th scope="col">In Production</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,7 @@
       <td><%= app.issuer %></td>
       <td><%= app.active? ? '✔' : '❌' %></td>
       <td><%= app.created_at.localtime.strftime("%F %T") %></td>
+      <td><%= app.production_issuer.present? ? '✔' : '❌' %></td>
     </tr>
     <% end %>
   </tbody>
