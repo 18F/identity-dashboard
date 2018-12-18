@@ -39,7 +39,7 @@ describe Api::ServiceProvidersController do
       it 'requires authentication' do
         post :update
 
-        expect(response).to redirect_to new_user_session_path
+        expect(response).to redirect_to root_url
       end
     end
 

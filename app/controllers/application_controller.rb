@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :render_401
 
   def new_session_path(_scope)
-    new_user_session_path
+    rool_url
   end
 
   def render_401
