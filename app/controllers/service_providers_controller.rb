@@ -97,7 +97,7 @@ class ServiceProvidersController < AuthenticatedController
 
   # rubocop:disable MethodLength
   def service_provider_params
-    params.require(:service_provider).permit(
+    permit_params = [
       :acs_url,
       :active,
       :agency_id,
@@ -114,10 +114,11 @@ class ServiceProvidersController < AuthenticatedController
       :sp_initiated_login_url,
       :group_id,
       :identity_protocol,
-      :production_issuer,
       attribute_bundle: [],
       redirect_uris: [],
-    )
+    ]
+    permit_params << :production_issuer if current_user.admin?
+    params.require(:service_provider).permit(*permit_params)
   end
   # rubocop:enable MethodLength
 
