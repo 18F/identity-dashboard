@@ -50,12 +50,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    if service_provider.valid?
-      save_service_provider(initial_action)
-    else
-      flash[:error] = error_messages
-      render initial_action
-    end
+    return save_service_provider(initial_action) if service_provider.valid?
+
+    flash[:error] = error_messages
+    render initial_action
   end
 
   def save_service_provider(initial_action)
@@ -115,7 +113,7 @@ class ServiceProvidersController < AuthenticatedController
       :saml_client_cert,
       :sp_initiated_login_url,
       attribute_bundle: [],
-      redirect_uris: [],
+      redirect_uris: []
     ]
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
