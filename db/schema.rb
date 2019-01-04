@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309010908) do
+ActiveRecord::Schema.define(version: 20181224112751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 20180309010908) do
     t.string   "logo"
     t.integer  "identity_protocol",                     default: 0
     t.json     "redirect_uris"
+    t.string   "production_issuer"
   end
 
   add_index "service_providers", ["group_id"], name: "index_service_providers_on_group_id", using: :btree

@@ -114,9 +114,10 @@ class ServiceProvidersController < AuthenticatedController
       :sp_initiated_login_url,
       :group_id,
       :identity_protocol,
+      :production_issuer,
       attribute_bundle: [],
       redirect_uris: [],
-    )
+      )
   end
   # rubocop:enable MethodLength
 

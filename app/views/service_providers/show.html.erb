@@ -26,6 +26,12 @@
       <th scope="row">Issuer</th>
       <td><code><%= service_provider.issuer %></code></td>
     </tr>
+    <% if current_user.admin? %>
+    <tr>
+      <th scope="row">Production Issuer</th>
+      <td><code><%= service_provider.production_issuer %></code></td>
+    </tr>
+    <% end %>
     <tr>
       <th scope="row">Logo</th>
       <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>"><%= service_provider.logo %></a></td>
