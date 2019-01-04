@@ -50,10 +50,12 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    return save_service_provider(initial_action) if service_provider.valid?
-
-    flash[:error] = error_messages
-    render initial_action
+    if service_provider.valid?
+      save_service_provider(initial_action)
+    else
+      flash[:error] = error_messages
+      render initial_action
+    end
   end
 
   def save_service_provider(initial_action)
@@ -95,7 +97,7 @@ class ServiceProvidersController < AuthenticatedController
 
   # rubocop:disable MethodLength
   def service_provider_params
-    permit_params = [
+    params.require(:service_provider).permit(
       :acs_url,
       :active,
       :agency_id,
@@ -104,19 +106,18 @@ class ServiceProvidersController < AuthenticatedController
       :block_encryption,
       :description,
       :friendly_name,
-      :group_id,
-      :identity_protocol,
       :issuer,
       :logo,
       :metadata_url,
       :return_to_sp_url,
       :saml_client_cert,
       :sp_initiated_login_url,
+      :group_id,
+      :identity_protocol,
+      :production_issuer,
       attribute_bundle: [],
-      redirect_uris: []
-    ]
-    permit_params << :production_issuer if current_user.admin?
-    params.require(:service_provider).permit(*permit_params)
+      redirect_uris: [],
+    )
   end
   # rubocop:enable MethodLength
 
