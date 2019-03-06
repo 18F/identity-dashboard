@@ -1,5 +1,8 @@
 require 'rails_helper'
 
+# TODO replace these tests with OIDC tests
+# https://github.com/18F/identity-dashboard/issues/194
+
 xdescribe 'SSO' do
   it 'uses external SAML IdP' do
     expect(User.count).to eq 0
