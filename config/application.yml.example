@@ -102,5 +102,6 @@ development:
   <<: *default
   idp_sp_url: 'http://localhost:3000/api/service_provider'
 
-production:
-  <<: *default
+# The entire application.yml is overwritten in production, so don't set
+# anything here.
+# production:

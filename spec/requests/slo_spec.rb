@@ -1,5 +1,8 @@
 require 'rails_helper'
 
+# TODO replace these tests with OIDC tests
+# https://github.com/18F/identity-dashboard/issues/194
+
 xdescribe 'SLO' do
   describe 'IdP-initiated' do
     it 'uses external SAML IdP' do

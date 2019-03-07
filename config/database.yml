@@ -12,11 +12,5 @@ test:
   <<: *default
   database: identity-dashboard_test
 
-production: &deploy
-  encoding: utf8
-  min_messages: warning
-  pool: <%= [Integer(Figaro.env.max_threads || 5), Integer(Figaro.env.db_pool || 5)].max %>
-  timeout: 5000
-  url:  <%= Figaro.env.database_url %>
-
-staging: *deploy
+# This whole file is overwritten by chef in production.
+#production:
