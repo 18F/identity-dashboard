@@ -104,6 +104,7 @@ class ServiceProvidersController < AuthenticatedController
       :description,
       :friendly_name,
       :group_id,
+      :ial,
       :identity_protocol,
       :issuer,
       :logo,

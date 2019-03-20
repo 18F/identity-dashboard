@@ -14,6 +14,7 @@ en:
         block_encryption: Block Encryption
         description: Description
         friendly_name: Friendly name
+        ial: Identity Assurance Level (IAL1 or IAL2)
         issuer: Issuer
         logo: Logo
         redirect_uris: Redirect URIs (for OpenID Connect)

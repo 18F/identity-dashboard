@@ -26,10 +26,23 @@ class ServiceProvider < ApplicationRecord
   validate :redirect_uris_are_parsable
   validate :saml_client_cert_is_x509_if_present
 
+  validates :ial, inclusion: { in: [1, 2] }
+
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
   # before_validation :build_issuer, on: :create
+
+  def ial_friendly
+    case ial
+    when 1, nil
+      'IAL1'
+    when 2
+      'IAL2'
+    else
+      ial.inspect
+    end
+  end
 
   def issuer_department
     @issuer_department || ServiceProviderIssuerParser.new(issuer).parse[:department]

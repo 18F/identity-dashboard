@@ -7,6 +7,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :block_encryption,
     :cert,
     :friendly_name,
+    :ial,
     :issuer,
     :logo,
     :redirect_uris,
