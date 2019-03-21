@@ -26,7 +26,7 @@ class ServiceProvider < ApplicationRecord
   validate :redirect_uris_are_parsable
   validate :saml_client_cert_is_x509_if_present
 
-  validates :ial, inclusion: { in: [1, 2] }
+  validates :ial, inclusion: { in: [1, 2] }, allow_nil: true
 
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
