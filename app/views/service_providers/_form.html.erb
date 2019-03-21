@@ -13,7 +13,7 @@
   <%= form.input :identity_protocol, as: :radio_buttons, label: "<b>Identity protocol</b><br>We highly recommend using OpenID Connect, unless a technical reason prevents you.<br>".html_safe %>
 
   <%= form.label(:ial, '<b>Identity verification level (IAL)</b><br>Choose IAL 1 for standard MFA-protected email-based login.<br>Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).<br>'.html_safe) %>
-  <%= form.select(:ial, options_for_select([['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]])).html_safe %>
+  <%= form.select(:ial, options_for_select([['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]], form.object.ial)).html_safe %>
 
   <%= form.input :issuer, disabled: form.object.persisted?, label: unless form.object.persisted? then "<b>Issuer</b><br>A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br><i>For OpenID Connect:</i><br><code class='ml2'>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br><i>For SAML:</i><br><code class='ml2'>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>".html_safe else "<b>Issuer</b><br><i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i>".html_safe end %>
   <% if current_user.admin? %>
