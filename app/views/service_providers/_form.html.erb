@@ -16,7 +16,7 @@
   <%= form.input :production_issuer, label: "<b>Production Issuer</b>".html_safe %>
   <% end %>
   <%= form.input :logo, placeholder: 'generic.svg', label: "<b>Logo</b><br>The name of the <a href='https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos' target='_blank'>logo image file</a> in the IdP. The login.gov team can add this image for you.".html_safe %>
-  <%= form.input :saml_client_cert, label: "<b>Public key</b><br>Your public key, needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail' target='_blank'>PEM encoded</a>, for example in the form:<br><pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>".html_safe %>
+  <%= form.input :saml_client_cert, label: "<b>Public certificate</b><br>Your public certificate, which contains your public key, is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail' target='_blank'>PEM encoded</a>, for example in the form:<br><pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>".html_safe %>
 <div>
 
 <div class="saml-fields">
