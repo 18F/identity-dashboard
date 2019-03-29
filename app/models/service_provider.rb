@@ -1,11 +1,11 @@
 class ServiceProvider < ApplicationRecord
-  # Note: We've temporarily disabled validation of the issuer. Validations have
-  # been commented out.
+  # Note: We no longer have strong validation of the issuer string. We used to
+  #         require that the issuer matched this format:
+  #         'urn:gov:gsa:<protocol>:2.0.profiles:sp:sso:<agency>:<app name>'
+  #         However, it was too restrictive for many COTS applications. Now,
+  #         we just enforce uniqueness, without whitespace.
 
-  ISSUER_FORMAT_REGEXP = /
-    \Aurn:gov:gsa:(?<protocol>SAML:2\.0|openidconnect)
-    \.profiles:sp:sso:(?<department>.+):(?<app>.+)\z
-  /x
+  ISSUER_FORMAT_REGEXP = /\A[\S]+\z/
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
@@ -19,10 +19,8 @@ class ServiceProvider < ApplicationRecord
 
   validates :friendly_name, presence: true
   validates :issuer, presence: true, uniqueness: true
-  # validates :issuer, format: { with: ISSUER_FORMAT_REGEXP }, on: :create
-  # validates :issuer_department, presence: true, on: :create
-  # validates :issuer_app, presence: true, on: :create
-  # validates :agency
+  validates :issuer, format: { with: ISSUER_FORMAT_REGEXP }, on: :create
+
   validate :redirect_uris_are_parsable
   validate :saml_client_cert_is_x509_if_present
 
@@ -31,7 +29,7 @@ class ServiceProvider < ApplicationRecord
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
-  # before_validation :build_issuer, on: :create
+
 
   def ial_friendly
     case ial
