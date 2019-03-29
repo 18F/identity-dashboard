@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action :authorize_service_provider, only: %i(update edit show destroy)
+  before_action :authorize_service_provider, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
 
   def index; end
