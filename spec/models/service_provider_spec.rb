@@ -8,9 +8,6 @@ describe ServiceProvider do
 
   describe 'Validations' do
     it { should validate_presence_of(:issuer) }
-    xit { should validate_presence_of(:issuer_department).on(:create) }
-    xit { should validate_presence_of(:issuer_app).on(:create) }
-    xit { should validate_presence_of(:agency) }
 
     it 'validate that issuer is formatted correctly' do
       valid_service_provider = build(

@@ -30,7 +30,6 @@ class ServiceProvider < ApplicationRecord
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 
-
   def ial_friendly
     case ial
     when 1, nil
@@ -40,14 +39,6 @@ class ServiceProvider < ApplicationRecord
     else
       ial.inspect
     end
-  end
-
-  def issuer_department
-    @issuer_department || ServiceProviderIssuerParser.new(issuer).parse[:department]
-  end
-
-  def issuer_app
-    @issuer_app || ServiceProviderIssuerParser.new(issuer).parse[:app]
   end
 
   # rubocop:disable MethodLength
@@ -70,7 +61,7 @@ class ServiceProvider < ApplicationRecord
     ]
     Hash[*possible.collect { |v| [v, v] }.flatten]
   end
-  # rubocop:ensable MethodLength
+  # rubocop:enable MethodLength
 
   def recently_approved?
     previous_changes.key?(:approved) && previous_changes[:approved].last == true
@@ -81,11 +72,6 @@ class ServiceProvider < ApplicationRecord
   end
 
   private
-
-  def build_issuer
-    return unless issuer_department && issuer_app
-    self.issuer = ServiceProviderIssuerBuilder.new(self).build_issuer
-  end
 
   def redirect_uris_are_parsable
     return if redirect_uris.blank?
