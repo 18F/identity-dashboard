@@ -9,21 +9,19 @@ describe User do
 
   let(:user) { build(:user) }
 
-  xdescribe '#uuid' do
-    it 'assigns uuid on create' do
+  describe '#uuid' do
+    it 'does not assign uuid on create' do
       user.save
-      expect(user.uuid).to_not be_nil
-      expect(user.uuid).to match(RubyRegex::UUID)
+      expect(user.uuid).to be_nil
     end
   end
 
-  xdescribe '#after_create' do
-    it 'sends welcome email' do
+  describe '#after_create' do
+    it 'does not send welcome email' do
       deliveries.clear
       expect(deliveries.count).to eq(0)
       user.save
-      expect(deliveries.count).to eq(1)
-      expect(deliveries.first.subject).to eq(I18n.t('mailer.welcome.subject'))
+      expect(deliveries.count).to eq(0)
     end
   end
 

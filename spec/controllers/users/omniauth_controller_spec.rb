@@ -30,7 +30,17 @@ describe Users::OmniauthController do
         expect(user.reload.uuid).to eq(uuid)
         expect(response).to redirect_to(service_providers_url)
       end
+
+      it 'updates the UUID to match Login.gov' do
+        user = create(:user, email: email, uuid: 'asdf')
+
+        get :callback
+
+        expect(user.reload.uuid).to eq(uuid)
+        expect(response).to redirect_to(service_providers_url)
+      end
     end
+
 
     context 'when a user does not exist with the given email' do
       it 'redirects to the empty user path' do
