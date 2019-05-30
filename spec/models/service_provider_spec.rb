@@ -90,6 +90,14 @@ describe ServiceProvider do
       expect(bad_uri_sp).to_not be_valid
     end
 
+    it 'forces URLs to be lowercase' do
+      sp = build(:service_provider, redirect_uris: [
+        'https://ServiceProvider.domain.com/AuthRoute/Callback'])
+
+      expect(sp).to be_valid
+      expect(sp.redirect_uris.first).to eq('https://serviceprovider.domain.com/authroute/callback')
+    end
+
     it 'allows redirect_uris to be empty' do
       sp = build(:service_provider, redirect_uris: [])
       expect(sp).to be_valid

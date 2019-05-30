@@ -28,6 +28,7 @@ class ServiceProvider < ApplicationRecord
 
   before_validation(on: %i(create update)) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
+    format_redirect_uris
   end
 
   def ial_friendly
@@ -88,6 +89,11 @@ class ServiceProvider < ApplicationRecord
     parsed_uri.scheme.present? || parsed_uri.host.present?
   rescue URI::BadURIError, URI::InvalidURIError
     false
+  end
+
+  def format_redirect_uris
+    return if redirect_uris.nil?
+    redirect_uris.map(&:downcase!)
   end
 
   def saml_client_cert_is_x509_if_present
