@@ -8,6 +8,7 @@ AllCops:
   Include:
     - '**/Gemfile'
     - '**/Rakefile'
+    - '**/Capfile'
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
@@ -16,65 +17,11 @@ AllCops:
     - 'config/initializers/devise.rb'
     - 'db/migrate/*'
   TargetRubyVersion: 2.3
+  TargetRailsVersion: 5.1
   UseCache: true
 
-Lint/PercentStringArray:
+Rails:
   Enabled: true
-  Exclude:
-    - 'config/initializers/secure_headers.rb'
-
-Metrics/AbcSize:
-  Description: A calculated magnitude based on number of assignments, branches, and
-    conditions.
-  Enabled: true
-  Max: 15
-  Exclude:
-  - spec/**/*
-
-Metrics/ClassLength:
-  Description: Avoid classes longer than 100 lines of code.
-  Enabled: true
-  CountComments: false
-  Max: 100
-  Exclude:
-  - spec/**/*
-
-Metrics/LineLength:
-  Description: Limit lines to 100 characters.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
-  Enabled: true
-  Max: 100
-  AllowURI: true
-  URISchemes:
-  - http
-  - https
-
-Metrics/MethodLength:
-  Description: Avoid methods longer than 10 lines of code.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: true
-  CountComments: false
-  Max: 10
-  Exclude:
-  - 'db/migrate/*'
-  - spec/**/*
-
-Metrics/ModuleLength:
-  CountComments: false
-  Max: 100
-  Description: Avoid modules longer than 100 lines of code.
-  Enabled: true
-  Exclude:
-  - spec/**/*
-
-Rails/TimeZone:
-  # The value `strict` means that `Time` should be used with `zone`.
-  # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
-  Enabled: true
-  EnforcedStyle: flexible
-  SupportedStyles:
-    - strict
-    - flexible
 
 Layout/AlignParameters:
   # Alignment of parameters in multi-line method calls.
@@ -102,21 +49,6 @@ Layout/AlignParameters:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Style/AndOr:
-  Description: Use &&/|| instead of and/or.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
-  EnforcedStyle: conditionals
-  SupportedStyles:
-  - always
-  - conditionals
-
-Style/Documentation:
-  Description: Document classes and non-namespace modules.
-  Enabled: false
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-
 Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
@@ -125,17 +57,6 @@ Layout/DotPosition:
   - leading
   - trailing
 
-# Warn on empty else statements
-# empty - warn only on empty else
-# nil - warn on else with nil in it
-# both - warn on empty else and else with nil in it
-Style/EmptyElse:
-  EnforcedStyle: both
-  SupportedStyles:
-    - empty
-    - nil
-    - both
-
 Layout/ExtraSpacing:
   # When true, allows most uses of extra spacing if the intent is to align
   # things with the previous or next line, not counting empty lines or comment
@@ -143,17 +64,6 @@ Layout/ExtraSpacing:
   AllowForAlignment: true
   # When true, forces the alignment of = in assignments on consecutive lines.
   ForceEqualSignAlignment: false
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-                 Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
-
-Style/IfUnlessModifier:
-  Description: Favor modifier if/unless usage when you have a single-line body.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
-  Enabled: true
 
 # Checks the indentation of the first element in an array literal.
 Layout/IndentArray:
@@ -186,6 +96,132 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Lint/PercentStringArray:
+  Enabled: true
+  Exclude:
+    - 'config/initializers/secure_headers.rb'
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Metrics/AbcSize:
+  Description: A calculated magnitude based on number of assignments, branches, and
+    conditions.
+  Enabled: true
+  Max: 15
+  Exclude:
+  - spec/**/*
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Enabled: true
+  Max: 25
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/ClassLength:
+  Description: Avoid classes longer than 100 lines of code.
+  Enabled: true
+  CountComments: false
+  Max: 100
+  Exclude:
+  - spec/**/*
+
+Metrics/LineLength:
+  Description: Limit lines to 100 characters.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
+  Enabled: true
+  Max: 100
+  AllowURI: true
+  URISchemes:
+  - http
+  - https
+  Exclude:
+    - 'config/routes.rb'
+
+Metrics/MethodLength:
+  Description: Avoid methods longer than 10 lines of code.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
+  Enabled: true
+  CountComments: false
+  Max: 10
+  Exclude:
+  - 'db/migrate/*'
+  - spec/**/*
+
+Metrics/ModuleLength:
+  CountComments: false
+  Max: 100
+  Description: Avoid modules longer than 100 lines of code.
+  Enabled: true
+  Exclude:
+  - spec/**/*
+
+Rails/HttpPositionalArguments:
+  Description: 'Use keyword arguments instead of positional arguments in http method calls.'
+  Enabled: true
+  Include:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Rails/TimeZone:
+  # The value `strict` means that `Time` should be used with `zone`.
+  # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
+  Enabled: true
+  EnforcedStyle: strict
+  SupportedStyles:
+    - strict
+    - flexible
+
+Style/AndOr:
+  Description: Use &&/|| instead of and/or.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
+  EnforcedStyle: conditionals
+  SupportedStyles:
+  - always
+  - conditionals
+
+Style/Documentation:
+  Description: Document classes and non-namespace modules.
+  Enabled: false
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+# Warn on empty else statements
+# empty - warn only on empty else
+# nil - warn on else with nil in it
+# both - warn on empty else and else with nil in it
+Style/EmptyElse:
+  EnforcedStyle: both
+  SupportedStyles:
+    - empty
+    - nil
+    - both
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Description: Favor modifier if/unless usage when you have a single-line body.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
+  Enabled: true
+
+Style/PercentLiteralDelimiters:
+  # Specify the default preferred delimiter for all types with the 'default' key
+  # Override individual delimiters (even with default specified) by specifying
+  # an individual key
+  PreferredDelimiters:
+    default: ()
+    '%i': '[]'
+    '%I': '[]'
+    '%r': '{}'
+    '%w': '[]'
+    '%W': '[]'
+
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
@@ -200,18 +236,29 @@ Style/TrailingCommaInArguments:
   # parenthesized method calls where each argument is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
+  EnforcedStyleForMultiline: no_comma
+  SupportedStylesForMultiline:
+    - comma
+    - consistent_comma
+    - no_comma
+
+Style/TrailingCommaInArrayLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array or
+  # hash, but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty array and hash literals.
   EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
     - no_comma
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in an array or
   # hash, but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
   # non-empty array and hash literals.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma

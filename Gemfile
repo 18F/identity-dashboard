@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '~> 2.3.5'
+# ruby '~> 2.3.5'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
@@ -37,7 +37,7 @@ end
 
 group :development do
   gem 'bummr', require: false
-  gem 'rubocop'
+  gem 'rubocop', '=0.54'
   gem 'web-console'
 end
 
