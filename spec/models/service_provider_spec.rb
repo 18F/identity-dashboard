@@ -83,11 +83,13 @@ describe ServiceProvider do
       missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
       relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
       bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
+      malformed_uri_sp = build(:service_provider, redirect_uris: ['super.foo.com:/result'])
 
       expect(valid_sp).to be_valid
       expect(missing_protocol_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
+      expect(malformed_uri_sp).to_not be_valid
     end
 
     it 'allows redirect_uris to be empty' do
