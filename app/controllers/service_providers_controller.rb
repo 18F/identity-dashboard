@@ -55,7 +55,7 @@ class ServiceProvidersController < AuthenticatedController
     render initial_action
   end
 
-  def save_service_provider(initial_action)
+  def save_service_provider(_initial_action)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_providers
@@ -113,7 +113,7 @@ class ServiceProvidersController < AuthenticatedController
       :saml_client_cert,
       :sp_initiated_login_url,
       attribute_bundle: [],
-      redirect_uris: []
+      redirect_uris: [],
     ]
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)

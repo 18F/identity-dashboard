@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-# TODO replace these tests with OIDC tests
+# TODO: replace these tests with OIDC tests
 # https://github.com/18F/identity-dashboard/issues/194
 
 xdescribe 'SSO' do
@@ -16,7 +16,7 @@ xdescribe 'SSO' do
     resp_xml = Base64.decode64(saml_idp_resp)
 
     expect(resp_xml).to match(
-      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/,
+      /<NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">/
     )
 
     post '/users/auth/saml/callback', params: { SAMLResponse: saml_idp_resp }

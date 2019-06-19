@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-# TODO replace these tests with OIDC tests
+# TODO: replace these tests with OIDC tests
 # https://github.com/18F/identity-dashboard/issues/194
 
 xdescribe 'SLO' do
