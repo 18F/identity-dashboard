@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '~> 2.3.5'
+# ruby '~> 2.3.5'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
@@ -9,7 +9,7 @@ gem 'dotenv-rails'
 gem 'enum_help'
 gem 'figaro'
 gem 'httparty'
-gem 'jquery-rails'
+gem 'jquery-rails', '>= 4.3.4'
 gem 'json-jwt', '>= 1.9.4'
 gem 'jwt'
 gem 'newrelic_rpm', '>= 3.9.8'
@@ -37,7 +37,7 @@ end
 
 group :development do
   gem 'bummr', require: false
-  gem 'rubocop'
+  gem 'rubocop', '=0.54'
   gem 'web-console'
 end
 
