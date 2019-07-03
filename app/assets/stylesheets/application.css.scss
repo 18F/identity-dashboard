@@ -1,3 +1,9 @@
+$font-path: 'fonts';
+$image-path: 'img';
+
+//@import '../../../node_modules/identity-style-guide/dist/assets/scss/styles';
+@import 'identity-style-guide/dist/assets/scss/styles';
+
 /* Custom Styles */
 
 html {
@@ -179,6 +185,7 @@ pre {
   }
 }
 
+
 code {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
   padding: 1px 3px;
@@ -198,6 +205,7 @@ code {
     background: rgba(0, 0, 0, 0.2);
   }
 }
+
 
 .highlight .hll { background-color: #c5c8c6 }
 .highlight  { background: #ffffff; color: #373b41 }
