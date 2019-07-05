@@ -1,0 +1,24 @@
+<h1>Group details</h1>
+
+<!-- TODO: FIX NAV! eek -->
+<%= link_to 'Back to groups ', groups_path %>🍇<br />
+<%= link_to 'Edit this group', edit_group_path(@group) %>✏️
+
+<h2><%= @group.name %></h2>
+
+<label for="description">Description:</label>
+<p name="description"><%= @group.description %></p>
+
+<label for="users">Users: (<%= @group.users.count %>)</label>
+<ul name="users">
+  <% @group.users.each do |u| %>
+    <li><%= u.email %></li>
+  <% end %>
+</ul>
+
+<label for="apps">Apps: (<%= @group.service_providers.count %>)</label>
+<ul name="apps">
+  <% @group.service_providers.each do |a| %>
+    <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
+  <% end %>
+</ul>

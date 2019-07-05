@@ -67,6 +67,26 @@ describe GroupsController do
     end
   end
 
+  describe '#show' do
+    context 'when admin' do
+      before do
+        user.admin = true
+      end
+
+      it 'shows the group template' do
+        get :show, params: { id: org.id }
+        expect(response).to render_template(:show)
+      end
+    end
+
+    context 'when normal user' do
+      it 'responds with an error' do
+        get :show, params: { id: org.id }
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
   describe '#create' do
     context 'when the user is not an admin' do
       it 'has an error response' do
