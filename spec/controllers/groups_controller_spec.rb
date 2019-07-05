@@ -15,13 +15,13 @@ describe GroupsController do
       before do
         user.admin = true
       end
-      it 'it has a success response' do
+      it 'has a success response' do
         get :new
         expect(response.status).to eq(200)
       end
     end
     context 'when the user is not an admin' do
-      it 'it has an error response' do
+      it 'has an error response' do
         get :new
         expect(response.status).to eq(401)
       end
@@ -30,29 +30,37 @@ describe GroupsController do
   end
 
   describe '#index' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when the user is signed in' do
 
-      context 'when the user is signed in' do
-        it 'will have a success response' do
+      context 'when the user is an admin' do
+        before do
+          user.admin = true
+        end
+
+        it 'has a success response' do
           get :index
           expect(response.status).to eq(200)
-        end
-      end
-
-      context 'when the user is not signed in' do
-        it 'will have an error response' do
-          allow(controller).to receive(:current_user).and_return(nil)
-          get :index
-          expect(response.status).to eq(401)
         end
       end
     end
 
     context 'when the user is not an admin' do
-      it 'requires user to be an admin' do
+      before do
+        user.admin = false
+      end
+
+      it 'has an error response' do
+        get :index
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is not signed in' do
+      before do
+        allow(controller).to receive(:current_user).and_return(nil)
+      end
+
+      it 'has an error response' do
         get :index
         expect(response.status).to eq(401)
       end

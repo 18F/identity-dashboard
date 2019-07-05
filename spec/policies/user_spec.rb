@@ -14,17 +14,25 @@ describe UserPolicy do
   end
 
   permissions :edit? do
-    it 'allows owner or admin to edit' do
+    it 'allows owner to edit' do
       expect(ServiceProviderPolicy).to permit(owner, app)
+    end
+    it 'allows admin to edit' do
       expect(ServiceProviderPolicy).to permit(admin_user, app)
+    end
+    it 'does not allow other users to edit' do
       expect(ServiceProviderPolicy).to_not permit(other_user, app)
     end
   end
 
   permissions :update? do
-    it 'allows owner or admin to update' do
+    it 'allows owner to update' do
       expect(ServiceProviderPolicy).to permit(owner, app)
+    end
+    it 'allows admin to update' do
       expect(ServiceProviderPolicy).to permit(admin_user, app)
+    end
+    it 'does not allow other users to update' do
       expect(ServiceProviderPolicy).to_not permit(other_user, app)
     end
   end
@@ -36,17 +44,25 @@ describe UserPolicy do
   end
 
   permissions :destroy? do
-    it 'allows owner or admin to destroy' do
+    it 'allows owner to destroy' do
       expect(ServiceProviderPolicy).to permit(owner, app)
+    end
+    it 'allows admin to destroy' do
       expect(ServiceProviderPolicy).to permit(admin_user, app)
+    end
+    it 'does not allow other users to destroy' do
       expect(ServiceProviderPolicy).to_not permit(other_user, app)
     end
   end
 
   permissions :show? do
-    it 'allows owner or admin to show' do
+    it 'allows owner to show' do
       expect(ServiceProviderPolicy).to permit(owner, app)
+    end
+    it 'allows admin to show' do
       expect(ServiceProviderPolicy).to permit(admin_user, app)
+    end
+    it 'does not allow other users to show' do
       expect(ServiceProviderPolicy).to_not permit(other_user, app)
     end
   end

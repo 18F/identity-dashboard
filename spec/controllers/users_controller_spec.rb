@@ -98,7 +98,7 @@ describe UsersController do
         end
       end
       context 'when the user is invalid' do
-        it 'has a redirect response' do
+        it "renders the 'new' view" do
           patch :create, params: { user: {admin: true, email: user.email} }
           expect(response).to render_template(:new)
         end
