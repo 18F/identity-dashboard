@@ -187,6 +187,7 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).not_to have_content('Success')
+      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
 
     context 'service provider does not have a user group' do

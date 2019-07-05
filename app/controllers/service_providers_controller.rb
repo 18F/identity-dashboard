@@ -51,7 +51,8 @@ class ServiceProvidersController < AuthenticatedController
 
   def validate_and_save_service_provider(initial_action)
     return save_service_provider(initial_action) if service_provider.valid?
-    flash[:error] = error_messages
+
+    flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
   end
 
