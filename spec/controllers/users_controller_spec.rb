@@ -9,30 +9,106 @@ describe UsersController do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  describe '#new' do
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
+      it 'has a success response' do
+        get :new
+        expect(response.status).to eq(200)
+      end
+    end
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        get :new
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
   describe '#index' do
-    it 'requires user to be an admin' do
-      get :index
-      expect(response.status).to eq(401)
-    end
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
 
-    it 'requires user to be signed in' do
-      allow(controller).to receive(:current_user).and_return(nil)
-      get :index
-      expect(response.status).to eq(401)
+      it 'has a success response' do
+        get :index
+        expect(response.status).to eq(200)
+      end
+    end
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        get :index
+        expect(response.status).to eq(401)
+      end
     end
   end
 
-  xdescribe '#edit' do
-    it 'requires user to be an admin' do
-      get :edit, params: { id: user.uuid }
-      expect(response.status).to eq(401)
+  describe '#edit' do
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
+      it 'has a success response' do
+        get :edit, params: { id: 1 }
+        expect(response.status).to eq(200)
+      end
+    end
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        get :edit, params: { id: 1 }
+        expect(response.status).to eq(401)
+      end
     end
   end
 
-  xdescribe '#update' do
-    it 'requires user to be an admin' do
-      patch :update, params: { id: user.uuid, user: { admin: 'true' } }
-      expect(response.status).to eq(401)
+  describe '#update' do
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
+      it 'has a redirect response' do
+        patch :update, params: { id: user.id, user: {admin: true, email: 'example@example.com'}}
+        expect(response.status).to eq(302)
+      end
+    end
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        patch :update, params: { id: user.id, user: {admin: true, email: 'example@example.com' }}
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe '#create' do
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
+      context 'when the user is valid' do
+        it 'has a redirect response' do
+          patch :create, params: { user: {admin: true, email: 'example@example.com'} }
+          expect(response.status).to eq(302)
+        end
+      end
+      context 'when the user is invalid' do
+        it "renders the 'new' view" do
+          patch :create, params: { user: {admin: true, email: user.email} }
+          expect(response).to render_template(:new)
+        end
+      end
+    end
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        patch :create, params: { user: {admin: true, email: 'example@example.com'} }
+        expect(response.status).to eq(401)
+      end
     end
   end
 end

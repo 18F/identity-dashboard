@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :groups, through: :user_groups
   has_many :service_providers, through: :groups
 
+  validates :email, uniqueness: true
+
   scope :sorted, -> { order(email: :asc) }
 
   def scoped_groups
