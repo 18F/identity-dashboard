@@ -454,6 +454,7 @@ DEPENDENCIES
   secure_headers (~> 3.0)
   shoulda-matchers
   simple_form
+  simplecov
   sinatra (>= 2.0.2)
   slim-rails
   slim_lint

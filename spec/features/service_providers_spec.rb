@@ -27,7 +27,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    scenario 'can update service provider with multiple redirect uris' do
+    scenario 'can update oidc service provider with multiple redirect uris' do
       user = create(:user)
       service_provider = create(:service_provider, user: user)
       login_as(user)
@@ -54,6 +54,35 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
+    scenario 'can update saml service provider with multiple redirect uris', :js do
+      user = create(:user)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
+      click_on 'Update'
+
+      service_provider.reload
+      expect(service_provider.redirect_uris).to eq(['https://foo.com'])
+
+      visit edit_service_provider_path(service_provider)
+      page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
+      click_on 'Update'
+
+      service_provider.reload
+      expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
+
+      visit edit_service_provider_path(service_provider)
+      page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
+      click_on 'Update'
+
+      service_provider.reload
+      expect(service_provider.redirect_uris).to eq(['https://bar.com'])
+    end
+
+    # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
+    # choosing the protocol in the following four scenarios. 
     xscenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
