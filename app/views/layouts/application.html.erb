@@ -163,12 +163,20 @@ Update banner with logo and navigation from style guide
 
   <div class="usa-overlay"></div>
 
-  <main class="usa-grid usa-section usa-content usa-layout-docs" id="main-content">
-    <div class="usa-layout-docs-main_content">
+
+<!-- 
+Karla Rodriguez
+added main layout from style guide
+-->
+  <main class="usa-layout-docs usa-section" id="main-content">
+  <div class="grid-container">
+    <div class="usa-layout-docs__main usa-prose">
       <%= render 'layouts/messages' %>
       <%= yield %>
     </div>
-  </main>
+  </div>
+</main>
+
 <!-- 
 Karla Rodriguez
 added code for footer used in style guide
