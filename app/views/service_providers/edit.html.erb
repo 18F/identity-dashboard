@@ -1,4 +1,9 @@
-<h1>Editing "<%= service_provider.friendly_name %>"</h1>
+<!-- 
+Karla Rodriguez
+added title from style guide
+-->
+<div class="usa-display">Editing "<%= service_provider.friendly_name %>"</div>
+
 
 <%= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form' }) do |form| %>
   <% selected_group = @service_provider.group_id %>

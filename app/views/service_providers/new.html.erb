@@ -1,7 +1,16 @@
-<h1>New test app</h1>
+<!-- 
+Karla Rodriguez
+added title from style guide
+-->
+<div class="usa-display">New test app</div>
+
 
 <%= simple_form_for(@service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form' }) do |form| %>
   <%= render 'form', form: form %>
   <br>
-  <%= form.button :submit, 'Create test app' %>
+  <!-- 
+  Karla Rodriguez
+  added style to button
+  --> 
+  <%= form.button :submit, 'Create test app', :class => "usa-button" %>
 <% end %>

@@ -1,6 +1,14 @@
-<h1>Apps</h1>
+<!-- 
+Karla Rodriguez
+added title from style guide
+-->
+<div class="usa-display">Apps</div>
+<!-- 
+Karla Rodriguez
+added style to button
+-->
+<%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post, :class => "usa-button" %>
 
-<%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post %>
 
 <table class="usa-table-borderless">
   <thead>

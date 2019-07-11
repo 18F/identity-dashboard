@@ -1,8 +1,11 @@
 <% unless user_signed_in? %>
   <p>Log in to manage your test applications.</p>
 <% end %>
-
-<h1>Environments status</h1>
+<!-- 
+Karla Rodriguez
+added title from style guide
+-->
+<div class="usa-display">Environments status</div>
 
 <% @deploy_statuses.each do |environment| %>
 
