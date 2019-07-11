@@ -1,8 +1,6 @@
 <h1>Group details</h1>
 
-<!-- TODO: FIX NAV! eek -->
-<%= link_to 'Back to groups ', groups_path %>🍇<br />
-<%= link_to 'Edit this group', edit_group_path(@group) %>✏️
+<%= render 'shared/subnav', current_item: @group %>
 
 <h2><%= @group.name %></h2>
 

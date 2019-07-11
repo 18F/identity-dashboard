@@ -36,6 +36,8 @@ group :deploy do
 end
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'rubocop', '=0.54'
   gem 'web-console'
