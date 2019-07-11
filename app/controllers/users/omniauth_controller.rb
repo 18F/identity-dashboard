@@ -2,7 +2,7 @@ module Users
   class OmniauthController < ApplicationController
     def callback
       omniauth_info = request.env['omniauth.auth']['info']
-      @user = User.find_by_email(omniauth_info['email'])
+      @user = User.find_by(email: omniauth_info['email'])
       if @user
         @user.update!(uuid: omniauth_info['uuid'])
         sign_in @user

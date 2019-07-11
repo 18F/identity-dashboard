@@ -26,7 +26,7 @@ class ServiceProvider < ApplicationRecord
 
   validates :ial, inclusion: { in: [1, 2] }, allow_nil: true
 
-  before_validation(on: %i(create update)) do
+  before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 

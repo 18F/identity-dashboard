@@ -26,12 +26,10 @@ describe GroupsController do
         expect(response.status).to eq(401)
       end
     end
-
   end
 
   describe '#index' do
     context 'when the user is signed in' do
-
       context 'when the user is an admin' do
         before do
           user.admin = true
@@ -82,7 +80,7 @@ describe GroupsController do
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
-          post :create, params: {group: {name: "unique name"} }
+          post :create, params: { group: { name: 'unique name' } }
           expect(response.status).to eq(302)
         end
       end
@@ -107,10 +105,10 @@ describe GroupsController do
       end
     end
     context 'when the user is not an admin'
-      it 'has an error response' do
-        delete :destroy, params: { id: org.id }
-        expect(response.status).to eq(401)
-      end
+    it 'has an error response' do
+      delete :destroy, params: { id: org.id }
+      expect(response.status).to eq(401)
+    end
   end
 
   describe '#edit' do
@@ -128,7 +126,7 @@ describe GroupsController do
 
       context 'when the update is successful' do
         it 'has a redirect response' do
-          patch :update, params: { id: org.id, group: {name: org.name} }
+          patch :update, params: { id: org.id, group: { name: org.name } }
           expect(response.status).to eq(302)
         end
       end
@@ -139,7 +137,7 @@ describe GroupsController do
         end
 
         it 'renders the edit action' do
-          patch :update, params: { id: org.id, group: {name: 4} }
+          patch :update, params: { id: org.id, group: { name: 4 } }
           expect(response).to render_template(:edit)
         end
       end

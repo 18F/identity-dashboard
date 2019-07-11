@@ -10,8 +10,8 @@ describe Users::OmniauthController do
       {
         'info' => {
           'email' => email,
-          'uuid' => uuid
-        }
+          'uuid' => uuid,
+        },
       }
     end
 
@@ -40,7 +40,6 @@ describe Users::OmniauthController do
         expect(response).to redirect_to(service_providers_url)
       end
     end
-
 
     context 'when a user does not exist with the given email' do
       it 'redirects to the empty user path' do

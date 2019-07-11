@@ -49,7 +49,7 @@ class FakeSamlIdp < Sinatra::Base
       SamlIdp.config.base_saml_location,
       'foo/bar/logout',
       user.uuid,
-      OpenSSL::Digest::SHA256,
+      OpenSSL::Digest::SHA256
     )
   end
 
@@ -71,20 +71,20 @@ class FakeSamlIdp < Sinatra::Base
 
       config.name_id.formats = {
         persistent: ->(principal) { principal.uuid },
-        email_address: ->(principal) { principal.email }
+        email_address: ->(principal) { principal.email },
       }
 
       config.attributes = {
         uuid: {
           getter: :uuid,
           name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
-          name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
+          name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
         },
         email: {
           getter: :email,
           name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-          name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
-        }
+          name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+        },
       }
 
       config.service_provider.finder = lambda do |_issuer_or_entity_id|
@@ -93,15 +93,15 @@ class FakeSamlIdp < Sinatra::Base
           cert: sp_cert,
           fingerprint: OpenSSL::Digest::SHA1.hexdigest(sp_cert.to_der),
           private_key: config.secret_key,
-          assertion_consumer_logout_service_url: 'http://www.example.com/users/auth/saml/logout'
+          assertion_consumer_logout_service_url: 'http://www.example.com/users/auth/saml/logout',
         }
       end
     end
   end
 
   def user
-    if saml_request && saml_request.name_id
-      User.find_by_uuid(saml_request.name_id)
+    if saml_request&.name_id
+      User.find_by(uuid: saml_request.name_id)
     else
       FactoryBot.build(:user, uuid: SecureRandom.uuid)
     end
