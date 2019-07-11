@@ -69,12 +69,15 @@
       <td><%= service_provider.return_to_sp_url %></td>
     </tr>
 
-    <% if service_provider.identity_protocol == 'openid_connect' %>
     <tr>
-      <th scope="row">Redirect URIs</th>
+      <% if service_provider.identity_protocol == 'openid_connect' %>
+        <th scope="row">Redirect URIs</th>
+      <% end %>
+      <% if service_provider.identity_protocol == 'saml' %>
+        <th scope="row">Additional Redirect URIs</th>
+      <% end %>
       <td><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></td>
     </tr>
-    <% end %>
 
     <tr>
       <th scope="row">Attribute bundle</th>

@@ -27,7 +27,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    scenario 'can update oidc service provider with multiple redirect uris' do
+    scenario 'can update oidc service provider with multiple redirect uris', :js do
       user = create(:user)
       service_provider = create(:service_provider, user: user)
       login_as(user)

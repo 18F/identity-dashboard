@@ -32,7 +32,15 @@
 
 <%= form.input :return_to_sp_url, input_html: { class: 'h4p4' }, label: "<b>Return to App URL</b><br>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
 
-<%= form.input :redirect_uris, label: "<b>Redirect URIs</b> — <i>OpenID Connect only</i><br>One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>x-example-app:/result</code>".html_safe %>
+<div class="oidc-fields">
+  <%= form.label :redirect_uris, "<b>Redirect URIs</b><br>One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>".html_safe %>
+</div>
+
+<div class="saml-fields">
+  <%= form.label :redirect_uris, "<b>Additional Redirect URIs</b><br>One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>".html_safe %>
+</div>
+
+<%= form.input :redirect_uris, label: false %>
 <button id="add-redirect-uri-field" class="usa-button" type="button">Add another URI</button>
 
 <fieldset class="usa-fieldset-inputs">
