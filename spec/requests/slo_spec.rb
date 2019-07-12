@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-# TODO replace these tests with OIDC tests
+# TODO: replace these tests with OIDC tests
 # https://github.com/18F/identity-dashboard/issues/194
 
 xdescribe 'SLO' do
@@ -11,7 +11,9 @@ xdescribe 'SLO' do
       saml_idp_resp = Net::HTTP.get(idp_uri)
 
       # send the SAMLRequest to our logout endpoint
-      post '/users/auth/saml/logout', params: { SAMLRequest: saml_idp_resp, RelayState: 'the_idp_session_id' }
+      post '/users/auth/saml/logout',
+           params: { SAMLRequest: saml_idp_resp,
+                     RelayState: 'the_idp_session_id' }
 
       # redirect to complete the sign-out at the IdP
       expect(response).to redirect_to(%r{idp.example.com/saml/logout})
@@ -29,7 +31,9 @@ xdescribe 'SLO' do
       # mangle the SAML payload a little to trigger error
       saml_idp_resp += 'foo'
 
-      post '/users/auth/saml/logout', params: { SAMLRequest: saml_idp_resp, RelayState: 'the_idp_session_id' }
+      post '/users/auth/saml/logout',
+           params: { SAMLRequest: saml_idp_resp,
+                     RelayState: 'the_idp_session_id' }
 
       expect(response.body).to match(/was not valid/)
     end

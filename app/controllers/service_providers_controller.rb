@@ -50,13 +50,12 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    return save_service_provider(initial_action) if service_provider.valid?
-
+    return save_service_provider if service_provider.valid?
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
   end
 
-  def save_service_provider(initial_action)
+  def save_service_provider
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_providers
@@ -114,7 +113,7 @@ class ServiceProvidersController < AuthenticatedController
       :saml_client_cert,
       :sp_initiated_login_url,
       attribute_bundle: [],
-      redirect_uris: []
+      redirect_uris: [],
     ]
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)

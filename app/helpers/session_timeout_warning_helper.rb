@@ -18,7 +18,7 @@ module SessionTimeoutWarningHelper
              locals: {
                warning: warning,
                start: start,
-               frequency: frequency
+               frequency: frequency,
              }
     end
   end

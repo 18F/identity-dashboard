@@ -6,6 +6,6 @@ describe 'Service Provider API' do
     get '/api/service_providers'
     json = JSON.parse(response.body)
     expect(response).to be_success
-    expect(json[0]["issuer"]).to eq(app.issuer)
+    expect(json[0]['issuer']).to eq(app.issuer)
   end
 end

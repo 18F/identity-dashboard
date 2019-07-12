@@ -73,13 +73,13 @@ describe UsersController do
       end
 
       it 'has a redirect response' do
-        patch :update, params: { id: user.id, user: {admin: true, email: 'example@example.com'}}
+        patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response.status).to eq(302)
       end
     end
     context 'when the user is not an admin' do
       it 'has an error response' do
-        patch :update, params: { id: user.id, user: {admin: true, email: 'example@example.com' }}
+        patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response.status).to eq(401)
       end
     end
@@ -93,20 +93,20 @@ describe UsersController do
 
       context 'when the user is valid' do
         it 'has a redirect response' do
-          patch :create, params: { user: {admin: true, email: 'example@example.com'} }
+          patch :create, params: { user: { admin: true, email: 'example@example.com' } }
           expect(response.status).to eq(302)
         end
       end
       context 'when the user is invalid' do
         it "renders the 'new' view" do
-          patch :create, params: { user: {admin: true, email: user.email} }
+          patch :create, params: { user: { admin: true, email: user.email } }
           expect(response).to render_template(:new)
         end
       end
     end
     context 'when the user is not an admin' do
       it 'has an error response' do
-        patch :create, params: { user: {admin: true, email: 'example@example.com'} }
+        patch :create, params: { user: { admin: true, email: 'example@example.com' } }
         expect(response.status).to eq(401)
       end
     end

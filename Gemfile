@@ -59,6 +59,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
+  gem 'simplecov'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
   gem 'webmock'
