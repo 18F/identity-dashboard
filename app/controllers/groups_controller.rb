@@ -38,6 +38,8 @@ class GroupsController < ApplicationController
     @groups = Group.includes(:users).all
   end
 
+  def show; end
+
   private
 
   def find_group
