@@ -1,6 +1,10 @@
 <h1>Group details</h1>
 
-<%= render 'shared/subnav', current_item: @group %>
+<ul>
+  <li><%= link_to "Back to groups", groups_path %> 🍇</li>
+  <li><%= link_to "Edit this group", edit_group_path %> ✏️</li>
+  <li><%= link_to "New group", new_group_path %> ➕</li>
+</ul>
 
 <h2><%= @group.name %></h2>
 
