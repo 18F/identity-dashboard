@@ -5,11 +5,11 @@ added title from style guide
 <div class="usa-display">Users</div>
 <!-- 
 Karla Rodriguez
-added style to link
-create a button from link 
+added style to button, removed icons not in style guide
 --> 
 
-<%= link_to 'Create a new user', new_user_path, :class => "usa-button" %> 👋
+
+<%= link_to 'Create a new user', new_user_path %> 
 
 <table class="usa-table-borderless">
   <thead>
@@ -24,9 +24,10 @@ create a button from link
     <% @users.each do |user| %>
     <tr>
       <th scope="row"><%= user.email %></th>
-      <td><%= user.uuid? ? '✔️' : '❌' %></td>
-      <td><%= user.admin? ? '💪' : '' %></td>
+      <td><%= image_tag user.uuid? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg' %></td>
+      <td><%= image_tag user.admin? ? '/assets/img/illustrations/security-key.svg' : '' %></td>
       <td><%= link_to 'edit', edit_user_path(user.id) %></td>
+
     </tr>
     <% end %>
   </tbody>

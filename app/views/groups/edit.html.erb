@@ -1,12 +1,19 @@
 <!-- 
 Karla Rodriguez
 added title from style guide
--->
+
+--> 
+<!--
+Karla Rodriguez
+added style to button
+--> 
 <div class="usa-display">Edit group</div>
 
 
 <%= simple_form_for(@group, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
-  <%= form.button :submit, 'Update' %>
+  <BR>
+  <%= form.button :submit, 'Update', :class => "usa-button"%>
 <% end %>
+

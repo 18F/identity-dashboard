@@ -23,15 +23,20 @@ added title from style guide
        Development
   <% end %>
   </h2>
-
+<!--removed icons not in design system 💚 💔 🚫 -->
   <% environment.statuses.each do |status| %>
     <div>
       <% if status.status_class == 'deploy-success' %>
-        💚
+        
+        <%= image_tag '/assets/img/alerts/success.svg', alt: 'success', style: 'height:27px;width:27px;' %>
+        
       <% elsif status.status_class == 'deploy-error' %>
-        💔
+
+        <%= image_tag '/assets/img/alerts/error.svg', alt: 'error', style: 'height:27px;width:27px;' %>
+
       <% elsif status.status_class == 'disabled' %>
-        🚫
+         
+       <%= image_tag '/assets/img/alerts/warning.svg', alt: 'disabled', style: 'height:27px;width:27px;' %>
       <% end %>
 
       <% if status.host %>

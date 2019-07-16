@@ -3,3 +3,48 @@ $image-path: 'img';
 
 @import 'identity-style-guide/dist/assets/scss/styles';
 
+ input[type="radio"].usa-input {
+    position: absolute;
+    left: -999em;
+}
+label.collection_radio_buttons {
+    cursor: pointer;
+    display: inherit;
+    font-weight: 400;
+    margin-bottom: .75rem;
+    padding-left: 2rem;
+    position: relative;
+    text-indent: -2rem;
+}
+
+ label.collection_radio_buttons:before {
+    background-color: #f2f9ff;
+    -webkit-box-shadow: inset 0 0 0 1px #0071bb;
+    box-shadow: inset 0 0 0 1px #0071bb;
+    height: 1rem;
+    width: 1rem;
+    margin-left: .25rem;
+    line-height: 1;    
+    background: #fff;
+    content: "\a0";
+    display: inline-block;
+    left: 2px;
+    position: relative;
+    border-radius: 99rem;
+    margin-right: .75rem;
+}
+
+
+
+input[type="radio"].usa-input:checked+label.collection_radio_buttons:before {
+    background-color: #fff;
+    -webkit-box-shadow: inset 0 0 0 0.3rem #0071bb;
+    box-shadow: inset 0 0 0 0.3rem #0071bb;
+}
+.radio {
+    display: block;
+}
+.usa-checkbox__label {
+    display: block;
+}
+

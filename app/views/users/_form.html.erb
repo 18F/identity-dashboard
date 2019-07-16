@@ -1,10 +1,16 @@
-<div class="form-fields">
+<form class="usa-form">
+    <fieldset class="usa-fieldset">
+       
+            
 
-<%= form.input :email,
-    label: "<b>Email</b>".html_safe %>
+            <%= form.input :email,
+                label: "<b>Email</b>".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' } %>
 
-<%= form.input :admin,
-    as: :radio_buttons,
-    label: "<b>Make admin?</b>".html_safe %>
+            <%= form.input :admin,
+                as: :radio_buttons,
+                label: "Make admin?".html_safe, label_html: { class: 'usa-label' } %>
 
-</div>
+            
+        </legend>
+    </fieldset>
+            

@@ -7,5 +7,9 @@ added title from style guide
 <%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
-  <%= form.button :submit, 'Update' %>
+  <!-- 
+  Karla Rodriguez
+  added style to button
+  --> 
+  <%= form.button :submit, 'Update', :class => "usa-button" %>
 <% end %>

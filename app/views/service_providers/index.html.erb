@@ -3,9 +3,9 @@ Karla Rodriguez
 added title from style guide
 -->
 <div class="usa-display">My apps</div>
-
-
-<%= link_to 'Create a new test app', new_service_provider_path %> 🚀
+<!--not passing any required info <%= button_to ('Create a new test app'), new_service_provider_path, method: :post, :class => "usa-button" %>-->
+<!--removed icon not in design system 🚀-->
+<%= link_to 'Create a new test app', new_service_provider_path %> 
 
 <table class="usa-table-borderless">
   <thead>
@@ -22,7 +22,7 @@ added title from style guide
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= app.active? ? '✔' : '❌' %></td>
+      <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg' %></td>
     </tr>
     <% end %>
   </tbody>
