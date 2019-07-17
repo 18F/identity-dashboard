@@ -29,7 +29,7 @@ SimpleForm.setup do |config|
     b.use :placeholder
     b.use :label
     b.wrapper :tag => 'ul', :class => 'usa-input-list' do |input|
-      input.use :input, :wrap_with => { :tag => 'li', :class => 'block-wrapper' }
+      input.use :input, :wrap_with => { :tag => 'li', :class => 'usa-checkbox__input' }
       input.use :error, :wrap_with => { :tag => 'span', :class => 'help-inline' }
       input.use :hint,  :wrap_with => { :tag => 'p', :class => 'help-block' }
     end
