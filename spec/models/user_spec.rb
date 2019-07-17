@@ -35,6 +35,21 @@ describe User do
       create(:service_provider)
       expect(user.scoped_service_providers).to eq([user_sp, group_sp])
     end
+    it "alphabetizes the list of user created and the user's group sps" do
+      group = create(:group)
+      user.groups = [group]
+      user.save
+      sp = {}
+      %i[a G c I e].shuffle.each do |prefix|
+        sp[prefix.downcase] = create(:service_provider,
+                                     user: user, friendly_name: "#{prefix}_service_provider")
+      end
+      %i[f B h D j].shuffle.each do |prefix|
+        sp[prefix.downcase] = create(:service_provider,
+                                     group: group, friendly_name: "#{prefix}_service_provider")
+      end
+      expect(user.scoped_service_providers).to eq(sp.keys.sort.map { |k| sp[k] })
+    end
   end
 
   describe '#scoped_groups' do

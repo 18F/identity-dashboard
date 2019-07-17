@@ -17,7 +17,9 @@ class User < ApplicationRecord
   end
 
   def scoped_service_providers
-    (member_service_providers + service_providers).uniq
+    (member_service_providers + service_providers).
+      uniq.
+      sort_by! { |sp| sp.friendly_name.downcase }
   end
 
   def domain

@@ -12,7 +12,6 @@ feature 'User groups CRUD' do
     fill_in 'Name', with: 'team name'
     find("#group_user_ids_#{user.id}").click
 
-
     click_on 'Create'
     expect(current_path).to eq(groups_path)
     expect(page).to have_content('Success')
@@ -89,7 +88,7 @@ feature 'User groups CRUD' do
       admin = create(:admin)
       group = create(:group)
       user = create(:user, groups: [group])
-      sp = create(:service_provider, group: group)
+      create(:service_provider, group: group)
 
       login_as(admin)
       visit groups_path
@@ -103,7 +102,7 @@ feature 'User groups CRUD' do
     scenario 'regular user attempts to view a group' do
       user = create(:user)
       group = create(:group)
-      sp = create(:service_provider, group: group)
+      create(:service_provider, group: group)
 
       login_as(user)
 
