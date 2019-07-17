@@ -68,6 +68,10 @@
       <th scope="row">Return to App URL</th>
       <td><%= service_provider.return_to_sp_url %></td>
     </tr>
+    <tr>
+      <th scope="row">Failure to Proof URL</th>
+      <td><%= service_provider.failure_to_proof_url %></td>
+    </tr>
 
     <% if service_provider.identity_protocol == 'openid_connect' %>
     <tr>

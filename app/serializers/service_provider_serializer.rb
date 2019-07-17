@@ -12,6 +12,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :logo,
     :redirect_uris,
     :return_to_sp_url,
+    :failure_to_proof_url,
     :signature,
     :sp_initiated_login_url,
     :updated_at,
