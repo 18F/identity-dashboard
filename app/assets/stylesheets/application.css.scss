@@ -41,9 +41,11 @@ input[type="radio"].usa-input:checked+label.collection_radio_buttons:before {
     -webkit-box-shadow: inset 0 0 0 0.3rem #0071bb;
     box-shadow: inset 0 0 0 0.3rem #0071bb;
 }
+/* these overrides are necessary because of simpleform not using lists for radio and checkboxes*/
 .radio {
     display: block;
 }
+
 .usa-checkbox__label {
     display: block;
 }

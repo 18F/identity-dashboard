@@ -5,12 +5,14 @@
 
 <div class="usa-display">Details for "<%= service_provider.friendly_name %>"</div>
 
-<table class="usa-table-borderless bold-th">
+<table class="usa-table">
   <tbody>
+  
     <tr class="usa-color-gold-lightest">
-      <th scope="row">Friendly name</th>
+      <th scope="row">Friendly name</th></thead>
       <td><%= service_provider.friendly_name %></td>
     </tr>
+  
     <tr>
       <th scope="row">Description</th>
       <td><%= service_provider.description %></td>
@@ -83,17 +85,18 @@
     </tr>
     <tr>
       <th scope="row">Active</th>
-      <td><%= (service_provider.active? ? '✔️' : '❌') %></td>
+      <!-- added image tag inline -->
+      <td><%= (image_tag service_provider.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg') %></td>
     </tr>
   </tbody>
 </table>
-
+<!-- removed button classes fma0 fmr1 fl -->
 <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
-    class: 'fma0 fmr1 fl',
+    class: 'usa-button float-left',
     method: :get %>
 
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),
-  class: 'fma0 fmr1 fl',
+  class: 'usa-button usa-button--outline float-left',
   method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>

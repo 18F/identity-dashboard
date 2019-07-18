@@ -86,12 +86,14 @@
           <fieldset class="usa-fieldset">
               <legend class="usa-legend">Attribute bundle</legend>
               <span class='usa-form-hint'>The possible <a href="https://developers.login.gov/attributes" target="_blank">user attributes</a> to be requested by your app. Note for IAL1/LOA1, only UUID and email can be requested.</span>     
+              
               <%= collection_check_boxes(:service_provider, 
                   :attribute_bundle,
                   ServiceProvider.possible_attributes, :first, :last) do |b| %>
                   <%= b.check_box class: 'usa-checkbox__input'%>
-                  <%= b.label class: 'usa-checkbox__label'%>
+                  <%= b.label class: 'usa-checkbox__label '%>
               <% end %>
+              
           </fieldset>
           <%= form.input :active,  label_html: { class: 'usa-label' }, as: :radio_buttons, label: "Active<br>".html_safe %>
           <span class='usa-form-hint'>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code></span>   

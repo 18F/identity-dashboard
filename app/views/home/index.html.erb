@@ -5,8 +5,16 @@
 Karla Rodriguez
 added title from style guide
 -->
+<!-- Use borderless table
 <div class="usa-display">Environments status</div>
-
+<table class="usa-table usa-table--borderless">
+<thead>
+    <tr>
+      <th scope="col">Status</th>
+      <th scope="col">Host</th>
+      <th scope="col">Deployed by</th>
+    </tr>
+</table>-->
 <% @deploy_statuses.each do |environment| %>
 
   <h2>
