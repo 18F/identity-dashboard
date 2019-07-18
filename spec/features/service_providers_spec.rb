@@ -218,6 +218,23 @@ feature 'Service Providers CRUD' do
       expect(page).not_to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
+    scenario 'user updates service provider but service provider updater fails' do
+      user = create(:user)
+      app = create(:service_provider, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(app)
+
+      allow(ServiceProviderUpdater).to receive(:ping).and_return(false)
+
+      fill_in 'Friendly name', with: 'change service_provider name'
+      fill_in 'Description', with: 'app description foobar'
+      choose 'Saml'
+      check 'last_name'
+      click_on 'Update'
+
+      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
+    end
 
     context 'service provider does not have a user group' do
       scenario 'user group defaults to nil' do

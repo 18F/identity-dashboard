@@ -110,6 +110,7 @@ class ServiceProvidersController < AuthenticatedController
       :logo,
       :metadata_url,
       :return_to_sp_url,
+      :failure_to_proof_url,
       :saml_client_cert,
       :sp_initiated_login_url,
       attribute_bundle: [],
