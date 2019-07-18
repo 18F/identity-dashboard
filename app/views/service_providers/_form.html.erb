@@ -31,7 +31,7 @@
 </div>
 
 <%= form.input :return_to_sp_url, input_html: { class: 'h4p4' }, label: "<b>Return to App URL</b><br>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
-<%= form.input :failure_to_proof_url, input_html: { class: 'h4p4' }, label: "<b>Failure to Proof URL</b>".html_safe %>
+<%= form.input :failure_to_proof_url, input_html: { class: 'h4p4' }, label: "<b>Failure to Proof URL</b><br><i>IAL2 Only</i> — The URL provided to users who are unable to complete identity proofing and returning to your application.".html_safe %>
 
 <div class="oidc-fields">
   <%= form.label :redirect_uris, "<b>Redirect URIs</b><br>One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>".html_safe %>
