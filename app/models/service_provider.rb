@@ -94,10 +94,7 @@ class ServiceProvider < ApplicationRecord
 
   def failure_to_proof_url_is_parsable
     return if failure_to_proof_url.blank?
-
-    unless uri_valid?(failure_to_proof_url)
-      errors.add(:failure_to_proof_url, :invalid)
-    end
+    errors.add(:failure_to_proof_url, :invalid) unless uri_valid?(failure_to_proof_url)
   end
 
   def saml_client_cert_is_x509_if_present
