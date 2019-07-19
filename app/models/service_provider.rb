@@ -22,6 +22,8 @@ class ServiceProvider < ApplicationRecord
   validates :issuer, format: { with: ISSUER_FORMAT_REGEXP }, on: :create
 
   validate :redirect_uris_are_parsable
+  validate :failure_to_proof_url_is_parsable
+
   validate :saml_client_cert_is_x509_if_present
 
   validates :ial, inclusion: { in: [1, 2] }, allow_nil: true
@@ -77,17 +79,22 @@ class ServiceProvider < ApplicationRecord
     return if redirect_uris.blank?
 
     redirect_uris.each do |uri|
-      next if redirect_uri_valid?(uri)
+      next if uri_valid?(uri)
       errors.add(:redirect_uris, :invalid)
       break
     end
   end
 
-  def redirect_uri_valid?(redirect_uri)
-    parsed_uri = URI.parse(redirect_uri)
+  def uri_valid?(uri)
+    parsed_uri = URI.parse(uri)
     parsed_uri.scheme.present? && parsed_uri.host.present?
   rescue URI::BadURIError, URI::InvalidURIError
     false
+  end
+
+  def failure_to_proof_url_is_parsable
+    return if failure_to_proof_url.blank?
+    errors.add(:failure_to_proof_url, :invalid) unless uri_valid?(failure_to_proof_url)
   end
 
   def saml_client_cert_is_x509_if_present
