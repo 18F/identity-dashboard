@@ -22,7 +22,7 @@ added title from style guide
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg' %></td>
+      <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
     </tr>
     <% end %>
   </tbody>

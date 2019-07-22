@@ -50,3 +50,9 @@ input[type="radio"].usa-input:checked+label.collection_radio_buttons:before {
     display: block;
 }
 
+/* Remove default browser arrow from select form elements */
+select::-ms-expand {	display: none; }
+select{
+  -webkit-appearance: none;
+  appearance: none;
+}
