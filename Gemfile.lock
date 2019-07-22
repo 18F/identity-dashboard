@@ -21,6 +21,11 @@ GIT
       multi_json
       omniauth
 
+PATH
+  remote: ../gems/identity-validations
+  specs:
+    identity-validations (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -435,6 +440,7 @@ DEPENDENCIES
   figaro
   httparty
   i18n-tasks
+  identity-validations!
   jquery-rails (>= 4.3.4)
   json-jwt (>= 1.9.4)
   jwt
