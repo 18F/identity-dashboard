@@ -24,8 +24,8 @@ added style to button, removed icons not in style guide
     <% @users.each do |user| %>
     <tr>
       <th scope="row"><%= user.email %></th>
-      <td><%= image_tag user.uuid? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg' %></td>
-      <td><%= image_tag user.admin? ? '/assets/img/illustrations/security-key.svg' : '' %></td>
+      <td><%= image_tag user.uuid? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
+      <td><%= image_tag '/assets/img/illustrations/security-key.svg', style: 'height:27px;width:27px;' if user.admin? %></td>
       <td><%= link_to 'edit', edit_user_path(user.id) %></td>
 
     </tr>
