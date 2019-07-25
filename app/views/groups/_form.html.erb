@@ -1,6 +1,11 @@
 <div class="form-fields">
 
 <%= form.input :name, label: "<b>Name</b>".html_safe %>
+<%= form.input :agency_id,
+               as: :collection_select,
+               collection: @agencies,
+               label: "<b>Agency</b><br>The federal agency you would like this group to be assigned to.".html_safe,
+               required: true %>
 <%= form.input :description, label: "<b>Description</b>".html_safe %>
 <fieldset class="usa-fieldset-inputs">
   <legend class="mb1">Users</legend>

@@ -2,6 +2,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
   attributes(
     :acs_url,
     :active,
+    :agency_id,
     :assertion_consumer_logout_service_url,
     :attribute_bundle,
     :block_encryption,

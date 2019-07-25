@@ -11,8 +11,9 @@ class ServiceProvider < ApplicationRecord
   attr_writer :issuer_department, :issuer_app
 
   belongs_to :user
-  belongs_to :agency
   belongs_to :group
+
+  has_one :agency, through: :group
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
