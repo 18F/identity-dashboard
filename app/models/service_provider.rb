@@ -1,7 +1,7 @@
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
-  include Identity::Validations::ServiceProviderValidation
+  include IdentityValidations::ServiceProviderValidation
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app

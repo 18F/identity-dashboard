@@ -7,6 +7,7 @@ describe ServiceProvider do
   end
 
   describe 'Validations' do
+    it { should validate_presence_of(:friendly_name) }
     it { should validate_presence_of(:issuer) }
 
     it 'accepts a correctly formatted issuer' do

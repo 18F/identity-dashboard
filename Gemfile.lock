@@ -11,6 +11,13 @@ GIT
       uuid
 
 GIT
+  remote: https://github.com/18f/identity-validations.git
+  revision: d112abe3707b62ee53987dfbdc89faa70a4c976f
+  branch: master
+  specs:
+    identity_validations (0.1.0)
+
+GIT
   remote: https://github.com/18f/omniauth_login_dot_gov.git
   revision: bc6932e5489d39b39b2dfdf0132561cd73ac781d
   specs:
@@ -20,11 +27,6 @@ GIT
       jwt
       multi_json
       omniauth
-
-PATH
-  remote: ../gems/identity-validations
-  specs:
-    identity-validations (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -440,7 +442,7 @@ DEPENDENCIES
   figaro
   httparty
   i18n-tasks
-  identity-validations!
+  identity_validations!
   jquery-rails (>= 4.3.4)
   json-jwt (>= 1.9.4)
   jwt
