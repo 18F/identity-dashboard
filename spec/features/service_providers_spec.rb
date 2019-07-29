@@ -3,8 +3,7 @@ require 'rails_helper'
 feature 'Service Providers CRUD' do
   context 'Regular user' do
     scenario 'can create service provider' do
-      user = create(:user)
-      create(:agency)
+      user = create(:user, :with_groups)
       login_as(user)
 
       visit new_service_provider_path
@@ -14,6 +13,8 @@ feature 'Service Providers CRUD' do
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       fill_in 'service_provider_logo', with: 'test.png'
+      select user.groups[0].name, from: 'service_provider_group_id'
+
       check 'email'
       check 'first_name'
       click_on 'Create'
@@ -24,7 +25,24 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content('test service_provider')
         expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
         expect(page).to have_content('email')
+        expect(page).to have_content(user.groups[0].agency.name)
       end
+    end
+
+    scenario 'can update service provider group', :js do
+      user = create(:user, :with_groups)
+      service_provider = create(:service_provider, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
+      select user.groups[1].name, from: 'service_provider_group_id'
+      click_on 'Update'
+
+      service_provider.reload
+      expect(service_provider.agency).to eq(user.groups[1].agency)
+      expect(service_provider.agency).not_to eq(user.groups[0].agency)
+
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
@@ -150,7 +168,6 @@ feature 'Service Providers CRUD' do
   context 'admin user' do
     scenario 'can create service provider with user group' do
       admin = create(:admin)
-      create(:agency)
       group = create(:group)
       login_as(admin)
 
