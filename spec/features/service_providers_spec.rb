@@ -42,7 +42,6 @@ feature 'Service Providers CRUD' do
       service_provider.reload
       expect(service_provider.agency).to eq(user.groups[1].agency)
       expect(service_provider.agency).not_to eq(user.groups[0].agency)
-
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
@@ -101,6 +100,7 @@ feature 'Service Providers CRUD' do
 
     # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
     # choosing the protocol in the following four scenarios.
+    # rubocop:disable Metrics/LineLength
     xscenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
@@ -109,7 +109,7 @@ feature 'Service Providers CRUD' do
       choose 'Saml'
 
       saml_attributes =
-        %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url)
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url]
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
@@ -126,13 +126,14 @@ feature 'Service Providers CRUD' do
       choose 'Openid connect'
 
       saml_attributes =
-        %w(acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url)
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url]
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
       expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
+    # rubocop:enable Metrics/LineLength
 
     xscenario 'issuer is updated when department or app is updated', :js do
       user = create(:user)

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
@@ -125,3 +126,4 @@ class ServiceProvidersController < AuthenticatedController
 
   helper_method :service_provider
 end
+# rubocop:enable Metrics/ClassLength

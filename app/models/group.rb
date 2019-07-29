@@ -1,8 +1,8 @@
 class Group < ApplicationRecord
   belongs_to :agency
 
-  has_many :service_providers
-  has_many :user_groups
+  has_many :service_providers, dependent: :nullify
+  has_many :user_groups, dependent: :nullify
   has_many :users, through: :user_groups
 
   validates :name, presence: true, uniqueness: true
@@ -14,8 +14,8 @@ class Group < ApplicationRecord
   end
 
   def update_service_providers
-    service_providers.each do |s|
-      s.update_attributes(agency_id: agency.id)
+    service_providers.each do |sp|
+      sp.update(agency_id: agency.id)
     end
   end
 end

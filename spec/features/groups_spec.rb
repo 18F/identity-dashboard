@@ -11,7 +11,7 @@ feature 'User groups CRUD' do
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
-    select('GSA', from: "Agency")
+    select('GSA', from: 'Agency')
     find("#group_user_ids_#{user.id}").click
 
     click_on 'Create'
@@ -62,7 +62,7 @@ feature 'User groups CRUD' do
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
-    select('USDS', from: "Agency")
+    select('USDS', from: 'Agency')
     click_on 'Update'
 
     expect(current_path).to eq(groups_path)
@@ -70,7 +70,6 @@ feature 'User groups CRUD' do
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
-
   end
 
   scenario 'Index' do
