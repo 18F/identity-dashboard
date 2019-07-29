@@ -76,6 +76,8 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
     ast (2.4.0)
+    autoprefixer-rails (9.6.1)
+      execjs
     bcrypt (3.1.11)
     bindata (2.4.4)
     builder (3.2.3)
@@ -412,6 +414,7 @@ PLATFORMS
 DEPENDENCIES
   actionmailer-text
   active_model_serializers
+  autoprefixer-rails (~> 9.6)
   bullet
   bummr
   capistrano
@@ -464,4 +467,4 @@ DEPENDENCIES
   websocket-driver (= 0.6.5)
 
 BUNDLED WITH
-   1.17.3
+   2.0.1
