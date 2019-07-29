@@ -20,7 +20,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
   )
 
   def agency
-    object.agency.name
+    object&.agency&.name
   end
 
   def cert

@@ -17,7 +17,7 @@
     <% @groups.each do |group| %>
     <tr>
       <th scope="row"><%= group.name %></th>
-      <td><%= group.agency.name %></td>
+      <td><%= group&.agency&.name %></td>
       <td><%= group.description %></td>
       <td>
         <% group.service_providers.each do |sp| %>
