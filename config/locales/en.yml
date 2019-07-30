@@ -27,6 +27,7 @@ en:
       new: Create new user group
       new_group: Create new group
       sub_index: Manage user groups
+      temporary_warning_group_user: "**Warning** Changing your group's agency will affect the UUIDs of the users of an application in this group. Only add an agency if you are prepared to migrate your users across applications."
     users:
       edit: Edit user
       index: Users

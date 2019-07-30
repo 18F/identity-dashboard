@@ -4,12 +4,14 @@ class GroupsController < ApplicationController
 
   def new
     @group = Group.new
+    @agencies = Agency.all
   end
 
   def create
     @group = Group.new(group_params)
 
     if @group.save
+
       flash[:success] = 'Success'
       redirect_to groups_path
     else
@@ -17,7 +19,9 @@ class GroupsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    @agencies = Agency.all
+  end
 
   def update
     if @group.update(group_params)
@@ -47,6 +51,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, user_ids: [])
+    params.require(:group).permit(:name, :agency_id, :description, user_ids: [])
   end
 end

@@ -4,18 +4,21 @@ feature 'User groups CRUD' do
   scenario 'Create' do
     admin = create(:admin)
     user = create(:user)
+    create(:agency, name: 'GSA')
 
     login_as(admin)
     visit new_group_path
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
+    select('GSA', from: 'Agency')
     find("#group_user_ids_#{user.id}").click
 
     click_on 'Create'
     expect(current_path).to eq(groups_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
+    expect(page).to have_content('GSA')
     expect(page).to have_content('department name')
     expect(page).to have_content(user.email)
   end
@@ -50,6 +53,7 @@ feature 'User groups CRUD' do
   scenario 'Update' do
     admin = create(:admin)
     org = create(:group)
+    create(:agency, name: 'USDS')
     login_as(admin)
 
     visit groups_path
@@ -58,10 +62,12 @@ feature 'User groups CRUD' do
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
+    select('USDS', from: 'Agency')
     click_on 'Update'
 
     expect(current_path).to eq(groups_path)
     expect(page).to have_content('Success')
+    expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
   end
@@ -78,6 +84,8 @@ feature 'User groups CRUD' do
 
     expect(page).to have_content(org1.name)
     expect(page).to have_content(org2.name)
+    expect(page).to have_content(org1.agency.name)
+    expect(page).to have_content(org2.agency.name)
     expect(page).to have_content(org1.description)
     expect(page).to have_content(org2.description)
     expect(page).to have_content(sp.friendly_name)
@@ -96,6 +104,7 @@ feature 'User groups CRUD' do
 
       expect(current_path).to eq(group_path(group))
       expect(page).to have_content(group.name)
+      expect(page).to have_content(group.agency.name)
       expect(page).to have_content(user.email)
     end
 

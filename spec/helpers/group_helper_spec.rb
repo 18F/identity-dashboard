@@ -2,7 +2,7 @@ require 'rails_helper'
 describe GroupHelper do
   let(:user) { build(:user) }
   describe '#can_edit_groups??' do
-    it 'returns false if user doesnt have a group' do
+    it "returns false if user doesn't have a group" do
       expect(can_edit_groups?(user)).to eq(false)
     end
 

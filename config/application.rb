@@ -35,5 +35,7 @@ module IdentityDashboard
     # Make sure the sum of this value and session_timeout_warning_seconds
     # is a multiple of 60 seconds.
     config.session_check_frequency         = 60
+
+    config.agencies = YAML.load_file 'config/agencies.yml'
   end
 end

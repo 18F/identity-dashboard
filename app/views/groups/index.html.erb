@@ -14,6 +14,7 @@ changed link to button
   <thead>
     <tr>
       <th scope="col">Name</th>
+      <th scope="col">Agency</th>
       <th scope="col">Description</th>
       <th scope="col">Apps</th>
       <th scope="col">Users</th>
@@ -24,6 +25,7 @@ changed link to button
     <% @groups.each do |group| %>
     <tr>
       <th scope="row"><%= group.name %></th>
+      <td><%= group&.agency&.name %></td>
       <td><%= group.description %></td>
       <td>
         <% group.service_providers.each do |sp| %>

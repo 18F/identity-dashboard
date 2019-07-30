@@ -1,16 +1,17 @@
 <!-- 
 Karla Rodriguez
 removed title using legend for form
--->
+--> 
+
 <div class="usa-display">New group</div>
 <form class="usa-form">
-    <fieldset class="usa-fieldset">
-        <%= simple_form_for(@group,
-            html: { autocomplete: 'off', role: 'form' },
-            url: groups_path) do |form| %>
-          <%= form.error_notification %>
-          <%= render 'form', form: form %>
-          <%= form.button :submit, 'Create', :class => "usa-button" %>
-        <% end %>
-    </fieldset>
+ <fieldset class="usa-fieldset">
+<%= simple_form_for(@group,
+    html: { autocomplete: 'off', role: 'form' },
+    url: groups_path) do |form| %>
+  <%= form.error_notification %>
+  <%= render 'form', form: form, agency_required: true, extra_message: nil %>
+  <%= form.button :submit, 'Create', :class => "usa-button" %>
+<% end %>
+</fieldset>
 </form>    

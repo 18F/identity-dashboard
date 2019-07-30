@@ -18,6 +18,10 @@
       <td><%= service_provider.description %></td>
     </tr>
     <tr>
+      <th scope="row">Agency</th>
+      <td><%= service_provider&.agency&.name %></td>
+    </tr>
+    <tr>
       <th scope="row">Group</th>
       <td><%= service_provider.group %></td>
     </tr>
