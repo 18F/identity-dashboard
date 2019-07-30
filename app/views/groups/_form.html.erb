@@ -4,8 +4,8 @@
 <%= form.input :agency_id,
                as: :collection_select,
                collection: @agencies,
-               label: "<b>Agency</b><br>The federal agency you would like this group to be assigned to.".html_safe,
-               required: true %>
+               label: "<b>Agency</b><br>The federal agency you would like this group to be assigned to.<p>#{ extra_message }".html_safe,
+               required: agency_required %>
 <%= form.input :description, label: "<b>Description</b>".html_safe %>
 <fieldset class="usa-fieldset-inputs">
   <legend class="mb1">Users</legend>

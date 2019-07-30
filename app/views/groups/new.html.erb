@@ -4,6 +4,6 @@
     html: { autocomplete: 'off', role: 'form' },
     url: groups_path) do |form| %>
   <%= form.error_notification %>
-  <%= render 'form', form: form %>
+  <%= render 'form', form: form, agency_required: true, extra_message: nil %>
   <%= form.button :submit, 'Create' %>
 <% end %>
