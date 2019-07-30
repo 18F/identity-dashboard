@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xfeature 'User groups CRUD' do
+feature 'User groups CRUD' do
   scenario 'Create' do
     admin = create(:admin)
     user = create(:user)
@@ -10,7 +10,7 @@ xfeature 'User groups CRUD' do
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
-    select user.email, from: 'Users'
+    find("#group_user_ids_#{user.id}").click
 
     click_on 'Create'
     expect(current_path).to eq(groups_path)
@@ -32,7 +32,7 @@ xfeature 'User groups CRUD' do
       expect(page).to have_content(user.email)
     end
 
-    scenario 'User can added to another group' do
+    scenario 'User can be added to another group' do
       admin = create(:admin)
       user = create(:user)
       group1 = create(:group, users: [user])
@@ -40,7 +40,8 @@ xfeature 'User groups CRUD' do
 
       login_as(admin)
       visit edit_group_path(group2)
-      select user.email, from: 'Users'
+      find("#group_user_ids_#{user.id}").click
+
       click_on 'Update'
       expect(user.groups).to include(group1, group2)
     end
@@ -52,8 +53,7 @@ xfeature 'User groups CRUD' do
     login_as(admin)
 
     visit groups_path
-    find("a[aria-label='#{t('links.aria.edit', name: org.name)}']").click
-
+    find("a[href='#{edit_group_path(org)}']").click
     expect(current_path).to eq(edit_group_path(org))
 
     fill_in 'Name', with: 'updated team'
@@ -83,16 +83,46 @@ xfeature 'User groups CRUD' do
     expect(page).to have_content(sp.friendly_name)
   end
 
+  describe 'show' do
+    scenario 'admin views a group' do
+      admin = create(:admin)
+      group = create(:group)
+      user = create(:user, groups: [group])
+      create(:service_provider, group: group)
+
+      login_as(admin)
+      visit groups_path
+      find("a[href='#{group_path(group)}']", text: 'view').click
+
+      expect(current_path).to eq(group_path(group))
+      expect(page).to have_content(group.name)
+      expect(page).to have_content(user.email)
+    end
+
+    scenario 'regular user attempts to view a group' do
+      user = create(:user)
+      group = create(:group)
+      create(:service_provider, group: group)
+
+      login_as(user)
+
+      visit group_path(group)
+
+      expect(page).to_not have_content(group.name)
+      expect(page).to have_content('Unauthorized')
+    end
+  end
+
   scenario 'Delete' do
     admin = create(:admin)
-    org = create(:group)
+    group = create(:group)
     login_as(admin)
 
     visit groups_path
-    find("a[aria-label='#{t('links.aria.delete', name: org.name)}']").click
+    find("a[href='#{group_path(group)}']", text: 'delete').click
 
     expect(current_path).to eq(groups_path)
     expect(page).to have_content('Success')
-    expect(page).to_not have_content(org.name)
+    expect(page).to_not have_content(group.name)
   end
 end

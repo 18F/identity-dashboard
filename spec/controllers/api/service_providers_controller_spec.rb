@@ -54,6 +54,17 @@ describe Api::ServiceProvidersController do
 
         expect(response).to redirect_to service_providers_path
       end
+      context 'when ServiceProviderUpdater fails' do
+        before do
+          allow(ServiceProviderUpdater).to receive(:ping).and_return(false)
+        end
+
+        it 'redirects to service_providers_path' do
+          post :update
+
+          expect(response).to redirect_to service_providers_path
+        end
+      end
     end
   end
 end

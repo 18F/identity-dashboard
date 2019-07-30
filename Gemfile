@@ -9,6 +9,7 @@ gem 'dotenv-rails'
 gem 'enum_help'
 gem 'figaro'
 gem 'httparty'
+gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', branch: 'master'
 gem 'jquery-rails', '>= 4.3.4'
 gem 'json-jwt', '>= 1.9.4'
 gem 'jwt'
@@ -36,6 +37,8 @@ group :deploy do
 end
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'rubocop', '=0.54'
   gem 'web-console'
@@ -59,6 +62,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
+  gem 'simplecov'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
   gem 'webmock'

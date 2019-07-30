@@ -20,7 +20,7 @@ SecureHeaders::Configuration.default do |config|
     object_src: %w['none'],
     script_src: %w['self' *.newrelic.com *.nr-data.net],
     style_src: %w['self'],
-    base_uri: %w['self']
+    base_uri: %w['self'],
   }
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {

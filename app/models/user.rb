@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :groups, through: :user_groups
   has_many :service_providers, through: :groups
 
+  validates :email, uniqueness: true
+
   scope :sorted, -> { order(email: :asc) }
 
   def scoped_groups
@@ -15,7 +17,9 @@ class User < ApplicationRecord
   end
 
   def scoped_service_providers
-    (member_service_providers + service_providers).uniq
+    (member_service_providers + service_providers).
+      uniq.
+      sort_by! { |sp| sp.friendly_name.downcase }
   end
 
   def domain

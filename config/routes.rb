@@ -8,9 +8,9 @@ Rails.application.routes.draw do
   end
   get '/auth/logindotgov/callback' => 'users/omniauth#callback'
   get 'users/none' => 'users#none'
-  resources :users
 
-  resources :groups, except: [:show]
+  resources :users
+  resources :groups
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'

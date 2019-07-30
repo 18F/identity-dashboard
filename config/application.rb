@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 require 'rails'
 require 'active_model/railtie'
 require 'active_job/railtie'
@@ -10,6 +10,7 @@ require 'sprockets/railtie'
 Bundler.require(*Rails.groups)
 module IdentityDashboard
   class Application < Rails::Application
+    config.app_name = 'Partner Dashboard'
     config.oidc = config_for(:oidc)
     config.quiet_assets = true
     config.generators do |generate|
