@@ -30,7 +30,7 @@ en:
     users:
       edit: Edit user
       index: Users
-      create_new_user: Create a new user
+      new_user: Create a new user
   home:
     deployed_by_html: Chef run %{time} ago. View %{href}.
   links:
