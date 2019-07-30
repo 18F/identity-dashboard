@@ -7,20 +7,56 @@ describe ServiceProvider do
   end
 
   describe 'Validations' do
+    it { should validate_presence_of(:friendly_name) }
     it { should validate_presence_of(:issuer) }
 
-    it 'validate that issuer is formatted correctly' do
+    it 'accepts a correctly formatted issuer' do
       valid_service_provider = build(
         :service_provider,
         issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
       )
+
+      expect(valid_service_provider).to be_valid
+    end
+
+    it 'fails when issuer is formatted incorrectly' do
+      invalid_service_provider = build(
+        :service_provider,
+        issuer: 'i-dont-care-about-your-rules even a little',
+      )
+
+      expect(invalid_service_provider).not_to be_valid
+    end
+
+    it 'accepts an incorrectly formatted issuer on update' do
+      initially_valid_service_provider = create(
+        :service_provider,
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
+      )
+      expect(initially_valid_service_provider).to be_valid
+
+      initially_valid_service_provider.update(
+        issuer: 'Valid - we only check for whitespace in issuer on create.'
+      )
+      expect(initially_valid_service_provider).to be_valid
+    end
+
+    it 'does not validate issuer format on update' do
+      service_provider = build(:service_provider, issuer: 'I am invalid :)')
+      service_provider.save(validate: false)
+
+      service_provider.friendly_name = 'Invalid issuer, but it\'s all good'
+
+      expect(service_provider).to be_valid
+    end
+
+    it 'provides an error message when issuer is formatted incorrectly' do
       invalid_service_provider = build(
         :service_provider,
         issuer: 'i-dont-care-about-your-rules even a little'
       )
+      invalid_service_provider.valid?
 
-      expect(valid_service_provider.valid?).to eq(true)
-      expect(invalid_service_provider.valid?).to eq(false)
       expect(invalid_service_provider.errors[:issuer]).to include(
         t('activerecord.errors.models.service_provider.attributes.issuer.invalid')
       )
@@ -36,6 +72,12 @@ describe ServiceProvider do
       sp = build(:service_provider, redirect_uris: [], saml_client_cert: 'foo')
 
       expect(sp).to_not be_valid
+    end
+
+    it 'provides an error message if certificate is present but not x509' do
+      sp = build(:service_provider, redirect_uris: [], saml_client_cert: 'foo')
+      sp.valid?
+
       expect(sp.errors[:saml_client_cert]).
         to include(
           t('activerecord.errors.models.service_provider.attributes.saml_client_cert.invalid')
@@ -69,15 +111,6 @@ describe ServiceProvider do
       expect(sp).to be_valid
     end
 
-    it 'does not validate issuer format on update' do
-      service_provider = build(:service_provider, issuer: 'I am invalid :)')
-      service_provider.save(validate: false)
-
-      service_provider.friendly_name = 'Invalid issuer, but it\'s all good'
-
-      expect(service_provider.valid?).to eq(true)
-    end
-
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
       missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
@@ -92,8 +125,33 @@ describe ServiceProvider do
       expect(malformed_uri_sp).to_not be_valid
     end
 
+    it 'validates that the failure_to_proof_url is an absolute, parsable uri' do
+      valid_sp = build(:service_provider, failure_to_proof_url: 'http://foo.com')
+      missing_protocol_sp = build(:service_provider, failure_to_proof_url: 'foo.com')
+      relative_uri_sp = build(:service_provider, failure_to_proof_url: '/asdf/hjkl')
+      bad_uri_sp = build(:service_provider, failure_to_proof_url: ' http://foo.com')
+      malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:/result')
+
+      expect(valid_sp).to be_valid
+      expect(missing_protocol_sp).to_not be_valid
+      expect(relative_uri_sp).to_not be_valid
+      expect(bad_uri_sp).to_not be_valid
+      expect(malformed_uri_sp).to_not be_valid
+    end
+
     it 'allows redirect_uris to be empty' do
       sp = build(:service_provider, redirect_uris: [])
+      expect(sp).to be_valid
+    end
+
+    it 'validates the value of ial' do
+      sp = build(:service_provider, ial: 1)
+      expect(sp).to be_valid
+      sp = build(:service_provider, ial: 2)
+      expect(sp).to be_valid
+      sp = build(:service_provider, ial: 3)
+      expect(sp).not_to be_valid
+      sp = build(:service_provider, ial: nil)
       expect(sp).to be_valid
     end
   end
