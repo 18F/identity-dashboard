@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
@@ -6,12 +7,14 @@ class ServiceProvidersController < AuthenticatedController
 
   def create
     @service_provider = ServiceProvider.new(service_provider_params)
+    service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     validate_and_save_service_provider(:new)
   end
 
   def update
     service_provider.assign_attributes(service_provider_params)
+    service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
   end
 
@@ -123,3 +126,4 @@ class ServiceProvidersController < AuthenticatedController
 
   helper_method :service_provider
 end
+# rubocop:enable Metrics/ClassLength

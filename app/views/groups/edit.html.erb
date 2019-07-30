@@ -2,6 +2,6 @@
 
 <%= simple_form_for(@group, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
-  <%= render 'form', form: form %>
+  <%= render 'form', form: form, agency_required: false, extra_message: t('headings.groups.temporary_warning_group_user') %>
   <%= form.button :submit, 'Update' %>
 <% end %>

@@ -8,5 +8,9 @@ FactoryBot.define do
     trait :saml do
       identity_protocol 1
     end
+
+    trait :group do
+      association :group, factory: :group
+    end
   end
 end
