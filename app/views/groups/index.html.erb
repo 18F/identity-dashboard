@@ -4,7 +4,7 @@ added title from style guide removed icon not in design system🍇
 -->
 <div class="usa-display">Groups</div>
 
-<%= link_to 'Create new group', new_group_path %> 
+<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button" %>
 
 <table class="usa-table-borderless groups">
   <thead>

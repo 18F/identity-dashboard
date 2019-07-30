@@ -18,16 +18,19 @@ en:
       index: All service providers
       main: My service providers
       new: Create a new service provider
+      new_app: Create a new test app
       show: 'Service Provider: %{friendly_name}'
     session_timeout_warning: Session Timeout
     groups:
       edit: Edit user group
       index: User groups
       new: Create new user group
+      new_group: Create new group
       sub_index: Manage user groups
     users:
       edit: Edit user
       index: Users
+      create_new_user: Create a new user
   home:
     deployed_by_html: Chef run %{time} ago. View %{href}.
   links:
