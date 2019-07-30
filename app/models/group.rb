@@ -15,7 +15,7 @@ class Group < ApplicationRecord
 
   def update_service_providers
     service_providers.each do |sp|
-      sp.update(agency_id: agency.id)
+      sp.update(agency_id: agency.id) if agency
     end
   end
 end
