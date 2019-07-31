@@ -4,7 +4,6 @@ added title from style guide
 -->
 <div class="usa-display">Editing "<%= service_provider.friendly_name %>"</div>
 
-
 <%= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form' }) do |form| %>
   <% selected_group = @service_provider.group_id %>
   <%= render 'form', form: form, selected_group: selected_group %>
@@ -14,3 +13,4 @@ added title from style guide
     <%= link_to t('forms.buttons.cancel'), service_provider_path(service_provider),
         class: 'usa-button usa-button--outline', role: :button %>
 <% end %>
+

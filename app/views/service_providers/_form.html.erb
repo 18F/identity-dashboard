@@ -1,104 +1,175 @@
 <%= form.error_notification %>
-<fieldset class="usa-fieldset">
-<!-- removing since not part of style guide for forms
-  <div class="form-fields">
-  <div class="common-fields">
--->
-    <!--
-    Karla Rodriguez
-    passing style guide classes to labels and inputs, removing inline styling
-    -->
-    <%= form.input :friendly_name, label: "Friendly name".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }%>
-    <!--
-    Karla Rodriguez
-    separating form hints to match style guide markup
-    -->
-    <span class='usa-form-hint'>The name of your app that will get displayed to users when logging in.</span>
-    <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-textarea' }%>
-    <span class='usa-form-hint'>A description of the app (may be helpful for your colleagues).</span>
+<fieldset class='usa-fieldset'>
+  <%= form.input :friendly_name,
+                 input_html: { class: 'usa-input' },
+                 label: 'Friendly name'.html_safe,
+                 hint: 'The name of your app that will get displayed to users when logging in.' %>
 
-   <%= form.association :group,
-        as: :collection_select,
-        collection: current_user.scoped_groups,
-        label: "Group".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-select' },
-        disabled: !can_edit_groups?(current_user) %>
-    <span class='usa-form-hint'>The agency group you would like this client to be assigned to.</span>
-    <!--
-    <%= form.input :identity_protocol, as: :radio_buttons, label: "<b>Identity protocol</b><br>We highly recommend using OpenID Connect, unless a technical reason prevents you.<br>".html_safe %>
-    <%= form.label(:ial, '<b>Identity verification level (IAL)</b><br>Choose IAL 1 for standard MFA-protected email-based login.<br>Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).<br>'.html_safe) %>
-    <%= form.select(:ial, options_for_select([['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]], form.object.ial)).html_safe %>-->
-    <!-- label the grouping of items using a fieldset and legend for screen readers, but it does not use UL for radio buttons -->
-    <fieldset class="usa-fieldset">
-        <legend class="usa-sr-only">Identity protocol</legend>
-        <%= form.input :identity_protocol, as: :radio_buttons, label: "Identity protocol".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input-list' } %>
-        <span class='usa-form-hint'>We highly recommend using OpenID Connect, unless a technical reason prevents you.</span>
-    </fieldset>
+  <%= form.input :description,
+                 as: :usa_textarea,
+                 label: 'Description'.html_safe,
+                 hint: 'A description of the app (may be helpful for your colleagues).' %>
 
-    <%= form.label(:ial, 'Identity verification level (IAL)'.html_safe, class:'usa-label') %>
-    <%= form.select(:ial, options_for_select([['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]], form.object.ial), {}, {:class=> "usa-input usa-select"} ).html_safe %>
-    <span class='usa-form-hint'>Choose IAL 1 for standard MFA-protected email-based login.</span>
-    <span class='usa-form-hint'>Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).</span>
-
-    <%= form.input :issuer, disabled: form.object.persisted?, label: unless form.object.persisted? then "<span class='usa-label'>Issuer</span><span class='usa-form-hint'>A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br><i>For OpenID Connect:</i><br><code class='ml2'>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br><i>For SAML:</i><br><code class='ml2'>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code></span>".html_safe else "<span class='usa-label'>Issuer</span><span class='usa-form-hint'><i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i></span>".html_safe end %>
-
-    <% if current_user.admin? %>
-      <%= form.input :production_issuer, label: "Production Issuer".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' } %>
-    <% end %>
-
-    <%= form.input :logo, placeholder: 'generic.svg', label: "Logo".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' } %>
-    <span class='usa-form-hint'>The name of the <a href='https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos' target='_blank'>logo image file</a> in the IdP. The login.gov team can add this image for you.</span>
+  <%= form.association :group,
+                       as: :usa_collection_select,
+                       collection: current_user.scoped_groups,
+                       label: "Group".html_safe,
+                       disabled: !can_edit_groups?(current_user),
+                       hint: 'The agency group you would like this client to be assigned to.' %>
 
 
-    <%= form.input :saml_client_cert, label: "Public certificate".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-textarea' }%>
-    <span class='usa-form-hint'>Your public certificate, which contains your public key, is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail' target='_blank'>PEM encoded</a>, for example in the form: <pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre></span>
-
-    <div>
-      <div class="saml-fields">
-        <%= form.input :acs_url, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Assertion Consumer Service URL — <i>SAML only</i>".html_safe %>
-      <span class='usa-form-hint'>Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code></span>
-
-         <%= form.input :assertion_consumer_logout_service_url, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Assertion Consumer Logout Service URL — <i>SAML only</i>".html_safe %>
-      <span class='usa-form-hint'>The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code></span>
-
-        <%= form.input :sp_initiated_login_url, input_html: { class: 'h4p4' }, label: "<b>SP Initiated Login URL</b> — <i>SAML only</i><br>The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>".html_safe %>
-
-         <%= form.input :block_encryption, label_html: { class: 'usa-label' }, input_html: { class: 'usa-select' }, label: "SAML Assertion Encryption — <i>SAML only</i><br>".html_safe, include_blank: false %>
-        <span class='usa-form-hint'>Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.</span>
-      </div>
-
-      <%= form.input :return_to_sp_url, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Return to App URL".html_safe %>
-      <span class='usa-form-hint'>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code></span>
-
-      <%= form.input :failure_to_proof_url, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Failure to Proof URL — <i>IAL2 Only</i> ".html_safe %>
-      <span class='usa-form-hint'>The URL provided to users who are unable to complete identity proofing and returning to your application.</span>
-
-      <div class="oidc-fields">
-        <%= form.input :redirect_uris, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Redirect URIs".html_safe %>
-      <span class='usa-form-hint'>One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code></span>
-      </div>
-      <div class="saml-fields">
-        <%= form.label :redirect_uris, label_html: { class: 'usa-label' }, label: "Additional Redirect URIs".html_safe %>  <span class='usa-form-hint'>One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code></span>
-      </div>
-      <%= form.input :redirect_uris,input_html: { class: 'usa-input' },  label: false %>
-      <button id="add-redirect-uri-field" class="usa-button" type="button">Add another URI</button><BR>
-      <fieldset class="usa-fieldset-inputs">
-      <legend>Attribute bundle</legend>
-      <span class='usa-form-hint'>The possible <a href="https://developers.login.gov/attributes" target="_blank">user attributes</a> to be requested by your app. Note for IAL1/LOA1, only UUID and email can be requested.</span>
-        <%= collection_check_boxes(:service_provider,
-            :attribute_bundle,
-            ServiceProvider.possible_attributes, :first, :last) do |b| %>
-            <%= b.check_box class: 'usa-checkbox__input' %>
-            <%= b.label class: 'usa-checkbox__label' %>
+  <%# label the grouping of items using a fieldset and legend for screen readers,
+      and use UL for radio buttons %>
+  <fieldset class="usa-fieldset">
+    <legend class="usa-sr-only">Identity protocol</legend>
+    <%= form.label :identity_protocol,
+                   label: 'Identity protocol',
+                   class: 'usa-label' %>
+    <%= content_tag(:ul, class: 'usa-input-list') do
+      ServiceProvider.identity_protocols.each_key do |protocol| %>
+        <%= content_tag(:li) do %>
+          <%= form.radio_button :identity_protocol,
+                                protocol,
+                                class: 'usa-radio__input' %>
+          <%= form.label ('identity_protocol_' + protocol).to_sym,
+                         protocol.titleize,
+                         class: 'usa-radio__label' %>
         <% end %>
-      </fieldset>
-      <%= form.input :block_encryption, label_html: { class: 'usa-label' }, input_html: { class: 'usa-select' }, label: "SAML Assertion Encryption — <i>SAML only</i><br>".html_safe, include_blank: false %>
-      <span class='usa-form-hint'>Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.</span>
-    </div>
-    <!--removed class h4p4 -->
-    <%= form.input :return_to_sp_url, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, label: "Return to App URL".html_safe %>
-    <span class='usa-form-hint'>The applications URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code></span>
+      <% end %>
+    <% end %>
+    <%= form.hint 'We highly recommend using OpenID Connect, unless a technical reason prevents you.' %>
+  </fieldset>
 
-<!-- </div></div>
+  <%= form.input :ial,
+                 as: :select,
+                 collection: [['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]],
+                 selected: form.object.ial,
+                 input_html: { class: 'usa-input usa-select'},
+                 label: 'Identity verification level (IAL)',
+                 hint: 'Choose IAL 1 for standard MFA-protected email-based login. <br/> Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).'.html_safe %>
+
+  <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
+  <%= form.input :issuer,
+                 disabled: form.object.persisted?,
+                 label: 'Issuer',
+                 input_html: { class: 'usa-input'},
+                 hint: if form.object.persisted?
+                     '<i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i>'.html_safe
+                   else
+                     'A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br>
+                     <i>For OpenID Connect:</i><br>
+                     <code class="ml2">urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br>
+                     <i>For SAML:</i><br>
+                     <code class="ml2">urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>'.html_safe
+                   end %>
+
+  <% if current_user.admin? %>
+    <%= form.input :production_issuer,
+                   label: 'Production Issuer',
+                   input_html: { class: 'usa-input' } %>
+  <% end %>
+
+  <%= form.input :logo,
+                 placeholder: 'generic.svg',
+                 label: 'Logo',
+                 input_html: { class: 'usa-input' },
+                 hint: 'The name of the <a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos" target="_blank">logo image file</a> in the IdP. The login.gov team can add this image for you.'.html_safe %>
+
+  <%= form.input :saml_client_cert,
+                 label: 'Public certificate',
+                 input_html: { class: 'usa-textarea' },
+                 hint: 'Your public certificate, which contains your public key, is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>, for example in the form: <pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>'.html_safe %>
+          
+  <div class='saml-fields'>
+    <%= form.input :acs_url,
+                   input_html: { class: 'usa-input' },
+                   label: 'Assertion Consumer Service URL — <i>SAML only</i>'.html_safe,
+                   hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>" %>
+
+    <%= form.input :assertion_consumer_logout_service_url,
+                   input_html: { class: 'usa-input' },
+                   label: 'Assertion Consumer Logout Service URL — <i>SAML only</i>'.html_safe,
+                   hint: 'The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>'.html_safe %>
+
+    <%= form.input :sp_initiated_login_url,
+                   input_html: { class: 'usa-input' },
+                   label: 'SP Initiated Login URL — <i>SAML only</i>'.html_safe,
+                   hint: 'The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>'.html_safe %>
+
+    <%= form.input :block_encryption,
+                   input_html: { class: 'usa-select' },
+                   label: 'SAML Assertion Encryption — <i>SAML only</i><br>'.html_safe,
+                   include_blank: false,
+                   hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
+  </div>
+
+  <%= form.input :return_to_sp_url,
+                 input_html: { class: 'usa-input' },
+                 label: 'Return to App URL',
+                 hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
+
+  <%= form.input :failure_to_proof_url,
+                 input_html: { class: 'usa-input' },
+                 label: 'Failure to Proof URL — <i>IAL2 Only</i>'.html_safe,
+                 hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
+
+  <%# BEGIN redirect_uris %>
+    <div class="oidc-fields">
+      <%= form.label :redirect_uris,
+                     label: 'Redirect URIs',
+                     class: 'usa-label' %>
     </div>
-    -->
+
+    <div class="saml-fields">
+      <%= form.label :redirect_uris,
+                     label: 'Additional Redirect URIs',
+                     class: 'usa-label' %>
+    </div>
+
+    <%= form.input :redirect_uris,
+                   input_html: { class: 'usa-input', multiple: 'multiple' },
+                   label: false %>
+
+    <div class="oidc-fields">
+      <%= form.hint 'One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
+    </div>
+
+    <div class="saml-fields">
+      <%= form.hint 'One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
+    </div>
+
+    <%= form.button :button,
+                    'Add another URI',
+                    type: 'button',
+                    id: 'add-redirect-uri-field',
+                    class: 'usa-button' %>
+  <%# END redirect_uris %>
+
+  <fieldset class='usa-fieldset-inputs'>
+    <%# form.label :attribute_bundle,
+                   label: 'Attribute bundle',
+                   class: 'usa-label' %>
+    <legend class='usa-legend'>Attribute bundle</legend>
+    <span class='usa-form-hint'>
+      The possible <a href="https://developers.login.gov/attributes" target="_blank">user attributes</a> to be requested by your app. Note for IAL1/LOA1, only UUID and email can be requested.
+    </span>
+
+    <%= form.collection_check_boxes(:attribute_bundle,
+      ServiceProvider.possible_attributes, :first, :last) do |b| %>
+        <%= b.check_box class: 'usa-checkbox__input' %>
+        <%= b.label class: 'usa-checkbox__label' %>
+    <% end %>
+  </fieldset>
+
+  <%= form.input :block_encryption,
+                 input_html: { class: 'usa-select' },
+                 label: 'SAML Assertion Encryption — <i>SAML only</i>'.html_safe,
+                 include_blank: false,
+                 hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
+
+  <!--removed class h4p4 -->
+  <%= form.input :return_to_sp_url,
+                 input_html: { class: 'usa-input' },
+                 label: 'Return to App URL',
+                 hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
 </fieldset>
