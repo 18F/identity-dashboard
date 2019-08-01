@@ -24,7 +24,7 @@ SimpleForm.setup do |config|
       input.use :hint,  :wrap_with => { :tag => 'p', :class => 'help-block' }
     end
    end
-   config.wrappers :usa_checkbox, :tag => 'fieldset', :class => 'usa-fieldset', :error_class => 'error' do |b|
+  config.wrappers :usa_checkbox, :tag => 'fieldset', :class => 'usa-fieldset', :error_class => 'error' do |b|
     b.use :html5
     b.use :placeholder
     b.use :label
@@ -33,7 +33,7 @@ SimpleForm.setup do |config|
       input.use :error, :wrap_with => { :tag => 'span', :class => 'help-inline' }
       input.use :hint,  :wrap_with => { :tag => 'p', :class => 'help-block' }
     end
-   end 
+  end 
   config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
@@ -41,10 +41,10 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label
+    b.use :label, class: 'usa-label'
     # changed input class from field to usa-input
-    b.use :input, class: 'block col-12 usa-input'
-    b.use :hint,  wrap_with: { tag: 'div', class: :hint }
+    b.use :input, class: 'block col-12' # usa-input'
+    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-form-hint' }
     b.use :error, wrap_with: { tag: 'div', class: 'error-notify alert-danger p1 mt1' }
   end
 
