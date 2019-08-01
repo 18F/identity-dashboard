@@ -1,11 +1,15 @@
+<!-- 
+Karla Rodriguez
+adding prose to activate styles
+--><div class="usa-prose">
 <% unless user_signed_in? %>
-  <p>Log in to manage your test applications.</p>
+  <p class="usa-intro">Log in to manage your test applications.</p>
 <% end %>
 <!-- 
 Karla Rodriguez
 added title from style guide
 -->
-
+<div class="usa-display">Environments status</div>
 <% @deploy_statuses.each do |environment| %>
 
   <h2>
@@ -56,3 +60,4 @@ added title from style guide
   <% end %>
 
 <% end %>
+</div>
