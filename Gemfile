@@ -74,4 +74,4 @@ group :production do
   gem 'rails_12factor'
 end
 
-gem "autoprefixer-rails", "~> 9.6"
+gem 'autoprefixer-rails', '~> 9.6'
