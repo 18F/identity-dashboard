@@ -2,26 +2,26 @@
 <fieldset class='usa-fieldset'>
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input' },
-                 label: 'Friendly name'.html_safe,
+                 label: 'Friendly name',
                  hint: 'The name of your app that will get displayed to users when logging in.' %>
 
   <%= form.input :description,
                  as: :usa_textarea,
-                 label: 'Description'.html_safe,
+                 label: 'Description',
                  hint: 'A description of the app (may be helpful for your colleagues).' %>
 
   <%= form.association :group,
                        as: :usa_collection_select,
                        collection: current_user.scoped_groups,
-                       label: "Group".html_safe,
+                       label: 'Group',
                        disabled: !can_edit_groups?(current_user),
                        hint: 'The agency group you would like this client to be assigned to.' %>
 
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
       and use UL for radio buttons %>
-  <fieldset class="usa-fieldset">
-    <legend class="usa-sr-only">Identity protocol</legend>
+  <fieldset class='usa-fieldset'>
+    <legend class='usa-sr-only'>Identity protocol</legend>
     <%= form.label :identity_protocol,
                    label: 'Identity protocol',
                    class: 'usa-label' %>
@@ -114,13 +114,13 @@
                  hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
 
   <%# BEGIN redirect_uris %>
-    <div class="oidc-fields">
+    <div class='oidc-fields'>
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
     </div>
 
-    <div class="saml-fields">
+    <div class='saml-fields'>
       <%= form.label :redirect_uris,
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
@@ -130,11 +130,11 @@
                    input_html: { class: 'usa-input', multiple: 'multiple' },
                    label: false %>
 
-    <div class="oidc-fields">
+    <div class='oidc-fields'>
       <%= form.hint 'One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
     </div>
 
-    <div class="saml-fields">
+    <div class='saml-fields mb-0'>
       <%= form.hint 'One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
     </div>
 
@@ -142,10 +142,10 @@
                     'Add another URI',
                     type: 'button',
                     id: 'add-redirect-uri-field',
-                    class: 'usa-button' %>
+                    class: 'usa-button mb-10' %>
   <%# END redirect_uris %>
 
-  <fieldset class='usa-fieldset-inputs'>
+  <fieldset class='usa-fieldset-inputs usa-fieldset'>
     <%# form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
