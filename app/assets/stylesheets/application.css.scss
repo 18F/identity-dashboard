@@ -3,19 +3,19 @@ $image-path: 'img';
 
 @import 'identity-style-guide/dist/assets/scss/styles';
 
-/* these overrides are necessary because of simpleform not using lists for radio and checkboxes*/
+// these overrides are necessary because of simpleform not using lists for radio and checkboxes
 .radio {
-    display: block;
+  display: block;
 }
 
 .usa-checkbox__label {
-    display: block;
+  display: block;
 }
 
 .mb-10 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .mb-0 {
-    margin-bottom: 0 !important;
-  }
+  margin-bottom: 0 !important;
+}
