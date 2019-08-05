@@ -2,13 +2,13 @@
 <fieldset class='usa-fieldset'>
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input' },
-                 label_html: { class: 'usa-input-required:after' },
                  label: 'Friendly name',
                  hint: 'The name of your app that will get displayed to users when logging in.' %>
 
 
   <%= form.input :description,
                  as: :usa_textarea,
+                 label_html: { class: 'usa-input-optional' },
                  label: 'Description',
                  hint: 'A description of the app (may be helpful for your colleagues).' %>
 

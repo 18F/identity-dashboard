@@ -49,7 +49,8 @@ SimpleForm.setup do |config|
 
   config.default_wrapper = :vertical_form
   #config.required_class = 'usa-input-required:after'
-  config.label_text = lambda { |label, required, explicit_label| "#{label}" }
+  #config.label_text = lambda { |label, required, explicit_label| "#{label}" }
+  config.label_text = lambda { |label, required, explicit_label| required.present? ? "#{label}" : " #{label} (optional)" }
   #how to replace "#{required} #{label}"  with usa-input-required:after
 
 end
