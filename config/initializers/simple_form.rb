@@ -48,5 +48,10 @@ SimpleForm.setup do |config|
   end
 
   config.default_wrapper = :vertical_form
+  #config.required_class = 'usa-input-required:after'
+  config.label_text = lambda { |label, required, explicit_label| "#{label}" }
+  #how to replace "#{required} #{label}"  with usa-input-required:after
+
 end
 # rubocop:enable Metrics/BlockLength
+ 

@@ -15,3 +15,11 @@ $image-path: 'img';
 .mb-0 {
   margin-bottom: 0;
 }
+//need to replace label with .usa-input-required:after
+.usarequired, abbr[title="required"] {
+  color: #981b1e;
+  content: '*';
+  text-decoration: none;
+  text-decoration: none;
+  border-bottom: none;
+}
