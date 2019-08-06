@@ -4,8 +4,9 @@ removed title using legend for form
 --> 
 
 <div class="usa-display">New group</div>
+
 <%= simple_form_for(@group,
-    html: { autocomplete: 'off', role: 'form' },
+    html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' },
     url: groups_path) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>

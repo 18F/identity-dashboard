@@ -1,28 +1,28 @@
-<h1>Group details</h1>
-
+<div class="back">
 <ul>
-  <li><%= link_to "Back to groups", groups_path %> 🍇</li>
-  <li><%= link_to "Edit this group", edit_group_path %> ✏️</li>
-  <li><%= link_to "New group", new_group_path %> ➕</li>
+  <li><%= link_to "Back to groups", groups_path %> </li>
+  <li><%= link_to "Edit this group", edit_group_path %> </li>
+  <li><%= link_to "New group", new_group_path %> </li>
 </ul>
+</div>
 
-<h2><%= @group.name %></h2>
+<div class="usa-display">Group details for "<%= @group.name %>" </div>
 
-<label for="agency">Agency:</label>
-<p name="agency"><%= @group&.agency&.name %></p>
+<h4><label for="agency">Agency:</label></h4>
+<p class="font-mono-xs margin-top-0" name="agency"><%= @group&.agency&.name %></p>
 
-<label for="description">Description:</label>
-<p name="description"><%= @group.description %></p>
+<h4><label for="description">Description:</label></h4>
+<p class="font-mono-xs margin-top-0" name="description"><%= @group.description %></p>
 
-<label for="users">Users: (<%= @group.users.count %>)</label>
-<ul name="users">
+<h4><label for="users">Users: (<%= @group.users.count %>)</label></h4>
+<ul class="font-mono-xs margin-top-0" name="users">
   <% @group.users.each do |u| %>
     <li><%= u.email %></li>
   <% end %>
 </ul>
 
-<label for="apps">Apps: (<%= @group.service_providers.count %>)</label>
-<ul name="apps">
+<h4><label for="apps">Apps: (<%= @group.service_providers.count %>)</label></h4>
+<ul class="font-mono-xs margin-top-0" name="apps">
   <% @group.service_providers.each do |a| %>
     <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
   <% end %>
