@@ -2,8 +2,9 @@
 <ul>
   <li><%= link_to "Back to groups", groups_path %> </li>
   <li><%= link_to "Edit this group", edit_group_path %> </li>
-  <li><%= link_to "New group", new_group_path %> </li>
 </ul>
+<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button" %>
+
 </div>
 
 <div class="usa-display">Group details for "<%= @group.name %>" </div>
