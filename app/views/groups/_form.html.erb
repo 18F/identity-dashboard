@@ -17,5 +17,16 @@
         <%= b.check_box class: 'usa-checkbox__input'%>
         <%= b.label class: 'usa-checkbox__label'%>
     <% end %>
+
+     <%= form.collection_check_boxes(:group,
+                                    :user_ids,
+                                    User.all.sorted,
+                                    :id, :email,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li) do |b| %>
+        <%=  b.check_box(class: "usa-checkbox__input") %>
+        <%=  b.label(class: "usa-checkbox__label")%>
+    <% end %>
 </fieldset>
 
