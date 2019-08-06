@@ -11,20 +11,13 @@
   <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label margin-top-2' }, input_html: { class: 'usa-textarea' } %>
 
   <span class="usa-label margin-bottom-1">Users</span>
-    <%= collection_check_boxes(:group,
-        :user_ids,
-        User.all.sorted, :id, :email) do |b| %>
-        <%= b.check_box class: 'usa-checkbox__input'%>
-        <%= b.label class: 'usa-checkbox__label'%>
-    <% end %>
 
-     <%= form.collection_check_boxes(:group,
-                                    :user_ids,
-                                    User.all.sorted,
-                                    :id, :email,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
+  <%= form.collection_check_boxes( :user_ids,
+                                 User.all.sorted,
+                                 :id, :email,
+                                 collection_wrapper_tag: :ul,
+                                 collection_wrapper_class: 'usa-input-list',
+                                 item_wrapper_tag: :li) do |b| %>
         <%=  b.check_box(class: "usa-checkbox__input") %>
         <%=  b.label(class: "usa-checkbox__label")%>
     <% end %>
