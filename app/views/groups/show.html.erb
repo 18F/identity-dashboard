@@ -1,11 +1,9 @@
-<div class="back">
-<ul>
-  <li><%= link_to "Back to groups", groups_path %> </li>
-  <li><%= link_to "Edit this group", edit_group_path %> </li>
-</ul>
-<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button" %>
 
-</div>
+<ul class="usa-list usa-list--unstyled">
+  <li><%= link_to "Back to groups", groups_path, :class => 'usa-link'  %> </li>
+</ul>
+<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button margin-top-4" %>
+
 
 <div class="usa-display">Group details for "<%= @group.name %>" </div>
 
@@ -16,15 +14,17 @@
 <p class="font-mono-xs margin-top-0" name="description"><%= @group.description %></p>
 
 <h4><label for="users">Users: (<%= @group.users.count %>)</label></h4>
-<ul class="font-mono-xs margin-top-0" name="users">
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="users">
   <% @group.users.each do |u| %>
     <li><%= u.email %></li>
   <% end %>
 </ul>
 
 <h4><label for="apps">Apps: (<%= @group.service_providers.count %>)</label></h4>
-<ul class="font-mono-xs margin-top-0" name="apps">
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="apps">
   <% @group.service_providers.each do |a| %>
     <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
   <% end %>
 </ul>
+
+<%= link_to "Edit this group", edit_group_path, class: 'usa-button usa-button--outline margin-top-4', role: :button  %>

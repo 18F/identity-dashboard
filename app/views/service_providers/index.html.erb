@@ -20,7 +20,7 @@ added title from style guide
   <tbody>
     <% current_user.scoped_service_providers.each do |app| %>
     <tr>
-      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
+      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app), :class => 'usa-link' ) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
       <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>

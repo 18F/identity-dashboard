@@ -5,12 +5,12 @@
                    input_html: { class: 'usa-select' },
                    collection: @agencies,
                    label: 'Agency'.html_safe,
-                   hint: "The federal agency you would like this group to be assigned to.<p>#{ extra_message }".html_safe,
+                   hint: "The federal agency you would like this group to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
                    required: agency_required %>
 
-  <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-textarea' } %>
-  <span class="usa-label">Users</span>
-  <BR>
+  <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label margin-top-2' }, input_html: { class: 'usa-textarea' } %>
+
+  <span class="usa-label margin-bottom-1">Users</span>
     <%= collection_check_boxes(:group,
         :user_ids,
         User.all.sorted, :id, :email) do |b| %>

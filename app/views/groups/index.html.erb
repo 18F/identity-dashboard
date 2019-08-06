@@ -29,18 +29,18 @@ changed link to button
       <td><%= group.description %></td>
       <td>
         <% group.service_providers.each do |sp| %>
-          <%= link_to sp.friendly_name, service_provider_path(sp) %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
+          <%= link_to sp.friendly_name, service_provider_path(sp), :class => 'usa-link' %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
         <% end %>
       </td>
       <td>
         <% group.users.each do |user| %>
-          <a href="<%= edit_user_path(user.id) %>"><%= user.email %></a><br>
+          <a href="<%= edit_user_path(user.id) %>" class="usa-link"><%= user.email %></a><br>
         <% end %>
       </td>
       <td>
-        <%= link_to 'view', group_path(group) %><br>
-        <%= link_to 'edit', edit_group_path(group) %><br>
-        <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure you want to delete this group?' } %>
+        <%= link_to 'view', group_path(group), :class => 'usa-link' %><br>
+        <%= link_to 'edit', edit_group_path(group), :class => 'usa-link' %><br>
+        <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure you want to delete this group?' }, :class => 'usa-link' %>
       </td>
     </tr>
     <% end %>

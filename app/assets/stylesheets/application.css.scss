@@ -2,24 +2,3 @@ $font-path: 'fonts';
 $image-path: 'img';
 
 @import 'identity-style-guide/dist/assets/scss/styles';
-
-// these overrides are necessary because of simpleform not using lists for radio and checkboxes
-.usa-checkbox__label {
-  display: block;
-}
-
-.mb-10 {
-  margin-bottom: 10px;
-}
-
-.mb-0 {
-  margin-bottom: 0;
-}
-//need to replace label with .usa-input-required:after
-/*.usarequired, abbr[title="required"] {
-  color: #981b1e;
-  content: '*';
-  text-decoration: none;
-  text-decoration: none;
-  border-bottom: none;
-}*/

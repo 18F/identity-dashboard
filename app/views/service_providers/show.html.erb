@@ -1,7 +1,7 @@
 <!-- removed 👈 icon not in style guide -->
-<div class="back">
-  <%= link_to 'Back to apps', '/service_providers' %>
-</div>
+
+ <%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
+
 
 <div class="usa-display">Details for "<%= service_provider.friendly_name %>"</div>
 
@@ -45,7 +45,7 @@
     <% end %>
     <tr>
       <th scope="row">Logo</th>
-      <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>"><%= service_provider.logo %></a></td>
+      <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link"><%= service_provider.logo %></a></td>
     </tr>
 
     <% if service_provider.identity_protocol == 'saml' %>
