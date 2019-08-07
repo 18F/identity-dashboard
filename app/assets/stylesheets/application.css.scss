@@ -2,3 +2,8 @@ $font-path: 'fonts';
 $image-path: 'img';
 
 @import 'identity-style-guide/dist/assets/scss/styles';
+
+.usa-input-required:after {
+    color: #981b1e;
+    content: ' (*required)';
+  }
