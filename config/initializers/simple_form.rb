@@ -50,4 +50,3 @@ SimpleForm.setup do |config|
   config.default_wrapper = :vertical_form
 end
 # rubocop:enable Metrics/BlockLength
- 
