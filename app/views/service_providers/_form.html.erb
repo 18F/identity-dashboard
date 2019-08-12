@@ -189,6 +189,28 @@
     <%=  b.label(class: "usa-radio__label")%>
   <% end %>
 
+  <fieldset class="usa-fieldset-inputs custom-help-text">
+    <legend>Custom help text</legend>
+    <p>You can specify help text in these different areas to alert users of important information for logging into your app</p>
+    <%= form.fields_for :help_text do |h| %>
+      <legend>Sign In Help Text</legend><br>
+      <%= h.input "sign_in[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["en"].presence || '' } %>
+      <%= h.input "sign_in[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["es"].presence || ''} %>
+      <%= h.input "sign_in[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["fr"].presence || '' } %>
+
+      <legend>Sign Up Help Text</legend><br>
+      <%= h.input "sign_up[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["en"].presence || '' } %>
+      <%= h.input "sign_up[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["es"].presence || '' } %>
+      <%= h.input "sign_up[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["fr"].presence || '' } %>
+
+      <legend>Forgot Password Help Text</legend><br>
+      <%= h.input  "forgot_password[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["en"] } %>
+      <%= h.input "forgot_password[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["es"] } %>
+      <%= h.input "forgot_password[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["fr"] } %>
+
+    <% end %>
+  </fieldset>
+
   <%= form.input :return_to_sp_url,
                input_html: { class: 'usa-input' },
                label: 'Return to App URL',

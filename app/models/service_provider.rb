@@ -10,9 +10,12 @@ class ServiceProvider < ApplicationRecord
   belongs_to :group
 
   has_one :agency, through: :group
+  has_one :help_text, dependent: :destroy
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
+
+  accepts_nested_attributes_for :help_text
 
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
