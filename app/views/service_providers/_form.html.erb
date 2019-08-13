@@ -114,6 +114,10 @@
                  input_html: { class: 'usa-input' },
                  label: 'Failure to Proof URL — <i>IAL2 Only</i>'.html_safe,
                  hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
+ <% form.input :push_notification_url,
+                 input_html: { class: 'usa-input' },
+                 label: 'Push notification URL',
+                 hint: "Your application's endpoint which receives push notifications." %>
 
   <%# BEGIN redirect_uris %>
     <div class='oidc-fields'>
@@ -169,12 +173,21 @@
         <%= b.label class: 'usa-checkbox__label' %>
     <% end %>
   </fieldset>
+<legend class='usa-sr-only'>Active</legend>
+    <%= form.label :admin,
+                   label: 'Active',
+                   class: 'usa-label' %>
+<%= form.collection_radio_buttons(:active,
+                                    { "Yes" => true, "No" => false },
+                                    :last, :first,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li) do |b| %>
+        <%=  b.radio_button(class: "usa-radio__input") %>
+        <%=  b.label(class: "usa-radio__label")%>
+  <%= form.hint 'Use to activate or deactivate the app.<br>'.html_safe %>
 
-  <%= form.input :block_encryption,
-                 input_html: { class: 'usa-select' },
-                 label: 'SAML Assertion Encryption — <i>SAML only</i>'.html_safe,
-                 include_blank: false,
-                 hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
+<%= form.input :active, as: :radio_buttons, label: "<b>Active</b><br>Use to activate or deactivate the app.<br>".html_safe %>
 
   <!--removed class h4p4 -->
   <%= form.input :return_to_sp_url,

@@ -79,6 +79,10 @@
       <th scope="row">Failure to Proof URL</th>
       <td><%= service_provider.failure_to_proof_url %></td>
     </tr>
+    <tr>
+      <th scope="row">Push Notification URL</th>
+      <td><%= service_provider.push_notification_url %></td>
+    </tr>
 
     <tr>
       <% if service_provider.identity_protocol == 'openid_connect' %>

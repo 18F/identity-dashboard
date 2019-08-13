@@ -10,19 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725184319) do
+ActiveRecord::Schema.define(version: 20190805160021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "agencies", force: :cascade do |t|
+  create_table "agencies", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["name"], name: "index_agencies_on_name", unique: true
   end
 
-  create_table "delayed_jobs", force: :cascade do |t|
+  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20190725184319) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "groups", force: :cascade do |t|
+  create_table "groups", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", null: false
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20190725184319) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
-  create_table "service_providers", force: :cascade do |t|
+  create_table "service_providers", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "issuer", null: false
     t.string "friendly_name", null: false
@@ -71,11 +71,12 @@ ActiveRecord::Schema.define(version: 20190725184319) do
     t.string "production_issuer"
     t.integer "ial"
     t.string "failure_to_proof_url"
+    t.string "push_notification_url"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
-  create_table "user_groups", force: :cascade do |t|
+  create_table "user_groups", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "group_id"
     t.datetime "created_at", null: false
@@ -84,7 +85,7 @@ ActiveRecord::Schema.define(version: 20190725184319) do
     t.index ["user_id"], name: "index_user_groups_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "uuid"
     t.string "email", null: false
     t.string "first_name"
