@@ -176,7 +176,8 @@
 <legend class='usa-sr-only'>Active</legend>
     <%= form.label :admin,
                    label: 'Active',
-                   class: 'usa-label' %>
+                   class: 'usa-label',
+                   hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
 <%= form.collection_radio_buttons(:active,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
@@ -185,9 +186,7 @@
                                     item_wrapper_tag: :li) do |b| %>
         <%=  b.radio_button(class: "usa-radio__input") %>
         <%=  b.label(class: "usa-radio__label")%>
-  <%= form.hint 'Use to activate or deactivate the app.<br>'.html_safe %>
-
-<%= form.input :active, as: :radio_buttons, label: "<b>Active</b><br>Use to activate or deactivate the app.<br>".html_safe %>
+<% end %>
 
   <!--removed class h4p4 -->
   <%= form.input :return_to_sp_url,
