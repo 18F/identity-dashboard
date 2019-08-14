@@ -1,17 +1,9 @@
-<!-- 
-Karla Rodriguez
-removed title using legend for form
--->
 <div class="usa-display">New user</div>
 
-  <%= simple_form_for(@user,
-      html: { autocomplete: 'off', role: 'form' },
-      url: users_path) do |form| %>
-    <%= form.error_notification %>
-    <%= render 'form', form: form %>
-    <!--
-    Karla Rodriguez
-    added style to button
-    -->
-    <%= form.button :submit, 'Create', :class => "usa-button" %>
-  <% end %>
+<%= simple_form_for(@user,
+    html: { autocomplete: 'off', role: 'form' },
+    url: users_path) do |form| %>
+  <%= form.error_notification %>
+  <%= render 'form', form: form %>
+  <%= form.button :submit, 'Create', :class => "usa-button" %>
+<% end %>
