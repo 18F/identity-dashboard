@@ -1,13 +1,5 @@
-<!-- 
-Karla Rodriguez
-added title from style guide
--->
+
 <div class="usa-display">Users</div>
-<!-- 
-Karla Rodriguez
-added style to button, removed icons not in style guide
-<%= link_to 'Create a new user', new_user_path %> 
--->
 
  	<%= button_to t('headings.users.new_user'), new_user_path, method: :get, :class => "usa-button" %>
 
@@ -27,7 +19,6 @@ added style to button, removed icons not in style guide
       <td><%= image_tag user.uuid? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
       <td><%= image_tag '/assets/img/illustrations/security-key.svg', style: 'height:27px;width:27px;' if user.admin? %></td>
       <td><%= link_to 'edit', edit_user_path(user.id), :class => 'usa-link' %></td>
-
     </tr>
     <% end %>
   </tbody>

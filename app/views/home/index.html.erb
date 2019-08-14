@@ -1,14 +1,8 @@
-<!-- 
-Karla Rodriguez
-adding prose to activate styles
 --><div class="usa-prose">
 <% unless user_signed_in? %>
   <p class="usa-intro">Log in to manage your test applications.</p>
 <% end %>
-<!-- 
-Karla Rodriguez
-added title from style guide
--->
+
 <div class="usa-display">Environments status</div>
 <% @deploy_statuses.each do |environment| %>
 
@@ -26,7 +20,7 @@ added title from style guide
        Development
   <% end %>
   </h2>
-<!--removed icons not in design system 💚 💔 🚫 -->
+
   <% environment.statuses.each do |status| %>
     <div>
       <% if status.status_class == 'deploy-success' %>

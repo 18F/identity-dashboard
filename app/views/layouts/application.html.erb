@@ -1,30 +1,19 @@
 <!doctype html>
-<!-- 
-Karla Rodriguez 
-added localization related meta tags from style guide
--->
+
 <!--[if lt IE 9]><html class="lt-ie9"><![endif]-->
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
   <head>
     <meta charset="utf-8">
-<!-- 
-Karla Rodriguez 
-added mobile related meta tags from style guide
--->
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login.gov Dashboard</title>
-    
-<!-- 
-Karla Rodriguez 
-removed link to uswds.min.css, added shortcut icons and added link to style guide in node modules 
--->
+
     <!-- 128x128 -->
     <link rel="shortcut icon" type="image/ico" href="/assets/img/favicons/favicon.ico">
     <link rel="icon" type="image/png" href="/assets/img/favicons/favicon.png">
@@ -46,16 +35,10 @@ removed link to uswds.min.css, added shortcut icons and added link to style guid
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>
   </head>
-<!-- 
-Karla Rodriguez 
-Updated updated body class to match style guide added skip nav
--->
+
   <body>
    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
-<!-- 
-Karla Rodriguez 
-Updated Official Site Header to match code in Identity Style Guide
--->
+
 <div class="usa-banner">
   <div class="usa-accordion">
     <header class="usa-banner__header">
@@ -99,10 +82,7 @@ Updated Official Site Header to match code in Identity Style Guide
     </div>
   </div>
 </div>
-<!---
-Karla Rodriguez
-Update banner with logo and navigation from style guide
--->
+
 <header class="usa-header usa-header--basic" role="banner">
   <div class="usa-nav-container">
     <div class="usa-navbar">
@@ -143,7 +123,7 @@ Update banner with logo and navigation from style guide
                 </li>
               </ul>
             </li>
-          <% end %>  
+          <% end %>
           <li class="usa-nav__primary-item">
             <a class="usa-nav__link" href="<%= destroy_user_session_path %>">
               <span>Logout</span>
@@ -155,7 +135,7 @@ Update banner with logo and navigation from style guide
               <span>Log in</span>
             </a>
           </li>
-        <% end %>  
+        <% end %>
       </ul>
     </nav>
   </div>
@@ -164,10 +144,6 @@ Update banner with logo and navigation from style guide
   <div class="usa-overlay"></div>
 
 
-<!-- 
-Karla Rodriguez
-added main layout from style guide
--->
 
   <main class="usa-layout-docs usa-section" id="main-content">
   <div class="grid-container">
@@ -178,13 +154,7 @@ added main layout from style guide
   </div>
 </main>
 
-<!-- 
-Karla Rodriguez
-added code for footer used in style guide
-linked to js file to make header collapsible
-Need to finish updating this without links
 
--->
 <footer class="usa-footer usa-footer--slim" role="contentinfo">
   <div class="grid-container usa-footer__return-to-top">
     <a href="#">Return to top</a>
