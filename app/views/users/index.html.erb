@@ -16,8 +16,8 @@
     <% @users.each do |user| %>
     <tr>
       <th scope="row"><%= user.email %></th>
-      <td><%= image_tag user.uuid? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
-      <td><%= image_tag '/assets/img/illustrations/security-key.svg', style: 'height:27px;width:27px;' if user.admin? %></td>
+      <td><%= image_tag user.uuid? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
+      <td><%= image_tag 'img/illustrations/security-key.svg', height: '27', width: '27' if user.admin? %></td>
       <td><%= link_to 'edit', edit_user_path(user.id), :class => 'usa-link' %></td>
     </tr>
     <% end %>
