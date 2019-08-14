@@ -23,9 +23,9 @@
       </th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
+      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
       <td><%= app.created_at.localtime.strftime("%F %T") %></td>
-      <td><%= image_tag app.production_issuer.present? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;'  %></td>
+      <td><%= image_tag app.production_issuer.present? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27'  %></td>
     </tr>
     <% end %>
   </tbody>

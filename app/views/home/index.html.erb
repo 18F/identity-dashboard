@@ -1,4 +1,4 @@
---><div class="usa-prose">
+<div class="usa-prose">
 <% unless user_signed_in? %>
   <p class="usa-intro">Log in to manage your test applications.</p>
 <% end %>
@@ -24,16 +24,16 @@
   <% environment.statuses.each do |status| %>
     <div>
       <% if status.status_class == 'deploy-success' %>
-        
-        <%= image_tag '/assets/img/alerts/success.svg', alt: 'success', style: 'height:27px;width:27px;' %>
-        
+
+        <%= image_tag 'img/alerts/success.svg', alt: 'success', height: '27', width: '27' %>
+
       <% elsif status.status_class == 'deploy-error' %>
 
-        <%= image_tag '/assets/img/alerts/error.svg', alt: 'error', style: 'height:27px;width:27px;' %>
+        <%= image_tag 'img/alerts/error.svg', alt: 'error', height: '27', width: '27' %>
 
       <% elsif status.status_class == 'disabled' %>
-         
-       <%= image_tag '/assets/img/alerts/warning.svg', alt: 'disabled', style: 'height:27px;width:27px;' %>
+
+       <%= image_tag 'img/alerts/warning.svg', alt: 'disabled', height: '27', width: '27' %>
       <% end %>
 
       <% if status.host %>
