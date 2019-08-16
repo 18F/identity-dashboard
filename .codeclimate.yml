@@ -64,6 +64,11 @@ plugins:
     exclude_patterns:
     - 'spec/**/*'
     - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'db/schema.rb'
+    - 'app/forms/password_form.rb'
+    - 'lib/user_flow_exporter.rb'
+    - 'lib/rspec/formatters/user_flow_formatter.rb'
   rubocop:
     enabled: true
     channel: rubocop-0-54
