@@ -25,15 +25,15 @@
     <div>
       <% if status.status_class == 'deploy-success' %>
 
-        <%= image_tag 'img/alerts/success.svg', alt: 'success', height: '27', width: '27' %>
+        <%= image_tag 'img/alerts/success.svg', alt: 'success', height: '27', width: '27', :class =>'margin-bottom-neg-105' %>
 
       <% elsif status.status_class == 'deploy-error' %>
 
-        <%= image_tag 'img/alerts/error.svg', alt: 'error', height: '27', width: '27' %>
+        <%= image_tag 'img/alerts/error.svg', alt: 'error', height: '27', width: '27', :class =>'margin-bottom-neg-1' %>
 
       <% elsif status.status_class == 'disabled' %>
 
-       <%= image_tag 'img/alerts/warning.svg', alt: 'disabled', height: '27', width: '27' %>
+       <%= image_tag 'img/alerts/warning.svg', alt: 'disabled', height: '27', width: '27',  :class =>'margin-bottom-neg-105' %>
       <% end %>
 
       <% if status.host %>
