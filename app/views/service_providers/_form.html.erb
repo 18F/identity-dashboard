@@ -86,7 +86,7 @@
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input' },
                    label: 'Assertion Consumer Service URL — <i>SAML only</i>'.html_safe,
-                   hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>" %>
+                   hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>".html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
