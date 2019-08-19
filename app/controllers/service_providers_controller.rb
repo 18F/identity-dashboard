@@ -66,7 +66,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def publish_service_providers
-    if ServiceProviderUpdater.ping
+    if ServiceProviderUpdater.ping == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')

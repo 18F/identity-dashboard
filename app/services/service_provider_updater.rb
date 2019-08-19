@@ -1,7 +1,13 @@
 class ServiceProviderUpdater
+  # :reek:TooManyStatements
   def self.ping
     resp = HTTParty.post(idp_url, headers: token_header)
-    resp.code == 200
+    status_code = resp.code
+    return status_code if status_code == 200
+
+    handle_error(status_code)
+  rescue StandardError => error
+    handle_error(error.msg)
   end
 
   class <<self
@@ -11,6 +17,12 @@ class ServiceProviderUpdater
 
     def token_header
       { 'X-LOGIN-DASHBOARD-TOKEN' => Figaro.env.dashboard_api_token }
+    end
+
+    def handle_error(status)
+      ::NewRelic::Agent.notice_error("ServiceProviderUpdater failed with "\
+        "status: #{status}")
+      status
     end
   end
 end
