@@ -18,7 +18,7 @@
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app), :class => 'usa-link' ) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
+      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %></td>
     </tr>
     <% end %>
   </tbody>
