@@ -4,9 +4,11 @@
 *.swp
 /.bundle
 /.env*
+/.idea/*
 /coverage/*
 /db/*.sqlite3
 /log/*
+/node_modules/*
 /public/system
 /tags
 /tmp/*

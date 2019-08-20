@@ -1,6 +1,8 @@
-<h1>Apps</h1>
 
-<%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post %>
+<div class="usa-display">Apps</div>
+
+<%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post, :class => "usa-button" %>
+
 
 <table class="usa-table-borderless">
   <thead>
@@ -16,12 +18,14 @@
   <tbody>
     <% @service_providers.each do |app| %>
     <tr>
-      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app)) %></th>
+      <th scope="row">
+      <%= link_to(app.friendly_name, service_provider_path(app), class: 'usa-link') %>
+      </th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= app.active? ? '✔' : '❌' %></td>
+      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
       <td><%= app.created_at.localtime.strftime("%F %T") %></td>
-      <td><%= app.production_issuer.present? ? '✔' : '❌' %></td>
+      <td><%= image_tag app.production_issuer.present? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27'  %></td>
     </tr>
     <% end %>
   </tbody>

@@ -1,9 +1,9 @@
-<h1>New group</h1>
+<div class="usa-display">New group</div>
 
 <%= simple_form_for(@group,
-    html: { autocomplete: 'off', role: 'form' },
+    html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' },
     url: groups_path) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>
-  <%= form.button :submit, 'Create' %>
+  <%= form.button :submit, 'Create', :class => "usa-button" %>
 <% end %>

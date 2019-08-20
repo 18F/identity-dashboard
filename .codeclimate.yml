@@ -63,6 +63,7 @@ plugins:
     enabled: true
     exclude_patterns:
     - 'spec/**/*'
+    - 'db/**/*'
   rubocop:
     enabled: true
     channel: rubocop-0-54
@@ -72,3 +73,4 @@ plugins:
 exclude_patterns:
   - 'public/'
   - 'spec/'
+  - 'db/'

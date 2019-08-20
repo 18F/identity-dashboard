@@ -33,6 +33,7 @@ jobs:
           command: |
             gem install bundler
             bundle install --deployment --jobs=4 --retry=3 --without deploy development production --path vendor/bundle
+            npm install
       - run:
           name: Install phantomjs
           command: |

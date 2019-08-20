@@ -1,6 +1,7 @@
-<h1>Users</h1>
 
-<%= link_to 'Create a new user', new_user_path %> 👋
+<div class="usa-display">Users</div>
+
+ 	<%= button_to t('headings.users.new_user'), new_user_path, method: :get, :class => "usa-button" %>
 
 <table class="usa-table-borderless">
   <thead>
@@ -15,9 +16,9 @@
     <% @users.each do |user| %>
     <tr>
       <th scope="row"><%= user.email %></th>
-      <td><%= user.uuid? ? '✔️' : '❌' %></td>
-      <td><%= user.admin? ? '💪' : '' %></td>
-      <td><%= link_to 'edit', edit_user_path(user.id) %></td>
+      <td><%= image_tag user.uuid? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
+      <td><%= image_tag 'img/illustrations/security-key.svg', height: '27', width: '27' if user.admin? %></td>
+      <td><%= link_to 'edit', edit_user_path(user.id), :class => 'usa-link' %></td>
     </tr>
     <% end %>
   </tbody>

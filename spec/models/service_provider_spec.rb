@@ -22,7 +22,7 @@ describe ServiceProvider do
     it 'fails when issuer is formatted incorrectly' do
       invalid_service_provider = build(
         :service_provider,
-        issuer: 'i-dont-care-about-your-rules even a little',
+        issuer: 'i-dont-care-about-your-rules even a little'
       )
 
       expect(invalid_service_provider).not_to be_valid

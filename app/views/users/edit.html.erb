@@ -1,7 +1,8 @@
-<h1>Edit user "<%= @user.email %>"</h1>
+
+<div class="usa-display">Edit user "<%= @user.email %>"</div>
 
 <%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
-  <%= form.button :submit, 'Update' %>
+  <%= form.button :submit, 'Update', :class => "usa-button" %>
 <% end %>

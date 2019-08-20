@@ -1,13 +1,12 @@
-<div class="back">
-  👈 <%= link_to 'Back to apps', '/service_providers' %>
-</div>
+<%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
 
-<h1>Details for "<%= service_provider.friendly_name %>"</h1>
 
-<table class="usa-table-borderless bold-th">
+<div class="usa-display">Details for "<%= service_provider.friendly_name %>"</div>
+
+<table class="usa-table">
   <tbody>
     <tr class="usa-color-gold-lightest">
-      <th scope="row">Friendly name</th>
+      <th scope="row">Friendly name</th></thead>
       <td><%= service_provider.friendly_name %></td>
     </tr>
     <tr>
@@ -34,34 +33,36 @@
       <th scope="row">Issuer</th>
       <td><code><%= service_provider.issuer %></code></td>
     </tr>
+
     <% if current_user.admin? %>
-    <tr>
-      <th scope="row">Production Issuer</th>
-      <td><code><%= service_provider.production_issuer %></code></td>
-    </tr>
+      <tr>
+        <th scope="row">Production Issuer</th>
+        <td><code><%= service_provider.production_issuer %></code></td>
+      </tr>
     <% end %>
+
     <tr>
       <th scope="row">Logo</th>
-      <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>"><%= service_provider.logo %></a></td>
+      <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link"><%= service_provider.logo %></a></td>
     </tr>
 
     <% if service_provider.identity_protocol == 'saml' %>
-    <tr>
-      <th scope="row">Assertion Consumer Service URL</th>
-      <td><%= service_provider.acs_url %></td>
-    </tr>
-    <tr>
-      <th scope="row">Assertion Consumer Logout Service URL</th>
-      <td><%= service_provider.assertion_consumer_logout_service_url %></td>
-    </tr>
-    <tr>
-      <th scope="row">SP Initiated Login URL</th>
-      <td><%= service_provider.sp_initiated_login_url %></td>
-    </tr>
-    <tr>
-      <th scope="row">SAML Assertion Encryption</th>
-      <td><%= service_provider.block_encryption %></td>
-    </tr>
+      <tr>
+        <th scope="row">Assertion Consumer Service URL</th>
+        <td><%= service_provider.acs_url %></td>
+      </tr>
+      <tr>
+        <th scope="row">Assertion Consumer Logout Service URL</th>
+        <td><%= service_provider.assertion_consumer_logout_service_url %></td>
+      </tr>
+      <tr>
+        <th scope="row">SP Initiated Login URL</th>
+        <td><%= service_provider.sp_initiated_login_url %></td>
+      </tr>
+      <tr>
+        <th scope="row">SAML Assertion Encryption</th>
+        <td><%= service_provider.block_encryption %></td>
+      </tr>
     <% end %>
 
     <tr>
@@ -80,7 +81,6 @@
       <th scope="row">Push Notification URL</th>
       <td><%= service_provider.push_notification_url %></td>
     </tr>
-
     <tr>
       <% if service_provider.identity_protocol == 'openid_connect' %>
         <th scope="row">Redirect URIs</th>
@@ -90,24 +90,25 @@
       <% end %>
       <td><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></td>
     </tr>
-
     <tr>
       <th scope="row">Attribute bundle</th>
       <td><%= (service_provider.attribute_bundle || []).sort.join(', ') %></td>
     </tr>
     <tr>
       <th scope="row">Active</th>
-      <td><%= (service_provider.active? ? '✔️' : '❌') %></td>
+      <td>
+        <%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
+                      height: '27', width: '27' %>
+      </td>
     </tr>
   </tbody>
 </table>
-
 <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
-    class: 'fma0 fmr1 fl',
+    class: 'usa-button float-left',
     method: :get %>
 
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),
-  class: 'fma0 fmr1 fl',
+  class: 'usa-button usa-button--outline float-left',
   method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>

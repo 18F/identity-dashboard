@@ -206,7 +206,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
-      choose 'Saml'
+      choose 'SAML'
       check 'last_name'
       click_on 'Update'
 
@@ -229,7 +229,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
-      choose 'Saml'
+      choose 'SAML'
       check 'last_name'
       click_on 'Update'
 
@@ -247,7 +247,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
-      choose 'Saml'
+      choose 'SAML'
       check 'last_name'
       click_on 'Update'
 

@@ -10,6 +10,7 @@ set -e
 gem install bundler --conservative
 gem install foreman --conservative && gem update foreman
 bundle check || bundle install
+npm install
 
 # Copy application.yml
 cp config/application.yml.example config/application.yml
@@ -19,6 +20,9 @@ bin/rake dev:prime
 
 # Add binstubs to PATH via export PATH=".git/safe/../../bin:$PATH" in ~/.zshenv
 mkdir -p .git/safe
+
+# Install node modules (e.g., style guide)
+npm ci
 
 # Only if this isn't CI
 # if [ -z "$CI" ]; then

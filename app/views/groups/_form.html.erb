@@ -1,20 +1,25 @@
-<div class="form-fields">
+<fieldset class="usa-fieldset">
+  <%= form.input :name, label: "Name".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' } %>
 
-<%= form.input :name, label: "<b>Name</b>".html_safe %>
-<%= form.input :agency_id,
-               as: :collection_select,
-               collection: @agencies,
-               label: "<b>Agency</b><br>The federal agency you would like this group to be assigned to.<p>#{ extra_message }".html_safe,
-               required: agency_required %>
-<%= form.input :description, label: "<b>Description</b>".html_safe %>
-<fieldset class="usa-fieldset-inputs">
-  <legend class="mb1">Users</legend>
-  <%= collection_check_boxes(:group,
-      :user_ids,
-      User.all.sorted, :id, :email) do |b| %>
-      <%= b.check_box %>
-      <%= b.label %>
-  <% end %>
+  <%= form.input :agency_id,
+                   input_html: { class: 'usa-select' },
+                   collection: @agencies,
+                   label: 'Agency'.html_safe,
+                   hint: "The federal agency you would like this group to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
+                   required: agency_required %>
+
+  <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label margin-top-2' }, input_html: { class: 'usa-textarea' } %>
+
+  <span class="usa-label margin-bottom-1">Users</span>
+
+  <%= form.collection_check_boxes( :user_ids,
+                                 User.all.sorted,
+                                 :id, :email,
+                                 collection_wrapper_tag: :ul,
+                                 collection_wrapper_class: 'usa-input-list',
+                                 item_wrapper_tag: :li) do |b| %>
+        <%=  b.check_box(class: "usa-checkbox__input") %>
+        <%=  b.label(class: "usa-checkbox__label")%>
+    <% end %>
 </fieldset>
 
-</div>
