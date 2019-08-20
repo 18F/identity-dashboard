@@ -18,5 +18,9 @@ Rails.application.routes.draw do
   post '/api/service_providers' => 'api/service_providers#update'
   resources :service_providers
 
+  if Rails.env.development?
+    post '/push_notification' => 'push_notification#push_notification'
+  end
+
   root to: 'home#index'
 end

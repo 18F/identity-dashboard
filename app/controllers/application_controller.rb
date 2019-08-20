@@ -12,4 +12,8 @@ class ApplicationController < ActionController::Base
   def render_401
     render file: 'public/401.html', status: :unauthorized
   end
+
+  def not_found
+    render(file: 'public/404.html', status: :not_found, layout: nil) and return
+  end
 end
