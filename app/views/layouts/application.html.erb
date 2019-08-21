@@ -1,212 +1,176 @@
 <!doctype html>
-<!-- 
-Karla Rodriguez 
-added localization related meta tags from style guide
--->
+
 <!--[if lt IE 9]><html class="lt-ie9"><![endif]-->
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
   <head>
     <meta charset="utf-8">
-<!-- 
-Karla Rodriguez 
-added mobile related meta tags from style guide
--->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>login.gov Dashboard</title>
-    
-<!-- 
-Karla Rodriguez 
-removed link to uswds.min.css, added shortcut icons and added link to style guide in node modules 
--->
+
     <!-- 128x128 -->
-    <link rel="shortcut icon" type="image/ico" href="/assets/img/favicons/favicon.ico">
-    <link rel="icon" type="image/png" href="/assets/img/favicons/favicon.png">
+    <link rel="shortcut icon" type="image/ico" href=<%= asset_path 'img/favicons/favicon.ico' %>>
+    <link rel="icon" type="image/png" href=<%= asset_path 'img/favicons/favicon.png' %>>
 
     <!-- 192x192, as recommended for Android
     http://updates.html5rocks.com/2014/11/Support-for-theme-color-in-Chrome-39-for-Android
     -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/favicon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href=<%= asset_path 'img/favicons/favicon-192.png' %>>
 
     <!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
-    <link rel="apple-touch-icon-precomposed" href="/assets/img/favicons/favicon-57.png">
+    <link rel="apple-touch-icon-precomposed" href=<%= asset_path 'img/favicons/favicon-57.png' %>>
     <!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/img/favicons/favicon-72.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href=<%= asset_path 'img/favicons/favicon-72.png' %>>
     <!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/assets/img/favicons/favicon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href=<%= asset_path 'img/favicons/favicon-114.png' %>>
     <!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/img/favicons/favicon-144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href=<%= asset_path 'img/favicons/favicon-144.png' %>>
 
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>
   </head>
-<!-- 
-Karla Rodriguez 
-Updated updated body class to match style guide added skip nav
--->
+
   <body>
-   <a class="usa-skipnav" href="#main-content">Skip to main content</a>
-<!-- 
-Karla Rodriguez 
-Updated Official Site Header to match code in Identity Style Guide
--->
-<div class="usa-banner">
-  <div class="usa-accordion">
-    <header class="usa-banner__header">
-      <div class="usa-banner__inner">
-        <div class="grid-col-auto">
-          <img class="usa-banner__header-flag" src="/assets/img/us_flag_small.png" alt="U.S. flag">
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <div class="usa-banner">
+      <div class="usa-accordion">
+        <header class="usa-banner__header">
+          <div class="usa-banner__inner">
+            <div class="grid-col-auto">
+              <%= image_tag 'img/us_flag_small.png', class: 'usa-banner__header-flag', alt: 'U.S. flag' %>
+            </div>
+            <div class="grid-col-fill tablet:grid-col-auto">
+              <p class="usa-banner__header-text">An official website of the United States government</p>
+              <p class="usa-banner__header-action" aria-hidden="true">Here’s how you know</p>
+            </div>
+            <button class="usa-accordion__button usa-banner__button"
+              aria-expanded="false" aria-controls="gov-banner">
+              <span class="usa-banner__button-text">Here’s how you know</span>
+            </button>
+          </div>
+        </header>
+        <div class="usa-banner__content usa-accordion__content" id="gov-banner">
+          <div class="grid-row grid-gap-lg">
+            <div class="usa-banner__guidance tablet:grid-col-6">
+              <%= image_tag 'img/icon-dot-gov.svg', alt: 'Dot gov', class: 'usa-banner__icon usa-media-block__img' %>
+              <div class="usa-media-block__body">
+                <p>
+                  <strong>The .gov means it’s official.</strong>
+                  <br>
+                  Federal government websites often end in .gov or .mil. Before sharing sensitive information, make sure you’re on a federal government site.
+                </p>
+              </div>
+            </div>
+            <div class="usa-banner__guidance tablet:grid-col-6">
+              <%= image_tag 'img/icon-https.svg', alt: 'Https', class: 'usa-banner__icon usa-media-block__img' %>
+              <div class="usa-media-block__body">
+                <p>
+                  <strong>The site is secure.</strong>
+                  <br>
+                  The <strong>https://</strong> ensures that you are connecting to the official website and that any information you provide is encrypted and transmitted securely.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="grid-col-fill tablet:grid-col-auto">
-          <p class="usa-banner__header-text">An official website of the United States government</p>
-          <p class="usa-banner__header-action" aria-hidden="true">Here’s how you know</p>
+      </div>
+    </div>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-logo">
+            <a href="/" accesskey="1" title="Home" aria-label="Home">
+              <%= image_tag 'img/login-gov-logo.svg', alt: 'login.gov', class: 'usa-logo__img' %>
+              <em class="usa-logo__text">Dashboard</em>
+            </a>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
         </div>
-        <button class="usa-accordion__button usa-banner__button"
-          aria-expanded="false" aria-controls="gov-banner">
-          <span class="usa-banner__button-text">Here’s how you know</span>
-        </button>
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <%= image_tag 'img/close.svg', alt: 'Close' %>
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            <% if user_signed_in? %>
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link" href="<%= service_providers_path %>">
+                  <span>Apps</span>
+                </a>
+              </li>
+              <% if current_user.admin? %>
+                <li class="usa-nav__primary-item">
+                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-1">
+                    <span>Admin</span>
+                  </button>
+                  <ul id="unique-id-1" class="usa-nav__submenu">
+                    <li class="usa-nav__submenu-item">
+                      <a href="/service_providers/all">Apps</a>
+                    </li>
+                    <li class="usa-nav__submenu-item">
+                      <a href="/users">Users</a>
+                    </li>
+                    <li class="usa-nav__submenu-item">
+                      <a href="/groups">Groups</a>
+                    </li>
+                    <li class="usa-nav__submenu-item">
+                      <a href="/emails">Emails</a>
+                    </li>
+                  </ul>
+                </li>
+              <% end %>
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link" href="<%= destroy_user_session_path %>">
+                  <span>Logout</span>
+                </a>
+              </li>
+              <% else %>
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/auth/logindotgov">
+                  <span>Log in</span>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
       </div>
     </header>
-    <div class="usa-banner__content usa-accordion__content" id="gov-banner">
-      <div class="grid-row grid-gap-lg">
-        <div class="usa-banner__guidance tablet:grid-col-6">
-          <img class="usa-banner__icon usa-media-block__img" src="/assets/img/icon-dot-gov.svg" alt="Dot gov">
-          <div class="usa-media-block__body">
-            <p>
-              <strong>The .gov means it’s official.</strong>
-              <br>
-              Federal government websites often end in .gov or .mil. Before sharing sensitive information, make sure you’re on a federal government site.
-            </p>
-          </div>
-        </div>
-        <div class="usa-banner__guidance tablet:grid-col-6">
-          <img class="usa-banner__icon usa-media-block__img" src="/assets/img/icon-https.svg" alt="Https">
-          <div class="usa-media-block__body">
-            <p>
-              <strong>The site is secure.</strong>
-              <br>
-              The <strong>https://</strong> ensures that you are connecting to the official website and that any information you provide is encrypted and transmitted securely.
-            </p>
-          </div>
+
+    <div class="usa-overlay"></div>
+
+    <main class="usa-layout-docs usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="usa-layout-docs-main_content usa-prose">
+          <%= render 'layouts/messages' %>
+          <%= yield %>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-<!---
-Karla Rodriguez
-Update banner with logo and navigation from style guide
--->
-<header class="usa-header usa-header--basic" role="banner">
-  <div class="usa-nav-container">
-    <div class="usa-navbar">
-      <div class="usa-logo" id="basic-logo">
-        <a href="/" accesskey="1" title="Home" aria-label="Home">
-          <img src="/assets/img/login-gov-logo.svg" class="usa-logo__img" alt="login.gov">
-          <em class="usa-logo__text">Dashboard</em>
-        </a>
-      </div>
-      <button class="usa-menu-btn">Menu</button>
-    </div>
-    <nav role="navigation" class="usa-nav">
-      <button class="usa-nav__close"><img src="/assets/img/close.svg" alt="Close"></button>
-      <ul class="usa-nav__primary usa-accordion">
-        <% if user_signed_in? %>
-          <li class="usa-nav__primary-item">
-            <a class="usa-nav__link" href="<%= service_providers_path %>">
-              <span>Apps</span>
-            </a>
-          </li>
-          <% if current_user.admin? %>
-            <li class="usa-nav__primary-item">
-              <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-1">
-                <span>Admin</span>
-              </button>
-              <ul id="unique-id-1" class="usa-nav__submenu">
-                <li class="usa-nav__submenu-item">
-                  <a href="/service_providers/all">Apps</a>
-                </li>
-                <li class="usa-nav__submenu-item">
-                  <a href="/users">Users</a>
-                </li>
-                <li class="usa-nav__submenu-item">
-                  <a href="/groups">Groups</a>
-                </li>
-                <li class="usa-nav__submenu-item">
-                  <a href="/emails">Emails</a>
-                </li>
-              </ul>
-            </li>
-          <% end %>  
-          <li class="usa-nav__primary-item">
-            <a class="usa-nav__link" href="<%= destroy_user_session_path %>">
-              <span>Logout</span>
-            </a>
-          </li>
-          <% else %>
-          <li class="usa-nav__primary-item">
-            <a class="usa-nav__link usa-current" href="/auth/logindotgov">
-              <span>Log in</span>
-            </a>
-          </li>
-        <% end %>  
-      </ul>
-    </nav>
-  </div>
-</header>
+    </main>
 
-  <div class="usa-overlay"></div>
-
-
-<!-- 
-Karla Rodriguez
-added main layout from style guide
--->
-
-  <main class="usa-layout-docs usa-section" id="main-content">
-  <div class="grid-container">
-    <div class="usa-layout-docs-main_content usa-prose">
-      <%= render 'layouts/messages' %>
-      <%= yield %>
-    </div>
-  </div>
-</main>
-
-<!-- 
-Karla Rodriguez
-added code for footer used in style guide
-linked to js file to make header collapsible
-Need to finish updating this without links
-
--->
-<footer class="usa-footer usa-footer--slim" role="contentinfo">
-  <div class="grid-container usa-footer__return-to-top">
-    <div class="grid-row flex-align-center">
-      <div class="grid-col flex-1">
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      <div class="grid-container usa-footer__return-to-top">
         <a href="#">Return to top</a>
       </div>
-    </div>
-  </div>
-  <div class="usa-footer__secondary-section">
-    <div class="grid-container">
-      <div class="usa-footer__logo grid-row grid-gap-2">
-        <div class="grid-col-auto">
-          <img src="/assets/img/gsa-logo-rev.svg" alt="U.S. General Services Administration logo" class="usa-footer__logo-img usa-footer__slim usa-footer__medium">
-        </div>
-        <div class="grid-col-auto">
-          <h3 class="usa-footer__logo-heading">U.S. General Services Administration</h3>
+      <div class="usa-footer__secondary-section">
+        <div class="grid-container">
+          <div class="usa-footer__logo grid-row grid-gap-2">
+            <div class="grid-col">
+              <a href="https://18f.gsa.gov">
+                <%= image_tag '18f-logo.svg', alt: '18F logo image', class: 'usa-footer__logo-img usa-footer__slim usa-footer__medium margin-right-05' %>
+              </a>
+              <%= image_tag 'img/gsa-logo-rev.svg', alt: 'U.S. General Services Administration logo', class: 'usa-footer__logo-img usa-footer__slim usa-footer__medium' %>
+            </div>
+
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</footer>
-<script src="/assets/js/main.js"></script>
-  <%= javascript_include_tag 'application' %>
+    </footer>
+
+    <%= javascript_include_tag 'js/main.js' %>
+    <%= javascript_include_tag 'application' %>
   </body>
 </html>

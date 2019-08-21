@@ -1,15 +1,8 @@
-<!-- 
-Karla Rodriguez
-added title from style guide
--->
+
 <div class="usa-display">Edit user "<%= @user.email %>"</div>
 
 <%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
-  <!-- 
-  Karla Rodriguez
-  added style to button
-  --> 
   <%= form.button :submit, 'Update', :class => "usa-button" %>
 <% end %>

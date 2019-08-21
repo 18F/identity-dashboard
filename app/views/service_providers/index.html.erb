@@ -1,10 +1,5 @@
-<!-- 
-Karla Rodriguez
-added title from style guide
--->
+
 <div class="usa-display">My apps</div>
-<!--changed link to button removed <%= link_to 'Create a new test app', new_service_provider_path %> -->
-<!--removed icon not in design system 🚀-->
 
 <%= button_to t('headings.service_providers.new_app'), new_service_provider_path, method: :get, :class => "usa-button" %>
 
@@ -23,7 +18,7 @@ added title from style guide
       <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app), :class => 'usa-link' ) %></th>
       <td><%= app.issuer %></td>
       <td><%= app.ial_friendly %></td>
-      <td><%= image_tag app.active? ? '/assets/img/alerts/success.svg' : '/assets/img/alerts/error.svg', style: 'height:27px;width:27px;' %></td>
+      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
     </tr>
     <% end %>
   </tbody>

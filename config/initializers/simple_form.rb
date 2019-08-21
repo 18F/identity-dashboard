@@ -51,4 +51,3 @@ SimpleForm.setup do |config|
   config.label_text = lambda { |label, required, explicit_label| "#{label}" }
 end
 # rubocop:enable Metrics/BlockLength
- 
