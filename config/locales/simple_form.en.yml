@@ -5,6 +5,7 @@ en:
       service_provider:
        logo: 'generic.svg'
     labels:
+      required: required
       service_provider:
         acs_url: Assertion Consumer Service URL
         active: Active
