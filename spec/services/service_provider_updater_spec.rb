@@ -24,5 +24,20 @@ describe ServiceProviderUpdater do
         ServiceProviderUpdater.ping
       end
     end
+
+    context 'when the HTTP request raises an error' do
+      before do
+        allow(::HTTParty).to receive(:post).and_raise("Error!")
+      end
+
+      it 'returns http status code for failure' do
+        expect(ServiceProviderUpdater.ping).to be nil
+      end
+
+      it 'notifies NewRelic of the error' do
+        expect(::NewRelic::Agent).to receive(:notice_error)
+        ServiceProviderUpdater.ping
+      end
+    end
   end
 end
