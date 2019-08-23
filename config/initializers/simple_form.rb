@@ -48,6 +48,8 @@ SimpleForm.setup do |config|
   end
 
   config.default_wrapper = :vertical_form
-  config.label_text = lambda { |label, required, explicit_label| "#{label}" }
+  config.label_text = lambda do |label, _required, _explicit_label|
+    "#{label}"
+  end
 end
 # rubocop:enable Metrics/BlockLength
