@@ -133,7 +133,8 @@ describe ServiceProvider do
       relative_uri_sp = build(:service_provider, failure_to_proof_url: '/asdf/hjkl')
       bad_uri_sp = build(:service_provider, failure_to_proof_url: ' http://foo.com')
       malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:/result')
-      file_uri_sp = build(:service_provider, failure_to_proof_url: 'file:///usr/sbin/evil_script.sh')
+      file_uri_sp = build(:service_provider,
+                          failure_to_proof_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
       expect(missing_protocol_sp).to_not be_valid
@@ -149,7 +150,8 @@ describe ServiceProvider do
       relative_uri_sp = build(:service_provider, push_notification_url: '/asdf/hjkl')
       bad_uri_sp = build(:service_provider, push_notification_url: ' http://foo.com')
       malformed_uri_sp = build(:service_provider, push_notification_url: 'super.foo.com:/result')
-      file_uri_sp = build(:service_provider, push_notification_url: 'file:///usr/sbin/evil_script.sh')
+      file_uri_sp = build(:service_provider,
+                          push_notification_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
       expect(missing_protocol_sp).to_not be_valid
