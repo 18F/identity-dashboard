@@ -2,9 +2,9 @@
   <% flash.each do |name, msg| %>
     <% if msg.is_a?(String) %>
       <% if name == 'notice' then name = 'info' end %>
-      <div class="usa-alert usa-alert-<%= name %>" >
-        <div class="usa-alert-body">
-          <h3 class="usa-alert-text"><%= msg %></h3>
+      <div class="usa-alert usa-alert__paragraph usa-alert--<%= name %>" >
+        <div class="usa-alert__body">
+          <p class="usa-alert__text"><%= msg %></p>
         </div>
       </div>
     <% end %>

@@ -55,14 +55,22 @@ describe Api::ServiceProvidersController do
         expect(response).to redirect_to service_providers_path
       end
       context 'when ServiceProviderUpdater fails' do
+        let(:error_response) { instance_double(HTTParty::Response, body: 'Error!', code: 404) }
+
         before do
-          allow(ServiceProviderUpdater).to receive(:ping).and_return(false)
+          allow(::HTTParty).to receive(:post).and_return(error_response)
         end
 
         it 'redirects to service_providers_path' do
           post :update
 
           expect(response).to redirect_to service_providers_path
+        end
+
+        it 'notifies NewRelic of the error' do
+          expect(::NewRelic::Agent).to receive(:notice_error)
+
+          post :update
         end
       end
     end
