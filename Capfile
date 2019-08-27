@@ -7,6 +7,9 @@ require 'capistrano/deploy'
 # support for passenger
 require 'capistrano/passenger'
 
+# support for npm install
+require 'capistrano/npm'
+
 # support for bundler, rails/assets and rails/migrations
 require 'capistrano/rails'
 
