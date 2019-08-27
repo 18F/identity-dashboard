@@ -487,4 +487,4 @@ DEPENDENCIES
   websocket-driver (= 0.6.5)
 
 BUNDLED WITH
-   2.0.2
+   1.17.3

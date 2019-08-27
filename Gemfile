@@ -33,8 +33,8 @@ gem 'uglifier'
 group :deploy do
   gem 'capistrano' # , '~> 3.4'
   gem 'capistrano-passenger'
-  gem 'capistrano-rails' # , '~> 1.1', require: false
   gem 'capistrano-npm'
+  gem 'capistrano-rails' # , '~> 1.1', require: false
 end
 
 group :development do
