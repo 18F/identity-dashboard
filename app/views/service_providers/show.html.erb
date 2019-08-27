@@ -97,8 +97,7 @@
     <tr>
       <th scope="row">Active</th>
       <td>
-        <%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
-                      height: '27', width: '27' %>
+        <%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %>
       </td>
     </tr>
   </tbody>

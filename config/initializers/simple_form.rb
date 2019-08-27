@@ -3,7 +3,8 @@ SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
   config.error_notification_tag = :div
-  config.error_notification_class = 'error-notify red bold mb2'
+  config.error_notification_class =
+    'usa-alert usa-alert--error usa-alert__body usa-alert__text text-indent-3'
 
   config.wrappers :base do |b|
     b.use :html5
@@ -44,7 +45,7 @@ SimpleForm.setup do |config|
     # changed input class from field to usa-input
     b.use :input, class: 'block col-12' # usa-input'
     b.use :hint,  wrap_with: { tag: 'div', class: 'usa-form-hint' }
-    b.use :error, wrap_with: { tag: 'div', class: 'error-notify alert-danger p1 mt1' }
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message margin-top-neg-205' }
   end
 
   config.default_wrapper = :vertical_form
