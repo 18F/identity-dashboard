@@ -111,15 +111,4 @@ describe UsersController do
       end
     end
   end
-
-  describe '#none' do
-    it 'overrides the CSP for the embedded HubSpot form' do
-      get :none
-      csp = response.request.headers.env['secure_headers_request_config'].csp
-
-      expect(csp.script_src).to eq(['*.hsforms.net', '*.hsforms.com', "\'self\'"])
-      expect(csp.style_src).to eq(["\'self\'", "\'unsafe-inline\'"])
-      expect(csp.img_src).to eq(['*.hsforms.com', '*.hsforms.net', "\'self\'"])
-    end
-  end
 end

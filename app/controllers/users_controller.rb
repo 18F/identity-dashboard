@@ -30,15 +30,7 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
-  def none
-    # rubocop:disable Lint/PercentStringArray
-    override_content_security_policy_directives(
-      script_src: %w[*.hsforms.net *.hsforms.com 'self'],
-      img_src: %w[*.hsforms.com *.hsforms.net 'self'],
-      style_src: %w['self' 'unsafe-inline']
-    )
-    # rubocop:enable Lint/PercentStringArray
-  end
+  def none; end
 
   private
 
