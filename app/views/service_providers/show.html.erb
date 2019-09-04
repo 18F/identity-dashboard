@@ -100,6 +100,12 @@
         <%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %>
       </td>
     </tr>
+    <tr>
+      <th scope="row">Service Provider config as YAML</th>
+      <td>
+        <%= render 'service_provider_yaml' %>
+      </td>
+    </tr>
   </tbody>
 </table>
 <%= button_to t('forms.buttons.edit_service_provider'),
