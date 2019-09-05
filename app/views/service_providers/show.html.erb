@@ -103,7 +103,7 @@
     <tr>
       <th scope="row">Service Provider config as YAML</th>
       <td>
-        <%= render 'service_provider_yaml' %>
+        <%= render 'service_provider_yaml' if current_user.admin? %>
       </td>
     </tr>
   </tbody>
