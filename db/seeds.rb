@@ -9,3 +9,11 @@
 Rails.application.config.agencies.values.pluck("name").each do |str|
   Agency.find_or_create_by(name: str)
 end
+
+if Rails.env.development? || Rails.env.test?
+  User.find_or_create_by email: 'admin@gsa.gov' do |user|
+    user.first_name = 'Addy'
+    user.last_name = 'Ministrator'
+    user.admin = true
+  end
+end
