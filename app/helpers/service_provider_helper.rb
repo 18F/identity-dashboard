@@ -1,6 +1,7 @@
 #:reek:UtilityFunction
 module ServiceProviderHelper
   SP_PROTECTED_ATTRIBUTES = %w[
+    issuer
     id
     created_at
     updated_at
@@ -34,21 +35,32 @@ module ServiceProviderHelper
       file
   end
 
-  #:reek:DuplicateMethodCall
+  #:reek:FeatureEnvy
   def yamlized_sp(service_provider)
     key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||
-                      clean_sp_hash(service_provider).dig('issuer')
-    yamlable_json = { key_from_issuer => clean_sp_hash(service_provider).except('issuer') }
-    yamlable_json.to_yaml
+                      service_provider.issuer
+    yamlable_json = { "'#{key_from_issuer}'" => config_hash(service_provider) }
+    yamlable_json.to_yaml.delete('\"')
   end
 
   private
 
-  #:reek:DuplicateMethodCall
-  def clean_sp_hash(service_provider)
+  #:reek:FeatureEnvy, :reek:DuplicateMethodCall
+  def config_hash(service_provider)
     clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)
-    hash_from_clean_json['agency'] = service_provider.agency.name if service_provider.agency
-    hash_from_clean_json
+    config_hash = formatted_config_hash(hash_from_clean_json)
+    config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
+    config_hash
+  end
+
+  def formatted_config_hash(sp_json)
+    sp_json.map do |config_key, value|
+      if %w[agency_id default_help_text attribute_bundle].include?(config_key)
+        [config_key, value]
+      else
+        [config_key, "'#{value}'"]
+      end
+    end.to_h
   end
 end
