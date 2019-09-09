@@ -224,7 +224,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (5.0.0.342)
     nio4r (2.3.1)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
@@ -453,7 +453,7 @@ DEPENDENCIES
   json-jwt (>= 1.9.4)
   jwt
   newrelic_rpm (>= 3.9.8)
-  nokogiri (~> 1.9)
+  nokogiri (~> 1.10)
   omniauth_login_dot_gov!
   pg
   poltergeist
