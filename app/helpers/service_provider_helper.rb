@@ -56,7 +56,7 @@ module ServiceProviderHelper
 
   def formatted_config_hash(sp_json)
     sp_json.map do |config_key, value|
-      if %w[agency_id default_help_text attribute_bundle].include?(config_key)
+      if %w[agency_id default_help_text attribute_bundle redirect_uris].include?(config_key)
         [config_key, value]
       else
         [config_key, "'#{value}'"]
