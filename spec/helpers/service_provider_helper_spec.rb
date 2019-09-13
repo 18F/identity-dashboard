@@ -61,4 +61,33 @@ describe ServiceProviderHelper do
       end
     end
   end
+
+  describe '#yamlized_sp' do
+    let(:sp) { create(:service_provider) }
+    let(:sp_config_protected_attributes) do
+      %w[
+        issuer
+        id
+        created_at
+        updated_at
+        user_id
+        description
+        approved
+        active
+        group_id
+        identity_protocol
+        production_issuer
+      ]
+    end
+    it 'returns the sp issuer in the yaml blurb' do
+      expect(yamlized_sp(sp)).to include(sp.issuer)
+    end
+
+    it 'returns the sp configuration in the yaml blurb' do
+      sp.attribute_names.each do |attribute_name|
+        next if sp_config_protected_attributes.include?(attribute_name)
+        expect(yamlized_sp(sp)).to include(attribute_name)
+      end
+    end
+  end
 end
