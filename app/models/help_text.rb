@@ -4,7 +4,7 @@ class HelpText < ApplicationRecord
 
   belongs_to :service_provider
 
-  validates :service_provider_id, uniqueness: true
+  validates :service_provider_id, uniqueness: true, presence: true
 
   before_commit :sanitize_help_text_content
 
@@ -17,7 +17,7 @@ class HelpText < ApplicationRecord
 
   def sanitize_section(section)
     section.each do |_language, translation|
-      sanitize translation
+      translation.replace sanitize translation, tags: %w[a b br p], attributes: %w[href]
     end
   end
 end
