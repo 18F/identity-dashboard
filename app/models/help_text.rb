@@ -4,7 +4,7 @@ class HelpText < ApplicationRecord
 
   belongs_to :service_provider
 
-  validates :service_provider_id, uniqueness: true, presence: true
+  validates :service_provider_id, uniqueness: true
 
   before_commit :sanitize_help_text_content
 

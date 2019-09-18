@@ -7,7 +7,6 @@ RSpec.describe HelpText, type: :model do
 
   describe 'Validations' do
     it { should validate_uniqueness_of(:service_provider_id) }
-    it { should validate_presence_of(:service_provider_id) }
 
     it 'accepts a correctly formatted issuer' do
       unsanitary_help_text = create(

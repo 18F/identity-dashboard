@@ -193,26 +193,21 @@
     <legend>Custom help text</legend>
     <p>You can specify help text in these different areas to alert users of important information for logging into your app</p>
     <%= form.fields_for :help_text do |h| %>
-      <legend>Sign In Help Text</legend><br>
+      <legend>Sign In Help Text</legend>
       <%= h.input "sign_in[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["en"].presence || '' } %>
       <%= h.input "sign_in[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["es"].presence || ''} %>
       <%= h.input "sign_in[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_in["fr"].presence || '' } %>
 
-      <legend>Sign Up Help Text</legend><br>
+      <legend>Sign Up Help Text</legend>
       <%= h.input "sign_up[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["en"].presence || '' } %>
       <%= h.input "sign_up[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["es"].presence || '' } %>
       <%= h.input "sign_up[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.sign_up["fr"].presence || '' } %>
 
-      <legend>Forgot Password Help Text</legend><br>
+      <legend>Forgot Password Help Text</legend>
       <%= h.input  "forgot_password[en]", label: "<b>English</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["en"] } %>
       <%= h.input "forgot_password[es]", label: "<b>Español</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["es"] } %>
       <%= h.input "forgot_password[fr]", label: "<b>Français</b>".html_safe, as: :text, input_html: { value: service_provider&.help_text.forgot_password["fr"] } %>
 
     <% end %>
   </fieldset>
-
-  <%= form.input :return_to_sp_url,
-               input_html: { class: 'usa-input' },
-               label: 'Return to App URL',
-               hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
 </fieldset>
