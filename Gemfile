@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'actionmailer-text'
 gem 'active_model_serializers'
+gem 'colorize'
 gem 'devise', '~> 4.7.1'
 gem 'dotenv-rails'
 gem 'enum_help'

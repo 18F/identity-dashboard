@@ -58,4 +58,22 @@ class ServiceProvider < ApplicationRecord
   def redirect_uris=(uris)
     super uris.select(&:present?)
   end
+
+  def certificate
+    @certificate ||=  begin
+                        ServiceProviderCertificate.new saml_client_cert
+                      rescue OpenSSL::X509::CertificateError
+                        null_certificate
+                      end
+  end
+
+  private
+
+  def null_certificate
+    OpenStruct.new(
+      issuer: 'Null Certificate',
+      not_before: 1.day.ago,
+      not_after: 1.day.ago
+    )
+  end
 end

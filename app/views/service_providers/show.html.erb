@@ -67,7 +67,10 @@
 
     <tr>
       <th scope="row">Public certificate</th>
-      <td><pre><code><%= service_provider.saml_client_cert %></code></pre></td>
+      <td>
+        <pre><code><%= service_provider.saml_client_cert %></code></pre>
+        <p>Expires: <%= service_provider.certificate.not_after %></p>
+      </td>
     </tr>
     <tr>
       <th scope="row">Return to App URL</th>
