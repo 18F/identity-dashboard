@@ -15,7 +15,7 @@ feature 'User groups CRUD' do
     find("#group_user_ids_#{user.id}").click
 
     click_on 'Create'
-    expect(current_path).to eq(groups_path)
+    expect(current_path).to eq(group_path(Group.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
     expect(page).to have_content('GSA')
@@ -65,7 +65,7 @@ feature 'User groups CRUD' do
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(current_path).to eq(groups_path)
+    expect(current_path).to eq(group_path(org.id))
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
