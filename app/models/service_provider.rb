@@ -72,8 +72,8 @@ class ServiceProvider < ApplicationRecord
   def null_certificate
     OpenStruct.new(
       issuer: 'Null Certificate',
-      not_before: 1.day.ago,
-      not_after: 1.day.ago
+      not_before: Time.new(0),
+      not_after: Time.new(0)
     )
   end
 end

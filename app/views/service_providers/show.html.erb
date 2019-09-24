@@ -69,7 +69,9 @@
       <th scope="row">Public certificate</th>
       <td>
         <pre><code><%= service_provider.saml_client_cert %></code></pre>
-        <p>Expires: <%= service_provider.certificate.not_after %></p>
+        <% unless service_provider.saml_client_cert.blank? %>
+          <p>Expires:  <%= render partial: 'certificate_expiration', locals: { app: service_provider } %></p>
+        <% end %>
       </td>
     </tr>
     <tr>
