@@ -130,6 +130,7 @@ GEM
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
     coderay (1.1.2)
+    colorize (0.8.1)
     concurrent-ruby (1.1.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -440,6 +441,7 @@ DEPENDENCIES
   capistrano-rails
   climate_control
   codeclimate-test-reporter
+  colorize
   database_cleaner
   devise (~> 4.7.1)
   dotenv-rails
