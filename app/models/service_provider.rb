@@ -60,20 +60,28 @@ class ServiceProvider < ApplicationRecord
   end
 
   def certificate
-    @certificate ||=  begin
-                        ServiceProviderCertificate.new saml_client_cert
-                      rescue OpenSSL::X509::CertificateError
-                        null_certificate
-                      end
+    @certificate ||= begin
+                       if saml_client_cert
+                         ServiceProviderCertificate.new saml_client_cert
+                       else
+                         null_certificate
+                       end
+                     rescue OpenSSL::X509::CertificateError
+                       null_certificate
+                     end
   end
 
   private
 
+  # :reek:UtilityFunction
+  # rubocop:disable Rails/TimeZone
   def null_certificate
+    time = Time.new(0)
     OpenStruct.new(
       issuer: 'Null Certificate',
-      not_before: Time.new(0),
-      not_after: Time.new(0)
+      not_before: time,
+      not_after: time
     )
   end
+  # rubocop:enable Rails/TimeZone
 end
