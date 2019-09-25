@@ -74,5 +74,4 @@ class ServiceProvider < ApplicationRecord
       sanitize translation, tags: %w[a b br p], attributes: %w[href]
     end
   end
-
 end

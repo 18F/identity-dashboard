@@ -51,13 +51,16 @@ module ServiceProviderHelper
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
-    config_hash['help_text'] = eval(config_hash["help_text"].delete('\''))
     config_hash
   end
 
   def formatted_config_hash(sp_json)
     sp_json.map do |config_key, value|
-      if %w[agency_id default_help_text attribute_bundle redirect_uris].include?(config_key)
+      if %w[agency_id
+            default_help_text
+            help_text
+            attribute_bundle
+            redirect_uris].include?(config_key)
         [config_key, value]
       else
         [config_key, "'#{value}'"]
