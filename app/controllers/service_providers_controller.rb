@@ -27,7 +27,6 @@ class ServiceProvidersController < AuthenticatedController
 
   def new
     @service_provider = ServiceProvider.new
-    @service_provider.help_text = HelpText.new
   end
 
   def edit; end
@@ -121,7 +120,7 @@ class ServiceProvidersController < AuthenticatedController
       :sp_initiated_login_url,
       attribute_bundle: [],
       redirect_uris: [],
-      help_text_attributes: {},
+      help_text: {},
     ]
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)

@@ -2,6 +2,7 @@ class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
   include IdentityValidations::ServiceProviderValidation
+  include ActionView::Helpers::SanitizeHelper
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
@@ -10,16 +11,15 @@ class ServiceProvider < ApplicationRecord
   belongs_to :group
 
   has_one :agency, through: :group
-  has_one :help_text, dependent: :destroy
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
 
-  accepts_nested_attributes_for :help_text
-
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
+
+  before_save :sanitize_help_text_content
 
   def ial_friendly
     case ial
@@ -61,4 +61,18 @@ class ServiceProvider < ApplicationRecord
   def redirect_uris=(uris)
     super uris.select(&:present?)
   end
+
+  private
+
+  def sanitize_help_text_content
+    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']]
+    sections.each { |section| sanitize_section(section) }
+  end
+
+  def sanitize_section(section)
+    section.transform_values! do |translation|
+      sanitize translation, tags: %w[a b br p], attributes: %w[href]
+    end
+  end
+
 end
