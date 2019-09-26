@@ -13,7 +13,7 @@ class GroupsController < ApplicationController
     if @group.save
 
       flash[:success] = 'Success'
-      redirect_to groups_path
+      redirect_to group_path(@group.id)
     else
       render :new
     end
@@ -26,7 +26,7 @@ class GroupsController < ApplicationController
   def update
     if @group.update(group_params)
       flash[:success] = 'Success'
-      redirect_to groups_path
+      redirect_to group_path(@group.id)
     else
       render :edit
     end

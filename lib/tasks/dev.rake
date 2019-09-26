@@ -12,7 +12,7 @@ if Rails.env.development? || Rails.env.test?
       create(:service_provider,
              user: user,
              issuer: issuer,
-             friendly_name: 'login.gov Dashboard',
+             friendly_name: Rails.application.config.app_name,
              description: 'user friendly login.gov dashboard',
              metadata_url: "http://localhost:3001/api/service_providers/#{issuer}",
              acs_url: 'http://localhost:3001/users/auth/saml/callback',

@@ -67,7 +67,12 @@
 
     <tr>
       <th scope="row">Public certificate</th>
-      <td><pre><code><%= service_provider.saml_client_cert %></code></pre></td>
+      <td>
+        <pre><code><%= service_provider.saml_client_cert %></code></pre>
+        <% unless service_provider.saml_client_cert.blank? %>
+          <p>Expires:  <%= render partial: 'certificate_expiration', locals: { app: service_provider } %></p>
+        <% end %>
+      </td>
     </tr>
     <tr>
       <th scope="row">Return to App URL</th>

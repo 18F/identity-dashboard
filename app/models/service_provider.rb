@@ -74,4 +74,30 @@ class ServiceProvider < ApplicationRecord
       sanitize translation, tags: %w[a b br p], attributes: %w[href]
     end
   end
+
+  def certificate
+    @certificate ||= begin
+                       if saml_client_cert
+                         ServiceProviderCertificate.new saml_client_cert
+                       else
+                         null_certificate
+                       end
+                     rescue OpenSSL::X509::CertificateError
+                       null_certificate
+                     end
+  end
+
+  private
+
+  # :reek:UtilityFunction
+  # rubocop:disable Rails/TimeZone
+  def null_certificate
+    time = Time.new(0)
+    OpenStruct.new(
+      issuer: 'Null Certificate',
+      not_before: time,
+      not_after: time
+    )
+  end
+  # rubocop:enable Rails/TimeZone
 end
