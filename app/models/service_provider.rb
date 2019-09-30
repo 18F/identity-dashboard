@@ -2,7 +2,6 @@ class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
   include IdentityValidations::ServiceProviderValidation
-  include ActionView::Helpers::SanitizeHelper
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
@@ -18,8 +17,6 @@ class ServiceProvider < ApplicationRecord
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
-
-  before_save :sanitize_help_text_content
 
   def ial_friendly
     case ial
@@ -64,28 +61,17 @@ class ServiceProvider < ApplicationRecord
 
   def certificate
     @certificate ||= begin
-      if saml_client_cert
-        ServiceProviderCertificate.new saml_client_cert
-      else
-        null_certificate
-      end
-    rescue OpenSSL::X509::CertificateError
-      null_certificate
-    end
+                       if saml_client_cert
+                         ServiceProviderCertificate.new saml_client_cert
+                       else
+                         null_certificate
+                       end
+                     rescue OpenSSL::X509::CertificateError
+                       null_certificate
+                     end
   end
 
   private
-
-  def sanitize_help_text_content
-    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']]
-    sections.each { |section| sanitize_section(section) }
-  end
-
-  def sanitize_section(section)
-    section.transform_values! do |translation|
-      sanitize translation, tags: %w[a b br p], attributes: %w[href]
-    end
-  end
 
   # :reek:UtilityFunction
   # rubocop:disable Rails/TimeZone
