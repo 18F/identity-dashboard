@@ -1,5 +1,4 @@
 # rubocop:disable Metrics/ClassLength
-# :reek:InstanceVariableAssumption
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
@@ -120,7 +119,6 @@ class ServiceProvidersController < AuthenticatedController
       :sp_initiated_login_url,
       attribute_bundle: [],
       redirect_uris: [],
-      help_text: {},
     ]
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
