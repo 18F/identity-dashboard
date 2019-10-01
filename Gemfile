@@ -27,7 +27,7 @@ gem 'rest-client', '~> 2.0'
 gem 'ruby_regex'
 gem 'sass-rails', '~> 5.0', '>= 5.0.7'
 gem 'secure_headers', '~> 3.0'
-gem 'simple_form'
+gem 'simple_form', '>= 5.0.0'
 gem 'slim-rails'
 gem 'uglifier'
 
