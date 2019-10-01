@@ -54,13 +54,15 @@ module ServiceProviderHelper
     config_hash
   end
 
+  # rubocop:disable Metrics/LineLength
   def formatted_config_hash(sp_json)
     sp_json.map do |config_key, value|
-      if %w[agency_id default_help_text attribute_bundle redirect_uris].include?(config_key)
+      if %w[agency_id default_help_text help_text attribute_bundle redirect_uris].include?(config_key)
         [config_key, value]
       else
         [config_key, "'#{value}'"]
       end
     end.to_h
   end
+  # rubocop:enable Metrics/LineLength
 end
