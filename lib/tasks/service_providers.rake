@@ -5,5 +5,5 @@ namespace :service_providers do
       sp.update_attribute(:help_text, sign_in: {}, sign_up: {}, forgot_password: {})
     end
   end
-  # rubocop:enable Rails/SkipsModelValidation
+  # rubocop:enable Rails/SkipsModelValidations
 end
