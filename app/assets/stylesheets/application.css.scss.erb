@@ -7,3 +7,9 @@ $image-path: 'img';
     color: #981b1e;
     content: " (*<%= I18n.translate('simple_form.labels.required') %>)";
   }
+@mixin text-wrap-mixin {
+  word-break: break-all;
+}
+.text-wrap {
+  @include text-wrap-mixin;
+}
