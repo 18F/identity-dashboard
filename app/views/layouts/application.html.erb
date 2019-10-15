@@ -130,9 +130,8 @@
               </li>
               <% else %>
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link usa-current" href="/auth/logindotgov">
-                  <span>Log in</span>
-                </a>
+                <%= link_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-nav__link usa-current' %>
+                
               </li>
             <% end %>
           </ul>

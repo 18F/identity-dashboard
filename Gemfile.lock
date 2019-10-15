@@ -230,6 +230,9 @@ GEM
     omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
+    omniauth-rails_csrf_protection (0.1.2)
+      actionpack (>= 4.2)
+      omniauth (>= 1.3.1)
     orm_adapter (0.5.0)
     parallel (1.17.0)
     parser (2.6.3.0)
@@ -351,7 +354,7 @@ GEM
       useragent
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
-    simple_form (3.5.0)
+    simple_form (3.5.1)
       actionpack (> 4, < 5.2)
       activemodel (> 4, < 5.2)
     simplecov (0.13.0)
@@ -456,6 +459,7 @@ DEPENDENCIES
   jwt
   newrelic_rpm (>= 3.9.8)
   nokogiri (~> 1.9)
+  omniauth-rails_csrf_protection (~> 0.1)
   omniauth_login_dot_gov!
   pg
   poltergeist
@@ -477,7 +481,7 @@ DEPENDENCIES
   sass-rails (~> 5.0, >= 5.0.7)
   secure_headers (~> 3.0)
   shoulda-matchers
-  simple_form
+  simple_form (~> 3.0)
   simplecov
   sinatra (>= 2.0.2)
   slim-rails
