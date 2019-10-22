@@ -23,7 +23,7 @@
             <%= link_to sp.friendly_name, service_provider_path(sp), :class => 'usa-link' %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
           <% end %>
         </td>
-        <td class="text-wrap">
+        <td>
           <% group.users.each do |user| %>
             <a href="<%= edit_user_path(user.id) %>" class="usa-link"><%= user.email %></a><br>
           <% end %>
