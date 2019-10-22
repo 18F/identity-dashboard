@@ -37,11 +37,9 @@ feature 'Users can access service providers that belong to their user group' do
         click_on 'Update'
 
         expect(page).to have_content('Success')
-        within('table') do
-          expect(page).to have_content(new_name)
-          expect(page).to have_content(new_description)
-          expect(page).to have_content('last_name')
-        end
+        expect(page).to have_content(new_name)
+        expect(page).to have_content(new_description)
+        expect(page).to have_content('last_name')
       end
     end
   end

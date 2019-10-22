@@ -21,12 +21,10 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
-      within('table') do
-        expect(page).to have_content('test service_provider')
-        expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
-        expect(page).to have_content('email')
-        expect(page).to have_content(user.groups[0].agency.name)
-      end
+      expect(page).to have_content('test service_provider')
+      expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
+      expect(page).to have_content('email')
+      expect(page).to have_content(user.groups[0].agency.name)
     end
 
     scenario 'can update service provider group', :js do
@@ -212,11 +210,9 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
-      within('table') do
-        expect(page).to have_content('app description foobar')
-        expect(page).to have_content('change service_provider name')
-        expect(page).to have_content('last_name')
-      end
+      expect(page).to have_content('app description foobar')
+      expect(page).to have_content('change service_provider name')
+      expect(page).to have_content('last_name')
     end
     scenario 'user updates service provider but service provider is invalid' do
       user = create(:user)
