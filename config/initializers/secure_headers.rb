@@ -11,7 +11,7 @@ SecureHeaders::Configuration.default do |config|
     frame_src: %w['self'], # deprecated in CSP 2.0
     child_src: %w['self'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
-    form_action: %w['self'], # CSP 2.0 only
+    form_action: %w['self' *.identitysandbox.gov], # CSP 2.0 only
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: %w['self'],
     font_src: %w['self' data:],
