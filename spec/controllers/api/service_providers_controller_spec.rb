@@ -12,7 +12,7 @@ describe Api::ServiceProvidersController do
 
       get :index
 
-      expect(response_from_json).to include serialized_sp
+      expect(response_from_json).to include serialized_sp.deep_symbolize_keys
     end
 
     xit 'does not return un-approved SPs' do
@@ -29,8 +29,7 @@ describe Api::ServiceProvidersController do
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
-
-      expect(response_from_json).to include serialized_sp
+      expect(response_from_json).to include serialized_sp.deep_symbolize_keys
     end
   end
 

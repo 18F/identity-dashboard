@@ -3,113 +3,85 @@
 
 <div class="usa-display">Details for "<%= service_provider.friendly_name %>"</div>
 
-<table class="usa-table">
-  <tbody>
-    <tr class="usa-color-gold-lightest">
-      <th scope="row">Friendly name</th></thead>
-      <td><%= service_provider.friendly_name %></td>
-    </tr>
-    <tr>
-      <th scope="row">Description</th>
-      <td><%= service_provider.description %></td>
-    </tr>
-    <tr>
-      <th scope="row">Agency</th>
-      <td><%= service_provider&.agency&.name %></td>
-    </tr>
-    <tr>
-      <th scope="row">Group</th>
-      <td><%= service_provider.group %></td>
-    </tr>
-    <tr>
-      <th scope="row">Identity protocol</th>
-      <td><%= service_provider.identity_protocol %></td>
-    </tr>
-    <tr>
-      <th scope="row">Identity verification level (IAL)</th>
-      <td><%= service_provider.ial_friendly %></td>
-    </tr>
-    <tr>
-      <th scope="row">Issuer</th>
-      <td><code><%= service_provider.issuer %></code></td>
-    </tr>
+<h4><label for="name">Friendly name:</label></h4>
+<p class="font-mono-xs margin-top-0" name="name"><%= service_provider.friendly_name %></p>
+
+<h4><label for="description">Description:</label></h4>
+<p class="font-mono-xs margin-top-0" name="description"><%= service_provider.description %></p>
+
+<h4><label for="agency">Agency:</label></h4>
+<p class="font-mono-xs margin-top-0" name="agency"><%= service_provider&.agency&.name %></p>
+
+<h4><label for="group">Group:</label></h4>
+<p class="font-mono-xs margin-top-0" name="agency"><%= service_provider.group %></p>
+
+<h4><label for="identity_protocol">Identity protocol:</label></h4>
+<p class="font-mono-xs margin-top-0" name="identity_protocol"><%= service_provider.identity_protocol %></p>
+
+<h4><label for="ial_friendly">Identity verification level (IAL):</label></h4>
+<p class="font-mono-xs margin-top-0" name="ial_friendly"><%= service_provider.ial_friendly %></p>
+
+<h4><label for="issuer">Issuer:</label></h4>
+<p class="font-mono-xs margin-top-0" name="issuer"><%=  service_provider.issuer %></p>
 
     <% if current_user.admin? %>
-      <tr>
-        <th scope="row">Production Issuer</th>
-        <td><code><%= service_provider.production_issuer %></code></td>
-      </tr>
+      <h4><label for="production_issuer">Production Issuer:</label></h4>
+      <p class="font-mono-xs margin-top-0" name="production_issuer"><%=  service_provider.production_issuer %></p>
     <% end %>
 
-    <tr>
-      <th scope="row">Logo</th>
-      <td><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link"><%= service_provider.logo %></a></td>
-    </tr>
+<h4><label for="logo">Logo:</label></h4>
+<p class="font-mono-xs margin-top-0" name="logo"><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link"><%= service_provider.logo %></a></p>
 
     <% if service_provider.identity_protocol == 'saml' %>
-      <tr>
-        <th scope="row">Assertion Consumer Service URL</th>
-        <td><%= service_provider.acs_url %></td>
-      </tr>
-      <tr>
-        <th scope="row">Assertion Consumer Logout Service URL</th>
-        <td><%= service_provider.assertion_consumer_logout_service_url %></td>
-      </tr>
-      <tr>
-        <th scope="row">SP Initiated Login URL</th>
-        <td><%= service_provider.sp_initiated_login_url %></td>
-      </tr>
-      <tr>
-        <th scope="row">SAML Assertion Encryption</th>
-        <td><%= service_provider.block_encryption %></td>
-      </tr>
+    <h4><label for="acs_url">Assertion Consumer Service URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="acs_url"><%= service_provider.acs_url %></p>
+
+<h4><label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.assertion_consumer_logout_service_url %></p>
+
+<h4><label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.sp_initiated_login_url %></p>
+
+<h4><label for="block_encryption">SAML Assertion Encryption:</label></h4>
+<p class="font-mono-xs margin-top-0" name="block_encryption"><%= service_provider.block_encryption %></p>
     <% end %>
 
-    <tr>
-      <th scope="row">Public certificate</th>
-      <td><pre><code><%= service_provider.saml_client_cert %></code></pre></td>
-    </tr>
-    <tr>
-      <th scope="row">Return to App URL</th>
-      <td><%= service_provider.return_to_sp_url %></td>
-    </tr>
-    <tr>
-      <th scope="row">Failure to Proof URL</th>
-      <td><%= service_provider.failure_to_proof_url %></td>
-    </tr>
-    <tr>
-      <th scope="row">Push Notification URL</th>
-      <td><%= service_provider.push_notification_url %></td>
-    </tr>
-    <tr>
-      <% if service_provider.identity_protocol == 'openid_connect' %>
-        <th scope="row">Redirect URIs</th>
-      <% end %>
-      <% if service_provider.identity_protocol == 'saml' %>
-        <th scope="row">Additional Redirect URIs</th>
-      <% end %>
-      <td><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></td>
-    </tr>
-    <tr>
-      <th scope="row">Attribute bundle</th>
-      <td><%= (service_provider.attribute_bundle || []).sort.join(', ') %></td>
-    </tr>
-    <tr>
-      <th scope="row">Active</th>
-      <td>
-        <%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %>
-      </td>
-    </tr>
-    <% if current_user.admin? %>
-      <tr>
-        <th scope="row">Service Provider config as YAML</th>
-        <td>
-          <%= render 'service_provider_yaml' %>
-        </td>
-      </tr>
+
+<h4><label for="saml_client_cert">Public certificate:</label></h4>
+<pre><code><%= service_provider.saml_client_cert %></code></pre>
+        <% unless service_provider.saml_client_cert.blank? %>
+        <p class="font-mono-xs margin-top-0" name="saml_client_cert">Expires:
+        <%= render partial: 'certificate_expiration', locals: { app: service_provider } %></p>
+        <% end %>
+
+<h4><label for="return_to_sp_url">Return to App URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>
+
+<h4><label for="failure_to_proof_url">Failure to Proof URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="failure_to_proof_url"><%= service_provider.failure_to_proof_url %></p>
+
+<h4><label for="push_notification_url">Push Notification URL:</label></h4>
+<p class="font-mono-xs margin-top-0" name="push_notification_url"><%= service_provider.push_notification_url %></p>
+
+    <% if service_provider.identity_protocol == 'openid_connect' %>
+        <h4><label for="uris">Redirect URIs</label></h4>
+    <% end %>
+    <% if service_provider.identity_protocol == 'saml' %>
+        <h4><label for="uris">Additional Redirect URIs</label></h4>
+    <% end %>
+    <p class="font-mono-xs margin-top-0" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
+
+<h4><label for="attribute_bundle">Attribute bundle:</label></h4>
+<p class="font-mono-xs margin-top-0" name="attribute_bundle"><%= (service_provider.attribute_bundle || []).sort.join(', ') %></p>
+
+<h4><label for="active">Active</label></h4>
+<p class="font-mono-xs margin-top-0" name="active"><%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %></p>
+
+<% if current_user.admin? %>
+<h4><label for="service_provider_yaml">Service Provider config as YAML</label></h4>
+<p class="font-mono-xs margin-top-0" name="service_provider_yaml"><%= render 'service_provider_yaml' %></p>
     <%end %>
-  </tbody>
-</table>
+
 <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
     class: 'usa-button float-left',

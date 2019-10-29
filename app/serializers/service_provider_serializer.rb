@@ -17,7 +17,8 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :push_notification_url,
     :signature,
     :sp_initiated_login_url,
-    :updated_at
+    :updated_at,
+    :help_text
   )
 
   def agency

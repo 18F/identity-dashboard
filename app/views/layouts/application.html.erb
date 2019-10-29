@@ -9,7 +9,7 @@
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>login.gov Dashboard</title>
+    <title>login.gov - <%= Rails.application.config.app_name %></title>
 
     <!-- 128x128 -->
     <link rel="shortcut icon" type="image/ico" href=<%= asset_path 'img/favicons/favicon.ico' %>>
@@ -86,7 +86,7 @@
           <div class="usa-logo" id="basic-logo">
             <a href="/" accesskey="1" title="Home" aria-label="Home">
               <%= image_tag 'img/login-gov-logo.svg', alt: 'login.gov', class: 'usa-logo__img' %>
-              <em class="usa-logo__text">Dashboard</em>
+              <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
             </a>
           </div>
           <button class="usa-menu-btn">Menu</button>
@@ -130,9 +130,8 @@
               </li>
               <% else %>
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link usa-current" href="/auth/logindotgov">
-                  <span>Log in</span>
-                </a>
+                <%= link_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-nav__link usa-current' %>
+                
               </li>
             <% end %>
           </ul>
