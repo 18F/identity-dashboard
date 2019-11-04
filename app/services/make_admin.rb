@@ -7,38 +7,42 @@ class MakeAdmin
     Usage: rake users:make_admin USER=first.last@email.com,First,Last
   WARN
 
-  attr_reader :user_info
+  attr_reader :email, :first_name, :last_name
 
   def initialize(user_info)
-    @user_info = user_info
+    parse_user_info = user_info&.split(',') || []
+    @email, @first_name, @last_name = parse_user_info
   end
 
   def call
-    # binding.pry
     raise(USAGE_WARNING) if user_info_invalid?
-    return puts("INFO: User \"#{user_info}\" already has admin privileges.") if admin.admin?
+    return puts("INFO: User \"#{email}\" already has admin privileges.") if admin.admin?
     make_admin
-    puts "SUCCESS: Promoted \"#{user_info}\" to admin."
+    puts "SUCCESS: Promoted \"#{email}\" to admin."
   end
 
   private
 
   def user_info_invalid?
-    user_info.blank? || user_info.split(',').count < 3
+    [
+      email,
+      first_name,
+      last_name,
+    ].map(&:blank?).include?(true)
   end
 
   def admin
     @admin ||= begin
-      new_user_warning = "INFO: User \"#{user_info}\" not found; creating a new User."
-      schrodingers_admin = User.find_or_initialize_by(email: user_info.split(',')[0])
+      new_user_warning = "INFO: User \"#{email}\" not found; creating a new User."
+      schrodingers_admin = User.find_or_initialize_by(email: email)
       puts new_user_warning unless schrodingers_admin.persisted?
       schrodingers_admin
     end
   end
 
   def make_admin
-    admin.first_name = user_info.split(',')[1]
-    admin.last_name  = user_info.split(',')[2]
+    admin.first_name = first_name
+    admin.last_name  = last_name
     admin.admin      = true
     admin.save!
   end

@@ -17,10 +17,10 @@ describe MakeAdmin do
     context 'when the user does not exist' do
       it 'prints an info message and creates the user as an admin' do
         expect(subject).to receive(:puts).with(
-          "INFO: User \"#{user_info}\" not found; creating a new User."
+          "INFO: User \"#{email}\" not found; creating a new User."
         )
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{user_info}\" to admin."
+          "SUCCESS: Promoted \"#{email}\" to admin."
         )
 
         subject.call
@@ -39,7 +39,7 @@ describe MakeAdmin do
     context 'when the user does exist and is not an admin' do
       it 'promotes the user to be an admin' do
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{user_info}\" to admin."
+          "SUCCESS: Promoted \"#{email}\" to admin."
         )
 
         user = User.create(
@@ -60,7 +60,7 @@ describe MakeAdmin do
     context 'when the user does exist and is an admin' do
       it 'prints an info message and does nothing' do
         expect(subject).to receive(:puts).with(
-          "INFO: User \"#{user_info}\" already has admin privileges."
+          "INFO: User \"#{email}\" already has admin privileges."
         )
 
         user = User.create(
