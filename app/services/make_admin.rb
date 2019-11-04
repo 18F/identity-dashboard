@@ -9,6 +9,7 @@ class MakeAdmin
 
   attr_reader :email, :first_name, :last_name
 
+  # :reek:ControlParameter :reek:NilCheck
   def initialize(user_info)
     @email, @first_name, @last_name = user_info&.split(',') || []
   end
