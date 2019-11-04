@@ -10,8 +10,7 @@ class MakeAdmin
   attr_reader :email, :first_name, :last_name
 
   def initialize(user_info)
-    parse_user_info = user_info&.split(',') || []
-    @email, @first_name, @last_name = parse_user_info
+    @email, @first_name, @last_name = user_info&.split(',') || []
   end
 
   def call
