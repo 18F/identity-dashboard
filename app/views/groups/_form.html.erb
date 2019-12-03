@@ -19,8 +19,13 @@
                                  collection_wrapper_tag: :ul,
                                  collection_wrapper_class: 'usa-input-list',
                                  item_wrapper_tag: :li) do |b| %>
-        <%=  b.check_box(class: "usa-checkbox__input") %>
+        <%=  b.check_box(class: "usa-checkbox__input", disabled: b.object == current_user && !current_user.admin?) %>
         <%=  b.label(class: "usa-checkbox__label")%>
     <% end %>
+
+  <%= simple_fields_for :new_user do |form| %>
+    <%= form.input :email, label: "Add new group user (email)".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, required: false %>
+  <% end %>
+
 </fieldset>
 

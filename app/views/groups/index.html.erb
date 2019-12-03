@@ -1,5 +1,5 @@
 <div class="usa-display">Groups</div>
-<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button" %>
+<%= button_to t('headings.groups.new_group'), new_group_path, method: :get, :class => "usa-button" if current_user&.admin? %>
 
 <table class="usa-table-borderless groups">
   <thead>
@@ -15,25 +15,26 @@
   <tbody>
     <% @groups.each do |group| %>
       <tr>
-        <th scope="row"><%= group.name %></th>
-        <td><%= group&.agency&.name %></td>
-        <td class="text-wrap"><%= group.description %></td>
-        <td>
-          <% group.service_providers.each do |sp| %>
-            <%= link_to sp.friendly_name, service_provider_path(sp), :class => 'usa-link' %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
-          <% end %>
-        </td>
-        <td>
-          <% group.users.each do |user| %>
-            <a href="<%= edit_user_path(user.id) %>" class="usa-link"><%= user.email %></a><br>
-          <% end %>
-        </td>
-        <td class="text-wrap">
-          <%= link_to 'view', group_path(group), :class => 'usa-link' %><br>
-          <%= link_to 'edit', edit_group_path(group), :class => 'usa-link' %><br>
-          <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure you want to delete this group?' }, :class => 'usa-link' %>
-        </td>
-      </tr>
-    <% end %>
+        <% if current_user&.admin? || group.users.include?(current_user) %>
+          <th scope="row"><%= group.name %></th>
+          <td><%= group&.agency&.name %></td>
+          <td class="text-wrap"><%= group.description %></td>
+          <td>
+            <% group.service_providers.each do |sp| %>
+              <%= link_to sp.friendly_name, service_provider_path(sp), :class => 'usa-link' %><%= "<br><hr>".html_safe unless sp == group.service_providers.last %>
+            <% end %>
+          </td>
+          <td>
+            <% group.users.each do |user| %>
+              <a href="<%= edit_user_path(user.id) %>" class="usa-link"><%= user.email %></a><br>
+            <% end %>
+          </td>
+          <td class="text-wrap">
+            <%= link_to 'view', group_path(group), :class => 'usa-link' %><br>
+            <%= link_to 'edit', edit_group_path(group), :class => 'usa-link' %><br>
+            <%= link_to 'delete', group_path(group), method: :delete, data: { confirm: 'Are you sure you want to delete this group?' }, :class => 'usa-link' if current_user.admin? %>
+          </td>
+        <% end %>
+      <% end %>
   </tbody>
 </table>

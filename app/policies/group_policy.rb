@@ -1,24 +1,25 @@
 class GroupPolicy < BasePolicy
-  attr_reader :current_user
+  attr_reader :current_user, :group
 
-  def initialize(current_user, _model)
+  def initialize(current_user, model)
     @current_user = current_user
+    @group = model
   end
 
   def index?
-    admin?
+    true
   end
 
   def show?
-    admin?
+    in_group? || admin?
   end
 
   def update?
-    admin?
+    in_group? || admin?
   end
 
   def edit?
-    admin?
+    in_group? || admin?
   end
 
   def destroy?
@@ -37,5 +38,9 @@ class GroupPolicy < BasePolicy
 
   def admin?
     current_user&.admin?
+  end
+
+  def in_group?
+    @group.users.include?(current_user)
   end
 end

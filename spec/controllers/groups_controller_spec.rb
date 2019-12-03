@@ -8,6 +8,7 @@ describe GroupsController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
+    sign_in user
   end
 
   describe '#new' do
@@ -30,37 +31,21 @@ describe GroupsController do
 
   describe '#index' do
     context 'when the user is signed in' do
-      context 'when the user is an admin' do
-        before do
-          user.admin = true
-        end
-
-        it 'has a success response' do
-          get :index
-          expect(response.status).to eq(200)
-        end
-      end
-    end
-
-    context 'when the user is not an admin' do
-      before do
-        user.admin = false
-      end
-
-      it 'has an error response' do
+      it 'has a success response' do
         get :index
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(200)
       end
     end
 
     context 'when the user is not signed in' do
       before do
         allow(controller).to receive(:current_user).and_return(nil)
+        sign_out user
       end
 
-      it 'has an error response' do
+      it 'has a redirect response' do
         get :index
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(302)
       end
     end
   end
@@ -77,10 +62,14 @@ describe GroupsController do
       end
     end
 
-    context 'when normal user' do
-      it 'responds with an error' do
+    context 'when not an admin but a group member' do
+      before do
+        org.users << user
+      end
+
+      it 'shows the group template' do
         get :show, params: { id: org.id }
-        expect(response.status).to eq(401)
+        expect(response).to render_template(:show)
       end
     end
   end
@@ -88,7 +77,7 @@ describe GroupsController do
   describe '#create' do
     context 'when the user is not an admin' do
       it 'has an error response' do
-        post :create
+        post :create, params: { group: { name: 'unique name' } }
         expect(response.status).to eq(401)
       end
     end
@@ -132,21 +121,38 @@ describe GroupsController do
   end
 
   describe '#edit' do
-    it 'requires user to be an admin' do
-      get :edit, params: { id: org.id }
-      expect(response.status).to eq(401)
+    context 'when admin' do
+      before do
+        user.admin = true
+      end
+      it 'shows the edit template' do
+        get :edit, params: { id: org.id }
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'when not an admin but a group member' do
+      before do
+        user.admin = false
+        org.users << user
+      end
+
+      it 'shows the edit template' do
+        get :edit, params: { id: org.id }
+        expect(response).to render_template(:edit)
+      end
     end
   end
 
   describe '#update' do
-    context 'when the user is an admin' do
+    context 'when user is an admin' do
       before do
         user.admin = true
       end
 
       context 'when the update is successful' do
         it 'has a redirect response' do
-          patch :update, params: { id: org.id, group: { name: org.name } }
+          patch :update, params: { id: org.id, group: { name: org.name }, new_user: { email: '' } }
           expect(response.status).to eq(302)
         end
       end
@@ -157,14 +163,32 @@ describe GroupsController do
         end
 
         it 'renders the edit action' do
-          patch :update, params: { id: org.id, group: { name: 4 } }
+          patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
           expect(response).to render_template(:edit)
         end
       end
     end
-    context 'when the user is not an admin' do
-      it 'has an error response' do
-        patch :update, params: { id: org.id }
+
+    context 'when user is not an admin but a member of the group' do
+      before do
+        user.admin = false
+        org.users << user
+      end
+
+      context 'when the update includes adding a new user' do
+        let(:new_user) { create(:user) }
+
+        it 'adds the user to the group' do
+          patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] },
+                                   new_user: { email: new_user.email } }
+          expect(org.users.include?(new_user)).to be true
+        end
+      end
+    end
+
+    context 'when user is neither a admin nor a group member' do
+      it 'has an unauthorized response' do
+        patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
         expect(response.status).to eq(401)
       end
     end
