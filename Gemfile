@@ -32,6 +32,7 @@ gem 'secure_headers', '~> 3.0'
 gem 'simple_form', '~> 3.5', '>= 3.5.1'
 gem 'slim-rails', '~> 3.1'
 gem 'uglifier'
+gem 'webpacker', '~> 4.x'
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'

@@ -5,15 +5,18 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
+  form_action =  %w['self' *.identitysandbox.gov]
+  form_action << %w[localhost:3000] if Rails.env.development?
+  connect_src = %w['self']
+  connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   config.csp = {
     default_src: %w['self'],
-    report_only: Rails.env.development? ? true : false,
     frame_src: %w['self'], # deprecated in CSP 2.0
     child_src: %w['self'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
-    form_action: %w['self' *.identitysandbox.gov], # CSP 2.0 only
+    form_action: form_action.flatten,
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: %w['self'],
+    connect_src: connect_src.flatten,
     font_src: %w['self' data:],
     img_src: %w['self' data:],
     media_src: %w['self'],
