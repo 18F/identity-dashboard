@@ -13,3 +13,32 @@ $image-path: 'img';
 .text-wrap {
   @include text-wrap-mixin;
 }
+.hidden-tablet {
+  display: block;
+}
+.hidden-mobile {
+  display: none;
+}
+.row-reverse-tablet {
+  flex-direction: row;
+}
+.text-align-right-tablet {
+  text-align: left;
+}
+@media (min-width: 640px) {
+  .hidden-tablet {
+    display: none;
+  }
+  .row-reverse-tablet {
+    flex-direction: row-reverse;
+  }
+  .text-align-right-tablet {
+    text-align: right;
+  }
+}
+
+@media (min-width: 959px) {
+  .hidden-mobile {
+    display: block;
+  }
+}
