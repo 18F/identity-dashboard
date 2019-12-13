@@ -25,7 +25,8 @@ class GroupsController < AuthenticatedController
   end
 
   def update
-    if @group.update(group_params)
+    update_params = current_user.admin? ? group_params : group_params.merge('user_ids': current_user.id.to_s)
+    if @group.update(update_params)
       add_new_user
       flash[:success] = 'Success'
       redirect_to group_path(@group.id)
@@ -48,6 +49,10 @@ class GroupsController < AuthenticatedController
 
   private
 
+  def authorize_group
+    authorize group
+  end
+
   def group
     @group ||= Group.find(params[:id])
   end
@@ -62,7 +67,6 @@ class GroupsController < AuthenticatedController
   end
 
   def group_params
-    params.dig('group', 'user_ids').append(current_user.id.to_s) unless current_user.admin?
     params.require(:group).permit(:name, :agency_id, :description, user_ids: [])
   end
 

@@ -62,6 +62,7 @@ feature 'User groups CRUD' do
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
+    fill_in 'Add new group user (email)', with: 'new_user@gsa.gov'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
@@ -70,6 +71,7 @@ feature 'User groups CRUD' do
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
+    expect(page).to have_content('new_user@gsa.gov')
   end
 
   scenario 'Index' do
