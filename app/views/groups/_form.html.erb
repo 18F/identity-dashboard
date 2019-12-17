@@ -6,7 +6,7 @@
                    collection: @agencies,
                    label: 'Agency'.html_safe,
                    label_html: { class: 'usa-input-required'},
-                   hint: "The federal agency you would like this group to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
+                   hint: "The federal agency you would like this team to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
                    required: agency_required %>
 
   <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label margin-top-2' }, input_html: { class: 'usa-textarea' } %>
@@ -24,7 +24,7 @@
     <% end %>
 
   <%= simple_fields_for :new_user do |form| %>
-    <%= form.input :email, label: "Add new group user (email)".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, required: false %>
+    <%= form.input :email, label: "Add new team user (email)".html_safe, label_html: { class: 'usa-label' }, input_html: { class: 'usa-input' }, required: false %>
   <% end %>
 
 </fieldset>
