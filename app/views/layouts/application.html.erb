@@ -122,6 +122,12 @@
                     </li>
                   </ul>
                 </li>
+              <% else %>
+                <li class="usa-nav__primary-item">
+                  <a class="usa-nav__link" href="<%= groups_path %>">
+                    <span>Groups</span>
+                  </a>
+                </li>
               <% end %>
               <li class="usa-nav__primary-item">
                 <a class="usa-nav__link" href="<%= destroy_user_session_path %>">

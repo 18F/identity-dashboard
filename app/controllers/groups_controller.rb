@@ -1,6 +1,7 @@
-class GroupsController < ApplicationController
-  before_action -> { authorize Group }
-  before_action :find_group, only: %i[show edit update destroy]
+# :reek:InstanceVariableAssumption
+class GroupsController < AuthenticatedController
+  before_action -> { authorize Group }, only: %i[index create new]
+  before_action -> { authorize group }, only: %i[edit update destroy show]
 
   def new
     @group = Group.new
@@ -24,7 +25,8 @@ class GroupsController < ApplicationController
   end
 
   def update
-    if @group.update(group_params)
+    if @group.update(update_params_with_current_user)
+      add_new_user
       flash[:success] = 'Success'
       redirect_to group_path(@group.id)
     else
@@ -46,11 +48,36 @@ class GroupsController < ApplicationController
 
   private
 
-  def find_group
+  def authorize_group
+    authorize group
+  end
+
+  def group
     @group ||= Group.find(params[:id])
+  end
+
+  # :reek:DuplicateMethodCall
+  def add_new_user
+    new_user_email = new_user_params[:email]
+    return if new_user_email.blank?
+
+    user = User.find_by(email: new_user_email).presence || User.new(email: new_user_email)
+    @group.users << user unless @group.users.include?(user)
   end
 
   def group_params
     params.require(:group).permit(:name, :agency_id, :description, user_ids: [])
+  end
+
+  def new_user_params
+    params.require(:new_user).permit(:email)
+  end
+
+  def update_params_with_current_user
+    if current_user.admin?
+      group_params
+    else
+      group_params.merge('user_ids': (group_params[:user_ids] << current_user.id.to_s))
+    end
   end
 end

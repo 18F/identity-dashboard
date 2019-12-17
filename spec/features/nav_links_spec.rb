@@ -22,13 +22,13 @@ feature 'Nav links' do
   end
 
   context 'user is not an admin' do
-    scenario 'user should not see manage user group link' do
+    scenario 'user should see manage user group link' do
       user = create(:user)
 
       login_as(user)
       visit service_providers_path
 
-      expect(page).to_not have_content('Groups')
+      expect(page).to have_content('Groups')
     end
 
     scenario 'user should not see a manage users link' do
@@ -37,7 +37,7 @@ feature 'Nav links' do
       login_as(admin)
       visit service_providers_path
 
-      expect(page).to_not have_content('Groups')
+      expect(page).to_not have_content('Users')
     end
   end
 end
