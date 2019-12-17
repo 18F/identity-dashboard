@@ -2,13 +2,13 @@ require 'rails_helper'
 
 feature 'Nav links' do
   context 'user is admin' do
-    scenario 'admin should see manage user groups link' do
+    scenario 'admin should see manage user teams link' do
       admin = create(:admin)
 
       login_as(admin)
       visit service_providers_path
 
-      expect(page).to have_content('Groups')
+      expect(page).to have_content('Teams')
     end
 
     scenario 'admin should see a manage users link' do
@@ -22,13 +22,13 @@ feature 'Nav links' do
   end
 
   context 'user is not an admin' do
-    scenario 'user should see manage user group link' do
+    scenario 'user should see manage user teams link' do
       user = create(:user)
 
       login_as(user)
       visit service_providers_path
 
-      expect(page).to have_content('Groups')
+      expect(page).to have_content('Teams')
     end
 
     scenario 'user should not see a manage users link' do
