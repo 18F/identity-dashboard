@@ -14,7 +14,7 @@
   <span class="usa-label margin-bottom-1">Users</span>
 
   <%= form.collection_check_boxes( :user_ids,
-                                 User.all.sorted,
+                                 current_user.admin? ? User.all.sorted : User.select { |u| u.groups.include?(@group) },
                                  :id, :email,
                                  collection_wrapper_tag: :ul,
                                  collection_wrapper_class: 'usa-input-list',
