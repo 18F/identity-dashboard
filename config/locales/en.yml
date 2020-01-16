@@ -25,7 +25,7 @@ en:
       edit: Edit user team
       index: User teams
       new: Create new user team
-      new_group: Create new team
+      new_group: Create a new team
       sub_index: Manage user teams
       temporary_warning_group_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an application in this team. Only add an agency if you are prepared to migrate your users across applications."
     users:
