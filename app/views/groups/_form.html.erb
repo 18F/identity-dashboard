@@ -18,8 +18,8 @@
                                  :id, :email,
                                  collection_wrapper_tag: :ul,
                                  collection_wrapper_class: 'usa-input-list',
-                                 item_wrapper_tag: :li) do |b|,
-                                 hint: "Select members to add to this team.".html_safe %>
+                                 item_wrapper_tag: :li,
+                                 hint: "Select members to add to this team.".html_safe) do |b| %>
         <%=  b.check_box(class: "usa-checkbox__input", disabled: b.object == current_user && !current_user.admin?) %>
         <%=  b.label(class: "usa-checkbox__label")%>
     <% end %>

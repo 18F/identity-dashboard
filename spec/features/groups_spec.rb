@@ -62,7 +62,7 @@ feature 'User groups CRUD' do
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
-    fill_in 'Add new team user (email)', with: 'new_user@gsa.gov'
+    fill_in "Add another team member's email", with: 'new_user@gsa.gov'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
