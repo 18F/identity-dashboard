@@ -33,7 +33,7 @@ en:
       index: Users
       new_user: Create a new user
   home:
-    deployed_by_html: Chef run %{time} ago. View %{href}.
+    deployed_by_html: Deployed %{time} ago. View %{href}.
   links:
     aria:
       delete: Delete %{name}
