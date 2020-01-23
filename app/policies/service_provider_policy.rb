@@ -45,7 +45,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def member?
-    sp.group.present? && current_user.groups.include?(sp.group)
+    sp.team.present? && current_user.teams.include?(sp.team)
   end
 
   def member_or_admin?

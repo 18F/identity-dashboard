@@ -1,0 +1,30 @@
+
+<ul class="usa-list usa-list--unstyled">
+  <li><%= link_to "Back to Teams", teams_path, :class => 'usa-link'  %> </li>
+</ul>
+<%= button_to t('headings.teams.new_team'), new_team_path, method: :get, :class => "usa-button margin-top-4" if current_user.admin? %>
+
+
+<div class="usa-display">Team details for "<%= @team.name %>" </div>
+
+<h4><label for="agency">Agency:</label></h4>
+<p class="font-mono-xs margin-top-0" name="agency"><%= @team&.agency&.name %></p>
+
+<h4><label for="description">Description:</label></h4>
+<p class="font-mono-xs margin-top-0" name="description"><%= @team.description %></p>
+
+<h4><label for="users">Users: (<%= @team.users.count %>)</label></h4>
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="users">
+  <% @team.users.each do |u| %>
+    <li><%= u.email %></li>
+  <% end %>
+</ul>
+
+<h4><label for="apps">Apps: (<%= @team.service_providers.count %>)</label></h4>
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="apps">
+  <% @team.service_providers.each do |a| %>
+    <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
+  <% end %>
+</ul>
+
+<%= link_to "Edit this team", edit_team_path, class: 'usa-button usa-button--outline margin-top-4', role: :button  %>

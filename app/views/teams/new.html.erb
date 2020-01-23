@@ -1,8 +1,8 @@
 <div class="usa-display">New team</div>
 
-<%= simple_form_for(@group,
+<%= simple_form_for(@team,
     html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' },
-    url: groups_path) do |form| %>
+    url: teams_path) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>
   <%= form.button :submit, 'Create', :class => "usa-button" %>

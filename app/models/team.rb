@@ -1,9 +1,11 @@
-class Group < ApplicationRecord
+class Team < ApplicationRecord
+  self.table_name = :groups
+
   belongs_to :agency
 
-  has_many :service_providers, dependent: :nullify
-  has_many :user_groups, dependent: :nullify
-  has_many :users, through: :user_groups
+  has_many :service_providers, dependent: :nullify, foreign_key: 'group_id'
+  has_many :user_teams, dependent: :nullify, foreign_key: 'group_id'
+  has_many :users, through: :user_teams
 
   validates :name, presence: true, uniqueness: true
 

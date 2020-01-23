@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Group do
+describe Team do
   describe 'Associations' do
     it { should have_many(:users) }
     it { should have_many(:service_providers) }
@@ -11,8 +11,8 @@ describe Group do
 
     it 'validates uniqueness of name' do
       name = 'good name'
-      create(:group, name: name)
-      duplicate = build(:group, name: name)
+      create(:team, name: name)
+      duplicate = build(:team, name: name)
 
       expect(duplicate).not_to be_valid
     end
