@@ -18,5 +18,3 @@ import "app/app";
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
-
-console.log('Loading javascript from Webpacker');
