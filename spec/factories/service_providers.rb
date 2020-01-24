@@ -12,7 +12,7 @@ FactoryBot.define do
     end
 
     trait :saml do
-      identity_protocol 1
+      identity_protocol { 1 }
     end
 
     trait :group do
