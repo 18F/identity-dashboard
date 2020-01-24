@@ -4,7 +4,7 @@ ruby '~> 2.6.5'
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.7'
-gem 'bundler', '~> 1.17.0'
+gem 'bundler'
 gem 'colorize'
 gem 'devise', '~> 4.7.1'
 gem 'dotenv-rails', '~> 2.4'
@@ -56,16 +56,17 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 4.8'
   gem 'i18n-tasks'
   gem 'pry-byebug'
+  gem 'puma'
   gem 'rspec-rails', '~> 3.7', '>= 3.7.2'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
 end
 
 group :test do
+  gem 'capybara-selenium'
   gem 'climate_control'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
-  gem 'poltergeist'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.2'
   gem 'reek'
