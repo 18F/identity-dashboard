@@ -13,11 +13,12 @@
                  label: 'Description',
                  hint: 'A description of the app (may be helpful for your colleagues).' %>
 
-  <%= form.association :group,
+  <%= form.association :team,
                        as: :usa_collection_select,
-                       collection: current_user.scoped_groups,
+                       value_method: :id,
+                       collection: current_user.scoped_teams,
                        label: 'Team',
-                       disabled: !can_edit_groups?(current_user),
+                       disabled: !can_edit_teams?(current_user),
                        hint: 'Assign an agency team to this client.' %>
 
 

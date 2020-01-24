@@ -23,14 +23,14 @@ en:
         saml_client_cert: SAML Client Cert (PEM encoded)
         sp_initiated_login_url: SP Initiated Login URL
         identity_protocol: Identity Protocol
-        group: User Group
+        team: Team
       user:
         admin: Admin?
         email: Email
         first_name: First name
         last_name: Last name
         name: Name
-      group:
+      team:
         description: Description
         name: Name
         service_providers: Service Providers

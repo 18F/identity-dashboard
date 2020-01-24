@@ -1,9 +1,0 @@
-<div class="usa-display">Edit team</div>
-
-
-<%= simple_form_for(@group, html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' }) do |form| %>
-  <%= form.error_notification %>
-  <%= render 'form', form: form, agency_required: false, extra_message: t('headings.groups.temporary_warning_group_user') %>
-  <%= form.button :submit, 'Update', :class => "usa-button" %>
-<% end %>
-

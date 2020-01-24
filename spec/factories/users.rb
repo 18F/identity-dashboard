@@ -4,8 +4,8 @@ FactoryBot.define do
     sequence(:first_name) { |n| "FirstName#{n}" }
     sequence(:last_name) { |n| "LastName#{n}" }
 
-    trait :with_groups do
-      groups { create_list(:group, 3) }
+    trait :with_teams do
+      teams { create_list(:team, 3) }
     end
 
     factory :admin do

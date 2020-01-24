@@ -14,7 +14,7 @@
   <span class="usa-label margin-bottom-1">Users</span>
  <%= form.hint "Select members to add to this team. Or add a new member's email." %>
   <%= form.collection_check_boxes( :user_ids,
-                                 current_user.admin? ? User.all.sorted : User.select { |u| u.groups.include?(@group) },
+                                 current_user.admin? ? User.all.sorted : User.select { |u| u.teams.include?(@team) },
                                  :id, :email,
                                  collection_wrapper_tag: :ul,
                                  collection_wrapper_class: 'usa-input-list',

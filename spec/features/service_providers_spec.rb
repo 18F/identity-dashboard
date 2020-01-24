@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Service Providers CRUD' do
   context 'Regular user' do
     scenario 'can create service provider' do
-      user = create(:user, :with_groups)
+      user = create(:user, :with_teams)
       login_as(user)
 
       visit new_service_provider_path
@@ -13,7 +13,7 @@ feature 'Service Providers CRUD' do
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       fill_in 'service_provider_logo', with: 'test.png'
-      select user.groups[0].name, from: 'service_provider_group_id'
+      select user.teams[0].name, from: 'service_provider_group_id'
 
       check 'email'
       check 'first_name'
@@ -24,22 +24,22 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('test service_provider')
       expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
       expect(page).to have_content('email')
-      expect(page).to have_content(user.groups[0].agency.name)
+      expect(page).to have_content(user.teams[0].agency.name)
     end
 
-    scenario 'can update service provider group', :js do
-      user = create(:user, :with_groups)
+    scenario 'can update service provider team', :js do
+      user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
-      select user.groups[1].name, from: 'service_provider_group_id'
+      select user.teams[1].name, from: 'service_provider_group_id'
       click_on 'Update'
 
       service_provider.reload
-      expect(service_provider.agency).to eq(user.groups[1].agency)
-      expect(service_provider.agency).not_to eq(user.groups[0].agency)
+      expect(service_provider.agency).to eq(user.teams[1].agency)
+      expect(service_provider.agency).not_to eq(user.teams[0].agency)
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
@@ -165,14 +165,14 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can create service provider with user group' do
+    scenario 'can create service provider with user team' do
       admin = create(:admin)
-      group = create(:group)
+      team = create(:team)
       login_as(admin)
 
       visit new_service_provider_path
 
-      select group, from: 'service_provider[group_id]'
+      select team, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
                         match: :prefer_exact
@@ -250,31 +250,31 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
 
-    context 'service provider does not have a user group' do
-      scenario 'user group defaults to nil' do
-        ug = create(:group)
-        user = create(:user, groups: [ug])
+    context 'service provider does not have a user team' do
+      scenario 'user team defaults to nil' do
+        ut = create(:team)
+        user = create(:user, teams: [ut])
 
         app = create(:service_provider, user: user)
         login_as(user)
 
         visit edit_service_provider_path(app)
         click_on 'Update'
-        expect(page).to_not have_content(ug.name)
+        expect(page).to_not have_content(ut.name)
       end
     end
   end
 
   scenario 'Read' do
     user = create(:user)
-    group = create(:group)
-    app = create(:service_provider, group: group, user: user)
+    team = create(:team)
+    app = create(:service_provider, team: team, user: user)
     login_as(user)
 
     visit service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
-    expect(page).to have_content(group)
+    expect(page).to have_content(team)
     expect(page).to_not have_content('All service providers')
   end
 
