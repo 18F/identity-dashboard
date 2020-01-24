@@ -68,6 +68,7 @@ group :test do
   gem 'poltergeist'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.2'
+  gem 'reek'
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'sinatra', '>= 2.0.2'

@@ -3,8 +3,10 @@ class Team < ApplicationRecord
 
   belongs_to :agency
 
-  has_many :service_providers, dependent: :nullify, foreign_key: 'group_id'
-  has_many :user_teams, dependent: :nullify, foreign_key: 'group_id'
+  has_many :service_providers, dependent: :nullify, foreign_key: 'group_id',
+                               inverse_of: :team
+  has_many :user_teams, dependent: :nullify, foreign_key: 'group_id',
+                        inverse_of: :team
   has_many :users, through: :user_teams
 
   validates :name, presence: true, uniqueness: true

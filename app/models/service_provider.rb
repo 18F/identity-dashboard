@@ -8,7 +8,7 @@ class ServiceProvider < ApplicationRecord
   attr_writer :issuer_department, :issuer_app
 
   belongs_to :user
-  belongs_to :team, foreign_key: 'group_id'
+  belongs_to :team, foreign_key: 'group_id', inverse_of: :service_providers
 
   has_one :agency, through: :team
 
