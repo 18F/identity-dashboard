@@ -34,12 +34,6 @@ jobs:
             gem install bundler
             bundle install --deployment --jobs=4 --retry=3 --without deploy development production --path vendor/bundle
             npm install
-      # - run:
-      #     name: Install phantomjs
-      #     command: |
-      #       sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
-      #       sudo chmod ugo+x /tmp/phantomjs
-      #       sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
       - run:
           name: Install Code Climate Test Reporter
           command: |
