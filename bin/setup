@@ -38,7 +38,7 @@ Dir.chdir APP_ROOT do
   run 'test -L config/application.yml || cp -v config/application.yml.example config/application.yml'
 
   puts "\n== Installing dependencies =="
-  run 'gem install bundler --conservative'
+  run 'gem install bundler -v 1.17.3 --conservative'
   run 'gem install foreman --conservative && gem update foreman'
   run 'bundle check || bundle install --without deploy production'
   run 'yarn install'
