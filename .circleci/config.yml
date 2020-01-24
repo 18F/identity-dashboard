@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.6-node-browsers
+      - image: circleci/ruby:2.6-node-browsers-legacy
         environment:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: 39be7be4c9a09e955bd481daa7196fe4dccd67f3ee53e24e91535169eea78123
@@ -34,12 +34,12 @@ jobs:
             gem install bundler
             bundle install --deployment --jobs=4 --retry=3 --without deploy development production --path vendor/bundle
             npm install
-      - run:
-          name: Install phantomjs
-          command: |
-            sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
-            sudo chmod ugo+x /tmp/phantomjs
-            sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
+      # - run:
+      #     name: Install phantomjs
+      #     command: |
+      #       sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
+      #       sudo chmod ugo+x /tmp/phantomjs
+      #       sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
       - run:
           name: Install Code Climate Test Reporter
           command: |
