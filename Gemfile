@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-# ruby '~> 2.3.5'
+ruby '~> 2.6.5'
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.7'
+gem 'bundler', '~> 1.17.0'
 gem 'colorize'
 gem 'devise', '~> 4.7.1'
 gem 'dotenv-rails', '~> 2.4'
@@ -46,6 +47,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'rubocop', '=0.54'
+  gem 'rubocop-rspec'
   gem 'web-console', '>= 3.3.0'
 end
 

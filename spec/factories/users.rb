@@ -9,7 +9,7 @@ FactoryBot.define do
     end
 
     factory :admin do
-      admin true
+      admin { true }
     end
   end
 end
