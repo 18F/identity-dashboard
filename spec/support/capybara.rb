@@ -1,11 +1,20 @@
 require 'capybara/rspec'
-require 'capybara/poltergeist'
 require 'rack_session_access/capybara'
+require 'selenium/webdriver'
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: true)
+Capybara.register_driver :headless_chrome do |app|
+  browser_options = Selenium::WebDriver::Chrome::Options.new
+  browser_options.args << '--headless'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--no-sandbox'
+
+  Capybara::Selenium::Driver.new app,
+                                 browser: :chrome,
+                                 options: browser_options
 end
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :headless_chrome
 Capybara.asset_host = 'http://localhost:3000'
 Capybara.default_max_wait_time = 5
+
+Capybara.server = :puma, { Silent: true }

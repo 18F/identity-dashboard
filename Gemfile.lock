@@ -121,17 +121,21 @@ GEM
     capistrano-rails (1.3.1)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capybara (2.18.0)
+    capybara (3.30.0)
       addressable
       mini_mime (>= 0.1.3)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (>= 2.0, < 4.0)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (~> 1.5)
+      xpath (~> 3.2)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     case_transform (0.2)
       activesupport
+    childprocess (3.0.0)
     climate_control (0.2.0)
-    cliver (0.3.2)
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
     codeclimate-test-reporter (1.0.8)
@@ -239,7 +243,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (5.0.0.342)
     nio4r (2.5.2)
-    nokogiri (1.10.5)
+    nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
     omniauth (1.9.0)
       hashie (>= 3.4.6, < 3.7.0)
@@ -252,10 +256,6 @@ GEM
     parser (2.7.0.2)
       ast (~> 2.4.0)
     pg (0.21.0)
-    poltergeist (1.17.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -267,9 +267,11 @@ GEM
       pry (>= 0.10.4)
     psych (3.1.0)
     public_suffix (4.0.3)
+    puma (4.3.1)
+      nio4r (~> 2.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
-    rack (2.0.8)
+    rack (2.1.1)
     rack-canonical-host (0.2.3)
       addressable (> 0, < 3)
       rack (>= 1.0.0, < 3)
@@ -328,6 +330,7 @@ GEM
       parser (>= 2.5.0.0, < 2.8, != 2.5.1.1)
       psych (~> 3.1.0)
       rainbow (>= 2.0, < 4.0)
+    regexp_parser (1.6.0)
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
@@ -363,6 +366,7 @@ GEM
       rubocop (>= 0.53.0)
     ruby-progressbar (1.10.1)
     ruby_regex (0.1.3)
+    rubyzip (2.0.0)
     safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -377,6 +381,9 @@ GEM
       tilt (>= 1.1, < 3)
     secure_headers (3.9.0)
       useragent
+    selenium-webdriver (3.142.7)
+      childprocess (>= 0.5, < 4.0)
+      rubyzip (>= 1.2.2)
     shoulda-matchers (4.2.0)
       activesupport (>= 4.2.0)
     simple_form (3.5.1)
@@ -459,7 +466,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
-    xpath (3.0.0)
+    xpath (3.2.0)
       nokogiri (~> 1.8)
 
 PLATFORMS
@@ -473,11 +480,12 @@ DEPENDENCIES
   binding_of_caller
   bullet
   bummr
-  bundler (~> 1.17.0)
+  bundler
   capistrano
   capistrano-npm
   capistrano-passenger
   capistrano-rails
+  capybara-selenium
   climate_control
   codeclimate-test-reporter
   colorize
@@ -498,9 +506,9 @@ DEPENDENCIES
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
   omniauth_login_dot_gov!
   pg
-  poltergeist
   pry-byebug
   pry-rails
+  puma
   pundit
   rack-canonical-host
   rack-timeout
