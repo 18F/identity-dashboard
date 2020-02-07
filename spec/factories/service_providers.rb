@@ -12,11 +12,11 @@ FactoryBot.define do
     end
 
     trait :saml do
-      identity_protocol 1
+      identity_protocol { 1 }
     end
 
-    trait :group do
-      association :group, factory: :group
+    trait :team do
+      association :team, factory: :team
     end
   end
 end

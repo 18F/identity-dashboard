@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get '/env' => 'env#index'
 
   resources :users
-  resources :groups
+  resources :teams
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'

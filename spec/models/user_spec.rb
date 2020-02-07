@@ -26,18 +26,18 @@ describe User do
   end
 
   describe '#scoped_service_providers' do
-    it 'returns user created sps and the users group sps' do
-      group = create(:group)
-      user.groups = [group]
+    it 'returns user created sps and the users team sps' do
+      team = create(:team)
+      user.teams = [team]
       user.save
       user_sp = create(:service_provider, user: user)
-      group_sp = create(:service_provider, group: group)
+      team_sp = create(:service_provider, team: team)
       create(:service_provider)
-      expect(user.scoped_service_providers).to eq([user_sp, group_sp])
+      expect(user.scoped_service_providers).to eq([user_sp, team_sp])
     end
-    it "alphabetizes the list of user created and the user's group sps" do
-      group = create(:group)
-      user.groups = [group]
+    it "alphabetizes the list of user created and the user's team sps" do
+      team = create(:team)
+      user.teams = [team]
       user.save
       sp = {}
       %i[a G c I e].shuffle.each do |prefix|
@@ -46,29 +46,29 @@ describe User do
       end
       %i[f B h D j].shuffle.each do |prefix|
         sp[prefix.downcase] = create(:service_provider,
-                                     group: group, friendly_name: "#{prefix}_service_provider")
+                                     team: team, friendly_name: "#{prefix}_service_provider")
       end
       expect(user.scoped_service_providers).to eq(sp.keys.sort.map { |k| sp[k] })
     end
   end
 
-  describe '#scoped_groups' do
-    it 'returns collection of users user groups' do
-      group = create(:group)
-      user.groups = [group]
+  describe '#scoped_teams' do
+    it 'returns collection of users user teams' do
+      team = create(:team)
+      user.teams = [team]
       user.save
 
-      expect(user.scoped_groups).to eq([group])
+      expect(user.scoped_teams).to eq([team])
     end
 
-    it 'returns all user groups for admins' do
+    it 'returns all user teams for admins' do
       2.times do
-        create(:group)
+        create(:team)
       end
       user.admin = true
       user.save
 
-      expect(user.scoped_groups).to eq(Group.all)
+      expect(user.scoped_teams).to eq(Team.all)
     end
   end
 end

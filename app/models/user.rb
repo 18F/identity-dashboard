@@ -1,18 +1,18 @@
 class User < ApplicationRecord
   devise :trackable, :timeoutable
-  has_many :user_groups, dependent: :nullify
-  has_many :groups, through: :user_groups
-  has_many :service_providers, through: :groups
+  has_many :user_teams, dependent: :nullify
+  has_many :teams, through: :user_teams
+  has_many :service_providers, through: :teams
 
   validates :email, uniqueness: true
 
   scope :sorted, -> { order(email: :asc) }
 
-  def scoped_groups
+  def scoped_teams
     if admin?
-      Group.all
+      Team.all
     else
-      groups
+      teams
     end
   end
 

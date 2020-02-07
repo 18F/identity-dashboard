@@ -1,21 +1,21 @@
 require 'rails_helper'
 
-feature 'User groups CRUD' do
+feature 'User teams CRUD' do
   scenario 'Create' do
     admin = create(:admin)
     user = create(:user)
     create(:agency, name: 'GSA')
 
     login_as(admin)
-    visit new_group_path
+    visit new_team_path
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
     select('GSA', from: 'Agency')
-    find("#group_user_ids_#{user.id}").click
+    find("#team_user_ids_#{user.id}").click
 
     click_on 'Create'
-    expect(current_path).to eq(group_path(Group.last))
+    expect(current_path).to eq(team_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
     expect(page).to have_content('GSA')
@@ -23,50 +23,50 @@ feature 'User groups CRUD' do
     expect(page).to have_content(user.email)
   end
 
-  context 'User already in a group' do
-    scenario 'User does show up in user group that they are assigned to' do
+  context 'User already in a team' do
+    scenario 'User does show up in user team that they are assigned to' do
       admin = create(:admin)
       user = create(:user)
-      group = create(:group, users: [user])
+      team = create(:team, users: [user])
 
       login_as(admin)
-      visit edit_group_path(group)
+      visit edit_team_path(team)
 
       expect(page).to have_content(user.email)
     end
 
-    scenario 'User can be added to another group' do
+    scenario 'User can be added to another team' do
       admin = create(:admin)
       user = create(:user)
-      group1 = create(:group, users: [user])
-      group2 = create(:group)
+      team1 = create(:team, users: [user])
+      team2 = create(:team)
 
       login_as(admin)
-      visit edit_group_path(group2)
-      find("#group_user_ids_#{user.id}").click
+      visit edit_team_path(team2)
+      find("#team_user_ids_#{user.id}").click
 
       click_on 'Update'
-      expect(user.groups).to include(group1, group2)
+      expect(user.teams).to include(team1, team2)
     end
   end
 
   scenario 'Update' do
     admin = create(:admin)
-    org = create(:group)
+    org = create(:team)
     create(:agency, name: 'USDS')
     login_as(admin)
 
-    visit groups_path
-    find("a[href='#{edit_group_path(org)}']").click
-    expect(current_path).to eq(edit_group_path(org))
+    visit teams_path
+    find("a[href='#{edit_team_path(org)}']").click
+    expect(current_path).to eq(edit_team_path(org))
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
-    fill_in 'Add new team user (email)', with: 'new_user@gsa.gov'
+    fill_in "Add another team member's email", with: 'new_user@gsa.gov'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(current_path).to eq(group_path(org.id))
+    expect(current_path).to eq(team_path(org.id))
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -76,13 +76,13 @@ feature 'User groups CRUD' do
 
   scenario 'Index' do
     admin = create(:admin)
-    org1 = create(:group)
-    org2 = create(:group)
-    group = create(:group)
-    sp = create(:service_provider, group: group)
+    org1 = create(:team)
+    org2 = create(:team)
+    team = create(:team)
+    sp = create(:service_provider, team: team)
 
     login_as(admin)
-    visit groups_path
+    visit teams_path
 
     expect(page).to have_content(org1.name)
     expect(page).to have_content(org2.name)
@@ -94,46 +94,46 @@ feature 'User groups CRUD' do
   end
 
   describe 'show' do
-    scenario 'admin views a group' do
+    scenario 'admin views a team' do
       admin = create(:admin)
-      group = create(:group)
-      user = create(:user, groups: [group])
-      create(:service_provider, group: group)
+      team = create(:team)
+      user = create(:user, teams: [team])
+      create(:service_provider, team: team)
 
       login_as(admin)
-      visit groups_path
-      find("a[href='#{group_path(group)}']", text: 'view').click
+      visit teams_path
+      find("a[href='#{team_path(team)}']", text: 'view').click
 
-      expect(current_path).to eq(group_path(group))
-      expect(page).to have_content(group.name)
-      expect(page).to have_content(group.agency.name)
+      expect(current_path).to eq(team_path(team))
+      expect(page).to have_content(team.name)
+      expect(page).to have_content(team.agency.name)
       expect(page).to have_content(user.email)
     end
 
-    scenario 'regular user attempts to view a group' do
+    scenario 'regular user attempts to view a team' do
       user = create(:user)
-      group = create(:group)
-      create(:service_provider, group: group)
+      team = create(:team)
+      create(:service_provider, team: team)
 
       login_as(user)
 
-      visit group_path(group)
+      visit team_path(team)
 
-      expect(page).to_not have_content(group.name)
+      expect(page).to_not have_content(team.name)
       expect(page).to have_content('Unauthorized')
     end
   end
 
   scenario 'Delete' do
     admin = create(:admin)
-    group = create(:group)
+    team = create(:team)
     login_as(admin)
 
-    visit groups_path
-    find("a[href='#{group_path(group)}']", text: 'delete').click
+    visit teams_path
+    find("a[href='#{team_path(team)}']", text: 'delete').click
 
-    expect(current_path).to eq(groups_path)
+    expect(current_path).to eq(teams_path)
     expect(page).to have_content('Success')
-    expect(page).to_not have_content(group.name)
+    expect(page).to_not have_content(team.name)
   end
 end

@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-# ruby '~> 2.3.5'
+ruby '~> 2.6.5'
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.7'
+gem 'bundler'
 gem 'colorize'
 gem 'devise', '~> 4.7.1'
 gem 'dotenv-rails', '~> 2.4'
@@ -28,7 +29,7 @@ gem 'responders', '~> 2.4'
 gem 'rest-client', '~> 2.0'
 gem 'ruby_regex'
 gem 'sass-rails', '~> 5.0', '>= 5.0.7'
-gem 'secure_headers', '~> 3.0'
+gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 3.5', '>= 3.5.1'
 gem 'slim-rails', '~> 3.1'
 gem 'uglifier'
@@ -46,6 +47,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'rubocop', '=0.54'
+  gem 'rubocop-rspec'
   gem 'web-console', '>= 3.3.0'
 end
 
@@ -54,18 +56,20 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 4.8'
   gem 'i18n-tasks'
   gem 'pry-byebug'
+  gem 'puma'
   gem 'rspec-rails', '~> 3.7', '>= 3.7.2'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
 end
 
 group :test do
+  gem 'capybara-selenium'
   gem 'climate_control'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
-  gem 'poltergeist'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.2'
+  gem 'reek'
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'sinatra', '>= 2.0.2'

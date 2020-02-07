@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe GroupsController do
+describe TeamsController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:org) { create(:group) }
+  let(:org) { create(:team) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -56,18 +56,18 @@ describe GroupsController do
         user.admin = true
       end
 
-      it 'shows the group template' do
+      it 'shows the team template' do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
       end
     end
 
-    context 'when not an admin but a group member' do
+    context 'when not an admin but a team member' do
       before do
         org.users << user
       end
 
-      it 'shows the group template' do
+      it 'shows the team template' do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
       end
@@ -77,7 +77,7 @@ describe GroupsController do
   describe '#create' do
     context 'when the user is not an admin' do
       it 'has an error response' do
-        post :create, params: { group: { name: 'unique name' } }
+        post :create, params: { team: { name: 'unique name' } }
         expect(response.status).to eq(401)
       end
     end
@@ -89,13 +89,13 @@ describe GroupsController do
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
-          post :create, params: { group: { name: 'unique name' } }
+          post :create, params: { team: { name: 'unique name' } }
           expect(response.status).to eq(302)
         end
       end
       context 'when it fails to create' do
         it 'renders #new' do
-          post :create, params: { group: { name: '' } }
+          post :create, params: { team: { name: '' } }
           expect(response).to render_template(:new)
         end
       end
@@ -131,7 +131,7 @@ describe GroupsController do
       end
     end
 
-    context 'when not an admin but a group member' do
+    context 'when not an admin but a team member' do
       before do
         user.admin = false
         org.users << user
@@ -152,24 +152,24 @@ describe GroupsController do
 
       context 'when the update is successful' do
         it 'has a redirect response' do
-          patch :update, params: { id: org.id, group: { name: org.name }, new_user: { email: '' } }
+          patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
           expect(response.status).to eq(302)
         end
       end
 
       context 'when the update is unsuccessful' do
         before do
-          allow_any_instance_of(Group).to receive(:update).and_return(false)
+          allow_any_instance_of(Team).to receive(:update).and_return(false)
         end
 
         it 'renders the edit action' do
-          patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
+          patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
           expect(response).to render_template(:edit)
         end
       end
     end
 
-    context 'when user is not an admin but a member of the group' do
+    context 'when user is not an admin but a member of the team' do
       before do
         user.admin = false
         org.users << user
@@ -178,17 +178,17 @@ describe GroupsController do
       context 'when the update includes adding a new user' do
         let(:new_user) { create(:user) }
 
-        it 'adds the user to the group' do
-          patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] },
+        it 'adds the user to the team' do
+          patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] },
                                    new_user: { email: new_user.email } }
           expect(org.users.include?(new_user)).to be true
         end
       end
     end
 
-    context 'when user is neither a admin nor a group member' do
+    context 'when user is neither a admin nor a team member' do
       it 'has an unauthorized response' do
-        patch :update, params: { id: org.id, group: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
+        patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
         expect(response.status).to eq(401)
       end
     end

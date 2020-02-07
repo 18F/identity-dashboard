@@ -76,8 +76,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.2)
-      public_suffix (>= 2.0.2, < 4.0)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
     aes_key_wrap (1.0.1)
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -85,6 +85,10 @@ GEM
     ast (2.4.0)
     autoprefixer-rails (9.6.1)
       execjs
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.13)
     better_errors (2.5.1)
       coderay (>= 1.0.0)
@@ -117,20 +121,28 @@ GEM
     capistrano-rails (1.3.1)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capybara (2.18.0)
+    capybara (3.30.0)
       addressable
       mini_mime (>= 0.1.3)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (>= 2.0, < 4.0)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (~> 1.5)
+      xpath (~> 3.2)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     case_transform (0.2)
       activesupport
+    childprocess (3.0.0)
     climate_control (0.2.0)
-    cliver (0.3.2)
+    codeclimate-engine-rb (0.4.1)
+      virtus (~> 1.0)
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
     coderay (1.1.2)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
     concurrent-ruby (1.1.5)
     crack (0.4.3)
@@ -138,6 +150,8 @@ GEM
     crass (1.0.5)
     database_cleaner (1.7.0)
     debug_inspector (0.0.3)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
     devise (4.7.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -157,6 +171,7 @@ GEM
       thread_safe
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
+    equalizer (0.0.11)
     erubi (1.9.0)
     execjs (2.7.0)
     factory_bot (4.11.1)
@@ -171,7 +186,7 @@ GEM
       thor (~> 0.14)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    hashdiff (0.3.7)
+    hashdiff (1.0.0)
     hashie (3.6.0)
     highline (1.7.10)
     htmlentities (4.3.4)
@@ -179,7 +194,7 @@ GEM
       domain_name (~> 0.5)
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
-    i18n (1.7.0)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.21)
       activesupport (>= 4.0.2)
@@ -191,6 +206,7 @@ GEM
       parser (>= 2.2.3.0)
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
+    ice_nine (0.11.2)
     jquery-rails (4.3.5)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -202,6 +218,7 @@ GEM
       bindata
     jsonapi-renderer (0.2.2)
     jwt (2.1.0)
+    kwalify (0.7.2)
     loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -215,7 +232,7 @@ GEM
     mime-types-data (3.2018.0812)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.13.0)
+    minitest (5.14.0)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -226,7 +243,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (5.0.0.342)
     nio4r (2.5.2)
-    nokogiri (1.10.5)
+    nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
     omniauth (1.9.0)
       hashie (>= 3.4.6, < 3.7.0)
@@ -236,13 +253,9 @@ GEM
       omniauth (>= 1.3.1)
     orm_adapter (0.5.0)
     parallel (1.17.0)
-    parser (2.6.3.0)
+    parser (2.7.0.2)
       ast (~> 2.4.0)
     pg (0.21.0)
-    poltergeist (1.17.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -252,10 +265,13 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (3.0.2)
+    psych (3.1.0)
+    public_suffix (4.0.3)
+    puma (4.3.1)
+      nio4r (~> 2.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
-    rack (2.0.8)
+    rack (2.1.1)
     rack-canonical-host (0.2.3)
       addressable (> 0, < 3)
       rack (>= 1.0.0, < 3)
@@ -308,6 +324,13 @@ GEM
       ffi (~> 1.0)
     recipient_interceptor (0.1.2)
       mail
+    reek (5.6.0)
+      codeclimate-engine-rb (~> 0.4.0)
+      kwalify (~> 0.7.0)
+      parser (>= 2.5.0.0, < 2.8, != 2.5.1.1)
+      psych (~> 3.1.0)
+      rainbow (>= 2.0, < 4.0)
+    regexp_parser (1.6.0)
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
@@ -339,9 +362,12 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
+    rubocop-rspec (1.26.0)
+      rubocop (>= 0.53.0)
     ruby-progressbar (1.10.1)
     ruby_regex (0.1.3)
-    safe_yaml (1.0.4)
+    rubyzip (2.0.0)
+    safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -353,10 +379,13 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    secure_headers (3.7.3)
+    secure_headers (3.9.0)
       useragent
-    shoulda-matchers (3.1.2)
-      activesupport (>= 4.0.0)
+    selenium-webdriver (3.142.7)
+      childprocess (>= 0.5, < 4.0)
+      rubyzip (>= 1.2.2)
+    shoulda-matchers (4.2.0)
+      activesupport (>= 4.2.0)
     simple_form (3.5.1)
       actionpack (> 4, < 5.2)
       activemodel (> 4, < 5.2)
@@ -402,7 +431,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.1)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uglifier (4.1.10)
       execjs (>= 0.3.0, < 3)
@@ -414,6 +443,11 @@ GEM
     useragent (0.16.10)
     uuid (2.3.8)
       macaddr (~> 1.0)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.8)
       rack (>= 2.0.6)
     web-console (3.7.0)
@@ -421,10 +455,10 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webmock (3.3.0)
+    webmock (3.8.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-      hashdiff
+      hashdiff (>= 0.4.0, < 2.0.0)
     webpacker (4.2.0)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
@@ -432,7 +466,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
-    xpath (3.0.0)
+    xpath (3.2.0)
       nokogiri (~> 1.8)
 
 PLATFORMS
@@ -446,10 +480,12 @@ DEPENDENCIES
   binding_of_caller
   bullet
   bummr
+  bundler
   capistrano
   capistrano-npm
   capistrano-passenger
   capistrano-rails
+  capybara-selenium
   climate_control
   codeclimate-test-reporter
   colorize
@@ -470,9 +506,9 @@ DEPENDENCIES
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
   omniauth_login_dot_gov!
   pg
-  poltergeist
   pry-byebug
   pry-rails
+  puma
   pundit
   rack-canonical-host
   rack-timeout
@@ -481,14 +517,16 @@ DEPENDENCIES
   rails-controller-testing (>= 1.0.2)
   rails_12factor
   recipient_interceptor
+  reek
   responders (~> 2.4)
   rest-client (~> 2.0)
   rspec-rails (~> 3.7, >= 3.7.2)
   rubocop (= 0.54)
+  rubocop-rspec
   ruby_regex
   saml_idp!
   sass-rails (~> 5.0, >= 5.0.7)
-  secure_headers (~> 3.0)
+  secure_headers (~> 3.9)
   shoulda-matchers
   simple_form (~> 3.5, >= 3.5.1)
   simplecov
@@ -502,5 +540,8 @@ DEPENDENCIES
   webpacker (~> 4.x)
   websocket-driver (= 0.6.5)
 
+RUBY VERSION
+   ruby 2.6.5p114
+
 BUNDLED WITH
-   1.17.3
+   2.1.4
