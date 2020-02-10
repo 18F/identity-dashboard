@@ -19,4 +19,7 @@ Rails.application.routes.draw do
   resources :service_providers
 
   root to: 'home#index'
+
+  # preserve old Groups route
+  match '/groups/:id', to: redirect('/teams/%{id}'), via: :get
 end
