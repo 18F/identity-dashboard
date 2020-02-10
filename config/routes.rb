@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   get '/auth/logindotgov/callback' => 'users/omniauth#callback'
   get 'users/none' => 'users#none'
+  get '/env' => 'env#index'
 
   resources :users
   resources :teams

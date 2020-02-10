@@ -1,57 +1,15 @@
 <div class="usa-prose">
 <% unless user_signed_in? %>
-  <p class="usa-intro">Log in to manage your test applications.</p>
-<% end %>
-
-<div class="usa-display">Environments status</div>
-<% @deploy_statuses.each do |environment| %>
-
-  <h2>
-  <% case environment.env
-     when 'prod' %>
-       Production
-  <% when 'staging' %>
-       Staging
-  <% when 'int' %>
-       Agency integration
-  <% when 'qa' %>
-       Quality assurance
-  <% when 'dev' %>
-       Development
-  <% end %>
-  </h2>
-
-  <% environment.statuses.each do |status| %>
-    <div>
-      <% if status.status_class == 'deploy-success' %>
-
-        <%= image_tag 'img/alerts/success.svg', alt: 'success', height: '27', width: '27', :class =>'margin-bottom-neg-105' %>
-
-      <% elsif status.status_class == 'deploy-error' %>
-
-        <%= image_tag 'img/alerts/error.svg', alt: 'error', height: '27', width: '27', :class =>'margin-bottom-neg-1' %>
-
-      <% elsif status.status_class == 'disabled' %>
-
-       <%= image_tag 'img/alerts/warning.svg', alt: 'disabled', height: '27', width: '27',  :class =>'margin-bottom-neg-105' %>
-      <% end %>
-
-      <% if status.host %>
-        <%= link_to status.short_name, status.host %> —
-      <% else %>
-        <%= status.short_name %> —
-      <% end %>
-
-      <% if status.error %>
-        <%= status.error %>
-      <% else %>
-        <%= status.branch %> @ <%= link_to status.short_sha, status.commit_url %> —
-        <%= t 'home.deployed_by_html',
-            time: time_ago_in_words(status.timestamp),
-            href: link_to(t('links.pending_changes'), status.pending_url) %>
-      <% end %>
-    </div>
-  <% end %>
-
+  <p class="usa-intro">
+    <%= t 'home.body_intro' %>
+  </p>
+  <p>
+    <%= t 'home.body_dev_docs_html',
+        href_dev_docs: link_to(t('home.dev_docs_link'), 'https://developers.login.gov') %>
+  </p>
+  <p>
+    <%= t 'home.body_partners_html',
+        href_partners: link_to(t('home.partners_link'), 'https://login.gov/partners') %>
+  </p>
 <% end %>
 </div>
