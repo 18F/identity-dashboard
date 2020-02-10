@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe EnvController do
   include Devise::Test::ControllerHelpers
+  WebMock.allow_net_connect!
 
   let(:user) { create(:user) }
 
