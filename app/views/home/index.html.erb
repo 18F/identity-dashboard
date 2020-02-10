@@ -1,6 +1,15 @@
 <div class="usa-prose">
 <% unless user_signed_in? %>
-  <p class="usa-intro">Use the dashboard to manage your login.gov test integrations.</p>
-  <p>Visit our <a href="https://developers.login.gov">developer documentation</a> to learn more. Interested in login.gov for your federal government applications? Visit <a href="https://login.gov/partners">login.gov/partners</a></p>
+  <p class="usa-intro">
+    <%= t 'home.body_intro' %>
+  </p>
+  <p>
+    <%= t 'home.body_dev_docs_html',
+        href_dev_docs: link_to(t('home.dev_docs_link'), 'https://developers.login.gov') %>
+  </p>
+  <p>
+    <%= t 'home.body_partners_html',
+        href_partners: link_to(t('home.partners_link'), 'https://login.gov/partners') %>
+  </p>
 <% end %>
 </div>

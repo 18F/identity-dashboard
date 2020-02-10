@@ -17,28 +17,4 @@ feature 'Environemnts' do
       expect(page).to have_content('Development')
     end
   end
-
-  context 'an adminn user' do
-    scenario 'should see manage teams and manage users' do
-      admin = create(:admin)
-
-      login_as(admin)
-      visit env_path
-
-      expect(page).to have_content('Teams')
-      expect(page).to have_content('Users')
-    end
-  end
-
-  context 'a user who is not an admin' do
-    scenario 'should see manage teams and not see manage users' do
-      user = create(:user)
-
-      login_as(user)
-      visit env_path
-
-      expect(page).to have_content('Teams')
-      expect(page).to_not have_content('Users')
-    end
-  end
 end
