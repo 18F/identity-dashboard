@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Home' do
-  WebMock.allow_net_connect!
-
   context 'when viewing the home page' do
     scenario 'you should see intro and links to dev docs and partners' do
       visit root_path

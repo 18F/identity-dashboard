@@ -1,7 +1,11 @@
 require 'rails_helper'
 
 feature 'Environemnts' do
-  WebMock.allow_net_connect!
+  include DeployStatusCheckerHelper
+
+  before do
+    stub_deploy_status
+  end
 
   context 'any user viewing the environemnts page' do
     scenario 'should see prod, staging, int, qa and dev environments' do
