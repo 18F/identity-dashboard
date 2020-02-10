@@ -11,7 +11,7 @@ feature 'Home' do
     end
   end
 
-  context 'an adminn user' do
+  context 'an admin user' do
     scenario 'should see manage teams and manage users' do
       admin = create(:admin)
 

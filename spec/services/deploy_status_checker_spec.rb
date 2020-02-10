@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe DeployStatusChecker do
+  include DeployStatusCheckerHelper
+
   subject(:checker) { DeployStatusChecker.new }
 
   describe DeployStatusChecker::Status do
@@ -61,32 +63,8 @@ RSpec.describe DeployStatusChecker do
   end
 
   describe '#check!' do
-    let(:status_json) do
-      {
-        sha: 'sha',
-        branch: 'branch',
-        user: 'user',
-        timestamp: '20161102201213',
-      }.as_json
-    end
-
     before do
-      stub_request(:get, %r{https://secure\.login\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.staging\.login\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.int\.identitysandbox\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://int-.*\.cloud\.gov/api/deploy\.json}).
-        to_return(body: status_json.to_json)
-      stub_request(:get, %r{https://.*\.dev\.identitysandbox\.gov/api/deploy\.json}).
-        to_return(status: 404)
-      stub_request(:get, %r{https://dev-.*\.cloud\.gov/api/deploy\.json}).
-        to_return(status: 404)
-      stub_request(:get, %r{https://.*\.qa\.identitysandbox\.gov/api/deploy\.json}).
-        to_timeout
-      stub_request(:get, %r{https://qa-.*\.cloud\.gov/api/deploy\.json}).
-        to_timeout
+      stub_deploy_status
     end
 
     it 'loads statuses from the environments and swallows error' do
@@ -94,7 +72,7 @@ RSpec.describe DeployStatusChecker do
 
       int = statuses.find { |status| status.env == 'int' }
       int_status = int.statuses.first
-      expect(int_status.sha).to eq(status_json['sha'])
+      expect(int_status.sha).to eq(stub_status_json['sha'])
 
       dev = statuses.find { |status| status.env == 'dev' }
       dev_status = dev.statuses.first
