@@ -19,6 +19,7 @@ jobs:
       - image: postgres:9.6
         environment:
           POSTGRES_USER: circleci
+          POSTGRES_PASSWORD: password
 
     working_directory: ~/identity-dashboard
 
