@@ -56,7 +56,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 4.8'
   gem 'i18n-tasks'
   gem 'pry-byebug'
-  gem 'puma'
+  gem 'puma', '>= 4.3.2'
   gem 'rspec-rails', '~> 3.7', '>= 3.7.2'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
