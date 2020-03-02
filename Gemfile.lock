@@ -267,7 +267,7 @@ GEM
       pry (>= 0.10.4)
     psych (3.1.0)
     public_suffix (4.0.3)
-    puma (4.3.1)
+    puma (4.3.3)
       nio4r (~> 2.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
@@ -508,7 +508,7 @@ DEPENDENCIES
   pg
   pry-byebug
   pry-rails
-  puma
+  puma (>= 4.3.3)
   pundit
   rack-canonical-host
   rack-timeout
@@ -544,4 +544,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.1.4
+   1.17.3
