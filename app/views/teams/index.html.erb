@@ -1,40 +1,43 @@
 <div class="usa-display">Teams</div>
-<%= button_to t('headings.teams.new_team'), new_team_path, method: :get, :class => "usa-button" if current_user&.admin? %>
-
-<table class="usa-table-borderless teams">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Agency</th>
-      <th scope="col">Description</th>
-      <th scope="col">Apps</th>
-      <th scope="col">Users</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @teams.each do |team| %>
-      <tr>
-        <% if current_user&.admin? || team.users.include?(current_user) %>
-          <th scope="row"><%= team.name %></th>
-          <td><%= team&.agency&.name %></td>
-          <td class="text-wrap"><%= team.description %></td>
-          <td>
-            <% team.service_providers.each do |sp| %>
-              <%= link_to sp.friendly_name, service_provider_path(sp), :class => 'usa-link' %><%= "<br><hr>".html_safe unless sp == team.service_providers.last %>
-            <% end %>
-          </td>
-          <td>
-            <% team.users.each do |user| %>
-              <a href="<%= edit_user_path(user.id) %>" class="usa-link"><%= user.email %></a><br>
-            <% end %>
-          </td>
-          <td class="text-wrap">
-            <%= link_to 'view', team_path(team), :class => 'usa-link' %><br>
-            <%= link_to 'edit', edit_team_path(team), :class => 'usa-link' %><br>
-            <%= link_to 'delete', team_path(team), method: :delete, data: { confirm: 'Are you sure you want to delete this team?' }, :class => 'usa-link' if current_user.admin? %>
-          </td>
-        <% end %>
-      <% end %>
-  </tbody>
-</table>
+<% @teams.each do |team| %>
+  <div class='lg-card margin-bottom-3'>
+    <div class='grid-row flex-row flex-align-end'>
+      <div class='mobile-lg:grid-col-10'>
+        <h1 class='margin-y-05'>
+          <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
+        </h1>
+        <p class='margin-0'>
+          <strong>Agency:</strong> <%= team&.agency&.name %>
+        </p>
+        <p class='margin-0'>
+          <%= team.description %>
+        </p>
+        <p class='margin-y-2'>
+          <strong>
+            <%= 'App'.pluralize(team.service_providers.count) %>
+            <%= "[#{team.service_providers.count}]:" if team.service_providers.count > 1 %>
+          </strong>
+          <br/>
+          <% team.service_providers.each do |service_provider| %>
+            <span class='usa-tag bg-primary-lighter text-bold margin-right-1 padding-x-1 padding-y-05 text-no-wrap'>
+              <%= link_to service_provider.friendly_name, service_provider, class: 'text-primary text-no-underline' %>
+            </span>
+          <% end %>
+        </p>
+        <p class='margin-y-2'>
+          <strong>
+            <%= 'User'.pluralize(team.users.count) %>
+            <%= "[#{team.users.count}]:" if team.users.count > 1 %>
+          </strong>
+          <br/>
+          <% team.users.each do |user| %>
+            <span class='text-primary'><%= user.email %></span>
+          <% end %>
+        </p>
+      </div>
+      <div class='mobile-lg:grid-col-2 text-right'>
+        <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline'%>
+      </div>
+    </div>
+  </div>
+<% end %>
