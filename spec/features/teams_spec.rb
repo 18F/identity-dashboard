@@ -102,7 +102,7 @@ feature 'User teams CRUD' do
 
       login_as(admin)
       visit teams_path
-      find("a[href='#{team_path(team)}']", text: 'view').click
+      find("a[href='#{team_path(team)}']", text: team.name).click
 
       expect(current_path).to eq(team_path(team))
       expect(page).to have_content(team.name)
@@ -130,7 +130,7 @@ feature 'User teams CRUD' do
     login_as(admin)
 
     visit teams_path
-    find("a[href='#{team_path(team)}']", text: 'delete').click
+    find("a[href='#{team_path(team)}']", text: 'Delete').click
 
     expect(current_path).to eq(teams_path)
     expect(page).to have_content('Success')

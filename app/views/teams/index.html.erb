@@ -36,7 +36,18 @@
         </p>
       </div>
       <div class='mobile-lg:grid-col-2 text-right'>
-        <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline'%>
+        <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
+        <% if current_user.admin? %>
+          <%=
+            link_to(
+              'Delete',
+              team_path(team),
+              method: :delete,
+              data: { confirm: 'Are you sure you want to delete this team?' },
+              class: 'usa-button usa-button--danger display-block',
+            )
+          %>
+        <% end %>
       </div>
     </div>
   </div>

@@ -41,7 +41,7 @@ class TeamsController < AuthenticatedController
   end
 
   def index
-    includes = [:users, :service_providers, :agency]
+    includes = %i[users service_providers agency]
     @teams = if current_user.admin?
                Team.includes(*includes).all
              else
