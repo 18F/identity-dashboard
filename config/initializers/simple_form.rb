@@ -45,7 +45,7 @@ SimpleForm.setup do |config|
     # changed input class from field to usa-input
     b.use :input, class: 'block col-12' # usa-input'
     b.use :hint,  wrap_with: { tag: 'div', class: 'usa-form-hint' }
-    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message margin-top-neg-205' }
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
   config.default_wrapper = :vertical_form

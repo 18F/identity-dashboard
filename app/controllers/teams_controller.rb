@@ -9,7 +9,7 @@ class TeamsController < AuthenticatedController
   end
 
   def create
-    @team = Team.new(team_params)
+    @team = Team.new(update_params_with_current_user)
 
     if @team.save
 
