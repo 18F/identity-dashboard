@@ -1,54 +1,21 @@
-<div class="usa-display">Teams</div>
-<% @teams.each do |team| %>
-  <div class='lg-card margin-bottom-3'>
-    <div class='grid-row flex-row flex-align-end'>
-      <div class='mobile-lg:grid-col-10'>
-        <h1 class='margin-y-05'>
-          <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
-        </h1>
-        <p class='margin-0'>
-          <strong>Agency:</strong> <%= team&.agency&.name %>
-        </p>
-        <p class='margin-0'>
-          <%= team.description %>
-        </p>
-        <p class='margin-y-2'>
-          <strong>
-            <%= 'App'.pluralize(team.service_providers.count) %>
-            <%= "[#{team.service_providers.count}]:" if team.service_providers.count > 1 %>
-          </strong>
-          <br/>
-          <% team.service_providers.each do |service_provider| %>
-            <span class='usa-tag bg-primary-lighter text-bold margin-right-1 padding-x-1 padding-y-05 text-no-wrap'>
-              <%= link_to service_provider.friendly_name, service_provider, class: 'text-primary text-no-underline' %>
-            </span>
-          <% end %>
-        </p>
-        <p class='margin-y-2'>
-          <strong>
-            <%= 'User'.pluralize(team.users.count) %>
-            <%= "[#{team.users.count}]:" if team.users.count > 1 %>
-          </strong>
-          <br/>
-          <% team.users.each do |user| %>
-            <span class='text-primary'><%= user.email %></span>
-          <% end %>
-        </p>
-      </div>
-      <div class='mobile-lg:grid-col-2 text-right'>
-        <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
-        <% if current_user.admin? %>
-          <%=
-            link_to(
-              'Delete',
-              team_path(team),
-              method: :delete,
-              data: { confirm: 'Are you sure you want to delete this team?' },
-              class: 'usa-button usa-button--danger display-block',
-            )
-          %>
-        <% end %>
-      </div>
-    </div>
-  </div>
+<h1 class="usa-display">Welcome, <%= current_user.email %></h1>
+<div>
+  <h2 class='margin-bottom-2'>Teams</h2>
+  <% if @teams.count > 0 %>
+    <%= render 'teams_list' %>
+  <% else %>
+  <p>
+    You aren't a part of any teams yet.
+  </p>
+  <% end %>
+</div>
+<% if current_user.admin? %>
+  <%=
+    button_to(
+      t('headings.teams.new_team'),
+      new_team_path,
+      method: :get,
+      class: "usa-button margin-top-4",
+    )
+  %>
 <% end %>
