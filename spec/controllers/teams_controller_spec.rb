@@ -89,13 +89,13 @@ describe TeamsController do
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
-          post :create, params: { team: { name: 'unique name' } }
+          post :create, params: { team: { name: 'unique name' }, new_user: { email: '' } }
           expect(response.status).to eq(302)
         end
       end
       context 'when it fails to create' do
         it 'renders #new' do
-          post :create, params: { team: { name: '' } }
+          post :create, params: { team: { name: '' }, new_user: { email: '' } }
           expect(response).to render_template(:new)
         end
       end
