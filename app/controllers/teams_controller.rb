@@ -11,7 +11,7 @@ class TeamsController < AuthenticatedController
   def create
     @team = Team.new(update_params_with_current_user)
     add_new_user
-    
+
     if @team.save
 
       flash[:success] = 'Success'

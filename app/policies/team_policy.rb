@@ -1,7 +1,7 @@
 class TeamPolicy < BasePolicy
-  attr_reader :current_user, :team
+  include TeamHelper
 
-  WHITELISTED_DOMAINS = %w[.mil .gov .fed.us].freeze
+  attr_reader :current_user, :team
 
   def initialize(current_user, model)
     @current_user = current_user
@@ -44,9 +44,5 @@ class TeamPolicy < BasePolicy
 
   def in_team?
     @team.users.include?(current_user)
-  end
-
-  def whitelisted_user?
-    WHITELISTED_DOMAINS.any? { |domain| current_user.email.end_with? domain }
   end
 end

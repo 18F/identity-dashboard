@@ -7,10 +7,14 @@ module TeamHelper
   end
 
   def can_create_teams?(user)
-    WHITELISTED_DOMAINS.any? { |domain| user.email.end_with? domain } || user.admin?
+    whitelisted_user? || user.admin?
   end
 
   def can_delete_team?(user, team)
     team.users.include?(user) || user.admin?
+  end
+
+  def whitelisted_user?
+    WHITELISTED_DOMAINS.any? { |domain| current_user.email.end_with? domain }
   end
 end
