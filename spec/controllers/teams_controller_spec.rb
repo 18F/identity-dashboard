@@ -5,6 +5,7 @@ describe TeamsController do
 
   let(:user) { create(:user) }
   let(:org) { create(:team) }
+  let(:agency) { create(:agency) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -89,7 +90,7 @@ describe TeamsController do
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
-          post :create, params: { team: { name: 'unique name' }, new_user: { email: '' } }
+          post :create, params: { team: { name: 'unique name', agency_id: agency.id }, new_user: { email: '' } }
           expect(response.status).to eq(302)
         end
       end
