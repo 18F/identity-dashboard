@@ -28,7 +28,7 @@ describe Users::OmniauthController do
         get :callback
 
         expect(user.reload.uuid).to eq(uuid)
-        expect(response).to redirect_to(service_providers_url)
+        expect(response).to redirect_to(teams_url)
       end
 
       it 'updates the UUID to match Login.gov' do
@@ -37,7 +37,7 @@ describe Users::OmniauthController do
         get :callback
 
         expect(user.reload.uuid).to eq(uuid)
-        expect(response).to redirect_to(service_providers_url)
+        expect(response).to redirect_to(teams_url)
       end
     end
 

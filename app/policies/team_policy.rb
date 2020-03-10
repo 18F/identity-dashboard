@@ -1,4 +1,6 @@
 class TeamPolicy < BasePolicy
+  include TeamHelper
+
   attr_reader :current_user, :team
 
   def initialize(current_user, model)
@@ -23,15 +25,15 @@ class TeamPolicy < BasePolicy
   end
 
   def destroy?
-    admin?
+    in_team? || admin?
   end
 
   def create?
-    admin?
+    whitelisted_user? || admin?
   end
 
   def new?
-    admin?
+    whitelisted_user? || admin?
   end
 
   private
