@@ -54,10 +54,6 @@ class TeamsController < AuthenticatedController
 
   private
 
-  def authorize_team
-    authorize team
-  end
-
   def team
     @team ||= Team.find(params[:id])
   end
