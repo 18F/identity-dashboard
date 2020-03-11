@@ -233,8 +233,8 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
     scenario 'user updates service provider but service provider updater fails' do
-      user = create(:user)
-      app = create(:service_provider, user: user)
+      user = create(:user, :with_teams)
+      app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(app)
