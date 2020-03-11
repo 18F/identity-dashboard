@@ -136,9 +136,15 @@
                      class: 'usa-label' %>
     </div>
 
-    <%= form.input :redirect_uris,
-                   input_html: { class: 'usa-input', multiple: 'multiple' },
-                   label: false %>
+    <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
+      <% redirect_uri_list.each do |value| %>
+        <%= text_field_tag 'service_provider[redirect_uris][]',
+                           value,
+                           id: 'service_provider_redirect_uris',
+                           class: 'block col-12 json optional usa-input',
+                           multiple: 'multiple' %>
+      <% end %>
+    <% end %>
 
     <div class='oidc-fields'>
       <%= form.hint 'One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>

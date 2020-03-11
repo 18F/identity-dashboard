@@ -43,8 +43,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
-      user = create(:user)
-      service_provider = create(:service_provider, user: user)
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -70,8 +70,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
-      user = create(:user)
-      service_provider = create(:service_provider, :saml, user: user)
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -196,8 +196,8 @@ feature 'Service Providers CRUD' do
 
   context 'Update' do
     scenario 'user updates service provider' do
-      user = create(:user)
-      app = create(:service_provider, user: user)
+      user = create(:user, :with_teams)
+      app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -233,8 +233,8 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
     scenario 'user updates service provider but service provider updater fails' do
-      user = create(:user)
-      app = create(:service_provider, user: user)
+      user = create(:user, :with_teams)
+      app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -248,20 +248,6 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
-    end
-
-    context 'service provider does not have a user team' do
-      scenario 'user team defaults to nil' do
-        ut = create(:team)
-        user = create(:user, teams: [ut])
-
-        app = create(:service_provider, user: user)
-        login_as(user)
-
-        visit edit_service_provider_path(app)
-        click_on 'Update'
-        expect(page).to_not have_content(ut.name)
-      end
     end
   end
 

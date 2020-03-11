@@ -35,6 +35,12 @@ module ServiceProviderHelper
       file
   end
 
+  # Generate the list for the SP edit form, including a nil entry
+  def redirect_uri_list(service_provider = @service_provider)
+    values = service_provider.redirect_uris || []
+    values << nil
+  end
+
   #:reek:FeatureEnvy
   def yamlized_sp(service_provider)
     key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||

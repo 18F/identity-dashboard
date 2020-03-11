@@ -13,8 +13,13 @@ AllCops:
     - 'bin/**/*'
     - 'db/**/*'
     - 'spec/i18n_spec.rb'
+    - 'config/application.rb'
+    - 'config/boot.rb'
     - 'config/deploy.rb'
+    - 'config/initializers/backtrace_silencers.rb'
+    - 'config/initializers/content_security_policy.rb'
     - 'config/initializers/devise.rb'
+    - 'config/puma.rb'
     - 'db/migrate/*'
     - '**/Capfile'
   TargetRubyVersion: 2.3
