@@ -21,7 +21,7 @@ FactoryBot.define do
 
     trait :with_users_team do
       after(:build) do |service_provider|
-        team = service_provider.user&.teams[1] || create(:team)
+        team = service_provider.user&.teams[0]
         service_provider.team = team
       end
     end

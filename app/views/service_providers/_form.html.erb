@@ -136,10 +136,8 @@
                      class: 'usa-label' %>
     </div>
 
-    <% values = service_provider.redirect_uris || [] %>
-    <% values << nil %>
     <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
-      <% values.each do |value| %>
+      <% redirect_uri_list.each do |value| %>
         <%= text_field_tag 'service_provider[redirect_uris][]',
                            value,
                            id: 'service_provider_redirect_uris',
