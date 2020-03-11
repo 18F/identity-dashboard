@@ -25,7 +25,7 @@ class TeamPolicy < BasePolicy
   end
 
   def destroy?
-    in_team? || admin?
+    admin?
   end
 
   def create?

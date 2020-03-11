@@ -44,9 +44,9 @@ describe TeamPolicy do
   end
 
   permissions :destroy? do
-    it 'allows team member or admin to destroy' do
+    it 'allows only admin to destroy' do
       expect(TeamPolicy).to permit(admin_user, team)
-      expect(TeamPolicy).to permit(team_user, team)
+      expect(TeamPolicy).to_not permit(team_user, team)
       expect(TeamPolicy).to_not permit(other_user, team)
     end
   end
