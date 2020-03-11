@@ -36,7 +36,7 @@
       </div>
       <div class='mobile-lg:grid-col-2 text-right'>
         <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
-        <% if can_delete_team?(current_user, team) %>
+        <% if can_delete_team?(current_user) %>
           <%=
             link_to(
               'Delete',

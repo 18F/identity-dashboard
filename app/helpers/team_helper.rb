@@ -10,8 +10,8 @@ module TeamHelper
     whitelisted_user? || user.admin?
   end
 
-  def can_delete_team?(user, team)
-    team.users.include?(user) || user.admin?
+  def can_delete_team?(user)
+    user.admin?
   end
 
   def whitelisted_user?
