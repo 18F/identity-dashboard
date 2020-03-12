@@ -130,6 +130,7 @@ feature 'User teams CRUD' do
     login_as(admin)
 
     visit teams_path
+    find("a[href='#{edit_team_path(team)}']").click
     find("a[href='#{team_path(team)}']", text: 'Delete').click
 
     expect(current_path).to eq(teams_path)
