@@ -6,13 +6,15 @@ class ServiceProvidersController < AuthenticatedController
 
   def index; end
 
+  # rubocop:disable Metrics/AbcSize
   def create
     @service_provider = ServiceProvider.new(service_provider_params)
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    service_provider.logo_file.attach(service_provider_params[:logo_file]) if service_provider_params[:logo_file]
+    service_provider.logo_file.attach(logo_file_param) if logo_file_param
     validate_and_save_service_provider(:new)
   end
+  # rubocop:enable Metrics/AbcSize
 
   def update
     service_provider.assign_attributes(service_provider_params)
@@ -128,6 +130,10 @@ class ServiceProvidersController < AuthenticatedController
     params.require(:service_provider).permit(*permit_params)
   end
   # rubocop:enable MethodLength
+
+  def logo_file_param
+    service_provider_params[:logo_file]
+  end
 
   helper_method :service_provider
 end
