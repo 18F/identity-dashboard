@@ -6,6 +6,31 @@ describe ServiceProvider do
     it { should belong_to(:team) }
   end
 
+  describe 'Attachments' do
+    let(:service_provider) do
+      create(
+        :service_provider,
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
+      )
+    end
+    let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+
+    it 'accepts a valid logo attachment' do
+      service_provider.logo_file.attach(io: File.open(fixture_path + '/logo.svg'),
+                               filename: 'logo.svg',
+                               content_type: 'image/svg')
+      expect(service_provider.logo_file).to be_attached
+      expect(service_provider).to be_valid
+    end
+
+    it 'rejects an unsupported mime-type' do
+      service_provider.logo_file.attach(io: File.open(fixture_path + '/invalid.txt'),
+                               filename: 'invalid.txt',
+                               content_type: 'text/plain')
+      expect(service_provider).to_not be_valid
+    end
+  end
+
   describe 'Validations' do
     it { should validate_presence_of(:friendly_name) }
     it { should validate_presence_of(:issuer) }

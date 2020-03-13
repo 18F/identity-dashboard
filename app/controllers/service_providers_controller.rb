@@ -10,6 +10,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider = ServiceProvider.new(service_provider_params)
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
+    service_provider.logo_file.attach(service_provider_params[:logo_file]) if service_provider_params[:logo_file]
     validate_and_save_service_provider(:new)
   end
 
@@ -118,6 +119,7 @@ class ServiceProvidersController < AuthenticatedController
       :push_notification_url,
       :saml_client_cert,
       :sp_initiated_login_url,
+      :logo_file,
       attribute_bundle: [],
       redirect_uris: [],
       help_text: {},

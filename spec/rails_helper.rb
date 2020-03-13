@@ -19,6 +19,10 @@ RSpec.configure do |config|
     Warden.test_mode!
   end
 
+  config.after(:suite) do
+    remove_uploaded_files
+  end
+
   config.before(:each) do
     stub_request(:any, /idp.example.com/).to_rack(FakeSamlIdp)
   end
@@ -26,6 +30,10 @@ RSpec.configure do |config|
   config.after(:each) do
     Warden.test_reset!
   end
+end
+
+def remove_uploaded_files
+  FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
 end
 
 ActiveRecord::Migration.maintain_test_schema!

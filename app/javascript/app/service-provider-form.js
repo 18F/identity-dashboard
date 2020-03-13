@@ -66,4 +66,12 @@ $(function(){
   $("#add-redirect-uri-field").click(function() {
     $(".service_provider_redirect_uris input:last-child").clone().appendTo(".service_provider_redirect_uris");
   });
+
+  // This will need to change if we start uploading more files, e.g. certs, etc.
+  const input = document.querySelector('.input-file');
+  const preview = document.querySelector('.input-preview');
+  input.addEventListener('change', function () {
+    logo_file = input.files[0];
+    preview.textContent = logo_file.name;
+  });
 });

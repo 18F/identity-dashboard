@@ -14,6 +14,11 @@ module ServiceProviderHelper
     production_issuer
   ].freeze
 
+  SP_VALID_LOGO_MIME_TYPES = %w[
+    image/png
+    image/svg+xml
+  ].freeze
+
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
     if file.end_with?('.svg')
@@ -33,6 +38,10 @@ module ServiceProviderHelper
     file = file_name || 'generic.svg'
     'https://github.com/18F/identity-idp/blob/master/app/assets/images/sp-logos/' +
       file
+  end
+
+  def sp_valid_logo_mime_types
+    SP_VALID_LOGO_MIME_TYPES
   end
 
   # Generate the list for the SP edit form, including a nil entry
