@@ -39,13 +39,13 @@
 <% if Figaro.env.logo_upload_enabled == 'true' %>
   <h4><label for="logo_file">Uploaded Logo:</label></h4>
   <% if service_provider.logo_file.attached? %>
-      <p class="font-mono-xs margin-top-0" name="logo_file">
-          <%= image_tag service_provider.logo_file %>
-      </p>
+    <p class="font-mono-xs margin-top-0" name="logo_file">
+      <%= image_tag service_provider.logo_file %>
+    </p>
   <% else %>
-      <p class="font-mono-xs margin-top-0" name="logo_file">
-          'No file Uploaded'
-      </p>
+    <p class="font-mono-xs margin-top-0" name="logo_file">
+      'No file Uploaded'
+    </p>
   <% end %>
 <% end %>
 
