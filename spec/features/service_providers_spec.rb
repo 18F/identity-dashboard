@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 feature 'Service Providers CRUD' do
+  before do
+    allow(Figaro.env).to receive(:logo_upload_enabled).and_return('false')
+  end
+
   context 'Regular user' do
     scenario 'can create service provider' do
       user = create(:user, :with_teams)
