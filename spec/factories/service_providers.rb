@@ -25,6 +25,5 @@ FactoryBot.define do
         service_provider.team = team
       end
     end
-
   end
 end
