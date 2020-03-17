@@ -81,35 +81,9 @@
                  input_html: { class: 'usa-input' },
                  hint: 'The name of the <a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos" target="_blank">logo image file</a> in the IdP. The login.gov team can add this image for you.'.html_safe %>
 
-  <%= content_tag :div, class: 'mb2 json optional service_provider_logo_file' do -%>
-    <%= form.label :logo_file,
-                   label: 'Upload your logo',
-                   class: 'usa-label' %>
-    <%= form.file_field :logo_file,
-                   class: 'input-file',
-                   accept: sp_valid_logo_mime_types %>
-    <% if service_provider.logo_file.attached? %>
-      <p class="font-mono-xs margin-top-0" name="logo_file">
-        <%= image_tag service_provider.logo_file %>
-      </p>
-    <% end %>
-    <%= content_tag :div, class: 'input-file-wrapper' do -%>
-      <%= form.label :logo_file,
-                     label: 'Choose a file',
-                     class: 'usa-button file-input-button',
-                     id: 'logo-file-button' %>
-      <%= content_tag :div,
-                      "No file selected",
-                      class: 'input-preview' %>
-    <% end %>
-    <%= form.hint 'Choose a file to upload as your logo. See <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
-    <% if service_provider.errors[:logo_file].present? %>
-      <%= content_tag :div,
-                      'ERROR: ' + service_provider.errors[:logo_file].join('|'),
-                      class: 'usa-error-message' %>
-    <% end %>
+  <% if Figaro.env.logo_upload_enabled == 'true' %>
+    <%= render 'logo_upload', form: form, service_provider: service_provider %>
   <% end %>
-
 
   <%= form.input :saml_client_cert,
                  label: 'Public certificate',

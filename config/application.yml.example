@@ -2,6 +2,7 @@ test: &default
   certificate_expiration_warning_period: '60'
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
+  logo_upload_enabled: 'true'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
   saml_sp_certificate: |
@@ -101,8 +102,9 @@ test: &default
 
 development:
   <<: *default
-  idp_sp_url: 'http://localhost:3000/api/service_provider'
   dashboard_api_token: 'test_token'
+  idp_sp_url: 'http://localhost:3000/api/service_provider'
+  logo_upload_enabled: 'true'
 
 # The entire application.yml is overwritten in production, so don't set
 # anything here.
