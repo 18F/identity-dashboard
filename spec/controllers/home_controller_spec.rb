@@ -15,7 +15,7 @@ describe HomeController do
     context 'when the user is signed in' do
       it 'has a redirect response' do
         get :index
-        expect(response.status).to eq(302)
+        expect(response.status).to eq(200)
       end
     end
 

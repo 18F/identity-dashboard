@@ -6,7 +6,7 @@ module Users
       if @user
         @user.update!(uuid: omniauth_info['uuid'])
         sign_in @user
-        redirect_to teams_path
+        redirect_to root_path
 
       # Can't find an account, tell user to contact login.gov team
       else
