@@ -12,6 +12,9 @@ class ServiceProvider < ApplicationRecord
 
   has_one :agency, through: :team
 
+  has_one_attached :logo_file
+  validate :logo_file_mime_type
+
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
 
@@ -98,4 +101,15 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
+
+  def logo_file_mime_type
+    return unless logo_file.attached?
+    return if mime_type_valid?
+    errors.add(:logo_file, "The file you uploaded (#{logo_file.filename}) is not a PNG or SVG")
+    logo_file.purge
+  end
+
+  def mime_type_valid?
+    logo_file.content_type.in?(ServiceProviderHelper::SP_VALID_LOGO_MIME_TYPES)
+  end
 end

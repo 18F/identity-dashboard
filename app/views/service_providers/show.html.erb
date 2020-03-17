@@ -29,8 +29,25 @@
       <p class="font-mono-xs margin-top-0" name="production_issuer"><%=  service_provider.production_issuer %></p>
     <% end %>
 
-<h4><label for="logo">Logo:</label></h4>
-<p class="font-mono-xs margin-top-0" name="logo"><a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link"><%= service_provider.logo %></a></p>
+<% if Figaro.env.logo_upload_enabled == 'true' %>
+  <h4><label for="logo_file">Uploaded Logo:</label></h4>
+  <% if service_provider.logo_file.attached? %>
+    <p class="font-mono-xs margin-top-0" name="logo_file">
+      <%= image_tag service_provider.logo_file %>
+    </p>
+  <% else %>
+    <p class="font-mono-xs margin-top-0" name="logo_file">
+      'No file Uploaded'
+    </p>
+  <% end %>
+<% else %>
+  <h4><label for="logo">Logo:</label></h4>
+  <p class="font-mono-xs margin-top-0" name="logo">
+    <a href="https://github.com/18F/identity-idp/tree/master/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link">
+      <%= service_provider.logo %>
+    </a>
+  </p>
+<% end %>
 
     <% if service_provider.identity_protocol == 'saml' %>
     <h4><label for="acs_url">Assertion Consumer Service URL:</label></h4>
