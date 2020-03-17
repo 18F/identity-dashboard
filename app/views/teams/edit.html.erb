@@ -4,6 +4,20 @@
 <%= simple_form_for(@team, html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: false, extra_message: t('headings.teams.temporary_warning_team_user') %>
-  <%= form.button :submit, 'Update', :class => "usa-button" %>
-<% end %>
 
+  <% if can_delete_team?(current_user) %>
+    <%= link_to(
+            'Delete',
+            team_path(@team),
+            method: :delete,
+            data: { confirm: 'Are you sure you want to delete this team?' },
+            class: 'usa-button usa-button--danger float-left button-delete',
+            )
+    %>
+  <% end %>
+
+  <%= form.button :submit, 'Update', class: "usa-button float-left" %>
+
+  <%= link_to t('forms.buttons.cancel'), teams_path,
+                class: 'usa-button usa-button--outline float-left button-secondary', method: :get %>
+<% end %>
