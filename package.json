@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@rails/webpacker": "^4.2.0",
-    "identity-style-guide": "^2.2.2",
+    "identity-style-guide": "^2.2.3",
     "jquery": "^3.4.1",
     "jquery-ujs": "^1.2.2",
     "serialize-javascript": "^2.1.2",
