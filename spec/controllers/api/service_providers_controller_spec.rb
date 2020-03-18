@@ -74,14 +74,4 @@ describe Api::ServiceProvidersController do
       end
     end
   end
-
-  describe '#logo' do
-    context 'when the service provider has a logo' do
-      it 'renders the logo'
-    end
-
-    context 'when the service provider does not have a logo' do
-      it 'does not render the logo'
-    end
-  end
 end
