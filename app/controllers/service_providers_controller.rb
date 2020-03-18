@@ -41,16 +41,6 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = ServiceProvider.all.sort_by(&:created_at).reverse
   end
 
-  def logo
-    logo_file = service_provider.logo_file
-    return render(plain: 'Not Found', status: :not_found) unless logo_file.attached?
-    send_data(
-      logo_file.attachment,
-      type: logo_file.content_type,
-      disposition: :inline
-    )
-  end
-
   private
 
   def authorize_service_provider
