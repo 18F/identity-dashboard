@@ -11,6 +11,8 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :ial,
     :issuer,
     :logo,
+    :logo_file_blob_key,
+    :logo_file_blob_content_type,
     :redirect_uris,
     :return_to_sp_url,
     :failure_to_proof_url,
@@ -27,6 +29,14 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def cert
     object.saml_client_cert
+  end
+
+  def logo_file_blob_key
+    object.logo_file&.attachment&.blob&.key
+  end
+
+  def logo_file_blob_content_type
+    object.logo_file&.attachment&.blob&.content_type
   end
 
   def updated_at
