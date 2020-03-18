@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
+  get '/service_providers/:id/logo' => 'service_provider_logos#show', as: :service_provider_logo
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
   resources :service_providers

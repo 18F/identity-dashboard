@@ -1,4 +1,6 @@
 test: &default
+  aws_region: us-west-2
+  aws_logo_bucket: 'changeme'
   certificate_expiration_warning_period: '60'
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
@@ -104,7 +106,6 @@ development:
   <<: *default
   dashboard_api_token: 'test_token'
   idp_sp_url: 'http://localhost:3000/api/service_provider'
-  logo_upload_enabled: 'true'
 
 # The entire application.yml is overwritten in production, so don't set
 # anything here.
