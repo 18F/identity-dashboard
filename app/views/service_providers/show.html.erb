@@ -33,7 +33,7 @@
   <h4><label for="logo_file">Uploaded Logo:</label></h4>
   <% if service_provider.logo_file.attached? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
-      <%= image_tag service_provider_logo_path(service_provider.id) %>
+      <%= image_tag url_for(service_provider.logo_file) %>
     </p>
   <% else %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
