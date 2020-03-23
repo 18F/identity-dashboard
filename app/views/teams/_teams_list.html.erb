@@ -26,11 +26,11 @@
         <p class='margin-y-2'>
           <strong>
             <%= 'User'.pluralize(team.users.count) %>
-            <%= "[#{team.users.count}]:" if team.users.count > 1 %>
+            <%= "[#{team.users.count}]" if team.users.count > 1 %><%= ":" if team.users.count > 1 && current_user.admin? %>
           </strong>
           <br/>
-          <% team.users.each do |user| %>
-            <%= user.email %>
+          <% if current_user.admin? %>
+            <%= team.users.map{ |user| link_to(user.email, edit_user_path(user.id), class:'text-primary text-no-underline' ) }.join(", ").html_safe %>
           <% end %>
         </p>
       </div>
