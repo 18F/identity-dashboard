@@ -3,11 +3,7 @@ class HomeController < ApplicationController
     render :index and return unless user_signed_in?
 
     includes = %i[users service_providers agency]
-    @teams = if current_user.admin?
-               Team.includes(*includes).all
-             else
-               current_user.teams.includes(*includes).all
-             end
+    @teams = current_user.teams.includes(*includes).all
 
     render 'home/authenticated/index'
   end
