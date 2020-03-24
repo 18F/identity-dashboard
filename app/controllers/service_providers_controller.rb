@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 # :reek:InstanceVariableAssumption
 class ServiceProvidersController < AuthenticatedController
-  before_action :authorize_service_provider, only: %i[update edit show destroy]
+  before_action :authorize_service_provider
   before_action :authorize_approval, only: [:update]
 
   def index; end
@@ -44,7 +44,8 @@ class ServiceProvidersController < AuthenticatedController
   private
 
   def authorize_service_provider
-    authorize service_provider
+    authorize service_provider if %i[update edit show destroy].include?(action_name.to_sym)
+    authorize ServiceProvider if action_name == 'all'
   end
 
   def service_provider

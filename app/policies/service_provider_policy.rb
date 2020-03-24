@@ -34,6 +34,10 @@ class ServiceProviderPolicy < BasePolicy
     true
   end
 
+  def all?
+    admin?
+  end
+
   private
 
   def owner?

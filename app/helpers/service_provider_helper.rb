@@ -74,6 +74,8 @@ module ServiceProviderHelper
     sp_json.map do |config_key, value|
       if %w[agency_id default_help_text help_text attribute_bundle redirect_uris].include?(config_key)
         [config_key, value]
+      elsif config_key == 'saml_client_cert'
+        ['cert', value]
       else
         [config_key, "'#{value}'"]
       end

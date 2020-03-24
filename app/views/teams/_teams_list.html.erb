@@ -14,13 +14,11 @@
         <p class='margin-y-2'>
           <strong>
             <%= 'App'.pluralize(team.service_providers.count) %>
-            <%= "[#{team.service_providers.count}]:" if team.service_providers.count > 1 %>
+            <%= "[#{team.service_providers.count}]:" %>
           </strong>
           <br/>
           <% team.service_providers.each do |service_provider| %>
-            <span class='usa-tag bg-primary-lighter text-bold margin-right-1 padding-x-1 padding-y-05 text-no-wrap'>
-              <%= link_to service_provider.friendly_name, service_provider, class: 'text-primary text-no-underline' %>
-            </span>
+            <%= link_to service_provider.friendly_name, service_provider, class: "usa-button usa-button--inverse usa-button--tiny margin-top-1" %>
           <% end %>
         </p>
         <p class='margin-y-2'>
