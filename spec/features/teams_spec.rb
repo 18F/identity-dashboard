@@ -56,7 +56,7 @@ feature 'User teams CRUD' do
     create(:agency, name: 'USDS')
     login_as(admin)
 
-    visit teams_path
+    visit teams_all_path
     find("a[href='#{edit_team_path(org)}']").click
     expect(current_path).to eq(edit_team_path(org))
 
@@ -82,7 +82,7 @@ feature 'User teams CRUD' do
     sp = create(:service_provider, team: team)
 
     login_as(admin)
-    visit teams_path
+    visit teams_all_path
 
     expect(page).to have_content(org1.name)
     expect(page).to have_content(org2.name)
@@ -101,7 +101,7 @@ feature 'User teams CRUD' do
       create(:service_provider, team: team)
 
       login_as(admin)
-      visit teams_path
+      visit teams_all_path
       find("a[href='#{team_path(team)}']", text: team.name).click
 
       expect(current_path).to eq(team_path(team))
@@ -129,7 +129,7 @@ feature 'User teams CRUD' do
     team = create(:team)
     login_as(admin)
 
-    visit teams_path
+    visit teams_all_path
     find("a[href='#{edit_team_path(team)}']").click
     find("a[href='#{team_path(team)}']", text: 'Delete').click
 

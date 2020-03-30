@@ -102,6 +102,11 @@
                   <span>Apps</span>
                 </a>
               </li>
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link" href="<%= teams_path %>">
+                  <span>Teams</span>
+                </a>
+              </li>
               <% if current_user.admin? %>
                 <li class="usa-nav__primary-item">
                   <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-1">
@@ -109,24 +114,18 @@
                   </button>
                   <ul id="unique-id-1" class="usa-nav__submenu">
                     <li class="usa-nav__submenu-item">
-                      <a href="/service_providers/all">Apps</a>
+                      <a href="<%= service_providers_all_path %>">All apps</a>
                     </li>
                     <li class="usa-nav__submenu-item">
-                      <a href="/users">Users</a>
+                      <a href="<%= users_path %>">Users</a>
                     </li>
                     <li class="usa-nav__submenu-item">
-                      <a href="/teams">Teams</a>
+                      <a href=<%= teams_all_path %>>All teams</a>
                     </li>
                     <li class="usa-nav__submenu-item">
-                      <a href="/emails">Emails</a>
+                      <a href="<%= emails_path %>">Emails</a>
                     </li>
                   </ul>
-                </li>
-              <% else %>
-                <li class="usa-nav__primary-item">
-                  <a class="usa-nav__link" href="<%= teams_path %>">
-                    <span>Teams</span>
-                  </a>
                 </li>
               <% end %>
               <li class="usa-nav__primary-item">

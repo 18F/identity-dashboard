@@ -1,6 +1,6 @@
 # :reek:InstanceVariableAssumption
 class TeamsController < AuthenticatedController
-  before_action -> { authorize Team }, only: %i[index create new]
+  before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
 
   def new
@@ -43,11 +43,14 @@ class TeamsController < AuthenticatedController
 
   def index
     includes = %i[users service_providers agency]
-    @teams = if current_user.admin?
-               Team.includes(*includes).all
-             else
-               current_user.teams.includes(*includes).all
-             end
+    @teams = current_user.teams.includes(*includes).all
+  end
+
+  def all
+    includes = %i[users service_providers agency]
+    @teams = Team.includes(*includes).all
+
+    render 'teams/all'
   end
 
   def show; end

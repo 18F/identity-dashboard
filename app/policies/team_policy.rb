@@ -36,6 +36,10 @@ class TeamPolicy < BasePolicy
     whitelisted_user? || admin?
   end
 
+  def all?
+    admin?
+  end
+
   private
 
   def admin?
