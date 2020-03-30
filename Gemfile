@@ -67,13 +67,13 @@ end
 group :test do
   gem 'capybara-selenium'
   gem 'climate_control'
-  gem 'codeclimate-test-reporter', require: nil
+  gem 'codeclimate-test-reporter', '>= 1.0.8', require: nil
   gem 'database_cleaner'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.2'
   gem 'reek'
   gem 'shoulda-matchers'
-  gem 'simplecov'
+  gem 'simplecov', '>= 0.13.0'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
   gem 'webmock'
