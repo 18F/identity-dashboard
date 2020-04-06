@@ -90,7 +90,6 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  # :reek:UtilityFunction
   # rubocop:disable Rails/TimeZone
   def null_certificate
     time = Time.new(0)

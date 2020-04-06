@@ -59,11 +59,6 @@ plugins:
       - XXX
   pep8:
     enabled: true
-  reek:
-    enabled: true
-    exclude_patterns:
-    - 'spec/**/*'
-    - 'db/**/*'
   rubocop:
     enabled: true
     channel: rubocop-0-54

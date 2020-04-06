@@ -1,4 +1,3 @@
-#:reek:UtilityFunction
 module ServiceProviderHelper
   SP_PROTECTED_ATTRIBUTES = %w[
     issuer
@@ -50,7 +49,6 @@ module ServiceProviderHelper
     values << nil
   end
 
-  #:reek:FeatureEnvy
   def yamlized_sp(service_provider)
     key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||
                       service_provider.issuer
@@ -60,7 +58,6 @@ module ServiceProviderHelper
 
   private
 
-  #:reek:FeatureEnvy, :reek:DuplicateMethodCall
   def config_hash(service_provider)
     clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)

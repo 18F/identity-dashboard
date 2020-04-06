@@ -1,5 +1,4 @@
 # rubocop:disable Metrics/ClassLength
-# :reek:InstanceVariableAssumption
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider
   before_action :authorize_approval, only: [:update]
