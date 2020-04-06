@@ -24,14 +24,6 @@ deploys:
     env: 'int'
     host: 'https://int-identity-saml-sinatra.app.cloud.gov/'
 
-  # Quality assurance
-  - app: 'identity-idp'
-    env: 'qa'
-    host: 'https://idp.qa.identitysandbox.gov'
-  - app: 'identity-dashboard'
-    env: 'qa'
-    host: 'https://dashboard.qa.identitysandbox.gov'
-
   # Development
   - app: 'identity-idp'
     env: 'dev'
@@ -39,3 +31,9 @@ deploys:
   - app: 'identity-dashboard'
     env: 'dev'
     host: 'https://dashboard.dev.identitysandbox.gov'
+  - app: 'identity-oidc-sinatra'
+    env: 'dev'
+    host: 'https://dev-identity-oidc-sinatra.app.cloud.gov/'
+  - app: 'identity-saml-sinatra'
+    env: 'dev'
+    host: 'https://dev-identity-saml-sinatra.app.cloud.gov/'
