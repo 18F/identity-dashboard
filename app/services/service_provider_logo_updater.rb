@@ -4,6 +4,8 @@ require 'subprocess'
 class ServiceProviderLogoUpdater
   include ServiceProviderHelper
 
+  IDP_CONFIG_CHECKOUT_NAME = 'identity-idp-config'.freeze
+
   # :reek:TooManyStatements
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def import_logos_to_active_storage
@@ -13,7 +15,7 @@ class ServiceProviderLogoUpdater
     idp_config.each do |sp|
       issuer = sp['issuer']
       logo_name = sp['logo']
-      logger.info('~~ ' + issuer.to_s + ' logo: ' + logo_name.to_s)
+      logger.info(issuer.to_s + ' logo: ' + logo_name.to_s)
       next unless logo_name.present? && valid_image_type?(logo_name)
 
       service_provider = ServiceProvider.find_by(issuer: issuer)
@@ -46,7 +48,6 @@ class ServiceProviderLogoUpdater
   end
 
   def handle_error(error)
-    # ::NewRelic::Agent.notice_error(error)
     logger.error(error)
   end
 
@@ -65,15 +66,17 @@ class ServiceProviderLogoUpdater
   #############################################################################
 
   def update_repo
-    cmd = ['cd', repo_dir, ';', 'git', 'pull']
-    logger.info(cmd.join(' '))
-    Subprocess.check_call(cmd)
+    Dir.chdir(repo_dir) do
+      cmd = %w[git pull]
+      logger.info(cmd.join(' '))
+      Subprocess.check_call(cmd)
+    end
   end
 
   def clone_repo
-    repo_url = ENV.fetch('IDP_private_config_repo',
+    repo_url = ENV.fetch('idp_private_config_repo',
                          'git@github.com:18F/identity-idp-config.git')
-    cmd = ['git', 'clone', repo_url, repo_dir]
+    cmd = ['git', 'clone', repo_url.to_s, repo_dir.to_s]
     logger.info(cmd.join(' '))
     Subprocess.check_call(cmd)
   end
@@ -93,7 +96,7 @@ class ServiceProviderLogoUpdater
   #############################################################################
 
   def repo_dir
-    @repo_dir ||= Rails.root.join(idp_config_checkout_name)
+    @repo_dir ||= Rails.root.join(IDP_CONFIG_CHECKOUT_NAME)
   end
 
   # :reek:UtilityFunction
@@ -112,12 +115,5 @@ class ServiceProviderLogoUpdater
     logger = Logger.new(STDOUT)
     logger.progname = 'import_logos_to_active_storage'
     logger
-  end
-
-  #############################################################################
-
-  # :reek:UtilityFunction
-  def idp_config_checkout_name
-    'identity-idp-config'.freeze
   end
 end
