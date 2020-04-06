@@ -19,16 +19,8 @@ class ServiceProviderLogoUpdater
       service_provider = ServiceProvider.find_by(issuer: issuer)
       next unless service_provider
 
-      logo_path = Rails.root.join(
-        'identity-idp-config',
-        'public',
-        'assets',
-        'images',
-        'sp-logos',
-        logo_name
-      )
       service_provider.logo_file.attach(
-        io: File.open(logo_path),
+        io: File.open(logo_path(logo_name)),
         filename: logo_name,
         content_type: mime_type(logo_name)
       )
@@ -56,6 +48,18 @@ class ServiceProviderLogoUpdater
   def handle_error(error)
     # ::NewRelic::Agent.notice_error(error)
     logger.error(error)
+  end
+
+  # :reek:UtilityFunction
+  def logo_path(filename)
+    Rails.root.join(
+      'identity-idp-config',
+      'public',
+      'assets',
+      'images',
+      'sp-logos',
+      filename
+    )
   end
 
   #############################################################################
