@@ -1,5 +1,4 @@
 class ServiceProviderUpdater
-  # :reek:TooManyStatements
   def self.ping
     resp = HTTParty.post(idp_url, headers: token_header)
     status_code = resp.code

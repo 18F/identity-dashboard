@@ -1,4 +1,3 @@
-# :reek:InstanceVariableAssumption
 class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
@@ -61,7 +60,6 @@ class TeamsController < AuthenticatedController
     @team ||= Team.find(params[:id])
   end
 
-  # :reek:DuplicateMethodCall
   def add_new_user
     new_user_email = new_user_params[:email]
     return if new_user_email.blank?
