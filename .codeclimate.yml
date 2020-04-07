@@ -69,3 +69,4 @@ exclude_patterns:
   - 'public/'
   - 'spec/'
   - 'db/'
+  - 'app/services/service_provider_logo_updater.rb'
