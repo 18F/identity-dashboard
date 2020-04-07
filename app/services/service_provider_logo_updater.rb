@@ -6,7 +6,6 @@ class ServiceProviderLogoUpdater
 
   IDP_CONFIG_CHECKOUT_NAME = 'identity-idp-config'.freeze
 
-  # :reek:TooManyStatements
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def import_logos_to_active_storage
     return unless Figaro.env.logo_upload_enabled
@@ -32,7 +31,7 @@ class ServiceProviderLogoUpdater
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-  #############################################################################
+  private
 
   # Clone the private-but-not-secret git repo
   def git_latest_idp_config
@@ -51,7 +50,6 @@ class ServiceProviderLogoUpdater
     logger.error(error)
   end
 
-  # :reek:UtilityFunction
   def logo_path(filename)
     Rails.root.join(
       'identity-idp-config',
@@ -99,7 +97,6 @@ class ServiceProviderLogoUpdater
     @repo_dir ||= Rails.root.join(IDP_CONFIG_CHECKOUT_NAME)
   end
 
-  # :reek:UtilityFunction
   def dashboard_sp_url
     if LoginGov::Hostdata.in_datacenter?
       env = LoginGov::Hostdata.env
@@ -110,7 +107,6 @@ class ServiceProviderLogoUpdater
     end
   end
 
-  # :reek:UtilityFunction
   def default_logger
     logger = Logger.new(STDOUT)
     logger.progname = 'import_logos_to_active_storage'
