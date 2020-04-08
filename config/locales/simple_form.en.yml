@@ -5,7 +5,7 @@ en:
       service_provider:
        logo: 'generic.svg'
     required:
-      html: '<abbr class="text-secondary-dark" title="required">(*required)</abbr>'
+      html: '<abbr class="text-secondary-dark">(*required)</abbr>'
     labels:
       required: required
       service_provider:
