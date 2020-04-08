@@ -122,6 +122,7 @@ class ServiceProvidersController < AuthenticatedController
       :saml_client_cert,
       :sp_initiated_login_url,
       :logo_file,
+      :environment,
       attribute_bundle: [],
       redirect_uris: [],
       help_text: {},
