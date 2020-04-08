@@ -9,6 +9,8 @@
     "identity-style-guide": "^2.2.3",
     "jquery": "^3.4.1",
     "jquery-ujs": "^1.2.2",
+    "kind-of": "^6.0.3",
+    "minimist": "^1.2.3",
     "serialize-javascript": "^2.1.2",
     "webpack-merge": "^4.2.2"
   },

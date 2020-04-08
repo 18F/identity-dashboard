@@ -1,4 +1,3 @@
-#:reek:UtilityFunction
 module ServiceProviderHelper
   SP_PROTECTED_ATTRIBUTES = %w[
     issuer
@@ -14,14 +13,23 @@ module ServiceProviderHelper
     production_issuer
   ].freeze
 
-  SP_VALID_LOGO_MIME_TYPES = %w[
-    image/png
-    image/svg+xml
+  PNG_MIME_TYPE = 'image/png'.freeze
+  SVG_MIME_TYPE = 'image/svg+xml'.freeze
+  SP_VALID_LOGO_MIME_TYPES = [
+    PNG_MIME_TYPE,
+    SVG_MIME_TYPE,
+  ].freeze
+
+  PNG_EXT = '.png'.freeze
+  SVG_EXT = '.svg'.freeze
+  SP_VALID_LOGO_EXTENSIONS = [
+    PNG_EXT,
+    SVG_EXT,
   ].freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
-    if file.end_with?('.svg')
+    if file.downcase.end_with?('.svg')
       link_to(file, sp_logo_preview_path(file))
     else
       image_tag(sp_logo_path(file))
@@ -44,13 +52,25 @@ module ServiceProviderHelper
     SP_VALID_LOGO_MIME_TYPES
   end
 
+  def valid_image_type?(filename)
+    SP_VALID_LOGO_EXTENSIONS.each do |ext|
+      return true if filename.downcase.end_with? ext
+    end
+  end
+
+  def mime_type(filename)
+    name = filename.downcase
+    return PNG_MIME_TYPE if name.end_with? PNG_EXT
+    return SVG_MIME_TYPE if name.end_with? SVG_EXT
+    nil
+  end
+
   # Generate the list for the SP edit form, including a nil entry
   def redirect_uri_list(service_provider = @service_provider)
     values = service_provider.redirect_uris || []
     values << nil
   end
 
-  #:reek:FeatureEnvy
   def yamlized_sp(service_provider)
     key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||
                       service_provider.issuer
@@ -60,7 +80,6 @@ module ServiceProviderHelper
 
   private
 
-  #:reek:FeatureEnvy, :reek:DuplicateMethodCall
   def config_hash(service_provider)
     clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)

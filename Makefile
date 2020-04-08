@@ -18,8 +18,6 @@ lint:
 	bundle exec rubocop -R
 	@echo "--- slim-lint ---"
 	bundle exec slim-lint app/views
-	@echo "--- reek ---"
-	bundle exec reek
 
 test:
 	bundle exec rspec

@@ -27,3 +27,6 @@ yarn-debug.log*
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore the idp-config dir if it has been checked out
+/identity-idp-config/

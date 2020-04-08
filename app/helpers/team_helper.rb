@@ -1,4 +1,3 @@
-#:reek:UtilityFunction
 module TeamHelper
   WHITELISTED_DOMAINS = %w[.mil .gov .fed.us].freeze
 
