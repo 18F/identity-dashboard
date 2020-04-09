@@ -109,6 +109,7 @@ class ServiceProvidersController < AuthenticatedController
       :assertion_consumer_logout_service_url,
       :block_encryption,
       :description,
+      :environment,
       :friendly_name,
       :group_id,
       :ial,

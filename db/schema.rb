@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_022438) do
+ActiveRecord::Schema.define(version: 2020_04_09_203440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_022438) do
     t.string "failure_to_proof_url"
     t.string "push_notification_url"
     t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
+    t.integer "environment", default: 0
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
