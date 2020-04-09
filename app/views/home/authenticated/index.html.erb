@@ -22,10 +22,8 @@
         class: "usa-button margin-top-4 margin-bottom-4",
         ) if whitelisted_user?
   %>
-
   <h1 class='margin-bottom-3'>My teams</h1>
   <%= render 'teams/teams_list' %>
-
 <% else %>
   <%= render "teams/no_teams" %>
 <% end %>
