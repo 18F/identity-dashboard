@@ -64,6 +64,7 @@ en:
     service_provider_saved: Success! You have saved %{issuer}
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
     service_providers_refreshed: Success! Service providers publish request has been sent.
+    user_deleted: Success! You have deleted %{email}
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out
