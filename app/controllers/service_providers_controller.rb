@@ -10,7 +10,10 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider = ServiceProvider.new(service_provider_params)
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    service_provider.logo_file.attach(logo_file_param) if logo_file_param
+    if logo_file_param
+      service_provider.logo_file.attach(logo_file_param)
+      service_provider.logo = service_provider.logo_file.filename.to_s
+    end
     validate_and_save_service_provider(:new)
   end
   # rubocop:enable Metrics/AbcSize
