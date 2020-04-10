@@ -26,7 +26,7 @@
                    label: 'Use this app for:',
                    class: 'usa-label' %>
     <%= form.collection_radio_buttons(:environment,
-                                      { 'Testing': 0, 'To go live in production': 1 },
+                                      { 'Testing' => 'int', 'To go live in production' => 'prod' },
                                       :last, :first,
                                       collection_wrapper_tag: :ul,
                                       collection_wrapper_class: 'usa-input-list',

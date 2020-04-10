@@ -17,7 +17,7 @@ class ServiceProvider < ApplicationRecord
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
-  enum environment: { 'Testing': 0, 'To go live in production': 1 }
+  enum environment: { 'Testing' => 'int', 'To go live in production' => 'prod' }
 
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?

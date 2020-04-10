@@ -75,6 +75,9 @@ $(function(){
       logo_file = input.files[0];
       preview.textContent = logo_file.name;
     });
-    $('input[id="service_provider_environment_0"]').attr('checked', true);
   }
+
+  $(document).ready(function() {
+    $('input[id="service_provider_environment_int"]').attr('checked', true);
+  });
 });
