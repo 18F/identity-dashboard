@@ -111,4 +111,25 @@ describe UsersController do
       end
     end
   end
+
+  describe '#destroy' do
+    let(:user_to_delete) { create(:user) }
+
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+        delete :destroy, params: { id: user_to_delete.id }
+      end
+
+      it 'has a redirect response' do
+        expect(response.status).to eq(302)
+      end
+    end
+
+    context 'when the user is not an admin'
+    it 'has an error response' do
+      delete :destroy, params: { id: user_to_delete.id }
+      expect(response.status).to eq(401)
+    end
+  end
 end
