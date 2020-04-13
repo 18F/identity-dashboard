@@ -1,6 +1,6 @@
 require 'capybara/rspec'
+require 'webdrivers/chromedriver'
 require 'rack_session_access/capybara'
-require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
