@@ -25,6 +25,10 @@ class UserPolicy < BasePolicy
     admin?
   end
 
+  def destroy?
+    admin?
+  end
+
   def none?
     true
   end
