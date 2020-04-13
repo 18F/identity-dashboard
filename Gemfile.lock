@@ -524,7 +524,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma
-  pundit
+  pundit (>= 2.1.0)
   rack-canonical-host
   rack-timeout
   rack_session_access
