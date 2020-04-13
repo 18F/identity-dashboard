@@ -1,4 +1,4 @@
-class AddUsersPolicy < BasePolicy
+class ManageUsersPolicy < BasePolicy
   attr_reader :current_user, :team
 
   def initialize(current_user, team)

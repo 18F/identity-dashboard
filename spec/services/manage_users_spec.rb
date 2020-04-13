@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AddUsers do
+describe ManageUsers do
   let(:team) { create(:team) }
   let(:user_already_on_the_team) { create(:user, teams: [team]) }
   let(:user_not_already_on_the_team) { create(:user) }

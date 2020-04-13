@@ -1,5 +1,5 @@
-class AddUsersController < AuthenticatedController
-  before_action -> { authorize team, policy_class: AddUsersPolicy }
+class ManageUsersController < AuthenticatedController
+  before_action -> { authorize team, policy_class: ManageUsersPolicy }
 
   def new; end
 

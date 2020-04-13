@@ -1,4 +1,4 @@
-class AddUsers
+class ManageUsers
   attr_reader
 
   def initialize(team:, user_emails:)
