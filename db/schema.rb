@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_022438) do
+ActiveRecord::Schema.define(version: 2020_04_08_172357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,16 @@ ActiveRecord::Schema.define(version: 2020_03_12_022438) do
     t.text "description", default: ""
     t.integer "agency_id"
     t.index ["name"], name: "index_groups_on_name", unique: true
+  end
+
+  create_table "help_texts", force: :cascade do |t|
+    t.bigint "service_provider_id"
+    t.json "sign_in", default: {}
+    t.json "sign_up", default: {}
+    t.json "forgot_password", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_provider_id"], name: "index_help_texts_on_service_provider_id"
   end
 
   create_table "service_providers", force: :cascade do |t|
