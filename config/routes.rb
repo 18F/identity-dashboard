@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   resources :users
 
   get '/teams/all' => 'teams#all'
-  resources :teams
+  resources :teams do
+    resources :add_users, only: %i[new create]
+  end
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
