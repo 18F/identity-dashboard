@@ -35,9 +35,13 @@ class TeamsController < AuthenticatedController
   end
 
   def destroy
-    return unless @team.destroy
-    flash[:success] = 'Success'
-    redirect_to teams_path
+    if @team.service_providers.empty? && @team.destroy
+      flash[:success] = 'Success'
+      redirect_to teams_path and return
+    end
+
+    flash[:warning] = I18n.t('notices.team_delete_failed')
+    redirect_back(fallback_location: teams_path) and return
   end
 
   def index
