@@ -5,21 +5,17 @@ class ServiceProvidersController < AuthenticatedController
 
   def index; end
 
-  # rubocop:disable Metrics/AbcSize
   def create
     @service_provider = ServiceProvider.new(service_provider_params)
+    attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if logo_file_param
-      service_provider.logo_file.attach(logo_file_param)
-      service_provider.logo = service_provider.logo_file.filename.to_s
-    end
     validate_and_save_service_provider(:new)
   end
-  # rubocop:enable Metrics/AbcSize
 
   def update
     service_provider.assign_attributes(service_provider_params)
+    attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
   end
@@ -136,6 +132,37 @@ class ServiceProvidersController < AuthenticatedController
 
   def logo_file_param
     service_provider_params[:logo_file]
+  end
+
+  def attach_logo_file
+    return unless logo_file_param
+
+    service_provider.logo_file.attach(logo_file_param)
+    service_provider.logo = service_provider.logo_file.filename.to_s
+    push_logo_content_type
+  end
+
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def push_logo_content_type
+    return unless Rails.application.config.active_storage.service == :amazon
+
+    # Set the content-type on the S3 blob or SVG's won't work
+    bucket = Figaro.env.aws_logo_bucket
+    key = service_provider.logo_file.key
+    content_type = service_provider.logo_file.content_type
+    s3.copy_object(
+      bucket:             bucket,
+      content_type:       content_type,
+      copy_source:        "#{bucket}/#{key}",
+      key:                key,
+      metadata_directive: 'REPLACE',
+      acl:                'public-read'
+    )
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def s3
+    @s3 ||= Aws::S3::Client.new
   end
 
   helper_method :service_provider

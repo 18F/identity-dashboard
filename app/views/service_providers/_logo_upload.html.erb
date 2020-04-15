@@ -7,7 +7,7 @@
                   accept: sp_valid_logo_mime_types %>
   <% if service_provider.logo_file.attached? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
-      <%= image_tag url_for(service_provider.logo_file) %>
+      <%= image_tag url_for(service_provider.logo_file), height: '120px' %>
     </p>
   <% end %>
   <div class='input-file-wrapper'>

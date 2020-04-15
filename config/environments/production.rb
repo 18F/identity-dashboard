@@ -52,7 +52,7 @@ Rails.application.configure do
                                   else
                                     :local
                                   end
-  config.active_storage.content_types_to_serve_as_binary -=  ["image/svg+xml"]
+  config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
