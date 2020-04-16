@@ -41,13 +41,13 @@ class ServiceProvidersController < AuthenticatedController
 
   private
 
+  def service_provider
+    @service_provider ||= ServiceProvider.find(params[:id])
+  end
+
   def authorize_service_provider
     authorize service_provider if %i[update edit show destroy].include?(action_name.to_sym)
     authorize ServiceProvider if action_name == 'all'
-  end
-
-  def service_provider
-    @service_provider ||= ServiceProvider.find(params[:id])
   end
 
   def authorize_approval
@@ -144,7 +144,7 @@ class ServiceProvidersController < AuthenticatedController
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def push_logo_content_type
-    return unless Rails.application.config.active_storage.service == :amazon
+    return unless using_s3?
 
     # Set the content-type on the S3 blob or SVG's won't work
     bucket = Figaro.env.aws_logo_bucket
@@ -160,6 +160,10 @@ class ServiceProvidersController < AuthenticatedController
     )
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def using_s3?
+    Rails.application.config.active_storage.service == :amazon
+  end
 
   def s3
     @s3 ||= Aws::S3::Client.new
