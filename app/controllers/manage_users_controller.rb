@@ -1,17 +1,23 @@
 class ManageUsersController < AuthenticatedController
   before_action -> { authorize team, policy_class: ManageUsersPolicy }
 
-  def new; end
+  def new
+    @manage_users_form = ManageUsersForm.new(team)
+  end
 
-  def create; end
+  def create
+    @manage_users_form = ManageUsersForm.new(team)
+    if @manage_users_form.submit(user_emails: params[:user_emails])
+      flash[:success] = 'Success'
+      redirect_to team_path(@team.id)
+    else
+      render :new
+    end
+  end
 
   private
 
   def team
     @team ||= Team.includes(:users).find(params[:team_id])
-  end
-
-  def add_users_params
-    params.permit(:users)
   end
 end
