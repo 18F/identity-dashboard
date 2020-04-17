@@ -7,49 +7,10 @@
     <% end %>
   </div>
 
-  <ul id='user_email_list' class='usa-list usa-list--unstyled margin-bottom-2'>
-  </ul>
-
-  <div class='dropdown-desktop-toggle'>
-    <button type="button" class="usa-button usa-button--dropdown">
-      Add user <span class="caret inline-block ml-tiny" aria-hidden="true">&#9662;</span>
-    </button>
-    <ul class="desktop-dropdown add-list-reset display-none">
-      <li>
-        <button
-          id='show-add-user-button'
-          type="button"
-          class="usa-button--unstyled text-no-underline padding-right-1 padding-left-1 padding-bottom-1 padding-top-1 desktop-menu text-bold width-full"
-        >
-          <span>Add user</span>
-        </button>
-      </li>
-      <li>
-        <button
-          id='show-bulk-add-button'
-          type="button"
-          class="usa-button--unstyled text-no-underline padding-right-1 padding-left-1 padding-bottom-1 padding-top-1 desktop-menu text-bold width-full"
-        >
-          <span>Bulk add</span>
-        </button>
-      </li>
-    </ul>
-  </div>
-
-  <div id='add-email-form' class='margin-y-2 display-none'>
-    <label for='add_email' class='usa-label'>Email</label>
-    <input type='text' id='add_email' class='usa-input margin-bottom-2'/>
-    <button type='button' class='usa-button usa-button--inverse usa-button'>Add user</button>
-    <button type='button' class='usa-button usa-button--outline usa-button'>Cancel</button>
-  </div>
-
-  <div id='bulk-add-form' class='margin-y-2 display-none'>
-    <label for='buld_add' class='usa-label'>Bulk add</label>
-    <textarea class='usa-textarea'></textarea>
-    <p class='margin-bottom-1'>Enter multiple email addresses, separated by commas</p>
-    <button type='button' class='usa-button usa-button--inverse usa-button'>Add users</button>
-    <button type='button' class='usa-button usa-button--outline usa-button'>Cancel</button>
-  </div>
+  <ul id='user_email_list' class='usa-list usa-list--unstyled margin-bottom-2'></ul>
+  <%= render 'add_user_options_dropdown' %>
+  <%= render 'add_email_form' %>
+  <%= render 'bulk_add_email_form' %>
 
   <%= submit_tag 'Save', class: 'usa-button margin-top-4 usa-button-wide' %>
 <% end %>
