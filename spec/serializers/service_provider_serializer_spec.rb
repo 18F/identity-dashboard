@@ -21,7 +21,7 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:issuer]).to eq(service_provider.issuer)
         expect(as_json[:redirect_uris]).to eq(service_provider.redirect_uris)
         expect(as_json[:logo]).to eq('logo.svg')
-        expect(as_json[:logo_key]).to eq(service_provider.logo_file.key)
+        expect(as_json[:remote_logo_key]).to eq(service_provider.logo_file.key)
       end
     end
   end
