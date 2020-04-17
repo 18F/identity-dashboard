@@ -1,23 +1,27 @@
-let manageUserEmailAddresses = [];
+import { buildEmailAddressRow } from "../app/manage_users/email_row";
+
+window.manageUserEmailAddresses = [];
 
 const loadInitialEmailAddresses = () => {
-  const inputs = Array.from(document.querySelectorAll('.user_email_input'));
-  manageUserEmailAddresses = inputs.map(el => el.value).sort();
-  console.log(manageUserEmailAddresses);
+  const inputs = Array.from(document.querySelectorAll(".user_email_input"));
+  window.manageUserEmailAddresses = inputs.map((el) => el.value).sort();
 };
 
 const removeEmailFromList = (email) => {
-  manageUserEmailAddresses = manageUserEmailAddresses.filter(e => e !== email);
-  console.log(manageUserEmailAddresses);
+  window.manageUserEmailAddresses = manageUserEmailAddresses.filter((e) => e !== email);
+  renderEmailList();
 };
 
-const createEmailListRow = (email) => {
-  const list = document.createElement('li');
-  list.classList = 'margin-top-1';
+const renderEmailList = () => {
+  const emailAddressList = document.querySelector("#user_email_list");
+  emailAddressList.innerHTML = "";
+  window.manageUserEmailAddresses.forEach((email) => {
+    const row = buildEmailAddressRow(email, removeEmailFromList);
+    emailAddressList.append(row);
+  });
+};
 
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   loadInitialEmailAddresses();
+  renderEmailList();
 });

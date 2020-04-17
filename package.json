@@ -23,6 +23,7 @@
     "dirty-chai": "^2.0.1",
     "jsdom": "^16.2.2",
     "mocha": "^7.1.1",
+    "sinon": "^9.0.2",
     "webpack-dev-server": "^3.9.0"
   }
 }
