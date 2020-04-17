@@ -1,4 +1,4 @@
-import { buildEmailAddressRow } from "../app/manage_users/email_row";
+import { updateEmailAddressList } from "../app/manage_users/email_list";
 
 window.manageUserEmailAddresses = [];
 
@@ -13,12 +13,7 @@ const removeEmailFromList = (email) => {
 };
 
 const renderEmailList = () => {
-  const emailAddressList = document.querySelector("#user_email_list");
-  emailAddressList.innerHTML = "";
-  window.manageUserEmailAddresses.forEach((email) => {
-    const row = buildEmailAddressRow(email, removeEmailFromList);
-    emailAddressList.append(row);
-  });
+  updateEmailAddressList(window.manageUserEmailAddresses, removeEmailFromList);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
