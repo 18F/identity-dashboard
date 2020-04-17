@@ -65,6 +65,7 @@ en:
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
     service_providers_refreshed: Success! Service providers publish request has been sent.
     user_deleted: Success! You have deleted %{email}
+    team_delete_failed: Only teams without apps can be deleted. Reassign or delete the apps first.
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out

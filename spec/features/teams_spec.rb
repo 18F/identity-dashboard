@@ -137,4 +137,18 @@ feature 'User teams CRUD' do
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
+
+  scenario 'Delete when a team still has service providers' do
+    admin = create(:admin)
+    team = create(:team)
+    create(:service_provider, team: team)
+
+    login_as(admin)
+
+    visit edit_team_path(team)
+    find("a[href='#{team_path(team)}']", text: 'Delete').click
+
+    expect(current_path).to eq(edit_team_path(team))
+    expect(page).to have_content(I18n.t('notices.team_delete_failed'))
+  end
 end
