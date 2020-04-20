@@ -52,6 +52,8 @@ Rails.application.configure do
                                   else
                                     :local
                                   end
+  # Allow SVG's only because we will always serve them in an <img> element
+  config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true

@@ -10,3 +10,5 @@ amazon:
   service: S3
   region: <%= Figaro.env.aws_region %>
   bucket: <%= Figaro.env.aws_logo_bucket %>
+  upload:
+    acl: 'public-read'

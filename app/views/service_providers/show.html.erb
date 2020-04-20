@@ -33,11 +33,11 @@
   <h4><label for="logo_file">Uploaded Logo:</label></h4>
   <% if service_provider.logo_file.attached? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
-      <%= image_tag url_for(service_provider.logo_file) %>
+      <%= image_tag url_for(service_provider.logo_file), height: "120px" %>
     </p>
   <% else %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
-      'No file Uploaded'
+      No file Uploaded
     </p>
   <% end %>
 <% else %>

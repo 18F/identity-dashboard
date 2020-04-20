@@ -30,6 +30,8 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
+  # Allow SVG's only because we will always serve them in an <img> element
+  config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
 
   # Don't care if the mailer can't send.
   # config.action_mailer.raise_delivery_errors = false
