@@ -47,7 +47,8 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = if Figaro.env.logo_upload_enabled == 'true'
+  logo_enabled = ENV.fetch('logo_upload_enabled') { 'true' } == 'true'
+  config.active_storage.service = if logo_enabled
                                     :amazon
                                   else
                                     :local

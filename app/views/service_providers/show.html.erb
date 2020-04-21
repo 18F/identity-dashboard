@@ -29,7 +29,7 @@
       <p class="font-mono-xs margin-top-0" name="production_issuer"><%=  service_provider.production_issuer %></p>
     <% end %>
 
-<% if Figaro.env.logo_upload_enabled == 'true' %>
+<% if ENV.fetch('logo_upload_enabled') { 'true' } == 'true' %>
   <h4><label for="logo_file">Uploaded Logo:</label></h4>
   <% if service_provider.logo_file.attached? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">

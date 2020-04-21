@@ -1,10 +1,10 @@
 test: &default
   aws_region: us-west-2
-  aws_logo_bucket: 'changeme'
+  # aws_logo_bucket: 'changeme'
   certificate_expiration_warning_period: '60'
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
-  logo_upload_enabled: 'true'
+  # logo_upload_enabled: 'true'
   mailer_domain: 'https://dashboard.login.gov'
   newrelic_license_key: ''
   saml_sp_certificate: |
