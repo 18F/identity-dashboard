@@ -3,6 +3,10 @@ require 'rails_helper'
 feature 'Logo upload' do
   let(:user) { create(:user, :with_teams) }
 
+  before do
+    ENV['logo_upload_enabled'] = 'true'
+  end
+
   context 'on create' do
     before do
       login_as(user)
