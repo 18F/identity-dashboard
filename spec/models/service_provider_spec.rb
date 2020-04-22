@@ -138,14 +138,16 @@ describe ServiceProvider do
 
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
-      missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
+      valid_native_sp = build(:service_provider, redirect_uris: ['example-app:/result'])
+      missing_scheme_sp = build(:service_provider, redirect_uris: ['foo.com'])
       relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
       bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
-      malformed_uri_sp = build(:service_provider, redirect_uris: ['super.foo.com:/result'])
+      malformed_uri_sp = build(:service_provider, redirect_uris: ['super.foo.com:result'])
       file_uri_sp = build(:service_provider, redirect_uris: ['file:///usr/sbin/evil_script.sh'])
 
       expect(valid_sp).to be_valid
-      expect(missing_protocol_sp).to_not be_valid
+      expect(valid_native_sp).to be_valid
+      expect(missing_scheme_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
       expect(malformed_uri_sp).to_not be_valid
@@ -154,15 +156,17 @@ describe ServiceProvider do
 
     it 'validates that the failure_to_proof_url is an absolute, parsable uri' do
       valid_sp = build(:service_provider, failure_to_proof_url: 'http://foo.com')
-      missing_protocol_sp = build(:service_provider, failure_to_proof_url: 'foo.com')
+      valid_native_sp = build(:service_provider, failure_to_proof_url: 'example-app:/result')
+      missing_scheme_sp = build(:service_provider, failure_to_proof_url: 'foo.com')
       relative_uri_sp = build(:service_provider, failure_to_proof_url: '/asdf/hjkl')
       bad_uri_sp = build(:service_provider, failure_to_proof_url: ' http://foo.com')
-      malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:/result')
+      malformed_uri_sp = build(:service_provider, failure_to_proof_url: 'super.foo.com:result')
       file_uri_sp = build(:service_provider,
                           failure_to_proof_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
-      expect(missing_protocol_sp).to_not be_valid
+      expect(valid_native_sp).to be_valid
+      expect(missing_scheme_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
       expect(malformed_uri_sp).to_not be_valid
@@ -171,15 +175,17 @@ describe ServiceProvider do
 
     it 'validates that the push_notification_url is an absolute, parsable uri' do
       valid_sp = build(:service_provider, push_notification_url: 'http://foo.com')
-      missing_protocol_sp = build(:service_provider, push_notification_url: 'foo.com')
+      valid_native_sp = build(:service_provider, push_notification_url: 'example-app:/result')
+      missing_scheme_sp = build(:service_provider, push_notification_url: 'foo.com')
       relative_uri_sp = build(:service_provider, push_notification_url: '/asdf/hjkl')
       bad_uri_sp = build(:service_provider, push_notification_url: ' http://foo.com')
-      malformed_uri_sp = build(:service_provider, push_notification_url: 'super.foo.com:/result')
+      malformed_uri_sp = build(:service_provider, push_notification_url: 'super.foo.com:result')
       file_uri_sp = build(:service_provider,
                           push_notification_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
-      expect(missing_protocol_sp).to_not be_valid
+      expect(valid_native_sp).to be_valid
+      expect(missing_scheme_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
       expect(malformed_uri_sp).to_not be_valid

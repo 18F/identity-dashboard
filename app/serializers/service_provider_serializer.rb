@@ -11,6 +11,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :ial,
     :issuer,
     :logo,
+    :remote_logo_key,
     :redirect_uris,
     :return_to_sp_url,
     :failure_to_proof_url,
@@ -35,6 +36,11 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def signature
     Digest::SHA256.hexdigest unique_identifier
+  end
+
+  def remote_logo_key
+    return unless object.logo_file.attached?
+    object.logo_file.key
   end
 
   private
