@@ -1,3 +1,44 @@
+# These settings are common across environments, but may be overridden
+# in any particular environment
+aamva_verification_request_timeout: '50'
+aamva_verification_url: https://verificationservices-cert.aamva.org:18449/dldv/2.1/online
+account_reset_wait_period_days: '0'
+acuant_timeout: '55'
+acuant_simulator: 'true'
+acuant_sdk_document_capture_enabled: 'true'
+allow_doc_auth_test_credentials: 'true'
+attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
+aws_region: us-west-2
+cac_proofing_enabled: 'true'
+dashboard_api_token: ''
+disallow_all_web_crawlers: 'true'
+disallow_ial2_recovery: 'false'
+doc_auth_enabled: 'true'
+doc_auth_exclusive: 'true'
+email_deletion_enabled: 'true'
+email_from: no-reply@identitysandbox.gov
+enable_usps_verification: 'true'
+enable_load_testing_mode: 'true'
+enable_mobile_capture: 'true'
+hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+in_person_proofing_enabled: 'false'
+liveness_checking_enabled: 'true'
+logins_per_ip_limit: '20'
+logins_per_ip_period: '8'
+logo_upload_enabled: 'false'
+participate_in_dap: 'true'
+pinpoint_sms_credential_role_session_name: 'idp.int.identitysandbox.gov'
+pinpoint_sms_longcode_pool: '[]'
+pinpoint_sms_region: us-west-2
+pinpoint_sms_shortcode:
+pinpoint_voice_credential_role_session_name: 'idp.int.identitysandbox.gov'
+pinpoint_voice_region: us-east-1
+requests_per_ip_track_only_mode: 'true'
+saml_secret_rotation_enabled: 'true'
+telephony_adapter: pinpoint
+telephony_disabled: 'false'
+use_dashboard_service_providers: 'true'
+
 test: &default
   aws_region: us-west-2
   aws_logo_bucket: 'changeme'
@@ -107,6 +148,58 @@ development:
   dashboard_api_token: 'test_token'
   idp_sp_url: 'http://localhost:3000/api/service_provider'
 
-# The entire application.yml is overwritten in production, so don't set
-# anything here.
-# production:
+# Secrets for the application.yml are merged in production.
+# These are keys that may need to be set:
+production:
+  aamva_private_key: 'changeme'
+  aamva_public_key: 'changeme'
+  account_reset_auth_token: 'changeme'
+  acuant_assure_id_password: 'changeme'
+  acuant_assure_id_subscription_id: 'changeme'
+  acuant_assure_id_url: 'changeme'
+  acuant_assure_id_username: 'changeme'
+  acuant_facial_match_license_key: 'changeme'
+  acuant_facial_match_url: 'changeme'
+  acuant_passlive_url: 'changeme'
+  attribute_encryption_key: 'changeme'
+  aws_kms_key_id: 'changeme'
+  aws_logo_bucket: 'changeme'
+  database_host: 'changeme'
+  database_read_replica_host: 'changeme'
+  database_readonly_password: 'changeme'
+  database_readonly_username: 'changeme'
+  database_username: 'changeme'
+  exception_recipients: 'changeme'
+  google_analytics_key: 'changeme'
+  hmac_fingerprinter_key: 'changeme'
+  lexisnexis_account_id: 'changeme'
+  lexisnexis_base_url: 'changeme'
+  lexisnexis_password: 'changeme'
+  lexisnexis_username: 'changeme'
+  lexisnexis_threat_metrix_org_id: 'changeme'
+  lexisnexis_threat_metrix_api_key: 'changeme'
+  mailer_domain: 'changeme'
+  newrelic_browser_app_id: 'changeme'
+  newrelic_browser_key: 'changeme'
+  newrelic_license_key: 'changeme'
+  password_pepper: 'changeme' # set with rake secret
+  pinpoint_sms_application_id: 'changeme'
+  pinpoint_sms_credential_role_arn: 'changeme'
+  pinpoint_voice_credential_role_arn: 'changeme'
+  pinpoint_voice_longcode_pool: '["changeme","changeme"]'
+  saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"changeme"},{"suffix":"2019","secret_key_passphrase":"changeme"}]'
+  secret_key_base: 'changeme'
+  session_encryption_key: 'changeme' # set with rake secret
+  twilio_auth_token: 'changeme'
+  twilio_http_basic_auth_password: 'changeme'
+  twilio_http_basic_auth_username: 'changeme'
+  twilio_messaging_service_sid: 'changeme'
+  twilio_numbers: '[changeme, changeme, changeme]'
+  twilio_sid: 'changeme'
+  twilio_verify_api_key: 'changeme'
+  twilio_voice_callback_encryption_key: 'changeme'
+  usps_upload_sftp_directory: 'changeme'
+  usps_upload_sftp_host: 'changeme'
+  usps_upload_sftp_password: 'changeme'
+  usps_upload_sftp_username: 'changeme'
+  usps_upload_token: 'changeme'
