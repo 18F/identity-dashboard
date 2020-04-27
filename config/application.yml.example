@@ -1,44 +1,27 @@
+# These settings are common across environments, but may be overridden
+# in any particular environment
+aws_region: us-west-2
+aws_logo_bucket: changeme
+certificate_expiration_warning_period: '60'
+dashboard_api_token: changeme
+idp_url: changeme
+idp_sp_url: changeme
+logo_upload_enabled: 'false'
+mailer_domain: changeme
+newrelic_license_key: changeme
+saml_sp_issuer: changeme
+saml_sp_private_key: changeme
+saml_sp_private_key_password: changeme
+secret_key_base: changeme
+smtp_address: changeme
+smtp_domain: changeme
+smtp_password: changeme
+smtp_username: changeme
+
 test: &default
-  aws_region: us-west-2
-  aws_logo_bucket: 'changeme'
-  certificate_expiration_warning_period: '60'
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
-  logo_upload_enabled: 'true'
   mailer_domain: 'https://dashboard.login.gov'
-  newrelic_license_key: ''
-  saml_sp_certificate: |
-    -----BEGIN CERTIFICATE-----
-    MIIFLjCCAxYCCQD/dXjTvpnD0jANBgkqhkiG9w0BAQsFADBZMQswCQYDVQQGEwJV
-    UzETMBEGA1UECBMKV2FzaGluZ3RvbjELMAkGA1UEBxMCREMxDDAKBgNVBAoTAzE4
-    RjEaMBgGA1UEAxMRdGVzdC5jZXJ0LjE4Zi5nb3YwHhcNMTYwNTEzMTUyNTE3WhcN
-    MjYwNTExMTUyNTE3WjBZMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3Rv
-    bjELMAkGA1UEBxMCREMxDDAKBgNVBAoTAzE4RjEaMBgGA1UEAxMRdGVzdC5jZXJ0
-    LjE4Zi5nb3YwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQC+mkS5cTDx
-    Vgt36ad8/ssFvpO8KJhIlfc73pNdr4WDdnLp7935clx3RfRwjfENanTrotg/i4Oz
-    DvLQvODj7GwD1nTozCPAw6wX4JOEbkN8IhnhdvxjePxxYWjZCbmsaLW2US9zBNcY
-    +93qbBsSLN99Xw/wIKLGXxxgAGg0QO/706/M7dxGFENK+6a74pGkTEI/Zv82KBbr
-    vTDfnkvVfR7TtoKGf9RKrtM/90BaLKpoV0SXMAc6Krw9ltk3DvJ5WKF5Q9KgkG2q
-    Q2iGYmZEp1m/0LUd8a1DJUuqWqtm9j+8B69mHfcmf0FftdnlX+qfnQ1aPrBQTpFG
-    +N1mj8at+ZCXy+IbyMf8BR+1k9YJeEAUVn/dg7jjVKTepM+IaC7C4rME+L2R+7X0
-    1QvMDeJGHMJAmatV8FICKpPBq6F/3Ub86wLqzJNsK4fcpEf3jRwp9FclOGORtpVo
-    E0VmGs+fIqP230FT1aRkNvNEfRFWi/9U8hUMvQAXI6jZKt++ScMMeLpqvjR5HrRC
-    +d7w9MvJ7XZDu3IRV8gdH7KYwX6xIdqKboCw9wcXn3kREDL6cNqs5l/VN74Qx4yg
-    i/aRabwd/d4CTSkq9kpngb5AaVESkd+fCu40+FznkxCE59qKMrjYDFYnuYUmPceH
-    9kgYgaD/8ARPkmHnPoXT3bLzlOtTtqqJswIDAQABMA0GCSqGSIb3DQEBCwUAA4IC
-    AQCfLLqCR2jQFbvK/KxNbDeDh0EkGC96+/3i6XWFS9EeJcU3/pDYBi5aLTkRcAsN
-    31heZ8ThRWN6/ZwsIrhQi0rqp1FB0OvTjMI5u1MTxFL/88ftk7fkll6wTN9HZZcr
-    7wVVSa37ULN9HmBaxXFKzBxo+RRDrucD+hk8dUBOlMf3FI+HlDLBYt5bn+TA5rvB
-    y5KbEn+ryhCAUf+byghkR/r20bh6WNRw27TvO0ocyMTLXqXpr0YKnT3E2KVjABmE
-    WLHFbJRv7WD3MhB+dgJhpIZuDkijsDT7ns/lO7jXdzcpVFZ9C09HlVam8G0L6//0
-    5qexSv2xW2/oeJULok2FFOsYdIWgWlhscg5GKHkZ5EZo50AMWTuVFT7vw/SLzus1
-    7HgmM03IjSxCr6Kl1rp022x+SBrMLTvHLSRqeM26HvNGGKX7N0R0/xAXJ6oqQPLg
-    6YbAQvI7oxdCKZFNUE9ZMhT34F84ZRMwQluzeukiMne1Z/ZZX317cKOEflZiU3mc
-    7nZHi2STJiL0mD8A3laPPgegeNmuEnDPYOo+sMgyan8scJR8vUIQEKACnkHNoa8G
-    3xQBe08Bt1P/kcAGC3awQUqEnFVx6ORD0QWpPpaWe/0SO4mb2DwyGeBcCI027qVA
-    6czR3hR8eGhocSy2VSoSymE2DlBF/Jt5Pwa8SzSHw/5/8g==
-    -----END CERTIFICATE-----
-
   saml_sp_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
     Proc-Type: 4,ENCRYPTED
@@ -94,19 +77,14 @@ test: &default
     thBmdYeRTGJrJ1PxYSGBJjKg6ksnmUO9ethzG09Fxt460aZfbIZikEIMtiDirqES
     fLCnOrXnlA44sn4sHuoSO7gWZcgvkjB6HL8HShOIO3kwbB0tcl8MX8/P4kyE/OCB
     -----END RSA PRIVATE KEY-----
-
   saml_sp_private_key_password: 'foobar'
-  secret_key_base: 'changeme'
-  smtp_address: 'changeme'
-  smtp_domain: 'changeme'
-  smtp_password: 'changeme'
-  smtp_username: 'changeme'
 
 development:
   <<: *default
   dashboard_api_token: 'test_token'
   idp_sp_url: 'http://localhost:3000/api/service_provider'
 
-# The entire application.yml is overwritten in production, so don't set
-# anything here.
-# production:
+# Secrets for the application.yml are merged in production.
+# These are keys that may need to be set:
+production:
+  logo_upload_enabled: 'true'

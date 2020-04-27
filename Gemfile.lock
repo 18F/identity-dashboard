@@ -196,6 +196,7 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
+    fakefs (1.2.2)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
@@ -511,6 +512,7 @@ DEPENDENCIES
   dotenv-rails (~> 2.4)
   enum_help
   factory_bot_rails (~> 4.8)
+  fakefs
   figaro
   httparty
   i18n-tasks
