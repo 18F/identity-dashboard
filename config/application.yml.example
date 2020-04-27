@@ -1,85 +1,27 @@
 # These settings are common across environments, but may be overridden
 # in any particular environment
-aamva_verification_request_timeout: '50'
-aamva_verification_url: https://verificationservices-cert.aamva.org:18449/dldv/2.1/online
-account_reset_wait_period_days: '0'
-acuant_timeout: '55'
-acuant_simulator: 'true'
-acuant_sdk_document_capture_enabled: 'true'
-allow_doc_auth_test_credentials: 'true'
-attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
 aws_region: us-west-2
-cac_proofing_enabled: 'true'
-dashboard_api_token: ''
-disallow_all_web_crawlers: 'true'
-disallow_ial2_recovery: 'false'
-doc_auth_enabled: 'true'
-doc_auth_exclusive: 'true'
-email_deletion_enabled: 'true'
-email_from: no-reply@identitysandbox.gov
-enable_usps_verification: 'true'
-enable_load_testing_mode: 'true'
-enable_mobile_capture: 'true'
-hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
-in_person_proofing_enabled: 'false'
-liveness_checking_enabled: 'true'
-logins_per_ip_limit: '20'
-logins_per_ip_period: '8'
+aws_logo_bucket: changeme
+certificate_expiration_warning_period: '60'
+dashboard_api_token: changeme
+idp_url: changeme
+idp_sp_url: changeme
 logo_upload_enabled: 'false'
-participate_in_dap: 'true'
-pinpoint_sms_credential_role_session_name: 'idp.int.identitysandbox.gov'
-pinpoint_sms_longcode_pool: '[]'
-pinpoint_sms_region: us-west-2
-pinpoint_sms_shortcode:
-pinpoint_voice_credential_role_session_name: 'idp.int.identitysandbox.gov'
-pinpoint_voice_region: us-east-1
-requests_per_ip_track_only_mode: 'true'
-saml_secret_rotation_enabled: 'true'
-telephony_adapter: pinpoint
-telephony_disabled: 'false'
-use_dashboard_service_providers: 'true'
+mailer_domain: changeme
+newrelic_license_key: changeme
+saml_sp_issuer: changeme
+saml_sp_private_key: changeme
+saml_sp_private_key_password: changeme
+secret_key_base: changeme
+smtp_address: changeme
+smtp_domain: changeme
+smtp_password: changeme
+smtp_username: changeme
 
 test: &default
-  aws_region: us-west-2
-  aws_logo_bucket: 'changeme'
-  certificate_expiration_warning_period: '60'
   dashboard_api_token: 'sekret'
   idp_sp_url: 'http://idp.example.com/api/service_provider'
-  logo_upload_enabled: 'true'
   mailer_domain: 'https://dashboard.login.gov'
-  newrelic_license_key: ''
-  saml_sp_certificate: |
-    -----BEGIN CERTIFICATE-----
-    MIIFLjCCAxYCCQD/dXjTvpnD0jANBgkqhkiG9w0BAQsFADBZMQswCQYDVQQGEwJV
-    UzETMBEGA1UECBMKV2FzaGluZ3RvbjELMAkGA1UEBxMCREMxDDAKBgNVBAoTAzE4
-    RjEaMBgGA1UEAxMRdGVzdC5jZXJ0LjE4Zi5nb3YwHhcNMTYwNTEzMTUyNTE3WhcN
-    MjYwNTExMTUyNTE3WjBZMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3Rv
-    bjELMAkGA1UEBxMCREMxDDAKBgNVBAoTAzE4RjEaMBgGA1UEAxMRdGVzdC5jZXJ0
-    LjE4Zi5nb3YwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQC+mkS5cTDx
-    Vgt36ad8/ssFvpO8KJhIlfc73pNdr4WDdnLp7935clx3RfRwjfENanTrotg/i4Oz
-    DvLQvODj7GwD1nTozCPAw6wX4JOEbkN8IhnhdvxjePxxYWjZCbmsaLW2US9zBNcY
-    +93qbBsSLN99Xw/wIKLGXxxgAGg0QO/706/M7dxGFENK+6a74pGkTEI/Zv82KBbr
-    vTDfnkvVfR7TtoKGf9RKrtM/90BaLKpoV0SXMAc6Krw9ltk3DvJ5WKF5Q9KgkG2q
-    Q2iGYmZEp1m/0LUd8a1DJUuqWqtm9j+8B69mHfcmf0FftdnlX+qfnQ1aPrBQTpFG
-    +N1mj8at+ZCXy+IbyMf8BR+1k9YJeEAUVn/dg7jjVKTepM+IaC7C4rME+L2R+7X0
-    1QvMDeJGHMJAmatV8FICKpPBq6F/3Ub86wLqzJNsK4fcpEf3jRwp9FclOGORtpVo
-    E0VmGs+fIqP230FT1aRkNvNEfRFWi/9U8hUMvQAXI6jZKt++ScMMeLpqvjR5HrRC
-    +d7w9MvJ7XZDu3IRV8gdH7KYwX6xIdqKboCw9wcXn3kREDL6cNqs5l/VN74Qx4yg
-    i/aRabwd/d4CTSkq9kpngb5AaVESkd+fCu40+FznkxCE59qKMrjYDFYnuYUmPceH
-    9kgYgaD/8ARPkmHnPoXT3bLzlOtTtqqJswIDAQABMA0GCSqGSIb3DQEBCwUAA4IC
-    AQCfLLqCR2jQFbvK/KxNbDeDh0EkGC96+/3i6XWFS9EeJcU3/pDYBi5aLTkRcAsN
-    31heZ8ThRWN6/ZwsIrhQi0rqp1FB0OvTjMI5u1MTxFL/88ftk7fkll6wTN9HZZcr
-    7wVVSa37ULN9HmBaxXFKzBxo+RRDrucD+hk8dUBOlMf3FI+HlDLBYt5bn+TA5rvB
-    y5KbEn+ryhCAUf+byghkR/r20bh6WNRw27TvO0ocyMTLXqXpr0YKnT3E2KVjABmE
-    WLHFbJRv7WD3MhB+dgJhpIZuDkijsDT7ns/lO7jXdzcpVFZ9C09HlVam8G0L6//0
-    5qexSv2xW2/oeJULok2FFOsYdIWgWlhscg5GKHkZ5EZo50AMWTuVFT7vw/SLzus1
-    7HgmM03IjSxCr6Kl1rp022x+SBrMLTvHLSRqeM26HvNGGKX7N0R0/xAXJ6oqQPLg
-    6YbAQvI7oxdCKZFNUE9ZMhT34F84ZRMwQluzeukiMne1Z/ZZX317cKOEflZiU3mc
-    7nZHi2STJiL0mD8A3laPPgegeNmuEnDPYOo+sMgyan8scJR8vUIQEKACnkHNoa8G
-    3xQBe08Bt1P/kcAGC3awQUqEnFVx6ORD0QWpPpaWe/0SO4mb2DwyGeBcCI027qVA
-    6czR3hR8eGhocSy2VSoSymE2DlBF/Jt5Pwa8SzSHw/5/8g==
-    -----END CERTIFICATE-----
-
   saml_sp_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
     Proc-Type: 4,ENCRYPTED
@@ -135,13 +77,7 @@ test: &default
     thBmdYeRTGJrJ1PxYSGBJjKg6ksnmUO9ethzG09Fxt460aZfbIZikEIMtiDirqES
     fLCnOrXnlA44sn4sHuoSO7gWZcgvkjB6HL8HShOIO3kwbB0tcl8MX8/P4kyE/OCB
     -----END RSA PRIVATE KEY-----
-
   saml_sp_private_key_password: 'foobar'
-  secret_key_base: 'changeme'
-  smtp_address: 'changeme'
-  smtp_domain: 'changeme'
-  smtp_password: 'changeme'
-  smtp_username: 'changeme'
 
 development:
   <<: *default
@@ -151,55 +87,4 @@ development:
 # Secrets for the application.yml are merged in production.
 # These are keys that may need to be set:
 production:
-  aamva_private_key: 'changeme'
-  aamva_public_key: 'changeme'
-  account_reset_auth_token: 'changeme'
-  acuant_assure_id_password: 'changeme'
-  acuant_assure_id_subscription_id: 'changeme'
-  acuant_assure_id_url: 'changeme'
-  acuant_assure_id_username: 'changeme'
-  acuant_facial_match_license_key: 'changeme'
-  acuant_facial_match_url: 'changeme'
-  acuant_passlive_url: 'changeme'
-  attribute_encryption_key: 'changeme'
-  aws_kms_key_id: 'changeme'
-  aws_logo_bucket: 'changeme'
-  database_host: 'changeme'
-  database_read_replica_host: 'changeme'
-  database_readonly_password: 'changeme'
-  database_readonly_username: 'changeme'
-  database_username: 'changeme'
-  exception_recipients: 'changeme'
-  google_analytics_key: 'changeme'
-  hmac_fingerprinter_key: 'changeme'
-  lexisnexis_account_id: 'changeme'
-  lexisnexis_base_url: 'changeme'
-  lexisnexis_password: 'changeme'
-  lexisnexis_username: 'changeme'
-  lexisnexis_threat_metrix_org_id: 'changeme'
-  lexisnexis_threat_metrix_api_key: 'changeme'
-  mailer_domain: 'changeme'
-  newrelic_browser_app_id: 'changeme'
-  newrelic_browser_key: 'changeme'
-  newrelic_license_key: 'changeme'
-  password_pepper: 'changeme' # set with rake secret
-  pinpoint_sms_application_id: 'changeme'
-  pinpoint_sms_credential_role_arn: 'changeme'
-  pinpoint_voice_credential_role_arn: 'changeme'
-  pinpoint_voice_longcode_pool: '["changeme","changeme"]'
-  saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"changeme"},{"suffix":"2019","secret_key_passphrase":"changeme"}]'
-  secret_key_base: 'changeme'
-  session_encryption_key: 'changeme' # set with rake secret
-  twilio_auth_token: 'changeme'
-  twilio_http_basic_auth_password: 'changeme'
-  twilio_http_basic_auth_username: 'changeme'
-  twilio_messaging_service_sid: 'changeme'
-  twilio_numbers: '[changeme, changeme, changeme]'
-  twilio_sid: 'changeme'
-  twilio_verify_api_key: 'changeme'
-  twilio_voice_callback_encryption_key: 'changeme'
-  usps_upload_sftp_directory: 'changeme'
-  usps_upload_sftp_host: 'changeme'
-  usps_upload_sftp_password: 'changeme'
-  usps_upload_sftp_username: 'changeme'
-  usps_upload_token: 'changeme'
+  logo_upload_enabled: 'true'

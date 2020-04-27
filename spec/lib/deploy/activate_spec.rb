@@ -70,11 +70,11 @@ describe Deploy::Activate do
       combined_application_yml = YAML.load_file(File.join(config_dir, 'application.yml'))
 
       # top-level key from application.yml.example
-      expect(combined_application_yml['logins_per_ip_limit']).to eq('20')
+      expect(combined_application_yml['certificate_expiration_warning_period']).to eq('60')
       # overridden production key from s3
       expect(combined_application_yml['production']['logo_upload_enabled']).to eq('true')
       # production key from application.yml.example, not overwritten
-      expect(combined_application_yml['production']['mailer_domain']).to eq('changeme')
+      expect(combined_application_yml['production']['logo_upload_enabled']).to eq('true')
     end
 
     it 'sets the correct permissions on the YAML files' do
