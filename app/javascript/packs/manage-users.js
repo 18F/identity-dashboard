@@ -8,7 +8,14 @@ const loadInitialEmailAddresses = () => {
 };
 
 const removeEmailFromList = (email) => {
-  window.manageUserEmailAddresses = manageUserEmailAddresses.filter((e) => e !== email);
+  window.manageUserEmailAddresses = window.manageUserEmailAddresses.filter((e) => e !== email);
+  renderEmailList();
+};
+
+const addEmailToList = (email) => {
+  window.manageUserEmailAddresses = Array.from(
+    new Set(window.manageUserEmailAddresses.concat(email))
+  ).sort();
   renderEmailList();
 };
 
@@ -19,4 +26,12 @@ const renderEmailList = () => {
 document.addEventListener("DOMContentLoaded", () => {
   loadInitialEmailAddresses();
   renderEmailList();
+
+  const button = document.getElementById("add_email_button");
+  button.onclick = () => {
+    const email = document.getElementById("add_email").value;
+    if (!email) return;
+    addEmailToList(email);
+    document.getElementById("add_email").value = "";
+  };
 });

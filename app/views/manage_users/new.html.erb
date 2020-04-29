@@ -1,16 +1,21 @@
 <h1>Manage users for <%= @team.name %></h1>
 
 <%= form_with url: team_manage_users_path(@team), method: :post do |f| %>
-  <div class='user_email_inputs'>
+  <div id='user_email_inputs'>
     <% @manage_users_form.user_emails.each do |email| %>
       <%= hidden_field_tag 'user_emails[]', strip_tags(email), class: 'user_email_input' %>
     <% end %>
   </div>
 
   <ul id='user_email_list' class='usa-list usa-list--unstyled margin-bottom-2'></ul>
-  <%= render 'add_user_options_dropdown' %>
-  <%= render 'add_email_form' %>
-  <%= render 'bulk_add_email_form' %>
+
+  <div id='add-email-form' class='margin-y-1'>
+    <label for='add_email' class='usa-label'>Email</label>
+    <input type='text' id='add_email' class='usa-input margin-bottom-2'/>
+    <button type='button' id='add_email_button' class='usa-button usa-button--inverse usa-button'>
+      Add user
+    </button>
+  </div>
 
   <%= submit_tag 'Save', class: 'usa-button margin-top-4 usa-button-wide' %>
 <% end %>
