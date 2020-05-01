@@ -1,10 +1,41 @@
-version: v1.38.1
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  'SNYK-RUBY-NOKOGIRI-20299':
+  SNYK-RUBY-NOKOGIRI-20299:
     - '* > nokogiri':
-        reason: 'We do not opt in to DTDLOAD and do not opt out of NONET'
+        reason: We do not opt in to DTDLOAD and do not opt out of NONET
         expires: '2018-01-01T00:00:00.000Z'
-  'SNYK-RUBY-ACTIONCABLE-20338':
+  SNYK-RUBY-ACTIONCABLE-20338:
     - '* > actioncable':
-        reason: 'We do not use actioncable'
+        reason: We do not use actioncable
         expires: '2018-09-10T00:00:00.000Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - webpack-merge > lodash:
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/core > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > node-sass > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-block-scoping > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > node-sass > sass-graph > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > optimize-css-assets-webpack-plugin > last-call-webpack-plugin > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > node-sass > gaze > globule > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/generator > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
+    - '@rails/webpacker > @babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2020-05-01T03:49:36.717Z'
