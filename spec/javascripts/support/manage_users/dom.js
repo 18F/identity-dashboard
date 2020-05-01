@@ -7,7 +7,14 @@ const INITIAL_MANAGE_USERS_HTML = `
       <input name='user_emails[]' value='email2@example.com' class='user_email_input'/>
     </div>
   </form>
+
   <ul id='user_email_list'></ul>
+
+  <label for='add_email'>Email</label>
+  <input type='text' id='add_email'/>
+  <button type='button' id='add_email_button'>
+    Add user
+  </button>
 `;
 
 export const setupManageUsersTestDOM = () => {

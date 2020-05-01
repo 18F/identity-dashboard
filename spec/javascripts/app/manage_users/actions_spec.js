@@ -28,7 +28,12 @@ describe("manage_users/actions", () => {
       ]);
     });
 
-    it("renders the initial email addresses in the email list");
+    it("renders the initial email addresses in the email list", () => {
+      loadInitialEmailAddresses();
+
+      expect(document.body.textContent).to.have.string("email1@example.com");
+      expect(document.body.textContent).to.have.string("email2@example.com");
+    });
   });
 
   describe(".addEmailAddressToList", () => {
@@ -53,7 +58,13 @@ describe("manage_users/actions", () => {
       ]);
     });
 
-    it("renders a list item with the added email address");
+    it("renders a list item with the added email address", () => {
+      addEmailAddressToList("email3@example.com");
+
+      expect(document.body.textContent).to.have.string("email1@example.com");
+      expect(document.body.textContent).to.have.string("email2@example.com");
+      expect(document.body.textContent).to.have.string("email3@example.com");
+    });
   });
 
   describe(".removeEmailAddressFromList", () => {
@@ -74,6 +85,11 @@ describe("manage_users/actions", () => {
       ]);
     });
 
-    it("renders a list without an item for the deleted email");
+    it("renders a list without an item for the deleted email", () => {
+      removeEmailAddressFromList("email1@example.com");
+
+      expect(document.body.textContent).to.not.have.string("email1@example.com");
+      expect(document.body.textContent).to.have.string("email2@example.com");
+    });
   });
 });

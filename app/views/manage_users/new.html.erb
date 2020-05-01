@@ -1,5 +1,7 @@
 <h1>Manage users for <%= @team.name %></h1>
 
+TODO: Add a flash with errors
+
 <%= form_with url: team_manage_users_path(@team), method: :post do |f| %>
   <div id='user_email_inputs'>
     <% @manage_users_form.user_emails.each do |email| %>

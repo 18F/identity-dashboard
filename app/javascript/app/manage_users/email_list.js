@@ -1,25 +1,20 @@
 import { buildEmailAddressRow } from "./email_row";
+import { buildEmailAddressFormInput } from "./email_form_input";
 
 const emailAddressList = () => document.querySelector("#user_email_list");
 const emailAddressInputs = () => document.querySelector("#user_email_inputs");
 
-const buildHiddenInput = (email) => {
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "user_emails[]";
-  input.value = email;
-  return input;
-};
-
-export const updateEmailAddressList = (emails, removeEmailCallback) => {
+export const updateEmailAddressList = () => {
   const list = emailAddressList();
   const hiddenInputs = emailAddressInputs();
+
   list.innerHTML = "";
   hiddenInputs.innerHTML = "";
-  emails.forEach((email) => {
-    const row = buildEmailAddressRow(email, removeEmailCallback);
+
+  window.manageUserEmailAddresses.forEach((email) => {
+    const row = buildEmailAddressRow(email);
+    const input = buildEmailAddressFormInput(email);
     list.append(row);
-    const input = buildHiddenInput(email);
     hiddenInputs.append(input);
   });
 };
