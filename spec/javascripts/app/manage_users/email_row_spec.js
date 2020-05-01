@@ -1,28 +1,38 @@
 import sinon from "sinon";
 
-import { setupTestDOM, teardDownTestDOM } from "../../support/dom";
+import {
+  setupManageUsersTestDOM,
+  tearDownManageUsersTestDOM,
+} from "../../support/manage_users/dom";
+
+import {
+  addEmailAddressToList,
+  loadInitialEmailAddresses,
+} from "../../../../app/javascript/app/manage_users/actions";
 
 import { buildEmailAddressRow } from "../../../../app/javascript/app/manage_users/email_row";
 
 describe("manage_users/email_row", () => {
   before(() => {
-    setupTestDOM();
+    setupManageUsersTestDOM();
+    loadInitialEmailAddresses();
   });
 
   after(() => {
-    teardDownTestDOM();
+    tearDownManageUsersTestDOM();
   });
 
-  describe("buildEmailAddressRow", () => {
+  describe(".buildEmailAddressRow", () => {
     it("renders a row with the email address", () => {
-      const row = buildEmailAddressRow("test@gsa.gov", () => {});
+      const row = buildEmailAddressRow("test@gsa.gov");
 
       expect(row.textContent).to.have.string("test@gsa.gov");
     });
 
     it("adds the remove email callback to the remove email link", () => {
-      const removeEmailCallback = sinon.spy();
-      const row = buildEmailAddressRow("test@gsa.gov", removeEmailCallback);
+      addEmailAddressToList("test@gsa.gov");
+
+      const row = buildEmailAddressRow("test@gsa.gov");
       const removeEmailLink = row.querySelector("a");
 
       expect(removeEmailLink.textContent).to.have.string("⨉");
@@ -31,8 +41,7 @@ describe("manage_users/email_row", () => {
 
       removeEmailLink.onclick(clickEvent);
 
-      expect(removeEmailCallback.calledOnce).to.eq(true);
-      expect(removeEmailCallback.lastCall.args[0]).to.eq("test@gsa.gov");
+      expect(window.manageUserEmailAddresses).to.not.include("test@gsa.gov");
       expect(clickEvent.preventDefault.calledOnce).to.eq(true);
     });
   });

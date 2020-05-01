@@ -1,3 +1,5 @@
+import { removeEmailAddressFromList } from "./actions";
+
 const buildListElement = () => {
   const node = document.createElement("li");
   node.classList = "margin-top-1";
@@ -14,23 +16,23 @@ const buildEmailAddressText = (email) => {
   return document.createTextNode(`${email} | `);
 };
 
-const buildRemoveEmailLink = (email, removeEmailCallback) => {
+const buildRemoveEmailLink = (email) => {
   const node = document.createElement("a");
   node.classList = "text-ink text-no-underline";
   node.href = "/";
   node.innerHTML = "⨉";
   node.onclick = (event) => {
     event.preventDefault();
-    removeEmailCallback(email);
+    removeEmailAddressFromList(email);
   };
   return node;
 };
 
-export const buildEmailAddressRow = (email, removeEmailCallback) => {
+export const buildEmailAddressRow = (email) => {
   const li = buildListElement();
   const span = buildSpanElement();
   const text = buildEmailAddressText(email);
-  const link = buildRemoveEmailLink(email, removeEmailCallback);
+  const link = buildRemoveEmailLink(email);
 
   span.append(text);
   span.append(link);

@@ -18,7 +18,7 @@ export const setupTestDOM = (initialHtml = JSDOM_DEFAULT_HTML) => {
   global.document = global.window.document;
 };
 
-export const teardDownTestDOM = () => {
+export const tearDownTestDOM = () => {
   global.window = undefined;
   global.document = undefined;
 };
