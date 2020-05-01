@@ -85,7 +85,7 @@ end
 
 group :production do
   gem 'rack-timeout'
-  gem 'rails_12factor'
+  gem 'rails_serve_static_assets'
 end
 
 gem 'autoprefixer-rails', '~> 9.6'
