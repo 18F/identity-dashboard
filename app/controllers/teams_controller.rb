@@ -9,7 +9,6 @@ class TeamsController < AuthenticatedController
 
   def create
     @team = Team.new(update_params_with_current_user)
-    add_new_user
 
     if @team.save
 
@@ -26,7 +25,6 @@ class TeamsController < AuthenticatedController
 
   def update
     if @team.update(update_params_with_current_user)
-      add_new_user
       flash[:success] = 'Success'
       redirect_to team_path(@team.id)
     else
@@ -64,20 +62,8 @@ class TeamsController < AuthenticatedController
     @team ||= Team.find(params[:id])
   end
 
-  def add_new_user
-    new_user_email = new_user_params[:email]
-    return if new_user_email.blank?
-
-    user = User.find_by(email: new_user_email).presence || User.new(email: new_user_email)
-    @team.users << user unless @team.users.include?(user)
-  end
-
   def team_params
     params.require(:team).permit(:name, :agency_id, :description, user_ids: [])
-  end
-
-  def new_user_params
-    params.require(:new_user).permit(:email)
   end
 
   def update_params_with_current_user

@@ -1,6 +1,15 @@
 <h1>Manage users for <%= @team.name %></h1>
 
-TODO: Add a flash with errors
+<% if @manage_users_form.errors.any? %>
+  <div class="usa-alert usa-alert--error usa-alert__body usa-alert__text text-indent-3">
+    Please review the problems below:
+    <ul>
+      <% @manage_users_form.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
 <%= form_with url: team_manage_users_path(@team), method: :post do |f| %>
   <div id='user_email_inputs'>
