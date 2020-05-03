@@ -24,7 +24,7 @@ class ManageUsersForm
 
   def users_from_user_emails
     existing_users = User.where(email: user_emails).to_a
-    missing_users = (user_emails - existing_users.map(&:emails)).map { |e| User.new(email: e) }
+    missing_users = (user_emails - existing_users.map(&:email)).map { |e| User.new(email: e) }
 
     (existing_users + missing_users).sort_by(&:email)
   end
