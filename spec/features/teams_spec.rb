@@ -12,7 +12,6 @@ feature 'User teams CRUD' do
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
     select('GSA', from: 'Agency')
-    find("#team_user_ids_#{user.id}").click
 
     click_on 'Create'
     expect(current_path).to eq(team_path(Team.last))
@@ -20,7 +19,6 @@ feature 'User teams CRUD' do
     expect(page).to have_content('team name')
     expect(page).to have_content('GSA')
     expect(page).to have_content('department name')
-    expect(page).to have_content(user.email)
   end
 
   context 'User already in a team' do
@@ -43,9 +41,11 @@ feature 'User teams CRUD' do
 
       login_as(admin)
       visit edit_team_path(team2)
-      find("#team_user_ids_#{user.id}").click
+      click_on 'Manage users'
+      fill_in 'Email', with: user.email
+      click_on 'Add user'
+      click_on 'Save'
 
-      click_on 'Update'
       expect(user.teams).to include(team1, team2)
     end
   end
@@ -62,7 +62,6 @@ feature 'User teams CRUD' do
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
-    fill_in "Add another team member's email", with: 'new_user@gsa.gov'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
@@ -71,7 +70,6 @@ feature 'User teams CRUD' do
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
-    expect(page).to have_content('new_user@gsa.gov')
   end
 
   scenario 'Index' do
