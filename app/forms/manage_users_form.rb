@@ -23,9 +23,10 @@ class ManageUsersForm
   private
 
   def users_from_user_emails
-    user_emails.map do |email|
-      User.find_by(email: email).presence || User.new(email: email)
-    end
+    existing_users = User.where(email: user_emails).to_a
+    missing_users = (user_emails - existing_users.map(&:emails)).map { |e| User.new(email: e) }
+
+    (existing_users + missing_users).sort_by(&:email)
   end
 
   def user_emails_are_valid_email_addresses
