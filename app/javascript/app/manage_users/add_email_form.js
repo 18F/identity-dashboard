@@ -17,7 +17,6 @@ const shouldInterceptKeyPressEvent = (event) => {
 };
 
 const addEmailInputKeyPress = (event) => {
-  // Do nothing unless this is the enter key
   if (!shouldInterceptKeyPressEvent(event)) return;
   event.preventDefault();
   addEmailButtonClicked();
