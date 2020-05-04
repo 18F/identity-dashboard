@@ -1,3 +1,5 @@
+import sinon from "sinon";
+
 import {
   setupManageUsersTestDOM,
   tearDownManageUsersTestDOM,
@@ -48,6 +50,34 @@ describe("manage_users/add_email_form", () => {
       button.onclick();
 
       expect(window.manageUserEmailAddresses).to.deep.equal(["test1@example.com"]);
+    });
+
+    it("adds a keypress event listener that adds an email on enter pressed", () => {
+      window.manageUserEmailAddresses = ["test1@example.com"];
+
+      setupAddEmailForm();
+
+      const input = document.getElementById("add_email");
+      const button = document.getElementById("add_email_button");
+
+      input.value = "test2@example.com";
+      input.focus();
+
+      const ignoredEvent = { keyCode: 5, preventDefault: sinon.spy() };
+      const enterEvent = { keyCode: 13, preventDefault: sinon.spy() };
+
+      input.onkeypress(ignoredEvent);
+
+      expect(ignoredEvent.preventDefault.calledOnce).to.eq(false);
+      expect(window.manageUserEmailAddresses).to.deep.equal(["test1@example.com"]);
+
+      input.onkeypress(enterEvent);
+
+      expect(enterEvent.preventDefault.calledOnce).to.eq(true);
+      expect(window.manageUserEmailAddresses).to.deep.equal([
+        "test1@example.com",
+        "test2@example.com",
+      ]);
     });
   });
 });

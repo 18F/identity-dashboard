@@ -11,7 +11,7 @@
   </div>
 <% end %>
 
-<%= form_with url: team_manage_users_path(@team), method: :post do |f| %>
+<%= form_with url: team_manage_users_path(@team), method: :post, id: 'manage_users_form' do |f| %>
   <div id='user_email_inputs'>
     <% @manage_users_form.user_emails.each do |email| %>
       <%= hidden_field_tag 'user_emails[]', strip_tags(email), class: 'user_email_input' %>
