@@ -29,7 +29,8 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = :local
+  logo_enabled = ENV.fetch('logo_upload_enabled', 'true') == 'true'
+  config.active_storage.service = logo_enabled ? :amazon : :local
   # Allow SVG's only because we will always serve them in an <img> element
   config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
 
