@@ -175,16 +175,6 @@ describe TeamsController do
         user.admin = false
         org.users << user
       end
-
-      context 'when the update includes adding a new user' do
-        let(:new_user) { create(:user) }
-
-        it 'adds the user to the team' do
-          patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] },
-                                   new_user: { email: new_user.email } }
-          expect(org.users.include?(new_user)).to be true
-        end
-      end
     end
 
     context 'when user is neither a admin nor a team member' do

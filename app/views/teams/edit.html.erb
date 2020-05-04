@@ -5,6 +5,20 @@
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: false, extra_message: t('headings.teams.temporary_warning_team_user') %>
 
+  <div>
+    <h4><label for="users">Users: (<%= @team.users.count %>)</label></h4>
+    <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="users">
+      <% @team.users.each do |u| %>
+        <li><%= u.email %></li>
+      <% end %>
+    </ul>
+    <%= link_to(
+      "Manage users",
+      new_team_manage_user_path(@team),
+      class: 'margin-y-1 display-block',
+    ) %>
+  </div>
+
   <% if can_delete_team?(current_user) %>
     <%= link_to(
             'Delete',

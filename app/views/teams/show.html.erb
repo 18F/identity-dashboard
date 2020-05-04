@@ -17,6 +17,11 @@
     <li><%= u.email %></li>
   <% end %>
 </ul>
+<%= link_to(
+  "Manage users",
+  new_team_manage_user_path(@team),
+  class: 'margin-y-1 display-block',
+) %>
 
 <h4><label for="apps">Apps: (<%= @team.service_providers.count %>)</label></h4>
 <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="apps">

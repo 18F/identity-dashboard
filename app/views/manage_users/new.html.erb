@@ -1,0 +1,34 @@
+<h1>Manage users for <%= @team.name %></h1>
+
+<% if @manage_users_form.errors.any? %>
+  <div class="usa-alert usa-alert--error usa-alert__body usa-alert__text text-indent-3">
+    Please review the problems below:
+    <ul>
+      <% @manage_users_form.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with url: team_manage_users_path(@team), method: :post, id: 'manage_users_form' do |f| %>
+  <div id='user_email_inputs'>
+    <% @manage_users_form.user_emails.each do |email| %>
+      <%= hidden_field_tag 'user_emails[]', strip_tags(email), class: 'user_email_input' %>
+    <% end %>
+  </div>
+
+  <ul id='user_email_list' class='usa-list usa-list--unstyled margin-bottom-2'></ul>
+
+  <div id='add-email-form' class='margin-y-1'>
+    <label for='add_email' class='usa-label'>Email</label>
+    <input type='text' id='add_email' class='usa-input margin-bottom-2'/>
+    <button type='button' id='add_email_button' class='usa-button usa-button--inverse usa-button'>
+      Add user
+    </button>
+  </div>
+
+  <%= submit_tag 'Save', class: 'usa-button margin-top-4 usa-button-wide' %>
+<% end %>
+
+<%= javascript_pack_tag 'manage-users' %>
