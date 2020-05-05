@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Logo upload' do
   let(:user) { create(:user, :with_teams) }
   before do
-    allow(Figaro.env).to receive(:logo_upload_enabled).and_return('true')
+    ENV['logo_upload_enabled'] = 'true'
   end
 
   context 'on create' do
