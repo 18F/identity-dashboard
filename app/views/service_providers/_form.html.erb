@@ -75,7 +75,9 @@
                    input_html: { class: 'usa-input' } %>
   <% end %>
 
-  <% if ENV.fetch('logo_upload_enabled', 'true') == 'true' %>
+  <%# Temp hack to allow feature in dev but not int for testing %>
+  <% if (ENV.fetch('logo_upload_enabled', 'true') == 'true') &&
+        (LoginGov::Hostdata.env != 'int') %>
     <%= render 'logo_upload', form: form, service_provider: service_provider %>
   <% else %>
     <%= form.input :logo,
