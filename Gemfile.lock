@@ -21,7 +21,6 @@ GIT
 GIT
   remote: https://github.com/18f/identity-validations.git
   revision: 579e79345e6af31013df19f6316e9aebf2686dd4
-  579e79345e6af31013df19f6316e9aebf2686dd4
   branch: master
   specs:
     identity_validations (0.3.2)
