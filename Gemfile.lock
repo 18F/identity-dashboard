@@ -20,10 +20,11 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: 31d041f479d5479940b9c6c67a3ee37786ace68c
+  revision: 579e79345e6af31013df19f6316e9aebf2686dd4
+  579e79345e6af31013df19f6316e9aebf2686dd4
   branch: master
   specs:
-    identity_validations (0.3.1)
+    identity_validations (0.3.2)
 
 GIT
   remote: https://github.com/18f/omniauth_login_dot_gov.git
