@@ -147,6 +147,7 @@ class ServiceProvidersController < AuthenticatedController
     return unless using_s3?
 
     # Set the content-type on the S3 blob or SVG's won't work
+    region = Figaro.env.aws_region
     bucket = Figaro.env.aws_logo_bucket
     key = service_provider.logo_file.key
     content_type = service_provider.logo_file.content_type
@@ -166,7 +167,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def s3
-    @s3 ||= Aws::S3::Client.new
+    @s3 ||= Aws::S3::Client.new region: Figaro.env.aws_region
   end
 
   helper_method :service_provider
