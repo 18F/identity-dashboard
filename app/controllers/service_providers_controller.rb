@@ -166,7 +166,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def s3
-    @s3 ||= Aws::S3::Client.new
+    @s3 ||= Aws::S3::Client.new(region: Figaro.env.aws_region)
   end
 
   helper_method :service_provider

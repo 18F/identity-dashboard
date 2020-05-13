@@ -49,4 +49,9 @@ Rails.application.configure do
   config.active_support.test_order = :random
   config.assets.raise_runtime_errors = true
   config.active_job.queue_adapter = :inline
+
+  # Separate file storage in the test environment
+  config.active_storage.service = :test
+  # Allow SVG's only because we will always serve them in an <img> element
+  config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
 end
