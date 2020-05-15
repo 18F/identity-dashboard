@@ -13,6 +13,13 @@ RSpec.describe ServiceProviderLogoUpdater do
     )
   end
 
+  before do
+    # look for logos in the fixtures
+    allow(updater).to receive(:logo_path) do |filename|
+      Rails.root.join('spec', 'fixtures', filename)
+    end
+  end
+
   describe '#import_logos_to_active_storage' do
     it 'attaches the legacy logo to the service provider' do
       # don't clone the config repo
@@ -20,10 +27,6 @@ RSpec.describe ServiceProviderLogoUpdater do
       # don't call /api/service_providers on the dashboard
       # allow(updater).to receive(:load_idp_config).and_return(fake_config)
       allow_any_instance_of(RestClient::Request).to receive(:execute).and_return(fake_response)
-      # look for logos in the fixtures
-      allow(updater).to receive(:logo_path) do |filename|
-        Rails.root.join('spec', 'fixtures', filename)
-      end
       # Just to bump up code coverage -- doesn't affect the test
       allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
       allow(LoginGov::Hostdata).to receive(:env).and_return('int')
@@ -39,6 +42,7 @@ RSpec.describe ServiceProviderLogoUpdater do
     it 'handles edge cases' do
       allow(Subprocess).to receive(:check_call).and_return(true)
       allow(File).to receive(:directory?).and_return(true)
+      allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false)
       # don't call /api/service_providers on the dashboard
       # allow(updater).to receive(:load_idp_config).and_return(fake_config)
       allow_any_instance_of(RestClient::Request).to receive(:execute).and_return(fake_response)
