@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/18F/identity-hostdata.git
+  remote: git://github.com/18F/identity-hostdata.git
   revision: b5587588601670f762bbc79f0f4a8468064d9401
   branch: master
   specs:
@@ -8,14 +8,15 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: cfa27ce765d676d4d748d039ba39d50353441b10
+  revision: 8d0bedcd71b025617c0ab094bbc6a7982d9df1cd
   branch: master
   specs:
-    saml_idp (0.4.0)
+    saml_idp (0.9.0.pre.18f)
       activesupport
       builder
       httparty
       nokogiri (>= 1.6.2)
+      pkcs11
       uuid
 
 GIT
@@ -39,28 +40,28 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    actioncable (5.2.4.2)
-      actionpack (= 5.2.4.2)
+    actioncable (5.2.4.3)
+      actionpack (= 5.2.4.3)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
-    actionmailer (5.2.4.2)
-      actionpack (= 5.2.4.2)
-      actionview (= 5.2.4.2)
-      activejob (= 5.2.4.2)
+    actionmailer (5.2.4.3)
+      actionpack (= 5.2.4.3)
+      actionview (= 5.2.4.3)
+      activejob (= 5.2.4.3)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 2.0)
     actionmailer-text (0.1.1)
       actionmailer
       htmlentities
-    actionpack (5.2.4.2)
-      actionview (= 5.2.4.2)
-      activesupport (= 5.2.4.2)
+    actionpack (5.2.4.3)
+      actionview (= 5.2.4.3)
+      activesupport (= 5.2.4.3)
       rack (~> 2.0, >= 2.0.8)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionview (5.2.4.2)
-      activesupport (= 5.2.4.2)
+    actionview (5.2.4.3)
+      activesupport (= 5.2.4.3)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
@@ -70,20 +71,20 @@ GEM
       activemodel (>= 4.1, < 6.1)
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
-    activejob (5.2.4.2)
-      activesupport (= 5.2.4.2)
+    activejob (5.2.4.3)
+      activesupport (= 5.2.4.3)
       globalid (>= 0.3.6)
-    activemodel (5.2.4.2)
-      activesupport (= 5.2.4.2)
-    activerecord (5.2.4.2)
-      activemodel (= 5.2.4.2)
-      activesupport (= 5.2.4.2)
+    activemodel (5.2.4.3)
+      activesupport (= 5.2.4.3)
+    activerecord (5.2.4.3)
+      activemodel (= 5.2.4.3)
+      activesupport (= 5.2.4.3)
       arel (>= 9.0)
-    activestorage (5.2.4.2)
-      actionpack (= 5.2.4.2)
-      activerecord (= 5.2.4.2)
+    activestorage (5.2.4.3)
+      actionpack (= 5.2.4.3)
+      activerecord (= 5.2.4.3)
       marcel (~> 0.3.1)
-    activesupport (5.2.4.2)
+    activesupport (5.2.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -118,14 +119,14 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
-    bindata (2.4.4)
+    bindata (2.4.7)
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     builder (3.2.4)
-    bullet (5.7.5)
+    bullet (6.1.0)
       activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11.0)
+      uniform_notifier (~> 1.11)
     bummr (0.3.2)
       rainbow
       thor
@@ -184,9 +185,6 @@ GEM
     dotenv-rails (2.7.5)
       dotenv (= 2.7.5)
       railties (>= 3.2, < 6.1)
-    easy_translate (0.5.1)
-      thread
-      thread_safe
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
     erubi (1.9.0)
@@ -199,33 +197,34 @@ GEM
     fakefs (1.2.2)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
-    ffi (1.11.1)
+    ffi (1.12.2)
     figaro (1.1.1)
       thor (~> 0.14)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     hashdiff (1.0.0)
-    hashie (3.6.0)
-    highline (1.7.10)
+    hashie (4.1.0)
+    highline (2.0.3)
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    httparty (0.16.2)
+    httparty (0.18.0)
+      mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
-    i18n-tasks (0.9.21)
+    i18n-tasks (0.9.31)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
-      easy_translate (>= 0.5.1)
       erubi
-      highline (>= 1.7.3)
+      highline (>= 2.0.0)
       i18n
       parser (>= 2.2.3.0)
+      rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     jmespath (1.4.0)
-    jquery-rails (4.3.5)
+    jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
@@ -242,8 +241,8 @@ GEM
     loofah (2.5.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    macaddr (1.7.1)
-      systemu (~> 2.6.2)
+    macaddr (1.7.2)
+      systemu (~> 2.6.5)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
@@ -252,10 +251,10 @@ GEM
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
-    mimemagic (0.3.4)
+    mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.0)
+    minitest (5.14.1)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -268,17 +267,18 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
-    omniauth (1.9.0)
-      hashie (>= 3.4.6, < 3.7.0)
+    omniauth (1.9.1)
+      hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
     omniauth-rails_csrf_protection (0.1.2)
       actionpack (>= 4.2)
       omniauth (>= 1.3.1)
     orm_adapter (0.5.0)
     parallel (1.17.0)
-    parser (2.7.0.2)
+    parser (2.7.1.2)
       ast (~> 2.4.0)
     pg (0.21.0)
+    pkcs11 (0.3.2)
     powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -307,18 +307,18 @@ GEM
     rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
-    rails (5.2.4.2)
-      actioncable (= 5.2.4.2)
-      actionmailer (= 5.2.4.2)
-      actionpack (= 5.2.4.2)
-      actionview (= 5.2.4.2)
-      activejob (= 5.2.4.2)
-      activemodel (= 5.2.4.2)
-      activerecord (= 5.2.4.2)
-      activestorage (= 5.2.4.2)
-      activesupport (= 5.2.4.2)
+    rails (5.2.4.3)
+      actioncable (= 5.2.4.3)
+      actionmailer (= 5.2.4.3)
+      actionpack (= 5.2.4.3)
+      actionview (= 5.2.4.3)
+      activejob (= 5.2.4.3)
+      activemodel (= 5.2.4.3)
+      activerecord (= 5.2.4.3)
+      activestorage (= 5.2.4.3)
+      activesupport (= 5.2.4.3)
       bundler (>= 1.3.0)
-      railties (= 5.2.4.2)
+      railties (= 5.2.4.3)
       sprockets-rails (>= 2.0.0)
     rails-controller-testing (1.0.4)
       actionpack (>= 5.0.1.x)
@@ -329,17 +329,20 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
+    rails-i18n (5.1.3)
+      i18n (>= 0.7, < 2)
+      railties (>= 5.0, < 6)
     rails_serve_static_assets (0.0.5)
-    railties (5.2.4.2)
-      actionpack (= 5.2.4.2)
-      activesupport (= 5.2.4.2)
+    railties (5.2.4.3)
+      actionpack (= 5.2.4.3)
+      activesupport (= 5.2.4.3)
       method_source
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
     rake (12.3.3)
-    rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
+    rb-fsevent (0.10.4)
+    rb-inotify (0.10.1)
       ffi (~> 1.0)
     recipient_interceptor (0.1.2)
       mail
@@ -351,15 +354,15 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rspec-core (3.9.0)
-      rspec-support (~> 3.9.0)
-    rspec-expectations (3.9.0)
+    rspec-core (3.9.2)
+      rspec-support (~> 3.9.3)
+    rspec-expectations (3.9.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
-    rspec-mocks (3.9.0)
+    rspec-mocks (3.9.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
-    rspec-rails (3.9.0)
+    rspec-rails (3.9.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
@@ -367,7 +370,7 @@ GEM
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
-    rspec-support (3.9.0)
+    rspec-support (3.9.3)
     rubocop (0.54.0)
       parallel (~> 1.10)
       parser (>= 2.5)
@@ -386,8 +389,8 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.7)
-      railties (>= 4.0.0, < 6)
+    sass-rails (5.1.0)
+      railties (>= 5.2.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
@@ -397,7 +400,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    shoulda-matchers (4.2.0)
+    shoulda-matchers (4.3.0)
       activesupport (>= 4.2.0)
     simple_form (5.0.2)
       actionpack (>= 5.0)
@@ -441,7 +444,6 @@ GEM
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     thor (0.20.3)
-    thread (0.2.2)
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.1)
@@ -452,10 +454,10 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    unicode-display_width (1.6.0)
-    uniform_notifier (1.11.0)
+    unicode-display_width (1.7.0)
+    uniform_notifier (1.13.0)
     useragent (0.16.10)
-    uuid (2.3.8)
+    uuid (2.3.9)
       macaddr (~> 1.0)
     warden (1.2.8)
       rack (>= 2.0.6)
@@ -472,7 +474,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (4.2.0)
+    webpacker (4.2.2)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -487,12 +489,12 @@ PLATFORMS
 
 DEPENDENCIES
   actionmailer-text (>= 0.1.1)
-  active_model_serializers (>= 0.10.7)
+  active_model_serializers (>= 0.10.10)
   autoprefixer-rails (~> 9.6)
   aws-sdk-s3
   better_errors
   binding_of_caller
-  bullet
+  bullet (>= 5.7.5)
   bummr
   bundler
   capistrano
@@ -505,17 +507,17 @@ DEPENDENCIES
   colorize
   database_cleaner
   devise (~> 4.7.1)
-  dotenv-rails (~> 2.4)
-  enum_help
-  factory_bot_rails (~> 4.8)
+  dotenv-rails (~> 2.7, >= 2.7.5)
+  enum_help (>= 0.0.17)
+  factory_bot_rails (~> 4.11, >= 4.11.1)
   fakefs
   figaro
   httparty
-  i18n-tasks
+  i18n-tasks (>= 0.9.21)
   identity-hostdata!
   identity_validations!
   jquery-rails (>= 4.3.5)
-  json-jwt (>= 1.9.4)
+  json-jwt (>= 1.11.0)
   jwt
   listen (~> 3.2)
   newrelic_rpm (>= 3.9.8)
@@ -530,36 +532,36 @@ DEPENDENCIES
   rack-canonical-host
   rack-timeout
   rack_session_access
-  rails (~> 5.2.0)
-  rails-controller-testing (>= 1.0.2)
+  rails (~> 5.2.4, >= 5.2.4.3)
+  rails-controller-testing (>= 1.0.4)
   rails_serve_static_assets
   recipient_interceptor
-  responders (~> 2.4)
+  responders (~> 2.4, >= 2.4.1)
   rest-client (~> 2.0)
-  rspec-rails (~> 3.7, >= 3.7.2)
+  rspec-rails (~> 3.9, >= 3.9.0)
   rubocop (= 0.54)
   rubocop-rspec
   ruby_regex
   saml_idp!
   sass-rails (~> 5.0, >= 5.0.7)
   secure_headers (~> 3.9)
-  shoulda-matchers
-  simple_form (~> 5.0)
+  shoulda-matchers (>= 4.2.0)
+  simple_form (~> 5.0, >= 5.0.2)
   simplecov
   sinatra (>= 2.0.2)
-  slim-rails (~> 3.1)
+  slim-rails (~> 3.2, >= 3.2.0)
   slim_lint
   subprocess
   timecop
   uglifier
-  web-console (>= 3.3.0)
+  web-console (>= 3.7.0)
   webdrivers (~> 3.0)
   webmock
-  webpacker (~> 4.x)
+  webpacker (~> 4.2, >= 4.2.0)
   websocket-driver (= 0.6.5)
 
 RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.1.4
+   1.17.3
