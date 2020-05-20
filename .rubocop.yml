@@ -102,6 +102,9 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/TrailingBlankLines:
+  Enabled: false
+
 Lint/PercentStringArray:
   Enabled: true
   Exclude:
