@@ -1,8 +1,12 @@
 module Users
   class OmniauthController < ApplicationController
+    # rubocop:disable Metrics/MethodLength
     def callback
       omniauth_info = request.env['omniauth.auth']['info']
-      @user = User.find_by(email: omniauth_info['email'])
+      email = omniauth_info['email']
+      @user = User.find_by(email: email)
+      allow_unregistered_government_user(email)
+
       if @user
         @user.update!(uuid: omniauth_info['uuid'])
         sign_in @user
@@ -12,6 +16,17 @@ module Users
       else
         redirect_to users_none_url
       end
+    end
+    # rubocop:enable Metrics/MethodLength
+
+    private
+
+    def allow_unregistered_government_user(received_email)
+      return if @user
+      allowed_tlds = Figaro.env.auto_account_creation_tlds.split(',')
+      return unless allowed_tlds.include?(received_email[-4..-1])
+
+      @user = User.create(email: received_email)
     end
   end
 end
