@@ -23,7 +23,7 @@ module Users
 
     def allow_unregistered_government_user(received_email)
       return if @user
-      allowed_tlds = Figaro.env.auto_account_creation_tlds.split(',')
+      allowed_tlds = (Figaro.env.auto_account_creation_tlds || '')&.split(',')
       return if allowed_tlds.filter do |tld|
         /(#{Regexp.escape(tld)})\Z/.match?(received_email)
       end.empty?
