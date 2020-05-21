@@ -1,6 +1,7 @@
 require 'login_gov/hostdata'
 require 'subprocess'
 
+# rubocop:disable Metrics/ClassLength
 class ServiceProviderLogoUpdater
   include ServiceProviderHelper
 
@@ -15,16 +16,17 @@ class ServiceProviderLogoUpdater
       issuer = sp['issuer']
       logo_name = sp['logo']
       logger.info(issuer.to_s + ' logo: ' + logo_name.to_s)
-      next unless logo_name.present? && valid_image_type?(logo_name)
+      next unless valid_logo?(logo_name)
 
       service_provider = ServiceProvider.find_by(issuer: issuer)
-      next unless service_provider
+      next unless service_provider && File.file?(logo_path(logo_name))
 
       service_provider.logo_file.attach(
         io: File.open(logo_path(logo_name)),
         filename: logo_name,
         content_type: mime_type(logo_name)
       )
+      push_logo_content_type(service_provider)
     end
   rescue StandardError => error
     handle_error(error)
@@ -46,6 +48,12 @@ class ServiceProviderLogoUpdater
     @idp_config ||= load_idp_config
   end
 
+  def valid_logo?(logo_name)
+    logo_name.present? &&
+      valid_image_type?(logo_name) &&
+      File.file?(logo_path(logo_name))
+  end
+
   def handle_error(error)
     logger.error(error)
   end
@@ -58,6 +66,20 @@ class ServiceProviderLogoUpdater
       'images',
       'sp-logos',
       filename
+    )
+  end
+
+  def push_logo_content_type(service_provider)
+    # Set the content-type on the S3 blob or SVG's won't work
+    bucket = Figaro.env.aws_logo_bucket
+    key = service_provider.logo_file.key
+    s3.copy_object(
+      bucket:             bucket,
+      content_type:       service_provider.logo_file.content_type,
+      copy_source:        "#{bucket}/#{key}",
+      key:                key,
+      metadata_directive: 'REPLACE',
+      acl:                'public-read'
     )
   end
 
@@ -91,6 +113,10 @@ class ServiceProviderLogoUpdater
     @logger ||= default_logger
   end
 
+  def s3
+    @s3 ||= Aws::S3::Client.new(region: Figaro.env.aws_region)
+  end
+
   #############################################################################
 
   def repo_dir
@@ -113,3 +139,4 @@ class ServiceProviderLogoUpdater
     logger
   end
 end
+# rubocop:enable Metrics/ClassLength

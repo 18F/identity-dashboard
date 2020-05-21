@@ -18,6 +18,10 @@ RSpec.describe ServiceProviderLogoUpdater do
     allow(updater).to receive(:logo_path) do |filename|
       Rails.root.join('spec', 'fixtures', filename)
     end
+
+    # don't actually set s3 object's acl
+    allow_any_instance_of(Aws::S3::Client).to receive(:copy_object)
+    allow(updater).to receive(:s3).and_return(Aws::S3::Client.new(stub_responses: true))
   end
 
   describe '#import_logos_to_active_storage' do
