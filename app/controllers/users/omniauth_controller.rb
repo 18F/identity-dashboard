@@ -24,7 +24,9 @@ module Users
     def allow_unregistered_government_user(received_email)
       return if @user
       allowed_tlds = Figaro.env.auto_account_creation_tlds.split(',')
-      return unless allowed_tlds.include?(received_email[-4..-1])
+      return if allowed_tlds.filter do |tld|
+        /(#{Regexp.escape(tld)})\Z/.match?(received_email)
+      end.empty?
 
       @user = User.create(email: received_email)
     end
