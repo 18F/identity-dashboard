@@ -1,5 +1,6 @@
 # These settings are common across environments, but may be overridden
 # in any particular environment
+auto_account_creation_tlds: '.gov,.mil'
 aws_region: us-west-2
 aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
