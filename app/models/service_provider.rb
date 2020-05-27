@@ -4,6 +4,8 @@ class ServiceProvider < ApplicationRecord
   include IdentityValidations::ServiceProviderValidation
   include ActionView::Helpers::SanitizeHelper
 
+  has_paper_trail on: %i[create update destroy]
+
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
 
