@@ -138,11 +138,16 @@ class ServiceProvidersController < AuthenticatedController
     return unless logo_file_param
 
     service_provider.logo_file.attach(logo_file_param)
-    service_provider.logo = service_provider.logo_file.filename.to_s
+    cache_logo_info
     push_logo_content_type
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def cache_logo_info
+    service_provider.logo = service_provider.logo_file.filename.to_s
+    service_provider.remote_logo_key = service_provider.logo_file.key
+  end
+
+  # rubocop:disable Metrics/MethodLength
   def push_logo_content_type
     return unless using_s3?
 
@@ -159,7 +164,7 @@ class ServiceProvidersController < AuthenticatedController
       acl:                'public-read'
     )
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength
 
   def using_s3?
     Rails.application.config.active_storage.service == :amazon

@@ -5,6 +5,7 @@ require File.expand_path('../config/environment', __dir__)
 
 require 'rspec/rails'
 require 'pundit/rspec'
+require 'paper_trail/frameworks/rspec'
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |file| require file }
 
