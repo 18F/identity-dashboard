@@ -47,6 +47,6 @@ feature 'manage users', :js do
 
     click_on 'Save'
 
-    expect(page).to have_content('Nonsense is not a valid email address')
+    expect(page).to have_content('nonsense is not a valid email address')
   end
 end
