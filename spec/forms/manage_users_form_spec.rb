@@ -4,12 +4,12 @@ describe ManageUsersForm do
   let(:team) { create(:team) }
   let(:user_already_on_the_team) { create(:user, teams: [team]) }
   let(:user_not_already_on_the_team) { create(:user) }
-  let(:email_for_nonexistent_user) { 'nonexistent@gsa.gov' }
+  let(:email_for_nonexistent_user) { 'NonExistent@gsa.gov' }
 
   let(:user_emails) do
     [
-      user_already_on_the_team.email,
-      user_not_already_on_the_team.email,
+      user_already_on_the_team.email.upcase,
+      user_not_already_on_the_team.email.upcase,
       email_for_nonexistent_user,
     ]
   end
@@ -20,7 +20,7 @@ describe ManageUsersForm do
     it 'creates users that do not exist and adds users to the team' do
       result = subject.submit(user_emails: user_emails)
 
-      previously_nonexistent_user = User.find_by(email: email_for_nonexistent_user)
+      previously_nonexistent_user = User.find_by(email: email_for_nonexistent_user.downcase)
       team_users = team.reload.users
 
       expect(result).to eq(true)

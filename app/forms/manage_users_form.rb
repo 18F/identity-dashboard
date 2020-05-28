@@ -23,9 +23,7 @@ class ManageUsersForm
   private
 
   def users_from_user_emails
-    existing_users = User.where(email: user_emails).to_a
-    missing_users = (user_emails - existing_users.map(&:email)).map { |e| User.new(email: e) }
-
+    missing_users = missing_emails.map { |e| User.new(email: e) }
     (existing_users + missing_users).sort_by(&:email)
   end
 
@@ -34,5 +32,14 @@ class ManageUsersForm
       next if email.match(Devise.email_regexp)
       errors.add(:base, "#{email} is not a valid email address")
     end
+  end
+
+  def existing_users
+    User.where('lower(email) IN (?)', user_emails.map(&:downcase)).to_a
+  end
+
+  def missing_emails
+    existing_emails = existing_users.map { |user| user.email.downcase }
+    user_emails.filter { |email| !existing_emails.include? email.downcase }
   end
 end
