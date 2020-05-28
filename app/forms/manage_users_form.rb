@@ -11,7 +11,8 @@ class ManageUsersForm
   end
 
   def submit(user_emails:)
-    @user_emails = user_emails
+    # Devise makes emails case insensitive by downcasing prior to saving
+    @user_emails = user_emails.map(&:downcase)
 
     return false unless valid?
 
@@ -23,10 +24,17 @@ class ManageUsersForm
   private
 
   def users_from_user_emails
-    existing_users = User.where(email: user_emails).to_a
-    missing_users = (user_emails - existing_users.map(&:email)).map { |e| User.new(email: e) }
-
+    missing_users = missing_emails.map { |e| User.new(email: e) }
     (existing_users + missing_users).sort_by(&:email)
+  end
+
+  def missing_emails
+    existing_emails = existing_users.map(&:email)
+    user_emails.filter { |email| !existing_emails.include? email }
+  end
+
+  def existing_users
+    User.where(email: user_emails).to_a
   end
 
   def user_emails_are_valid_email_addresses
