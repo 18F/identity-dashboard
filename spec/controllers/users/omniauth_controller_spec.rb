@@ -20,7 +20,7 @@ describe Users::OmniauthController do
     context 'when a user exists' do
       it 'signs the user in' do
         user = create(:user, email: email)
-        session[:requsted_url] = service_providers_url
+        session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
 

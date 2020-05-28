@@ -1,4 +1,4 @@
-class Omniauth
+class UserSession
   attr_reader :user, :email
 
   def initialize(info)

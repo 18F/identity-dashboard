@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include Pundit
 
   before_action :set_paper_trail_whodunnit
-  before_action :set_requsted_url
+  before_action :set_requested_url
 
   protect_from_forgery with: :exception
 
@@ -22,8 +22,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def set_requsted_url
-    return if session[:requsted_url]
-    session[:requsted_url] = request.original_url
+  def set_requested_url
+    return if session[:requested_url]
+    session[:requested_url] = request.original_url
   end
 end
