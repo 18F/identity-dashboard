@@ -6,8 +6,10 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#index' do
+    let(:team) { build(:team, agency: build(:agency)) }
+
     it 'returns active, approved SPs' do
-      sp = create(:service_provider, active: true, approved: true)
+      sp = create(:service_provider, active: true, approved: true, team: team)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
@@ -16,7 +18,7 @@ describe Api::ServiceProvidersController do
     end
 
     xit 'does not return un-approved SPs' do
-      sp = create(:service_provider, active: true, approved: false)
+      sp = create(:service_provider, active: true, approved: false, team: team)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
@@ -25,7 +27,7 @@ describe Api::ServiceProvidersController do
     end
 
     it 'includes non-active SPs' do
-      sp = create(:service_provider, active: false, approved: true)
+      sp = create(:service_provider, active: false, approved: true, team: team)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
