@@ -81,7 +81,7 @@ group :test do
   gem 'timecop'
   gem 'webdrivers', '~> 3.0'
   gem 'webmock'
-  gem 'websocket-driver', '=0.6.5'
+  gem 'websocket-driver', '= 0.6.5'
 end
 
 group :production do
