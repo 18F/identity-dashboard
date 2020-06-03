@@ -26,6 +26,10 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     object&.agency&.name
   end
 
+  def agency_id
+    object&.agency&.id
+  end
+
   def cert
     object.saml_client_cert
   end

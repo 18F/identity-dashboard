@@ -25,7 +25,7 @@ module Api
     end
 
     def approved_service_providers
-      ServiceProvider.all
+      ServiceProvider.includes(:logo_file_attachment, :agency).all
     end
   end
 end

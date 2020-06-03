@@ -4,10 +4,12 @@ RSpec.describe ServiceProviderSerializer do
   subject(:serializer) { ServiceProviderSerializer.new(service_provider) }
   let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
   let(:logo_filename) { 'logo.svg' }
+  let(:team_agency_id) { SecureRandom.random_number(10_000) }
   let(:service_provider) do
     sp = create(:service_provider,
           redirect_uris: ['http://localhost:9292/result', 'x-example-app:/result'],
-          updated_at: Time.zone.now)
+          updated_at: Time.zone.now,
+          team: create(:team, agency: create(:agency, id: team_agency_id)))
     sp.logo_file.attach(io: File.open(fixture_path + "/#{logo_filename}"), filename: logo_filename)
     sp.update(logo: logo_filename)
     sp.reload
@@ -23,6 +25,10 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:logo]).to eq('logo.svg')
         expect(as_json[:remote_logo_key]).to eq(service_provider.logo_file.key)
       end
+    end
+
+    it 'gets the agency_id from the team' do
+      expect(as_json[:agency_id]).to eq(team_agency_id)
     end
   end
 end
