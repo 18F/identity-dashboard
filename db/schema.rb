@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_09_184921) do
+ActiveRecord::Schema.define(version: 2020_06_11_125630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,9 +133,9 @@ ActiveRecord::Schema.define(version: 2020_06_09_184921) do
     t.boolean "admin", default: false, null: false
     t.integer "group_id"
     t.datetime "deleted_at"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email", where: "(deleted_at IS NULL)"
     t.index ["group_id"], name: "index_users_on_group_id"
-    t.index ["uuid"], name: "index_users_on_uuid", unique: true
+    t.index ["uuid"], name: "index_users_on_uuid", where: "(deleted_at IS NULL)"
   end
 
   create_table "versions", force: :cascade do |t|
