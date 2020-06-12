@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action -> { authorize User }
 
   def index
-    @users = User.all
+    @users = User.all.sorted
   end
 
   def new
