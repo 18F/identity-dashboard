@@ -72,7 +72,7 @@ en:
       sent.
     team_delete_failed: Only teams without apps can be deleted. Reassign or delete
       the apps first.
-    user_already_exists: User already exists
+    user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
   omniauth:
     logout_fail: Logout failed

@@ -78,9 +78,12 @@ describe User do
       user.email = email
       user.save
       expect(user).to be_valid
-      duplicate = User.new(email: email)
-      duplicate.save
-      expect(duplicate).not_to be_valid
+      user_with_same_email = User.new(email: email)
+      user_with_same_email.save
+      expect(user_with_same_email).not_to be_valid
+      user.destroy
+      user_with_same_email.save
+      expect(user_with_same_email).to be_valid
     end
   end
 end
