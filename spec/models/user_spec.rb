@@ -71,4 +71,16 @@ describe User do
       expect(user.scoped_teams).to eq(Team.all)
     end
   end
+
+  describe 'validates' do
+    it 'uniqueness of email address' do
+      email = 'joe@gsa.gov'
+      user.email = email
+      user.save
+      expect(user).to be_valid
+      duplicate = User.new(email: email)
+      duplicate.save
+      expect(duplicate).not_to be_valid
+    end
+  end
 end

@@ -1,10 +1,12 @@
 class User < ApplicationRecord
+  acts_as_paranoid
+
   devise :trackable, :timeoutable
   has_many :user_teams, dependent: :nullify
   has_many :teams, through: :user_teams
   has_many :service_providers, through: :teams
 
-  validates :email, uniqueness: true
+  validates_with UserValidator, on: :create
 
   scope :sorted, -> { order(email: :asc) }
 

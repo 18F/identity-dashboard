@@ -3,7 +3,6 @@
 <%= simple_form_for(@user,
     html: { autocomplete: 'off', role: 'form' },
     url: users_path) do |form| %>
-  <%= form.error_notification %>
   <%= render 'form', form: form %>
   <%= form.button :submit, 'Create', :class => "usa-button" %>
 <% end %>
