@@ -4,9 +4,9 @@ class CleanUsersService
             where('created_at < ?', 14.days.ago).
             delete_all
 
-    if count > 0
-      accounts = "account".pluralize(count)
-      Rails.logger.info("Deleted #{count} unauthenticated #{accounts}")
-    end
+    return unless count.positive?
+
+    accounts = 'account'.pluralize(count)
+    Rails.logger.info("Deleted #{count} unauthenticated #{accounts}")
   end
 end
