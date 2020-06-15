@@ -37,6 +37,7 @@ gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.0'
 gem 'slim-rails', '~> 3.1'
 gem 'subprocess', require: false
+gem 'sucker_punch', '~> 2.0'
 gem 'uglifier'
 gem 'webpacker', '~> 4.x'
 
