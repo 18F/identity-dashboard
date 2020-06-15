@@ -1,5 +1,7 @@
 class CleanUsersService
   def self.call
+    return unless User
+
     count = User.where(last_sign_in_at: nil).
             where('created_at < ?', 14.days.ago).
             delete_all
