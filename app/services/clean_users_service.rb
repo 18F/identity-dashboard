@@ -9,6 +9,6 @@ class CleanUsersService
     accounts = 'account'.pluralize(count)
     Rails.logger.info("Deleted #{count} unauthenticated #{accounts}")
   rescue ActiveRecord::NoDatabaseError
-    Rails.logger.info("Database not yet available")
+    Rails.logger.info('Database not yet available')
   end
 end
