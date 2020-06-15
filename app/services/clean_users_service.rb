@@ -1,6 +1,6 @@
 class CleanUsersService
   def self.call
-    return unless User
+    return unless ActiveRecord::Base.connection
 
     count = User.where(last_sign_in_at: nil).
             where('created_at < ?', 14.days.ago).
