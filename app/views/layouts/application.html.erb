@@ -53,7 +53,7 @@
             </button>
           </div>
         </header>
-        <div class="usa-banner__content usa-accordion__content" id="gov-banner">
+        <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
           <div class="grid-row grid-gap-lg">
             <div class="usa-banner__guidance tablet:grid-col-6">
               <%= image_tag 'img/icon-dot-gov.svg', alt: 'Dot gov', class: 'usa-banner__icon usa-media-block__img' %>
@@ -84,8 +84,7 @@
       <div class="usa-nav-container">
         <div class="usa-navbar">
           <div class="usa-logo" id="basic-logo">
-            <a href="/" accesskey="1" title="Home" aria-label="Home">
-              <%= image_tag 'img/login-gov-logo.svg', alt: 'login.gov', class: 'usa-logo__img' %>
+            <a href="/" title="Login.gov partner dashboard" aria-label="Login.gov partner dashboard">
               <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
             </a>
           </div>
@@ -136,7 +135,7 @@
               <% else %>
               <li class="usa-nav__primary-item">
                 <%= link_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-nav__link usa-current' %>
-                
+
               </li>
             <% end %>
           </ul>
