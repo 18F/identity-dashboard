@@ -3,8 +3,8 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <p>Welcome to <%= APP_NAME %>!</p>
-    <p><%= link_to APP_NAME, root_url %></p>
+    <p>Welcome to <%= Rails.application.config.app_name %>!</p>
+    <p><%= link_to Rails.application.config.app_name, root_url %></p>
     <p><strong>PLEASE DO NOT REPLY TO THIS MESSAGE</strong></p>
   </body>
 </html>
