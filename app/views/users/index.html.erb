@@ -8,7 +8,7 @@
   <% if can_delete_unconfirmed_users?(current_user, @users) %>
     <%= button_to t('forms.buttons.remove_unconfirmed_users'),
                   remove_unconfirmed_users_path,
-                  method: :post, :class => "usa-button" %>
+                  method: :delete, :class => "usa-button" %>
   <% end %>
 </div>
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CleanUsersService do
+describe DeleteUnconfirmedUsers do
   describe '#call' do
     context 'when 1 account is deleted' do
       it 'logs/returns the number of deleted accounts' do
