@@ -23,6 +23,18 @@ feature 'admin manages users' do
     end
   end
 
+  scenario 'admin can delete unconfirmed users' do
+    admin = create(:admin)
+    users = create_list(:user, 3)
+    users[1].update(created_at: 20.days.ago)
+
+    login_as(admin)
+    visit users_path
+
+    click_on t('forms.buttons.remove_unconfirmed_users')
+    expect(page).to have_content('Deleted 1 unconfirmed user')
+  end
+
   xscenario 'admin edits users' do
     admin = create(:admin)
     user = create(:user)

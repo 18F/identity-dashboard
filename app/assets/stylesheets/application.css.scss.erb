@@ -31,3 +31,28 @@ $image-path: 'img';
 .usa-label {
   color: map-get($site-palette, 'site-dark-grey');
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  form {
+    margin-bottom: 1em;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .actions {
+    form {
+      flex-grow: 1;
+    }
+  }
+}
+
+.users {
+  overflow-x: auto;
+
+  .usa-table {
+    margin-top: 0;
+  }
+}
