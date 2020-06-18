@@ -48,6 +48,23 @@ $image-path: 'img';
   }
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  form {
+    margin-bottom: 1em;
+  }
+}
+
+.users {
+  overflow-x: auto;
+
+  .usa-table {
+    margin-top: 0;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .usa-navbar .usa-logo {
     a {
@@ -58,4 +75,11 @@ $image-path: 'img';
       padding-left: 21px;
     }
   }
+
+  .actions {
+    form {
+      flex-grow: 1;
+    }
+  }
 }
+
