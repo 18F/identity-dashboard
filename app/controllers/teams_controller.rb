@@ -70,7 +70,7 @@ class TeamsController < AuthenticatedController
       team_params
     else
       user_ids = team_params[:user_ids] || []
-      team_params.merge('user_ids': (user_ids << current_user.id.to_s))
+      team_params.merge(user_ids: (user_ids << current_user.id.to_s))
     end
   end
 end
