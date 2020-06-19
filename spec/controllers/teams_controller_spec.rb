@@ -22,10 +22,22 @@ describe TeamsController do
         expect(response.status).to eq(200)
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :new
         expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is not an admin but has a whitelisted email address' do
+      before do
+        user.email = 'example@gsa.gov'
+      end
+
+      it 'has a success reponse' do
+        get :new
+        expect(response.status).to eq(200)
       end
     end
   end
@@ -77,9 +89,25 @@ describe TeamsController do
 
   describe '#create' do
     context 'when the user is not an admin' do
-      it 'has an error response' do
-        post :create, params: { team: { name: 'unique name' } }
+      it 'creates the team' do
+        post :create, params: { team: { name: 'unique name' }, agency_id: agency.id }
         expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is not an admin but has a whitelisted email address' do
+      before do
+        user.email = 'example@gsa.gov'
+      end
+
+      it 'creates the team and has a redirect response' do
+        post :create, params: { team: { name: 'unique name', agency_id: agency.id } }
+
+        team = Team.find_by(name: 'unique name')
+
+        expect(team).to_not be_nil
+        expect(team.users).to eq([user])
+        expect(response).to redirect_to(new_team_manage_user_path(team))
       end
     end
 
@@ -90,13 +118,20 @@ describe TeamsController do
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
-          post :create, params: { team: { name: 'unique name', agency_id: agency.id }, new_user: { email: '' } }
-          expect(response.status).to eq(302)
+          post :create, params: { team: { name: 'unique name', agency_id: agency.id } }
+
+          team = Team.find_by(name: 'unique name')
+
+          expect(team).to_not be_nil
+          expect(team.users).to eq([])
+
+          expect(response).to redirect_to(new_team_manage_user_path(team))
         end
       end
+
       context 'when it fails to create' do
         it 'renders #new' do
-          post :create, params: { team: { name: '' }, new_user: { email: '' } }
+          post :create, params: { team: { name: '' } }
           expect(response).to render_template(:new)
         end
       end
