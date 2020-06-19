@@ -11,9 +11,8 @@ class TeamsController < AuthenticatedController
     @team = Team.new(update_params_with_current_user)
 
     if @team.save
-
       flash[:success] = 'Success'
-      redirect_to team_path(@team.id)
+      redirect_to new_team_manage_user_path(@team.id)
     else
       render :new
     end
@@ -70,7 +69,8 @@ class TeamsController < AuthenticatedController
     if current_user.admin?
       team_params
     else
-      team_params.merge('user_ids': (team_params[:user_ids] << current_user.id.to_s))
+      user_ids = team_params[:user_ids] || []
+      team_params.merge('user_ids': (user_ids << current_user.id.to_s))
     end
   end
 end
