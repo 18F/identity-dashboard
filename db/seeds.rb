@@ -6,8 +6,13 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Rails.application.config.agencies.values.pluck("name").each do |str|
-  Agency.find_or_create_by(name: str)
+Rails.application.config.agencies.each do |agency_id, values|  
+  agency = Agency.find_by(id: agency_id)
+  if agency
+    agency.update!(name: values['name'])
+  else
+    Agency.create!(id: agency_id, name: values['name'])
+  end
 end
 
 if Rails.env.development? || Rails.env.test?
