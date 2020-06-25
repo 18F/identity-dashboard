@@ -14,11 +14,9 @@ feature 'User teams CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create'
-    expect(current_path).to eq(team_path(Team.last))
+    expect(current_path).to eq(new_team_manage_user_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
-    expect(page).to have_content('GSA')
-    expect(page).to have_content('department name')
   end
 
   context 'User already in a team' do
