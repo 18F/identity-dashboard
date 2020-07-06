@@ -36,9 +36,9 @@
   <body>
     <a class="usa-skipnav" href="#main-content">Skip to main content</a>
 
-    <div class="usa-banner">
+    <header class="usa-banner">
       <div class="usa-accordion">
-        <header class="usa-banner__header">
+        <div class="usa-banner__header">
           <div class="usa-banner__inner">
             <div class="grid-col-auto">
               <%= image_tag 'img/us_flag_small.png', class: 'usa-banner__header-flag', alt: 'U.S. flag' %>
@@ -52,7 +52,7 @@
               <span class="usa-banner__button-text">Here’s how you know</span>
             </button>
           </div>
-        </header>
+        </div>
         <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
           <div class="grid-row grid-gap-lg">
             <div class="usa-banner__guidance tablet:grid-col-6">
@@ -78,9 +78,9 @@
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <header class="usa-header usa-header--basic" role="banner">
+    <nav class="usa-header usa-header--basic">
       <div class="usa-nav-container">
         <div class="usa-navbar">
           <div class="usa-logo" id="basic-logo">
@@ -90,7 +90,7 @@
           </div>
           <button class="usa-menu-btn">Menu</button>
         </div>
-        <nav role="navigation" class="usa-nav">
+        <div class="usa-nav">
           <button class="usa-nav__close">
             <%= image_tag 'img/close.svg', alt: 'Close' %>
           </button>
@@ -139,9 +139,9 @@
               </li>
             <% end %>
           </ul>
-        </nav>
+        </div>
       </div>
-    </header>
+    </nav>
 
     <div class="usa-overlay"></div>
 

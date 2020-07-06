@@ -14,7 +14,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Capybara.javascript_driver = :headless_chrome
-Capybara.asset_host = 'http://localhost:3000'
+Capybara.asset_host = 'http://localhost:3001'
 Capybara.default_max_wait_time = 5
 
 Capybara.server = :puma, { Silent: true }

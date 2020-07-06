@@ -91,4 +91,14 @@ describe ServiceProviderHelper do
       end
     end
   end
+
+  describe '#sp_active_img_alt' do
+    it 'returns alt tag indicatng active service provider' do
+      expect(sp_active_img_alt(true)).to eq('Active service provider')
+    end
+
+    it 'returns alt tag indicatng inactive service provider' do
+      expect(sp_active_img_alt(false)).to eq('Inactive service provider')
+    end
+  end
 end

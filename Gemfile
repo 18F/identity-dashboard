@@ -69,6 +69,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'axe-matchers'
   gem 'capybara-selenium'
   gem 'climate_control'
   gem 'codeclimate-test-reporter', require: nil

@@ -9,6 +9,8 @@ ENV['RAILS_ENV'] ||= 'test'
 
 require 'webmock/rspec'
 
+require 'axe/rspec'
+
 # http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.color = true
