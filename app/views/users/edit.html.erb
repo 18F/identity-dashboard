@@ -1,5 +1,5 @@
 
-<div class="usa-display">Edit user "<%= @user.email %>"</div>
+<h1 class="usa-display">Edit user "<%= @user.email %>"</h1>
 
 <%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>

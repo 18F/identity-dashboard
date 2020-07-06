@@ -78,6 +78,11 @@ module ServiceProviderHelper
     yamlable_json.to_yaml.delete('\"')
   end
 
+  def sp_active_img_alt(service_provider_is_active)
+    return 'Active service provider' if service_provider_is_active
+    'Inactive service provider'
+  end
+
   private
 
   def config_hash(service_provider)
