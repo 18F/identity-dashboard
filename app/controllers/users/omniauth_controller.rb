@@ -6,6 +6,7 @@ module Users
 
       if @user
         sign_in @user
+        session[:id_token] = request.env['omniauth.auth']['credentials']['id_token']
         redirect_to session[:requested_url]
       else
         redirect_to users_none_url
