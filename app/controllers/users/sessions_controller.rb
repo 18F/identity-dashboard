@@ -22,16 +22,20 @@ module Users
     end
 
     def destroy
-      if session[:id_token]
+      if session[:id_token] && post_logout_redirect_uri
+        sign_out(current_user)
         logout_request = self.class.logout_utility.build_request(
           id_token: session[:id_token],
-          post_logout_redirect_uri: 'http://localhost:3001/'
+          post_logout_redirect_uri: post_logout_redirect_uri
         )
-        sign_out(current_user)
-        redirect_to(logout_request[:redirect_uri]) and return
+        redirect_to(logout_request.redirect_uri)
       else
         super
       end
+    end
+
+    def post_logout_redirect_uri
+      Rails.configuration.oidc['post_logout_redirect_uri']
     end
 
     def self.logout_utility

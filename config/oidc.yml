@@ -2,6 +2,7 @@ test: &default
   client_id: urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard
   idp_url: http://localhost:3000
   dashboard_url: http://localhost:3001
+  post_logout_redirect_uri: http://localhost:3001
 
 development:
   <<: *default
