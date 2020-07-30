@@ -35,6 +35,9 @@ plugins:
     enabled: true
   bundler-audit:
     enabled: true
+    exclude_fingerprints:
+      # omniauth CVE-2015-9284
+    - 66ed39bb85e54152ee5e2343f95f4b53
   csslint:
     enabled: true
   duplication:
