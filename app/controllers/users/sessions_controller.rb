@@ -35,7 +35,7 @@ module Users
     end
 
     def post_logout_redirect_uri
-      Rails.configuration.application['post_logout_redirect_uri']
+      Figaro.env.post_logout_redirect_uri
     end
 
     def self.logout_utility
