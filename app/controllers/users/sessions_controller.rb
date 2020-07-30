@@ -22,9 +22,25 @@ module Users
     end
 
     def destroy
-      # TODO: log out of IdP using OIDC logout endpoint
-      #   https://developers.login.gov/oidc/#logout
-      super
+      if session[:id_token] && post_logout_redirect_uri
+        sign_out(current_user)
+        logout_request = self.class.logout_utility.build_request(
+          id_token: session[:id_token],
+          post_logout_redirect_uri: post_logout_redirect_uri
+        )
+        redirect_to(logout_request.redirect_uri)
+      else
+        super
+      end
+    end
+
+    def post_logout_redirect_uri
+      Figaro.env.post_logout_redirect_uri
+    end
+
+    def self.logout_utility
+      @logout_utility ||=
+        OmniAuth::LoginDotGov::LogoutUtility.new(idp_base_url: Rails.configuration.oidc['idp_url'])
     end
   end
 end

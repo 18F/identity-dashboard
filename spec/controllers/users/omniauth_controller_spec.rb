@@ -10,6 +10,9 @@ describe Users::OmniauthController do
           'email' => email,
           'uuid' => uuid,
         },
+        'credentials' => {
+          'id_token'=> 'abc123'
+        }
       }
     end
 
