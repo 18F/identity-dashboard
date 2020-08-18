@@ -173,7 +173,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint 'The possible <a href="https://developers.login.gov/attributes" target="_blank">user attributes</a> to be requested by your app. Note for IAL1/LOA1, only UUID and email can be requested.'.html_safe %>
+    <%= form.hint 'Refer to our <a href="https://developers.login.gov/attributes" target="_blank">developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app.'.html_safe %>
 
     <%= form.collection_check_boxes(:attribute_bundle,
                                     ServiceProvider.possible_attributes,
