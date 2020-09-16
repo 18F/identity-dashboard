@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 Rails.application.config.agencies.each do |agency_id, values|
-  agency = Agency.find_by(id: agency_id)
+  agency = Agency.find_by(name: values['name'])
   if agency
     agency.update!(name: values['name'])
   else
