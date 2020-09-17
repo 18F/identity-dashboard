@@ -7,21 +7,33 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # There are unique indexes on both agency name and agency id so we can't in-place update individual
-# records without potentially causing unique constraint errors. What we do to get around this
-# is to delete the ones we're going to update, and then re-create them.
+# records without potentially causing unique constraint errors. There are also foreign key
+# constraints with the service_providers table, so we can't just delete and recreate records.
+#
+# Our approach is to detect pre-existing records that would conflict, and give them temporary names,
+# then run upserts to match the configuration
 #
 # We do this all inside a transaction to provide continuity for other things that read the table.
 Agency.transaction do
-  Agency.where(
-    id: Rails.application.config.agencies.map { |id, _values| id },
-  ).delete_all
+  agency_configs = Rails.application.config.agencies
 
-  Agency.where(
-    name: Rails.application.config.agencies.map { |_id, values| values['name'] },
-  ).delete_all
+  agencies_by_id = Agency.where(id: agency_configs.map { |id, _values| id }).to_a
+  agencies_by_name = Agency.where(name: agency_configs.map { |_id, values| values['name'] }).to_a
 
-  Rails.application.config.agencies.each do |agency_id, values|
-    Agency.create(id: agency_id, name: values['name'])
+  agencies_in_db = (agencies_by_id + agencies_by_name).uniq(&:id)
+
+  agencies_to_update = agencies_in_db.select do |agency|
+    agency.name != agency_configs[agency.id]['name']
+  end
+
+  # Set temporary names for ones that may collide
+  agencies_to_update.each do |agency|
+    agency.update!(name: SecureRandom.uuid)
+  end
+
+  # Update everything to match the YAML config
+  agency_configs.each do |agency_id, values|
+    Agency.new(id: agency_id, name: values['name']).upsert
   end
 end
 
