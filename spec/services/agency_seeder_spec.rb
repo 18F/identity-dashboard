@@ -59,7 +59,6 @@ RSpec.describe AgencySeeder do
       end
 
       before do
-        Agency.delete_all
         agency = create(:agency, id: 1, name: 'original name')
         create(:service_provider, agency_id: agency.id, team: create(:team, agency: agency))
       end
