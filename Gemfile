@@ -4,6 +4,7 @@ ruby '~> 2.6.5'
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.7'
+gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 gem 'aws-sdk-s3', require: false
 gem 'bundler'

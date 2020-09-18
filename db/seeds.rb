@@ -6,14 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Rails.application.config.agencies.each do |agency_id, values|
-  agency = Agency.find_by(id: agency_id)
-  if agency
-    agency.update!(name: values['name'])
-  else
-    Agency.create!(name: values['name'])
-  end
-end
+AgencySeeder.new.run!
 
 if Rails.env.development? || Rails.env.test?
   User.find_or_create_by email: 'admin@gsa.gov' do |user|
