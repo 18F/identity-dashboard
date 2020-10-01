@@ -33,7 +33,8 @@ describe User do
       user_sp = create(:service_provider, user: user)
       team_sp = create(:service_provider, team: team)
       create(:service_provider)
-      expect(user.scoped_service_providers).to eq([user_sp, team_sp])
+      sorted_sps = [user_sp, team_sp].sort_by { |x| x.friendly_name.downcase }
+      expect(user.scoped_service_providers).to eq(sorted_sps)
     end
     it "alphabetizes the list of user created and the user's team sps" do
       team = create(:team)
