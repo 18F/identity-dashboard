@@ -64,6 +64,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'pry-byebug'
   gem 'puma'
+  gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
   gem 'slim_lint'
 end
