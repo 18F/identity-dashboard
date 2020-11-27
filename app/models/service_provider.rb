@@ -107,7 +107,7 @@ class ServiceProvider < ApplicationRecord
     return unless logo_file.attached?
     return if mime_type_valid?
     errors.add(:logo_file, "The file you uploaded (#{logo_file.filename}) is not a PNG or SVG")
-    logo_file.purge
+    logo_file = nil
   end
 
   def mime_type_valid?
