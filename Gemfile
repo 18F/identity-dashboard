@@ -39,7 +39,7 @@ gem 'simple_form', '~> 5.0', '>= 5.0.2'
 gem 'slim-rails', '~> 3.2', '>= 3.2.0'
 gem 'subprocess', require: false
 gem 'uglifier'
-gem 'webpacker', '~> 4.2', '>= 4.2.0'
+gem 'webpacker', '~> 5.2', '>= 5.2.1'
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'
