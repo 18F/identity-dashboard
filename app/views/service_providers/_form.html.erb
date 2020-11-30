@@ -73,6 +73,20 @@
     <%= form.input :production_issuer,
                    label: 'Production Issuer',
                    input_html: { class: 'usa-input' } %>
+
+    <%# allow_prompt_login checkbox %>
+    <fieldset class="usa-fieldset">
+      <legend class="usa-sr-only">Enable prompt=login</legend>
+      <%= form.label :allow_prompt_login,
+                      label: 'Enable <code>prompt=login</code>'.html_safe,
+                      class: 'usa-label' %>
+      <ul class="usa-input-list">
+        <li>
+          <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
+          <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
+        </li>
+      </ul>
+    </fieldset>
   <% end %>
 
   <%# Temp hack to allow feature in dev but not int for testing %>
