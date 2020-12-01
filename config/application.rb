@@ -20,7 +20,7 @@ Bundler.require(*Rails.groups)
 module IdentityDashboard
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 5.0
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
