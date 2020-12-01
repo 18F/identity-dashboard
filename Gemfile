@@ -79,7 +79,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers'
-  gem 'simplecov'
+  gem 'simplecov', '= 0.17.0'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
   gem 'webdrivers', '~> 3.0'
