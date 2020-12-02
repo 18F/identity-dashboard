@@ -183,7 +183,6 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
-    database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -536,7 +535,6 @@ DEPENDENCIES
   climate_control
   codeclimate-test-reporter
   colorize
-  database_cleaner
   devise (~> 4.7.1)
   dotenv-rails (~> 2.7, >= 2.7.5)
   enum_help
