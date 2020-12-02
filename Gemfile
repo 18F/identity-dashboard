@@ -81,7 +81,7 @@ group :test do
   gem 'simplecov'
   gem 'sinatra', '>= 2.0.2'
   gem 'timecop'
-  gem 'webdrivers', '~> 3.0'
+  gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'websocket-driver', '= 0.6.5'
 end
