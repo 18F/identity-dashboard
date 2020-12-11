@@ -1,5 +1,12 @@
 # These settings are common across environments, but may be overridden
 # in any particular environment
+
+# How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
+# Note that the key name must be capitalized because the gem looks for
+# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and AppConfig does not automatically make lowercase keys
+# available to ENV as uppercase keys.
+RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
+
 aws_region: us-west-2
 aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
