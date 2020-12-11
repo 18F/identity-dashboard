@@ -5,7 +5,7 @@ describe 'Service Provider API' do
     app = create(:service_provider)
     get api_service_providers_path
     json = JSON.parse(response.body)
-    expect(response).to be_success
+    expect(response.status).to eq(200)
     expect(json[0]['issuer']).to eq(app.issuer)
   end
 end
