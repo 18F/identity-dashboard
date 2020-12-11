@@ -1,5 +1,6 @@
 # These settings are common across environments, but may be overridden
 # in any particular environment
+RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 aws_region: us-west-2
 aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'

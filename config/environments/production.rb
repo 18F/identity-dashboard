@@ -109,5 +109,3 @@ Rails.application.configure do
   config.middleware.use Rack::Deflater
 end
 # rubocop:enable Metrics/BlockLength
-
-Rack::Timeout.timeout = (Figaro.env.rack_timeout || 10).to_i
