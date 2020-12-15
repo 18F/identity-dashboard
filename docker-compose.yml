@@ -1,0 +1,40 @@
+# Compose file for local development
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mounts entire tree into container - Only suitable for development
+      # image with Gems installed into system path and node modules in
+      # alternate location
+      - .:/idp-dashboard
+#      - ../identity-doc-auth:/upaya/vendor/gems/identity-doc-auth
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "postgres://postgres@db"
+#      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
+      # Set database timeouts to 30 seconds
+      database_timeout: '30000'
+      database_statement_timeout: '30000'
+#      RACK_TIMEOUT_SERVICE_TIMEOUT: '30000'
+      DOCKER_DB_HOST: 'db'
+      DOCKER_DB_USER: 'postgres'
+      # '' == 1 thread for tests; performs better in a container
+#      TEST_ENV_NUMBER: ''
+#      SMTP_HOST: 'mailcatcher'
+      NODE_ENV: 'development'
+#      ENABLE_BOOTSNAP: 'false'
+    depends_on:
+      - db
+    tty: true
+    stdin_open: true
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    # Trust Docker network - Not suitable for production
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
