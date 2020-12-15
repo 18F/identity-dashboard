@@ -1,0 +1,5 @@
+<h2><label for="allow_prompt_login"><code>prompt=login</code> Enabled:</label></h2>
+<p class="font-mono-xs margin-top-0" name="allow_prompt_login"><%= image_tag service_provider.allow_prompt_login? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
+                                                                height: '27', width: '27',
+                                                                :class => 'margin-bottom-neg-105',
+                                                                :alt => sp_allow_prompt_login_img_alt(service_provider.allow_prompt_login?) %></p>

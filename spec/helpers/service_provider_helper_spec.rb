@@ -93,12 +93,22 @@ describe ServiceProviderHelper do
   end
 
   describe '#sp_active_img_alt' do
-    it 'returns alt tag indicatng active service provider' do
+    it 'returns alt tag indicating active service provider' do
       expect(sp_active_img_alt(true)).to eq('Active service provider')
     end
 
-    it 'returns alt tag indicatng inactive service provider' do
+    it 'returns alt tag indicating inactive service provider' do
       expect(sp_active_img_alt(false)).to eq('Inactive service provider')
+    end
+  end
+
+  describe '#sp_allow_prompt_login_img_alt' do
+    it 'returns alt tag indicating prompt=login enabled' do
+      expect(sp_allow_prompt_login_img_alt(true)).to eq('prompt=login enabled')
+    end
+
+    it 'returns alt tag indicating prompt=login disabled' do
+      expect(sp_allow_prompt_login_img_alt(false)).to eq('prompt=login disabled')
     end
   end
 end
