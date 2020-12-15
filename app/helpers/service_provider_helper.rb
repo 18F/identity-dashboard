@@ -83,6 +83,11 @@ module ServiceProviderHelper
     'Inactive service provider'
   end
 
+  def sp_allow_prompt_login_img_alt(sp_allows_prompt_login)
+    return 'prompt=login enabled' if sp_allows_prompt_login
+    'prompt=login disabled'
+  end
+
   private
 
   def config_hash(service_provider)

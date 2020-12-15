@@ -2,6 +2,7 @@
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider
   before_action :authorize_approval, only: [:update]
+  before_action :authorize_allow_prompt_login, only: %i[create update]
 
   def index; end
 
@@ -55,6 +56,13 @@ class ServiceProvidersController < AuthenticatedController
     raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
   end
 
+  def authorize_allow_prompt_login
+    return unless params.require(:service_provider).key?(:allow_prompt_login) &&
+                  !current_user.admin?
+
+    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
+  end
+
   def validate_and_save_service_provider(initial_action)
     return save_service_provider if service_provider.valid?
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
@@ -104,6 +112,7 @@ class ServiceProvidersController < AuthenticatedController
       :acs_url,
       :active,
       :agency_id,
+      :allow_prompt_login,
       :approved,
       :assertion_consumer_logout_service_url,
       :block_encryption,
