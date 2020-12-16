@@ -148,32 +148,12 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.logo_file.attach(logo_file_param)
     cache_logo_info
-    push_logo_content_type
   end
 
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
   end
-
-  # rubocop:disable Metrics/MethodLength
-  def push_logo_content_type
-    return unless using_s3?
-
-    # Set the content-type on the S3 blob or SVG's won't work
-    bucket = Figaro.env.aws_logo_bucket
-    key = service_provider.logo_file.key
-    content_type = service_provider.logo_file.content_type
-    s3.copy_object(
-      bucket:             bucket,
-      content_type:       content_type,
-      copy_source:        "#{bucket}/#{key}",
-      key:                key,
-      metadata_directive: 'REPLACE',
-      acl:                'public-read'
-    )
-  end
-  # rubocop:enable Metrics/MethodLength
 
   def using_s3?
     Rails.application.config.active_storage.service == :amazon

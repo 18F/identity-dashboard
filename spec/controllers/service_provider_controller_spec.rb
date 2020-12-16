@@ -36,18 +36,6 @@ describe ServiceProvidersController do
         expect(sp.remote_logo_key).to be_present
       end
 
-      context 'when using amazon for storage' do
-        before do
-          allow(subject).to receive(:using_s3?).and_return(true)
-          allow(subject).to receive(:s3).and_return(Aws::S3::Client.new(stub_responses: true))
-        end
-
-        it 'calls copy_object on the S3 client to set content-type' do
-          expect(subject.send(:s3)).to receive(:copy_object)
-          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
-        end
-      end
-
       context 'with paper trail versioning enabled', versioning: true do
         before do
           put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
