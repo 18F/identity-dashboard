@@ -3,12 +3,13 @@ require 'rails_helper'
 describe Users::SessionsController do
   include Devise::Test::ControllerHelpers
 
+  let(:user) { create(:user) }
+
   describe '#destroy' do
     before do
       request.env["devise.mapping"] = Devise.mappings[:user]
     end
 
-    let(:user) { create(:user) }
     let(:uuid) { '123-asdf-qwerty' }
     let(:omniauth_hash) do
       {
@@ -42,6 +43,21 @@ describe Users::SessionsController do
       it 'redirects to the empty user path' do
         get :destroy
         expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
+  describe '#active' do
+    context 'when logged in' do
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        request.env["devise.mapping"] = Devise.mappings[:user]
+      end
+
+      it 'returns 200 status' do
+        get :active
+
+        expect(response.status).to eq 200
       end
     end
   end
