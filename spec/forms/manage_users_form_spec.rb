@@ -47,6 +47,15 @@ describe ManageUsersForm do
       end
     end
 
+    context 'when no emails addresses are submitted' do
+      it 'returns false and has a general error message' do
+        result = subject.submit(user_emails: [])
+
+        expect(result).to eq(false)
+        expect(subject.errors[:base]).to include('You must submit at least one email address')
+      end
+    end
+
     context 'when the team fails to save' do
       let(:team) { Team.new(name: nil) }
       let(:user_emails) do
