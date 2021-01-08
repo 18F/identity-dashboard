@@ -20,10 +20,12 @@
                     class: 'input-preview' %>
   </div>
   <%= form.hint 'Choose a file to upload as your logo. See <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
-  <% if service_provider.errors[:logo_file].present? %>
-    <div class='usa-error-message'>
+  <div class='usa-error-message' id='logo-upload-error'>
+    <% if service_provider.errors[:logo_file].present? %>
       ERROR:
       <%= service_provider.errors[:logo_file].join('|') %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
+
+<%= javascript_pack_tag 'validate-logo-size' %>
