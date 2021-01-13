@@ -3,6 +3,7 @@ class ManageUsersForm
 
   attr_reader :team, :user_emails
 
+  validate :user_emails_is_not_empty
   validate :user_emails_are_valid_email_addresses
 
   def initialize(team)
@@ -35,6 +36,12 @@ class ManageUsersForm
 
   def existing_users
     User.where(email: user_emails).to_a
+  end
+
+  def user_emails_is_not_empty
+    return unless user_emails.empty?
+
+    errors.add(:base, 'You must submit at least one email address')
   end
 
   def user_emails_are_valid_email_addresses
