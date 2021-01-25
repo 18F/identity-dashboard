@@ -41,10 +41,8 @@ class ServiceProvider < ApplicationRecord
     case default_aal
     when 1, nil
       ''
-    when 2
-      'AAL2'
-    when 3
-      'AAL3'
+    when 2, 3
+      "AAL#{default_aal}"
     else
       default_aal.inspect
     end
