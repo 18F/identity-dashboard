@@ -49,9 +49,21 @@
                  collection: [['IAL1 (standard)', 1], ['IAL2 (verified identity with SSN)', 2]],
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
-                 label: 'Identity verification level (IAL)',
+                 label: 'Identity Assurance Level (IAL)',
                  #label_html: { class: 'usa-input-required'},
                  hint: 'Choose IAL 1 for standard MFA-protected email-based login. <br/> Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).'.html_safe %>
+
+  <%= form.input :default_aal,
+                 as: :select,
+                 collection: [
+                   ['', 1],
+                   ['AAL2', 2],
+                   ['AAL3', 3]],
+                 selected: form.object.default_aal,
+                 input_html: { class: 'usa-input usa-select'},
+                 label: 'Authentication Assurance Level (AAL)',
+                 #label_html: { class: 'usa-input-required'},
+                 hint: 'Empty - MFA required + remember device is 30 days<br/>AAL2 - MFA required + remember device is 12 hours<br/>AAL3 - unphishable MFA required + remember device is 12 hours'.html_safe %>
 
   <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,

@@ -9,6 +9,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :cert,
     :friendly_name,
     :ial,
+    :default_aal,
     :issuer,
     :logo,
     :remote_logo_key,
