@@ -19,6 +19,8 @@ feature 'Service Providers CRUD' do
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       fill_in 'service_provider_logo', with: 'test.png'
       select user.teams[0].name, from: 'service_provider_group_id'
+      select 'IAL2', from: 'Identity Assurance Level (IAL)'
+      select 'AAL2', from: 'Authentication Assurance Level (AAL)'
 
       check 'email'
       check 'first_name'
@@ -30,6 +32,8 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
       expect(page).to have_content('email')
       expect(page).to have_content(user.teams[0].agency.name)
+      expect(page).to have_content('IAL2')
+      expect(page).to have_content('AAL2')
     end
 
     scenario 'can update service provider team', :js do
@@ -231,6 +235,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
+      select 'AAL3', from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
       check 'last_name'
       click_on 'Update'
@@ -240,6 +245,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('app description foobar')
       expect(page).to have_content('change service_provider name')
       expect(page).to have_content('last_name')
+      expect(page).to have_content('AAL3')
     end
     scenario 'user updates service provider but service provider is invalid' do
       user = create(:user)

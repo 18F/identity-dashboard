@@ -37,6 +37,17 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def aal_friendly
+    case default_aal
+    when 1, nil
+      ''
+    when 2, 3
+      "AAL#{default_aal}"
+    else
+      default_aal.inspect
+    end
+  end
+
   # rubocop:disable MethodLength
   def self.possible_attributes
     possible = %w[
