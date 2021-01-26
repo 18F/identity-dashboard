@@ -26,6 +26,8 @@ These instructions assume [`identity-idp`](https://github.com/18F/identity-idp) 
   $ make run
   ```
 
+In the development environment, an administrator user account is created during the setup process with the email address _admin@gsa.gov_ . If this is the first time you've run the application, you will want to log in with this email address, or create an account if one doesn't already exist. After you've logged in as the administrator, you can add new users and teams.
+
 ## Running tests
 
 Run RSpec tests using:
