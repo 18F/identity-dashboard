@@ -54,4 +54,6 @@ Rails.application.configure do
   config.active_storage.service = :test
   # Allow SVG's only because we will always serve them in an <img> element
   config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
+
+  config.lograge.enabled = true
 end
