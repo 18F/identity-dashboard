@@ -21,14 +21,11 @@ RSpec.describe 'lograge' do
     let(:start) { Time.zone.now }
     let(:finish) { Time.zone.now }
     let(:transaction_id) { SecureRandom.uuid }
-    let(:amzn_trace_id) { SecureRandom.hex }
-    let(:headers) do
-      { 'X-Amzn-Trace-Id' => amzn_trace_id }
-    end
+    let(:headers) { {} }
 
     let(:now) { Time.zone.now }
 
-    it 'adds in timestamp, uuid, and pid, trace_id and omits extra noise' do
+    it 'adds in timestamp, uuid, and pid and omits extra noise' do
       payload = Timecop.freeze(now) do
         Rails.application.config.lograge.custom_options.call(event)
       end
@@ -42,7 +39,6 @@ RSpec.describe 'lograge' do
         controller: 'HomeController',
         action: 'index',
         path: '/',
-        trace_id: amzn_trace_id,
       )
     end
   end

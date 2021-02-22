@@ -13,18 +13,16 @@ RSpec.describe ApplicationController do
   describe '#append_info_to_payload' do
     let(:payload) { {} }
 
-    it 'adds user_uuid, user_agent and ip to the lograge output' do
-      Timecop.freeze(Time.zone.now) do
-        controller.append_info_to_payload(payload)
+    it 'adds user_uuid, user_agent and ip, trace_id to the lograge output' do
+      controller.append_info_to_payload(payload)
 
-        expect(payload).to eq(
-          user_uuid: user.uuid,
-          user_agent: request.user_agent,
-          ip: request.remote_ip,
-          host: request.host,
-          trace_id: trace_id
-        )
-      end
+      expect(payload).to eq(
+        user_uuid: user.uuid,
+        user_agent: request.user_agent,
+        ip: request.remote_ip,
+        host: request.host,
+        trace_id: trace_id
+      )
     end
 
     context 'when there is no current_user' do

@@ -45,7 +45,6 @@ module IdentityDashboard
       event.payload[:timestamp] = Time.zone.now.iso8601
       event.payload[:uuid] = SecureRandom.uuid
       event.payload[:pid] = Process.pid
-      event.payload[:trace_id] = event.payload[:headers]['X-Amzn-Trace-Id']
       event.payload.except(:params, :headers, :request, :response)
     end
 
