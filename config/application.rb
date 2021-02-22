@@ -41,6 +41,13 @@ module IdentityDashboard
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
 
+    config.lograge.custom_options = lambda do |event|
+      event.payload[:timestamp] = Time.zone.now.iso8601
+      event.payload[:uuid] = SecureRandom.uuid
+      event.payload[:pid] = Process.pid
+      event.payload.except(:params, :headers, :request, :response)
+    end
+
     # Set the number of seconds the timeout warning should occur before
     # login session is timed out.
     config.session_timeout_warning_seconds = 120

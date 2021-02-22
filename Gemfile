@@ -19,6 +19,7 @@ gem 'identity_validations', git: 'https://github.com/18f/identity-validations.gi
 gem 'jquery-rails', '>= 4.4.0'
 gem 'json-jwt', '>= 1.13.0'
 gem 'jwt'
+gem 'lograge'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.11', '>= 1.11.0'
 gem 'omniauth-rails_csrf_protection', '~> 0.1', '>= 0.1.2'
