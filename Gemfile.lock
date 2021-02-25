@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/18F/identity-hostdata.git
-  revision: da013056e3a5ffcb46001a3f4fca21b80640838e
-  branch: master
-  specs:
-    identity-hostdata (0.4.1)
-      aws-sdk-s3 (~> 1.8)
-
-GIT
   remote: https://github.com/18F/saml_idp.git
   revision: f9805ad43c1d0bb7ef9c482ea17d735bc784ea55
   branch: master
@@ -18,6 +10,14 @@ GIT
       nokogiri (>= 1.10.2)
       pkcs11
       uuid
+
+GIT
+  remote: https://github.com/18f/identity-hostdata.git
+  revision: cc3cb39349a6f9bb20f4ab58697bb284612f60d5
+  branch: margolis-railtie-with-logger
+  specs:
+    identity-hostdata (1.0.0)
+      aws-sdk-s3 (~> 1.8)
 
 GIT
   remote: https://github.com/18f/identity-validations.git
@@ -274,6 +274,11 @@ GEM
     listen (3.3.3)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    lograge (0.11.2)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.8.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -579,6 +584,7 @@ DEPENDENCIES
   json-jwt (>= 1.13.0)
   jwt
   listen (~> 3.3)
+  lograge
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.11, >= 1.11.0)
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
