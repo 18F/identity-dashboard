@@ -2,9 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ApplicationController do
   let(:user) { create(:user) }
+  let(:trace_id) { 'some-trace-id-abcdef' }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
+
+    request.headers['X-Amzn-Trace-Id'] = trace_id
   end
 
   describe '#append_info_to_payload' do
@@ -15,6 +18,10 @@ RSpec.describe ApplicationController do
 
       expect(payload).to eq(
         user_uuid: user.uuid,
+        user_agent: request.user_agent,
+        ip: request.remote_ip,
+        host: request.host,
+        trace_id: trace_id
       )
     end
 
