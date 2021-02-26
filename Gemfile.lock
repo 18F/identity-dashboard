@@ -37,12 +37,6 @@ GIT
       multi_json (~> 1.14)
       omniauth (~> 1.8.1)
 
-PATH
-  remote: ../identity-hostdata
-  specs:
-    identity-hostdata (1.0.0)
-      aws-sdk-s3 (~> 1.8)
-
 GEM
   remote: https://rubygems.org/
   specs:
