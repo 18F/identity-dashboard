@@ -82,10 +82,6 @@ Rails.application.configure do
     Bullet.rails_logger = true
   end
 
-  config.lograge.enabled = true
-  config.lograge.ignore_actions = []
-  config.lograge.formatter = Lograge::Formatters::Json.new
-
   $stdout.sync = true
 end
 # rubocop:enable Metrics/BlockLength

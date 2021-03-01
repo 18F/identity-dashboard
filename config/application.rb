@@ -12,6 +12,7 @@ require "action_view/railtie"
 # require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
+require "identity/logging/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -40,13 +41,6 @@ module IdentityDashboard
       generate.view_specs false
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
-
-    config.lograge.custom_options = lambda do |event|
-      event.payload[:timestamp] = Time.zone.now.iso8601
-      event.payload[:uuid] = SecureRandom.uuid
-      event.payload[:pid] = Process.pid
-      event.payload.except(:params, :headers, :request, :response)
-    end
 
     # Set the number of seconds the timeout warning should occur before
     # login session is timed out.

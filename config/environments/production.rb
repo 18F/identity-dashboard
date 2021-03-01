@@ -107,9 +107,5 @@ Rails.application.configure do
 
   # Custom settings for Login.gov
   config.middleware.use Rack::Deflater
-
-  config.lograge.enabled = true
-  config.lograge.ignore_actions = []
-  config.lograge.formatter = Lograge::Formatters::Json.new
 end
 # rubocop:enable Metrics/BlockLength
