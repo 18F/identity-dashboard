@@ -1,4 +1,4 @@
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 require 'subprocess'
 
 # rubocop:disable Metrics/ClassLength
