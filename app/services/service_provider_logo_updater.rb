@@ -124,9 +124,9 @@ class ServiceProviderLogoUpdater
   end
 
   def dashboard_sp_url
-    if LoginGov::Hostdata.in_datacenter?
-      env = LoginGov::Hostdata.env
-      domain = LoginGov::Hostdata.domain
+    if Identity::Hostdata.in_datacenter?
+      env = Identity::Hostdata.env
+      domain = Identity::Hostdata.domain
       "https://dashboard.#{env}.#{domain}/api/service_providers"
     else
       'http://localhost:3001/api/service_providers'

@@ -7,7 +7,7 @@ describe Deploy::Activate do
   let(:config_dir) { Rails.root.join('config') }
 
   around(:each) do |ex|
-    LoginGov::Hostdata.reset!
+    Identity::Hostdata.reset!
 
     @logger = Logger.new('/dev/null')
 
@@ -28,7 +28,7 @@ describe Deploy::Activate do
   end
 
   let(:logger) { @logger }
-  let(:s3_client) { LoginGov::Hostdata::FakeS3Client.new }
+  let(:s3_client) { Identity::Hostdata::FakeS3Client.new }
   let(:set_up_files!) {}
 
   let(:subject) { Deploy::Activate.new(logger: logger, s3_client: s3_client) }
