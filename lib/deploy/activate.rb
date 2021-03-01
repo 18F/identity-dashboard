@@ -1,6 +1,6 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 require 'subprocess'
 require 'yaml'
 
@@ -22,7 +22,7 @@ module Deploy
     private
 
     def download_application_yml_from_s3
-      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
+      Identity::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
         '/%<env>s/dashboard/v1/application.yml' => env_yaml_path
       )
     end

@@ -32,9 +32,9 @@ RSpec.describe ServiceProviderLogoUpdater do
       # allow(updater).to receive(:load_idp_config).and_return(fake_config)
       allow_any_instance_of(RestClient::Request).to receive(:execute).and_return(fake_response)
       # Just to bump up code coverage -- doesn't affect the test
-      allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
-      allow(LoginGov::Hostdata).to receive(:env).and_return('int')
-      allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+      allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
+      allow(Identity::Hostdata).to receive(:env).and_return('int')
+      allow(Identity::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
 
       updater.import_logos_to_active_storage
       service_provider.reload
@@ -46,7 +46,7 @@ RSpec.describe ServiceProviderLogoUpdater do
     it 'handles edge cases' do
       allow(Subprocess).to receive(:check_call).and_return(true)
       allow(File).to receive(:directory?).and_return(true)
-      allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false)
+      allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
       # don't call /api/service_providers on the dashboard
       # allow(updater).to receive(:load_idp_config).and_return(fake_config)
       allow_any_instance_of(RestClient::Request).to receive(:execute).and_return(fake_response)
