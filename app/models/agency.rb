@@ -1,2 +1,0 @@
-class Agency < ApplicationRecord
-end
