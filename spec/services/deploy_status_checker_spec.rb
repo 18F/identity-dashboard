@@ -41,7 +41,7 @@ RSpec.describe DeployStatusChecker do
     describe '#pending_url' do
       it 'links to the compare link on Github' do
         expect(status.pending_url).
-          to eq('https://github.com/18F/identity-idp/compare/1234567890abcdef...master')
+          to eq('https://github.com/18F/identity-idp/compare/1234567890abcdef...main')
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe DeployStatusChecker do
     let(:json) do
       {
         env: 'qa',
-        branch: 'master',
+        branch: 'main',
         user: 'user',
         sha: '5184dcc8c413adffd7cd622ab55ac36b4b219163',
         timestamp: '20161102201213',

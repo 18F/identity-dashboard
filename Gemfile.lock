@@ -9,7 +9,7 @@ GIT
 GIT
   remote: https://github.com/18F/saml_idp.git
   revision: f9805ad43c1d0bb7ef9c482ea17d735bc784ea55
-  branch: master
+  branch: main
   specs:
     saml_idp (0.11.0.pre.18f)
       activesupport
@@ -31,7 +31,7 @@ GIT
 GIT
   remote: https://github.com/18f/identity-validations.git
   revision: 26253af02f472d3023062efd5c7a3920b0db5f9c
-  branch: master
+  branch: main
   specs:
     identity_validations (0.3.2)
 
