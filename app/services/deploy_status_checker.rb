@@ -33,7 +33,7 @@ class DeployStatusChecker
     end
 
     def pending_url
-      "https://github.com/18F/#{app}/compare/#{sha}...master"
+      "https://github.com/18F/#{app}/compare/#{sha}...main"
     end
   end
 

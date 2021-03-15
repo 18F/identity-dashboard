@@ -12,7 +12,7 @@ describe ServiceProviderHelper do
       end
 
       it 'returns a github raw file url string' do
-        expect(sp_logo_path('test.png')).to eq('https://raw.githubusercontent.com/18F/identity-idp/master/app/assets/images/sp-logos/test.png')
+        expect(sp_logo_path('test.png')).to eq('https://raw.githubusercontent.com/18F/identity-idp/main/app/assets/images/sp-logos/test.png')
       end
     end
 
@@ -30,7 +30,7 @@ describe ServiceProviderHelper do
   describe '#sp_logo_preview_path' do
     context 'file name is present' do
       it 'returns a github preview url string' do
-        expect(sp_logo_preview_path('test.svg')).to eq('https://github.com/18F/identity-idp/blob/master/app/assets/images/sp-logos/test.svg')
+        expect(sp_logo_preview_path('test.svg')).to eq('https://github.com/18F/identity-idp/blob/main/app/assets/images/sp-logos/test.svg')
       end
     end
   end

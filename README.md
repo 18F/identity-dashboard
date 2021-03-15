@@ -1,6 +1,6 @@
 # login.gov Partner Dashboard
 
-[![Build Status](https://travis-ci.org/18F/identity-dashboard.svg?branch=master)](https://travis-ci.org/18F/identity-dashboard) [![Code Climate](https://codeclimate.com/github/18F/identity-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-dashboard) [![Test Coverage](https://codeclimate.com/github/18F/identity-dashboard/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-dashboard/coverage) [![security](https://hakiri.io/github/18F/identity-dashboard/master.svg)](https://hakiri.io/github/18F/identity-dashboard/master)
+[![Build Status](https://circleci.com/gh/18F/identity-dashboard.svg?style=svg)](https://circleci.com/gh/18F/identity-dashboard) [![Code Climate](https://codeclimate.com/github/18F/identity-dashboard/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-dashboard) [![Test Coverage](https://codeclimate.com/github/18F/identity-dashboard/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-dashboard/coverage)
 
 An admin dashboard for the Identity project.
 
