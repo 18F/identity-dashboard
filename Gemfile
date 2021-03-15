@@ -16,7 +16,7 @@ gem 'figaro'
 gem 'httparty'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v1.0.1'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
-gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', branch: 'main'
+gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', branch: 'v0.3.2'
 gem 'jquery-rails', '>= 4.4.0'
 gem 'json-jwt', '>= 1.13.0'
 gem 'jwt'
@@ -67,7 +67,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
-  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'main'
+  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'
   gem 'slim_lint'
 end
 
