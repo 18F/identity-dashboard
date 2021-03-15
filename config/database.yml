@@ -6,7 +6,8 @@ development: &default
   pool: <%= Integer(Figaro.env.db_pool || 5) %>
   reaping_frequency: <%= Integer(Figaro.env.dp_reaping_frequency || 10) %>
   timeout: 5000
-  host: localhost
+  host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
+  username: <%= ENV['DOCKER_DB_USER'] %>
 
 test:
   <<: *default

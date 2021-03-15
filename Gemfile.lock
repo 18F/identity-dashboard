@@ -536,6 +536,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   actionmailer-text (>= 0.1.1)
