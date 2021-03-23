@@ -1,34 +1,21 @@
-common: &default_settings
-  app_name: "identity-dashboard"
+production:
+  agent_enabled: true
+  app_name: pivcac.<%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
+  host: gov-collector.newrelic.com
   audit_log:
     enabled: false
   browser_monitoring:
-    auto_instrument: true
-  capture_params: false
-  developer_mode: false
+    auto_instrument: false
   error_collector:
     capture_source: true
     enabled: true
-    ignore_errors: "ActionController::RoutingError,Sinatra::NotFound"
-  license_key: "<%= Figaro.env.newrelic_license_key %>"
+  license_key: <%= Figaro.env.newrelic_license_key! %>
   log_level: info
   monitor_mode: true
   transaction_tracer:
     enabled: true
     record_sql: obfuscated
-    stack_trace_threshold: 0.500
+    stack_trace_threshold: 0.5
     transaction_threshold: apdex_f
-development:
-  <<: *default_settings
-  monitor_mode: false
-  developer_mode: true
-test:
-  <<: *default_settings
-  monitor_mode: false
-production:
-  <<: *default_settings
-  monitor_mode: true
-staging:
-  <<: *default_settings
-  app_name: "identity-dashboard (Staging)"
-  monitor_mode: true
+  proxy_host:
+  proxy_port:
