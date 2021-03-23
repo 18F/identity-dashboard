@@ -1,6 +1,6 @@
 production:
   agent_enabled: true
-  app_name: pivcac.<%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
+  app_name: dashboard.<%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
   host: gov-collector.newrelic.com
   audit_log:
     enabled: false
