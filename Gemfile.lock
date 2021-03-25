@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/mimemagicrb/mimemagic.git
+  revision: 40dd02bb6b442535f97c35326c0383bc67146ac4
+  ref: 40dd02bb6b442535f97c35326c0383bc67
+  specs:
+    mimemagic (0.3.5)
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 0f8d4626709d6031acdfe0b024faefede928f8aa
   tag: v1.0.1
@@ -301,7 +308,6 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2020.1104)
-    mimemagic (0.3.6)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
@@ -595,6 +601,7 @@ DEPENDENCIES
   jwt
   listen (~> 3.3)
   lograge
+  mimemagic (= 0.3.5)!
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.11, >= 1.11.0)
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
