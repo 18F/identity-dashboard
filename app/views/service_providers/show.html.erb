@@ -88,9 +88,12 @@
     <dd class="font-mono-xs"><%= service_provider.certificate.serial %></dd>
 
     <dt>Expiration</dt>
-    <%= content_tag(:dd, class: ['font-mono-xs', service_provider.certificate.expiration_css_class]) do %>
-      <%= service_provider.certificate.not_after %>
-    <% end %>
+    <dd>
+      <%= content_tag(:span, class: ['font-mono-xs', service_provider.certificate.expiration_css_class]) do %>
+        <%= service_provider.certificate.not_after %>
+      <% end %>
+      (<%= time_ago_in_words service_provider.certificate.not_after %>)
+    </dd>
   </dl>
 
   <details name="saml_client_cert">
