@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@rails/webpacker": "^4.3.0",
-    "identity-style-guide": "^2.2.3",
+    "identity-style-guide": "^5.0.3",
     "jquery": "^3.5.0",
     "jquery-ujs": "^1.2.2",
     "kind-of": "^6.0.3",

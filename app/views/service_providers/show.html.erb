@@ -72,15 +72,33 @@
   <p class="font-mono-xs margin-top-0" name="block_encryption"><%= service_provider.block_encryption %></p>
 <% end %>
 
-<h2><label for="saml_client_cert">Public certificate:</label></h2>
-<pre><code><%= service_provider.saml_client_cert %></code></pre>
+<h2>
+  <label for="saml_client_cert">Public certificate:</label>
+</h2>
+
 <% unless service_provider.saml_client_cert.blank? %>
-  <p class="font-mono-xs margin-top-0" name="saml_client_cert">
-    Expires:
-    <%= content_tag(:span, class: service_provider.certificate.expiration_css_class) do %>
-      <%= service_provider.certificate.not_after.to_s %>
+  <dl>
+    <dt>Issuer</dt>
+    <dd><%= service_provider.certificate.issuer %></dd>
+
+    <dt>Subject</dt>
+    <dd><%= service_provider.certificate.subject %></dd>
+
+    <dt>Serial Number</dt>
+    <dd class="font-mono-xs"><%= service_provider.certificate.serial %></dd>
+
+    <dt>Expiration</dt>
+    <%= content_tag(:dd, class: ['font-mono-xs', service_provider.certificate.expiration_css_class]) do %>
+      <%= service_provider.certificate.not_after %>
     <% end %>
-  </p>
+  </dl>
+
+  <details name="saml_client_cert">
+    <summary>
+      Raw Certificate
+    </summary>
+    <pre><code><%= service_provider.saml_client_cert %></code></pre>
+  </details>
 <% end %>
 
 <h2><label for="return_to_sp_url">Return to App URL:</label></h2>
