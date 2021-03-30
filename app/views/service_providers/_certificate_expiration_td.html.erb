@@ -1,6 +1,6 @@
 <%
  # locals: app
- cert = app.certificate
+ cert = app.certificates.max_by(&:not_after)
 %>
 
 <%= content_tag(:td, class: cert.expiration_css_class) do %>

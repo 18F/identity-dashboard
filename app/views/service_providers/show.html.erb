@@ -73,36 +73,40 @@
 <% end %>
 
 <h2>
-  <label for="saml_client_cert">Public certificate:</label>
+  <label for="saml_client_cert">Public certificates:</label>
 </h2>
 
-<% unless service_provider.saml_client_cert.blank? %>
-  <dl>
-    <dt>Issuer</dt>
-    <dd><%= service_provider.certificate.issuer %></dd>
+<ol class="number-list">
+  <% service_provider.certificates.each do |certificate| %>
+    <li>
+      <dl>
+        <dt>Issuer</dt>
+        <dd><%= certificate.issuer %></dd>
 
-    <dt>Subject</dt>
-    <dd><%= service_provider.certificate.subject %></dd>
+        <dt>Subject</dt>
+        <dd><%= certificate.subject %></dd>
 
-    <dt>Serial Number</dt>
-    <dd class="font-mono-xs"><%= service_provider.certificate.serial %></dd>
+        <dt>Serial Number</dt>
+        <dd class="font-mono-xs"><%= certificate.serial %></dd>
 
-    <dt>Expiration</dt>
-    <dd>
-      <%= content_tag(:span, class: ['font-mono-xs', service_provider.certificate.expiration_css_class]) do %>
-        <%= service_provider.certificate.not_after %>
-      <% end %>
-      (<%= time_ago_in_words service_provider.certificate.not_after %>)
-    </dd>
-  </dl>
+        <dt>Expiration</dt>
+        <dd>
+          <%= content_tag(:span, class: ['font-mono-xs', certificate.expiration_css_class]) do %>
+            <%= certificate.not_after %>
+          <% end %>
+          (<%= time_ago_in_words certificate.not_after %>)
+        </dd>
+      </dl>
 
-  <details name="saml_client_cert">
-    <summary class="summary-fix">
-      Raw Certificate
-    </summary>
-    <pre><code><%= service_provider.saml_client_cert %></code></pre>
-  </details>
-<% end %>
+      <details name="saml_client_cert">
+        <summary class="summary-fix">
+          Raw Certificate
+        </summary>
+        <pre><code><%= certificate.to_pem %></code></pre>
+      </details>
+    </li>
+  <% end %>
+</ol>
 
 <h2><label for="return_to_sp_url">Return to App URL:</label></h2>
 <p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>
@@ -131,9 +135,11 @@
                                                                  :alt => sp_active_img_alt(service_provider.active?) %></p>
 
 <% if current_user.admin? %>
-<h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
-<p class="font-mono-xs margin-top-0" name="service_provider_yaml"><%= render 'service_provider_yaml' %></p>
-    <%end %>
+  <h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
+  <p class="font-mono-xs margin-top-0" name="service_provider_yaml">
+    <%= render 'service_provider_yaml' %>
+  </p>
+<% end %>
 
 <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),

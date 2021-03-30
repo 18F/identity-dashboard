@@ -78,11 +78,11 @@ class ServiceProvider < ApplicationRecord
     super uris.select(&:present?)
   end
 
-  # @return [ServiceProviderCertificate]
-  def certificate
-    @certificate ||= begin
-      if saml_client_cert
-        ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(saml_client_cert))
+  # @return [Array<ServiceProviderCertificate>]
+  def certificates
+    @certificate ||= (certs.presence || Array(saml_client_cert)).map do |cert|
+      if cert
+        ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
       else
         null_certificate
       end
