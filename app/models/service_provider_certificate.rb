@@ -4,7 +4,6 @@ class ServiceProviderCertificate
 
   # @param [OpenSSL::X509::Certificate,String] cert
   def initialize(cert)
-    Rails.logger.info(cert.class)
     @cert = cert
   end
 
