@@ -18,4 +18,12 @@ class ServiceProviderCertificate < OpenSSL::X509::Certificate
   def self.warning_period
     (Figaro.env.certificate_expiration_warning_period || 60).to_i.days.from_now
   end
+
+  def expiration_css_class
+    if not_after < Time.zone.now
+      'certificate-expired'
+    elsif not_after < self.class.warning_period
+      'certificate-warning'
+    end
+  end
 end

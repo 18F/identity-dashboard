@@ -1,14 +1,12 @@
-<% cert = app.certificate %>
-<% if cert.not_after < Time.zone.now %>
-  <td style='color: white; background: red'>
-<% elsif cert.not_after < ServiceProviderCertificate.warning_period %>
-  <td style='color: black; background: yellow'>
-<% else %>
-  <td>
+<%
+ # locals: app
+ cert = app.certificate
+%>
+
+<%= content_tag(:td, class: cert.expiration_css_class) do %>
+  <% if cert.issuer.to_s == 'Null Certificate' %>
+    Invalid
+  <% else %>
+    <%= cert.not_after.localtime.strftime("%F") %>
+  <% end %>
 <% end %>
-    <% if cert.issuer.to_s == 'Null Certificate' %>
-      Invalid
-    <% else %>
-      <%= cert.not_after.localtime.strftime("%F") %>
-    <% end %>
-  </td>
