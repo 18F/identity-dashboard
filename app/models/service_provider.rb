@@ -78,10 +78,11 @@ class ServiceProvider < ApplicationRecord
     super uris.select(&:present?)
   end
 
+  # @return [ServiceProviderCertificate]
   def certificate
     @certificate ||= begin
       if saml_client_cert
-        ServiceProviderCertificate.new saml_client_cert
+        ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(saml_client_cert))
       else
         null_certificate
       end

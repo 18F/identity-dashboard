@@ -13,8 +13,7 @@ namespace :dashboard do
 
     puts "\nExpiration                Issuer"
     sps.each do |sp|
-      exp = collection[sp]&.not_after
-      puts "#{ServiceProviderCertificate.expiration_time_to_colorized_s(exp)}:  #{sp}"
+      puts "#{collection[sp]&.expiration_time_to_colorized_s}   #{sp}"
     end
   end
 end
