@@ -16,6 +16,7 @@ class ServiceProvider < ApplicationRecord
 
   has_one_attached :logo_file
   validate :logo_file_mime_type
+  validate :certs_are_pems
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect: 0, saml: 1 }
@@ -143,5 +144,17 @@ class ServiceProvider < ApplicationRecord
 
   def mime_type_valid?
     logo_file.content_type.in?(ServiceProviderHelper::SP_VALID_LOGO_MIME_TYPES)
+  end
+
+  def certs_are_pems
+    Array(certs).each do |cert|
+      if cert.include?('----BEGIN CERTIFICATE----')
+        OpenSSL::X509::Certificate.new(cert)
+      else
+        errors.add(:certs, 'Certificate is a not PEM-encoded')
+      end
+    rescue OpenSSL::X509::CertificateError => err
+      errors.add(:certs, err.message)
+    end
   end
 end

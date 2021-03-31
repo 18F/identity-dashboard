@@ -141,12 +141,14 @@
     <% end %>
 
     <div class="lg-card margin-top-2">
-      <label class="usa-label margin-top-0 usa-label--error" for="service_provider_cert">
+      <label class="usa-label margin-top-0" for="service_provider_cert">
         Upload a new public cert
       </label>
 
       <div class="clearfix">
-        <span class="usa-error-message js-pem-input-error-message"></span>
+        <span class="usa-error-message js-pem-input-error-message">
+          <%= service_provider.errors[:certs].to_sentence.presence %>
+        </span>
         <%= form.file_field :cert, class: 'input-file js-pem-input' %>
         <label class="usa-button file-input-button" for="service_provider_cert">
           Choose a cert file

@@ -136,6 +136,24 @@ describe ServiceProvider do
       expect(sp).to be_valid
     end
 
+    it 'rejects invalid certs' do
+      sp = build(:service_provider, certs: ['NOT A CERT'])
+
+      expect(sp).to_not be_valid
+    end
+
+    it 'rejects DER encoded certs' do
+      sp = build(:service_provider, certs: [OpenSSL::X509::Certificate.new(build_pem).to_der])
+
+      expect(sp).to_not be_valid
+    end
+
+    it 'rejects private keys as PEMs' do
+      sp = build(:service_provider, certs: [OpenSSL::PKey::RSA.new(2048).to_pem])
+
+      expect(sp).to_not be_valid
+    end
+
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
       valid_native_sp = build(:service_provider, redirect_uris: ['example-app:/result'])

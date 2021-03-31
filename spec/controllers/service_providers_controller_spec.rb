@@ -102,5 +102,16 @@ describe ServiceProvidersController do
       has_serial = sp.certificates.any? { |c| c.serial.to_s == '10' }
       expect(has_serial).to eq(true)
     end
+
+    it 'errors when cert data is not PEM encoded' do
+      file = Rack::Test::UploadedFile.new(
+               StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
+               original_filename: 'my-cert.der',
+             )
+
+      expect do
+        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+      end.to_not(change { sp.reload.certs&.size })
+    end
   end
 end

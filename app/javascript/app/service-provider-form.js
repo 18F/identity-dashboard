@@ -92,7 +92,7 @@ $(function(){
 
       document.querySelector('.js-pem-file-name').innerText = file ? file.name : null;
 
-      if (file) {
+      if (file && file.text) {
         file.text().then(function(content) {
           if (content.includes('PRIVATE')) {
             setPemError('This is a private key, upload the public key instead');
