@@ -272,7 +272,7 @@ describe ServiceProvider do
     end
 
     context 'with only an old saml_client_cert' do
-      let(:saml_client_cert) { build_pem(100) }
+      let(:saml_client_cert) { build_pem(serial: 100) }
       let(:certs) { nil }
 
       it 'wraps that cert as a ServiceProviderCertificate' do
@@ -283,7 +283,7 @@ describe ServiceProvider do
 
     context 'with multiple certs' do
       let(:saml_client_cert) { nil }
-      let(:certs) { [ build_pem(200), build_pem(300)] }
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'wraps them as ServiceProviderCertificates' do
         wrapped = certs.map do |cert|
@@ -295,8 +295,8 @@ describe ServiceProvider do
     end
 
     context 'with multiple certs and an old saml_client_cert' do
-      let(:saml_client_cert) { build_pem(100) }
-      let(:certs) { [ build_pem(200), build_pem(300)] }
+      let(:saml_client_cert) { build_pem(serial: 100) }
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'wraps them as ServiceProviderCertificates' do
         wrapped = (certs + [saml_client_cert]).map do |cert|
@@ -314,7 +314,7 @@ describe ServiceProvider do
     let(:certs) { nil }
 
     context 'when removing a serial that matches saml_client_cert' do
-      let(:saml_client_cert) { build_pem(111) }
+      let(:saml_client_cert) { build_pem(serial: 111) }
 
       it 'removes that cert' do
         expect { sp.remove_certificate(111) }.
@@ -323,7 +323,7 @@ describe ServiceProvider do
     end
 
     context 'when removing a serial that matches in the certs array' do
-      let(:certs) { [ build_pem(100), build_pem(200), build_pem(300)] }
+      let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'removes that cert' do
         expect { sp.remove_certificate(200) }.
@@ -335,51 +335,11 @@ describe ServiceProvider do
     end
 
     context 'when removing a serial that does not exist' do
-      let(:certs) { [ build_pem(200), build_pem(300)] }
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'does not remove anything' do
         expect { sp.remove_certificate(100) }.to_not(change { sp.certificates.size })
       end
     end
-  end
-
-  # Looks like a lot, but the goal is to just build a PEM that can parse to a realistic
-  # X509 certicicate with a given serial
-  # From https://ruby-doc.org/stdlib-2.4.0/libdoc/openssl/rdoc/OpenSSL/X509/Certificate.html
-  def build_pem(serial)root_key = OpenSSL::PKey::RSA.new 2048 # the CA's public/private key
-    root_ca = OpenSSL::X509::Certificate.new
-    root_ca.version = 2 # cf. RFC 5280 - to make it a "v3" certificate
-    root_ca.serial = 1
-    root_ca.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby CA"
-    root_ca.issuer = root_ca.subject # root CA's are "self-signed"
-    root_ca.public_key = root_key.public_key
-    root_ca.not_before = Time.now
-    root_ca.not_after = root_ca.not_before + 2 * 365 * 24 * 60 * 60 # 2 years validity
-    ef = OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = root_ca
-    ef.issuer_certificate = root_ca
-    root_ca.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
-    root_ca.add_extension(ef.create_extension("keyUsage","keyCertSign, cRLSign", true))
-    root_ca.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-    root_ca.add_extension(ef.create_extension("authorityKeyIdentifier","keyid:always",false))
-    root_ca.sign(root_key, OpenSSL::Digest::SHA256.new)
-
-    key = OpenSSL::PKey::RSA.new 2048
-    cert = OpenSSL::X509::Certificate.new
-    cert.version = 2
-    cert.serial = serial
-    cert.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby certificate"
-    cert.issuer = root_ca.subject # root CA is the issuer
-    cert.public_key = key.public_key
-    cert.not_before = Time.now
-    cert.not_after = cert.not_before + 1 * 365 * 24 * 60 * 60 # 1 years validity
-    ef = OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = cert
-    ef.issuer_certificate = root_ca
-    cert.add_extension(ef.create_extension("keyUsage","digitalSignature", true))
-    cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-    cert.sign(root_key, OpenSSL::Digest::SHA256.new)
-
-    cert.to_pem
   end
 end

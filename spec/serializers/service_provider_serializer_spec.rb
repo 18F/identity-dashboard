@@ -11,7 +11,8 @@ RSpec.describe ServiceProviderSerializer do
           updated_at: Time.zone.now,
           team: create(:team, agency: create(:agency, id: team_agency_id)),
           ial: 2,
-          default_aal: 3)
+          default_aal: 3,
+          certs: [build_pem])
     sp.logo_file.attach(io: File.open(fixture_path + "/#{logo_filename}"), filename: logo_filename)
     sp.update(logo: logo_filename)
     sp.reload
@@ -28,6 +29,7 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:remote_logo_key]).to eq(service_provider.logo_file.key)
         expect(as_json[:ial]).to eq(2)
         expect(as_json[:default_aal]).to eq(3)
+        expect(as_json[:certs]).to eq([service_provider.certificates.first.to_pem])
       end
     end
 
