@@ -77,15 +77,6 @@ $(function(){
     });
   }
 
-  function setPemInputError(pemInput, message) {
-    if (message) {
-
-    }
-  }
-
-
-  var pemInput = document.querySelector('.js-pem-input');
-
   /**
    * @param {string,null} message
    */
@@ -94,6 +85,7 @@ $(function(){
     pemInputMessage.innerText = message;
   }
 
+  var pemInput = document.querySelector('.js-pem-input');
   if (pemInput) {
     pemInput.addEventListener('change', function(event) {
       var file = event.target.files[0];
