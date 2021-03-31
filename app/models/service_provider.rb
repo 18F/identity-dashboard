@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
@@ -88,10 +89,13 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def remove_certificate(serial)
+    serial = serial.to_s
+
     # legacy single cert
     begin
-      if saml_client_cert && OpenSSL::X509::Certificate.new(saml_client_cert).serial.to_s == serial.to_s
+      if saml_client_cert && OpenSSL::X509::Certificate.new(saml_client_cert).serial.to_s == serial
         self.saml_client_cert = nil
       end
     rescue OpenSSL::X509::CertificateError
@@ -100,7 +104,7 @@ class ServiceProvider < ApplicationRecord
 
     # newer certs array
     certs&.delete_if do |cert|
-      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
+      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial
     rescue OpenSSL::X509::CertificateError
       nil
     end
@@ -110,6 +114,7 @@ class ServiceProvider < ApplicationRecord
 
     serial
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
@@ -158,3 +163,4 @@ class ServiceProvider < ApplicationRecord
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
