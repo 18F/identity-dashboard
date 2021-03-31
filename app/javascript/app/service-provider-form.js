@@ -78,7 +78,7 @@ $(function(){
   }
 
   /**
-   * @param {string,null} message
+   * @param {string?} message
    */
   function setPemError(message) {
     var pemInputMessage = document.querySelector('.js-pem-input-error-message');
