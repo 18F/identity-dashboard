@@ -111,57 +111,22 @@ $image-path: 'img';
   background: yellow;
 }
 
-// Borrowed from identity-site
-$navy: #112e51;
-$white: #fff;
+.compact-definition {
+  margin-top: 0;
+  margin-bottom: 0;
 
-ol.number-list,
-ul.help-question-list {
-  list-style-type: none;
-  margin-left: 0;
-  padding-left: 0;
-
-  > li {
-    @include u-margin-y(1);
-    @include u-position('relative');
-    padding-left: 2.25rem;
-
-    &::before {
-      @include u-pin-top;
-      @include u-pin-left;
-      background-color: $navy;
-      border-radius: 50%;
-      color: $white;
-      display: inline-block;
-      font-weight: bold;
-      height: 25px;
-      line-height: 25px;
-      text-align: center;
-      width: 25px;
-    }
-
-    > ul {
-      list-style-type: disc;
-    }
+  dt {
+    clear: both;
+    font-weight: bold;
   }
 
-  p {
-    // TODO: Remove once `$theme-body-line-height` is assigned as consistent with `$line-height`.
-    position: relative;
-    // $line-height-offset: round(
-    //     ($line-height - line-height($theme-body-font-family, $theme-body-line-height)) * 100
-    //   ) / 100 / -2;
-    top: 0; //$line-height-offset;
-
-    &:last-of-type {
-      margin-bottom: 0; // $line-height-offset;
-    }
+  dd {
+    margin: 0
   }
-}
 
-ul.help-question-list {
-  li::before {
-    content: '?';
+  dd::after {
+    content: '';
+    display: block;
   }
 }
 

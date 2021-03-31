@@ -112,10 +112,62 @@
                    hint: 'The name of the <a href="https://github.com/18F/identity-idp/tree/main/app/assets/images/sp-logos" target="_blank">logo image file</a> in the IdP. The login.gov team can add this image for you.'.html_safe %>
   <% end %>
 
-  <%= form.input :saml_client_cert,
-                 label: 'Public certificate',
-                 input_html: { class: 'usa-textarea' },
-                 hint: 'Your public certificate, which contains your public key, is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. This must be <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>, for example in the form: <pre><code>-----BEGIN CERTIFICATE-----<br>MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df<br>BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx<br>B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==<br>-----END CERTIFICATE-----</code></pre>'.html_safe %>
+  <fieldset class="usa-fieldset">
+    <%= form.label 'Certificates', for: :saml_client_cert, class: 'usa-label' %>
+
+    <p>
+      Your public certificate (or certificates), which contains your public key,
+      is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML.
+    </p>
+
+
+    <% service_provider.certificates.each do |certificate| %>
+      <%= render 'certificate', certificate: certificate do %>
+        <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
+          <div class="usa-alert__text">
+            <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
+                              certificate.serial,
+                              false,
+                              name: "service_provider[remove_certificates][]",
+                              class: 'usa-checkbox__input' %>
+            <%= content_tag :label,
+                            for: "service_provider_remove_certificates_#{certificate.serial}",
+                            class: 'usa-checkbox__label' do %>
+              Remove this certificate
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="lg-card margin-top-2">
+      <div class="usa-form-group">
+        <label class="usa-label margin-top-0 usa-label--error">
+          Upload a new public cert
+        </label>
+        <span class="usa-error-message js-pem-input-error-message"></span>
+        <%= form.file_field :cert, class: 'usa-file-input js-pem-input' %>
+      </div>
+
+      <div class="margin-top-2">
+        <p>
+          Take a look at our developer documentation for
+          <a href="https://developers.login.gov/testing/#creating-a-public-certificate">
+          how to generate a public-private key pair</a>.
+        </p>
+        <p>
+          Certificate must be
+          <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>,
+          see example:
+        </p>
+        <pre><code>-----BEGIN CERTIFICATE-----
+MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
+BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
+B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
+-----END CERTIFICATE-----</code></pre>
+      </div>
+    </div>
+  </fieldset>
 
   <div class='saml-fields'>
     <%= form.input :acs_url,

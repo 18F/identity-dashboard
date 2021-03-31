@@ -76,37 +76,9 @@
   <label for="saml_client_cert">Public certificates:</label>
 </h2>
 
-<ol class="number-list">
-  <% service_provider.certificates.each do |certificate| %>
-    <li>
-      <dl>
-        <dt>Issuer</dt>
-        <dd><%= certificate.issuer %></dd>
-
-        <dt>Subject</dt>
-        <dd><%= certificate.subject %></dd>
-
-        <dt>Serial Number</dt>
-        <dd class="font-mono-xs"><%= certificate.serial %></dd>
-
-        <dt>Expiration</dt>
-        <dd>
-          <%= content_tag(:span, class: ['font-mono-xs', certificate.expiration_css_class]) do %>
-            <%= certificate.not_after %>
-          <% end %>
-          (<%= time_ago_in_words certificate.not_after %>)
-        </dd>
-      </dl>
-
-      <details name="saml_client_cert">
-        <summary class="summary-fix">
-          Raw Certificate
-        </summary>
-        <pre><code><%= certificate.to_pem %></code></pre>
-      </details>
-    </li>
-  <% end %>
-</ol>
+<% service_provider.certificates.each do |certificate| %>
+  <%= render partial: 'certificate', locals: { certificate: certificate } %>
+<% end %>
 
 <h2><label for="return_to_sp_url">Return to App URL:</label></h2>
 <p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>

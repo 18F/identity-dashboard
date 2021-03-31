@@ -1,0 +1,34 @@
+<%#
+locals:
+- certificate (required)
+- block for extra content inside card (optional)
+%>
+<div class="lg-card margin-top-2">
+  <dl class="compact-definition padding-bottom-2">
+    <dt>Issuer</dt>
+    <dd><%= certificate.issuer %></dd>
+
+    <dt>Subject</dt>
+    <dd><%= certificate.subject %></dd>
+
+    <dt>Serial Number</dt>
+    <dd class="font-mono-xs"><%= certificate.serial %></dd>
+
+    <dt>Expiration</dt>
+    <dd>
+      <%= content_tag(:span, class: ['font-mono-xs', certificate.expiration_css_class]) do %>
+        <%= certificate.not_after %>
+      <% end %>
+      (<%= time_ago_in_words certificate.not_after %>)
+    </dd>
+  </dl>
+
+  <details>
+    <summary class="summary-fix">
+      Raw Certificate
+    </summary>
+    <pre><code><%= certificate.to_pem %></code></pre>
+  </details>
+
+  <%= yield %>
+</div>
