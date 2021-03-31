@@ -116,8 +116,8 @@
     <%= form.label 'Certificates', for: :saml_client_cert, class: 'usa-label' %>
 
     <p>
-      Your public certificate (or certificates), which contains your public key,
-      is needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML.
+      Your public certificate (or certificates), which contains your public key.
+      Needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML.
     </p>
 
 
@@ -141,12 +141,17 @@
     <% end %>
 
     <div class="lg-card margin-top-2">
-      <div class="usa-form-group">
-        <label class="usa-label margin-top-0 usa-label--error">
-          Upload a new public cert
-        </label>
+      <label class="usa-label margin-top-0 usa-label--error" for="service_provider_cert">
+        Upload a new public cert
+      </label>
+
+      <div class="clearfix">
         <span class="usa-error-message js-pem-input-error-message"></span>
-        <%= form.file_field :cert, class: 'usa-file-input js-pem-input' %>
+        <%= form.file_field :cert, class: 'input-file js-pem-input' %>
+        <label class="usa-button file-input-button" for="service_provider_cert">
+          Choose a file
+        </label>
+        <div class="margin-top-4 js-pem-file-name"></div>
       </div>
 
       <div class="margin-top-2">
@@ -158,7 +163,7 @@
         <p>
           Certificate must be
           <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>,
-          see example:
+          like this example:
         </p>
         <pre><code>-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df

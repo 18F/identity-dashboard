@@ -97,6 +97,9 @@ $(function(){
   if (pemInput) {
     pemInput.addEventListener('change', function(event) {
       var file = event.target.files[0];
+
+      document.querySelector('.js-pem-file-name').innerText = file ? file.name : null;
+
       if (file) {
         file.text().then(function(content) {
           if (content.includes('PRIVATE')) {
