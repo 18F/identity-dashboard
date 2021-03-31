@@ -93,3 +93,20 @@ $image-path: 'img';
   }
 }
 
+// Override to get <summary> disclosure triangle to render correctly in Chrome
+// This can be removed entirely after LG-3762 upgrades USWDS
+.summary-fix {
+  display: list-item !important;
+}
+
+.certificate-expired,
+.usa-table td.certificate-expired {
+  color: white;
+  background: red;
+}
+
+.certificate-warning,
+.usa-table td.certificate-warning {
+  color: black;
+  background: yellow;
+}

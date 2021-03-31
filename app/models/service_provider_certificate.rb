@@ -1,14 +1,29 @@
-# A class to provide colorized expiration text
-class ServiceProviderCertificate < OpenSSL::X509::Certificate
-  def expiration_time_to_colorized_s
-    self.class.expiration_time_to_colorized_s(not_after)
+# A class to decorate a certificate, for easier warning and expiration
+class ServiceProviderCertificate
+  attr_reader :cert
+
+  # @param [OpenSSL::X509::Certificate,String] cert
+  def initialize(cert)
+    @cert = cert
   end
 
-  def self.expiration_time_to_colorized_s(time)
-    time_s = time.to_s
-    if time < Time.zone.now
+  def method_missing(name, *args, &block)
+    if cert.respond_to?(name)
+      cert.send(name, *args, &block)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(name)
+    cert.respond_to_missing?(name) || super
+  end
+
+  def expiration_time_to_colorized_s
+    time_s = not_after.to_s
+    if not_after < Time.zone.now
       time_s.colorize(color: :black, background: :red)
-    elsif time < warning_period
+    elsif not_after < self.class.warning_period
       time_s.colorize(color: :black, background: :light_yellow)
     else
       time_s
@@ -17,5 +32,13 @@ class ServiceProviderCertificate < OpenSSL::X509::Certificate
 
   def self.warning_period
     (Figaro.env.certificate_expiration_warning_period || 60).to_i.days.from_now
+  end
+
+  def expiration_css_class
+    if not_after < Time.zone.now
+      'certificate-expired'
+    elsif not_after < self.class.warning_period
+      'certificate-warning'
+    end
   end
 end

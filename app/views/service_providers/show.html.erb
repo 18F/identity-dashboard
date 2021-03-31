@@ -58,27 +58,51 @@
   <% end %>
 <% end %>
 
-    <% if service_provider.identity_protocol == 'saml' %>
-    <h2><label for="acs_url">Assertion Consumer Service URL:</label></h2>
-<p class="font-mono-xs margin-top-0" name="acs_url"><%= service_provider.acs_url %></p>
+<% if service_provider.identity_protocol == 'saml' %>
+  <h2><label for="acs_url">Assertion Consumer Service URL:</label></h2>
+  <p class="font-mono-xs margin-top-0" name="acs_url"><%= service_provider.acs_url %></p>
 
-<h2><label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label></h2>
-<p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.assertion_consumer_logout_service_url %></p>
+  <h2><label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label></h2>
+  <p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.assertion_consumer_logout_service_url %></p>
 
-<h2><label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label></h2>
-<p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.sp_initiated_login_url %></p>
+  <h2><label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label></h2>
+  <p class="font-mono-xs margin-top-0" name="assertion_consumer_logout_service_url"><%= service_provider.sp_initiated_login_url %></p>
 
-<h2><label for="block_encryption">SAML Assertion Encryption:</label></h2>
-<p class="font-mono-xs margin-top-0" name="block_encryption"><%= service_provider.block_encryption %></p>
-    <% end %>
+  <h2><label for="block_encryption">SAML Assertion Encryption:</label></h2>
+  <p class="font-mono-xs margin-top-0" name="block_encryption"><%= service_provider.block_encryption %></p>
+<% end %>
 
+<h2>
+  <label for="saml_client_cert">Public certificate:</label>
+</h2>
 
-<h2><label for="saml_client_cert">Public certificate:</label></h2>
-<pre><code><%= service_provider.saml_client_cert %></code></pre>
-        <% unless service_provider.saml_client_cert.blank? %>
-        <p class="font-mono-xs margin-top-0" name="saml_client_cert">Expires:
-        <%= render partial: 'certificate_expiration', locals: { app: service_provider } %></p>
-        <% end %>
+<% unless service_provider.saml_client_cert.blank? %>
+  <dl>
+    <dt>Issuer</dt>
+    <dd><%= service_provider.certificate.issuer %></dd>
+
+    <dt>Subject</dt>
+    <dd><%= service_provider.certificate.subject %></dd>
+
+    <dt>Serial Number</dt>
+    <dd class="font-mono-xs"><%= service_provider.certificate.serial %></dd>
+
+    <dt>Expiration</dt>
+    <dd>
+      <%= content_tag(:span, class: ['font-mono-xs', service_provider.certificate.expiration_css_class]) do %>
+        <%= service_provider.certificate.not_after %>
+      <% end %>
+      (<%= time_ago_in_words service_provider.certificate.not_after %>)
+    </dd>
+  </dl>
+
+  <details name="saml_client_cert">
+    <summary class="summary-fix">
+      Raw Certificate
+    </summary>
+    <pre><code><%= service_provider.saml_client_cert %></code></pre>
+  </details>
+<% end %>
 
 <h2><label for="return_to_sp_url">Return to App URL:</label></h2>
 <p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>
