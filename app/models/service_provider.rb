@@ -80,7 +80,7 @@ class ServiceProvider < ApplicationRecord
 
   # @return [Array<ServiceProviderCertificate>]
   def certificates
-    @certificates ||= (certs.presence || Array(saml_client_cert)).map do |cert|
+    @certificates ||= [*certs, *saml_client_cert].map do |cert|
       if cert
         ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
       else
@@ -91,11 +91,10 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  # @param [String] serial
   def remove_certificate(serial)
     # legacy single cert
     begin
-      if saml_client_cert && OpenSSL::X509::Certificate.new(saml_client_cert).serial.to_s == serial
+      if saml_client_cert && OpenSSL::X509::Certificate.new(saml_client_cert).serial.to_s == serial.to_s
         self.saml_client_cert = nil
       end
     rescue OpenSSL::X509::CertificateError
@@ -103,8 +102,8 @@ class ServiceProvider < ApplicationRecord
     end
 
     # newer certs array
-    certs.delete_if do |cert|
-      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial
+    certs&.delete_if do |cert|
+      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
     rescue OpenSSL::X509::CertificateError
       nil
     end

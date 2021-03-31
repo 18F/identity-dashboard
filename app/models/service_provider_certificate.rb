@@ -15,8 +15,14 @@ class ServiceProviderCertificate
     end
   end
 
-  def respond_to_missing?(name)
-    cert.respond_to_missing?(name) || super
+  def respond_to_missing?(name, include_private=false)
+    cert.respond_to?(name) || super
+  end
+
+  # Simplistic check that makes array comparisons work more easily in specs
+  def ==(other)
+    subject == other.subject &&
+      serial == other.serial
   end
 
   def expiration_time_to_colorized_s

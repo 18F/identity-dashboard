@@ -66,5 +66,11 @@ describe ServiceProvidersController do
         end
       end
     end
+
+    context 'when deleting certs' do
+    end
+
+    it 'adds new certs uploaded to the certs array' do
+    end
   end
 end
