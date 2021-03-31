@@ -91,10 +91,11 @@ module ServiceProviderHelper
   private
 
   def config_hash(service_provider)
-    clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
+    clean_sp_json = service_provider.to_json(except: [*SP_PROTECTED_ATTRIBUTES, 'saml_client_cert'])
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
+    config_hash['certs'] = service_provider.certificates.map(&:to_pem)
     config_hash
   end
 
@@ -103,8 +104,6 @@ module ServiceProviderHelper
     sp_json.map do |config_key, value|
       if %w[agency_id default_help_text help_text attribute_bundle redirect_uris].include?(config_key)
         [config_key, value]
-      elsif config_key == 'saml_client_cert'
-        ['cert', value]
       else
         [config_key, "'#{value}'"]
       end

@@ -22,8 +22,8 @@ AllCops:
     - 'config/puma.rb'
     - 'db/migrate/*'
     - '**/Capfile'
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 5.1
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 6.1
   UseCache: true
 
 Rails:

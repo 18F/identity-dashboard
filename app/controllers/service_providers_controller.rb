@@ -15,8 +15,12 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def update
+    attach_cert
+    remove_certificates
+
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
+
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
   end
@@ -128,7 +132,6 @@ class ServiceProvidersController < AuthenticatedController
       :return_to_sp_url,
       :failure_to_proof_url,
       :push_notification_url,
-      :saml_client_cert,
       :sp_initiated_login_url,
       :logo_file,
       attribute_bundle: [],
@@ -139,6 +142,24 @@ class ServiceProvidersController < AuthenticatedController
     params.require(:service_provider).permit(*permit_params)
   end
   # rubocop:enable MethodLength
+
+  # relies on ServiceProvider#certs_are_pems for validation
+  def attach_cert
+    return if params.dig(:service_provider, :cert).blank?
+
+    service_provider.certs ||= []
+    service_provider.certs << params[:service_provider].delete(:cert).read
+  end
+
+  def remove_certificates
+    return if params.dig(:service_provider, :remove_certificates).blank?
+
+    to_remove_serials = params[:service_provider].delete(:remove_certificates)
+
+    to_remove_serials.each do |serial|
+      service_provider.remove_certificate(serial)
+    end
+  end
 
   def logo_file_param
     service_provider_params[:logo_file]

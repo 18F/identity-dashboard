@@ -7,6 +7,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :attribute_bundle,
     :block_encryption,
     :cert,
+    :certs,
     :friendly_name,
     :ial,
     :default_aal,
@@ -33,6 +34,10 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def cert
     object.saml_client_cert
+  end
+
+  def certs
+    object.certificates.map(&:to_pem)
   end
 
   def updated_at

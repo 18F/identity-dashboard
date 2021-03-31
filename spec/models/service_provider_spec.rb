@@ -136,6 +136,24 @@ describe ServiceProvider do
       expect(sp).to be_valid
     end
 
+    it 'rejects invalid certs' do
+      sp = build(:service_provider, certs: ['NOT A CERT'])
+
+      expect(sp).to_not be_valid
+    end
+
+    it 'rejects DER encoded certs' do
+      sp = build(:service_provider, certs: [OpenSSL::X509::Certificate.new(build_pem).to_der])
+
+      expect(sp).to_not be_valid
+    end
+
+    it 'rejects private keys as PEMs' do
+      sp = build(:service_provider, certs: [OpenSSL::PKey::RSA.new(2048).to_pem])
+
+      expect(sp).to_not be_valid
+    end
+
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
       valid_native_sp = build(:service_provider, redirect_uris: ['example-app:/result'])
@@ -255,6 +273,91 @@ describe ServiceProvider do
       expect do
         sp.block_encryption = 'someinvalidthing'
       end.to raise_error(ArgumentError, /not a valid block_encryption/)
+    end
+  end
+
+  describe '#certificates' do
+    subject(:sp) { build(:service_provider, certs: certs, saml_client_cert: saml_client_cert) }
+    let(:saml_client_cert) { nil }
+    let(:certs) { nil }
+
+    context 'with invalid PEM data' do
+      let(:certs) { ['i-am-not-a-pem'] }
+
+      it 'is a null certificate' do
+        expect(sp.certificates.first.issuer).to eq('Null Certificate')
+      end
+    end
+
+    context 'with only an old saml_client_cert' do
+      let(:saml_client_cert) { build_pem(serial: 100) }
+      let(:certs) { nil }
+
+      it 'wraps that cert as a ServiceProviderCertificate' do
+        expect(sp.certificates).
+          to eq([ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(saml_client_cert))])
+      end
+    end
+
+    context 'with multiple certs' do
+      let(:saml_client_cert) { nil }
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+
+      it 'wraps them as ServiceProviderCertificates' do
+        wrapped = certs.map do |cert|
+          ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
+        end
+
+        expect(sp.certificates).to eq(wrapped)
+      end
+    end
+
+    context 'with multiple certs and an old saml_client_cert' do
+      let(:saml_client_cert) { build_pem(serial: 100) }
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+
+      it 'wraps them as ServiceProviderCertificates' do
+        wrapped = (certs + [saml_client_cert]).map do |cert|
+          ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
+        end
+
+        expect(sp.certificates).to eq(wrapped)
+      end
+    end
+  end
+
+  describe '#remove_certificate' do
+    subject(:sp) { build(:service_provider, certs: certs, saml_client_cert: saml_client_cert) }
+    let(:saml_client_cert) { nil }
+    let(:certs) { nil }
+
+    context 'when removing a serial that matches saml_client_cert' do
+      let(:saml_client_cert) { build_pem(serial: 111) }
+
+      it 'removes that cert' do
+        expect { sp.remove_certificate(111) }.
+          to(change { sp.saml_client_cert }.to(nil).and change { sp.certificates }.to([]))
+      end
+    end
+
+    context 'when removing a serial that matches in the certs array' do
+      let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
+
+      it 'removes that cert' do
+        expect { sp.remove_certificate(200) }.
+          to(change { sp.certificates.size }.from(3).to(2))
+
+        has_serial = sp.certificates.any? { |c| c.serial.to_s == '200' }
+        expect(has_serial).to eq(false)
+      end
+    end
+
+    context 'when removing a serial that does not exist' do
+      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+
+      it 'does not remove anything' do
+        expect { sp.remove_certificate(100) }.to_not(change { sp.certificates.size })
+      end
     end
   end
 end

@@ -110,3 +110,23 @@ $image-path: 'img';
   color: black;
   background: yellow;
 }
+
+.compact-definition {
+  margin-top: 0;
+  margin-bottom: 0;
+
+  dt {
+    display: inline;
+    font-weight: bold;
+  }
+
+  dd {
+    display: inline;
+    margin: 0
+  }
+
+  dd::after {
+    content: '';
+    display: block;
+  }
+}

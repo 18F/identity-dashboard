@@ -1,10 +1,10 @@
 <%
  # locals: app
- cert = app.certificate
+ cert = app.certificates.max_by(&:not_after)
 %>
 
-<%= content_tag(:td, class: cert.expiration_css_class) do %>
-  <% if cert.issuer.to_s == 'Null Certificate' %>
+<%= content_tag(:td, class: cert&.expiration_css_class) do %>
+  <% if !cert || cert.issuer.to_s == 'Null Certificate' %>
     Invalid
   <% else %>
     <%= cert.not_after.localtime.strftime("%F") %>
