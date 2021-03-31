@@ -148,6 +148,7 @@ class ServiceProvidersController < AuthenticatedController
 
     x509 = OpenSSL::X509::Certificate.new(params[:service_provider].delete(:cert).read)
 
+    service_provider.certs ||= []
     service_provider.certs << x509.to_pem
   rescue OpenSSL::X509::CertificateError => err
     service_provider.errors.add(:cert, err.message)

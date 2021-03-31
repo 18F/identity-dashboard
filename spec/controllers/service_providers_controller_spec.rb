@@ -68,9 +68,39 @@ describe ServiceProvidersController do
     end
 
     context 'when deleting certs' do
+      let(:sp) do
+        create(:service_provider,
+               :with_users_team,
+               user: user,
+               certs: [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300) ])
+      end
+
+      it 'deletes certs with the corresponding serials' do
+        put :update,
+            params: {
+              id: sp.id,
+              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'] },
+            }
+
+        sp.reload
+
+        expect(sp.certificates.size).to eq(1)
+        expect(sp.certificates.first.serial.to_s).to eq('300')
+      end
     end
 
     it 'adds new certs uploaded to the certs array' do
+      file = Rack::Test::UploadedFile.new(
+               StringIO.new(build_pem(serial: 10)),
+               original_filename: 'my-cert.crt',
+             )
+
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+
+      sp.reload
+
+      has_serial = sp.certificates.any? { |c| c.serial.to_s == '10' }
+      expect(has_serial).to eq(true)
     end
   end
 end
