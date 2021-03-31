@@ -15,7 +15,7 @@ class ServiceProviderCertificate
     end
   end
 
-  def respond_to_missing?(name, include_private=false)
+  def respond_to_missing?(name, include_private = false)
     cert.respond_to?(name) || super
   end
 

@@ -161,7 +161,6 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-
   def logo_file_param
     service_provider_params[:logo_file]
   end
