@@ -282,6 +282,79 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
+
+    context 'managing certificates' do
+      let(:existing_serial) { '111222333444' }
+
+      let(:user) { create(:user, :with_teams) }
+      let(:sp) do
+        create(:service_provider,
+                     :with_users_team,
+                     user: user,
+                     certs: [build_pem(serial: existing_serial)])
+      end
+
+      before do
+        login_as(user)
+        visit edit_service_provider_path(sp)
+      end
+
+      scenario 'removing existing certificate' do
+        within(page.find('.lg-card', text: existing_serial)) do
+          check 'Remove this certificate'
+        end
+        click_on 'Update'
+
+        expect(sp.reload.certificates).to be_empty
+      end
+
+      context 'file uploads', js: true do
+        around do |ex|
+          Tempfile.create(binmode: !file_content.ascii_only?) do |file|
+            @file_path = file.path
+            file.puts file_content
+            file.close
+
+            ex.run
+          end
+        end
+
+        context 'uploading a valid PEM certificate' do
+          let(:file_content) { build_pem }
+
+          it 'shows the file name and does not have an error' do
+            page.attach_file 'Choose a cert file', @file_path, make_visible: true
+
+            expect(page).to have_content(File.basename(@file_path))
+
+            error_field = page.find('.js-pem-input-error-message')
+            expect(error_field.text).to be_empty
+          end
+        end
+
+        context 'uploading a private key' do
+          let(:file_content) { '----PRIVATE KEY----' }
+
+          it 'shows an error indicating a private key' do
+            page.attach_file 'Choose a cert file', @file_path, make_visible: true
+
+            error_field = page.find('.js-pem-input-error-message')
+            expect(error_field).to have_content('This is a private key')
+          end
+        end
+
+        context 'uploading a DER-encoded file' do
+          let(:file_content) { OpenSSL::X509::Certificate.new(build_pem).to_der }
+
+          it 'show an error' do
+            page.attach_file 'Choose a cert file', @file_path, make_visible: true
+
+            error_field = page.find('.js-pem-input-error-message')
+            expect(error_field).to have_content('does not appear to be PEM encoded')
+          end
+        end
+      end
+    end
   end
 
   scenario 'Read' do

@@ -23,7 +23,7 @@ def build_pem(serial: SecureRandom.rand(100_000))
   key = OpenSSL::PKey::RSA.new 2048
   cert = OpenSSL::X509::Certificate.new
   cert.version = 2
-  cert.serial = serial
+  cert.serial = serial.to_i
   cert.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby certificate"
   cert.issuer = root_ca.subject # root CA is the issuer
   cert.public_key = key.public_key
