@@ -81,11 +81,7 @@ class ServiceProvider < ApplicationRecord
   # @return [Array<ServiceProviderCertificate>]
   def certificates
     @certificates ||= [*certs, *saml_client_cert].map do |cert|
-      if cert
-        ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
-      else
-        null_certificate
-      end
+      ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
     rescue OpenSSL::X509::CertificateError
       null_certificate
     end
