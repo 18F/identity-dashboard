@@ -129,16 +129,3 @@ $image-path: 'img';
     display: block;
   }
 }
-
-ol.number-list {
-  counter-reset: num;
-
-  > li {
-    @include u-margin-y(2);
-    counter-increment: num;
-
-    &::before {
-      content: counter(num);
-    }
-  }
-}
