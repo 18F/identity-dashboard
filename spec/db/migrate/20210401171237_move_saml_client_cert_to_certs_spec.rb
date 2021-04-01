@@ -5,7 +5,7 @@ require Rails.root.join('db/migrate/20210401171237_move_saml_client_cert_to_cert
 # This entire spec can be removed once the saml_client_cert column is dropped
 RSpec.describe MoveSAMLClientCertToCerts do
   around do |ex|
-    cols = ServiceProvider.ignored_columns;
+    cols = ServiceProvider.ignored_columns
     ServiceProvider.ignored_columns = []
 
     ex.run
