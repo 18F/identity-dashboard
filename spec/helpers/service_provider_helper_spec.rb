@@ -77,7 +77,6 @@ describe ServiceProviderHelper do
         group_id
         identity_protocol
         production_issuer
-        saml_client_cert
       ]
     end
     it 'returns the sp issuer in the yaml blurb' do

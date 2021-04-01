@@ -88,25 +88,22 @@ describe ServiceProvider do
     end
 
     it 'accepts a blank certificate' do
-      sp = build(:service_provider, redirect_uris: [], saml_client_cert: '')
+      sp = build(:service_provider, redirect_uris: [], certs: [''])
 
       expect(sp).to be_valid
     end
 
     it 'fails if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], saml_client_cert: 'foo')
+      sp = build(:service_provider, redirect_uris: [], certs: ['foo'])
 
       expect(sp).to_not be_valid
     end
 
     it 'provides an error message if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], saml_client_cert: 'foo')
+      sp = build(:service_provider, redirect_uris: [], certs: ['foo'])
       sp.valid?
 
-      expect(sp.errors[:saml_client_cert]).
-        to include(
-          t('activerecord.errors.models.service_provider.attributes.saml_client_cert.invalid')
-        )
+      expect(sp.errors[:certs]).to include('Certificate is a not PEM-encoded')
     end
 
     it 'accepts a valid x509 certificate' do
@@ -131,7 +128,7 @@ describe ServiceProvider do
         e0sZY2CS
         -----END CERTIFICATE-----
       CERT
-      sp = build(:service_provider, redirect_uris: [], saml_client_cert: valid_cert)
+      sp = build(:service_provider, redirect_uris: [], certs: [valid_cert])
 
       expect(sp).to be_valid
     end
@@ -277,9 +274,16 @@ describe ServiceProvider do
   end
 
   describe '#certificates' do
-    subject(:sp) { build(:service_provider, certs: certs, saml_client_cert: saml_client_cert) }
-    let(:saml_client_cert) { nil }
+    subject(:sp) { build(:service_provider, certs: certs) }
     let(:certs) { nil }
+
+    context 'with nil' do
+      let(:certs) { nil }
+
+      it 'is an empty array' do
+        expect(sp.certificates).to eq([])
+      end
+    end
 
     context 'with invalid PEM data' do
       let(:certs) { ['i-am-not-a-pem'] }
@@ -289,18 +293,7 @@ describe ServiceProvider do
       end
     end
 
-    context 'with only an old saml_client_cert' do
-      let(:saml_client_cert) { build_pem(serial: 100) }
-      let(:certs) { nil }
-
-      it 'wraps that cert as a ServiceProviderCertificate' do
-        expect(sp.certificates).
-          to eq([ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(saml_client_cert))])
-      end
-    end
-
     context 'with multiple certs' do
-      let(:saml_client_cert) { nil }
       let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'wraps them as ServiceProviderCertificates' do
@@ -311,34 +304,11 @@ describe ServiceProvider do
         expect(sp.certificates).to eq(wrapped)
       end
     end
-
-    context 'with multiple certs and an old saml_client_cert' do
-      let(:saml_client_cert) { build_pem(serial: 100) }
-      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
-
-      it 'wraps them as ServiceProviderCertificates' do
-        wrapped = (certs + [saml_client_cert]).map do |cert|
-          ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
-        end
-
-        expect(sp.certificates).to eq(wrapped)
-      end
-    end
   end
 
   describe '#remove_certificate' do
-    subject(:sp) { build(:service_provider, certs: certs, saml_client_cert: saml_client_cert) }
-    let(:saml_client_cert) { nil }
+    subject(:sp) { build(:service_provider, certs: certs) }
     let(:certs) { nil }
-
-    context 'when removing a serial that matches saml_client_cert' do
-      let(:saml_client_cert) { build_pem(serial: 111) }
-
-      it 'removes that cert' do
-        expect { sp.remove_certificate(111) }.
-          to(change { sp.saml_client_cert }.to(nil).and change { sp.certificates }.to([]))
-      end
-    end
 
     context 'when removing a serial that matches in the certs array' do
       let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
