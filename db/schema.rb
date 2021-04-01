@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_171237) do
+ActiveRecord::Schema.define(version: 2021_04_01_225415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 2021_04_01_171237) do
     t.text "metadata_url"
     t.text "acs_url"
     t.text "assertion_consumer_logout_service_url"
-    t.text "saml_client_cert"
     t.integer "block_encryption", default: 1, null: false
     t.datetime "created_at"
     t.datetime "updated_at"

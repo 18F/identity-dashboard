@@ -7,8 +7,6 @@ class ServiceProvider < ApplicationRecord
 
   has_paper_trail on: %i[create update destroy]
 
-  self.ignored_columns = %w[saml_client_cert]
-
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
 

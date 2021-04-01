@@ -91,7 +91,7 @@ module ServiceProviderHelper
   private
 
   def config_hash(service_provider)
-    clean_sp_json = service_provider.to_json(except: [*SP_PROTECTED_ATTRIBUTES, 'saml_client_cert'])
+    clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
