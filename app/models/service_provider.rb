@@ -91,7 +91,6 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  # rubocop:disable Metrics/MethodLength
   def remove_certificate(serial)
     certs&.delete_if do |cert|
       OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
@@ -104,7 +103,6 @@ class ServiceProvider < ApplicationRecord
 
     serial
   end
-  # rubocop:enable Metrics/MethodLength
 
   private
 
