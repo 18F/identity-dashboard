@@ -6,7 +6,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :assertion_consumer_logout_service_url,
     :attribute_bundle,
     :block_encryption,
-    :cert,
     :certs,
     :friendly_name,
     :ial,
@@ -30,10 +29,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def agency_id
     object&.agency&.id
-  end
-
-  def cert
-    object.saml_client_cert
   end
 
   def certs

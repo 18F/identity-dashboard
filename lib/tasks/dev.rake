@@ -19,7 +19,7 @@ if Rails.env.development? || Rails.env.test?
              assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout',
              # sp_initiated_login_url: 'add once db is updated http://localhost:3001/users/auth/saml',
              block_encryption: 'aes256-cbc',
-             # saml_client_cert: dashboard_saml_config.certificate,
+             # certs: [dashboard_saml_config.certificate],
              # attribute_bundle: add once db is updated [:email],
              # logo: 'add once db updated svg string',
              # return_to_sp_url: 'add once db is updated',

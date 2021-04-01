@@ -7,6 +7,8 @@ class ServiceProvider < ApplicationRecord
 
   has_paper_trail on: %i[create update destroy]
 
+  self.ignored_columns = %w[saml_client_cert]
+
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
 
@@ -82,7 +84,7 @@ class ServiceProvider < ApplicationRecord
 
   # @return [Array<ServiceProviderCertificate>]
   def certificates
-    @certificates ||= [*certs, *saml_client_cert].map do |cert|
+    @certificates ||= Array(certs).map do |cert|
       ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
     rescue OpenSSL::X509::CertificateError
       null_certificate
@@ -91,20 +93,8 @@ class ServiceProvider < ApplicationRecord
 
   # rubocop:disable Metrics/MethodLength
   def remove_certificate(serial)
-    serial = serial.to_s
-
-    # legacy single cert
-    begin
-      if saml_client_cert && OpenSSL::X509::Certificate.new(saml_client_cert).serial.to_s == serial
-        self.saml_client_cert = nil
-      end
-    rescue OpenSSL::X509::CertificateError
-      nil
-    end
-
-    # newer certs array
     certs&.delete_if do |cert|
-      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial
+      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
     rescue OpenSSL::X509::CertificateError
       nil
     end
@@ -153,6 +143,8 @@ class ServiceProvider < ApplicationRecord
 
   def certs_are_pems
     Array(certs).each do |cert|
+      next if cert.blank?
+
       if cert.include?('----BEGIN CERTIFICATE----')
         OpenSSL::X509::Certificate.new(cert)
       else

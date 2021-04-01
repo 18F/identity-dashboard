@@ -22,7 +22,6 @@ en:
         logo: Logo
         redirect_uris: Redirect URIs
         return_to_sp_url: Return to SP URL
-        saml_client_cert: SAML Client Cert (PEM encoded)
         sp_initiated_login_url: SP Initiated Login URL
         identity_protocol: Identity Protocol
         team: Team

@@ -30,10 +30,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: 26253af02f472d3023062efd5c7a3920b0db5f9c
-  branch: v0.3.2
+  revision: 9fc9c9840be7519d059ae043e5e63b28abbbde33
+  branch: margolis-support-multiple-certs
   specs:
-    identity_validations (0.3.2)
+    identity_validations (0.4.0)
 
 GIT
   remote: https://github.com/18f/omniauth_login_dot_gov.git
