@@ -7,9 +7,10 @@ class ServiceProvidersController < AuthenticatedController
   def index; end
 
   def create
+    @service_provider = ServiceProvider.new
     attach_cert
 
-    @service_provider = ServiceProvider.new(service_provider_params)
+    @service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
