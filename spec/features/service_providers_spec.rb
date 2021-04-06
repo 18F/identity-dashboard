@@ -24,7 +24,13 @@ feature 'Service Providers CRUD' do
 
       check 'email'
       check 'first_name'
-      click_on 'Create'
+
+      Tempfile.create(['cert', '.crt']) do |tmp|
+        File.write(tmp.path, build_pem)
+        attach_file('cert', tmp.path)
+
+        click_on 'Create'
+      end
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
