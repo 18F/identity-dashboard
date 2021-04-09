@@ -6,7 +6,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :assertion_consumer_logout_service_url,
     :attribute_bundle,
     :block_encryption,
-    :cert,
+    :certs,
     :friendly_name,
     :ial,
     :default_aal,
@@ -31,10 +31,8 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     object&.agency&.id
   end
 
-  # The one expiring latest - no way to know which was added last. Since this is
-  # temporary I think it's ok.
-  def cert
-    object.certificates.sort(&:not_after).last&.to_pem
+  def certs
+    object.certificates.map(&:to_pem)
   end
 
   def updated_at

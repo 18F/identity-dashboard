@@ -29,7 +29,7 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:remote_logo_key]).to eq(service_provider.logo_file.key)
         expect(as_json[:ial]).to eq(2)
         expect(as_json[:default_aal]).to eq(3)
-        expect(as_json[:cert]).to eq(service_provider.certificates.first.to_pem)
+        expect(as_json[:certs]).to eq([service_provider.certificates.first.to_pem])
       end
     end
 
