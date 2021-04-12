@@ -4,6 +4,12 @@ class UserSession
   def initialize(info)
     @email = info['email']
     @user = User.find_by(email: email) || unregistered_government_user
+
+    puts "====="
+    puts info.inspect
+    puts "===="
+
+
     @user&.update!(uuid: info['uuid'])
   end
 

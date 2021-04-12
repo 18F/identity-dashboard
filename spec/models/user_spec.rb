@@ -5,6 +5,7 @@ describe User do
 
   describe 'Associations' do
     it { should have_many(:service_providers) }
+    it { should have_many(:security_events) }
   end
 
   let(:user) { build(:user) }

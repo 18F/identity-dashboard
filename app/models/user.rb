@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :user_teams, dependent: :nullify
   has_many :teams, through: :user_teams
   has_many :service_providers, through: :teams
+  has_many :security_events
 
   validates_with UserValidator, on: :create
 
