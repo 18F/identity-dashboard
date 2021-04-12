@@ -39,7 +39,7 @@
             <td>
               <% if security_event.raw_event %>
                 <details>
-                  <summary>Show Payload</summary>
+                  <summary class="summary-fix">Show Payload</summary>
                   <pre><code><%= JSON.pretty_generate(JSON.parse(security_event.raw_event)) %></code></pre>
                 </details>
               <% end %>
