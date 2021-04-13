@@ -4,6 +4,14 @@ RSpec.describe SecurityEventPolicy do
   subject(:policy) { SecurityEventPolicy.new(user, SecurityEvent) }
 
   describe '#index?' do
+    context 'when logged out' do
+      let(:user) { nil }
+
+      it 'is false' do
+        expect(policy.index?).to eq(false)
+      end
+    end
+
     context 'for a non-admin user' do
       let(:user) { build(:user) }
 
