@@ -4,11 +4,12 @@ RSpec.describe Api::SecurityEventsController do
   describe '#create' do
     subject(:action) { post :create, body: body }
 
+    let(:idp_private_key) { OpenSSL::PKey::RSA.new(2048) }
+    let(:idp_public_key) { idp_private_key.public_key }
+    before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
+
     context 'with a valid JWT' do
       let(:user) { create(:user) }
-      let(:idp_private_key) { OpenSSL::PKey::RSA.new(2048) }
-      let(:idp_public_key) { idp_private_key.public_key }
-      before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
 
       let(:payload) do
         {
