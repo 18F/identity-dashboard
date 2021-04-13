@@ -14,9 +14,8 @@
             <th scope="col">User</th>
           <% end %>
           <th scope="col">Type</th>
-          <th scope="col">UUID</th>
+          <th scope="col">UUID (click for details)</th>
           <th scope="col">Issued At</th>
-          <th scope="col">Payload</th>
         </tr>
       </thead>
       <tbody>
@@ -31,18 +30,10 @@
               <%= security_event.event_type.split('/').last %>&hellip;
             <% end %>
             <td>
-              <kbd><%= security_event.uuid %></kbd>
+              <%= link_to security_event.uuid, security_event_path(security_event) %>
             </td>
             <td>
               <%= l(security_event.issued_at, format: :long) %>
-            </td>
-            <td>
-              <% if security_event.raw_event %>
-                <details>
-                  <summary class="summary-fix">Show Payload</summary>
-                  <pre><code><%= JSON.pretty_generate(JSON.parse(security_event.raw_event)) %></code></pre>
-                </details>
-              <% end %>
             </td>
           </tr>
         <% end %>

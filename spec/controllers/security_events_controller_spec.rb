@@ -66,4 +66,48 @@ RSpec.describe SecurityEventsController do
       end
     end
   end
+
+  describe '#show' do
+    subject(:action) { get :show, params: { id: id } }
+    let(:security_event) { create(:security_event, user: user) }
+    let(:id) { security_event.id }
+
+    context 'for an event belonging to the current user' do
+      let(:security_event) { create(:security_event, user: user) }
+
+      it 'renders the event' do
+        action
+        expect(assigns[:security_event]).to eq(security_event)
+      end
+    end
+
+    context 'for an event belonging to a different user' do
+      let(:security_event) { create(:security_event, user: build(:user)) }
+
+      it 'renders an error' do
+        action
+
+        expect(response).to be_unauthorized
+      end
+
+      context 'when the current user is an admin' do
+        let(:user) { create(:admin) }
+
+        it 'renders the event' do
+          action
+          expect(assigns[:security_event]).to eq(security_event)
+        end
+      end
+    end
+
+    context 'for an event that does not exist' do
+      let(:id) { 'abcdef' }
+
+      it '404s' do
+        action
+
+        expect(response).to be_not_found
+      end
+    end
+  end
 end

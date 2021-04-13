@@ -1,0 +1,25 @@
+<h1>Security Event</h1>
+
+<dl class="bold-definition spaced-definition padding-bottom-2">
+  <dt>User</dt>
+  <dd><%= @security_event.user.email %></dd>
+
+  <dt>Event Type</dt>
+  <dd><%= @security_event.event_type %>
+
+  <dt>UUID (<kbd>jti</kbd>)</dt>
+  <dd><%= @security_event.uuid %></dd>
+
+  <dt>Issued At</dt>
+  <dd>
+    <%= l(@security_event.issued_at, format: :long) %>
+    (<%= time_ago_in_words(@security_event.issued_at) %>)
+  </dd>
+</dl>
+
+
+<h2>Event Payload</h2>
+
+<% if @security_event.raw_event %>
+  <pre><code><%= JSON.pretty_generate(JSON.parse(@security_event.raw_event)) %></code></pre>
+<% end %>
