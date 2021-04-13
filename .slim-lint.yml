@@ -1,5 +1,0 @@
-linters:
-  LineLength:
-    max: 100
-    exclude:
-      - 'app/views/pages/privacy_policy.html.slim'
