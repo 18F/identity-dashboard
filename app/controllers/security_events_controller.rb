@@ -6,11 +6,7 @@ class SecurityEventsController < ApplicationController
                        order('issued_at DESC').
                        page(params[:page])
 
-    if @security_events.out_of_range?
-      redirect_to security_events_path
-    else
-      assign_pagination
-    end
+    assign_pagination
   end
 
   def all
@@ -18,11 +14,7 @@ class SecurityEventsController < ApplicationController
                        order('issued_at DESC').
                        page(params[:page])
 
-    if @security_events.out_of_range?
-      redirect_to security_events_all_path
-    else
-      assign_pagination
-    end
+    assign_pagination
   end
 
   private

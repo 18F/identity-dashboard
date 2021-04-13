@@ -22,10 +22,15 @@ RSpec.describe SecurityEventsController do
       expect(security_events.map(&:user).uniq).to eq([user])
     end
 
-    it 'redirects to the first page from an invalid page' do
-      get :index, params: { page: 1000 }
+    context 'with no events' do
+      before { SecurityEvent.delete_all }
 
-      expect(response).to redirect_to(security_events_path)
+      it 'renders an empty page' do
+        get :index
+
+        expect(assigns[:security_events].size).to eq(0)
+        expect(response).to be_ok
+      end
     end
   end
 
@@ -41,10 +46,15 @@ RSpec.describe SecurityEventsController do
         expect(security_events.map(&:user).uniq).to match_array([user, other_user])
       end
 
-      it 'redirects to the first page from an invalid page' do
-        get :all, params: { page: 1000 }
+      context 'with no events' do
+        before { SecurityEvent.delete_all }
 
-        expect(response).to redirect_to(security_events_all_path)
+        it 'renders an empty page' do
+          get :index
+
+          expect(assigns[:security_events].size).to eq(0)
+          expect(response).to be_ok
+        end
       end
     end
 
