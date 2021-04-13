@@ -3,8 +3,8 @@ class SecurityEventsController < ApplicationController
 
   def index
     @security_events = current_user.security_events.
-                                    order('issued_at DESC').
-                                    page(params[:page])
+                       order('issued_at DESC').
+                       page(params[:page])
 
     if @security_events.out_of_range?
       redirect_to security_events_path
@@ -15,8 +15,8 @@ class SecurityEventsController < ApplicationController
 
   def all
     @security_events = SecurityEvent.includes(:user).
-                                     order('issued_at DESC')
-                                     page(params[:page])
+                       order('issued_at DESC')
+                       page(params[:page])
 
     if @security_events.out_of_range?
       redirect_to security_events_all_path

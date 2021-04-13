@@ -33,6 +33,7 @@ class SecurityEventForm
     )
   end
 
+  # rubocop:disable Metrics/MethodLength
   def payload
     @payload ||= begin
       payload = nil
@@ -43,6 +44,7 @@ class SecurityEventForm
         )
         break if payload
       rescue JWT::DecodeError
+        next
       end
 
       return payload if payload
@@ -51,6 +53,7 @@ class SecurityEventForm
       {}
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def event_type
     (payload['events'] || {}).keys.first
