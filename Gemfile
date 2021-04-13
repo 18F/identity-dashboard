@@ -64,7 +64,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
-  gem 'rubocop', '~> 1.6.0'
+  gem 'rubocop', '~> 1.10.0'
   gem 'rubocop-rails', '~> 2.5.0'
   gem 'rubocop-rspec'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'

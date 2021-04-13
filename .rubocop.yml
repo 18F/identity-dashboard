@@ -105,16 +105,10 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/TrailingEmptyLines:
-  Enabled: false
-
 Lint/PercentStringArray:
   Enabled: true
   Exclude:
     - 'config/initializers/secure_headers.rb'
-
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
@@ -167,13 +161,6 @@ Style/AndOr:
   - always
   - conditionals
 
-Style/Documentation:
-  Description: Document classes and non-namespace modules.
-  Enabled: false
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-
 # Warn on empty else statements
 # empty - warn only on empty else
 # nil - warn on else with nil in it
@@ -184,12 +171,6 @@ Style/EmptyElse:
     - empty
     - nil
     - both
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-                 Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
 
 Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
@@ -249,3 +230,12 @@ Style/TrailingCommaInHashLiteral:
     - comma
     - consistent_comma
     - no_comma
+
+Lint/AmbiguousAssignment:
+  Enabled: true
+
+Style/HashExcept:
+  Enabled: true
+
+Lint/DeprecatedConstants:
+  Enabled: true
