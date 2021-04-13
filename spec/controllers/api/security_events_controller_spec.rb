@@ -21,9 +21,9 @@ RSpec.describe Api::SecurityEventsController do
                 subject_type: 'iss-sub',
                 sub: user.uuid,
                 iss: 'https://idp.example.login.gov',
-              }
-            }
-          }
+              },
+            },
+          },
         }
       end
 

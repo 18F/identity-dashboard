@@ -22,14 +22,14 @@ class IdpPublicKeys
   def openid_configuration
     @openid_configuration ||= JSON.parse(
       Faraday.get(URI.join(idp_url, '.well-known/openid-configuration')).body,
-      symbolize_names: true
+      symbolize_names: true,
     )
   end
 
   def jwks_configuration
     @jwks_configuration ||= JSON.parse(
       Faraday.get(openid_configuration[:jwks_uri]).body,
-      symbolize_names: true
+      symbolize_names: true,
     )
   end
 end

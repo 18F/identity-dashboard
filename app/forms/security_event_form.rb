@@ -29,7 +29,7 @@ class SecurityEventForm
       uuid: payload['jti'],
       event_type: event_type,
       issued_at: payload['iat'] ? Time.zone.at(payload['iat']) : nil,
-      raw_event: payload.to_json
+      raw_event: payload.to_json,
     )
   end
 
