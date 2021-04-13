@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider
   before_action :authorize_approval, only: [:update]
@@ -113,7 +112,6 @@ class ServiceProvidersController < AuthenticatedController
     [[@errors] + [service_provider.errors.full_messages]].flatten.compact.to_sentence
   end
 
-  # rubocop:disable MethodLength
   def service_provider_params
     permit_params = [
       :acs_url,
@@ -144,7 +142,6 @@ class ServiceProvidersController < AuthenticatedController
     permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
   end
-  # rubocop:enable MethodLength
 
   # relies on ServiceProvider#certs_are_pems for validation
   def attach_cert
@@ -190,4 +187,3 @@ class ServiceProvidersController < AuthenticatedController
 
   helper_method :service_provider
 end
-# rubocop:enable Metrics/ClassLength

@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
@@ -50,7 +49,6 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  # rubocop:disable MethodLength
   def self.possible_attributes
     possible = %w[
       email
@@ -70,7 +68,6 @@ class ServiceProvider < ApplicationRecord
     ]
     Hash[*possible.collect { |v| [v, v] }.flatten]
   end
-  # rubocop:enable MethodLength
 
   def recently_approved?
     previous_changes.key?(:approved) && previous_changes[:approved].last == true
@@ -121,7 +118,7 @@ class ServiceProvider < ApplicationRecord
     OpenStruct.new(
       issuer: 'Null Certificate',
       not_before: time,
-      not_after: time
+      not_after: time,
     )
   end
   # rubocop:enable Rails/TimeZone
@@ -151,4 +148,3 @@ class ServiceProvider < ApplicationRecord
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

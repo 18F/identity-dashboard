@@ -1,13 +1,11 @@
 require 'identity/hostdata'
 require 'subprocess'
 
-# rubocop:disable Metrics/ClassLength
 class ServiceProviderLogoUpdater
   include ServiceProviderHelper
 
   IDP_CONFIG_CHECKOUT_NAME = 'identity-idp-config'.freeze
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def import_logos_to_active_storage
     return unless Figaro.env.logo_upload_enabled
 
@@ -24,14 +22,13 @@ class ServiceProviderLogoUpdater
       service_provider.logo_file.attach(
         io: File.open(logo_path(logo_name)),
         filename: logo_name,
-        content_type: mime_type(logo_name)
+        content_type: mime_type(logo_name),
       )
       push_logo_content_type(service_provider)
     end
   rescue StandardError => error
     handle_error(error)
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
@@ -65,7 +62,7 @@ class ServiceProviderLogoUpdater
       'assets',
       'images',
       'sp-logos',
-      filename
+      filename,
     )
   end
 
@@ -79,7 +76,7 @@ class ServiceProviderLogoUpdater
       copy_source:        "#{bucket}/#{key}",
       key:                key,
       metadata_directive: 'REPLACE',
-      acl:                'public-read'
+      acl:                'public-read',
     )
   end
 
@@ -139,4 +136,3 @@ class ServiceProviderLogoUpdater
     logger
   end
 end
-# rubocop:enable Metrics/ClassLength

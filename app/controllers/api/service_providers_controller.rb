@@ -20,7 +20,7 @@ module Api
     def serialized_service_providers(service_providers)
       ActiveModel::Serializer::CollectionSerializer.new(
         service_providers,
-        each_serializer: ServiceProviderSerializer
+        each_serializer: ServiceProviderSerializer,
       )
     end
 

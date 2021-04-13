@@ -123,7 +123,7 @@ feature 'Service Providers CRUD' do
 
     # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
     # choosing the protocol in the following four scenarios.
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     xscenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
@@ -156,7 +156,7 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
     end
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
 
     xscenario 'issuer is updated when department or app is updated', :js do
       user = create(:user)
@@ -169,7 +169,7 @@ feature 'Service Providers CRUD' do
       fill_in 'Issuer app', with: 'my-cool-app'
 
       expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app'
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
       )
     end
 
@@ -184,7 +184,7 @@ feature 'Service Providers CRUD' do
       fill_in 'Issuer app', with: 'my-cool-app'
 
       expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:my-cool-app'
+        'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:my-cool-app',
       )
     end
   end

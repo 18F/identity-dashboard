@@ -99,7 +99,7 @@ module ServiceProviderHelper
     config_hash
   end
 
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   def formatted_config_hash(sp_json)
     sp_json.map do |config_key, value|
       if %w[agency_id default_help_text help_text attribute_bundle redirect_uris].include?(config_key)
@@ -109,5 +109,5 @@ module ServiceProviderHelper
       end
     end.to_h
   end
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
 end

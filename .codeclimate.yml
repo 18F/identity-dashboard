@@ -62,9 +62,6 @@ plugins:
       - XXX
   pep8:
     enabled: true
-  rubocop:
-    enabled: true
-    channel: rubocop-0-54
   scss-lint:
     enabled: true
 

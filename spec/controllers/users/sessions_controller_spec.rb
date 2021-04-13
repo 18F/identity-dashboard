@@ -7,7 +7,7 @@ describe Users::SessionsController do
 
   describe '#destroy' do
     before do
-      request.env["devise.mapping"] = Devise.mappings[:user]
+      request.env['devise.mapping'] = Devise.mappings[:user]
     end
 
     let(:uuid) { '123-asdf-qwerty' }
@@ -18,11 +18,13 @@ describe Users::SessionsController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123'
-        }
+          'id_token'=> 'abc123',
+        },
       }
     end
-    let(:logout_utility) { OmniAuth::LoginDotGov::LogoutUtility.new(end_session_endpoint: 'http://localhost:3000') }
+    let(:logout_utility) do
+      OmniAuth::LoginDotGov::LogoutUtility.new(end_session_endpoint: 'http://localhost:3000')
+    end
 
     context 'when logged in' do
       before do
@@ -51,13 +53,28 @@ describe Users::SessionsController do
     context 'when logged in' do
       before do
         allow(controller).to receive(:current_user).and_return(user)
-        request.env["devise.mapping"] = Devise.mappings[:user]
+        request.env['devise.mapping'] = Devise.mappings[:user]
       end
 
       it 'returns 200 status' do
         get :active
 
         expect(response.status).to eq 200
+      end
+    end
+  end
+
+  describe '#timeout' do
+    context 'when logged in' do
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        request.env['devise.mapping'] = Devise.mappings[:user]
+      end
+
+      it 'redirects to root' do
+        get :timeout
+
+        expect(response).to redirect_to(root_url)
       end
     end
   end

@@ -20,7 +20,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :signature,
     :sp_initiated_login_url,
     :updated_at,
-    :help_text
+    :help_text,
   )
 
   def agency

@@ -199,7 +199,9 @@ describe TeamsController do
         end
 
         it 'renders the edit action' do
-          patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
+          patch :update, params: {
+            id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' }
+          }
           expect(response).to render_template(:edit)
         end
       end
@@ -214,7 +216,9 @@ describe TeamsController do
 
     context 'when user is neither a admin nor a team member' do
       it 'has an unauthorized response' do
-        patch :update, params: { id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' } }
+        patch :update, params: {
+          id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' }
+        }
         expect(response.status).to eq(401)
       end
     end

@@ -5,7 +5,6 @@ class AgencySeeder
     @agency_configs = agency_configs
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def run!
     # There are unique indexes on both agency name and agency id so we can't in-place update
     # individual records without potentially causing unique constraint errors. There are also
@@ -19,7 +18,7 @@ class AgencySeeder
     Agency.transaction do
       agencies_by_id = Agency.where(id: agency_configs.map { |id, _values| id }).to_a
       agencies_by_name = Agency.where(
-        name: agency_configs.map { |_id, values| values['name'] }
+        name: agency_configs.map { |_id, values| values['name'] },
       ).to_a
 
       agencies_in_db = (agencies_by_id + agencies_by_name).uniq(&:id)
@@ -38,5 +37,4 @@ class AgencySeeder
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

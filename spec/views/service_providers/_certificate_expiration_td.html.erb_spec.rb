@@ -6,13 +6,13 @@ RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
 
   let(:expired_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.day.ago, issuer: issuer)
+      instance_double('OpenSSL::X509::Certificate', not_after: 1.day.ago, issuer: issuer),
     )
   end
 
   let(:valid_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.year.from_now, issuer: issuer)
+      instance_double('OpenSSL::X509::Certificate', not_after: 1.year.from_now, issuer: issuer),
     )
   end
 
@@ -35,7 +35,7 @@ RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
     let(:certificates) { [expired_certificate] }
 
     it 'renders an expired certificate' do
-      expect(td_tag.text.strip).to eq(expired_certificate.not_after.localtime.strftime("%F"))
+      expect(td_tag.text.strip).to eq(expired_certificate.not_after.localtime.strftime('%F'))
       expect(td_tag[:class]).to eq('certificate-expired')
     end
   end
@@ -44,7 +44,7 @@ RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
     let(:certificates) { [expired_certificate, valid_certificate] }
 
     it 'renders the one that expires farthest in the future' do
-      expect(td_tag.text.strip).to eq(valid_certificate.not_after.localtime.strftime("%F"))
+      expect(td_tag.text.strip).to eq(valid_certificate.not_after.localtime.strftime('%F'))
       expect(td_tag[:class]).to be_blank
     end
   end

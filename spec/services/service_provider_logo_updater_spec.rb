@@ -9,7 +9,7 @@ RSpec.describe ServiceProviderLogoUpdater do
   let(:fake_config) { [service_provider.attributes] }
   let(:fake_response) do
     OpenStruct.new(
-      body: JSON.generate(fake_config)
+      body: JSON.generate(fake_config),
     )
   end
 

@@ -61,7 +61,7 @@ jobs:
 
             make test
             yarn test
-            bundle exec slim-lint app/views
+            bundle exec rubocop
       - run:
           name: Upload Test Results to Code Climate
           command: |

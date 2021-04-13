@@ -23,7 +23,7 @@ module Deploy
 
     def download_application_yml_from_s3
       Identity::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/%<env>s/dashboard/v1/application.yml' => env_yaml_path
+        '/%<env>s/dashboard/v1/application.yml' => env_yaml_path,
       )
     end
 
