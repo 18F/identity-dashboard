@@ -10,7 +10,7 @@ describe ServiceProvider do
     let(:service_provider) do
       create(
         :service_provider,
-        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app',
       )
     end
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
@@ -38,7 +38,7 @@ describe ServiceProvider do
     it 'accepts a correctly formatted issuer' do
       valid_service_provider = build(
         :service_provider,
-        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app',
       )
 
       expect(valid_service_provider).to be_valid
@@ -47,7 +47,7 @@ describe ServiceProvider do
     it 'fails when issuer is formatted incorrectly' do
       invalid_service_provider = build(
         :service_provider,
-        issuer: 'i-dont-care-about-your-rules even a little'
+        issuer: 'i-dont-care-about-your-rules even a little',
       )
 
       expect(invalid_service_provider).not_to be_valid
@@ -56,12 +56,12 @@ describe ServiceProvider do
     it 'accepts an incorrectly formatted issuer on update' do
       initially_valid_service_provider = create(
         :service_provider,
-        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app'
+        issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app',
       )
       expect(initially_valid_service_provider).to be_valid
 
       initially_valid_service_provider.update(
-        issuer: 'Valid - we only check for whitespace in issuer on create.'
+        issuer: 'Valid - we only check for whitespace in issuer on create.',
       )
       expect(initially_valid_service_provider).to be_valid
     end
@@ -78,12 +78,12 @@ describe ServiceProvider do
     it 'provides an error message when issuer is formatted incorrectly' do
       invalid_service_provider = build(
         :service_provider,
-        issuer: 'i-dont-care-about-your-rules even a little'
+        issuer: 'i-dont-care-about-your-rules even a little',
       )
       invalid_service_provider.valid?
 
       expect(invalid_service_provider.errors[:issuer]).to include(
-        t('activerecord.errors.models.service_provider.attributes.issuer.invalid')
+        t('activerecord.errors.models.service_provider.attributes.issuer.invalid'),
       )
     end
 
@@ -226,7 +226,10 @@ describe ServiceProvider do
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
           :service_provider,
-          help_text: { 'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {}, 'forgot_password': {} }
+          help_text: {
+            'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
+            'forgot_password': {}
+          },
       )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end

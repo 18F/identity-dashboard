@@ -5,7 +5,7 @@ describe TeamPolicy do
   let(:team_user) { build(:user) }
   let(:whitelist_user) { build(:user, email: 'user@example.gov') }
   let(:other_user) { build(:user) }
-  let(:team)      { build(:team) }
+  let(:team) { build(:team) }
 
   before do
     team.users << team_user

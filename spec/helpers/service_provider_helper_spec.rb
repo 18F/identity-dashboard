@@ -7,7 +7,7 @@ describe ServiceProviderHelper do
         file = 'test.png'
 
         expect(sp_logo_path(file)).to match(
-          /test.png/
+          /test.png/,
         )
       end
 
@@ -21,7 +21,7 @@ describe ServiceProviderHelper do
         file = nil
 
         expect(sp_logo_path(file)).to match(
-          /generic.svg/
+          /generic.svg/,
         )
       end
     end

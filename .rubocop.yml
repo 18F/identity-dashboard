@@ -4,11 +4,9 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 
+require: rubocop-rails
+
 AllCops:
-  Include:
-    - '**/Gemfile'
-    - '**/Rakefile'
-    - '**/Capfile'
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
@@ -22,14 +20,19 @@ AllCops:
     - 'config/puma.rb'
     - 'db/migrate/*'
     - '**/Capfile'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'public/**/*'
+    - 'node_modules/**/*'
   TargetRubyVersion: 2.5
   TargetRailsVersion: 6.1
   UseCache: true
+  DisabledByDefault: true
 
 Rails:
-  Enabled: true
+  Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same
@@ -72,7 +75,7 @@ Layout/ExtraSpacing:
   ForceEqualSignAlignment: false
 
 # Checks the indentation of the first element in an array literal.
-Layout/IndentArray:
+Layout/FirstArrayElementIndentation:
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -102,7 +105,7 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
 
 Lint/PercentStringArray:
@@ -113,14 +116,6 @@ Lint/PercentStringArray:
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
-Metrics/AbcSize:
-  Description: A calculated magnitude based on number of assignments, branches, and
-    conditions.
-  Enabled: true
-  Max: 15
-  Exclude:
-  - spec/**/*
-
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Enabled: true
@@ -128,15 +123,7 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
 
-Metrics/ClassLength:
-  Description: Avoid classes longer than 100 lines of code.
-  Enabled: true
-  CountComments: false
-  Max: 100
-  Exclude:
-  - spec/**/*
-
-Metrics/LineLength:
+Layout/LineLength:
   Description: Limit lines to 100 characters.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
   Enabled: true
@@ -148,19 +135,9 @@ Metrics/LineLength:
   Exclude:
     - 'config/routes.rb'
 
-Metrics/MethodLength:
-  Description: Avoid methods longer than 10 lines of code.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: true
-  CountComments: false
-  Max: 10
-  Exclude:
-  - 'db/migrate/*'
-  - spec/**/*
-
 Metrics/ModuleLength:
   CountComments: false
-  Max: 100
+  Max: 200
   Description: Avoid modules longer than 100 lines of code.
   Enabled: true
   Exclude:
@@ -245,7 +222,7 @@ Style/TrailingCommaInArguments:
   # parenthesized method calls where each argument is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma

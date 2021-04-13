@@ -27,7 +27,7 @@ describe ServiceProviderUpdater do
 
     context 'when the HTTP request raises an error' do
       before do
-        allow(::HTTParty).to receive(:post).and_raise("Error!")
+        allow(::HTTParty).to receive(:post).and_raise('Error!')
       end
 
       it 'returns http status code for failure' do

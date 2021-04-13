@@ -30,7 +30,7 @@ feature 'Logo upload' do
       click_on 'Create'
 
       expect(page).to have_content(
-        'The file you uploaded (invalid.txt) is not a PNG or SVG'
+        'The file you uploaded (invalid.txt) is not a PNG or SVG',
       )
       expect(user.reload.service_providers.count).to eq(0)
     end
@@ -56,7 +56,7 @@ feature 'Logo upload' do
       click_on 'Update'
 
       expect(page).to have_content(
-        'The file you uploaded (invalid.txt) is not a PNG or SVG'
+        'The file you uploaded (invalid.txt) is not a PNG or SVG',
       )
       expect(service_provider.reload.logo_file.attachment).to eq(nil)
     end

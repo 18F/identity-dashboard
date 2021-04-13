@@ -16,7 +16,7 @@ module Users
     def timeout
       flash[:notice] = I18n.t(
         'session_timedout',
-        session_timeout: distance_of_time_in_words(Devise.timeout_in)
+        session_timeout: distance_of_time_in_words(Devise.timeout_in),
       )
       redirect_to root_url
     end
@@ -26,7 +26,7 @@ module Users
         sign_out(current_user)
         logout_request = self.class.logout_utility.build_request(
           id_token: session[:id_token],
-          post_logout_redirect_uri: post_logout_redirect_uri
+          post_logout_redirect_uri: post_logout_redirect_uri,
         )
         redirect_to(logout_request.redirect_uri)
       else

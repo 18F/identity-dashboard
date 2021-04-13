@@ -23,8 +23,8 @@ gem 'jwt'
 gem 'lograge'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.11', '>= 1.11.0'
-gem 'omniauth-rails_csrf_protection', '~> 0.1', '>= 0.1.2'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git'
+gem 'omniauth-rails_csrf_protection', '~> 0.1', '>= 0.1.2'
 gem 'paper_trail', '~> 11.0'
 gem 'pg'
 gem 'pry-rails'
@@ -38,7 +38,6 @@ gem 'ruby_regex'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.0', '>= 5.0.3'
-gem 'slim-rails', '~> 3.2', '>= 3.2.0'
 gem 'subprocess', require: false
 gem 'uglifier'
 gem 'webpacker', '~> 5.2', '>= 5.2.1'
@@ -55,8 +54,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
-  gem 'rubocop', '=1.6'
-  gem 'rubocop-rspec'
   gem 'web-console', '>= 4.1.0'
 end
 
@@ -67,8 +64,10 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
+  gem 'rubocop', '~> 1.6.0'
+  gem 'rubocop-rails', '~> 2.5.0'
+  gem 'rubocop-rspec'
   gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'
-  gem 'slim_lint'
 end
 
 group :test do
