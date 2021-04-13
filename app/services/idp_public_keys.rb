@@ -3,7 +3,7 @@
 class IdpPublicKeys
   # @return [Array<OpenSSL::PKey::PKey>]
   def self.all
-    @all ||= self.new.load_all
+    @all ||= new.load_all
   end
 
   attr_reader :idp_url
@@ -22,7 +22,7 @@ class IdpPublicKeys
   def openid_configuration
     @openid_configuration ||= JSON.parse(
       Faraday.get(URI.join(idp_url, '.well-known/openid-configuration')).body,
-      symbolize_names: true,
+      symbolize_names: true
     )
   end
 

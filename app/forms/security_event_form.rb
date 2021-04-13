@@ -16,17 +16,21 @@ class SecurityEventForm
   # @return [Array(Boolean, ActiveModel::Errors)]
   def submit
     if valid?
-      SecurityEvent.create!(
-        user: user,
-        uuid: payload['jti'],
-        event_type: event_type,
-        issued_at: payload['iat'] ? Time.zone.at(payload['iat']) : nil,
-        raw_event: payload.to_json,
-      )
-      [ true, nil ]
+      create_security_event!
+      [true, nil]
     else
-      [ false, errors ]
+      [false, errors]
     end
+  end
+
+  def create_security_event!
+    SecurityEvent.create!(
+      user: user,
+      uuid: payload['jti'],
+      event_type: event_type,
+      issued_at: payload['iat'] ? Time.zone.at(payload['iat']) : nil,
+      raw_event: payload.to_json
+    )
   end
 
   def payload
@@ -39,15 +43,12 @@ class SecurityEventForm
         )
         break if payload
       rescue JWT::DecodeError
-        next
       end
 
-      if payload
-        payload
-      else
-        errors.add(:jwt, 'could not verify JWT with any known keys')
-        {}
-      end
+      return payload if payload
+
+      errors.add(:jwt, 'could not verify JWT with any known keys')
+      {}
     end
   end
 
