@@ -430,7 +430,7 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.10.1)
-    rubocop (1.10.0)
+    rubocop (1.11.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -606,7 +606,7 @@ DEPENDENCIES
   responders (~> 3.0, >= 3.0.1)
   rest-client (~> 2.1)
   rspec-rails (~> 4.0, >= 4.0.1)
-  rubocop (~> 1.10.0)
+  rubocop (~> 1.11.0)
   rubocop-rails (~> 2.5.0)
   rubocop-rspec
   ruby_regex

@@ -18,7 +18,7 @@ def build_pem(serial: SecureRandom.rand(100_000))
   root_ca.add_extension(ef.create_extension('keyUsage','keyCertSign, cRLSign', true))
   root_ca.add_extension(ef.create_extension('subjectKeyIdentifier','hash',false))
   root_ca.add_extension(ef.create_extension('authorityKeyIdentifier','keyid:always',false))
-  root_ca.sign(root_key, OpenSSL::Digest::SHA256.new)
+  root_ca.sign(root_key, OpenSSL::Digest.new('SHA256'))
 
   key = OpenSSL::PKey::RSA.new 2048
   cert = OpenSSL::X509::Certificate.new
@@ -34,7 +34,7 @@ def build_pem(serial: SecureRandom.rand(100_000))
   ef.issuer_certificate = root_ca
   cert.add_extension(ef.create_extension('keyUsage','digitalSignature', true))
   cert.add_extension(ef.create_extension('subjectKeyIdentifier','hash',false))
-  cert.sign(root_key, OpenSSL::Digest::SHA256.new)
+  cert.sign(root_key, OpenSSL::Digest.new('SHA256'))
 
   cert.to_pem
 end
