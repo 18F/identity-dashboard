@@ -1,0 +1,8 @@
+<h2>Your Security Events</h2>
+
+<%= render partial: 'table',
+           locals: {
+             security_events: @security_events,
+             next_page: @next_page,
+             prev_page: @prev_page,
+           } %>

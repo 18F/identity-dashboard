@@ -20,9 +20,14 @@ Rails.application.routes.draw do
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
+  resources :service_providers
+
+  resources :security_events, only: %i[index show]
+  get '/security_events/all' => 'security_events#all'
+
+  post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'
   post '/api/service_providers' => 'api/service_providers#update'
-  resources :service_providers
 
   root to: 'home#index'
 

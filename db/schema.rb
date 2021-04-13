@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_225415) do
+ActiveRecord::Schema.define(version: 2021_04_12_181322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,19 @@ ActiveRecord::Schema.define(version: 2021_04_01_225415) do
     t.text "description", default: ""
     t.integer "agency_id"
     t.index ["name"], name: "index_groups_on_name", unique: true
+  end
+
+  create_table "security_events", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "uuid"
+    t.datetime "issued_at"
+    t.string "event_type"
+    t.text "raw_event"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["issued_at"], name: "index_security_events_on_issued_at"
+    t.index ["user_id"], name: "index_security_events_on_user_id"
+    t.index ["uuid"], name: "index_security_events_on_uuid"
   end
 
   create_table "service_providers", id: :serial, force: :cascade do |t|

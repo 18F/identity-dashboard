@@ -280,6 +280,18 @@ GEM
       bindata
     jsonapi-renderer (0.2.2)
     jwt (2.2.2)
+    kaminari (1.2.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.1)
+      kaminari-activerecord (= 1.2.1)
+      kaminari-core (= 1.2.1)
+    kaminari-actionview (1.2.1)
+      actionview
+      kaminari-core (= 1.2.1)
+    kaminari-activerecord (1.2.1)
+      activerecord
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
     listen (3.3.3)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -591,6 +603,7 @@ DEPENDENCIES
   jquery-rails (>= 4.4.0)
   json-jwt (>= 1.13.0)
   jwt
+  kaminari
   listen (~> 3.3)
   lograge
   newrelic_rpm (>= 6.14.0)

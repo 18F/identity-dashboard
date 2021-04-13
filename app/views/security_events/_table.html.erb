@@ -1,0 +1,75 @@
+<%# locals:
+  - security_events
+  - next_page (optional)
+  - prev_page (optional)
+  - show_user (optional)
+%>
+
+<div class="grid-container padding-0">
+  <div class="grid-row">
+    <table class="usa-table grid-col-fill">
+      <thead>
+        <tr>
+          <% if local_assigns[:show_user] %>
+            <th scope="col">User</th>
+          <% end %>
+          <th scope="col">Type</th>
+          <th scope="col">UUID (click for details)</th>
+          <th scope="col">Issued At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% security_events.each do |security_event| %>
+          <tr>
+            <% if local_assigns[:show_user] %>
+              <td>
+                <%= security_event.user.email %>
+              </td>
+            <% end %>
+            <%= content_tag(:td, title: security_event.event_type) do %>
+              <%= security_event.event_type.split('/').last %>&hellip;
+            <% end %>
+            <td>
+              <%= link_to security_event.uuid, security_event_path(security_event) %>
+            </td>
+            <td>
+              <%= l(security_event.issued_at, format: :long) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-container padding-0">
+  <div class="grid-row">
+    <div class="grid-col-auto">
+      <% if local_assigns[:prev_page] %>
+        <%= link_to prev_page do %>
+          &larr; Previous
+        <% end %>
+      <% else %>
+        <span class="text-base-light">
+          &larr; Previous
+        </span>
+      <% end %>
+    </div>
+
+    <div class="grid-col-fill">
+      &nbsp;
+    </div>
+
+    <div class="grid-col-auto">
+      <% if local_assigns[:next_page] %>
+        <%= link_to next_page do %>
+          Next &rarr;
+        <% end %>
+      <% else %>
+        <span class="text-base-light">
+          Next &rarr;
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>
