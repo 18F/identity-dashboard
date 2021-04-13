@@ -15,7 +15,7 @@ class SecurityEventsController < ApplicationController
 
   def all
     @security_events = SecurityEvent.includes(:user).
-                       order('issued_at DESC')
+                       order('issued_at DESC').
                        page(params[:page])
 
     if @security_events.out_of_range?
