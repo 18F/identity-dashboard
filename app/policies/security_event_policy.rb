@@ -7,7 +7,7 @@ class SecurityEventPolicy < BasePolicy
   end
 
   def index?
-    true
+    current_user.present?
   end
 
   def all?
