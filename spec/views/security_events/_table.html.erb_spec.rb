@@ -11,6 +11,10 @@ RSpec.describe 'security_events/table.html.erb' do
           }
   end
 
+  before do
+    allow(DevDocs).to receive(:risc_events).and_return({})
+  end
+
   let(:user) { create(:user) }
   let(:security_events) do
     2.times.map { create(:security_event, user: user) }
@@ -24,8 +28,6 @@ RSpec.describe 'security_events/table.html.erb' do
 
     rows = Nokogiri::HTML(rendered).css('tbody tr')
     expect(rows.size).to eq(2)
-
-    expect(rows.map { |r| r.css('td')[1].text.strip }).to eq(security_events.map(&:uuid))
   end
 
   context 'with show_user: false' do

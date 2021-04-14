@@ -25,6 +25,7 @@ smtp_domain: changeme
 smtp_password: changeme
 smtp_username: changeme
 post_logout_redirect_uri: http://localhost:3001
+dev_docs_url: 'https://developers.login.gov'
 
 test: &default
   auto_account_creation_tlds: '.gov,.mil'
