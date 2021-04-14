@@ -11,13 +11,13 @@ RSpec.describe IdpPublicKeys do
     end
 
     it 'loads from the IDP' do
-      stub_request(:get, 'http://idp.example.com/.well-known/openid-configuration')
-        .to_return(body: {
+      stub_request(:get, 'http://idp.example.com/.well-known/openid-configuration').
+        to_return(body: {
           jwks_uri: 'http://idp.example.com/certs',
         }.to_json)
 
-      stub_request(:get, 'http://idp.example.com/certs')
-        .to_return(body: {
+      stub_request(:get, 'http://idp.example.com/certs').
+        to_return(body: {
           keys: public_keys.map { |key| JSON::JWK.new(key) },
         }.to_json)
 
