@@ -21,7 +21,7 @@ RSpec.describe DevDocs do
           event_type: 'https://schemas.openid.net/secevent/risc/event-type/recovery-activated',
           description: 'Some event that does things like XYZ',
         },
-      ]
+      ],
     }
   end
 
@@ -109,7 +109,7 @@ RSpec.describe DevDocs do
             some_new_key: 'aaaa',
             event_type: '/identifier-recycled',
             friendly_name: 'Identifier Recycled',
-          ]
+          ],
         }
       end
 

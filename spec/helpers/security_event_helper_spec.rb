@@ -4,12 +4,12 @@ RSpec.describe SecurityEventHelper do
   before do
     allow(DevDocs).to receive(:risc_events).and_return(
       'https://.../identifier-recycled' => DevDocs::RiscEvent.new(
-        friendly_name: 'Identifier Recycled'
+        friendly_name: 'Identifier Recycled',
       ),
       'https://.../recovery-activated' => DevDocs::RiscEvent.new(
         friendly_name: 'Recovery Activated',
         description: 'Some event that does things like XYZ',
-      )
+      ),
     )
   end
 
