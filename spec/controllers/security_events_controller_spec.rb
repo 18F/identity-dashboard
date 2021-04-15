@@ -46,6 +46,14 @@ RSpec.describe SecurityEventsController do
         expect(security_events.map(&:user).uniq).to match_array([user, other_user])
       end
 
+      it 'filters by user with a user_uuid param' do
+        get :all, params: { user_uuid: other_user.uuid }
+
+        security_events = assigns[:security_events]
+        expect(security_events.size).to eq(1)
+        expect(security_events.map(&:user_id).uniq).to eq([other_user.id])
+      end
+
       context 'with no events' do
         before { SecurityEvent.delete_all }
 
@@ -107,6 +115,44 @@ RSpec.describe SecurityEventsController do
         action
 
         expect(response).to be_not_found
+      end
+    end
+  end
+
+  describe '#search' do
+    context 'for a non-admin user' do
+      it 'renders an error' do
+        post :search
+
+        expect(response).to be_unauthorized
+      end
+    end
+
+    context 'for an admin user' do
+      let(:user) { create(:admin) }
+
+      context 'with an email that belongs to a user' do
+        it 'redirects back to all with the UUID in the params' do
+          post :search, params: { email: other_user.email }
+
+          expect(response).to redirect_to(security_events_all_path(user_uuid: other_user.uuid))
+        end
+      end
+
+      context 'with an email that does not belong to a user' do
+        it 'redirects back to all and shows a warning flash' do
+          post :search, params: { email: 'some-fake-email' }
+
+          expect(response).to redirect_to(security_events_all_path)
+          expect(flash[:warning]).to include("Could not find a user with email some-fake-email")
+        end
+      end
+
+      context 'without any params' do
+        it 'redirects back to all' do
+          post :search
+          expect(response).to redirect_to(security_events_all_path)
+        end
       end
     end
   end

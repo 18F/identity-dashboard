@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :service_providers
 
   get '/security_events/all' => 'security_events#all'
+  post '/security_events/search' => 'security_events#search'
   resources :security_events, only: %i[index show]
 
   post '/api/security_events' => 'api/security_events#create'
