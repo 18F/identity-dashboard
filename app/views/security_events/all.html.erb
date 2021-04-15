@@ -1,16 +1,19 @@
 <h2>All Security Events</h2>
 
-<%= form_with url: security_events_search_path, method: :post do |form| %>
+<%= form_with url: security_events_search_path,
+              method: :post,
+              class: "usa-search",
+              role: "search" do |form| %>
   <fieldset class="usa-fieldset">
-    <legend class="usa-legend">
-      Filter Events By
-    </legend>
-
-    <%= form.label :email, 'Email', class: 'usa-label' %>
-    <%= form.text_field :email, class: 'usa-input', value: @user&.email %>
-
-    <%= form.submit 'Search', class: 'usa-button margin-top-1' %>
-  </fieldset>
+    <%= form.label :email, 'Search by email address', class: 'usa-sr-only' %>
+    <%= form.text_field :email,
+                        type: 'search',
+                        class: 'usa-input usa-input--md usa-search-input--joined-right',
+                        value: @user&.email %>
+    <button class="usa-button" type="submit">
+      <span class="usa-search__submit-text">Search by email address</span>
+    </button>
+   </fieldset>
 <% end %>
 
 <%= render partial: 'table',
