@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe SecurityEventsController do
-  let(:user) { create(:user) }
-  let(:other_user) { create(:user) }
+  let(:user) { create(:user, uuid: SecureRandom.uuid) }
+  let(:other_user) { create(:user, uuid: SecureRandom.uuid) }
 
   before do
     sign_in(user)
@@ -146,7 +146,7 @@ RSpec.describe SecurityEventsController do
           post :search, params: { email: 'some-fake-email' }
 
           expect(response).to redirect_to(security_events_all_path)
-          expect(flash[:warning]).to include("Could not find a user with email some-fake-email")
+          expect(flash[:warning]).to include('Could not find a user with email some-fake-email')
         end
       end
 
