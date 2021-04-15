@@ -49,6 +49,8 @@ RSpec.describe SecurityEventsController do
       it 'filters by user with a user_uuid param' do
         get :all, params: { user_uuid: other_user.uuid }
 
+        expect(assigns[:user]).to eq(other_user)
+
         security_events = assigns[:security_events]
         expect(security_events.size).to eq(1)
         expect(security_events.map(&:user_id).uniq).to eq([other_user.id])
