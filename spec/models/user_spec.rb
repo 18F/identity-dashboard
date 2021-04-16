@@ -88,4 +88,24 @@ describe User do
       expect(user_with_same_email).to be_valid
     end
   end
+
+  describe 'paper_trail', versioning: true do
+    it { is_expected.to be_versioned }
+
+    it 'tracks creation' do
+      expect { create(:user) }.to change { PaperTrail::Version.count }.by(1)
+    end
+
+    it 'tracks updates' do
+      user = create(:user)
+
+      expect { user.update!(admin: true) }.to change { PaperTrail::Version.count }.by(1)
+    end
+
+    it 'tracks deletion' do
+      user = create(:user)
+
+      expect { user.destroy }.to change { PaperTrail::Version.count }.by(1)
+    end
+  end
 end
