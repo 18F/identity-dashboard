@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   acts_as_paranoid
 
+  has_paper_trail on: %i[create update destroy]
+
   devise :trackable, :timeoutable
   has_many :user_teams, dependent: :nullify
   has_many :teams, through: :user_teams

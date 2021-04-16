@@ -1,6 +1,8 @@
 class Team < ApplicationRecord
   self.table_name = :groups
 
+  has_paper_trail on: %i[create update destroy]
+
   belongs_to :agency
 
   has_many :service_providers, dependent: :nullify, foreign_key: 'group_id',
