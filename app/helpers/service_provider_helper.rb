@@ -88,6 +88,14 @@ module ServiceProviderHelper
     'prompt=login disabled'
   end
 
+  def sp_attribute_bundle(service_provider)
+    return '' unless service_provider.attribute_bundle.present?
+
+    service_provider.attribute_bundle.select do |attribute|
+      ServiceProvider.possible_attributes.include? attribute
+    end.sort.join(', ')
+  end
+
   private
 
   def config_hash(service_provider)
