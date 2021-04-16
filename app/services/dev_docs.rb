@@ -31,7 +31,7 @@ class DevDocs
     Array(json[:supported_events]).map do |attrs|
       RiscEvent.new(**attrs.slice(*RiscEvent.members))
     end.select(&:event_type)
-  rescue Faraday::ConnectionFailed, JSON::ParserError => e
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, JSON::ParserError => e
     Rails.logger.warn(e)
     []
   end
