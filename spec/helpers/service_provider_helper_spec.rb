@@ -110,4 +110,26 @@ describe ServiceProviderHelper do
       expect(sp_allow_prompt_login_img_alt(false)).to eq('prompt=login disabled')
     end
   end
+
+  describe '#sp_attribute_bundle' do
+    it 'returns a comma separated string of alphabetized attributes by default' do
+      sp = instance_double(ServiceProvider, attribute_bundle: %w[first_name email])
+      expect(sp_attribute_bundle(sp)).to eq('email, first_name')
+    end
+
+    it 'returns an empty string if attribute_bundle is nil' do
+      sp = instance_double(ServiceProvider, attribute_bundle: nil)
+      expect(sp_attribute_bundle(sp)).to eq('')
+    end
+
+    it 'returns an empty string if attribute_bundle is empty' do
+      sp = instance_double(ServiceProvider, attribute_bundle: [])
+      expect(sp_attribute_bundle(sp)).to eq('')
+    end
+
+    it 'filters out invalid attributes' do
+      sp = instance_double(ServiceProvider, attribute_bundle: %w[first_name middle_name email])
+      expect(sp_attribute_bundle(sp)).to eq('email, first_name')
+    end
+  end
 end

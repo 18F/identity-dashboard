@@ -53,7 +53,6 @@ class ServiceProvider < ApplicationRecord
     possible = %w[
       email
       first_name
-      middle_name
       last_name
       address1
       address2

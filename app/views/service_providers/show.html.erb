@@ -98,7 +98,7 @@
     <p class="font-mono-xs margin-top-0" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 
 <h2><label for="attribute_bundle">Attribute bundle:</label></h2>
-<p class="font-mono-xs margin-top-0" name="attribute_bundle"><%= (service_provider.attribute_bundle || []).sort.join(', ') %></p>
+<p class="font-mono-xs margin-top-0" name="attribute_bundle"><%= sp_attribute_bundle(service_provider) %></p>
 
 <h2><label for="active">Active</label></h2>
 <p class="font-mono-xs margin-top-0" name="active"><%= image_tag service_provider.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
