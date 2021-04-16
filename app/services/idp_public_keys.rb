@@ -3,7 +3,9 @@
 class IdpPublicKeys
   # @return [Array<OpenSSL::PKey::PKey>]
   def self.all
-    @all ||= new.load_all
+    Rails.cache.fetch('idp-public-keys', expires_in: 12.hours) do
+      new.load_all
+    end.map(&:to_key) # PKeys don't serialize, so we cache the JWKs
   end
 
   attr_reader :idp_url
@@ -12,10 +14,10 @@ class IdpPublicKeys
     @idp_url = idp_url
   end
 
-  # @return [Array<OpenSSL::PKey::PKey>]
+  # @return [Array<JSON::JWK>]
   def load_all
     jwks_configuration[:keys].map do |key_data|
-      JSON::JWK.new(key_data).to_key
+      JSON::JWK.new(key_data)
     end
   end
 

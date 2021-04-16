@@ -14,7 +14,6 @@
             <th scope="col">User</th>
           <% end %>
           <th scope="col">Type</th>
-          <th scope="col">UUID (click for details)</th>
           <th scope="col">Issued At</th>
         </tr>
       </thead>
@@ -26,11 +25,11 @@
                 <%= security_event.user.email %>
               </td>
             <% end %>
-            <%= content_tag(:td, title: security_event.event_type) do %>
-              <%= security_event.event_type.split('/').last %>&hellip;
-            <% end %>
             <td>
-              <%= link_to security_event.uuid, security_event_path(security_event) %>
+              <%= link_to(
+                    friendly_name(security_event),
+                    security_event_path(security_event)
+                  ) %>
             </td>
             <td>
               <%= l(security_event.issued_at, format: :long) %>
