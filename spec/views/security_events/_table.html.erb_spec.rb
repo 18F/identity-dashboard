@@ -11,10 +11,6 @@ RSpec.describe 'security_events/table.html.erb' do
           }
   end
 
-  before do
-    allow(DevDocs).to receive(:risc_events).and_return({})
-  end
-
   let(:user) { create(:user) }
   let(:security_events) do
     2.times.map { create(:security_event, user: user) }

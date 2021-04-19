@@ -1,9 +1,5 @@
 <h1><%= friendly_name(@security_event) %></h1>
 
-<% if event_description(@security_event) %>
-  <p><%= event_description(@security_event) %></p>
-<% end %>
-
 <dl class="bold-definition spaced-definition padding-bottom-2">
   <dt>User</dt>
   <dd><%= @security_event.user.email %></dd>
