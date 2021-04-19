@@ -91,4 +91,24 @@ RSpec.describe SecurityEventPolicy do
       end
     end
   end
+
+  describe '#search?' do
+    let(:model) { SecurityEvent }
+
+    context 'for a non-admin user' do
+      let(:user) { build(:user) }
+
+      it 'is false' do
+        expect(policy.search?).to eq(false)
+      end
+    end
+
+    context 'for an admin user' do
+      let(:user) { build(:admin) }
+
+      it 'is true' do
+        expect(policy.search?).to eq(true)
+      end
+    end
+  end
 end

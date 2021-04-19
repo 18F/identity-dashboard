@@ -7,4 +7,11 @@ RSpec.describe '/security_events' do
       action: 'all',
     )
   end
+
+  it 'routes search to #search' do
+    expect(post: '/security_events/search').to route_to(
+      controller: 'security_events',
+      action: 'search',
+    )
+  end
 end

@@ -1,5 +1,5 @@
 class SecurityEventsController < ApplicationController
-  before_action -> { authorize SecurityEvent }, only: %i[index all]
+  before_action -> { authorize SecurityEvent }, only: %i[index all search]
   before_action -> { authorize security_event }, only: %i[show]
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -15,7 +15,13 @@ class SecurityEventsController < ApplicationController
   end
 
   def all
-    @security_events = SecurityEvent.includes(:user).
+    scope = SecurityEvent.includes(:user)
+
+    if params[:user_uuid].present? && (@user = User.find_by(uuid: params[:user_uuid]))
+      scope = scope.where(user_id: @user.id)
+    end
+
+    @security_events = scope.
                        order('issued_at DESC').
                        page(params[:page])
 
@@ -24,6 +30,21 @@ class SecurityEventsController < ApplicationController
 
   def show
     @security_event = security_event
+  end
+
+  def search
+    email = params[:email]
+
+    if email.present?
+      if (user = User.find_by(email: email))
+        redirect_to security_events_all_path(user_uuid: user.uuid)
+        return
+      else
+        flash[:warning] = "Could not find a user with email #{email}"
+      end
+    end
+
+    redirect_to security_events_all_path
   end
 
   private
