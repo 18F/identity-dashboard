@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'manage users', :js do
-  scenario 'adding and removing users by email address' do
+  scenario 'adding and removing users by email address', versioning: true do
     team = create(:team)
     user = create(:user, teams: [team])
     user_to_remove = create(:user, teams: [team])
@@ -30,6 +30,8 @@ feature 'manage users', :js do
     expect(team_member_emails).to include(user.email)
     expect(team_member_emails).to include(email_to_add)
     expect(team_member_emails).to_not include(user_to_remove.email)
+    # auditing!
+    expect(PaperTrail::Version.where(event: 'destroy', item_type: 'UserTeam').count).to eq(1)
   end
 
   scenario 'adding a user with an invalid email address renders an error' do
