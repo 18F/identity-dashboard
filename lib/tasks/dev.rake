@@ -3,15 +3,17 @@ if Rails.env.development? || Rails.env.test?
 
   namespace :dev do
     desc 'Sample data for local development environment'
-    task prime: 'db:setup' do
+    task prime: 'db:reset' do
       include FactoryBot::Syntax::Methods
 
       user = create(:user, email: 'user@example.com')
 
       issuer = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local'
+
       create(:service_provider,
              user: user,
              issuer: issuer,
+             agency: Agency.find_by(name: 'General Services Administration'),
              friendly_name: Rails.application.config.app_name,
              description: 'user friendly login.gov dashboard',
              metadata_url: "http://localhost:3001/api/service_providers/#{issuer}",
