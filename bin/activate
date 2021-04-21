@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
 
-echo 'bin/activate is a noop and can be removed'
+puts 'bin/activate is a noop and can be removed'
