@@ -2,8 +2,7 @@ require 'rails_helper'
 
 feature 'Service Providers CRUD' do
   before do
-    allow(Figaro.env).to receive(:logo_upload_enabled).and_return('false')
-    ENV['logo_upload_enabled'] = 'false'
+    allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(false)
   end
 
   context 'Regular user' do

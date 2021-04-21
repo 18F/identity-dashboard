@@ -7,7 +7,7 @@ class ServiceProviderLogoUpdater
   IDP_CONFIG_CHECKOUT_NAME = 'identity-idp-config'.freeze
 
   def import_logos_to_active_storage
-    return unless Figaro.env.logo_upload_enabled
+    return unless IdentityConfig.store.logo_upload_enabled
 
     git_latest_idp_config
     idp_config.each do |sp|
@@ -68,7 +68,7 @@ class ServiceProviderLogoUpdater
 
   def push_logo_content_type(service_provider)
     # Set the content-type on the S3 blob or SVG's won't work
-    bucket = Figaro.env.aws_logo_bucket
+    bucket = IdentityConfig.store.aws_logo_bucket
     key = service_provider.logo_file.key
     s3.copy_object(
       bucket:             bucket,
@@ -111,7 +111,7 @@ class ServiceProviderLogoUpdater
   end
 
   def s3
-    @s3 ||= Aws::S3::Client.new(region: Figaro.env.aws_region)
+    @s3 ||= Aws::S3::Client.new(region: IdentityConfig.store.aws_region)
   end
 
   #############################################################################

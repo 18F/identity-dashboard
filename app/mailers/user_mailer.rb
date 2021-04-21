@@ -1,6 +1,6 @@
 class UserMailer < ApplicationMailer
   def admin_email_address
-    Figaro.env.admin_email || 'partners@login.gov'
+    IdentityConfig.store.admin_email
   end
 
   def welcome_new_user(user)

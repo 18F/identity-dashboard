@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderCertificate do
   before do
-    allow(Figaro.env).to receive(:certificate_expiration_warning_period).and_return('5')
+    allow(IdentityConfig.store).to receive(:certificate_expiration_warning_period).and_return(5)
   end
 
   let(:plain_cert) do

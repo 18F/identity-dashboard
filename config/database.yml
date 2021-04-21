@@ -3,8 +3,8 @@ development: &default
   database: identity-dashboard_development
   encoding: utf8
   min_messages: warning
-  pool: <%= Integer(Figaro.env.db_pool || 5) %>
-  reaping_frequency: <%= Integer(Figaro.env.dp_reaping_frequency || 10) %>
+  pool: <%= IdentityConfig.store.db_pool %>
+  reaping_frequency: <%= IdentityConfig.store.dp_reaping_frequency %>
   timeout: 5000
   host: localhost
 

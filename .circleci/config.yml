@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Test Setup
           command: |
-            cp config/application.yml.example config/application.yml
+            cp config/application.yml.default config/application.yml
             bundle exec rake db:setup
 
       - run:

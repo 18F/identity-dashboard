@@ -18,10 +18,8 @@ describe UserMailer, type: :mailer do
   describe 'admin_new_service_provider' do
     let(:mail) { UserMailer.admin_new_service_provider(app) }
 
-    it 'sends to ADMIN_EMAIL' do
-      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
-        expect(mail.to).to eq ['identity-admin@example.com']
-      end
+    it 'sends to admin_email' do
+      allow(IdentityConfig.store).to receive(:admin_email).and_return('identity-admin@example.com')
     end
 
     it 'renders the subject' do
@@ -45,9 +43,8 @@ describe UserMailer, type: :mailer do
     let(:mail) { UserMailer.admin_approved_service_provider(app) }
 
     it 'sends to ADMIN_EMAIL' do
-      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
-        expect(mail.to).to eq ['identity-admin@example.com']
-      end
+      allow(IdentityConfig.store).to receive(:admin_email).and_return('identity-admin@example.com')
+      expect(mail.to).to eq ['identity-admin@example.com']
     end
 
     it 'renders the subject' do

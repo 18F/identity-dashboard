@@ -58,9 +58,7 @@ class DeployStatusChecker
   def load_status(deploy)
     uri = URI.join(deploy.host, '/api/deploy.json')
 
-    req = RestClient::Request.new(url: uri.to_s, method: :get, timeout: 2,
-                                  user: Figaro.env.basic_auth_username,
-                                  password: Figaro.env.basic_auth_password)
+    req = RestClient::Request.new(url: uri.to_s, method: :get, timeout: 2)
     req.execute
   end
 

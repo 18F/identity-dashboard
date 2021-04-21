@@ -18,7 +18,7 @@ SecureHeaders::Configuration.default do |config|
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', "https://s3.#{Figaro.env.aws_region || '*'}.amazonaws.com"],
+    img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: ["'self'", '*.newrelic.com', '*.nr-data.net'],

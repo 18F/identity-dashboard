@@ -37,7 +37,7 @@ class ServiceProviderCertificate
   end
 
   def self.warning_period
-    (Figaro.env.certificate_expiration_warning_period || 60).to_i.days.from_now
+    IdentityConfig.store.certificate_expiration_warning_period.days.from_now
   end
 
   def expiration_css_class
