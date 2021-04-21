@@ -14,7 +14,7 @@ class UserSession
   private
 
   def unregistered_government_user
-    allowed_tlds = (Figaro.env.auto_account_creation_tlds || '')&.split(',')
+    allowed_tlds = IdentityConfig.store.auto_account_creation_tlds.split(',')
 
     return if allowed_tlds.filter do |tld|
       /(#{Regexp.escape(tld)})\Z/.match?(email)

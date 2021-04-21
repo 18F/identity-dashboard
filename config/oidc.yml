@@ -8,5 +8,5 @@ development:
 
 production:
   <<: *default
-  idp_url: "<%= Figaro.env.idp_url %>"
-  dashboard_url: "<%= Figaro.env.saml_sp_issuer %>"
+  idp_url: "<%= IdentityConfig.store.idp_url %>"
+  dashboard_url: "<%= IdentityConfig.store.saml_sp_issuer %>"

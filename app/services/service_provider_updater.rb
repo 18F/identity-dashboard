@@ -14,11 +14,11 @@ class ServiceProviderUpdater
 
   class <<self
     def idp_url
-      Figaro.env.idp_sp_url
+      IdentityConfig.store.idp_sp_url
     end
 
     def token_header
-      { 'X-LOGIN-DASHBOARD-TOKEN' => Figaro.env.dashboard_api_token }
+      { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
     end
 
     def handle_error(error)

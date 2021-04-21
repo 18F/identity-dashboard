@@ -36,7 +36,7 @@
 <% end %>
 
 <%# Temp hack to allow feature in dev but not int for testing %>
-<% if Figaro.env.logo_upload_enabled == 'true' %>
+<% if IdentityConfig.store.logo_upload_enabled %>
   <h2><label for="logo_file">Uploaded Logo:</label></h2>
   <% if service_provider.logo_file.attached? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">

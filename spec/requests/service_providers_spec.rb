@@ -22,55 +22,51 @@ describe 'Users::ServiceProviders' do
     end
 
     it 'allows admin to approve' do
-      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
-        app = create(:service_provider)
-        admin_user = create(:user, admin: true)
-        deliveries.clear
-        login_as(admin_user)
+      app = create(:service_provider)
+      admin_user = create(:user, admin: true)
+      deliveries.clear
+      login_as(admin_user)
 
-        mailer = instance_double(ActionMailer::MessageDelivery)
-        allow(UserMailer).to receive(:admin_approved_service_provider).
-          with(anything).and_return(mailer)
-        allow(UserMailer).to receive(:user_approved_service_provider).
-          with(anything).and_return(mailer)
-        allow(mailer).to receive(:deliver_later)
+      mailer = instance_double(ActionMailer::MessageDelivery)
+      allow(UserMailer).to receive(:admin_approved_service_provider).
+        with(anything).and_return(mailer)
+      allow(UserMailer).to receive(:user_approved_service_provider).
+        with(anything).and_return(mailer)
+      allow(mailer).to receive(:deliver_later)
 
-        put service_provider_path(app), params: { service_provider: { approved: 'true' } }
+      put service_provider_path(app), params: { service_provider: { approved: 'true' } }
 
-        expect(response.status).to eq(302) # redirect on success
-        app.reload
-        expect(app.approved?).to eq(true)
+      expect(response.status).to eq(302) # redirect on success
+      app.reload
+      expect(app.approved?).to eq(true)
 
-        expect(UserMailer).to have_received(:admin_approved_service_provider).with(app)
-        expect(UserMailer).to have_received(:user_approved_service_provider).with(app)
-        expect(mailer).to have_received(:deliver_later).twice
-      end
+      expect(UserMailer).to have_received(:admin_approved_service_provider).with(app)
+      expect(UserMailer).to have_received(:user_approved_service_provider).with(app)
+      expect(mailer).to have_received(:deliver_later).twice
     end
   end
 
   describe 'notifications' do
     xit 'sends email to admin requesting approval' do
-      ClimateControl.modify ADMIN_EMAIL: 'identity-admin@example.com' do
-        user = create(:user)
-        deliveries.clear
-        login_as(user)
+      user = create(:user)
+      deliveries.clear
+      login_as(user)
 
-        mailer = instance_double(ActionMailer::MessageDelivery)
-        allow(UserMailer).to receive(:admin_new_service_provider).with(anything).and_return(mailer)
-        allow(UserMailer).to receive(:user_new_service_provider).with(anything).and_return(mailer)
-        allow(mailer).to receive(:deliver_later)
+      mailer = instance_double(ActionMailer::MessageDelivery)
+      allow(UserMailer).to receive(:admin_new_service_provider).with(anything).and_return(mailer)
+      allow(UserMailer).to receive(:user_new_service_provider).with(anything).and_return(mailer)
+      allow(mailer).to receive(:deliver_later)
 
-        post service_providers_path, params: { service_provider: { friendly_name: 'test' } }
+      post service_providers_path, params: { service_provider: { friendly_name: 'test' } }
 
-        app = ServiceProvider.last
+      app = ServiceProvider.last
 
-        expect(UserMailer).to have_received(:admin_new_service_provider).with(app)
-        expect(UserMailer).to have_received(:user_new_service_provider).with(app)
-        expect(mailer).to have_received(:deliver_later).twice
+      expect(UserMailer).to have_received(:admin_new_service_provider).with(app)
+      expect(UserMailer).to have_received(:user_new_service_provider).with(app)
+      expect(mailer).to have_received(:deliver_later).twice
 
-        expect(response.status).to eq(302)
-        expect(app.approved).to eq(false)
-      end
+      expect(response.status).to eq(302)
+      expect(app.approved).to eq(false)
     end
   end
 

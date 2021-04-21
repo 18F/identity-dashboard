@@ -8,7 +8,7 @@ local:
 
 amazon:
   service: S3
-  region: <%= Figaro.env.aws_region %>
-  bucket: <%= Figaro.env.aws_logo_bucket %>
+  region: <%= IdentityConfig.store.aws_region %>
+  bucket: <%= IdentityConfig.store.aws_logo_bucket %>
   upload:
     acl: 'public-read'

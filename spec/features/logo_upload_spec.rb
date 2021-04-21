@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Logo upload' do
   let(:user) { create(:user, :with_teams) }
   before do
-    ENV['logo_upload_enabled'] = 'true'
+    allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(true)
   end
 
   context 'on create' do

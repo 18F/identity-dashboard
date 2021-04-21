@@ -34,8 +34,9 @@ Dir.chdir APP_ROOT do
 
   }
 
-  puts '== Copying application.yml =='
-  run 'test -L config/application.yml || cp -v config/application.yml.example config/application.yml'
+  puts '== Setting up config overrides =='
+  default_application_yml = { 'development' => { 'config_key' => nil } }
+  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exists?('config/application.yml')
 
   puts "\n== Installing dependencies =="
   run 'gem install bundler --conservative'

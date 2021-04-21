@@ -14,6 +14,8 @@ RSpec.describe ServiceProviderLogoUpdater do
   end
 
   before do
+    allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(true)
+
     # look for logos in the fixtures
     allow(updater).to receive(:logo_path) do |filename|
       Rails.root.join('spec', 'fixtures', filename)
