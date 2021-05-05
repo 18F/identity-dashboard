@@ -585,7 +585,7 @@ DEPENDENCIES
   enum_help
   factory_bot_rails (~> 6.1, >= 6.1.0)
   fakefs
-  httparty
+  faraday
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
   identity-logging!

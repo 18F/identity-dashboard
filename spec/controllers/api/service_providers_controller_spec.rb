@@ -53,11 +53,11 @@ describe Api::ServiceProvidersController do
 
         expect(response).to redirect_to service_providers_path
       end
-      context 'when ServiceProviderUpdater fails' do
-        let(:error_response) { instance_double(HTTParty::Response, body: 'Error!', code: 404) }
 
+      context 'when ServiceProviderUpdater fails' do
         before do
-          allow(::HTTParty).to receive(:post).and_return(error_response)
+          stub_request(:post, IdentityConfig.store.idp_sp_url).
+            to_return(status: 404)
         end
 
         it 'redirects to service_providers_path' do
