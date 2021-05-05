@@ -1,12 +1,14 @@
 <% unless flash.empty? %>
-  <% flash.each do |name, msg| %>
-    <% if msg.is_a?(String) %>
-      <% if name == 'notice' then name = 'info' end %>
-      <div class="usa-alert usa-alert__paragraph usa-alert--<%= name %>" >
-        <div class="usa-alert__body">
-          <p class="usa-alert__text"><%= msg %></p>
+  <div class="margin-bottom-2">
+    <% flash.each do |name, msg| %>
+      <% if msg.is_a?(String) %>
+        <% alert_name = name == 'notice' ? 'info' : name %>
+        <div class="usa-alert usa-alert__paragraph usa-alert--<%= alert_name %>" >
+          <div class="usa-alert__body">
+            <p class="usa-alert__text"><%= sanitize(msg) %></p>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 <% end %>
