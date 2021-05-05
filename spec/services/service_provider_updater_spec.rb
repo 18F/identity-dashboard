@@ -5,6 +5,7 @@ describe ServiceProviderUpdater do
 
   before do
     stub_request(:post, IdentityConfig.store.idp_sp_url).
+      with(headers: { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }).
       to_return(status: status)
   end
 
