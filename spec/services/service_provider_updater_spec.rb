@@ -1,7 +1,13 @@
 require 'rails_helper'
 
 describe ServiceProviderUpdater do
-  let(:error_response) { instance_double(HTTParty::Response, body: 'Error!', code: 404) }
+  let(:status) { 200 }
+
+  before do
+    stub_request(:post, IdentityConfig.store.idp_sp_url).
+      with(headers: { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }).
+      to_return(status: status)
+  end
 
   describe '#ping' do
     context 'when successful' do
@@ -11,9 +17,7 @@ describe ServiceProviderUpdater do
     end
 
     context 'when the HTTP request fails' do
-      before do
-        allow(::HTTParty).to receive(:post).and_return(error_response)
-      end
+      let(:status) { 404 }
 
       it 'returns http status code for failure' do
         expect(ServiceProviderUpdater.ping).to eq 404
@@ -27,7 +31,8 @@ describe ServiceProviderUpdater do
 
     context 'when the HTTP request raises an error' do
       before do
-        allow(::HTTParty).to receive(:post).and_raise('Error!')
+        stub_request(:post, IdentityConfig.store.idp_sp_url).
+          to_timeout
       end
 
       it 'returns http status code for failure' do

@@ -1,7 +1,8 @@
 class ServiceProviderUpdater
   def self.ping
-    resp = HTTParty.post(idp_url, headers: token_header)
-    status_code = resp.code
+    resp = Faraday.post(idp_url, nil, token_header)
+
+    status_code = resp.status
     return status_code if status_code == 200
 
     failure = StandardError.new "ServiceProviderUpdater failed with status: #{status_code}"
@@ -12,7 +13,7 @@ class ServiceProviderUpdater
     status_code
   end
 
-  class <<self
+  class << self
     def idp_url
       IdentityConfig.store.idp_sp_url
     end
