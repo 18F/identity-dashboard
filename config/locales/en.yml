@@ -68,6 +68,7 @@ en:
     confirm_delete: Are you sure you want to delete this user?
     service_provider_deleted: Success! You have deleted %{issuer}
     service_provider_saved: Success! You have saved %{issuer}
+    service_provider_iaa_notice: Please note that you will need a signed Inter-Agency Agreement with login.gov in order to go live in production. Visit <a href="https://developers.login.gov/production" target="_blank">https://developers.login.gov/production</a> for more details or email <a href="mailto:partners@login.gov">partners@login.gov</a> with any questions.
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov
       for support.
     service_providers_refreshed: Success! Service providers publish request has been

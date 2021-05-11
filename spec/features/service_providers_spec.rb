@@ -385,4 +385,37 @@ feature 'Service Providers CRUD' do
 
     expect(page).to have_content('Success')
   end
+
+  describe 'IAA banner' do
+    shared_examples 'a page with an IAA banner' do
+      let(:user) { create(:user) }
+      let(:sp) { create(:service_provider, user: user) }
+      let(:prod_url) { 'https://developers.login.gov/production' }
+      let(:partners_email) { 'partners@login.gov' }
+
+      before { login_as(user) }
+
+      it 'displays the banner' do
+        visit path
+        expect(page).to have_selector(:css, "a[href='#{prod_url}']")
+        expect(page).to have_selector(:css, "a[href='mailto:#{partners_email}']")
+      end
+    end
+
+    context 'new page' do
+      let(:path) { new_service_provider_path }
+
+      it_behaves_like 'a page with an IAA banner'
+    end
+    context 'show page' do
+      let(:path) { service_provider_path(sp) }
+
+      it_behaves_like 'a page with an IAA banner'
+    end
+    context 'edit page' do
+      let(:path) { edit_service_provider_path(sp) }
+
+      it_behaves_like 'a page with an IAA banner'
+    end
+  end
 end

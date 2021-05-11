@@ -2,6 +2,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_service_provider
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
+  before_action :add_iaa_warning, except: %i[index destroy]
 
   def index; end
 
@@ -183,6 +184,10 @@ class ServiceProvidersController < AuthenticatedController
 
   def s3
     @s3 ||= Aws::S3::Client.new(region: IdentityConfig.store.aws_region)
+  end
+
+  def add_iaa_warning
+    flash.now[:warning] = I18n.t('notices.service_provider_iaa_notice')
   end
 
   helper_method :service_provider
