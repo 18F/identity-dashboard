@@ -4,11 +4,23 @@ deploys:
   - app: 'identity-idp'
     env: 'prod'
     host: 'https://secure.login.gov'
+  - app: 'identity-oidc-sinatra'
+    env: 'prod'
+    host: 'https://prod-identity-oidc-sinatra.app.cloud.gov/'
+  - app: 'identity-saml-sinatra'
+    env: 'prod'
+    host: 'https://prod-identity-saml-sinatra.app.cloud.gov/'
 
   # Staging
   - app: 'identity-idp'
     env: 'staging'
     host: 'https://idp.staging.login.gov'
+  - app: 'identity-oidc-sinatra'
+    env: 'staging'
+    host: 'https://staging-identity-oidc-sinatra.app.cloud.gov/'
+  - app: 'identity-saml-sinatra'
+    env: 'staging'
+    host: 'https://staging-identity-saml-sinatra.app.cloud.gov/'
 
   # Agency integration
   - app: 'identity-idp'
