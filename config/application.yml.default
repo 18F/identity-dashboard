@@ -13,6 +13,7 @@ dp_reaping_frequency: '10'
 email_recipients: ''
 newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
+risc_notifications_eventbridge_enabled: 'false'
 secret_key_base: changeme
 serve_static_files: 'false'
 smtp_address: changeme

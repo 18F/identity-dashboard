@@ -138,6 +138,9 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
+    aws-sdk-eventbridge (1.18.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.39.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -565,6 +568,7 @@ DEPENDENCIES
   active_record_upsert
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
+  aws-sdk-eventbridge
   aws-sdk-s3
   axe-matchers
   better_errors

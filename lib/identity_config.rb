@@ -60,6 +60,7 @@ class IdentityConfig
     config.add(:mailer_domain, type: :string)
     config.add(:newrelic_license_key, type: :string)
     config.add(:post_logout_redirect_uri, type: :string)
+    config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:saml_sp_issuer, type: :string)
     config.add(:saml_sp_private_key, type: :string)
