@@ -29,6 +29,9 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def destroy
+    if IdentityConfig.store.risc_notifications_eventbridge_enabled
+      RiscDestinationUpdater.new(service_provider).remove
+    end
     service_provider.destroy
     flash[:success] = I18n.t('notices.service_provider_deleted', issuer: service_provider.issuer)
     redirect_to service_providers_path

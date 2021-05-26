@@ -7,14 +7,20 @@ class RiscDestinationUpdater
     @service_provider = service_provider
   end
 
-  def update!
+  def update
     if service_provider.push_notification_url.present?
       if api_destination_exists?
         eventbridge_client.update_api_destination(api_destination_attributes)
       else
         eventbridge_client.create_api_destination(api_destination_attributes)
       end
-    elsif api_destination_exists?
+    else
+      remove
+    end
+  end
+
+  def remove
+    if api_destination_exists?
       eventbridge_client.delete_api_destination(name: api_destination_name)
     end
   end
@@ -43,8 +49,8 @@ class RiscDestinationUpdater
   def connection_arn
     eventbridge_client.list_connections(
       name_prefix: '???', # TODO: fixme
-      limit: 1
-    ).connnections.first.connection_arn
+      limit: 1,
+    ).connections.first.connection_arn
   end
 
   def eventbridge_client
