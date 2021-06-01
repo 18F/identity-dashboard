@@ -45,7 +45,7 @@ RSpec.describe RiscDestinationUpdater do
 
       it 'removes the API destination' do
         expect(updater.eventbridge_client).to receive(:delete_api_destination).
-          with(name: "int-#{service_provider.issuer}").and_call_original
+          with(name: "int-risc-#{service_provider.issuer}").and_call_original
 
         subject
       end
@@ -62,7 +62,7 @@ RSpec.describe RiscDestinationUpdater do
         it 'creates an API destination' do
           expect(updater.eventbridge_client).to receive(:create_api_destination).
             with(
-              name: "int-#{service_provider.issuer}",
+              name: "int-risc-#{service_provider.issuer}",
               connection_arn: connection_arn,
               description: 'Destination for My Cool App',
               invocation_endpoint: push_notification_url,
@@ -77,7 +77,7 @@ RSpec.describe RiscDestinationUpdater do
         it 'updates the existing API destination' do
           expect(updater.eventbridge_client).to receive(:create_api_destination).
             with(
-              name: "int-#{service_provider.issuer}",
+              name: "int-risc-#{service_provider.issuer}",
               connection_arn: connection_arn,
               description: 'Destination for My Cool App',
               invocation_endpoint: push_notification_url,
@@ -104,7 +104,7 @@ RSpec.describe RiscDestinationUpdater do
 
   describe '#api_destination_name' do
     it 'includes the ENV and the issuer' do
-      expect(updater.api_destination_name).to eq("int-#{service_provider.issuer}")
+      expect(updater.api_destination_name).to eq("int-risc-#{service_provider.issuer}")
     end
   end
 end

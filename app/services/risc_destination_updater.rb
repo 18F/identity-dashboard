@@ -33,7 +33,7 @@ class RiscDestinationUpdater
   end
 
   def api_destination_name
-    "#{Identity::Hostdata.env}-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-#{service_provider.issuer}"
   end
 
   def api_destination_attributes
