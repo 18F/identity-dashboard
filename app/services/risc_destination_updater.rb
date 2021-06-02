@@ -20,15 +20,13 @@ class RiscDestinationUpdater
   end
 
   def remove
-    if api_destination_exists?
-      eventbridge_client.delete_api_destination(name: api_destination_name)
-    end
+    eventbridge_client.delete_api_destination(name: api_destination_name) if api_destination_exists?
   end
 
   def api_destination_exists?
     eventbridge_client.list_api_destinations(
       name_prefix: api_destination_name,
-      limit: 1
+      limit: 1,
     ).api_destinations.first.present?
   end
 

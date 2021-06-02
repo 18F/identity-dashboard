@@ -20,7 +20,7 @@ RSpec.describe RiscDestinationUpdater do
       stub_responses: {
         list_connections: { connections:[ { connection_arn: connection_arn } ] },
         list_api_destinations: { api_destinations: existing_api_desinations },
-      }
+      },
     }
   end
   let(:existing_api_desinations) { [] }
