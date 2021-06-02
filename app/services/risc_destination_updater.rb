@@ -48,7 +48,7 @@ class RiscDestinationUpdater
 
   def connection_arn
     eventbridge_client.list_connections(
-      name_prefix: '???', # TODO: fixme
+      name_prefix: "#{Identity::Hostdata.env}-risc",
       limit: 1,
     ).connections.first.connection_arn
   end
