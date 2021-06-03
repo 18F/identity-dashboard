@@ -74,8 +74,14 @@ RSpec.describe RiscDestinationUpdater do
       end
 
       context 'when an API destination exists for the SP' do
+        let(:existing_api_desinations) do
+          [
+            { connection_arn: connection_arn },
+          ]
+        end
+
         it 'updates the existing API destination' do
-          expect(updater.eventbridge_client).to receive(:create_api_destination).
+          expect(updater.eventbridge_client).to receive(:update_api_destination).
             with(
               name: "int-risc-#{service_provider.issuer}",
               connection_arn: connection_arn,
