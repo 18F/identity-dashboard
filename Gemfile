@@ -7,6 +7,7 @@ gem 'active_model_serializers', '>= 0.10.12'
 gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 gem 'aws-sdk-s3', require: false
+gem 'aws-sdk-eventbridge', require: false
 gem 'bundler'
 gem 'colorize'
 gem 'devise', '~> 4.7.3'

@@ -29,6 +29,9 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def destroy
+    if IdentityConfig.store.risc_notifications_eventbridge_enabled
+      RiscDestinationUpdater.new(service_provider).remove
+    end
     service_provider.destroy
     flash[:success] = I18n.t('notices.service_provider_deleted', issuer: service_provider.issuer)
     redirect_to service_providers_path
@@ -79,6 +82,7 @@ class ServiceProvidersController < AuthenticatedController
   def save_service_provider
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
+    update_eventbridge_risc_notifications
     publish_service_providers
     redirect_to service_provider_path(service_provider)
   end
@@ -88,6 +92,12 @@ class ServiceProvidersController < AuthenticatedController
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+    end
+  end
+
+  def update_eventbridge_risc_notifications
+    if IdentityConfig.store.risc_notifications_eventbridge_enabled
+      RiscDestinationUpdater.new(service_provider).update!
     end
   end
 
