@@ -52,6 +52,6 @@ class RiscDestinationUpdater
   end
 
   def eventbridge_client
-    @eventbridge_client ||= Aws::EventBridge::Client.new
+    @eventbridge_client ||= Aws::EventBridge::Client.new(region: IdentityConfig.store.aws_region)
   end
 end
