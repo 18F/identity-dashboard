@@ -59,6 +59,33 @@ RSpec.describe RiscDestinationUpdater do
     end
   end
 
+  shared_examples_for 'removes_rules' do
+    context 'when a rule does not exist for the SP' do
+      let(:existing_rules) { [] }
+
+      it 'no-ops' do
+        expect(updater.eventbridge_client).to_not receive(:delete_rule)
+
+        subject
+      end
+    end
+
+    context 'when a rule exists for the SP' do
+      let(:existing_rules) do
+        [
+          { name: "int-risc-rule-#{service_provider.issuer}" },
+        ]
+      end
+
+      it 'removes the API destination' do
+        expect(updater.eventbridge_client).to receive(:delete_rule).
+          with(name: "int-risc-rule-#{service_provider.issuer}", force: true).and_call_original
+
+        subject
+      end
+    end
+  end
+
   describe '#update' do
     subject(:update) { updater.update }
 
@@ -106,6 +133,7 @@ RSpec.describe RiscDestinationUpdater do
       let(:push_notification_url) { nil }
 
       it_behaves_like 'removes_api_destination'
+      it_behaves_like 'removes_rules'
     end
   end
 
@@ -113,6 +141,7 @@ RSpec.describe RiscDestinationUpdater do
     subject(:remove) { updater.remove }
 
     it_behaves_like 'removes_api_destination'
+    it_behaves_like 'removes_rules'
   end
 
   describe '#connection_name' do
