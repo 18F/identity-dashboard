@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe Team do
+  let(:user) { create(:user) }
+  let(:team) { create(:team) }
+  let(:user_team) { create(:user_team) }
+
   describe 'Associations' do
     it { should have_many(:users) }
     it { should have_many(:service_providers) }
@@ -25,6 +29,49 @@ describe Team do
       a_user = create(:user, email: 'a@example.com')
 
       expect(User.sorted).to eq([a_user, b_user, c_user])
+    end
+  end
+
+  describe '#user_deletion_history' do
+    it 'returns user deletion_history from paper_trail' do
+      with_versioning do
+        user_team.destroy
+        deletion_history = user_team.team.user_deletion_history
+        expect(deletion_history.count).to eq(1)
+      end
+    end
+  end
+
+  describe '#user_deletion_report_item' do
+    it 'returns formated record from user_deletion_history' do
+      history_record = [
+        {"id"=>1, "user_id"=>2, "group_id"=>3,
+        "created_at"=>"2021-06-08T17:34:06Z",
+        "updated_at"=>"2021-06-08T17:34:06Z"},
+        Time.zone.now, "1"
+       ]
+      report_item = user.user_deletion_report_item(history_record)
+      expect(report_item[:user_id]).to eq(2)
+    end
+  end
+
+  describe '#user_deletion_history_report' do
+    it 'returns deletion history when no email is provided' do
+      with_versioning do
+        user_id = user_team.user_id
+        user_team.destroy
+        deletion_report = user_team.team.user_deletion_history_report
+        expect(deletion_report.first[:user_id]).to eq(user_id)
+      end
+    end
+    it 'returns deletion history when email is provided' do
+      with_versioning do
+        user_id = user_team.user_id
+        user_email = user_team.user.email
+        user_team.destroy
+        report = user_team.team.user_deletion_history_report(user_email)
+        expect(report.first[:user_id]).to eq(user_id)
+      end
     end
   end
 

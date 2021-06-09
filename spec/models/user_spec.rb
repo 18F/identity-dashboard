@@ -26,6 +26,45 @@ describe User do
     end
   end
 
+  describe '#user_deletion_history' do
+    it 'returns user deletion_history from paper_trail' do
+      with_versioning do
+        team = create(:team)
+        user_team = create(:user_team)
+        user_team.destroy
+        deletion_history = user_team.user.user_deletion_history
+        expect(deletion_history.count).to eq(1)
+      end
+    end
+  end
+
+  describe '#user_deletion_report_item' do
+    it 'returns formated record from user_deletion_history' do
+      user.save
+      history_record = [
+        {"id"=>1, "user_id"=>2, "group_id"=>3,
+        "created_at"=>"2021-06-08T17:34:06Z",
+        "updated_at"=>"2021-06-08T17:34:06Z"},
+        Time.zone.now, "1"
+       ]
+      report_item = user.user_deletion_report_item(history_record)
+      expect(report_item[:user_id]).to eq(2)
+    end
+  end
+
+  describe '#user_deletion_history_report' do
+    it 'returns deletion history for user' do
+      with_versioning do
+        team = create(:team)
+        user_team = create(:user_team)
+        user_id = user_team.user_id
+        user_team.destroy
+        deletion_report = user_team.team.user_deletion_history_report
+        expect(deletion_report.first[:user_id]).to eq(user_id)
+      end
+    end
+  end
+
   describe '#scoped_service_providers' do
     it 'returns user created sps and the users team sps' do
       team = create(:team)
