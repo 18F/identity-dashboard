@@ -28,9 +28,9 @@ class User < ApplicationRecord
   end
 
   def user_deletion_history
-    PaperTrail::Version
-      .where(event: 'destroy', item_type: 'UserTeam')
-      .where("object ->>'user_id' = '?'", id)
+    PaperTrail::Version.
+      where(event: 'destroy', item_type: 'UserTeam').
+      where("object ->>'user_id' = '?'", id)
   end
 
   def user_deletion_report_item(record)
@@ -41,16 +41,16 @@ class User < ApplicationRecord
       team_name: Team.find_by(id: record[0]['group_id'])&.name,
       removed_at: record[1],
       whodunnit_id: record[2],
-      whodunnit_email: User.find_by(id: record[2])&.email
+      whodunnit_email: User.find_by(id: record[2])&.email,
     }
   end
 
   def user_deletion_history_report
-    user_deletion_history
-      .order(created_at: :desc)
-      .limit(5000)
-      .pluck(:object, :created_at, :whodunnit)
-      .map { |record|
+    user_deletion_history.
+      order(created_at: :desc).
+      limit(5000).
+      pluck(:object, :created_at, :whodunnit).
+      map { |record|
         user_deletion_report_item(record)
       }
   end
