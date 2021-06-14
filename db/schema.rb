@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_12_181322) do
+ActiveRecord::Schema.define(version: 2021_06_14_190137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 2021_04_12_181322) do
     t.boolean "allow_prompt_login", default: false
     t.integer "default_aal"
     t.string "certs", array: true
+    t.boolean "email_nameid_format_allowed", default: false
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
