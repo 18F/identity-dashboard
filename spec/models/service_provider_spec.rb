@@ -333,4 +333,19 @@ describe ServiceProvider do
       end
     end
   end
+
+  describe '#oidc?' do
+    it 'returns false for SAML integrations' do
+      sp = build(:service_provider, identity_protocol: 'saml')
+      expect(!sp.oidc?)
+    end
+    it 'returns true for OIDC private_key_jwt integrations' do
+      sp = build(:service_provider, identity_protocol: 'openid_connect_private_key_jwt')
+      expect(sp.oidc?)
+    end
+    it 'returns true for OIDC PKCE integrations' do
+      sp = build(:service_provider, identity_protocol: 'openid_connect_pkce')
+      expect(sp.oidc?)
+    end
+  end
 end
