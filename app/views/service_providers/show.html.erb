@@ -31,6 +31,7 @@
   <h2><label for="production_issuer">Production Issuer:</label></h2>
   <p class="font-mono-xs margin-top-0" name="production_issuer"><%=  service_provider.production_issuer %></p>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
+  <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
 <% elsif service_provider.allow_prompt_login? %>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
 <% end %>

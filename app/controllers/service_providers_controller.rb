@@ -151,6 +151,7 @@ class ServiceProvidersController < AuthenticatedController
       help_text: {},
     ]
     permit_params << :production_issuer if current_user.admin?
+    permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
   end
 

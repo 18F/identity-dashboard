@@ -88,6 +88,11 @@ module ServiceProviderHelper
     'prompt=login disabled'
   end
 
+  def sp_email_nameid_format_allowed_img_alt(sp_email_nameid_format_allowed)
+    return 'Email NameID format allowed' if sp_email_nameid_format_allowed
+    'Email NameID format prohibited'
+  end
+
   def sp_attribute_bundle(service_provider)
     return '' unless service_provider.attribute_bundle.present?
 

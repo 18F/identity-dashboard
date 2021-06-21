@@ -1,0 +1,7 @@
+<h2><label for="email_nameid_format_allowed">Email NameID Format Allowed</label></h2>
+<p class="font-mono-xs margin-top-0" name="email_nameid_format_allowed">
+<%= image_tag service_provider.email_nameid_format_allowed? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
+              height: '27', width: '27',
+              class: 'margin-bottom-neg-105',
+              alt: sp_email_nameid_format_allowed_img_alt(service_provider.email_nameid_format_allowed?) %>
+</p>
