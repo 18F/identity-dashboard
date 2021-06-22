@@ -141,9 +141,6 @@ GEM
     aws-sdk-eventbridge (1.24.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-iam (1.55.0)
-      aws-sdk-core (~> 3, >= 3.112.0)
-      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.39.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -572,7 +569,6 @@ DEPENDENCIES
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
   aws-sdk-eventbridge
-  aws-sdk-iam
   aws-sdk-s3
   axe-matchers
   better_errors
