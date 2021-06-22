@@ -176,12 +176,7 @@ RSpec.describe RiscDestinationUpdater do
   end
 
   describe '#issuer_slug' do
-    let(:service_provider) do
-      build(
-        :service_provider,
-        issuer: 'a,bc:def!ghi %'
-      )
-    end
+    let(:service_provider) { build(:service_provider, issuer: 'a,bc:def!ghi %') }
 
     it 'removes illegal characters and replaces them with _' do
       expect(updater.issuer_slug).to eq('a_bc_def_ghi__')
