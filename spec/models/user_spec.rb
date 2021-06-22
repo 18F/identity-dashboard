@@ -55,10 +55,10 @@ describe User do
     it 'returns deletion history for user' do
       team = create(:team)
       user_team = create(:user_team)
-      user_id = user_team.user_id
+      user = user_team.user
       user_team.destroy
-      deletion_report = user_team.team.user_deletion_history_report
-      expect(deletion_report.first[:user_id]).to eq(user_id)
+      deletion_report = user.user_deletion_history_report
+      expect(deletion_report.first[:user_id]).to eq(user.id)
     end
   end
 
