@@ -54,9 +54,4 @@ Rails.application.configure do
   config.active_storage.service = :test
   # Allow SVG's only because we will always serve them in an <img> element
   config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
-
-  # disable PaperTrail for the entire ruby process.
-  config.after_initialize do
-    PaperTrail.enabled = false
-  end
 end

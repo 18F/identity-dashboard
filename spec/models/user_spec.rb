@@ -26,15 +26,13 @@ describe User do
     end
   end
 
-  describe '#user_deletion_history' do
+  describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
-      with_versioning do
-        team = create(:team)
-        user_team = create(:user_team)
-        user_team.destroy
-        deletion_history = user_team.user.user_deletion_history
-        expect(deletion_history.count).to eq(1)
-      end
+      team = create(:team)
+      user_team = create(:user_team)
+      user_team.destroy
+      deletion_history = user_team.user.user_deletion_history
+      expect(deletion_history.count).to eq(1)
     end
   end
 
@@ -52,16 +50,14 @@ describe User do
     end
   end
 
-  describe '#user_deletion_history_report' do
+  describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history for user' do
-      with_versioning do
-        team = create(:team)
-        user_team = create(:user_team)
-        user_id = user_team.user_id
-        user_team.destroy
-        deletion_report = user_team.team.user_deletion_history_report
-        expect(deletion_report.first[:user_id]).to eq(user_id)
-      end
+      team = create(:team)
+      user_team = create(:user_team)
+      user_id = user_team.user_id
+      user_team.destroy
+      deletion_report = user_team.team.user_deletion_history_report
+      expect(deletion_report.first[:user_id]).to eq(user_id)
     end
   end
 

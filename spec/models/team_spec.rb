@@ -32,13 +32,11 @@ describe Team do
     end
   end
 
-  describe '#user_deletion_history' do
+  describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
-      with_versioning do
-        user_team.destroy
-        deletion_history = user_team.team.user_deletion_history
-        expect(deletion_history.count).to eq(1)
-      end
+      user_team.destroy
+      deletion_history = user_team.team.user_deletion_history
+      expect(deletion_history.count).to eq(1)
     end
   end
 
@@ -55,23 +53,19 @@ describe Team do
     end
   end
 
-  describe '#user_deletion_history_report' do
+  describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history when no email is provided' do
-      with_versioning do
-        user_id = user_team.user_id
-        user_team.destroy
-        deletion_report = user_team.team.user_deletion_history_report
-        expect(deletion_report.first[:user_id]).to eq(user_id)
-      end
+      user_id = user_team.user_id
+      user_team.destroy
+      deletion_report = user_team.team.user_deletion_history_report
+      expect(deletion_report.first[:user_id]).to eq(user_id)
     end
     it 'returns deletion history when email is provided' do
-      with_versioning do
-        user_id = user_team.user_id
-        user_email = user_team.user.email
-        user_team.destroy
-        report = user_team.team.user_deletion_history_report(user_email)
-        expect(report.first[:user_id]).to eq(user_id)
-      end
+      user_id = user_team.user_id
+      user_email = user_team.user.email
+      user_team.destroy
+      report = user_team.team.user_deletion_history_report(user_email)
+      expect(report.first[:user_id]).to eq(user_id)
     end
   end
 
