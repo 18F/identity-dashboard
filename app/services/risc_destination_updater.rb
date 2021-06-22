@@ -72,7 +72,6 @@ class RiscDestinationUpdater
       state: 'ENABLED',
       description: "Rule for for #{service_provider.friendly_name}",
       event_bus_name: event_bus_name,
-      role_arn: destination_iam_role_arn,
     )
   end
 
@@ -82,6 +81,7 @@ class RiscDestinationUpdater
       event_bus_name: event_bus_name,
       targets: [
         id: target_id,
+        role_arn: destination_iam_role_arn,
         arn: api_destination_arn,
         input_path: '$.detail',
         http_parameters: {
