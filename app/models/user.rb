@@ -45,10 +45,10 @@ class User < ApplicationRecord
     }
   end
 
-  def user_deletion_history_report
+  def user_deletion_history_report(limit: 5000)
     user_deletion_history.
       order(created_at: :desc).
-      limit(5000).
+      limit(limit).
       pluck(:object, :created_at, :whodunnit).
       map do |deleted_record, removed_at, whodunnit_id|
         deleted_record['removed_at'] = removed_at
