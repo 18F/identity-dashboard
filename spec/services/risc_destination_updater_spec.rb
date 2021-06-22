@@ -13,6 +13,7 @@ RSpec.describe RiscDestinationUpdater do
   end
   let(:service_provider_slug) { service_provider.issuer.tr(':', '_') }
   let(:connection_arn) { SecureRandom.hex }
+  let(:destination_role_arn) { "arn:role:destination:#{SecureRandom.hex}" }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -26,6 +27,20 @@ RSpec.describe RiscDestinationUpdater do
         list_rules: { rules: existing_rules },
         list_targets_by_rule: { targets: existing_targets },
       },
+    }
+
+    Aws.config[:iam] = {
+      stub_responses: {
+        get_role: {
+          role: {
+            arn: destination_role_arn,
+            role_name: 'int-risc-notification-destination',
+            path: 'aaa',
+            role_id: SecureRandom.random_number(1000).to_s,
+            create_date: Time.zone.now,
+          },
+        }
+      }
     }
   end
   let(:existing_connections) { [] }

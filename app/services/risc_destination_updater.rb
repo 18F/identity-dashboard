@@ -1,4 +1,5 @@
 require 'aws-sdk-eventbridge'
+require 'aws-sdk-iam'
 
 class RiscDestinationUpdater
   attr_reader :service_provider
@@ -49,6 +50,15 @@ class RiscDestinationUpdater
     "#{Identity::Hostdata.env}-risc-notifications"
   end
 
+  def destination_iam_role_name
+    # Matches value managed by Terraform
+    "#{Identity::Hostdata.env}-risc-notification-destination"
+  end
+
+  def destination_iam_role_arn
+    iam_client.get_role(role_name: destination_iam_role_name).role.arn
+  end
+
   def rule_exists?
     eventbridge_client.list_rules(
       name_prefix: rule_name,
@@ -67,6 +77,7 @@ class RiscDestinationUpdater
       state: 'ENABLED',
       description: "Rule for for #{service_provider.friendly_name}",
       event_bus_name: event_bus_name,
+      role_arn: destination_iam_role_arn,
     )
   end
 
@@ -171,5 +182,9 @@ class RiscDestinationUpdater
 
   def eventbridge_client
     @eventbridge_client ||= Aws::EventBridge::Client.new(region: IdentityConfig.store.aws_region)
+  end
+
+  def iam_client
+    @iam_client ||= Aws::IAM::Client.new(region: IdentityConfig.store.aws_region)
   end
 end
