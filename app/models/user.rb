@@ -33,15 +33,15 @@ class User < ApplicationRecord
       where("object ->>'user_id' = '?'", id)
   end
 
-  def user_deletion_report_item(record)
+  def user_deletion_report_item(deleted_record)
     {
-      user_id: record[0]['user_id'],
-      user_email: User.find_by(id: record[0]['user_id'])&.email,
-      team_id: record[0]['group_id'],
-      team_name: Team.find_by(id: record[0]['group_id'])&.name,
-      removed_at: record[1],
-      whodunnit_id: record[2],
-      whodunnit_email: User.find_by(id: record[2])&.email,
+      user_id: deleted_record['user_id'],
+      user_email: User.find_by(id: deleted_record['user_id'])&.email,
+      team_id: deleted_record['group_id'],
+      team_name: Team.find_by(id: deleted_record['group_id'])&.name,
+      removed_at: deleted_record['removed_at'],
+      whodunnit_id: deleted_record['whodunnit_id'],
+      whodunnit_email: User.find_by(id: deleted_record['whodunnit_id'])&.email,
     }
   end
 
@@ -50,9 +50,11 @@ class User < ApplicationRecord
       order(created_at: :desc).
       limit(5000).
       pluck(:object, :created_at, :whodunnit).
-      map { |record|
-        user_deletion_report_item(record)
-      }
+      map do |deleted_record, removed_at, whodunnit_id|
+        deleted_record['removed_at'] = removed_at
+        deleted_record['whodunnit_id'] = whodunnit_id
+        user_deletion_report_item(deleted_record)
+      end
   end
 
   def domain
