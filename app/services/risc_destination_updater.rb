@@ -24,20 +24,24 @@ class RiscDestinationUpdater
     eventbridge_client.delete_connection(name: connection_name) if connection_exists?
   end
 
+  def issuer_slug
+    service_provider.issuer.gsub(/[^\.\-_A-Za-z0-9]/, '_')
+  end
+
   def connection_name
-    "#{Identity::Hostdata.env}-risc-connection-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-connection-#{issuer_slug}"
   end
 
   def rule_name
-    "#{Identity::Hostdata.env}-risc-rule-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-rule-#{issuer_slug}"
   end
 
   def api_destination_name
-    "#{Identity::Hostdata.env}-risc-destination-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-destination-#{issuer_slug}"
   end
 
   def target_id
-    "#{Identity::Hostdata.env}-risc-target-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-target-#{issuer_slug}"
   end
 
   def event_bus_name
