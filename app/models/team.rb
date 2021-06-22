@@ -36,10 +36,10 @@ class Team < ApplicationRecord
     }
   end
 
-  def user_deletion_history_report(email = nil)
+  def user_deletion_history_report(email: nil, limit: 5000)
     user_deletion_history.
       order(created_at: :desc).
-      limit(5000).
+      limit(limit).
       pluck(:object, :created_at, :whodunnit).
       select { |object, _, _|
         email.nil? || User.find_by(id: object['user_id'])&.email == email
