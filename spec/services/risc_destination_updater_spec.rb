@@ -163,6 +163,20 @@ RSpec.describe RiscDestinationUpdater do
     end
   end
 
+  describe '#destination_iam_role_arn' do
+    let(:aws_account_id) { SecureRandom.random_number(1e6) }
+
+    before do
+      allow(Identity::Hostdata::EC2).to receive_message_chain(:load, :account_id).
+        and_return(aws_account_id)
+    end
+
+    it 'includes the AWS account id and the env' do
+      expect(updater.destination_iam_role_arn).
+        to eq("arn:aws:iam::#{aws_account_id}:role/int-risc-notification-destination")
+    end
+  end
+
   describe '#target_id' do
     it 'includes the ENV and the issuer' do
       expect(updater.target_id).to eq("int-risc-target-#{service_provider_slug}")
