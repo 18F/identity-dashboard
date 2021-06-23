@@ -109,7 +109,7 @@ class RiscDestinationUpdater
     eventbridge_client.delete_rule(
       name: rule_name,
       event_bus_name: event_bus_name,
-      force: true
+      force: true,
     )
   end
 
