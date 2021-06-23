@@ -30,6 +30,8 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:ial]).to eq(2)
         expect(as_json[:default_aal]).to eq(3)
         expect(as_json[:certs]).to eq([service_provider.certificates.first.to_pem])
+        expect(as_json[:email_nameid_format_allowed]).to \
+          eq(service_provider.email_nameid_format_allowed)
       end
     end
 

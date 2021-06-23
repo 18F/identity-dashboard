@@ -7,6 +7,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :attribute_bundle,
     :block_encryption,
     :certs,
+    :email_nameid_format_allowed,
     :friendly_name,
     :ial,
     :default_aal,
