@@ -155,9 +155,9 @@ RSpec.describe RiscDestinationUpdater do
     end
   end
 
-  describe '#rule_name_prefix' do
+  describe '#rule_name' do
     it 'includes the ENV and the issuer' do
-      expect(updater.rule_name_prefix).to eq("int-risc-rule-#{service_provider_slug}")
+      expect(updater.rule_name).to eq("int-risc-rule-#{service_provider_slug}")
     end
   end
 
