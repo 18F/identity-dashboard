@@ -19,7 +19,7 @@ class RiscDestinationUpdater
   end
 
   def remove
-    remove_rule if rule_exists?
+    remove_rule if existing_rule.present?
     eventbridge_client.delete_api_destination(name: api_destination_name) if api_destination_exists?
     eventbridge_client.delete_connection(name: connection_name) if connection_exists?
   end
@@ -32,7 +32,7 @@ class RiscDestinationUpdater
     "#{Identity::Hostdata.env}-risc-connection-#{issuer_slug}"
   end
 
-  def rule_name
+  def rule_name_prefix
     "#{Identity::Hostdata.env}-risc-rule-#{issuer_slug}"
   end
 
@@ -54,17 +54,17 @@ class RiscDestinationUpdater
     "arn:aws:iam::#{aws_account_id}:role/#{Identity::Hostdata.env}-risc-notification-destination"
   end
 
-  def rule_exists?
+  def existing_rule
     eventbridge_client.list_rules(
-      name_prefix: rule_name,
+      name_prefix: rule_name_prefix,
       event_bus_name: event_bus_name,
       limit: 1,
-    ).rules.first.present?
+    ).rules.first
   end
 
   def put_rule
     eventbridge_client.put_rule(
-      name: rule_name,
+      name: rule_name_prefix,
       event_pattern: {
         account: [aws_account_id],
         source: [service_provider.issuer],
@@ -77,7 +77,7 @@ class RiscDestinationUpdater
 
   def put_targets(api_destination_arn)
     eventbridge_client.put_targets(
-      rule: rule_name,
+      rule: rule_name_prefix,
       event_bus_name: event_bus_name,
       targets: [
         id: target_id,
@@ -95,18 +95,22 @@ class RiscDestinationUpdater
 
   def remove_rule
     target_ids = eventbridge_client.list_targets_by_rule(
-      rule: rule_name,
+      rule: existing_rule.name,
       event_bus_name: event_bus_name,
     ).targets.map(&:id)
 
     # Must remove targets before we can delete a rule
     eventbridge_client.remove_targets(
-      rule: rule_name,
+      rule: existing_rule.name,
       event_bus_name: event_bus_name,
       ids: target_ids,
-    )
+    ) if target_ids.present?
 
-    eventbridge_client.delete_rule(name: rule_name, force: true)
+    eventbridge_client.delete_rule(
+      name: existing_rule.name,
+      event_bus_name: event_bus_name,
+      force: true
+    )
   end
 
   def connection_exists?

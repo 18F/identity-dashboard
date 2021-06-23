@@ -80,7 +80,11 @@ RSpec.describe RiscDestinationUpdater do
 
       it 'removes the API destination' do
         expect(updater.eventbridge_client).to receive(:delete_rule).
-          with(name: "int-risc-rule-#{service_provider_slug}", force: true).and_call_original
+          with(
+            name: "int-risc-rule-#{service_provider_slug}",
+            event_bus_name: 'int-risc-notifications',
+            force: true,
+          ).and_call_original
 
         subject
       end
@@ -151,9 +155,9 @@ RSpec.describe RiscDestinationUpdater do
     end
   end
 
-  describe '#rule_name' do
+  describe '#rule_name_prefix' do
     it 'includes the ENV and the issuer' do
-      expect(updater.rule_name).to eq("int-risc-rule-#{service_provider_slug}")
+      expect(updater.rule_name_prefix).to eq("int-risc-rule-#{service_provider_slug}")
     end
   end
 
