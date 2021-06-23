@@ -24,25 +24,34 @@ class RiscDestinationUpdater
     eventbridge_client.delete_connection(name: connection_name) if connection_exists?
   end
 
+  def issuer_slug
+    @issuer_slug ||= service_provider.issuer.gsub(/[^.\-_A-Za-z0-9]/, '_')
+  end
+
   def connection_name
-    "#{Identity::Hostdata.env}-risc-connection-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-connection-#{issuer_slug}"
   end
 
   def rule_name
-    "#{Identity::Hostdata.env}-risc-rule-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-rule-#{issuer_slug}"
   end
 
   def api_destination_name
-    "#{Identity::Hostdata.env}-risc-destination-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-destination-#{issuer_slug}"
   end
 
   def target_id
-    "#{Identity::Hostdata.env}-risc-target-#{service_provider.issuer}"
+    "#{Identity::Hostdata.env}-risc-target-#{issuer_slug}"
   end
 
   def event_bus_name
     # Matches value managed by Terraform
     "#{Identity::Hostdata.env}-risc-notifications"
+  end
+
+  def destination_iam_role_arn
+    # Matches value managed by Terraform
+    "arn:aws:iam::#{aws_account_id}:role/#{Identity::Hostdata.env}-risc-notification-destination"
   end
 
   def rule_exists?
@@ -72,6 +81,7 @@ class RiscDestinationUpdater
       event_bus_name: event_bus_name,
       targets: [
         id: target_id,
+        role_arn: destination_iam_role_arn,
         arn: api_destination_arn,
         input_path: '$.detail',
         http_parameters: {
@@ -94,9 +104,13 @@ class RiscDestinationUpdater
       rule: rule_name,
       event_bus_name: event_bus_name,
       ids: target_ids,
-    )
+    ) if target_ids.present?
 
-    eventbridge_client.delete_rule(name: rule_name, force: true)
+    eventbridge_client.delete_rule(
+      name: rule_name,
+      event_bus_name: event_bus_name,
+      force: true,
+    )
   end
 
   def connection_exists?
