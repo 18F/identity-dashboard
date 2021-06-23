@@ -19,7 +19,7 @@ class ServiceProvider < ApplicationRecord
   validate :certs_are_pems
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
-  enum identity_protocol: { openid_connect: 0, saml: 1 }
+  enum identity_protocol: { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
 
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
@@ -96,6 +96,10 @@ class ServiceProvider < ApplicationRecord
     @certificates = nil
 
     serial
+  end
+
+  def oidc?
+    openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
   private

@@ -18,4 +18,6 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'OpenID'
   inflect.acronym 'SAML'
+  inflect.acronym 'PKCE'
+  inflect.acronym 'JWT'
 end
