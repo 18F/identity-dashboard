@@ -25,7 +25,7 @@ class RiscDestinationUpdater
   end
 
   def issuer_slug
-    service_provider.issuer.gsub(/[^.\-_A-Za-z0-9]/, '_')
+    @issuer_slug ||= service_provider.issuer.gsub(/[^.\-_A-Za-z0-9]/, '_')
   end
 
   def connection_name
