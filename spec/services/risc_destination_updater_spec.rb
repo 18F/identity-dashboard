@@ -7,11 +7,12 @@ RSpec.describe RiscDestinationUpdater do
   let(:service_provider) do
     build(
       :service_provider,
+      id: SecureRandom.random_number(1000),
       friendly_name: 'My Cool App',
       push_notification_url: push_notification_url,
     )
   end
-  let(:service_provider_slug) { service_provider.issuer.tr(':', '_') }
+  let(:service_provider_slug) { "issuer-#{service_provider.id}" }
   let(:connection_arn) { SecureRandom.hex }
 
   before do
@@ -194,10 +195,10 @@ RSpec.describe RiscDestinationUpdater do
   end
 
   describe '#issuer_slug' do
-    let(:service_provider) { build(:service_provider, issuer: 'a,bc:def!ghi %') }
+    let(:service_provider) { build(:service_provider, id: SecureRandom.random_number(1000)) }
 
-    it 'removes illegal characters and replaces them with _' do
-      expect(updater.issuer_slug).to eq('a_bc_def_ghi__')
+    it 'is the issuer DB id' do
+      expect(updater.issuer_slug).to eq("issuer-#{service_provider.id}")
     end
   end
 end
