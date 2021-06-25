@@ -196,7 +196,6 @@ class ServiceProvidersController < AuthenticatedController
   def s3
     @s3 ||= Aws::S3::Client.new(
       region: IdentityConfig.store.aws_region,
-      signature_version: 'v4',
       compute_checksums: false,
     )
   end
