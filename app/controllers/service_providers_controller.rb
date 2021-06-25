@@ -194,7 +194,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def s3
-    @s3 ||= Aws::S3::Client.new(region: IdentityConfig.store.aws_region)
+    @s3 ||= Aws::S3::Client.new(
+      region: IdentityConfig.store.aws_region,
+      compute_checksums: false,
+    )
   end
 
   def add_iaa_warning
