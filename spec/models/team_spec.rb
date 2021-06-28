@@ -65,8 +65,15 @@ describe Team do
       user_id = user_team.user_id
       user_email = user_team.user.email
       user_team.destroy
-      report = user_team.team.user_deletion_history_report(user_email)
+      report = user_team.team.user_deletion_history_report(email: user_email)
       expect(report.first[:user_id]).to eq(user_id)
+    end
+    it 'returns deletion history when limit is provided' do
+      user_id = user_team.user_id
+      user_email = user_team.user.email
+      user_team.destroy
+      report = user_team.team.user_deletion_history_report(limit: 1)
+      expect(report.count).to eq(1)
     end
   end
 
