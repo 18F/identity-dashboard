@@ -83,7 +83,7 @@ class RiscDestinationUpdater
         id: target_id,
         role_arn: destination_iam_role_arn,
         arn: api_destination_arn,
-        input_path: '$.detail',
+        input_path: '$.detail.jwt',
         http_parameters: {
           header_parameters: {
             'Content-Type' => 'application/secevent+jwt',
