@@ -97,7 +97,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def update_eventbridge_risc_notifications
     if IdentityConfig.store.risc_notifications_eventbridge_enabled
-      RiscDestinationUpdater.new(service_provider).update!
+      RiscDestinationUpdater.new(service_provider).update
     end
   end
 

@@ -113,5 +113,35 @@ describe ServiceProvidersController do
         put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
       end.to_not(change { sp.reload.certs&.size })
     end
+
+    context 'when eventbridge is enabled' do
+      before do
+        allow(Identity::Hostdata).to receive(:env).and_return('int')
+        allow(IdentityConfig.store).to receive(:risc_notifications_eventbridge_enabled).
+          and_return(true)
+
+        Aws.config[:eventbridge] = {
+          stub_responses: {
+            list_connections: { connections: [] },
+            create_connection: { connection_arn: 'example-arn' },
+            update_connection: { connection_arn: 'example-arn' },
+            list_api_destinations: { api_destinations: [] },
+            list_rules: { rules: [] },
+            list_targets_by_rule: { targets: [] },
+          },
+        }
+      end
+
+      it 'updates' do
+        put :update,
+            params: {
+              id: sp.id,
+              service_provider: {
+                issuer: sp.issuer,
+                push_notification_url: 'https://example.com/push',
+              },
+            }
+      end
+    end
   end
 end
