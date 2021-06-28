@@ -27,6 +27,36 @@ class User < ApplicationRecord
       sort_by! { |sp| sp.friendly_name.downcase }
   end
 
+  def user_deletion_history
+    PaperTrail::Version.
+      where(event: 'destroy', item_type: 'UserTeam').
+      where("object ->>'user_id' = '?'", id)
+  end
+
+  def user_deletion_report_item(deleted_record)
+    {
+      user_id: deleted_record['user_id'],
+      user_email: User.find_by(id: deleted_record['user_id'])&.email,
+      team_id: deleted_record['group_id'],
+      team_name: Team.find_by(id: deleted_record['group_id'])&.name,
+      removed_at: deleted_record['removed_at'],
+      whodunnit_id: deleted_record['whodunnit_id'],
+      whodunnit_email: User.find_by(id: deleted_record['whodunnit_id'])&.email,
+    }
+  end
+
+  def user_deletion_history_report(limit: 5000)
+    user_deletion_history.
+      order(created_at: :desc).
+      limit(limit).
+      pluck(:object, :created_at, :whodunnit).
+      map do |deleted_record, removed_at, whodunnit_id|
+        deleted_record['removed_at'] = removed_at
+        deleted_record['whodunnit_id'] = whodunnit_id
+        user_deletion_report_item(deleted_record)
+      end
+  end
+
   def domain
     email.to_s.split('@')[1].to_s
   end
