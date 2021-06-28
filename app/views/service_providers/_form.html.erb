@@ -99,6 +99,20 @@
         </li>
       </ul>
     </fieldset>
+
+    <%# email_nameid_format_allowed checkbox %>
+    <fieldset class="usa-fieldset">
+      <legend class="usa-sr-only">Allow email NameID Format</legend>
+      <%= form.label :email_nameid_format_allowed,
+                      label: 'Allow Email NameID Format',
+                      class: 'usa-label' %>
+      <ul class="usa-input-list">
+        <li>
+          <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
+          <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
+        </li>
+      </ul>
+    </fieldset>
   <% end %>
 
   <%# Temp hack to allow feature in dev but not int for testing %>
@@ -118,6 +132,7 @@
     <p>
       Your public certificate (or certificates), which contains your public key.
       Needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML.
+      Optional for OIDC PKCE.
     </p>
 
 

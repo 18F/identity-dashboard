@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 0583a0a5abd9052c8c95d96c821f9564c04e82c4
-  tag: v3.2.0
+  revision: 32fc831b47d17c878381279c936014e9956fcbe7
+  tag: v3.3.0
   specs:
-    identity-hostdata (3.2.0)
+    identity-hostdata (3.3.0)
       activesupport (~> 6.1)
       aws-sdk-s3 (~> 1.8)
 
@@ -162,7 +162,7 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
-    bindata (2.4.8)
+    bindata (2.4.10)
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)

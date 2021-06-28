@@ -97,7 +97,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def update_eventbridge_risc_notifications
     if IdentityConfig.store.risc_notifications_eventbridge_enabled
-      RiscDestinationUpdater.new(service_provider).update!
+      RiscDestinationUpdater.new(service_provider).update
     end
   end
 
@@ -151,6 +151,7 @@ class ServiceProvidersController < AuthenticatedController
       help_text: {},
     ]
     permit_params << :production_issuer if current_user.admin?
+    permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
   end
 
@@ -193,7 +194,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def s3
-    @s3 ||= Aws::S3::Client.new(region: IdentityConfig.store.aws_region)
+    @s3 ||= Aws::S3::Client.new(
+      region: IdentityConfig.store.aws_region,
+      compute_checksums: false,
+    )
   end
 
   def add_iaa_warning

@@ -31,6 +31,7 @@
   <h2><label for="production_issuer">Production Issuer:</label></h2>
   <p class="font-mono-xs margin-top-0" name="production_issuer"><%=  service_provider.production_issuer %></p>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
+  <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
 <% elsif service_provider.allow_prompt_login? %>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
 <% end %>
@@ -89,10 +90,9 @@
 <h2><label for="push_notification_url">Push Notification URL:</label></h2>
 <p class="font-mono-xs margin-top-0" name="push_notification_url"><%= service_provider.push_notification_url %></p>
 
-    <% if service_provider.identity_protocol == 'openid_connect' %>
+    <% if service_provider.oidc? %>
         <h2><label for="uris">Redirect URIs</label></h2>
-    <% end %>
-    <% if service_provider.identity_protocol == 'saml' %>
+    <% else # SAML %>
         <h2><label for="uris">Additional Redirect URIs</label></h2>
     <% end %>
     <p class="font-mono-xs margin-top-0" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>

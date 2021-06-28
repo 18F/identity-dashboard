@@ -120,6 +120,16 @@ feature 'Service Providers CRUD' do
       expect(page).not_to have_css('input#service_provider_allow_prompt_login')
     end
 
+    scenario 'cannot edit email_nameid_format_allowed' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
+    end
+
     # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
     # choosing the protocol in the following four scenarios.
     # rubocop:disable Layout/LineLength
@@ -224,6 +234,18 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(sp)
       check 'service_provider_allow_prompt_login'
+      click_on 'Update'
+
+      expect(page).to have_content('Success')
+    end
+
+    scenario 'can enable email NameID format for a service provider' do
+      admin = create(:admin)
+      sp = create(:service_provider, :with_team)
+      login_as(admin)
+
+      visit edit_service_provider_path(sp)
+      check 'service_provider_email_nameid_format_allowed'
       click_on 'Update'
 
       expect(page).to have_content('Success')
