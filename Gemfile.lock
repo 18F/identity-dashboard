@@ -123,7 +123,7 @@ GEM
     acts_as_paranoid (0.7.0)
       activerecord (>= 5.2, < 7.0)
       activesupport (>= 5.2, < 7.0)
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     aes_key_wrap (1.1.0)
     airbrussh (1.4.0)
