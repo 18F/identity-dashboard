@@ -157,7 +157,6 @@ describe ServiceProvider do
       missing_scheme_sp = build(:service_provider, redirect_uris: ['foo.com'])
       relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
       bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
-      malformed_uri_sp = build(:service_provider, redirect_uris: ['super.foo.com:result'])
       file_uri_sp = build(:service_provider, redirect_uris: ['file:///usr/sbin/evil_script.sh'])
 
       expect(valid_sp).to be_valid
@@ -165,7 +164,6 @@ describe ServiceProvider do
       expect(missing_scheme_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
-      expect(malformed_uri_sp).to_not be_valid
       expect(file_uri_sp).to_not be_valid
     end
 
