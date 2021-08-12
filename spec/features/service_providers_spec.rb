@@ -23,6 +23,7 @@ feature 'Service Providers CRUD' do
 
       check 'email'
       check 'first_name'
+      check 'verified_at'
 
       Tempfile.create(['cert', '.crt']) do |tmp|
         File.write(tmp.path, build_pem)
@@ -212,6 +213,7 @@ feature 'Service Providers CRUD' do
                         match: :prefer_exact
       check 'email'
       check 'first_name'
+      check 'verified_at'
       click_on 'Create'
 
       expect(page).to have_content('Success')
