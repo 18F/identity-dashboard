@@ -64,6 +64,7 @@ class ServiceProvider < ApplicationRecord
       phone
       x509_subject
       x509_presented
+      verified_at
     ]
     Hash[*possible.collect { |v| [v, v] }.flatten]
   end
