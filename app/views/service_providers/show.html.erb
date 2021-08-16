@@ -1,5 +1,5 @@
 <%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
-
+<br>
 
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
 
@@ -13,7 +13,7 @@
 <p class="font-mono-xs margin-top-0" name="agency"><%= service_provider&.agency&.name %></p>
 
 <h2><label for="team">Team:</label></h2>
-<p class="font-mono-xs margin-top-0" name="agency"><%= service_provider.team %></p>
+<%= link_to "#{service_provider.team}", team_path(@service_provider.team), :class => 'usa-link' %>
 
 <h2><label for="identity_protocol">Identity protocol:</label></h2>
 <p class="font-mono-xs margin-top-0" name="identity_protocol"><%= service_provider.identity_protocol %></p>
