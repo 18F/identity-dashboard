@@ -72,7 +72,8 @@ describe 'Users::ServiceProviders' do
 
   describe 'view an app' do
     it 'allows owner to view' do
-      app = create(:service_provider)
+      team = create(:team)
+      app = create(:service_provider, team: team)
       login_as(app.user)
 
       get service_provider_path(app)
@@ -92,7 +93,9 @@ describe 'Users::ServiceProviders' do
 
     it 'permits admin to view' do
       admin_user = create(:user, admin: true)
-      app = create(:service_provider)
+      user = create(:user)
+      team = create(:team)
+      app = create(:service_provider, team: team, user: user)
       login_as(admin_user)
 
       get service_provider_path(app)
