@@ -12,7 +12,9 @@
 <p class="font-mono-xs margin-top-0" name="agency"><%= service_provider&.agency&.name %></p>
 
 <h2><label for="team">Team:</label></h2>
-<%= link_to "#{service_provider&.team}", team_path(service_provider&.team&.id), :class => 'usa-link' %>
+  <% if service_provider.team.present? %>
+	  <%= link_to service_provider.team, service_provider.team, :class => 'usa-link' %>
+	<% end %>
 
 <h2><label for="identity_protocol">Identity protocol:</label></h2>
 <p class="font-mono-xs margin-top-0" name="identity_protocol"><%= service_provider.identity_protocol %></p>
