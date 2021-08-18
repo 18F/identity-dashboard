@@ -401,8 +401,7 @@ feature 'Service Providers CRUD' do
 
   scenario 'Delete' do
     user = create(:user)
-    team = create(:team)
-    app = create(:service_provider, team: team, user: user)
+    app = create(:service_provider, user: user)
     login_as(user)
 
     visit service_provider_path(app)
@@ -414,7 +413,7 @@ feature 'Service Providers CRUD' do
   describe 'IAA banner' do
     shared_examples 'a page with an IAA banner' do
       let(:user) { create(:user) }
-      let(:sp) { create(:service_provider, team: create(:team), user: user) }
+      let(:sp) { create(:service_provider, user: user) }
       let(:prod_url) { 'https://developers.login.gov/production' }
       let(:partners_email) { 'partners@login.gov' }
 
