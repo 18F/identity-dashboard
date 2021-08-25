@@ -301,6 +301,21 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%=  b.label(class: "usa-radio__label")%>
   <% end %>
 
+  <legend class='usa-sr-only'>Signed Response Message Requested</legend>
+  <%= form.label :admin,
+                 label: 'Signed Response Message Requested',
+                 class: 'usa-label',
+                 hint: "We should put some help text here".html_safe %>
+  <%= form.collection_radio_buttons(:signed_response_message_requested,
+                                    { "Yes" => true, "No" => false },
+                                    :last, :first,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li) do |b| %>
+    <%=  b.radio_button(class: "usa-radio__input") %>
+    <%=  b.label(class: "usa-radio__label")%>
+  <% end %>
+
   <fieldset class="usa-fieldset-inputs custom-help-text">
     <legend>Custom help text</legend>
     <p>You can specify help text in these different areas to alert users of important information for logging into your app</p>

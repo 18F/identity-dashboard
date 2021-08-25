@@ -19,6 +19,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :failure_to_proof_url,
     :push_notification_url,
     :signature,
+    :signed_response_message_requested,
     :sp_initiated_login_url,
     :updated_at,
     :help_text,
