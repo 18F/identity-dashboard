@@ -214,9 +214,10 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
 
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
-    <%= form.label :admin,
+    <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested — <i>SAML only</i>'.html_safe,
-                  class: 'usa-label' %>
+                  class: 'usa-label',
+                  hint: 'Whether the SAML response sent to your SP is signed or not.' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
