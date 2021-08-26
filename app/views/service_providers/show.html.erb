@@ -72,6 +72,12 @@
 
   <h2><label for="block_encryption">SAML Assertion Encryption:</label></h2>
   <p class="font-mono-xs margin-top-0" name="block_encryption"><%= service_provider.block_encryption %></p>
+
+  <h2><label for="signed_response_message_requested">Signed Response Message Requested</label></h2>
+  <p class="font-mono-xs margin-top-0" name="active"><%= image_tag service_provider.signed_response_message_requested? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
+                                                                  height: '27', width: '27',
+                                                                  :class => 'margin-bottom-neg-105',
+                                                                  :alt => sp_signed_response_message_requested_img_alt(service_provider.signed_response_message_requested?) %></p>
 <% end %>
 
 <h2>
@@ -106,12 +112,6 @@
                                                                  height: '27', width: '27',
                                                                  :class => 'margin-bottom-neg-105',
                                                                  :alt => sp_active_img_alt(service_provider.active?) %></p>
-
-<h2><label for="signed_response_message_requested">Signed Response Message Requested</label></h2>
-<p class="font-mono-xs margin-top-0" name="active"><%= image_tag service_provider.signed_response_message_requested? ? 'img/alerts/success.svg' : 'img/alerts/error.svg',
-                                                                 height: '27', width: '27',
-                                                                 :class => 'margin-bottom-neg-105',
-                                                                 :alt => sp_signed_response_message_requested_img_alt(service_provider.signed_response_message_requested?) %></p>
 
 <% if current_user.admin? %>
   <h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
