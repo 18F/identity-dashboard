@@ -217,7 +217,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested — <i>SAML only</i>'.html_safe,
                   class: 'usa-label',
-                  hint: 'Whether the SAML response sent to your SP is signed or not.' %>
+                  hint: 'Change this to "Yes" if you want the entire authentication response signed, as opposed to just the attribute statement.' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
