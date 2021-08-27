@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '~> 2.6.5'
-
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.12'
 gem 'active_record_upsert'
