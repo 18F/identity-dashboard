@@ -93,6 +93,11 @@ module ServiceProviderHelper
     'Email NameID format prohibited'
   end
 
+  def sp_signed_response_message_requested_img_alt(sp_response_message_requested)
+    return 'Signed response message requested' if sp_response_message_requested
+    'Signed response message not requested'
+  end
+
   def sp_attribute_bundle(service_provider)
     return '' unless service_provider.attribute_bundle.present?
 
