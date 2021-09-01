@@ -65,6 +65,27 @@
                  #label_html: { class: 'usa-input-required'},
                  hint: 'Empty - MFA required + remember device is 30 days<br/>AAL2 - MFA required + remember device is 12 hours<br/>AAL3 - unphishable MFA required + remember device is 12 hours'.html_safe %>
 
+  <%# label the grouping of items using a fieldset and legend for screen readers,
+      and use UL for checkboxes%>
+  <fieldset class='usa-fieldset-inputs usa-fieldset'>
+    <legend class='usa-sr-only'>Attribute bundle</legend>
+    <%= form.label :attribute_bundle,
+                   label: 'Attribute bundle',
+                   class: 'usa-label' %>
+    <%= form.hint 'Refer to our <a href="https://developers.login.gov/attributes" target="_blank">developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app.'.html_safe %>
+
+    <%= form.collection_check_boxes(:attribute_bundle,
+                                    ServiceProvider.possible_attributes,
+                                    :first, :last,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li,
+                                    item_wrapper_class: 'ial-attr-wrapper') do |b| %>
+      <%= b.check_box class: "usa-checkbox__input #{b.text}" %>
+      <%= b.label class: "usa-checkbox__label #{b.text}" %>
+    <% end %>
+  </fieldset>
+
   <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
@@ -236,7 +257,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
-                 label: 'Failure to Proof URL — <i>IAL2 Only</i>'.html_safe,
+                 label: 'Failure to Proof URL'.html_safe,
                  hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
@@ -280,26 +301,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                     id: 'add-redirect-uri-field',
                     class: 'usa-button margin-bottom-4' %>
   <%# END redirect_uris %>
-
-  <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for checkboxes%>
-  <fieldset class='usa-fieldset-inputs usa-fieldset'>
-    <legend class='usa-sr-only'>Attribute bundle</legend>
-    <%= form.label :attribute_bundle,
-                   label: 'Attribute bundle',
-                   class: 'usa-label' %>
-    <%= form.hint 'Refer to our <a href="https://developers.login.gov/attributes" target="_blank">developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app.'.html_safe %>
-
-    <%= form.collection_check_boxes(:attribute_bundle,
-                                    ServiceProvider.possible_attributes,
-                                    :first, :last,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
-      <%= b.check_box class: 'usa-checkbox__input' %>
-      <%= b.label class: 'usa-checkbox__label' %>
-    <% end %>
-  </fieldset>
 
   <legend class='usa-sr-only'>Active</legend>
   <%= form.label :admin,
