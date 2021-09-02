@@ -212,6 +212,21 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    label: 'SAML Assertion Encryption — <i>SAML only</i><br>'.html_safe,
                    include_blank: false,
                    hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
+
+    <legend class='usa-sr-only'>Signed Response Message Requested</legend>
+    <%= form.label :signed_response_message_requested,
+                  label: 'Signed Response Message Requested — <i>SAML only</i>'.html_safe,
+                  class: 'usa-label',
+                  hint: 'Change this to "Yes" if you want the entire authentication response signed, as opposed to just the attribute statement.' %>
+    <%= form.collection_radio_buttons(:signed_response_message_requested,
+                                      { "Yes" => true, "No" => false },
+                                      :last, :first,
+                                      collection_wrapper_tag: :ul,
+                                      collection_wrapper_class: 'usa-input-list',
+                                      item_wrapper_tag: :li) do |b| %>
+      <%=  b.radio_button(class: "usa-radio__input") %>
+      <%=  b.label(class: "usa-radio__label")%>
+    <% end %>  
   </div>
 
   <%= form.input :return_to_sp_url,
