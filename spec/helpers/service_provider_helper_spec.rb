@@ -136,7 +136,7 @@ describe ServiceProviderHelper do
     end
     it 'returns a properly formatted yaml blurb for OIDC jwt' do
       sp_config_oidc_attributes.each do |attribute_name|
-        expect(config_hash(oidc_pke_sp)).to include(attribute_name)
+        expect(config_hash(oidc_jwt_sp)).to include(attribute_name)
       end
     end
   end
