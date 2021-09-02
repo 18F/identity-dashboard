@@ -152,7 +152,7 @@ module ServiceProviderHelper
       'launch_date' => '<REPLACE_ME>',
       'iaa' => '<REPLACE_ME>',
       'iaa_start_date' => '<REPLACE_ME>',
-      'iaa_end_date' => '<REPLACE_ME>'
+      'iaa_end_date' => '<REPLACE_ME>',
     }
   end
 
@@ -180,7 +180,7 @@ module ServiceProviderHelper
       'launch_date' => '<REPLACE_ME>',
       'iaa' => '<REPLACE_ME>',
       'iaa_start_date' => '<REPLACE_ME>',
-      'iaa_end_date' => '<REPLACE_ME>'
+      'iaa_end_date' => '<REPLACE_ME>',
     }
   end
 end
