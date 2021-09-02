@@ -107,9 +107,12 @@ module ServiceProviderHelper
     clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
-    config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
-    config_hash['certs'] = service_provider.certificates.map(&:to_pem)
-    config_hash
+    config_hash['protocol'] = service_provider.identity_protocol
+    if config_hash['protocol'] == 'saml'
+      return map_saml_display_configs(config_hash, service_provider.id, service_provider.agency)
+    else
+      return map_oidc_display_configs(config_hash, service_provider.id, service_provider.agency)
+    end
   end
 
   # rubocop:disable Layout/LineLength
@@ -123,4 +126,56 @@ module ServiceProviderHelper
     end.to_h
   end
   # rubocop:enable Layout/LineLength
+
+  def map_oidc_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
+    mapped_hash = { 
+      'agency_id' => agency['id'],
+      'friendly_name' => sp_hash['friendly_name'],
+      'agency' => agency['name'],
+      'logo' => '<REPLACE_ME.png>',
+      'certs' => '<REPLACE_ME>',
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'redirect_uris' => sp_hash['redirect_uris'],
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'failure_to_proof_url' => sp_hash['failure_to_proof_url'],
+      'ial' => sp_hash['ial'],
+      'attribute_bundle' => sp_hash['attribute_bundle'],
+      'restrict_to_deploy_env' => 'prod',
+      'protocol' => sp_hash['protocol'],
+      'help_text' => sp_hash['help_text'],
+      'app_id' => sp_id,
+      'launch_date' => '<REPLACE_ME>',
+      'iaa' => '<REPLACE_ME>',
+      'iaa_start_date' => '<REPLACE_ME>',
+      'iaa_end_date' => '<REPLACE_ME>'
+    }
+  end
+
+  def map_saml_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
+    mapped_hash = { 
+      'agency_id' => agency['id'],
+      'friendly_name' => sp_hash['friendly_name'],
+      'agency' => agency['name'],
+      'logo' => '<REPLACE_ME.png>',
+      'certs' => '<REPLACE_ME>',
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'redirect_uris' => sp_hash['redirect_uris'],
+      'acs_url' => sp_hash['acs_url'],
+      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
+      'block_encryption' => sp_hash['block_encryption'],
+      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'failure_to_proof_url' => sp_hash['failure_to_proof_url'],
+      'ial' => sp_hash['ial'],
+      'attribute_bundle' => sp_hash['attribute_bundle'],
+      'restrict_to_deploy_env' => 'prod',
+      'protocol' => sp_hash['protocol'],
+      'help_text' => sp_hash['help_text'],
+      'app_id' => sp_id,
+      'launch_date' => '<REPLACE_ME>',
+      'iaa' => '<REPLACE_ME>',
+      'iaa_start_date' => '<REPLACE_ME>',
+      'iaa_end_date' => '<REPLACE_ME>'
+    }
+  end
 end

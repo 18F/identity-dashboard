@@ -15,6 +15,14 @@ FactoryBot.define do
       identity_protocol { 1 }
     end
 
+    trait :with_oidc_jwt do
+      identity_protocol { 0 }
+    end
+
+    trait :with_oidc_pke do
+      identity_protocol { 2 }
+    end
+
     trait :with_team do
       association :team, factory: :team
     end

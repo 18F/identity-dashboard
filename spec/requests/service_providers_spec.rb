@@ -92,7 +92,7 @@ describe 'Users::ServiceProviders' do
 
     it 'permits admin to view' do
       admin_user = create(:user, admin: true)
-      app = create(:service_provider)
+      app = create(:service_provider, :with_team)
       login_as(admin_user)
 
       get service_provider_path(app)
