@@ -139,8 +139,8 @@ module ServiceProviderHelper
       'redirect_uris' => sp_hash['redirect_uris'],
       'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
-      'restrict_to_deploy_env' => 'prod',
       'protocol' => sp_hash['protocol'],
+      'restrict_to_deploy_env' => 'prod',
       'help_text' => sp_hash['help_text'],
       'app_id' => sp_id,
       'launch_date' => '<REPLACE_ME>',
@@ -149,32 +149,36 @@ module ServiceProviderHelper
       'iaa_end_date' => '<REPLACE_ME>',
     }
     hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
-    if hash_with_ial_attr['protocol'] == 'saml'
+    if base_hash['protocol'] == 'saml'
       add_saml_attributes(hash_with_ial_attr)
     else
-      add_pkce_atttribute(hash_with_ial_attr)
+      add_oidc_atttributes(hash_with_ial_attr)
     end
   end
 
-  # rubocop:disable Layout/LineLength
   def add_saml_attributes(configs_hash)
     saml_attrs = {
       'acs_url' => configs_hash['acs_url'],
+      # rubocop:disable Layout/LineLength
       'assertion_consumer_logout_service_url' => configs_hash['assertion_consumer_logout_service_url'],
+      # rubocop:enable Layout/LineLength
       'block_encryption' => configs_hash['block_encryption'],
       'sp_initiated_login_url' => configs_hash['sp_initiated_login_url'],
+      'protocol' => 'saml',
     }
     configs_hash.merge!(saml_attrs)
   end
-  # rubocop:enable Layout/LineLength
 
   def add_IAL_attribute(config_hash, failure_to_proof_url)
     return config_hash if config_hash['ial'] != "'2'"
     config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
   end
 
-  def add_pkce_atttribute(config_hash)
-    return config_hash if config_hash['protocol'] != 'openid_connect_pkce'
-    config_hash.merge({'pkce' => true })
+  def add_oidc_atttributes(config_hash)
+    if config_hash['protocol'] == 'openid_connect_pkce'
+      config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
+    else
+      config_hash.merge({'protocol' => 'oidc'})
+    end
   end
 end

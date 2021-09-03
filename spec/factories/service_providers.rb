@@ -24,7 +24,7 @@ FactoryBot.define do
     end
 
     trait :with_ial_2 do
-      ial {2}
+      ial { 2 }
     end
 
     trait :with_team do
