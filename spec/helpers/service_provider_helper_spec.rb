@@ -74,6 +74,8 @@ describe ServiceProviderHelper do
     let(:saml_sp) { create(:service_provider, :saml) }
     let(:oidc_pkce_sp) {create(:service_provider, :with_oidc_pkce )}
     let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
+    let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
+    let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
     let(:sp_config_saml_attributes) do 
       %w[
         agency_id
@@ -88,7 +90,6 @@ describe ServiceProviderHelper do
         block_encryption
         sp_initiated_login_url
         return_to_sp_url
-        failure_to_proof_url
         ial
         attribute_bundle
         restrict_to_deploy_env
@@ -111,7 +112,6 @@ describe ServiceProviderHelper do
         return_to_sp_url
         redirect_uris
         return_to_sp_url
-        failure_to_proof_url
         ial
         attribute_bundle
         restrict_to_deploy_env
@@ -138,6 +138,18 @@ describe ServiceProviderHelper do
     it 'returns a properly formatted yaml blurb for OIDC jwt' do
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp)).to include(attribute_name)
+      end
+    end
+    it 'returns a hash with failure_to_proof_url if ial 2 - oidc' do
+      sp_config_oidc_attributes.push('failure_to_proof_url')
+      sp_config_oidc_attributes.each do |attribute_name|
+        expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
+      end
+    end
+    it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
+      sp_config_saml_attributes.push('failure_to_proof_url')
+      sp_config_saml_attributes.each do |attribute_name|
+        expect(config_hash(saml_sp_ial_2)).to include(attribute_name)
       end
     end
   end

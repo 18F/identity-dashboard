@@ -23,6 +23,10 @@ FactoryBot.define do
       identity_protocol { :openid_connect_pkce }
     end
 
+    trait :with_ial_2 do
+      ial {2}
+    end
+
     trait :with_team do
       association :team, factory: :team
     end

@@ -133,7 +133,7 @@ module ServiceProviderHelper
   # rubocop:enable Layout/LineLength
 
   def map_oidc_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    mapped_hash= { 
+    mapped_hash = { 
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
       'agency' => agency['name'],
@@ -142,7 +142,6 @@ module ServiceProviderHelper
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
       'redirect_uris' => sp_hash['redirect_uris'],
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'failure_to_proof_url' => sp_hash['failure_to_proof_url'],
       'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'restrict_to_deploy_env' => 'prod',
@@ -154,16 +153,12 @@ module ServiceProviderHelper
       'iaa_start_date' => '<REPLACE_ME>',
       'iaa_end_date' => '<REPLACE_ME>',
     }
-
-    if sp_hash['protocol'] == 'openid_connect_pkce' 
-      mapped_hash.merge({'pkce' => true })
-    else
-      mapped_hash
-    end
+    hash_with_ial_attr = add_IAL_attribute(mapped_hash, sp_hash['failure_to_proof_url'])
+    add_pkce_atttribute(hash_with_ial_attr)
   end
 
   def map_saml_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    { 
+    mapped_hash = { 
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
       'agency' => agency['name'],
@@ -176,7 +171,6 @@ module ServiceProviderHelper
       'block_encryption' => sp_hash['block_encryption'],
       'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'failure_to_proof_url' => sp_hash['failure_to_proof_url'],
       'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'restrict_to_deploy_env' => 'prod',
@@ -188,5 +182,16 @@ module ServiceProviderHelper
       'iaa_start_date' => '<REPLACE_ME>',
       'iaa_end_date' => '<REPLACE_ME>',
     }
+    add_IAL_attribute(mapped_hash, sp_hash['failure_to_proof_url'])
+  end
+
+  def add_IAL_attribute(config_hash, failure_to_proof_url)
+    return config_hash if config_hash['ial'] != "'2'"
+    config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
+  end
+
+  def add_pkce_atttribute(config_hash)
+    return config_hash if config_hash['protocol'] != 'openid_connect_pkce'
+    config_hash.merge({'pkce' => true })
   end
 end
