@@ -156,6 +156,7 @@ module ServiceProviderHelper
     end
   end
 
+  # rubocop:disable Layout/LineLength
   def add_saml_attributes(configs_hash)
     saml_attrs = {
       'acs_url' => configs_hash['acs_url'],
@@ -165,6 +166,7 @@ module ServiceProviderHelper
     }
     configs_hash.merge!(saml_attrs)
   end
+  # rubocop:enable Layout/LineLength
 
   def add_IAL_attribute(config_hash, failure_to_proof_url)
     return config_hash if config_hash['ial'] != "'2'"
