@@ -12,7 +12,19 @@ FactoryBot.define do
     end
 
     trait :saml do
-      identity_protocol { 1 }
+      identity_protocol { :saml }
+    end
+
+    trait :with_oidc_jwt do
+      identity_protocol { :openid_connect_private_key_jwt }
+    end
+
+    trait :with_oidc_pkce do
+      identity_protocol { :openid_connect_pkce }
+    end
+
+    trait :with_ial_2 do
+      ial { 2 }
     end
 
     trait :with_team do

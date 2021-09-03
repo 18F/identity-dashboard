@@ -64,29 +64,92 @@ describe ServiceProviderHelper do
 
   describe '#yamlized_sp' do
     let(:sp) { create(:service_provider) }
-    let(:sp_config_protected_attributes) do
-      %w[
-        issuer
-        id
-        created_at
-        updated_at
-        user_id
-        description
-        approved
-        active
-        group_id
-        identity_protocol
-        production_issuer
-      ]
-    end
+    
     it 'returns the sp issuer in the yaml blurb' do
       expect(yamlized_sp(sp)).to include(sp.issuer)
     end
+  end
 
-    it 'returns the sp configuration in the yaml blurb' do
-      sp.attribute_names.each do |attribute_name|
-        next if sp_config_protected_attributes.include?(attribute_name)
-        expect(yamlized_sp(sp)).to include(attribute_name)
+  describe '#config_hash' do
+    let(:saml_sp) { create(:service_provider, :saml) }
+    let(:oidc_pkce_sp) {create(:service_provider, :with_oidc_pkce )}
+    let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
+    let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
+    let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
+    let(:sp_config_saml_attributes) do 
+      %w[
+        agency_id
+        friendly_name
+        agency
+        logo
+        certs
+        return_to_sp_url
+        redirect_uris
+        acs_url
+        assertion_consumer_logout_service_url
+        block_encryption
+        sp_initiated_login_url
+        return_to_sp_url
+        ial
+        attribute_bundle
+        restrict_to_deploy_env
+        protocol
+        help_text
+        app_id
+        launch_date
+        iaa
+        iaa_start_date
+        iaa_end_date
+      ]
+    end
+    let(:sp_config_oidc_attributes) do
+      %w[
+        agency_id
+        friendly_name
+        agency
+        logo
+        certs
+        return_to_sp_url
+        redirect_uris
+        return_to_sp_url
+        ial
+        attribute_bundle
+        restrict_to_deploy_env
+        protocol
+        help_text
+        app_id
+        launch_date
+        iaa
+        iaa_start_date
+        iaa_end_date
+      ]
+    end
+    it 'returns a properly formatted yaml blurb for SAML' do
+      sp_config_saml_attributes.each do |attribute_name|
+        expect(config_hash(saml_sp)).to include(attribute_name)
+      end
+    end
+    it 'returns a properly formatted yaml blurb for OIDC pkce' do
+      sp_config_oidc_attributes.push('pkce')
+      sp_config_oidc_attributes.each do |attribute_name|
+        expect(config_hash(oidc_pkce_sp)).to include(attribute_name)
+      end
+    end
+    it 'returns a properly formatted yaml blurb for OIDC jwt' do
+      sp_config_oidc_attributes.each do |attribute_name|
+        expect(config_hash(oidc_jwt_sp)).to include(attribute_name)
+      end
+    end
+    it 'returns a hash with failure_to_proof_url if ial 2 - oidc' do
+      sp_config_oidc_attributes.push('failure_to_proof_url')
+      sp_config_oidc_attributes.each do |attribute_name|
+        expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
+      end
+    end
+    it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
+      sp_config_saml_attributes.push('failure_to_proof_url')
+      sp_config_saml_attributes.each do |attribute_name|
+        expect(config_hash(saml_sp_ial_2)).to include(attribute_name)
       end
     end
   end
