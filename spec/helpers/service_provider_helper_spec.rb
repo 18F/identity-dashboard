@@ -130,6 +130,7 @@ describe ServiceProviderHelper do
       end
     end
     it 'returns a properly formatted yaml blurb for OIDC pkce' do
+      sp_config_oidc_attributes.push('pkce')
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_pkce_sp)).to include(attribute_name)
       end

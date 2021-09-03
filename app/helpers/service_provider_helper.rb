@@ -133,7 +133,7 @@ module ServiceProviderHelper
   # rubocop:enable Layout/LineLength
 
   def map_oidc_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    mapped_hash = { 
+    mapped_hash= { 
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
       'agency' => agency['name'],
@@ -154,10 +154,16 @@ module ServiceProviderHelper
       'iaa_start_date' => '<REPLACE_ME>',
       'iaa_end_date' => '<REPLACE_ME>',
     }
+
+    if sp_hash['protocol'] == 'openid_connect_pkce' 
+      mapped_hash.merge({'pkce' => true })
+    else
+      mapped_hash
+    end
   end
 
   def map_saml_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    mapped_hash = { 
+    { 
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
       'agency' => agency['name'],
