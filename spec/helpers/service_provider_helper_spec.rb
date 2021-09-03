@@ -72,7 +72,7 @@ describe ServiceProviderHelper do
 
   describe '#config_hash' do
     let(:saml_sp) { create(:service_provider, :saml) }
-    let(:oidc_pke_sp) {create(:service_provider, :with_oidc_pke )}
+    let(:oidc_pkce_sp) {create(:service_provider, :with_oidc_pkce )}
     let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
     let(:sp_config_saml_attributes) do 
       %w[
@@ -129,9 +129,9 @@ describe ServiceProviderHelper do
         expect(config_hash(saml_sp)).to include(attribute_name)
       end
     end
-    it 'returns a properly formatted yaml blurb for OIDC pke' do
+    it 'returns a properly formatted yaml blurb for OIDC pkce' do
       sp_config_oidc_attributes.each do |attribute_name|
-        expect(config_hash(oidc_pke_sp)).to include(attribute_name)
+        expect(config_hash(oidc_pkce_sp)).to include(attribute_name)
       end
     end
     it 'returns a properly formatted yaml blurb for OIDC jwt' do
