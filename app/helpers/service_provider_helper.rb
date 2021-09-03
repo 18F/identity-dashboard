@@ -113,11 +113,7 @@ module ServiceProviderHelper
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['protocol'] = service_provider.identity_protocol
-    if config_hash['protocol'] == 'saml'
-      return map_saml_display_configs(config_hash, service_provider.id, service_provider.agency)
-    else
-      return map_oidc_display_configs(config_hash, service_provider.id, service_provider.agency)
-    end
+    map_config_attributes(config_hash, service_provider.id, service_provider.agency)
   end
 
   # rubocop:disable Layout/LineLength
@@ -132,8 +128,8 @@ module ServiceProviderHelper
   end
   # rubocop:enable Layout/LineLength
 
-  def map_oidc_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    mapped_hash = { 
+  def map_config_attributes(sp_hash, sp_id, agency = {name => '', id => nil})
+    base_hash = {
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
       'agency' => agency['name'],
@@ -141,7 +137,6 @@ module ServiceProviderHelper
       'certs' => '<REPLACE_ME>',
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
       'redirect_uris' => sp_hash['redirect_uris'],
-      'return_to_sp_url' => sp_hash['return_to_sp_url'],
       'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'restrict_to_deploy_env' => 'prod',
@@ -153,36 +148,22 @@ module ServiceProviderHelper
       'iaa_start_date' => '<REPLACE_ME>',
       'iaa_end_date' => '<REPLACE_ME>',
     }
-    hash_with_ial_attr = add_IAL_attribute(mapped_hash, sp_hash['failure_to_proof_url'])
-    add_pkce_atttribute(hash_with_ial_attr)
+    hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
+    if hash_with_ial_attr['protocol'] == 'saml'
+      add_saml_attributes(hash_with_ial_attr)
+    else
+      add_pkce_atttribute(hash_with_ial_attr)
+    end
   end
 
-  def map_saml_display_configs(sp_hash, sp_id, agency = {name => '', id => nil})
-    mapped_hash = { 
-      'agency_id' => agency['id'],
-      'friendly_name' => sp_hash['friendly_name'],
-      'agency' => agency['name'],
-      'logo' => '<REPLACE_ME.png>',
-      'certs' => '<REPLACE_ME>',
-      'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'redirect_uris' => sp_hash['redirect_uris'],
-      'acs_url' => sp_hash['acs_url'],
-      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
-      'block_encryption' => sp_hash['block_encryption'],
-      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
-      'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'ial' => sp_hash['ial'],
-      'attribute_bundle' => sp_hash['attribute_bundle'],
-      'restrict_to_deploy_env' => 'prod',
-      'protocol' => sp_hash['protocol'],
-      'help_text' => sp_hash['help_text'],
-      'app_id' => sp_id,
-      'launch_date' => '<REPLACE_ME>',
-      'iaa' => '<REPLACE_ME>',
-      'iaa_start_date' => '<REPLACE_ME>',
-      'iaa_end_date' => '<REPLACE_ME>',
+  def add_saml_attributes(configs_hash)
+    saml_attrs = {
+      'acs_url' => configs_hash['acs_url'],
+      'assertion_consumer_logout_service_url' => configs_hash['assertion_consumer_logout_service_url'],
+      'block_encryption' => configs_hash['block_encryption'],
+      'sp_initiated_login_url' => configs_hash['sp_initiated_login_url'],
     }
-    add_IAL_attribute(mapped_hash, sp_hash['failure_to_proof_url'])
+    configs_hash.merge!(saml_attrs)
   end
 
   def add_IAL_attribute(config_hash, failure_to_proof_url)
