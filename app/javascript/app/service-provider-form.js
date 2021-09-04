@@ -35,7 +35,6 @@ $(function(){
   }
 
   const toggleIALOptions = (ial) => {
-    ialAttributes.each((idx, el) => console.log(el))
     switch(ial) {
       case '1':
         failureToProofInput.hide();
