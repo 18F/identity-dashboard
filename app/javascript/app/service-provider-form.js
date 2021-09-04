@@ -4,19 +4,17 @@ $(function(){
   }
 
   // Selectors
-  const samlFields = $('.saml-fields');
-  const oidcFields = $('.oidc-fields');
   const idProtocol = $('input[name="service_provider[identity_protocol]"]');
   const ialLevel = $('#service_provider_ial');
+  const samlFields = $('.saml-fields');
+  const oidcFields = $('.oidc-fields');
   const ialAttributes = $('.ial-attr-wrapper')
-  const failureToProofInput = $('.service_provider_failure_to_proof_url');
-  const redirectURI = $("#add-redirect-uri-field");
-  const pemInputMessage = $('.js-pem-input-error-message');
   const fileInput = $('.input-file');
   const filePreview = $('.input-preview');
   const pemInput = $('.js-pem-input');
-
-  ialAttributes.each((idx, el) => console.log(el))
+  const pemInputMessage = $('.js-pem-input-error-message');
+  const redirectURI = $("#add-redirect-uri-field");
+  const failureToProofInput = $('.service_provider_failure_to_proof_url');
 
   // Functions
   const toggleFormFields = (idProtocol) => {
@@ -37,6 +35,7 @@ $(function(){
   }
 
   const toggleIALOptions = (ial) => {
+    ialAttributes.each((idx, el) => console.log(el))
     switch(ial) {
       case '1':
         failureToProofInput.hide();
