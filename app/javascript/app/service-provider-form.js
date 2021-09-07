@@ -8,25 +8,25 @@ $(function(){
   const ialLevel = $('#service_provider_ial');
   const samlFields = $('.saml-fields');
   const oidcFields = $('.oidc-fields');
-  const ialAttributes = $('.ial-attr-wrapper')
+  const ialAttributesCheckboxes = $('.ial-attr-wrapper')
   const fileInput = $('.input-file');
   const filePreview = $('.input-preview');
   const pemInput = $('.js-pem-input');
   const pemInputMessage = $('.js-pem-input-error-message');
   const redirectURI = $("#add-redirect-uri-field");
-  const failureToProofInput = $('.service_provider_failure_to_proof_url');
+  const failureToProofURL = $('.service_provider_failure_to_proof_url');
+
+  const ia1Attributes = ['email', 'x509_subject', 'x509_presented'];
 
   // Functions
   const toggleFormFields = (idProtocol) => {
     switch(idProtocol) {
       case 'openid_connect_private_key_jwt':
       case 'openid_connect_pkce':
-        samlFields.hide();
-        oidcFields.show();
+        toggleOIDCOptions();
         break;
       case 'saml':
-        samlFields.show();
-        oidcFields.hide();
+        toggleSAMLOptions();
         break;
       default:
         samlFields.show();
@@ -37,14 +37,53 @@ $(function(){
   const toggleIALOptions = (ial) => {
     switch(ial) {
       case '1':
-        failureToProofInput.hide();
+        failureToProofURL.hide();
+        failureToProofURL.find('input').val('');
+        toggleIAL1Options();
         break;
       case '2':
-        failureToProofInput.show();
+        failureToProofURL.show();
+        toggleIAL2Options();
         break;
       default:
-        failureToProofInput.show();
+        failureToProofURL.show();
+        toggleIAL2Options();
     }
+  }
+
+  const toggleIAL1Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => {
+      const element = $(attr).find('input');
+
+      if (!ia1Attributes.includes(element.val())) {
+        $(attr).hide();
+        element.prop('checked', false);
+      }
+    })
+  }
+
+  const toggleIAL2Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
+  }
+
+  const toggleSAMLOptions = () => {
+    samlFields.show();
+    oidcFields.hide();
+
+    oidcFields.find('input, textarea')
+      .val('')
+      .prop('checked', false)
+      .prop('selected', false);
+  }
+
+  const toggleOIDCOptions = () => {
+    oidcFields.show();
+    samlFields.hide();
+
+    samlFields.find('input, textarea')
+        .val('')
+        .prop('checked', false)
+        .prop('selected', false);
   }
 
   const setPemError = message => pemInputMessage.innerText = message;
