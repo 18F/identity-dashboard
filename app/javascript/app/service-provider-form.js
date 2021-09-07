@@ -99,6 +99,7 @@ $(function(){
 
   redirectURI.click(() => $(".service_provider_redirect_uris input:last-child")
       .clone()
+      .val('')
       .appendTo(".service_provider_redirect_uris")
   );
 
