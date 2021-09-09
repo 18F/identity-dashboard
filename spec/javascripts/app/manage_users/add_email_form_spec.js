@@ -58,7 +58,6 @@ describe("manage_users/add_email_form", () => {
       setupAddEmailForm();
 
       const input = document.getElementById("add_email");
-      const button = document.getElementById("add_email_button");
 
       input.value = "test2@example.com";
       input.focus();

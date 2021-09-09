@@ -1,0 +1,25 @@
+{
+  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
+  "plugins": ["@18f/eslint-plugin-identity"],
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "expect": true,
+    "$": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["{spec,config}/**/*"] }
+    ]
+  },
+  "overrides": [
+    {
+      "files": "app/javascript/app/manage_users/*",
+      "rules": {
+        "import/no-cycle": "off"
+      }
+    }
+  ]
+}

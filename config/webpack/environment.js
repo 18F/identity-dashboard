@@ -1,8 +1,8 @@
-const { environment } = require('@rails/webpacker')
-const merge = require('webpack-merge')
-const webpack = require('webpack')
+const { environment } = require('@rails/webpacker');
+const merge = require('webpack-merge');
+const webpack = require('webpack');
 
-module.exports = environment
+module.exports = environment;
 
 environment.plugins.prepend(
   'Provide',
@@ -11,15 +11,15 @@ environment.plugins.prepend(
     jQuery: 'jquery',
     jquery: 'jquery'
   })
-)
+);
 
-const envConfig = module.exports = environment
-const aliasConfig = module.exports = {
+const envConfig = environment;
+const aliasConfig = {
   resolve: {
     alias: {
       jquery: 'jquery/src/jquery'
     }
   }
-}
+};
 
-module.exports = merge(envConfig.toWebpackConfig(), aliasConfig)
+module.exports = merge(envConfig.toWebpackConfig(), aliasConfig);
