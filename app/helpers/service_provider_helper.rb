@@ -138,7 +138,7 @@ module ServiceProviderHelper
       'certs' => '<REPLACE_ME>',
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
       'redirect_uris' => sp_hash['redirect_uris'],
-      'ial' => sp_hash['ial'].to_i,
+      'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'protocol' => sp_hash['protocol'],
       'restrict_to_deploy_env' => 'prod',
