@@ -147,7 +147,7 @@ describe ServiceProviderHelper do
       end
     end
     it 'returns the ial config as an integer instead of a string' do 
-      expect(config_hash(saml_sp_ial_2)['ial'].class).to eq(Integer)
+      expect(config_hash(saml_sp_ial_2)['ial']).to be_an(Integer)
     end
     it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
       sp_config_saml_attributes.push('failure_to_proof_url')
