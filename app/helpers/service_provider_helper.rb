@@ -112,9 +112,9 @@ module ServiceProviderHelper
     clean_sp_json = service_provider.to_json(except: SP_PROTECTED_ATTRIBUTES)
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
-    config_hash['agency'] = "'#{service_provider.agency.name}'" if service_provider.agency
-    config_hash['certs'] = service_provider.certificates.map(&:to_pem)
-    config_hash
+    config_hash['protocol'] = service_provider.identity_protocol
+    config_hash['ial'] = service_provider.ial.to_i
+    map_config_attributes(config_hash, service_provider.id, service_provider.agency)
   end
 
   # rubocop:disable Layout/LineLength
@@ -128,4 +128,58 @@ module ServiceProviderHelper
     end.to_h
   end
   # rubocop:enable Layout/LineLength
+
+  def map_config_attributes(sp_hash, sp_id, agency = {name => '', id => nil})
+    base_hash = {
+      'agency_id' => agency['id'],
+      'friendly_name' => sp_hash['friendly_name'],
+      'agency' => agency['name'],
+      'logo' => '<REPLACE_ME.png>',
+      'certs' => '<REPLACE_ME>',
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'redirect_uris' => sp_hash['redirect_uris'],
+      'ial' => sp_hash['ial'],
+      'attribute_bundle' => sp_hash['attribute_bundle'],
+      'protocol' => sp_hash['protocol'],
+      'restrict_to_deploy_env' => 'prod',
+      'help_text' => sp_hash['help_text'],
+      'app_id' => sp_id,
+      'launch_date' => '<REPLACE_ME>',
+      'iaa' => '<REPLACE_ME>',
+      'iaa_start_date' => '<REPLACE_ME>',
+      'iaa_end_date' => '<REPLACE_ME>',
+    }
+    hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
+    if base_hash['protocol'] == 'saml'
+      add_saml_attributes(hash_with_ial_attr, sp_hash)
+    else
+      add_oidc_atttributes(hash_with_ial_attr)
+    end
+  end
+
+  def add_saml_attributes(configs_hash, sp_hash)
+    saml_attrs = {
+      'acs_url' => sp_hash['acs_url'],
+      # rubocop:disable Layout/LineLength
+      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
+      # rubocop:enable Layout/LineLength
+      'block_encryption' => sp_hash['block_encryption'],
+      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
+      'protocol' => 'saml',
+    }
+    configs_hash.merge!(saml_attrs)
+  end
+
+  def add_IAL_attribute(config_hash, failure_to_proof_url)
+    return config_hash if config_hash['ial'] != 2
+    config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
+  end
+
+  def add_oidc_atttributes(config_hash)
+    if config_hash['protocol'] == 'openid_connect_pkce'
+      config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
+    else
+      config_hash.merge({'protocol' => 'oidc'})
+    end
+  end
 end
