@@ -113,6 +113,7 @@ module ServiceProviderHelper
     hash_from_clean_json = JSON.parse(clean_sp_json)
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['protocol'] = service_provider.identity_protocol
+    config_hash['ial'] = service_provider.ial.to_i
     map_config_attributes(config_hash, service_provider.id, service_provider.agency)
   end
 
@@ -150,27 +151,27 @@ module ServiceProviderHelper
     }
     hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
     if base_hash['protocol'] == 'saml'
-      add_saml_attributes(hash_with_ial_attr)
+      add_saml_attributes(hash_with_ial_attr, sp_hash)
     else
       add_oidc_atttributes(hash_with_ial_attr)
     end
   end
 
-  def add_saml_attributes(configs_hash)
+  def add_saml_attributes(configs_hash, sp_hash)
     saml_attrs = {
-      'acs_url' => configs_hash['acs_url'],
+      'acs_url' => sp_hash['acs_url'],
       # rubocop:disable Layout/LineLength
-      'assertion_consumer_logout_service_url' => configs_hash['assertion_consumer_logout_service_url'],
+      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
       # rubocop:enable Layout/LineLength
-      'block_encryption' => configs_hash['block_encryption'],
-      'sp_initiated_login_url' => configs_hash['sp_initiated_login_url'],
+      'block_encryption' => sp_hash['block_encryption'],
+      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       'protocol' => 'saml',
     }
     configs_hash.merge!(saml_attrs)
   end
 
   def add_IAL_attribute(config_hash, failure_to_proof_url)
-    return config_hash if config_hash['ial'] != "'2'"
+    return config_hash if config_hash['ial'] != 2
     config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
   end
 
