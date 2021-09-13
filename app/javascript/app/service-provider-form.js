@@ -16,7 +16,7 @@ $(function () {
   const redirectURI = $('#add-redirect-uri-field');
   const failureToProofURL = $('.service_provider_failure_to_proof_url');
 
-  const ia1Attributes = ['email', 'x509_subject', 'x509_presented'];
+  const ial1Attributes = ['email', 'x509_subject', 'x509_presented'];
 
   // Functions
   const toggleFormFields = (idProtocol) => {
@@ -55,7 +55,7 @@ $(function () {
     ialAttributesCheckboxes.each((idx, attr) => {
       const element = $(attr).find('input');
 
-      if (!ia1Attributes.includes(element.val())) {
+      if (!ial1Attributes.includes(element.val())) {
         $(attr).hide();
         element.prop('checked', false);
       }
