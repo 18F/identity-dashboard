@@ -143,7 +143,7 @@ module ServiceProviderHelper
       'protocol' => sp_hash['protocol'],
       'restrict_to_deploy_env' => 'prod',
       'help_text' => sp_hash['help_text'],
-      'app_id' => sp_id,
+      'app_id' => '<REPLACE_ME_WITH_COMMS_ID>',
       'launch_date' => '<REPLACE_ME>',
       'iaa' => '<REPLACE_ME>',
       'iaa_start_date' => '<REPLACE_ME>',
