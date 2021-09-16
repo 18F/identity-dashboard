@@ -27,8 +27,6 @@ class ServiceProvider < ApplicationRecord
 
   before_save :sanitize_help_text_content
 
-  before_save :set_app_name_default
-
   def ial_friendly
     case ial
     when 1, nil
@@ -106,10 +104,6 @@ class ServiceProvider < ApplicationRecord
   end
 
   private
-
-  def set_app_name_default
-    self.app_name = self.friendly_name
-  end
 
   def sanitize_help_text_content
     sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']]
