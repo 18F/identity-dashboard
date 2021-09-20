@@ -141,7 +141,7 @@ module ServiceProviderHelper
       'ial' => sp_hash['ial'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'protocol' => sp_hash['protocol'],
-      'restrict_to_deploy_env' => 'prod',
+      'restrict_to_deploy_env' => "'prod'",
       'help_text' => sp_hash['help_text'],
       'app_id' => '<REPLACE_WITH_COMMS>',
       'launch_date' => '<REPLACE_ME>',
