@@ -1,10 +1,16 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
+  <%= form.input :app_name,
+                 input_html: { class: 'usa-input' },
+                 label_html: { class: 'usa-input-required'},
+                 label: 'App name',
+                 hint: 'The name of your application as it appears in the signed Inter-Agency Agreement with Login.gov. Ex: DHS - CSP' %>
+
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: 'The name of your app that will get displayed to users when logging in.' %>
+                 hint: 'The name of your app that will get displayed to users when logging in. Ex: DHS Customer Service Portal' %>
 
 
   <%= form.input :description,
