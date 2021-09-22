@@ -12,9 +12,7 @@ const buildSpanElement = () => {
   return node;
 };
 
-const buildEmailAddressText = (email) => {
-  return document.createTextNode(`${email} | `);
-};
+const buildEmailAddressText = (email) => document.createTextNode(`${email} | `);
 
 const buildRemoveEmailLink = (email) => {
   const node = document.createElement("a");

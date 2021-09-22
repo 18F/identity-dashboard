@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 document.getElementById("service_provider_logo_file").addEventListener("change", (e) => {
   // Clear the error div
-  var errorDiv = document.getElementById("logo-upload-error");
+  const errorDiv = document.getElementById("logo-upload-error");
   errorDiv.textContent = "";
 
   // See https://stackoverflow.com/a/3717847
@@ -14,7 +15,7 @@ document.getElementById("service_provider_logo_file").addEventListener("change",
   } else if (!e.target.files[0]) {
     console.log("No file attached.");
   } else {
-    var file = e.target.files[0];
+    const file = e.target.files[0];
 
     if (file.size > (1024 * 1024)) { // file.size returns bytes
       errorDiv.textContent = "ERROR: Logo must not be larger than 1MB.";

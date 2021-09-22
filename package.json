@@ -5,6 +5,7 @@
     "npm": "6.x.x"
   },
   "scripts": {
+    "lint": "eslint . --ignore-pattern public --ignore-pattern vendor",
     "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**_spec.js'"
   },
   "dependencies": {
@@ -18,12 +19,16 @@
     "webpack-merge": "^4.2.2"
   },
   "devDependencies": {
+    "@18f/eslint-plugin-identity": "^1.0.0",
+    "@babel/core": "^7.7.2",
     "@babel/register": "^7.9.0",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
+    "eslint": "^7.32.0",
     "jsdom": "^16.2.2",
     "mocha": "^7.1.1",
     "sinon": "^9.0.2",
+    "webpack": "^4.41.2",
     "webpack-dev-server": "^3.11.0"
   }
 }

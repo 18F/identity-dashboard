@@ -59,8 +59,7 @@ jobs:
             mkdir /tmp/test-results
             ./cc-test-reporter before-build
 
-            make test
-            yarn test
+            make lint test
             bundle exec rubocop
       - run:
           name: Upload Test Results to Code Climate

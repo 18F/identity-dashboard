@@ -1,15 +1,9 @@
-import sinon from "sinon";
-
 import {
   setupManageUsersTestDOM,
   tearDownManageUsersTestDOM,
 } from "../../support/manage_users/dom";
 
 import { updateEmailAddressList } from "../../../../app/javascript/app/manage_users/email_list";
-
-const INITIAL_HTML = `
-<ul id='user_email_list'></ul>
-`;
 
 describe("manage_user/email_list", () => {
   beforeEach(() => {
