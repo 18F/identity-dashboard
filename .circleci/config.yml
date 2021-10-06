@@ -30,7 +30,7 @@ jobs:
 
       - checkout
 
-      - restore-cache:
+      - restore_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
 
       - run:
@@ -46,7 +46,7 @@ jobs:
             chmod +x ./cc-test-reporter
 
       # Store bundle cache
-      - save-cache:
+      - save_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
