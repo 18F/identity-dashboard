@@ -2,12 +2,14 @@
 #
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 #
-version: 2
+version: 2.1
+orbs:
+  browser-tools: circleci/browser-tools@1.1
 jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.7-node-browsers-legacy
+      - image: cimg/ruby:2.7.3-browsers
         environment:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: 39be7be4c9a09e955bd481daa7196fe4dccd67f3ee53e24e91535169eea78123
@@ -24,9 +26,11 @@ jobs:
     working_directory: ~/identity-dashboard
 
     steps:
+      - browser-tools/install-browser-tools
+
       - checkout
 
-      - restore-cache:
+      - restore_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
 
       - run:
@@ -42,7 +46,7 @@ jobs:
             chmod +x ./cc-test-reporter
 
       # Store bundle cache
-      - save-cache:
+      - save_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
