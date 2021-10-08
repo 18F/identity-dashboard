@@ -11,7 +11,7 @@ en:
     change_issuer: "<i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i>"
     issuer: "A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br><i>For OpenID Connect:</i><br><code class='ml2'>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br><i>For SAML:</i><br><code class='ml2'>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>"
     logo: "The name of the <a href='https://github.com/18F/identity-idp/tree/main/app/assets/images/sp-logos' target='_blank'>logo image file</a> in the IdP. The login.gov team can add this image for you."
-    # certificate: "Your public certificate (or certificates), which contains your public key. Needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. Optional for OIDC PKCE."
+    certificate: "Your public certificate (or certificates), which contains your public key. Needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML. Optional for OIDC PKCE."
     assertion_consumer_service_url: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>"
     assertion_consumer_logout_service_url: "The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>"
     sp_initiated_login_url: "The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>"
@@ -23,6 +23,6 @@ en:
     oidc_fields: "One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>"
     saml_fields: "One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>"
     attribute_bundle: "Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
-    active: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>"
+    active: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. <br> For example: <code>https://app.agency.gov</code>"
 
     
