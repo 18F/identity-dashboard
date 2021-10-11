@@ -15,7 +15,9 @@ check: lint test
 
 lint:
 	@echo "--- rubocop ---"
-	bundle exec rubocop -R
+	bundle exec rubocop
+	@echo "--- eslint ---"
+	yarn lint
 
 test:
 	bundle exec rspec

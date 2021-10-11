@@ -1,2 +1,2 @@
-import "app/service-provider-form"
-import "app/utils"
+import "./service-provider-form";
+import "./utils";
