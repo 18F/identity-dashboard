@@ -10,7 +10,7 @@ $(function () {
   const oidcFields = $('.oidc-fields');
   const ialAttributesCheckboxes = $('.ial-attr-wrapper');
   const fileContainer = $('#certificate-container');
-  const fileInput = $('.input-file');
+  const logoInput = $('.input-file');
   const pemInputMessage = $('.js-pem-input-error-message');
   const pemInput = $('.js-pem-input');
   const redirectURI = $('#add-redirect-uri-field');
@@ -106,13 +106,12 @@ $(function () {
           .appendTo('.service_provider_redirect_uris')
   );
 
-  fileContainer.on('change', fileInput, () => {
-    // Handles a single file currently, used for logos
-    const logoFile = fileInput[0].files[0];
+  logoInput.change(() => {
+    const logoFile = logoInput[0].files[0];
     const filePreview = $('.input-preview');
 
-    filePreview.textContent = logoFile.name;
-  });
+    filePreview.text((logoFile && logoFile.name) || '');
+  })
 
   fileContainer.on('change', pemInput, () => {
     // Handles a single certificate file currently
