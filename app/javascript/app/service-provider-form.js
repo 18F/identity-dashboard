@@ -19,8 +19,47 @@ $(function () {
   const ial1Attributes = ['email', 'x509_subject', 'x509_presented'];
 
   // Functions
-  const toggleFormFields = (idProtocol) => {
-    switch (idProtocol) {
+  const toggleIAL1Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => {
+      const element = $(attr).find('input');
+
+      if (!ial1Attributes.includes(element.val())) {
+        $(attr).hide();
+        element.prop('checked', false);
+      }
+    });
+  };
+
+  const toggleIAL2Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
+  };
+
+  const resetFields = (fields) => {
+    fields
+        .find('input, textarea')
+        .val('')
+        .prop('checked', false)
+        .prop('selected', false);
+  };
+
+  const toggleSAMLOptions = () => {
+    samlFields.show();
+    oidcFields.hide();
+
+    resetFields(oidcFields);
+  };
+
+  const toggleOIDCOptions = () => {
+    oidcFields.show();
+    samlFields.hide();
+
+    resetFields(samlFields);
+  };
+
+  const setPemError = (message) => (pemInputMessage[0].textContent = message); // eslint-disable-line
+
+  const toggleFormFields = (protocol) => {
+    switch (protocol) {
       case 'openid_connect_private_key_jwt':
       case 'openid_connect_pkce':
         toggleOIDCOptions();
@@ -51,45 +90,6 @@ $(function () {
     }
   };
 
-  const toggleIAL1Options = () => {
-    ialAttributesCheckboxes.each((idx, attr) => {
-      const element = $(attr).find('input');
-
-      if (!ial1Attributes.includes(element.val())) {
-        $(attr).hide();
-        element.prop('checked', false);
-      }
-    });
-  };
-
-  const toggleIAL2Options = () => {
-    ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
-  };
-
-  const toggleSAMLOptions = () => {
-    samlFields.show();
-    oidcFields.hide();
-
-    resetFields(oidcFields);
-  };
-
-  const toggleOIDCOptions = () => {
-    oidcFields.show();
-    samlFields.hide();
-
-    resetFields(samlFields);
-  };
-
-  const resetFields = (fields) => {
-    fields
-      .find('input, textarea')
-      .val('')
-      .prop('checked', false)
-      .prop('selected', false);
-  };
-
-  const setPemError = (message) => (pemInputMessage[0].textContent = message);
-
   // Page initialization
   toggleFormFields(idProtocol.val());
   toggleIALOptions(ialLevel.val());
@@ -111,7 +111,7 @@ $(function () {
     const filePreview = $('.input-preview');
 
     filePreview.text((logoFile && logoFile.name) || '');
-  })
+  });
 
   fileContainer.on('change', pemInput, () => {
     // Handles a single certificate file currently
