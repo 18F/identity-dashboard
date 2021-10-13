@@ -440,6 +440,7 @@ feature 'Service Providers CRUD' do
     visit service_provider_path(app)
 
     expect(page).to have_content(app.friendly_name)
+    expect(page).to have_content(app.return_to_sp_url)
     expect(page).to have_content(team)
     expect(page).to_not have_content('All service providers')
   end
