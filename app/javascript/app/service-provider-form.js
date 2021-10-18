@@ -16,7 +16,7 @@ $(function () {
   const redirectURI = $('#add-redirect-uri-field');
   const failureToProofURL = $('.service_provider_failure_to_proof_url');
 
-  const ial1Attributes = ['email', 'x509_subject', 'x509_presented'];
+  const ial1Attributes = ['email', 'x509_subject', 'x509_presented', 'verified_at'];
 
   // Functions
   const toggleIAL1Options = () => {
