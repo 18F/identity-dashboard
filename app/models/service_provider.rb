@@ -27,6 +27,26 @@ class ServiceProvider < ApplicationRecord
 
   before_save :sanitize_help_text_content
 
+  ALLOWED_IAL1_ATTRIBUTES = %w[
+    email
+    verified_at
+    x509_subject
+    x509_presented
+  ].freeze
+
+  ALLOWED_IAL2_ATTRIBUTES = %w[
+    first_name
+    last_name
+    dob
+    ssn
+    address1
+    address2
+    city
+    state
+    zipcode
+    phone
+  ].freeze
+
   def ial_friendly
     case ial
     when 1, nil
@@ -50,23 +70,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def self.possible_attributes
-    possible = %w[
-      email
-      first_name
-      last_name
-      address1
-      address2
-      city
-      state
-      zipcode
-      dob
-      ssn
-      phone
-      x509_subject
-      x509_presented
-      verified_at
-    ]
-    Hash[*possible.collect { |v| [v, v] }.flatten]
+    Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
   end
 
   def recently_approved?
