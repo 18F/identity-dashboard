@@ -163,7 +163,8 @@ class ServiceProvider < ApplicationRecord
       return false
     end
 
-    return if ial == 2 && (self.attribute_bundle - (ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES)).empty?
+    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
+    return if ial == 2 && (self.attribute_bundle - possible_attributes).empty?
     return if (self.attribute_bundle - ALLOWED_IAL1_ATTRIBUTES).empty?
 
     errors.add(:attribute_bundle, 'Contains invalid IAL attributes')
