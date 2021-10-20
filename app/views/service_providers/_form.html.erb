@@ -81,7 +81,11 @@
     <%= form.hint(content_tag(:span) do %>
       Refer to our <%= link_to('developer documentation', 'https://developers.login.gov/attributes', target: '_blank') %>
       for the possible user attributes available at each IAL level that can be requested by your app
-    <% end) %>  
+    <% end) %>
+
+    <span class="usa-error-message js-pem-input-error-message">
+      <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
+    </span>
 
     <%= form.collection_check_boxes(:attribute_bundle,
                                     ServiceProvider.possible_attributes,
