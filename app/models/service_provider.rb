@@ -158,14 +158,14 @@ class ServiceProvider < ApplicationRecord
   end
 
   def validate_attribute_bundle
-    if self.attribute_bundle.empty?
+    if attribute_bundle.empty?
       errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
 
     possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
-    return if ial == 2 && (self.attribute_bundle - possible_attributes).empty?
-    return if (self.attribute_bundle - ALLOWED_IAL1_ATTRIBUTES).empty?
+    return if ial == 2 && (attribute_bundle - possible_attributes).empty?
+    return if (attribute_bundle - ALLOWED_IAL1_ATTRIBUTES).empty?
 
     errors.add(:attribute_bundle, 'Contains invalid IAL attributes')
   end

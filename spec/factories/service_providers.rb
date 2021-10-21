@@ -27,6 +27,14 @@ FactoryBot.define do
       ial { 2 }
     end
 
+    trait :with_ial_1_bundle do
+      attribute_bundle { ['email'] }
+    end
+
+    trait :with_ial_2_bundle do
+      attribute_bundle { %w[email first_name last_name] }
+    end
+
     trait :with_team do
       association :team, factory: :team
     end
