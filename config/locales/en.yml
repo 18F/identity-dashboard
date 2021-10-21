@@ -38,8 +38,8 @@ en:
       new_user: Create a new user
   home:
     body_dev_docs_html: Visit our %{href_dev_docs} to learn more.
-    body_intro: Use the dashboard to manage your login.gov test integrations.
-    body_partners_html: Interested in login.gov for your federal government applications?
+    body_intro: Use the dashboard to manage your Login.gov test integrations.
+    body_partners_html: Interested in Login.gov for your federal government applications?
       Visit %{href_partners}
     deployed_by_html: Deployed %{time} ago. View %{href}.
     dev_docs_link: developer documentation
@@ -68,7 +68,10 @@ en:
     confirm_delete: Are you sure you want to delete this user?
     service_provider_deleted: Success! You have deleted %{issuer}
     service_provider_saved: Success! You have saved %{issuer}
-    service_provider_iaa_notice: Please note that you will need a signed Inter-Agency Agreement with login.gov in order to go live in production. Visit <a href="https://developers.login.gov/production" target="_blank">https://developers.login.gov/production</a> for more details or email <a href="mailto:partners@login.gov">partners@login.gov</a> with any questions.
+    service_provider_iaa_notice: 
+        All configuration changes or new configurations must be promoted to production following the process outlined in the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Handbook</a> - configurations must be reviewed by the Login.gov Partnerships team and approved by Friday in order to go live the following Thursday. We suggest allowing two weeks for integration launch or change requests.
+        <br><br>
+        Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Handbook</a> for more details or email <a href="mailto:partners@login.gov">partners@login.gov</a> with any questions.
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov
       for support.
     service_providers_refreshed: Success! Service providers publish request has been
