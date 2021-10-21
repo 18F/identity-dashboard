@@ -41,6 +41,20 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('IAL2')
       expect(page).to have_content('AAL2')
     end
+  
+    scenario 'can see the service provider' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, user: user)
+      login_as(user)
+
+      visit new_service_provider_path
+      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.description'))
+      expect(page).to have_content(I18n.t('service_provider_form.team'))
+      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+    end
 
     scenario 'can update service provider team', :js do
       user = create(:user, :with_teams)
