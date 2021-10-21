@@ -40,6 +40,12 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(user.teams[0].agency.name)
       expect(page).to have_content('IAL2')
       expect(page).to have_content('AAL2')
+      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.description'))
+      expect(page).to have_content(I18n.t('service_provider_form.team'))
+      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
+      # expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
     end
   
     scenario 'can see the service provider' do
@@ -275,6 +281,13 @@ feature 'Service Providers CRUD' do
       login_as(user)
 
       visit edit_service_provider_path(app)
+
+      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
+      expect(page).to have_content(I18n.t('service_provider_form.description'))
+      expect(page).to have_content(I18n.t('service_provider_form.team'))
+      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
