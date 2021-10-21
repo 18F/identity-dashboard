@@ -23,6 +23,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :sp_initiated_login_url,
     :updated_at,
     :help_text,
+    :allow_prompt_login,
   )
 
   def agency

@@ -12,7 +12,8 @@ RSpec.describe ServiceProviderSerializer do
           team: create(:team, agency: create(:agency, id: team_agency_id)),
           ial: 2,
           default_aal: 3,
-          certs: [build_pem])
+          certs: [build_pem],
+          allow_prompt_login: true)
     sp.logo_file.attach(io: File.open(fixture_path + "/#{logo_filename}"), filename: logo_filename)
     sp.update(logo: logo_filename)
     sp.reload
@@ -34,6 +35,7 @@ RSpec.describe ServiceProviderSerializer do
           eq(service_provider.email_nameid_format_allowed)
         expect(as_json[:signed_response_message_requested]).to \
           eq(service_provider.signed_response_message_requested)
+        expect(as_json[:allow_prompt_login]).to eq(true)
       end
     end
 
