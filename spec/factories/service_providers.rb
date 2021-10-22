@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :service_provider do
+    attribute_bundle { %w[email] }
     sequence(:friendly_name) { |n| "test-service_provider-#{n}" }
     sequence(:issuer) { |n| "urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-#{n}" }
     sequence(:description) { |n| "test service_provider description #{n}" }
@@ -25,10 +26,6 @@ FactoryBot.define do
 
     trait :with_ial_2 do
       ial { 2 }
-    end
-
-    trait :with_ial_1_bundle do
-      attribute_bundle { ['email'] }
     end
 
     trait :with_ial_2_bundle do

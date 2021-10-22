@@ -44,7 +44,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can update service provider team', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_ial_1_bundle, user: user)
+      service_provider = create(:service_provider, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -59,7 +59,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_users_team, :with_ial_1_bundle, user: user)
+      service_provider = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -86,7 +86,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, :with_ial_1_bundle, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -113,7 +113,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'cannot edit allow_prompt_login' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, :with_ial_1_bundle, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -123,7 +123,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'cannot edit email_nameid_format_allowed' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, :with_ial_1_bundle, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -230,7 +230,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can enable prompt=login for a service provider' do
       admin = create(:admin)
-      sp = create(:service_provider, :with_team, :with_ial_1_bundle)
+      sp = create(:service_provider, :with_team)
       login_as(admin)
 
       visit edit_service_provider_path(sp)
@@ -242,7 +242,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can enable email NameID format for a service provider' do
       admin = create(:admin)
-      sp = create(:service_provider, :with_team, :with_ial_1_bundle)
+      sp = create(:service_provider, :with_team)
       login_as(admin)
 
       visit edit_service_provider_path(sp)
@@ -256,7 +256,7 @@ feature 'Service Providers CRUD' do
   context 'Update' do
     scenario 'user updates service provider' do
       user = create(:user, :with_teams)
-      app = create(:service_provider, :with_users_team, :with_ial_1_bundle, user: user)
+      app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -276,7 +276,7 @@ feature 'Service Providers CRUD' do
     end
     scenario 'user updates service provider but service provider is invalid' do
       user = create(:user)
-      app = create(:service_provider, :with_ial_1_bundle, user: user)
+      app = create(:service_provider, user: user)
       login_as(user)
 
       allow_any_instance_of(ServiceProvider).to receive(:valid?).and_return(false)
@@ -293,7 +293,7 @@ feature 'Service Providers CRUD' do
     end
     scenario 'user updates service provider but service provider updater fails' do
       user = create(:user, :with_teams)
-      app = create(:service_provider, :with_users_team, :with_ial_1_bundle, user: user)
+      app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -316,7 +316,7 @@ feature 'Service Providers CRUD' do
       let(:sp) do
         create(:service_provider,
                      :with_users_team,
-                     :with_ial_1_bundle,
+
                      user: user,
                      certs: [build_pem(serial: existing_serial)])
       end
@@ -387,7 +387,7 @@ feature 'Service Providers CRUD' do
   scenario 'Read' do
     user = create(:user)
     team = create(:team)
-    app = create(:service_provider, :with_ial_1_bundle, team: team, user: user)
+    app = create(:service_provider, team: team, user: user)
     login_as(user)
 
     visit service_provider_path(app)
@@ -399,7 +399,7 @@ feature 'Service Providers CRUD' do
 
   scenario 'Delete' do
     user = create(:user)
-    app = create(:service_provider, :with_ial_1_bundle, user: user)
+    app = create(:service_provider, user: user)
     login_as(user)
 
     visit service_provider_path(app)
@@ -411,7 +411,7 @@ feature 'Service Providers CRUD' do
   describe 'IAA banner' do
     shared_examples 'a page with an IAA banner' do
       let(:user) { create(:user) }
-      let(:sp) { create(:service_provider, :with_ial_1_bundle, user: user) }
+      let(:sp) { create(:service_provider, user: user) }
       let(:prod_url) { 'https://developers.login.gov/production' }
       let(:partners_email) { 'partners@login.gov' }
 

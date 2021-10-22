@@ -158,7 +158,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def validate_attribute_bundle
-    if attribute_bundle.empty?
+    if (attribute_bundle || []).empty?
       errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
