@@ -27,10 +27,9 @@
 <hr>
 <% if service_provider.team.present? %>
   <h2 class="margin-bottom-0">
-    <label for="team">Team:</label> 
+    <label for="team">Team:</label>
     <span class="font-mono-xs margin-left-5"><%= link_to service_provider.team, service_provider.team %></span>
   </h2>
-  <p><i> <%= I18n.t('service_provider_form.team').html_safe %> </i><p>
 <% end %>
 <hr>
 <h2 class="margin-bottom-0">
@@ -40,7 +39,7 @@
 <p><i> <%= I18n.t('service_provider_form.protocol').html_safe %> </i><p>
 <hr>
 <h2 class="margin-bottom-0">
-  <label for="ial_friendly">Identity Assurance Level (IAL):</label> 
+  <label for="ial_friendly">Identity Assurance Level (IAL):</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.ial_friendly %></span>
 </h2>
 <p><i> <%= I18n.t('service_provider_form.identity_assurance_level').html_safe %> </i><p>
@@ -83,7 +82,7 @@
   <% end %>
 <% else %>
   <h2 class="margin-bottom-0"><label for="logo">Logo:</label></h2>
-  <p><i> <%= I18n.t('service_provider_form.logo').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.logo').html_safe %> </i></p>
   <% if service_provider.logo %>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="logo">
     <a href="https://github.com/18F/identity-idp/tree/main/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link">
@@ -120,13 +119,22 @@
   <%= render partial: 'certificate', locals: { certificate: certificate } %>
 <% end %>
 <hr>
-<h2 class="margin-bottom-0"><label for="return_to_sp_url">Return to App URL:</label> <%= service_provider.return_to_sp_url %></h2>
+<h2 class="margin-bottom-0">
+  <label for="return_to_sp_url">Return to App URL: </label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
+</h2>
 <p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i><p>
 <hr>
-<h2 class="margin-bottom-0"><label for="failure_to_proof_url">Failure to Proof URL:</label> <%= service_provider.failure_to_proof_url %></h2>
+<h2 class="margin-bottom-0">
+  <label for="failure_to_proof_url">Failure to Proof URL: </label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.failure_to_proof_url %></span>
+</h2>
 <p><i> <%= I18n.t('service_provider_form.failure_to_proof_url').html_safe %> </i><p>
 <hr>
-<h2 class="margin-bottom-0"><label for="push_notification_url">Push Notification URL:</label> <%= service_provider.push_notification_url %></h2>
+<h2 class="margin-bottom-0">
+  <label for="push_notification_url">Push Notification URL: </label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.push_notification_url %></span>
+</h2>
 <p><i> <%= I18n.t('service_provider_form.push_notification_url').html_safe %> </i><p>
 <hr>
   <% if service_provider.oidc? %>
@@ -138,11 +146,16 @@
   <% end %>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <hr>
-<h2 class="margin-bottom-0"><label for="attribute_bundle">Attribute bundle:</label> <%= sp_attribute_bundle(service_provider) %></h2>
+<h2 class="margin-bottom-0">
+  <label for="attribute_bundle">Attribute bundle:</label> 
+  <span class="font-mono-xs margin-left-5"><%= sp_attribute_bundle(service_provider) %></span>
+</h2>
 <p><i> <%= I18n.t('service_provider_form.attribute_bundle').html_safe %> </i><p>
 <hr>
-<h2 class="margin-bottom-0"><label for="active">Active:</label> <%= service_provider.active? %></h2>
-<p><i> <%= I18n.t('service_provider_form.active').html_safe %> </i><p>
+<h2 class="margin-bottom-0">
+  <label for="active">Active:</label> 
+  <span class="font-mono-xs"><%= service_provider.active? %></span>
+</h2>
 <hr>
 <% if current_user.admin? %>
   <h2 class="margin-bottom-0"><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
