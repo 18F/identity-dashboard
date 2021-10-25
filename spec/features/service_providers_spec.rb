@@ -40,26 +40,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(user.teams[0].agency.name)
       expect(page).to have_content('IAL2')
       expect(page).to have_content('AAL2')
-      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.description'))
-      expect(page).to have_content(I18n.t('service_provider_form.team'))
-      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
-      # expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
-    end
-  
-    scenario 'can see the service provider' do
-      user = create(:user, :with_teams)
-      service_provider = create(:service_provider, user: user)
-      login_as(user)
-
-      visit new_service_provider_path
-      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.description'))
-      expect(page).to have_content(I18n.t('service_provider_form.team'))
-      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
-      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
     end
 
     scenario 'can update service provider team', :js do
@@ -282,13 +262,6 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(app)
 
-      expect(page).to have_content(I18n.t('service_provider_form.app_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
-      expect(page).to have_content(I18n.t('service_provider_form.description'))
-      expect(page).to have_content(I18n.t('service_provider_form.team'))
-      expect(page).to have_content(I18n.t('service_provider_form.protocol'))
-      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
-
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
       select 'AAL3', from: 'Authentication Assurance Level (AAL)'
@@ -467,6 +440,41 @@ feature 'Service Providers CRUD' do
       let(:path) { edit_service_provider_path(sp) }
 
       it_behaves_like 'a page with an IAA banner'
+    end
+  end
+
+  describe 'shared i18n text' do
+    shared_examples 'common i18n text is present' do
+
+      let(:user) {create(:user, :with_teams)}
+      let(:service_provider)  {create(:service_provider, :with_users_team, user: user)}
+
+      before { login_as(user) }
+
+      it 'displays i18n text' do
+        visit path
+ 
+        expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
+        expect(page).to have_content(I18n.t('service_provider_form.description'))
+        expect(page).to have_content(I18n.t('service_provider_form.protocol'))
+      end
+    end
+
+    context 'new page' do
+      let(:path) { new_service_provider_path }
+
+      it_behaves_like 'common i18n text is present'
+    end
+
+    context 'show page' do
+      let(:path) { service_provider_path(service_provider) }
+      it_behaves_like 'common i18n text is present'
+    end
+
+    context 'edit page' do
+      let(:path) { edit_service_provider_path(service_provider) }
+
+      it_behaves_like 'common i18n text is present'
     end
   end
 end
