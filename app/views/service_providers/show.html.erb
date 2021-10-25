@@ -6,19 +6,19 @@
   <label for="name">App name: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.app_name %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.app_name').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.app_name').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="name">Friendly name:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.friendly_name %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.friendly_name').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.friendly_name').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="description">Description:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.description %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.description').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.description').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="agency">Agency:</label>
@@ -36,26 +36,26 @@
   <label for="identity_protocol">Identity protocol:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.identity_protocol %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.protocol').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.protocol').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="ial_friendly">Identity Assurance Level (IAL):</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.ial_friendly %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.identity_assurance_level').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.identity_assurance_level').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="aal_friendly">Default Authentication Assurance Level (AAL):</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.aal_friendly %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.default_authentication_assurance_level').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.default_authentication_assurance_level').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="issuer">Issuer:</label>
   <span class="font-mono-xs margin-left-5"><%=  service_provider.issuer %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.issuer').html_safe %> </i><p>
-<p><i> <%= I18n.t('service_provider_form.change_issuer').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.issuer').html_safe %> </i></p>
+<p><i> <%= I18n.t('service_provider_form.change_issuer').html_safe %> </i></p>
 <hr>
 <% if current_user.admin? %>
   <h2 class="margin-bottom-0">
@@ -96,26 +96,26 @@
 <hr>
 <% if service_provider.identity_protocol == 'saml' %>
   <h2 class="margin-bottom-0"><label for="acs_url">Assertion Consumer Service URL:</label> <%= service_provider.acs_url %></h2>
-  <p><i> <%= I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %> </i></p>
   <hr>
   <h2 class="margin-bottom-0"><label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label> <%= service_provider.assertion_consumer_logout_service_url %></h2>
-  <p><i> <%= I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %> </i></p>
   <hr>
   <h2 class="margin-bottom-0"><label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label> <%= service_provider.sp_initiated_login_url %></h2>
-  <p><i> <%= I18n.t('service_provider_form.sp_initiated_login_url').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.sp_initiated_login_url').html_safe %> </i></p>
   <hr>
   <h2 class="margin-bottom-0"><label for="block_encryption">SAML Assertion Encryption:</label> <%= service_provider.block_encryption %></h2>
-  <p><i> <%= I18n.t('service_provider_form.saml_assertion_encryption').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.saml_assertion_encryption').html_safe %> </i></p>
   <hr>
   <h2 class="margin-bottom-0"><label for="signed_response_message_requested">Signed Response Message Requested:</label> <%= service_provider.signed_response_message_requested? %></h2>
-  <p><i> <%= I18n.t('service_provider_form.signed_response_requested').html_safe %> </i><p>
+  <p><i> <%= I18n.t('service_provider_form.signed_response_requested').html_safe %> </i></p>
   <hr>
 <% end %>
 <h2 class="margin-bottom-0">
   <label>Public certificates:</label>
 </h2>
 
-<p><i> <%= I18n.t('service_provider_form.certificate').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.certificate').html_safe %> </i></p>
 
 <% service_provider.certificates.each do |certificate| %>
   <%= render partial: 'certificate', locals: { certificate: certificate } %>
@@ -125,26 +125,26 @@
   <label for="return_to_sp_url">Return to App URL: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="failure_to_proof_url">Failure to Proof URL: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.failure_to_proof_url %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.failure_to_proof_url').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.failure_to_proof_url').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="push_notification_url">Push Notification URL: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.push_notification_url %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.push_notification_url').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.push_notification_url').html_safe %> </i></p>
 <hr>
   <% if service_provider.oidc? %>
       <h2><label for="uris">Redirect URIs</label></h2>
-      <p><i> <%= I18n.t('service_provider_form.oidc_fields').html_safe %> </i><p>
+      <p><i> <%= I18n.t('service_provider_form.oidc_fields') %><%= I18n.t('service_provider_form.oidc_code_ex').html_safe %> </i></p>
   <% else # SAML %>
       <h2><label for="uris">Additional Redirect URIs</label></h2>
-      <p><i> <%= I18n.t('service_provider_form.saml_fields').html_safe %> </i><p>
+      <p><i> <%= I18n.t('service_provider_form.saml_fields') %><%= I18n.t('service_provider_form.saml_code_ex').html_safe %></i></p>
   <% end %>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <hr>
@@ -152,7 +152,7 @@
   <label for="attribute_bundle">Attribute bundle:</label> 
   <span class="font-mono-xs margin-left-5"><%= sp_attribute_bundle(service_provider) %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.attribute_bundle').html_safe %> </i><p>
+<p><i> <%= I18n.t('service_provider_form.attribute_bundle').html_safe %> </i></p>
 <hr>
 <h2 class="margin-bottom-0">
   <label for="active">Active:</label> 

@@ -42,6 +42,48 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('AAL2')
     end
 
+    scenario 'saml fields are shown on sp show page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.saml_fields'))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+    end
+
+    scenario 'oidc fields are shown on sp show page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_fields'))
+    end
+
+    scenario 'saml fields are shown on sp edit page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.saml_fields'))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+    end
+
+    scenario 'oidc fields are shown on sp edit page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_fields'))
+    end
+
     scenario 'can update service provider team', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
@@ -129,73 +171,6 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
 
       expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
-    end
-
-    # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
-    # choosing the protocol in the following four scenarios.
-    # rubocop:disable Layout/LineLength
-    xscenario 'saml fields are shown when saml is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-      choose 'Saml'
-
-      saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
-      saml_attributes.each do |atr|
-        expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
-      end
-
-      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
-    end
-
-    xscenario 'oidc fields are shown when oidc is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Openid connect'
-
-      saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
-      saml_attributes.each do |atr|
-        expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
-      end
-
-      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
-    end
-    # rubocop:enable Layout/LineLength
-
-    xscenario 'issuer is updated when department or app is updated', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Openid connect'
-      fill_in 'Issuer department', with: 'ABC'
-      fill_in 'Issuer app', with: 'my-cool-app'
-
-      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
-      )
-    end
-
-    xscenario 'issuer protocol is changed when oidc or saml is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Saml'
-      fill_in 'Issuer department', with: 'ABC'
-      fill_in 'Issuer app', with: 'my-cool-app'
-
-      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:my-cool-app',
-      )
     end
   end
 
@@ -462,7 +437,6 @@ feature 'Service Providers CRUD' do
 
     context 'new page' do
       let(:path) { new_service_provider_path }
-
       it_behaves_like 'common i18n text is present'
     end
 
@@ -473,7 +447,6 @@ feature 'Service Providers CRUD' do
 
     context 'edit page' do
       let(:path) { edit_service_provider_path(service_provider) }
-
       it_behaves_like 'common i18n text is present'
     end
   end

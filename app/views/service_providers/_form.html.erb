@@ -270,11 +270,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= form.hint I18n.t('service_provider_form.oidc_fields').html_safe %>
+      <%= form.hint I18n.t('service_provider_form.oidc_fields') + I18n.t('service_provider_form.oidc_code_ex').html_safe %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint I18n.t('service_provider_form.saml_fields').html_safe %>
+      <%= form.hint I18n.t('service_provider_form.saml_fields') + I18n.t('service_provider_form.saml_code_ex').html_safe %>
     </div>
 
     <%= form.button :button,
