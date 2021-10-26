@@ -221,6 +221,19 @@ describe ServiceProvider do
       expect(sp).to be_valid
     end
 
+    it 'validates the values of the attribute bundle according to IAL' do
+      sp = build(:service_provider, ial: 1)
+      expect(sp).to allow_value(%w[email]).for(:attribute_bundle)
+      expect(sp).not_to allow_value([]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(%w[first_name last_name]).for(:attribute_bundle)
+
+      sp = build(:service_provider, ial: 2)
+      expect(sp).to allow_value(%w[email first_name last_name]).for(:attribute_bundle)
+      expect(sp).not_to allow_value([]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+    end
+
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
           :service_provider,
