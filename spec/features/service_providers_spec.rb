@@ -212,7 +212,6 @@ feature 'Service Providers CRUD' do
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
                         match: :prefer_exact
       check 'email'
-      check 'first_name'
       check 'verified_at'
       click_on 'Create'
 
@@ -252,6 +251,30 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
     end
+
+    scenario 'cannot send an empty attribute bundle to the backend' do
+      admin = create(:admin)
+      sp = create(:service_provider, :with_team)
+      login_as(admin)
+
+      visit edit_service_provider_path(sp)
+      uncheck 'email'
+      click_on 'Update'
+
+      expect(page).to have_content('Attribute bundle cannot be empty')
+    end
+
+    scenario 'cannot send IAL2 attributes for IAL1' do
+      admin = create(:admin)
+      sp = create(:service_provider, :with_team, ial: 1)
+      login_as(admin)
+
+      visit edit_service_provider_path(sp)
+      check 'ssn'
+      click_on 'Update'
+
+      expect(page).to have_content('Contains invalid IAL attributes')
+    end
   end
 
   context 'Update' do
@@ -266,14 +289,13 @@ feature 'Service Providers CRUD' do
       fill_in 'Description', with: 'app description foobar'
       select 'AAL3', from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
-      check 'last_name'
       click_on 'Update'
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       expect(page).to have_content('app description foobar')
       expect(page).to have_content('change service_provider name')
-      expect(page).to have_content('last_name')
+      expect(page).to have_content('email')
       expect(page).to have_content('AAL3')
     end
     scenario 'user updates service provider but service provider is invalid' do
@@ -288,7 +310,6 @@ feature 'Service Providers CRUD' do
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
       choose 'SAML'
-      check 'last_name'
       click_on 'Update'
 
       expect(page).not_to have_content('Success')
@@ -319,6 +340,7 @@ feature 'Service Providers CRUD' do
       let(:sp) do
         create(:service_provider,
                      :with_users_team,
+
                      user: user,
                      certs: [build_pem(serial: existing_serial)])
       end

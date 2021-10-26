@@ -71,6 +71,34 @@
                  #label_html: { class: 'usa-input-required'},
                  hint: 'Empty - MFA required + remember device is 30 days<br/>AAL2 - MFA required + remember device is 12 hours<br/>AAL3 - unphishable MFA required + remember device is 12 hours'.html_safe %>
 
+  <%# label the grouping of items using a fieldset and legend for screen readers,
+      and use UL for checkboxes%>
+  <fieldset class='usa-fieldset-inputs usa-fieldset'>
+    <legend class='usa-sr-only'>Attribute bundle</legend>
+    <%= form.label :attribute_bundle,
+                   label: 'Attribute bundle',
+                   class: 'usa-label' %>
+    <%= form.hint(content_tag(:span) do %>
+      Refer to our <%= link_to('developer documentation', 'https://developers.login.gov/attributes', target: '_blank') %>
+      for the possible user attributes available at each IAL level that can be requested by your app
+    <% end) %>
+
+    <span class="usa-error-message js-bundle-input-error-message">
+      <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
+    </span>
+
+    <%= form.collection_check_boxes(:attribute_bundle,
+                                    ServiceProvider.possible_attributes,
+                                    :first, :last,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li,
+                                    item_wrapper_class: 'ial-attr-wrapper') do |b| %>
+      <%= b.check_box class: "usa-checkbox__input" %>
+      <%= b.label class: "usa-checkbox__label" %>
+    <% end %>
+  </fieldset>
+
   <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
@@ -132,7 +160,7 @@
                    hint: 'The name of the <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines" target="_blank">logo image file</a> in the IdP. The login.gov team can add this image for you.'.html_safe %>
   <% end %>
 
-  <fieldset class="usa-fieldset">
+  <fieldset class="usa-fieldset" id="certificate-container">
     <div class="usa-label">Certificates</div>
 
     <p>
@@ -200,28 +228,28 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <div class='saml-fields'>
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Service URL — <i>SAML only</i>'.html_safe,
+                   label: 'Assertion Consumer Service URL'.html_safe,
                    hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>".html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Logout Service URL — <i>SAML only</i>'.html_safe,
+                   label: 'Assertion Consumer Logout Service URL'.html_safe,
                    hint: 'The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>'.html_safe %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
-                   label: 'SP Initiated Login URL — <i>SAML only</i>'.html_safe,
+                   label: 'SP Initiated Login URL'.html_safe,
                    hint: 'The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>'.html_safe %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
-                   label: 'SAML Assertion Encryption — <i>SAML only</i><br>'.html_safe,
+                   label: 'SAML Assertion Encryption<br>'.html_safe,
                    include_blank: false,
                    hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
 
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
-                  label: 'Signed Response Message Requested — <i>SAML only</i>'.html_safe,
+                  label: 'Signed Response Message Requested'.html_safe,
                   class: 'usa-label',
                   hint: 'Change this to "Yes" if you want the entire authentication response signed, as opposed to just the attribute statement.' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
@@ -242,7 +270,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
-                 label: 'Failure to Proof URL — <i>IAL2 Only</i>'.html_safe,
+                 label: 'Failure to Proof URL'.html_safe,
                  hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
@@ -286,26 +314,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                     id: 'add-redirect-uri-field',
                     class: 'usa-button margin-bottom-4' %>
   <%# END redirect_uris %>
-
-  <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for checkboxes%>
-  <fieldset class='usa-fieldset-inputs usa-fieldset'>
-    <legend class='usa-sr-only'>Attribute bundle</legend>
-    <%= form.label :attribute_bundle,
-                   label: 'Attribute bundle',
-                   class: 'usa-label' %>
-    <%= form.hint 'Refer to our <a href="https://developers.login.gov/attributes" target="_blank">developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app.'.html_safe %>
-
-    <%= form.collection_check_boxes(:attribute_bundle,
-                                    ServiceProvider.possible_attributes,
-                                    :first, :last,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
-      <%= b.check_box class: 'usa-checkbox__input' %>
-      <%= b.label class: 'usa-checkbox__label' %>
-    <% end %>
-  </fieldset>
 
   <legend class='usa-sr-only'>Active</legend>
   <%= form.label :admin,
