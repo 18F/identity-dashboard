@@ -73,9 +73,11 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('service_provider_form.saml_fields'))
       expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_code_ex')))
       expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+      # rubocop:disable Layout/LineLength
       expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_service_url')))
       expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
       expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
+      # rubocop:enable Layout/LineLength
     end
 
     scenario 'oidc fields are shown on sp edit page when oidc is selected' do
@@ -438,8 +440,10 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content(I18n.t('service_provider_form.description'))
         expect(page).to have_content(I18n.t('service_provider_form.protocol'))
 
+        # rubocop:disable Layout/LineLength
         expect(page).to have_content(strip_tags(I18n.t('service_provider_form.identity_assurance_level')))
         expect(page).to have_content(strip_tags(I18n.t('service_provider_form.default_authentication_assurance_level')))
+        # rubocop:enable Layout/LineLength
         expect(page).to have_content(strip_tags(I18n.t('service_provider_form.logo')))
         expect(page).to have_content(strip_tags(I18n.t('service_provider_form.certificate')))
         expect(page).to have_content(strip_tags(I18n.t('service_provider_form.attribute_bundle')))
