@@ -25,7 +25,7 @@ feature 'Users can access service providers that belong to their user team' do
         team = create(:team)
         user1 = create(:user, teams: [team])
         user2 = create(:user)
-        app = create(:service_provider, ial: 2, team: team, user: user2)
+        app = create(:service_provider, team: team, user: user2)
         new_name = 'New Service Name'
         new_description = 'New Description'
 
