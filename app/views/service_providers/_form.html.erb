@@ -99,13 +99,6 @@
     <% end %>
   </fieldset>
 
-  <%
-=begin%>
- TODO: look at above to make sure you've covered it with i18n 
-<%
-=end%>
-
-  <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
                  label: 'Issuer',
