@@ -17,6 +17,7 @@ class ServiceProvider < ApplicationRecord
   has_one_attached :logo_file
   validate :logo_file_mime_type
   validate :certs_are_pems
+  validate :validate_attribute_bundle
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
@@ -26,6 +27,26 @@ class ServiceProvider < ApplicationRecord
   end
 
   before_save :sanitize_help_text_content
+
+  ALLOWED_IAL1_ATTRIBUTES = %w[
+    email
+    verified_at
+    x509_subject
+    x509_presented
+  ].freeze
+
+  ALLOWED_IAL2_ATTRIBUTES = %w[
+    first_name
+    last_name
+    dob
+    ssn
+    address1
+    address2
+    city
+    state
+    zipcode
+    phone
+  ].freeze
 
   def ial_friendly
     case ial
@@ -50,23 +71,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def self.possible_attributes
-    possible = %w[
-      email
-      first_name
-      last_name
-      address1
-      address2
-      city
-      state
-      zipcode
-      dob
-      ssn
-      phone
-      x509_subject
-      x509_presented
-      verified_at
-    ]
-    Hash[*possible.collect { |v| [v, v] }.flatten]
+    Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
   end
 
   def recently_approved?
@@ -150,5 +155,18 @@ class ServiceProvider < ApplicationRecord
     rescue OpenSSL::X509::CertificateError => err
       errors.add(:certs, err.message)
     end
+  end
+
+  def validate_attribute_bundle
+    if (attribute_bundle || []).empty?
+      errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
+      return false
+    end
+
+    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
+    return if ial == 2 && (attribute_bundle - possible_attributes).empty?
+    return if (attribute_bundle - ALLOWED_IAL1_ATTRIBUTES).empty?
+
+    errors.add(:attribute_bundle, 'Contains invalid IAL attributes')
   end
 end
