@@ -221,6 +221,46 @@ describe ServiceProvider do
       expect(sp).to be_valid
     end
 
+    it 'converts integer to friendly IAL string' do
+      sp = build(:service_provider, ial: nil)
+      expect(sp.ial_friendly).to eq('IAL1')
+      sp = build(:service_provider, ial: 1)
+      expect(sp.ial_friendly).to eq('IAL1')
+      sp = build(:service_provider, ial: 2)
+      expect(sp.ial_friendly).to eq('IAL2')
+      sp = build(:service_provider, ial: 3)
+      expect(sp.ial_friendly).to eq('3')
+    end
+
+    it 'converts integer to friendly AAL string' do
+      sp = build(:service_provider, default_aal: nil)
+      expect(sp.aal_friendly).to eq('')
+      sp = build(:service_provider, default_aal: 1)
+      expect(sp.aal_friendly).to eq('')
+      sp = build(:service_provider, default_aal: 2)
+      expect(sp.aal_friendly).to eq('AAL2')
+      sp = build(:service_provider, default_aal: 3)
+      expect(sp.aal_friendly).to eq('AAL3')
+      sp = build(:service_provider, default_aal: 4)
+      expect(sp.aal_friendly).to eq('4')
+    end
+
+    it 'validates the values of the attribute bundle according to IAL' do
+      ial_1_bundle = %w[email verified_at x509_subject x509_presented]
+      ial_2_bundle = %w[first_name last_name dob ssn address1 address2 city state zipcode phone]
+
+      sp = build(:service_provider, ial: 1)
+      expect(sp).to allow_value(ial_1_bundle).for(:attribute_bundle)
+      expect(sp).not_to allow_value([]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
+
+      sp = build(:service_provider, ial: 2)
+      expect(sp).to allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(sp).not_to allow_value([]).for(:attribute_bundle)
+      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+    end
+
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
           :service_provider,

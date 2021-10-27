@@ -14,6 +14,7 @@ feature 'Logo upload' do
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       select user.teams[0].name, from: 'service_provider_group_id'
+      check 'email'
     end
 
     it 'saves the logo' do
