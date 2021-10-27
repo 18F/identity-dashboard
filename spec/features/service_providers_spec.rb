@@ -42,6 +42,55 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('AAL2')
     end
 
+    scenario 'saml fields are shown on sp show page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.saml_fields'))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+    end
+
+    scenario 'oidc fields are shown on sp show page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_fields'))
+    end
+
+    scenario 'saml fields are shown on sp edit page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.saml_fields'))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_code_ex')))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+      # rubocop:disable Layout/LineLength
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_service_url')))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
+      # rubocop:enable Layout/LineLength
+    end
+
+    scenario 'oidc fields are shown on sp edit page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_fields'))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.oidc_code_ex')))
+    end
+
     scenario 'can update service provider team', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
@@ -130,43 +179,6 @@ feature 'Service Providers CRUD' do
 
       expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
     end
-
-    # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
-    # choosing the protocol in the following four scenarios.
-    # rubocop:disable Layout/LineLength
-    xscenario 'saml fields are shown when saml is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-      choose 'Saml'
-
-      saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
-      saml_attributes.each do |atr|
-        expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
-      end
-
-      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
-    end
-
-    xscenario 'oidc fields are shown when oidc is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Openid connect'
-
-      saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
-      saml_attributes.each do |atr|
-        expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
-      end
-
-      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
-    end
-    # rubocop:enable Layout/LineLength
 
     xscenario 'issuer is updated when department or app is updated', :js do
       user = create(:user)
@@ -464,4 +476,48 @@ feature 'Service Providers CRUD' do
       it_behaves_like 'a page with an IAA banner'
     end
   end
+
+  describe 'shared i18n text' do
+    shared_examples 'common i18n text is present' do
+
+      let(:user) {create(:user, :with_teams)}
+      let(:service_provider)  {create(:service_provider, :with_users_team, user: user)}
+
+      before { login_as(user) }
+
+      it 'displays i18n text' do
+        visit path
+
+        expect(page).to have_content(I18n.t('service_provider_form.friendly_name'))
+        expect(page).to have_content(I18n.t('service_provider_form.description'))
+        expect(page).to have_content(I18n.t('service_provider_form.protocol'))
+
+        # rubocop:disable Layout/LineLength
+        expect(page).to have_content(strip_tags(I18n.t('service_provider_form.identity_assurance_level')))
+        expect(page).to have_content(strip_tags(I18n.t('service_provider_form.default_authentication_assurance_level')))
+        # rubocop:enable Layout/LineLength
+        expect(page).to have_content(strip_tags(I18n.t('service_provider_form.logo')))
+        expect(page).to have_content(strip_tags(I18n.t('service_provider_form.certificate')))
+      end
+    end
+
+    context 'new page' do
+      let(:path) { new_service_provider_path }
+      it_behaves_like 'common i18n text is present'
+    end
+
+    context 'show page' do
+      let(:path) { service_provider_path(service_provider) }
+      it_behaves_like 'common i18n text is present'
+    end
+
+    context 'edit page' do
+      let(:path) { edit_service_provider_path(service_provider) }
+      it_behaves_like 'common i18n text is present'
+    end
+  end
+end
+
+def strip_tags(string)
+  ActionController::Base.helpers.strip_tags(string)
 end
