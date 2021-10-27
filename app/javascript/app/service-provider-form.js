@@ -1,87 +1,137 @@
-// Note: We've temporarily disabled validation of the issuer. Calls to
-// `update_issuer` have been commented out.
-
 $(function () {
   if (!$('.service-provider-form').length) {
     return;
   }
 
-  const toggleFormFields = function (idProtocol) {
-    switch (idProtocol) {
+  // Selectors
+  const idProtocol = $('input[name="service_provider[identity_protocol]"]');
+  const ialLevel = $('#service_provider_ial');
+  const samlFields = $('.saml-fields');
+  const oidcFields = $('.oidc-fields');
+  const ialAttributesCheckboxes = $('.ial-attr-wrapper');
+  const fileContainer = $('#certificate-container');
+  const logoInput = $('.input-file');
+  const pemInputMessage = $('.js-pem-input-error-message');
+  const pemInput = $('.js-pem-input');
+  const redirectURI = $('#add-redirect-uri-field');
+  const failureToProofURL = $('.service_provider_failure_to_proof_url');
+
+  const ial1Attributes = ['email', 'x509_subject', 'x509_presented', 'verified_at'];
+
+  // Functions
+  const toggleIAL1Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => {
+      const element = $(attr).find('input');
+
+      if (!ial1Attributes.includes(element.val())) {
+        $(attr).hide();
+        element.prop('checked', false);
+      }
+    });
+  };
+
+  const toggleIAL2Options = () => {
+    ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
+  };
+
+  const resetFields = (fields) => {
+    fields
+        .find('input, textarea')
+        .val('')
+        .prop('checked', false)
+        .prop('selected', false);
+  };
+
+  const toggleSAMLOptions = () => {
+    samlFields.show();
+    oidcFields.hide();
+
+    resetFields(oidcFields);
+  };
+
+  const toggleOIDCOptions = () => {
+    oidcFields.show();
+    samlFields.hide();
+
+    resetFields(samlFields);
+  };
+
+  const setPemError = (message) => (pemInputMessage[0].textContent = message); // eslint-disable-line
+
+  const toggleFormFields = (protocol) => {
+    switch (protocol) {
       case 'openid_connect_private_key_jwt':
-        $('.saml-fields').hide();
-        $('.oidc-fields').show();
-        break;
       case 'openid_connect_pkce':
-        $('.saml-fields').hide();
-        $('.oidc-fields').show();
+        toggleOIDCOptions();
         break;
       case 'saml':
-        $('.saml-fields').show();
-        $('.oidc-fields').hide();
+        toggleSAMLOptions();
         break;
       default:
-        $('.saml-fields').show();
-        $('.oidc-fields').show();
+        samlFields.show();
+        oidcFields.show();
     }
   };
 
-  const idProtocol = function () {
-    return $('input[name="service_provider[identity_protocol]"]:checked').val();
+  const toggleIALOptions = (ial) => {
+    switch (ial) {
+      case '1':
+        failureToProofURL.hide();
+        failureToProofURL.find('input').val('');
+        toggleIAL1Options();
+        break;
+      case '2':
+        failureToProofURL.show();
+        toggleIAL2Options();
+        break;
+      default:
+        failureToProofURL.show();
+        toggleIAL2Options();
+    }
   };
 
-  toggleFormFields(idProtocol());
+  // Page initialization
+  toggleFormFields(idProtocol.val());
+  toggleIALOptions(ialLevel.val());
 
-  $('input[name="service_provider[identity_protocol]"]').click(function () {
-    toggleFormFields(idProtocol());
+  // Event triggers
+  idProtocol.change((evt) => toggleFormFields(evt.target.value));
+
+  ialLevel.change((evt) => toggleIALOptions(evt.target.value));
+
+  redirectURI.click(() =>
+      $('.service_provider_redirect_uris input:last-child')
+          .clone()
+          .val('')
+          .appendTo('.service_provider_redirect_uris')
+  );
+
+  logoInput.change(() => {
+    const logoFile = logoInput[0].files[0];
+    const filePreview = $('.input-preview');
+
+    filePreview.text((logoFile && logoFile.name) || '');
   });
 
-  // $('input[name="service_provider[issuer_department]"]').keyup(update_issuer);
-  // $('input[name="service_provider[issuer_app]"]').keyup(update_issuer);
+  fileContainer.on('change', pemInput, () => {
+    // Handles a single certificate file currently
+    const file = pemInput[0].files[0];
+    const pemFilename = $('.js-pem-file-name');
 
-  // Add another Redirect URI
-  $("#add-redirect-uri-field").click(function () {
-    $(".service_provider_redirect_uris input:last-child").clone().appendTo(".service_provider_redirect_uris");
+    pemFilename[0].textContent = file ? file.name : null;
+
+    if (file && file.text) {
+      file.text().then((content) => {
+        if (content.includes('PRIVATE')) {
+          setPemError('This is a private key, upload the public key instead');
+        } else if (!content.includes('-----BEGIN CERTIFICATE-----')) {
+          setPemError('This file does not appear to be PEM encoded');
+        } else {
+          setPemError(null);
+        }
+      });
+    } else {
+      setPemError(null);
+    }
   });
-
-  // This will need to change if we start uploading more files, e.g. certs, etc.
-  const input = document.querySelector('.input-file');
-  const preview = document.querySelector('.input-preview');
-  if (input) {
-    input.addEventListener('change', function () {
-      const logoFile = input.files[0];
-      preview.textContent = logoFile.name;
-    });
-  }
-
-  /**
-   * @param {string?} message
-   */
-  function setPemError(message) {
-    const pemInputMessage = document.querySelector('.js-pem-input-error-message');
-    pemInputMessage.innerText = message;
-  }
-
-  const pemInput = document.querySelector('.js-pem-input');
-  if (pemInput) {
-    pemInput.addEventListener('change', function (event) {
-      const file = event.target.files[0];
-
-      document.querySelector('.js-pem-file-name').innerText = file ? file.name : null;
-
-      if (file && file.text) {
-        file.text().then(function (content) {
-          if (content.includes('PRIVATE')) {
-            setPemError('This is a private key, upload the public key instead');
-          } else if (!content.includes('-----BEGIN CERTIFICATE-----')) {
-            setPemError('This file does not appear to be PEM encoded');
-          } else {
-            setPemError(null);
-          }
-        });
-      } else {
-        setPemError(null);
-      }
-    });
-  }
 });
