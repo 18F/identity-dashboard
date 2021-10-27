@@ -71,34 +71,6 @@
                  #label_html: { class: 'usa-input-required'},
                  hint: I18n.t('service_provider_form.default_authentication_assurance_level').html_safe %>
 
-  <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for checkboxes%>
-  <fieldset class='usa-fieldset-inputs usa-fieldset'>
-    <legend class='usa-sr-only'>Attribute bundle</legend>
-    <%= form.label :attribute_bundle,
-                   label: 'Attribute bundle',
-                   class: 'usa-label' %>
-    <%= form.hint(content_tag(:span) do %>
-      Refer to our <%= link_to('developer documentation', 'https://developers.login.gov/attributes', target: '_blank') %>
-      for the possible user attributes available at each IAL level that can be requested by your app
-    <% end) %>
-
-    <span class="usa-error-message js-bundle-input-error-message">
-      <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
-    </span>
-
-    <%= form.collection_check_boxes(:attribute_bundle,
-                                    ServiceProvider.possible_attributes,
-                                    :first, :last,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li,
-                                    item_wrapper_class: 'ial-attr-wrapper') do |b| %>
-      <%= b.check_box class: "usa-checkbox__input" %>
-      <%= b.label class: "usa-checkbox__label" %>
-    <% end %>
-  </fieldset>
-
   <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
@@ -157,7 +129,7 @@
 
   <% end %>
 
-  <fieldset class="usa-fieldset" id="certificate-container">
+  <fieldset class="usa-fieldset">
     <div class="usa-label">Certificates</div>
 
     <p>
@@ -237,16 +209,16 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    input_html: { class: 'usa-input' },
                    label: 'SP Initiated Login URL — <i>SAML only</i>'.html_safe,
                    hint: I18n.t('service_provider_form.sp_initiated_login_url').html_safe %>
-                   
+
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
-                   label: 'SAML Assertion Encryption<br>'.html_safe,
+                   label: 'SAML Assertion Encryption — <i>SAML only</i><br>'.html_safe,
                    include_blank: false,
                    hint: I18n.t('service_provider_form.saml_assertion_encryption') %>
 
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
-                  label: 'Signed Response Message Requested'.html_safe,
+                  label: 'Signed Response Message Requested — <i>SAML only</i>'.html_safe,
                   class: 'usa-label',
                   hint: I18n.t('service_provider_form.signed_response_requested') %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
