@@ -86,7 +86,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can view all saml fields when editing a saml app', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
       saml_only_assertion_consumer = "Your application's endpoint which receives authentication assertions"
       saml_only_assertion_logout = "The endpoint which receives logout requests and responses, for example"
