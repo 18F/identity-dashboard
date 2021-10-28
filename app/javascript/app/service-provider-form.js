@@ -79,8 +79,8 @@ $(function () {
   };
 
   // Page initialization
-  toggleFormFields(idProtocol.val());
-  toggleIALOptions(ialLevel.val());
+  toggleFormFields(idProtocol.filter(":checked").val());
+  toggleIALOptions(ialLevel.filter(":checked").val());
 
   // Event triggers
   idProtocol.change((evt) => toggleFormFields(evt.target.value));
