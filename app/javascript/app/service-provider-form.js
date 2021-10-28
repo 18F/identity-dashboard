@@ -34,26 +34,14 @@ $(function () {
     ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
   };
 
-  const resetFields = (fields) => {
-    fields
-        .find('input, textarea')
-        .val('')
-        .prop('checked', false)
-        .prop('selected', false);
-  };
-
   const toggleSAMLOptions = () => {
     samlFields.show();
     oidcFields.hide();
-
-    resetFields(oidcFields);
   };
 
   const toggleOIDCOptions = () => {
     oidcFields.show();
     samlFields.hide();
-
-    resetFields(samlFields);
   };
 
   const setPemError = (message) => (pemInputMessage[0].textContent = message); // eslint-disable-line
