@@ -84,6 +84,21 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
+    scenario 'can view all saml fields when editing a saml app', :js do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+
+      saml_only_assertion_consumer = "Your application's endpoint which receives authentication"
+      saml_only_assertion_logout = 'The endpoint which receives logout requests and responses'
+
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(saml_only_assertion_consumer)
+      expect(page).to have_content(saml_only_assertion_logout)
+    end
+
     scenario 'can update saml service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
