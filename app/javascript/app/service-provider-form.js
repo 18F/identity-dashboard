@@ -65,7 +65,6 @@ $(function () {
     switch (ial) {
       case '1':
         failureToProofURL.hide();
-        failureToProofURL.find('input').val('');
         toggleIAL1Options();
         break;
       case '2':
