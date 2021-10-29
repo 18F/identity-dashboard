@@ -65,7 +65,6 @@ $(function () {
     switch (ial) {
       case '1':
         failureToProofURL.hide();
-        failureToProofURL.find('input').val('');
         toggleIAL1Options();
         break;
       case '2':
@@ -80,7 +79,7 @@ $(function () {
 
   // Page initialization
   toggleFormFields(idProtocol.filter(':checked').val());
-  toggleIALOptions(ialLevel.filter(':checked').val());
+  toggleIALOptions(ialLevel.val());
 
   // Event triggers
   idProtocol.change((evt) => toggleFormFields(evt.target.value));
