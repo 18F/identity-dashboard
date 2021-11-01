@@ -15,6 +15,7 @@ $(function () {
   const pemInput = $('.js-pem-input');
   const redirectURI = $('#add-redirect-uri-field');
   const failureToProofURL = $('.service_provider_failure_to_proof_url');
+  const returnToSpUrl = document.querySelector('#service_provider_return_to_sp_url');
 
   const ial1Attributes = ['email', 'x509_subject', 'x509_presented', 'verified_at'];
 
@@ -51,9 +52,11 @@ $(function () {
       case 'openid_connect_private_key_jwt':
       case 'openid_connect_pkce':
         toggleOIDCOptions();
+        returnToSpUrl.removeAttribute('required');
         break;
       case 'saml':
         toggleSAMLOptions();
+        returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
         samlFields.show();
