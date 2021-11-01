@@ -14,9 +14,9 @@ FactoryBot.define do
 
     trait :saml do
       identity_protocol { :saml }
-      acs_url {"https://fake.gov/test/saml/acs"}
-      assertion_consumer_logout_service_url {"https://fake.gov/test/saml/logout"}
-      sp_initiated_login_url {"https://fake.gov/test/saml/sp_login"}
+      acs_url {'https://fake.gov/test/saml/acs'}
+      assertion_consumer_logout_service_url {'https://fake.gov/test/saml/logout'}
+      sp_initiated_login_url {'https://fake.gov/test/saml/sp_login'}
       signed_response_message_requested {1}
     end
 

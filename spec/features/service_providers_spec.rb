@@ -92,10 +92,19 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(find_field('Assertion Consumer Service URL', disabled: false).value).to eq("https://fake.gov/test/saml/acs")
-      expect(find_field('Assertion Consumer Logout Service URL', disabled: false).value).to eq("https://fake.gov/test/saml/logout")
-      expect(find_field('SP Initiated Login URL', disabled: false).value).to eq("https://fake.gov/test/saml/sp_login")
-      expect(find_field('SAML Assertion Encryption', disabled: false).value).to eq("aes256-cbc")
+      expect(find_field('Assertion Consumer Service URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/acs',
+      )
+      expect(find_field('Assertion Consumer Logout Service URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/logout',
+      )
+
+      expect(find_field('SP Initiated Login URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/sp_login',
+      )
+      expect(find_field('SAML Assertion Encryption', disabled: false).value).to eq(
+        'aes256-cbc',
+      )
     end
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
