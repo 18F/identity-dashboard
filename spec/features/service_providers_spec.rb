@@ -84,6 +84,29 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
+    scenario 'can view all saml fields when editing a saml app', :js do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(find_field('Assertion Consumer Service URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/acs',
+      )
+      expect(find_field('Assertion Consumer Logout Service URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/logout',
+      )
+
+      expect(find_field('SP Initiated Login URL', disabled: false).value).to eq(
+        'https://fake.gov/test/saml/sp_login',
+      )
+      expect(find_field('SAML Assertion Encryption', disabled: false).value).to eq(
+        'aes256-cbc',
+      )
+    end
+
     scenario 'can update saml service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
