@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :service_provider do
     attribute_bundle { %w[email] }
     sequence(:friendly_name) { |n| "test-service_provider-#{n}" }
-    sequence(:return_to_sp_url) { |n| "https://test-url-#{n}" }
     sequence(:issuer) { |n| "urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-#{n}" }
     sequence(:description) { |n| "test service_provider description #{n}" }
     association :user, factory: :user
@@ -19,6 +18,7 @@ FactoryBot.define do
       assertion_consumer_logout_service_url {'https://fake.gov/test/saml/logout'}
       sp_initiated_login_url {'https://fake.gov/test/saml/sp_login'}
       signed_response_message_requested {1}
+      sequence(:return_to_sp_url) { |n| "https://test-url-#{n}" }
     end
 
     trait :with_oidc_jwt do
