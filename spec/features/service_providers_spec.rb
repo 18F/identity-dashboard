@@ -115,7 +115,10 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      choose('service_provider_identity_protocol_openid_connect_private_key_jwt', allow_label_click: true)
+      choose(
+        'service_provider_identity_protocol_openid_connect_private_key_jwt', 
+        allow_label_click: true,
+      )
       choose('service_provider_identity_protocol_saml', allow_label_click: true)
 
       expect(find_field('Assertion Consumer Service URL', disabled: false).value).to eq(
