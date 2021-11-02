@@ -163,7 +163,7 @@ feature 'Service Providers CRUD' do
       choose('service_provider_identity_protocol_saml', allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url block_encryption return_to_sp_url signed_response_message_requested]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
@@ -181,7 +181,7 @@ feature 'Service Providers CRUD' do
       choose('service_provider_identity_protocol_openid_connect_private_key_jwt', allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url block_encryption return_to_sp_url signed_response_message_requested]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
