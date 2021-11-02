@@ -263,11 +263,14 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>  
   </div>
 
-  <%= form.input :return_to_sp_url,
-                 input_html: { class: 'usa-input' },
-                 label: 'Return to App URL',
-                 hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
-
+  <div class='saml-fields'>
+    <%= form.input :return_to_sp_url,
+                  input_html: { class: 'usa-input' },
+                  label_html: { class: 'usa-input-required'},
+                  label: 'Return to App URL',
+                  required: true,
+                  hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
+  </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
                  label: 'Failure to Proof URL'.html_safe,

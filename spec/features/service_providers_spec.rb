@@ -183,72 +183,41 @@ feature 'Service Providers CRUD' do
       expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
     end
 
-    # Poltergeist is attempting to click at coordinates [-16333, 22.5] when
-    # choosing the protocol in the following four scenarios.
     # rubocop:disable Layout/LineLength
-    xscenario 'saml fields are shown when saml is selected', :js do
+    scenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
 
       visit new_service_provider_path
-      choose 'Saml'
+      choose('service_provider_identity_protocol_saml', allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris'))
+      # Redirect URIs (for oidc) is found in Additional Redirect URIs (saml) so instead we assert that
+      # the oidc hint label is not found since the content there is dissimilar enough
+      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
     end
 
-    xscenario 'oidc fields are shown when oidc is selected', :js do
+    scenario 'oidc fields are shown when oidc is selected', :js do
       user = create(:user)
       login_as(user)
 
       visit new_service_provider_path
-
-      choose 'Openid connect'
+      choose('service_provider_identity_protocol_openid_connect_private_key_jwt', allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url failure_to_proof_url push_notification_url]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris'))
+      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
     end
     # rubocop:enable Layout/LineLength
-
-    xscenario 'issuer is updated when department or app is updated', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Openid connect'
-      fill_in 'Issuer department', with: 'ABC'
-      fill_in 'Issuer app', with: 'my-cool-app'
-
-      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
-      )
-    end
-
-    xscenario 'issuer protocol is changed when oidc or saml is selected', :js do
-      user = create(:user)
-      login_as(user)
-
-      visit new_service_provider_path
-
-      choose 'Saml'
-      fill_in 'Issuer department', with: 'ABC'
-      fill_in 'Issuer app', with: 'my-cool-app'
-
-      expect(find_field('service_provider_issuer', disabled: true).value).to eq(
-        'urn:gov:gsa:SAML:2.0.profiles:sp:sso:ABC:my-cool-app',
-      )
-    end
   end
 
   context 'admin user' do
