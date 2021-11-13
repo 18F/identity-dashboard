@@ -33,6 +33,10 @@ FactoryBot.define do
       ial { 2 }
     end
 
+    trait :with_ial_1 do
+      ial { 1 }
+    end
+
     trait :with_ial_2_bundle do
       attribute_bundle { %w[email first_name last_name] }
     end

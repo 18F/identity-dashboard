@@ -158,15 +158,30 @@ class ServiceProvider < ApplicationRecord
   end
 
   def validate_attribute_bundle
-    if (attribute_bundle || []).empty?
+    # attribute bundle should not be empty when saml and ial2 are selected
+    if ((attribute_bundle || []).empty? && ial == 2 && identity_protocol == 'saml')
       errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
 
-    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
-    return if ial == 2 && (attribute_bundle - possible_attributes).empty?
-    return if (attribute_bundle - ALLOWED_IAL1_ATTRIBUTES).empty?
+    return true if !attribute_bundle
 
-    errors.add(:attribute_bundle, 'Contains invalid IAL attributes')
+    if contains_invalid_attribute?
+      errors.add(:attribute_bundle, 'Contains invalid attributes')
+      return false
+    end
+
+    if ial == 1 && ((attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).length > 0)
+      errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
+    end
+    true
+  end
+
+  def contains_invalid_attribute? 
+    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
+    attribute_bundle.each{ |att| 
+      return true if !possible_attributes.include? att
+    }
+    false
   end
 end
