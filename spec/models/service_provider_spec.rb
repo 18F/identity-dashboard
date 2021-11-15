@@ -245,20 +245,35 @@ describe ServiceProvider do
       expect(sp.aal_friendly).to eq('4')
     end
 
-    it 'validates the values of the attribute bundle according to IAL' do
+    it 'validates the the attribute bundle according IAL and protocol' do
       ial_1_bundle = %w[email verified_at x509_subject x509_presented]
       ial_2_bundle = %w[first_name last_name dob ssn address1 address2 city state zipcode phone]
+      empty_bundle = []
 
-      sp = build(:service_provider, ial: 1)
-      expect(sp).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(sp).not_to allow_value([]).for(:attribute_bundle)
-      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
-      expect(sp).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
+      saml_sp_ial1 = create(:service_provider, :saml, :with_ial_1)
+      expect(saml_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
 
-      sp = build(:service_provider, ial: 2)
-      expect(sp).to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(sp).not_to allow_value([]).for(:attribute_bundle)
-      expect(sp).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+      saml_sp_ial2 = create(:service_provider, :saml, :with_ial_2)
+      expect(saml_sp_ial2).not_to allow_value(empty_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+
+      oidc_sp_ial1 = create(:service_provider, :with_oidc_jwt, :with_ial_1)
+      expect(oidc_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+
+      oidc_sp_ial2 = create(:service_provider, :with_oidc_jwt, :with_ial_2)
+      expect(oidc_sp_ial2).to allow_value(empty_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(oidc_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+
     end
 
     it 'sanitizes help text before saving' do

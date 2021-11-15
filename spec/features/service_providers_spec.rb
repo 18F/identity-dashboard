@@ -273,9 +273,9 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Success')
     end
 
-    scenario 'cannot send an empty attribute bundle to the backend' do
+    scenario 'cannot send an empty attribute bundle to the backend with saml and ial2' do
       admin = create(:admin)
-      sp = create(:service_provider, :with_team)
+      sp = create(:service_provider, :with_team, :saml, :with_ial_2)
       login_as(admin)
 
       visit edit_service_provider_path(sp)
@@ -294,7 +294,7 @@ feature 'Service Providers CRUD' do
       check 'ssn'
       click_on 'Update'
 
-      expect(page).to have_content('Contains invalid IAL attributes')
+      expect(page).to have_content('Contains ial 2 attributes when ial 1 is selected')
     end
   end
 

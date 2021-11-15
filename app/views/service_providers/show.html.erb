@@ -81,6 +81,9 @@
                                                                   height: '27', width: '27',
                                                                   :class => 'margin-bottom-neg-105',
                                                                   :alt => sp_signed_response_message_requested_img_alt(service_provider.signed_response_message_requested?) %></p>
+                                                                  
+  <h2><label for="return_to_sp_url">Return to App URL:</label></h2>
+  <p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>
 <% end %>
 
 <h2>
@@ -91,8 +94,6 @@
   <%= render partial: 'certificate', locals: { certificate: certificate } %>
 <% end %>
 
-<h2><label for="return_to_sp_url">Return to App URL:</label></h2>
-<p class="font-mono-xs margin-top-0" name="return_to_sp_url"><%= service_provider.return_to_sp_url %></p>
 
 <h2><label for="failure_to_proof_url">Failure to Proof URL:</label></h2>
 <p class="font-mono-xs margin-top-0" name="failure_to_proof_url"><%= service_provider.failure_to_proof_url %></p>
