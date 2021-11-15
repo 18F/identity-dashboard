@@ -164,7 +164,7 @@ class ServiceProvider < ApplicationRecord
       return false
     end
 
-    if attribute_bundle.present?  && contains_invalid_attribute?
+    if attribute_bundle.present? && contains_invalid_attribute?
       errors.add(:attribute_bundle, 'Contains invalid attributes')
       return false
     end
