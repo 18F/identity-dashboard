@@ -57,7 +57,7 @@
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Identity Assurance Level (IAL)',
                  #label_html: { class: 'usa-input-required'},
-                 hint: 'Choose IAL 1 for standard MFA-protected email-based login. <br/> Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).'.html_safe %>
+                 hint: 'Choose IAL 1 for standard MFA-protected email-based login. Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).' %>
 
   <%= form.input :default_aal,
                  as: :select,
@@ -69,7 +69,7 @@
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)',
                  #label_html: { class: 'usa-input-required'},
-                 hint: 'Empty - MFA required + remember device is 30 days<br/>AAL2 - MFA required + remember device is 12 hours<br/>AAL3 - unphishable MFA required + remember device is 12 hours'.html_safe %>
+                 hint: 'Empty - MFA required + remember device is 30 days. AAL2 - MFA required + remember device is 12 hours. AAL3 - unphishable MFA required + remember device is 12 hours' %>
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
       and use UL for checkboxes%>
@@ -106,7 +106,7 @@
                  label_html: { class: 'usa-input-required'},
                  input_html: { class: 'usa-input'},
                  hint: if form.object.persisted?
-                     '<i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i>'.html_safe
+                     'The issuer cannot be changed, but you can create a new test app with a different issuer.'
                    else
                      'A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br>
                      <i>For OpenID Connect:</i><br>
@@ -124,7 +124,7 @@
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>
       <%= form.label :allow_prompt_login,
-                      label: 'Enable <code>prompt=login</code>'.html_safe,
+                      label: 'Enable <prompt=login>',
                       class: 'usa-label' %>
       <ul class="usa-input-list">
         <li>
@@ -228,28 +228,28 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <div class='saml-fields'>
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Service URL'.html_safe,
+                   label: 'Assertion Consumer Service URL',
                    hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>".html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Logout Service URL'.html_safe,
+                   label: 'Assertion Consumer Logout Service URL',
                    hint: 'The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>'.html_safe %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
-                   label: 'SP Initiated Login URL'.html_safe,
+                   label: 'SP Initiated Login URL',
                    hint: 'The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>'.html_safe %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
-                   label: 'SAML Assertion Encryption<br>'.html_safe,
+                   label: 'SAML Assertion Encryption',
                    include_blank: false,
                    hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
 
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
-                  label: 'Signed Response Message Requested'.html_safe,
+                  label: 'Signed Response Message Requested',
                   class: 'usa-label',
                   hint: 'Change this to "Yes" if you want the entire authentication response signed, as opposed to just the attribute statement.' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
@@ -273,7 +273,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
-                 label: 'Failure to Proof URL'.html_safe,
+                 label: 'Failure to Proof URL',
                  hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
@@ -338,20 +338,19 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <p>You can specify help text in these different areas to alert users of important information for logging into your app</p>
     <%= form.fields_for :help_text do |h| %>
       <br><legend><b>Sign-in help text:</b></legend>
-      <%= h.input "sign_in[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
-      <%= h.input "sign_in[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
-      <%= h.input "sign_in[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
+      <%= h.input "sign_in[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
+      <%= h.input "sign_in[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
+      <%= h.input "sign_in[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
 
       <br><legend><b>Sign-up help text:</b></legend>
-      <%= h.input "sign_up[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
-      <%= h.input "sign_up[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
-      <%= h.input "sign_up[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
+      <%= h.input "sign_up[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
+      <%= h.input "sign_up[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
+      <%= h.input "sign_up[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
 
       <br><legend><b>Forgot password help text:</b></legend>
-      <%= h.input  "forgot_password[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
-      <%= h.input "forgot_password[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
-      <%= h.input "forgot_password[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
-
+      <%= h.input  "forgot_password[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
+      <%= h.input "forgot_password[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
+      <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
     <% end %>
   </fieldset>
 </fieldset>
