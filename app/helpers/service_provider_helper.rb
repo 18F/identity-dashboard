@@ -139,6 +139,7 @@ module ServiceProviderHelper
       'return_to_sp_url' => sp_hash['return_to_sp_url'],
       'redirect_uris' => sp_hash['redirect_uris'],
       'ial' => sp_hash['ial'],
+      'default_aal'=> sp_hash['default_aal'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'protocol' => sp_hash['protocol'],
       'restrict_to_deploy_env' => "'prod'",
