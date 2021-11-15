@@ -169,7 +169,7 @@ class ServiceProvider < ApplicationRecord
       return false
     end
 
-    if ial == 1 && ((attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?)
+    if ial == 1 && (attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
       errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
     end
     true
