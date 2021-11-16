@@ -42,6 +42,53 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('AAL2')
     end
 
+    scenario 'saml fields are shown on sp show page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_redirects')))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+    end
+
+    scenario 'oidc fields are shown on sp show page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit service_provider_path(service_provider)
+
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.oidc_redirects')))
+    end
+
+    scenario 'saml fields are shown on sp edit page when saml is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :saml, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_redirects')))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
+      # rubocop:disable Layout/LineLength
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_service_url')))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url')))
+      # rubocop:enable Layout/LineLength
+    end
+
+    scenario 'oidc fields are shown on sp edit page when oidc is selected' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.oidc_redirects')))
+    end
+
     scenario 'can update service provider team', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
@@ -215,7 +262,7 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      expect(page).to have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
+      expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects')))
     end
     # rubocop:enable Layout/LineLength
   end
@@ -484,5 +531,9 @@ feature 'Service Providers CRUD' do
 
       it_behaves_like 'a page with an IAA banner'
     end
+  end
+
+  def strip_tags(string)
+    ActionController::Base.helpers.strip_tags(string)
   end
 end
