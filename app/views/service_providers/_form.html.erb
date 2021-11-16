@@ -4,20 +4,20 @@
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'App name',
-                 hint: 'The name of your application as it appears in the signed Inter-Agency Agreement with Login.gov. Ex: DHS - CSP' %>
+                 hint: I18n.t('service_provider_form.app_name') %>
 
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: 'The name of your app that will get displayed to users when logging in. Ex: DHS Customer Service Portal' %>
+                 hint: I18n.t('service_provider_form.friendly_name') %>
 
 
   <%= form.input :description,
                  as: :usa_textarea,
                  label_html: { class: 'usa-input-optional' },
                  label: 'Description',
-                 hint: 'A description of the app (may be helpful for your colleagues).' %>
+                 hint: I18n.t('service_provider_form.description') %>
 
   <%= form.association :team,
                        as: :usa_collection_select,
@@ -25,7 +25,7 @@
                        collection: current_user.scoped_teams,
                        label: 'Team',
                        disabled: !can_edit_teams?(current_user),
-                       hint: 'Assign an agency team to this client.' %>
+                       hint: I18n.t('service_provider_form.team') %>
 
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
@@ -47,7 +47,7 @@
         <% end %>
       <% end %>
     <% end %>
-    <%= form.hint 'We highly recommend using OpenID Connect, unless a technical reason prevents you.' %>
+    <%= form.hint I18n.t('service_provider_form.protocol') %>
   </fieldset>
 
   <%= form.input :ial,
@@ -56,8 +56,7 @@
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Identity Assurance Level (IAL)',
-                 #label_html: { class: 'usa-input-required'},
-                 hint: 'Choose IAL 1 for standard MFA-protected email-based login. <br/> Choose IAL 2 for identity proofed accounts that require SSN and identity verification (aka LOA3).'.html_safe %>
+                 hint: I18n.t('service_provider_form.identity_assurance_level') %>
 
   <%= form.input :default_aal,
                  as: :select,
@@ -68,8 +67,7 @@
                  selected: form.object.default_aal,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)',
-                 #label_html: { class: 'usa-input-required'},
-                 hint: 'Empty - MFA required + remember device is 30 days<br/>AAL2 - MFA required + remember device is 12 hours<br/>AAL3 - unphishable MFA required + remember device is 12 hours'.html_safe %>
+                 hint: I18n.t('service_provider_form.default_authentication_assurance_level') %>
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
       and use UL for checkboxes%>
@@ -78,10 +76,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint(content_tag(:span) do %>
-      Refer to our <%= link_to('developer documentation', 'https://developers.login.gov/attributes', target: '_blank') %>
-      for the possible user attributes available at each IAL level that can be requested by your app
-    <% end) %>
+    <%= form.hint I18n.t('service_provider_form.attribute_bundle').html_safe %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -99,20 +94,15 @@
     <% end %>
   </fieldset>
 
-  <%# The 'ml2' class doesn't appear to exist in the css anymore, so the sample issuers are not indented %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
                  label: 'Issuer',
                  label_html: { class: 'usa-input-required'},
                  input_html: { class: 'usa-input'},
                  hint: if form.object.persisted?
-                     '<i>The issuer cannot be changed, but you can create a new test app with a different issuer.</i>'.html_safe
+                     I18n.t('service_provider_form.change_issuer')
                    else
-                     'A unique string to identify the app in the IdP. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.<br>
-                     <i>For OpenID Connect:</i><br>
-                     <code class="ml2">urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><br>
-                     <i>For SAML:</i><br>
-                     <code class="ml2">urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>'.html_safe
+                     I18n.t('service_provider_form.issuer').html_safe
                    end %>
 
   <% if current_user.admin? %>
@@ -124,7 +114,7 @@
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>
       <%= form.label :allow_prompt_login,
-                      label: 'Enable <code>prompt=login</code>'.html_safe,
+                      label: 'Enable <prompt=login>',
                       class: 'usa-label' %>
       <ul class="usa-input-list">
         <li>
@@ -157,16 +147,14 @@
                    placeholder: 'generic.svg',
                    label: 'Logo',
                    input_html: { class: 'usa-input' },
-                   hint: 'The name of the <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines" target="_blank">logo image file</a> in the IdP. The login.gov team can add this image for you.'.html_safe %>
+                   hint: I18n.t('service_provider_form.logo').html_safe %>
   <% end %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
     <div class="usa-label">Certificates</div>
 
     <p>
-      Your public certificate (or certificates), which contains your public key.
-      Needed for OpenID Connect (when using <i>private_key_jwt</i>) and for SAML.
-      Optional for OIDC PKCE.
+      <% I18n.t('service_provider_form.certificate') =%>
     </p>
 
 
@@ -228,30 +216,30 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <div class='saml-fields'>
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Service URL'.html_safe,
-                   hint: "Your application's endpoint which receives authentication assertions, for example: <code>https://app.agency.gov/auth/saml/sso</code>".html_safe %>
+                   label: 'Assertion Consumer Service URL',
+                   hint: I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
-                   label: 'Assertion Consumer Logout Service URL'.html_safe,
-                   hint: 'The endpoint which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>'.html_safe %>
+                   label: 'Assertion Consumer Logout Service URL',
+                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
-                   label: 'SP Initiated Login URL'.html_safe,
-                   hint: 'The endpoint which initializes authentication with login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>'.html_safe %>
+                   label: 'SP Initiated Login URL',
+                   hint: I18n.t('service_provider_form.sp_initiated_login_url').html_safe %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
-                   label: 'SAML Assertion Encryption<br>'.html_safe,
+                   label: 'SAML Assertion Encryption',
                    include_blank: false,
-                   hint: 'Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS.' %>
+                   hint: I18n.t('service_provider_form.saml_assertion_encryption') %>
 
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
-                  label: 'Signed Response Message Requested'.html_safe,
+                  label: 'Signed Response Message Requested',
                   class: 'usa-label',
-                  hint: 'Change this to "Yes" if you want the entire authentication response signed, as opposed to just the attribute statement.' %>
+                  hint: I18n.t('service_provider_form.signed_response_requested').html_safe %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -269,16 +257,16 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
-                  hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
+                  hint: I18n.t('service_provider_form.return_to_app_url').html_safe %>
   </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
-                 label: 'Failure to Proof URL'.html_safe,
-                 hint: 'The URL provided to users who are unable to complete identity proofing and returning to your application.' %>
+                 label: 'Failure to Proof URL',
+                 hint: I18n.t('service_provider_form.failure_to_proof_url') %>
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: 'Push notification URL',
-                 hint: "Your application's endpoint which receives push notifications." %>
+                 hint: I18n.t('service_provider_form.push_notification_url') %>
 
   <%# BEGIN redirect_uris %>
     <div class='oidc-fields'>
@@ -304,11 +292,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= form.hint 'One or more URIs that login.gov will redirect to after authentication. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
+      <%= I18n.t('service_provider_form.oidc_redirects').html_safe %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint 'One or more URIs that login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>'.html_safe %>
+      <%= form.hint I18n.t('service_provider_form.saml_redirects').html_safe %>
     </div>
 
     <%= form.button :button,
@@ -322,7 +310,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <%= form.label :admin,
                  label: 'Active',
                  class: 'usa-label',
-                 hint: "The application's URL which login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>".html_safe %>
+                 hint: I18n.t('service_provider_form.active').html_safe %>
   <%= form.collection_radio_buttons(:active,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
@@ -338,20 +326,19 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <p>You can specify help text in these different areas to alert users of important information for logging into your app</p>
     <%= form.fields_for :help_text do |h| %>
       <br><legend><b>Sign-in help text:</b></legend>
-      <%= h.input "sign_in[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
-      <%= h.input "sign_in[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
-      <%= h.input "sign_in[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
+      <%= h.input "sign_in[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
+      <%= h.input "sign_in[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
+      <%= h.input "sign_in[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
 
       <br><legend><b>Sign-up help text:</b></legend>
-      <%= h.input "sign_up[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
-      <%= h.input "sign_up[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
-      <%= h.input "sign_up[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
+      <%= h.input "sign_up[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
+      <%= h.input "sign_up[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
+      <%= h.input "sign_up[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
 
       <br><legend><b>Forgot password help text:</b></legend>
-      <%= h.input  "forgot_password[en]", label: "<b>English</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
-      <%= h.input "forgot_password[es]", label: "<b>Español</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
-      <%= h.input "forgot_password[fr]", label: "<b>Français</b>".html_safe, as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
-
+      <%= h.input  "forgot_password[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
+      <%= h.input "forgot_password[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
+      <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
     <% end %>
   </fieldset>
 </fieldset>
