@@ -108,29 +108,44 @@
 <hr>
 
 <% if service_provider.identity_protocol == 'saml' %>
-  <h2 class="margin-bottom-0"><label for="acs_url">Assertion Consumer Service URL:</label> <%= service_provider.acs_url %></h2>
+  <h2 class="margin-bottom-0">
+    <label for="acs_url">Assertion Consumer Service URL:</label> 
+    <span class="font-mono-xs margin-left-5"><%= service_provider.acs_url %></span>
+  </h2>
   <p><i> <%= I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %> </i></p>
   <hr>
 
-  <h2 class="margin-bottom-0"><label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label> <%= service_provider.assertion_consumer_logout_service_url %></h2>
+  <h2 class="margin-bottom-0">
+    <label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label> 
+    <span class="font-mono-xs margin-left-5"><%= service_provider.assertion_consumer_logout_service_url %></span>
+  </h2>
   <p><i> <%= I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %> </i></p>
   <hr>
 
-  <h2 class="margin-bottom-0"><label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label> <%= service_provider.sp_initiated_login_url %></h2>
+  <h2 class="margin-bottom-0">
+    <label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label> 
+    <span class="font-mono-xs margin-left-5"><%= service_provider.sp_initiated_login_url %></span>
+  </h2>
   <p><i> <%= I18n.t('service_provider_form.sp_initiated_login_url').html_safe %> </i></p>
   <hr>
 
-  <h2 class="margin-bottom-0"><label for="block_encryption">SAML Assertion Encryption:</label> <%= service_provider.block_encryption %></h2>
+  <h2 class="margin-bottom-0">
+    <label for="block_encryption">SAML Assertion Encryption:</label> 
+    <span class="font-mono-xs margin-left-5"><%= service_provider.block_encryption %></span>
+  </h2>
   <p><i> <%= I18n.t('service_provider_form.saml_assertion_encryption') %> </i></p>
   <hr>
 
-  <h2 class="margin-bottom-0"><label for="signed_response_message_requested">Signed Response Message Requested:</label> <%= service_provider.signed_response_message_requested? %></h2>
+  <h2 class="margin-bottom-0">
+    <label for="signed_response_message_requested">Signed Response Message Requested:</label> 
+    <span class="font-mono-xs margin-left-5"><%= service_provider.signed_response_message_requested? %></span>
+  </h2>
   <p><i> <%= I18n.t('service_provider_form.signed_response_requested') %> </i></p>
   <hr>
                                                                   
   <h2 class="margin-bottom-0">
-  <label for="return_to_sp_url">Return to App URL: </label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
+    <label for="return_to_sp_url">Return to App URL: </label>
+    <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i></p>
   <hr>
@@ -163,11 +178,11 @@
 <% if service_provider.oidc? %>
   <h2 class="margin-bottom-0"><label for="uris">Redirect URIs:</label></h2>
   <p><i> <%= I18n.t('service_provider_form.oidc_redirects').html_safe %> </i></p>
-  <p class="font-mono-xs margin-top-0" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
+  <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% else # SAML %>
   <h2><label for="uris">Additional Redirect URIs:</label></h2>
   <p><i> <%= I18n.t('service_provider_form.saml_redirects').html_safe %> </i></p>
-  <p class="font-mono-xs margin-top-0" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
+  <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% end %>
 <hr>
 
