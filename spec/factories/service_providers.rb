@@ -45,6 +45,14 @@ FactoryBot.define do
       association :team, factory: :team
     end
 
+    trait :without_signed_response_message_requested do
+      signed_response_message_requested { false }
+    end
+
+    trait :with_email_id_format do
+      email_nameid_format_allowed { true }
+    end
+
     trait :with_users_team do
       after(:build) do |service_provider|
         team = service_provider.user&.teams[0]

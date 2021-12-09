@@ -168,6 +168,12 @@ module ServiceProviderHelper
       'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       'protocol' => 'saml',
     }
+    if(sp_hash['signed_response_message_requested'] == "'true'")
+      saml_attrs['signed_response_message_requested'] = true
+    end
+    if(sp_hash['email_nameid_format_allowed'] == "'true'")
+      saml_attrs['email_nameid_format_allowed'] = true
+    end
     configs_hash.merge!(saml_attrs)
   end
 
