@@ -76,6 +76,10 @@ describe ServiceProviderHelper do
     let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
     let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
     let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
+    let(:saml_without_requested_response) {
+      create(:service_provider, :saml, :without_signed_response_message_requested)
+    }
+    let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
     let(:sp_config_saml_attributes) do 
       %w[
         agency_id
@@ -128,6 +132,22 @@ describe ServiceProviderHelper do
       sp_config_saml_attributes.each do |attribute_name|
         expect(config_hash(saml_sp)).to include(attribute_name)
       end
+    end
+    it 'returns saml attribute signed_response_message_requested if true' do
+      expect(config_hash(saml_sp)).to include('signed_response_message_requested')
+    end
+    it 'returns saml attributes without signed_response_message_requested if false' do
+      expect(config_hash(
+        saml_without_requested_response,
+      )).not_to include('signed_response_message_requested')
+    end
+    it 'returns saml attribute email_nameid_format_allowed if true' do
+      expect(config_hash(
+        saml_email_id_format,
+      )).to include('email_nameid_format_allowed')
+    end
+    it 'truens saml attributes without email_nameid_format_allowed if false' do
+      expect(config_hash(saml_sp)).not_to include('email_nameid_format_allowed')
     end
     it 'returns a properly formatted yaml blurb for OIDC pkce' do
       sp_config_oidc_attributes.push('pkce')
