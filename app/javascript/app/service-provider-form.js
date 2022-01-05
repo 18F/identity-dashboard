@@ -17,7 +17,7 @@ $(function () {
   const failureToProofURL = $('.service_provider_failure_to_proof_url');
   const returnToSpUrl = document.querySelector('#service_provider_return_to_sp_url');
 
-  const ial1Attributes = ['email', 'x509_subject', 'x509_presented', 'verified_at'];
+  const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
 
   // Functions
   const toggleIAL1Options = () => {
