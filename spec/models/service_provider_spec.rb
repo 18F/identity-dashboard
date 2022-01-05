@@ -246,7 +246,7 @@ describe ServiceProvider do
     end
 
     it 'validates the the attribute bundle according IAL and protocol' do
-      ial_1_bundle = %w[email verified_at x509_subject x509_presented]
+      ial_1_bundle = %w[email all_emails verified_at x509_subject x509_presented]
       ial_2_bundle = %w[first_name last_name dob ssn address1 address2 city state zipcode phone]
       empty_bundle = []
 

@@ -30,6 +30,7 @@ class ServiceProvider < ApplicationRecord
 
   ALLOWED_IAL1_ATTRIBUTES = %w[
     email
+    all_emails
     verified_at
     x509_subject
     x509_presented
