@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_15_155526) do
+ActiveRecord::Schema.define(version: 2022_01_10_190210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 2021_09_15_155526) do
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "signed_response_message_requested", default: false
     t.string "app_name", default: "", null: false
+    t.boolean "prod_config"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
