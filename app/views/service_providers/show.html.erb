@@ -4,7 +4,7 @@
 
 <h2 class="margin-bottom-0">
   <label for="identity_protocol">Production Configuration:</label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config %></span>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Yes' : 'No' %></span>
 </h2>
 <p><i> <%= I18n.t('service_provider_form.prod_config') %> </i></p>
 <hr>
@@ -145,7 +145,7 @@
 
   <h2 class="margin-bottom-0">
     <label for="signed_response_message_requested">Signed Response Message Requested:</label> 
-    <span class="font-mono-xs margin-left-5"><%= service_provider.signed_response_message_requested? %></span>
+    <span class="font-mono-xs margin-left-5"><%= service_provider.signed_response_message_requested? ? 'Yes' : 'No' %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.signed_response_requested') %> </i></p>
   <hr>
@@ -202,7 +202,7 @@
 
 <h2 class="margin-bottom-0">
   <label for="active">Active:</label> 
-  <span class="font-mono-xs"><%= service_provider.active? %></span>
+  <span class="font-mono-xs"><%= service_provider.active? ? 'Yes' : 'No' %></span>
 </h2>
 <hr>
 

@@ -6,7 +6,7 @@
                  label: 'Production Configuration',
                  class: 'usa-label',
                  hint: I18n.t('service_provider_form.prod_config').html_safe %>
-  <%= form.collection_radio_buttons(:active,
+  <%= form.collection_radio_buttons(:prod_config,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
                                     collection_wrapper_tag: :ul,
