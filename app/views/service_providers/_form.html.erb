@@ -15,6 +15,7 @@
     <%=  b.radio_button(class: "usa-radio__input") %>
     <%=  b.label(class: "usa-radio__label")%>
   <% end %>
+  <%= form.hint I18n.t('service_provider_form.prod_config') %>
 
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
