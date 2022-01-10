@@ -3,6 +3,13 @@
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
 
 <h2 class="margin-bottom-0">
+  <label for="identity_protocol">Production Configuration:</label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config %></span>
+</h2>
+<p><i> <%= I18n.t('service_provider_form.prod_config') %> </i></p>
+<hr>
+
+<h2 class="margin-bottom-0">
   <label for="name">App name: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.app_name %></span>
 </h2>
