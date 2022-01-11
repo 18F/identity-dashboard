@@ -1,5 +1,22 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
+
+  <legend class='usa-sr-only'>Production Configuration</legend>
+  <%= form.label :prod_config,
+                 label: 'Production Configuration',
+                 class: 'usa-label',
+                 hint: I18n.t('service_provider_form.prod_config').html_safe %>
+  <%= form.collection_radio_buttons(:prod_config,
+                                    { "Yes" => true, "No" => false },
+                                    :last, :first,
+                                    collection_wrapper_tag: :ul,
+                                    collection_wrapper_class: 'usa-input-list',
+                                    item_wrapper_tag: :li) do |b| %>
+    <%=  b.radio_button(class: "usa-radio__input") %>
+    <%=  b.label(class: "usa-radio__label")%>
+  <% end %>
+  <%= form.hint I18n.t('service_provider_form.prod_config') %>
+
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},

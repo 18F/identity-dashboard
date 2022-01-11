@@ -138,6 +138,7 @@ class ServiceProvidersController < AuthenticatedController
       :sp_initiated_login_url,
       :logo_file,
       :app_name,
+      :prod_config,
       attribute_bundle: [],
       redirect_uris: [],
       help_text: {},
