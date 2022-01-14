@@ -216,9 +216,7 @@ class ServiceProvidersController < AuthenticatedController
     ]
 
     service_provider.attributes.each do |k,v|
-      if string_attributes.include?(k)
-        v.try(:strip!)
-      end
+      v.try(:strip!) unless !string_attributes.include?(k)
     end
     service_provider
   end

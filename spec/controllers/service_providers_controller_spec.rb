@@ -33,10 +33,9 @@ describe ServiceProvidersController do
             return_to_sp_url: ' https://returntospurl.biz  ',
             failure_to_proof_url: '  https://failuretoproof.com  ',
             push_notification_url: ' https://pushnotifications.com  ',
-            app_name: '   app name  '
-          }
+            app_name: '   app name  ',
+          },
         }
-
         sp.reload
         expect(sp.friendly_name).to eq('friendly name')
         expect(sp.description).to eq('This is a description.')
