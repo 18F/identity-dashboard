@@ -16,7 +16,6 @@ describe ServiceProvidersController do
         content_type: 'image/svg+xml',
       }
     end
-    # let(:sp_with_whitespaces) {create(:service_provider, :with_whitespaces, user: user)}
 
     context 'when a user enters data into text inputs with leading and trailing spaces' do
       it('it clears leading and trailing spaces in service provider fields') do
