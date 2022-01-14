@@ -16,6 +16,40 @@ describe ServiceProvidersController do
         content_type: 'image/svg+xml',
       }
     end
+    # let(:sp_with_whitespaces) {create(:service_provider, :with_whitespaces, user: user)}
+
+    context 'when a user enters data into text inputs with leading and trailing spaces' do
+      it('it clears leading and trailing spaces in service provider fields') do
+        put :update, params: {
+          id: sp.id,
+          service_provider: {
+            issuer: '  urn:gov:gsa:openidconnect:profiles:sp:sso:agency:name     ',
+            friendly_name: '   friendly name    ',
+            description: '    This is a description.   ',
+            metadata_url: ' https://metadataurl.biz   ',
+            acs_url: ' https://acsurl.me  ',
+            assertion_consumer_logout_service_url: '   https://logoout.biz  ',
+            sp_initiated_login_url: '  https://login.me  ',
+            return_to_sp_url: ' https://returntospurl.biz  ',
+            failure_to_proof_url: '  https://failuretoproof.com  ',
+            push_notification_url: ' https://pushnotifications.com  ',
+            app_name: '   app name  '
+          }
+        }
+
+        sp.reload
+        expect(sp.friendly_name).to eq('friendly name')
+        expect(sp.description).to eq('This is a description.')
+        expect(sp.metadata_url).to eq('https://metadataurl.biz')
+        expect(sp.acs_url).to eq('https://acsurl.me')
+        expect(sp.assertion_consumer_logout_service_url).to eq('https://logoout.biz')
+        expect(sp.sp_initiated_login_url).to eq('https://login.me')
+        expect(sp.return_to_sp_url).to eq('https://returntospurl.biz')
+        expect(sp.failure_to_proof_url).to eq('https://failuretoproof.com')
+        expect(sp.push_notification_url).to eq('https://pushnotifications.com')
+        expect(sp.app_name).to eq('app name')
+      end
+    end
 
     context 'when uploading a logo' do
       before do
