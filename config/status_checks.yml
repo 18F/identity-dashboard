@@ -10,6 +10,9 @@ deploys:
   - app: 'identity-saml-sinatra'
     env: 'prod'
     host: 'https://prod-identity-saml-sinatra.app.cloud.gov/'
+  - app: 'identity-pki'
+    env: 'prod'
+    host: 'https://checking-deploy.pivcac.prod.login.gov'
 
   # Staging
   - app: 'identity-idp'
@@ -21,6 +24,9 @@ deploys:
   - app: 'identity-saml-sinatra'
     env: 'staging'
     host: 'https://staging-identity-saml-sinatra.app.cloud.gov/'
+  - app: 'identity-pki'
+    env: 'staging'
+    host: 'https://checking-deploy.pivcac.staging.login.gov'
 
   # Data Migration
   - app: 'identity-idp'
@@ -32,6 +38,9 @@ deploys:
   - app: 'identity-saml-sinatra'
     env: 'dm'
     host: 'https://dm-identity-saml-sinatra.app.cloud.gov/'
+  - app: 'identity-pki'
+    env: 'dm'
+    host: 'https://checking-deploy.pivcac.dm.login.gov'
 
   # Agency integration
   - app: 'identity-idp'
@@ -46,6 +55,9 @@ deploys:
   - app: 'identity-saml-sinatra'
     env: 'int'
     host: 'https://int-identity-saml-sinatra.app.cloud.gov/'
+  - app: 'identity-pki'
+    env: 'int'
+    host: 'https://checking-deploy.pivcac.int.identitysandbox.gov'
 
   # Development
   - app: 'identity-idp'
@@ -60,3 +72,6 @@ deploys:
   - app: 'identity-saml-sinatra'
     env: 'dev'
     host: 'https://dev-identity-saml-sinatra.app.cloud.gov/'
+  - app: 'identity-pki'
+    env: 'dev'
+    host: 'https://checking-deploy.pivcac.dev.identitysandbox.gov'

@@ -8,6 +8,7 @@ module DeployStatusCheckerHelper
     }.as_json
   end
 
+  # rubocop:disable Layout/LineLength
   def stub_deploy_status
     stub_request(:get, %r{https://secure\.login\.gov/api/deploy\.json}).
       to_return(body: stub_status_json.to_json)
@@ -16,6 +17,8 @@ module DeployStatusCheckerHelper
     stub_request(:get, %r{https://.*\.int\.identitysandbox\.gov/api/deploy\.json}).
       to_return(body: stub_status_json.to_json)
     stub_request(:get, %r{https://(int|staging|prod|dm)-.*\.cloud\.gov/api/deploy\.json}).
+      to_return(body: stub_status_json.to_json)
+    stub_request(:get,%r{https://checking-deploy.pivcac.(dev|int|staging|prod|dm).(login|identitysandbox).gov/api/deploy\.json}).
       to_return(body: stub_status_json.to_json)
     stub_request(:get, %r{https://.*\.dev\.identitysandbox\.gov/api/deploy\.json}).
       to_return(status: 404)
@@ -28,4 +31,5 @@ module DeployStatusCheckerHelper
     stub_request(:get, %r{https://dm-.*\.cloud\.gov/api/deploy\.json}).
       to_timeout
   end
+  # rubocop:enable Layout/LineLength
 end
