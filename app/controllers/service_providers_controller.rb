@@ -71,12 +71,14 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    return save_service_provider if service_provider.valid?
+    formatted_sp = clear_formatting(@service_provider)
+    return save_service_provider(formatted_sp) if formatted_sp.valid?
+
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
   end
 
-  def save_service_provider
+  def save_service_provider(service_provider)
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_providers
@@ -195,6 +197,28 @@ class ServiceProvidersController < AuthenticatedController
 
   def add_iaa_warning
     flash.now[:warning] = I18n.t('notices.service_provider_iaa_notice')
+  end
+
+  def clear_formatting(service_provider)
+    string_attributes = %w[
+      issuer
+      friendly_name
+      description
+      metadata_url
+      acs_url
+      assertion_consumer_logout_service_url
+      sp_initiated_login_url
+      return_to_sp_url
+      production_issuer
+      failure_to_proof_url
+      push_notification_url
+      app_name
+    ]
+
+    service_provider.attributes.each do |k,v|
+      v.try(:strip!) unless !string_attributes.include?(k)
+    end
+    service_provider
   end
 
   helper_method :service_provider
