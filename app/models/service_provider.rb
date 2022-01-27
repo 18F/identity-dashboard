@@ -183,7 +183,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def redirect_uris_contains_no_wildcards
-    return true if redirect_uris.empty?
+    return true if redirect_uris.nil? || redirect_uris.empty?
 
     redirect_uris.each do |uri|
       next unless uri.include?('*')
