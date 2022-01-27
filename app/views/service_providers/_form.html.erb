@@ -291,7 +291,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
       <span class="usa-error-message js-bundle-input-error-message">
-        <%= service_provider.errors[:redirect_uris][1].presence %>
+        <%= service_provider.errors[:redirect_uris].to_sentence.presence %>
       </span>
     </div>
 
@@ -300,7 +300,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
       <span class="usa-error-message js-bundle-input-error-message">
-        <%= service_provider.errors[:redirect_uris][1].presence %>
+        <%= service_provider.errors[:redirect_uris].to_sentence.presence %>
       </span>
     </div>
 
