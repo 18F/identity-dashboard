@@ -18,7 +18,6 @@ class ServiceProvider < ApplicationRecord
   validate :logo_file_mime_type
   validate :certs_are_pems
   validate :validate_attribute_bundle
-  validate :redirect_uris_contains_no_wildcards
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
@@ -180,17 +179,5 @@ class ServiceProvider < ApplicationRecord
   def contains_invalid_attribute? 
     possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
     attribute_bundle.any? { |att| !possible_attributes.include?(att) }
-  end
-
-  def redirect_uris_contains_no_wildcards
-    return true if redirect_uris.nil? || redirect_uris.empty?
-
-    redirect_uris.each do |uri|
-      next unless uri.include?('*')
-
-      errors.add(:redirect_uris, 'Redirect URIs cannot contain wildcards(*)')
-      return false
-    end
-    true
   end
 end
