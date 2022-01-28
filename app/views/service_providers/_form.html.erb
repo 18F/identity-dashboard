@@ -290,12 +290,22 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
+      <% service_provider.errors[:redirect_uris].each do |error| %>
+        <span class="usa-error-message js-bundle-input-error-message">
+          <%= error %>
+        </span>
+      <% end %>
     </div>
 
     <div class='saml-fields'>
       <%= form.label :redirect_uris,
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
+      <% service_provider.errors[:redirect_uris].each do |error| %>
+        <span class="usa-error-message js-bundle-input-error-message">
+          <%= error %>
+        </span>
+      <% end %>
     </div>
 
     <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>

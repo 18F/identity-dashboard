@@ -151,13 +151,14 @@ describe ServiceProvider do
       expect(sp).to_not be_valid
     end
 
-    it 'validates that all redirect_uris are absolute, parsable uris' do
+    it 'validates that all redirect_uris are absolute, parsable uris with no wildcards' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
       valid_native_sp = build(:service_provider, redirect_uris: ['example-app:/result'])
       missing_scheme_sp = build(:service_provider, redirect_uris: ['foo.com'])
       relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
       bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
       file_uri_sp = build(:service_provider, redirect_uris: ['file:///usr/sbin/evil_script.sh'])
+      wildcard_uri = build(:service_provider, redirect_uris: ['https://app.me/*'])
 
       expect(valid_sp).to be_valid
       expect(valid_native_sp).to be_valid
@@ -165,6 +166,7 @@ describe ServiceProvider do
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid
       expect(file_uri_sp).to_not be_valid
+      expect(wildcard_uri).to_not be_valid
     end
 
     it 'validates that the failure_to_proof_url is an absolute, parsable uri' do
