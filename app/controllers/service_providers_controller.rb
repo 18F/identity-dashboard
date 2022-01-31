@@ -155,7 +155,8 @@ class ServiceProvidersController < AuthenticatedController
     return if params.dig(:service_provider, :cert).blank?
 
     service_provider.certs ||= []
-    service_provider.certs << params[:service_provider].delete(:cert).read
+    crt = params[:service_provider].delete(:cert).read
+    service_provider.certs << crt unless crt.blank?
   end
 
   def remove_certificates
