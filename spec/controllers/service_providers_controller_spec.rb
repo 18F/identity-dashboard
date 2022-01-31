@@ -145,5 +145,15 @@ describe ServiceProvidersController do
         put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
       end.to_not(change { sp.reload.certs&.size })
     end
+
+    it 'does not update cert array when cert data is null/empty' do
+      empty_file = Rack::Test::UploadedFile.new(
+        StringIO.new(''),
+        original_filename: 'my-cert.crt',
+      )
+
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file } }
+      expect(sp.reload.certs&.size).to equal(0)
+    end
   end
 end
