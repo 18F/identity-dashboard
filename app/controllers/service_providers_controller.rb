@@ -219,6 +219,12 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.attributes.each do |k,v|
       v.try(:strip!) unless !string_attributes.include?(k)
     end
+
+    if service_provider.redirect_uris
+      service_provider.redirect_uris.each do |uri|
+        uri.try(:strip!)
+      end
+    end
     service_provider
   end
 
