@@ -595,7 +595,6 @@ DEPENDENCIES
   jwt
   kaminari
   listen (~> 3.3)
-  lograge (>= 0.11.2)
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.12)
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
