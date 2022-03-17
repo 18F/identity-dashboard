@@ -118,7 +118,7 @@ class ServiceProvider < ApplicationRecord
 
   def sanitize_section(section)
     section.transform_values! do |translation|
-      sanitize translation, tags: %w[a b br p], attributes: %w[href]
+      sanitize translation, tags: %w[a b br p], attributes: %w[href target]
     end
   end
 

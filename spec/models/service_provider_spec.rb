@@ -288,6 +288,19 @@ describe ServiceProvider do
       )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end
+
+    it 'permits the "target" attribute for links' do
+      sp = create(
+        :service_provider,
+        help_text: {
+          'sign_in' => { en: '<a href="#" target="_blank">link</a>' },
+          'sign_up' => {},
+          'forgot_password' => {},
+        },
+      )
+
+      expect(sp.help_text['sign_in']['en']).to eq('<a href="#" target="_blank">link</a>')
+    end
   end
 
   let(:service_provider) { build(:service_provider) }
