@@ -114,7 +114,7 @@ module ServiceProviderHelper
     config_hash = formatted_config_hash(hash_from_clean_json)
     config_hash['protocol'] = service_provider.identity_protocol
     config_hash['ial'] = service_provider.ial.to_i
-    map_config_attributes(config_hash, service_provider.id, service_provider.agency)
+    map_config_attributes(config_hash, service_provider)
   end
 
   # rubocop:disable Layout/LineLength
@@ -129,7 +129,8 @@ module ServiceProviderHelper
   end
   # rubocop:enable Layout/LineLength
 
-  def map_config_attributes(sp_hash, sp_id, agency = {name => '', id => nil})
+  def map_config_attributes(sp_hash, sp)
+    agency = sp.agency || {}
     base_hash = {
       'agency_id' => agency['id'],
       'friendly_name' => sp_hash['friendly_name'],
