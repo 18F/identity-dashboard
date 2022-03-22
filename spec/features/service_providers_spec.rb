@@ -268,6 +268,16 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
+    scenario 'can view SP with no team' do
+      admin = create(:admin)
+      sp = create(:service_provider)
+      login_as(admin)
+
+      visit service_provider_path(sp)
+
+      expect(page).to have_content(sp.friendly_name)
+    end
+
     scenario 'can create service provider with user team' do
       admin = create(:admin)
       team = create(:team)
