@@ -301,6 +301,20 @@ describe ServiceProvider do
 
       expect(sp.help_text['sign_in']['en']).to eq('<a href="#" target="_blank">link</a>')
     end
+
+    it 'permits more complex HTML elements' do
+      text = '<ol><li><strong>item1</strong></li></ol><ul><li><em>item2</em></li></ul>'
+      sp = create(
+        :service_provider,
+        help_text: {
+          'sign_in' => { en: text },
+          'sign_up' => {},
+          'forgot_password' => {},
+        },
+      )
+
+      expect(sp.help_text['sign_in']['en']).to eq(text)
+    end
   end
 
   let(:service_provider) { build(:service_provider) }
