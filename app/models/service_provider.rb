@@ -49,6 +49,18 @@ class ServiceProvider < ApplicationRecord
     phone
   ].freeze
 
+  ALLOWED_HELP_TEXT_HTML_TAGS = %w[
+    p
+    br
+    ol
+    ul
+    li
+    a
+    strong
+    em
+    b
+  ].freeze
+
   def ial_friendly
     case ial
     when 1, nil
@@ -118,7 +130,7 @@ class ServiceProvider < ApplicationRecord
 
   def sanitize_section(section)
     section.transform_values! do |translation|
-      sanitize translation, tags: %w[a b strong em br p ol ul li], attributes: %w[href target]
+      sanitize translation, tags: ALLOWED_HELP_TEXT_HTML_TAGS, attributes: %w[href target]
     end
   end
 
