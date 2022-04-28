@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'actionmailer-text', '>= 0.1.1'
-gem 'active_model_serializers', '>= 0.10.12'
+gem 'active_model_serializers', '>= 0.10.13'
 gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 gem 'aws-sdk-s3', require: false
@@ -28,7 +28,7 @@ gem 'pry-rails'
 gem 'pundit', '>= 2.1.0'
 gem 'rack-canonical-host'
 gem 'rack-timeout', require: false
-gem 'rails', '~> 6.1.4', '>= 6.1.4.7'
+gem 'rails', '~> 6.1.5', '>= 6.1.5.1'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
@@ -36,10 +36,10 @@ gem 'rest-client', '~> 2.1'
 gem 'ruby_regex'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
-gem 'simple_form', '~> 5.0', '>= 5.0.3'
+gem 'simple_form', '~> 5.1', '>= 5.1.0'
 gem 'subprocess', require: false
 gem 'uglifier'
-gem 'webpacker', '~> 5.2', '>= 5.2.1'
+gem 'webpacker', '~> 5.4', '>= 5.4.3'
 
 group :deploy do
   gem 'capistrano'
@@ -53,16 +53,16 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
-  gem 'web-console', '>= 4.1.0'
+  gem 'web-console', '>= 4.2.0'
 end
 
 group :development, :test do
   gem 'bullet'
-  gem 'factory_bot_rails', '~> 6.1', '>= 6.1.0'
-  gem 'i18n-tasks', '>= 0.9.33'
+  gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
+  gem 'i18n-tasks', '>= 0.9.37'
   gem 'pry-byebug'
   gem 'puma'
-  gem 'rspec-rails', '~> 4.0', '>= 4.0.2'
+  gem 'rspec-rails', '~> 4.1', '>= 4.1.2'
   gem 'rubocop', '~> 1.11.0'
   gem 'rubocop-rails', '~> 2.5.0'
   gem 'rubocop-rspec'
