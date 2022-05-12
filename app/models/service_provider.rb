@@ -64,9 +64,9 @@ class ServiceProvider < ApplicationRecord
   def ial_friendly
     case ial
     when 1, nil
-      'IAL1'
+      'Authentication only'
     when 2
-      'IAL2'
+      'Identity Verification permitted'
     else
       ial.inspect
     end
@@ -76,8 +76,10 @@ class ServiceProvider < ApplicationRecord
     case default_aal
     when 1, nil
       ''
-    when 2, 3
-      "AAL#{default_aal}"
+    when 2
+      'AAL2'
+    when 3
+      'AAL2 + Phishing-Resistant MFA'
     else
       default_aal.inspect
     end
