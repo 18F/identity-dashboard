@@ -9,7 +9,7 @@
     "test": "NODE_ENV=test `npm bin`/mocha --require @babel/register --require spec/javascripts/spec_helper.js 'spec/javascripts/**/**_spec.js'"
   },
   "dependencies": {
-    "@rails/webpacker": "^4.3.0",
+    "@rails/webpacker": "^5.2.2",
     "identity-style-guide": "^2.2.3",
     "jquery": "^3.6.0",
     "jquery-ujs": "^1.2.3",
