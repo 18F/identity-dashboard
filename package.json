@@ -20,8 +20,9 @@
   },
   "devDependencies": {
     "@18f/eslint-plugin-identity": "^1.0.0",
-    "@babel/core": "^7.7.2",
+    "@babel/core": "^7.13.0",
     "@babel/register": "^7.9.0",
+    "babel-loader": "^8.2.5",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.32.0",
@@ -29,7 +30,7 @@
     "mocha": "^7.1.1",
     "sinon": "^9.0.2",
     "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
+    "webpack-cli": "^4.3.0",
     "webpack-dev-server": "^4.9.0"
   }
 }
