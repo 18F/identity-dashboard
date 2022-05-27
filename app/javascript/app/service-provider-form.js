@@ -7,17 +7,17 @@ function ialOptionSetup() {
 
   // Functions
   const toggleIAL1Options = () => {
-    ialAttributesCheckboxes.forEach(checkboxWrapper => {
+    ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       const checkboxInput = checkboxWrapper.querySelector('input');
       if (ial1Attributes.includes(checkboxInput.value)) {
         checkboxWrapper.classList.add('display-none');
-        checkboxInput.checked = false
+        checkboxInput.checked = false;
       }
     });
   };
 
   const toggleIAL2Options = () => {
-    ialAttributesCheckboxes.forEach(checkboxWrapper => {
+    ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       checkboxWrapper.classList.remove('display-none');
     });
   };
@@ -54,13 +54,13 @@ function protocolOptionSetup() {
 
   // Functions
   const toggleSAMLOptions = () => {
-    samlFields.forEach(field => field.classList.remove('display-none'));
-    oidcFields.forEach(field => field.classList.add('display-none'));
+    samlFields.forEach((field) => field.classList.remove('display-none'));
+    oidcFields.forEach((field) => field.classList.add('display-none'));
   };
 
   const toggleOIDCOptions = () => {
-    oidcFields.forEach(field => field.classList.remove('display-none'));
-    samlFields.forEach(field => field.classList.add('display-none'));
+    oidcFields.forEach((field) => field.classList.remove('display-none'));
+    samlFields.forEach((field) => field.classList.add('display-none'));
   };
 
   const toggleFormFields = (protocol) => {
@@ -75,8 +75,8 @@ function protocolOptionSetup() {
         returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
-        samlFields.forEach(field => field.classList.remove('display-none'));
-        oidcFields.forEach(field => field.classList.remove('display-none'));
+        samlFields.forEach((field) => field.classList.remove('display-none'));
+        oidcFields.forEach((field) => field.classList.remove('display-none'));
     }
   };
 
@@ -84,15 +84,14 @@ function protocolOptionSetup() {
   toggleFormFields(activeIdProtocol.value);
 
   // Event triggers
-  idProtocols.forEach(idProtocol => {
+  idProtocols.forEach((idProtocol) => {
     idProtocol.addEventListener("change", (event) => toggleFormFields(event.target.value));
   });
-};
+}
 
 function serviceProviderForm() {
   ialOptionSetup();
   protocolOptionSetup();
-  certificateUploadSetup();
 }
 
 window.addEventListener('DOMContentLoaded', serviceProviderForm);
@@ -108,8 +107,6 @@ $(function () {
   const pemInputMessage = $('.js-pem-input-error-message');
   const pemInput = $('.js-pem-input');
   const redirectURI = $('#add-redirect-uri-field');
-
-  const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
 
   // Functions
 
