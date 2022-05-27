@@ -1,3 +1,6 @@
+const toggleElementVisibility = (element, isVisible) =>
+  element.classList.toggle('display-none', !isVisible);
+
 function ialOptionSetup() {
   // Selectors
   const ialLevel = document.getElementById('service_provider_ial');
@@ -10,7 +13,7 @@ function ialOptionSetup() {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       const checkboxInput = checkboxWrapper.querySelector('input');
       if (ial1Attributes.includes(checkboxInput.value)) {
-        checkboxWrapper.classList.add('display-none');
+        toggleElementVisibility(checkboxWrapper, false);
         checkboxInput.checked = false;
       }
     });
@@ -18,22 +21,22 @@ function ialOptionSetup() {
 
   const toggleIAL2Options = () => {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
-      checkboxWrapper.classList.remove('display-none');
+      toggleElementVisibility(checkboxWrapper, true);
     });
   };
 
   const toggleIALOptions = (ial) => {
     switch (ial) {
       case '1':
-        failureToProofURL.classList.add('display-none');
+        toggleElementVisibility(failureToProofURL, false);
         toggleIAL1Options();
         break;
       case '2':
-        failureToProofURL.classList.remove('display-none');
+        toggleElementVisibility(failureToProofURL, true);
         toggleIAL2Options();
         break;
       default:
-        failureToProofURL.remove('display-none');
+        toggleElementVisibility(failureToProofURL, true);
         toggleIAL2Options();
     }
   };
@@ -54,13 +57,14 @@ function protocolOptionSetup() {
 
   // Functions
   const toggleSAMLOptions = () => {
-    samlFields.forEach((field) => field.classList.remove('display-none'));
-    oidcFields.forEach((field) => field.classList.add('display-none'));
+    samlFields.forEach((field) => toggleElementVisibility(field, true));
+
+    oidcFields.forEach((field) => toggleElementVisibility(field, false));
   };
 
   const toggleOIDCOptions = () => {
-    oidcFields.forEach((field) => field.classList.remove('display-none'));
-    samlFields.forEach((field) => field.classList.add('display-none'));
+    oidcFields.forEach((field) => toggleElementVisibility(field, true));
+    samlFields.forEach((field) => toggleElementVisibility(field, false));
   };
 
   const toggleFormFields = (protocol) => {
@@ -75,8 +79,8 @@ function protocolOptionSetup() {
         returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
-        samlFields.forEach((field) => field.classList.remove('display-none'));
-        oidcFields.forEach((field) => field.classList.remove('display-none'));
+        samlFields.forEach((field) => toggleElementVisibility(field, true));
+        oidcFields.forEach((field) => toggleElementVisibility(field, true));
     }
   };
 
