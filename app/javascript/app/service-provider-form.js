@@ -1,5 +1,5 @@
-const toggleElementVisibility = (element, isVisible) =>
-  element.classList.toggle('display-none', !isVisible);
+const showElement = (element) => element.classList.remove('display-none');
+const hideElement = (element) => element.classList.add('display-none');
 
 function ialOptionSetup() {
   // Selectors
@@ -13,7 +13,7 @@ function ialOptionSetup() {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       const checkboxInput = checkboxWrapper.querySelector('input');
       if (ial1Attributes.includes(checkboxInput.value)) {
-        toggleElementVisibility(checkboxWrapper, false);
+        hideElement(checkboxWrapper);
         checkboxInput.checked = false;
       }
     });
@@ -21,22 +21,22 @@ function ialOptionSetup() {
 
   const toggleIAL2Options = () => {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
-      toggleElementVisibility(checkboxWrapper, true);
+      showElement(checkboxWrapper);
     });
   };
 
   const toggleIALOptions = (ial) => {
     switch (ial) {
       case '1':
-        toggleElementVisibility(failureToProofURL, false);
+        hideElement(failureToProofURL);
         toggleIAL1Options();
         break;
       case '2':
-        toggleElementVisibility(failureToProofURL, true);
+        showElement(failureToProofURL);
         toggleIAL2Options();
         break;
       default:
-        toggleElementVisibility(failureToProofURL, true);
+        showElement(failureToProofURL);
         toggleIAL2Options();
     }
   };
@@ -57,14 +57,14 @@ function protocolOptionSetup() {
 
   // Functions
   const toggleSAMLOptions = () => {
-    samlFields.forEach((field) => toggleElementVisibility(field, true));
 
-    oidcFields.forEach((field) => toggleElementVisibility(field, false));
+    samlFields.forEach(showElement);
+    oidcFields.forEach(hideElement);
   };
 
   const toggleOIDCOptions = () => {
-    oidcFields.forEach((field) => toggleElementVisibility(field, true));
-    samlFields.forEach((field) => toggleElementVisibility(field, false));
+    oidcFields.forEach(showElement);
+    samlFields.forEach(hideElement);
   };
 
   const toggleFormFields = (protocol) => {
@@ -79,8 +79,8 @@ function protocolOptionSetup() {
         returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
-        samlFields.forEach((field) => toggleElementVisibility(field, true));
-        oidcFields.forEach((field) => toggleElementVisibility(field, true));
+        samlFields.forEach(showElement);
+        oidcFields.forEach(showElement);
     }
   };
 
