@@ -57,7 +57,6 @@ function protocolOptionSetup() {
 
   // Functions
   const toggleSAMLOptions = () => {
-
     samlFields.forEach(showElement);
     oidcFields.forEach(hideElement);
   };
