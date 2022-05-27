@@ -1,6 +1,6 @@
 function ialOptionSetup() {
   // Selectors
-  const ialLevel = document.querySelector('#service_provider_ial');
+  const ialLevel = document.getElementById('service_provider_ial');
   const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
   const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
@@ -50,7 +50,7 @@ function protocolOptionSetup() {
   const activeIdProtocol = document.querySelector('input[name="service_provider[identity_protocol]"]:checked');
   const samlFields = document.querySelectorAll('.saml-fields');
   const oidcFields = document.querySelectorAll('.oidc-fields');
-  const returnToSpUrl = document.querySelector('#service_provider_return_to_sp_url');
+  const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
 
   // Functions
   const toggleSAMLOptions = () => {
