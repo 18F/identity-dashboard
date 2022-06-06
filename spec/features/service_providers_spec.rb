@@ -163,7 +163,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
 
       choose(
-        'service_provider_identity_protocol_openid_connect_private_key_jwt', 
+        'service_provider_identity_protocol_openid_connect_private_key_jwt',
         allow_label_click: true,
       )
       choose('service_provider_identity_protocol_saml', allow_label_click: true)
@@ -263,6 +263,42 @@ feature 'Service Providers CRUD' do
       end
 
       expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects')))
+    end
+
+    scenario 'IAL1 attributes shown when IAL1 is selected', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+      select('Authentication only', from: 'Level of Service')
+
+      ial1_attributes = %w[email all_emails verified_at x509_subject x509_presented]
+      ial2_attributes = %w[first_name last_name dob ssn address1 address2 city state zipcode phone]
+
+      ial1_attributes.each do |atr|
+        selector = "[for=service_provider_attribute_bundle_#{atr}]"
+        expect(page).to have_selector(selector, wait: 0.1)
+      end
+      ial2_attributes.each do |atr|
+        selector = "[for=service_provider_attribute_bundle_#{atr}]"
+        expect(page).to_not have_selector(selector, wait: 0.1)
+      end
+    end
+
+    scenario 'IAL2 attributes shown when IAL2 is selected', :js do
+      user = create(:user)
+      login_as(user)
+
+      visit new_service_provider_path
+      select('Identity Verification permitted', from: 'Level of Service')
+
+      attributes =
+       %w[email all_emails verified_at x509_subject x509_presented first_name last_name dob ssn address1 address2 city state zipcode phone]
+
+      attributes.each do |atr|
+        selector = "[for=service_provider_attribute_bundle_#{atr}]"
+        expect(page).to have_selector(selector, wait: 0.1)
+      end
     end
     # rubocop:enable Layout/LineLength
   end
