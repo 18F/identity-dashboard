@@ -93,6 +93,10 @@ function protocolOptionSetup() {
 }
 
 function serviceProviderForm() {
+  if (!document.querySelector('.service-provider-form')) {
+    return;
+  }
+
   ialOptionSetup();
   protocolOptionSetup();
 }
