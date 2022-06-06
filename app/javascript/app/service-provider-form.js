@@ -12,7 +12,7 @@ function ialOptionSetup() {
   const toggleIAL1Options = () => {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       const checkboxInput = checkboxWrapper.querySelector('input');
-      if (ial1Attributes.includes(checkboxInput.value)) {
+      if (!ial1Attributes.includes(checkboxInput.value)) {
         hideElement(checkboxWrapper);
         checkboxInput.checked = false;
       }
