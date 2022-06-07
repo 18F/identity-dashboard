@@ -94,7 +94,6 @@ function protocolOptionSetup() {
 
 function certificateUploadSetup() {
   // Selectors
-  const fileContainer = document.getElementById('certificate-container');
   const pemInputMessage = document.querySelector('.js-pem-input-error-message');
   const pemInput = document.querySelector('.js-pem-input');
   const pemFilename = document.querySelector('.js-pem-file-name');
@@ -125,7 +124,7 @@ function certificateUploadSetup() {
   };
 
   // Event triggers
-  fileContainer.addEventListener('change', handleUploadedCert);
+  pemInput.addEventListener('change', handleUploadedCert);
 }
 
 function logoUploadSetup() {
@@ -146,6 +145,7 @@ function logoUploadSetup() {
 
 function redirectURISetup() {
   // Selectors
+  const redirectURIContainer = document.querySelector('.service_provider_redirect_uris');
   const redirectURI = document.getElementById('add-redirect-uri-field');
 
   // Functions
@@ -153,6 +153,7 @@ function redirectURISetup() {
     const lastInput = document.querySelector('.service_provider_redirect_uris input:last-child');
     const newInput = lastInput.cloneNode(true);
     newInput.value = '';
+    redirectURIContainer.appendChild(newInput);
   };
 
   // Event triggers
@@ -172,18 +173,3 @@ function serviceProviderForm() {
 }
 
 window.addEventListener('DOMContentLoaded', serviceProviderForm);
-
-$(function () {
-  if (!$('.service-provider-form').length) {
-    return;
-  }
-  const redirectURI = $('#add-redirect-uri-field');
-
-  // Functions
-  redirectURI.click(() =>
-      $('.service_provider_redirect_uris input:last-child')
-          .clone()
-          .val('')
-          .appendTo('.service_provider_redirect_uris')
-  );
-});
