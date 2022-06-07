@@ -132,7 +132,7 @@ function logoUploadSetup() {
   const logoInput = document.querySelector('.input-file');
   const logoPreview = document.querySelector('.input-preview');
 
-  // Funcitons
+  // Functions
   const handleUploadedLogo = () => {
     const logoFile = logoInput.files[0];
 
