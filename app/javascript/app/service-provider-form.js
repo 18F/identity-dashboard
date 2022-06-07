@@ -92,53 +92,21 @@ function protocolOptionSetup() {
   });
 }
 
-function serviceProviderForm() {
-  if (!document.querySelector('.service-provider-form')) {
-    return;
-  }
-
-  ialOptionSetup();
-  protocolOptionSetup();
-}
-
-window.addEventListener('DOMContentLoaded', serviceProviderForm);
-
-$(function () {
-  if (!$('.service-provider-form').length) {
-    return;
-  }
-
+function certificateUploadSetup() {
   // Selectors
-  const fileContainer = $('#certificate-container');
-  const logoInput = $('.input-file');
-  const pemInputMessage = $('.js-pem-input-error-message');
-  const pemInput = $('.js-pem-input');
-  const redirectURI = $('#add-redirect-uri-field');
+  const pemInputMessage = document.querySelector('.js-pem-input-error-message');
+  const pemInput = document.querySelector('.js-pem-input');
+  const pemFilename = document.querySelector('.js-pem-file-name');
 
   // Functions
+  const setPemError = (message) => {
+    pemInputMessage.textContent = message;
+  };
 
-  const setPemError = (message) => (pemInputMessage[0].textContent = message); // eslint-disable-line
+  const handleUploadedCert = () => {
+    const file = pemInput.files[0];
 
-  redirectURI.click(() =>
-      $('.service_provider_redirect_uris input:last-child')
-          .clone()
-          .val('')
-          .appendTo('.service_provider_redirect_uris')
-  );
-
-  logoInput.change(() => {
-    const logoFile = logoInput[0].files[0];
-    const filePreview = $('.input-preview');
-
-    filePreview.text((logoFile && logoFile.name) || '');
-  });
-
-  fileContainer.on('change', pemInput, () => {
-    // Handles a single certificate file currently
-    const file = pemInput[0].files[0];
-    const pemFilename = $('.js-pem-file-name');
-
-    pemFilename[0].textContent = file ? file.name : null;
+    pemFilename.textContent = file ? file.name : null;
 
     if (file && file.text) {
       file.text().then((content) => {
@@ -153,5 +121,55 @@ $(function () {
     } else {
       setPemError(null);
     }
-  });
-});
+  };
+
+  // Event triggers
+  pemInput.addEventListener('change', handleUploadedCert);
+}
+
+function logoUploadSetup() {
+  // Selectors
+  const logoInput = document.querySelector('.logo-input-file');
+  const logoPreview = document.querySelector('.input-preview');
+
+  // Functions
+  const handleUploadedLogo = () => {
+    const logoFile = logoInput.files[0];
+
+    logoPreview.textContent = (logoFile && logoFile.name) || '';
+  };
+
+  // Event triggers
+  logoInput.addEventListener('change', handleUploadedLogo);
+}
+
+function redirectURISetup() {
+  // Selectors
+  const redirectURIContainer = document.querySelector('.service_provider_redirect_uris');
+  const redirectURI = document.getElementById('add-redirect-uri-field');
+
+  // Functions
+  const handleRedirectURIClick = () => {
+    const lastInput = document.querySelector('.service_provider_redirect_uris input:last-child');
+    const newInput = lastInput.cloneNode(true);
+    newInput.value = '';
+    redirectURIContainer.appendChild(newInput);
+  };
+
+  // Event triggers
+  redirectURI.addEventListener('click', handleRedirectURIClick);
+}
+
+function serviceProviderForm() {
+  if (!document.querySelector('.service-provider-form')) {
+    return;
+  }
+
+  ialOptionSetup();
+  protocolOptionSetup();
+  certificateUploadSetup();
+  logoUploadSetup();
+  redirectURISetup();
+}
+
+window.addEventListener('DOMContentLoaded', serviceProviderForm);
