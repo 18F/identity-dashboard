@@ -1,51 +1,70 @@
-$(function () {
-  if (!$('.service-provider-form').length) {
-    return;
-  }
+const showElement = (element) => element.classList.remove('display-none');
+const hideElement = (element) => element.classList.add('display-none');
 
+function ialOptionSetup() {
   // Selectors
-  const idProtocol = $('input[name="service_provider[identity_protocol]"]');
-  const ialLevel = $('#service_provider_ial');
-  const samlFields = $('.saml-fields');
-  const oidcFields = $('.oidc-fields');
-  const ialAttributesCheckboxes = $('.ial-attr-wrapper');
-  const fileContainer = $('#certificate-container');
-  const logoInput = $('.input-file');
-  const pemInputMessage = $('.js-pem-input-error-message');
-  const pemInput = $('.js-pem-input');
-  const redirectURI = $('#add-redirect-uri-field');
-  const failureToProofURL = $('.service_provider_failure_to_proof_url');
-  const returnToSpUrl = document.querySelector('#service_provider_return_to_sp_url');
-
+  const ialLevel = document.getElementById('service_provider_ial');
+  const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
+  const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
 
   // Functions
   const toggleIAL1Options = () => {
-    ialAttributesCheckboxes.each((idx, attr) => {
-      const element = $(attr).find('input');
-
-      if (!ial1Attributes.includes(element.val())) {
-        $(attr).hide();
-        element.prop('checked', false);
+    ialAttributesCheckboxes.forEach((checkboxWrapper) => {
+      const checkboxInput = checkboxWrapper.querySelector('input');
+      if (!ial1Attributes.includes(checkboxInput.value)) {
+        hideElement(checkboxWrapper);
+        checkboxInput.checked = false;
       }
     });
   };
 
   const toggleIAL2Options = () => {
-    ialAttributesCheckboxes.each((idx, attr) => $(attr).show());
+    ialAttributesCheckboxes.forEach((checkboxWrapper) => {
+      showElement(checkboxWrapper);
+    });
   };
 
+  const toggleIALOptions = (ial) => {
+    switch (ial) {
+      case '1':
+        hideElement(failureToProofURL);
+        toggleIAL1Options();
+        break;
+      case '2':
+        showElement(failureToProofURL);
+        toggleIAL2Options();
+        break;
+      default:
+        showElement(failureToProofURL);
+        toggleIAL2Options();
+    }
+  };
+
+  // Page initialization
+  toggleIALOptions(ialLevel.value);
+
+  // Event trigger
+  ialLevel.addEventListener("change", (event) => toggleIALOptions(event.target.value));
+}
+
+function protocolOptionSetup() {
+  const idProtocols = document.querySelectorAll('input[name="service_provider[identity_protocol]"]');
+  const activeIdProtocol = document.querySelector('input[name="service_provider[identity_protocol]"]:checked');
+  const samlFields = document.querySelectorAll('.saml-fields');
+  const oidcFields = document.querySelectorAll('.oidc-fields');
+  const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
+
+  // Functions
   const toggleSAMLOptions = () => {
-    samlFields.show();
-    oidcFields.hide();
+    samlFields.forEach(showElement);
+    oidcFields.forEach(hideElement);
   };
 
   const toggleOIDCOptions = () => {
-    oidcFields.show();
-    samlFields.hide();
+    oidcFields.forEach(showElement);
+    samlFields.forEach(hideElement);
   };
-
-  const setPemError = (message) => (pemInputMessage[0].textContent = message); // eslint-disable-line
 
   const toggleFormFields = (protocol) => {
     switch (protocol) {
@@ -59,56 +78,35 @@ $(function () {
         returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
-        samlFields.show();
-        oidcFields.show();
-    }
-  };
-
-  const toggleIALOptions = (ial) => {
-    switch (ial) {
-      case '1':
-        failureToProofURL.hide();
-        toggleIAL1Options();
-        break;
-      case '2':
-        failureToProofURL.show();
-        toggleIAL2Options();
-        break;
-      default:
-        failureToProofURL.show();
-        toggleIAL2Options();
+        samlFields.forEach(showElement);
+        oidcFields.forEach(showElement);
     }
   };
 
   // Page initialization
-  toggleFormFields(idProtocol.filter(':checked').val());
-  toggleIALOptions(ialLevel.val());
+  toggleFormFields(activeIdProtocol.value);
 
   // Event triggers
-  idProtocol.change((evt) => toggleFormFields(evt.target.value));
-
-  ialLevel.change((evt) => toggleIALOptions(evt.target.value));
-
-  redirectURI.click(() =>
-      $('.service_provider_redirect_uris input:last-child')
-          .clone()
-          .val('')
-          .appendTo('.service_provider_redirect_uris')
-  );
-
-  logoInput.change(() => {
-    const logoFile = logoInput[0].files[0];
-    const filePreview = $('.input-preview');
-
-    filePreview.text((logoFile && logoFile.name) || '');
+  idProtocols.forEach((idProtocol) => {
+    idProtocol.addEventListener("change", (event) => toggleFormFields(event.target.value));
   });
+}
 
-  fileContainer.on('change', pemInput, () => {
-    // Handles a single certificate file currently
-    const file = pemInput[0].files[0];
-    const pemFilename = $('.js-pem-file-name');
+function certificateUploadSetup() {
+  // Selectors
+  const pemInputMessage = document.querySelector('.js-pem-input-error-message');
+  const pemInput = document.querySelector('.js-pem-input');
+  const pemFilename = document.querySelector('.js-pem-file-name');
 
-    pemFilename[0].textContent = file ? file.name : null;
+  // Functions
+  const setPemError = (message) => {
+    pemInputMessage.textContent = message;
+  };
+
+  const handleUploadedCert = () => {
+    const file = pemInput.files[0];
+
+    pemFilename.textContent = file ? file.name : null;
 
     if (file && file.text) {
       file.text().then((content) => {
@@ -123,5 +121,55 @@ $(function () {
     } else {
       setPemError(null);
     }
-  });
-});
+  };
+
+  // Event triggers
+  pemInput.addEventListener('change', handleUploadedCert);
+}
+
+function logoUploadSetup() {
+  // Selectors
+  const logoInput = document.querySelector('.logo-input-file');
+  const logoPreview = document.querySelector('.input-preview');
+
+  // Functions
+  const handleUploadedLogo = () => {
+    const logoFile = logoInput.files[0];
+
+    logoPreview.textContent = (logoFile && logoFile.name) || '';
+  };
+
+  // Event triggers
+  logoInput.addEventListener('change', handleUploadedLogo);
+}
+
+function redirectURISetup() {
+  // Selectors
+  const redirectURIContainer = document.querySelector('.service_provider_redirect_uris');
+  const redirectURI = document.getElementById('add-redirect-uri-field');
+
+  // Functions
+  const handleRedirectURIClick = () => {
+    const lastInput = document.querySelector('.service_provider_redirect_uris input:last-child');
+    const newInput = lastInput.cloneNode(true);
+    newInput.value = '';
+    redirectURIContainer.appendChild(newInput);
+  };
+
+  // Event triggers
+  redirectURI.addEventListener('click', handleRedirectURIClick);
+}
+
+function serviceProviderForm() {
+  if (!document.querySelector('.service-provider-form')) {
+    return;
+  }
+
+  ialOptionSetup();
+  protocolOptionSetup();
+  certificateUploadSetup();
+  logoUploadSetup();
+  redirectURISetup();
+}
+
+window.addEventListener('DOMContentLoaded', serviceProviderForm);
