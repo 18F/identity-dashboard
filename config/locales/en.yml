@@ -22,7 +22,6 @@ en:
       new: Create a new service provider
       new_app: Create a new test app
       show: 'Service Provider: %{friendly_name}'
-    session_timeout_warning: Session Timeout
     teams:
       edit: Edit user team
       index: User teams
@@ -68,7 +67,7 @@ en:
     confirm_delete: Are you sure you want to delete this user?
     service_provider_deleted: Success! You have deleted %{issuer}
     service_provider_saved: Success! You have saved %{issuer}
-    service_provider_iaa_notice: 
+    service_provider_iaa_notice:
         All configuration changes or new configurations must be promoted to production following the process outlined in the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Docs</a> - configurations must be reviewed by the Login.gov Partnerships team and approved by Friday in order to go live the following Thursday. We suggest allowing two weeks for integration launch or change requests.
         <br><br>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Docs</a> for more details or email <a href="mailto:partners@login.gov">partners@login.gov</a> with any questions.
@@ -83,10 +82,5 @@ en:
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out
-  session_timedout: For your safety, we signed you out after being idle for %{session_timeout}.
-    Please sign in again.
-  session_timeout_warning: We noticed you haven't been very active, hence we will
-    sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain
-    signed in.
   shared:
     official_site: An official website of the United States government
