@@ -1,7 +1,3 @@
-// Removing element from DOM (on click containing appropriate data attribute)
-const dismiss = '[data-dismiss="true"]';
-$(document).on('click', dismiss, function (e) { $(e.target).parent().remove(); });
-
 // Safari & IE 8/9 do not support client side handling of `required` attribute on
 // form inputs; this adds basic messaging and styling fallback for these browsers
 $(document).on('ready', function () {

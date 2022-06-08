@@ -3,8 +3,6 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get '/users/logout' => 'users/sessions#destroy', as: :destroy_user_session
-    get 'active'  => 'users/sessions#active'
-    get 'timeout' => 'users/sessions#timeout'
   end
   get '/auth/logindotgov/callback' => 'users/omniauth#callback'
   get 'users/none' => 'users#none'
