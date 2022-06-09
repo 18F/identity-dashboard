@@ -3,8 +3,6 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
-import 'jquery';
-import 'jquery-ujs';
 import "../app/app";
 
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
