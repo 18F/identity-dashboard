@@ -132,10 +132,6 @@ function logoUploadSetup() {
   const logoInput = document.querySelector('.logo-input-file');
   const logoPreview = document.querySelector('.input-preview');
 
-  if (!logoInput) {
-    return;
-  }
-
   // Functions
   const handleUploadedLogo = () => {
     const logoFile = logoInput.files[0];
@@ -165,6 +161,10 @@ function redirectURISetup() {
 }
 
 function serviceProviderForm() {
+  if (!document.querySelector('.service-provider-form')) {
+    return;
+  }
+
   ialOptionSetup();
   protocolOptionSetup();
   certificateUploadSetup();
