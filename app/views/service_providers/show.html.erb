@@ -116,47 +116,47 @@
 
 <% if service_provider.identity_protocol == 'saml' %>
   <h2 class="margin-bottom-0">
-    <label for="acs_url">Assertion Consumer Service URL:</label> 
+    <label for="acs_url">Assertion Consumer Service URL:</label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.acs_url %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %> </i></p>
   <hr>
 
   <h2 class="margin-bottom-0">
-    <label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label> 
+    <label for="assertion_consumer_logout_service_url">Assertion Consumer Logout Service URL:</label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.assertion_consumer_logout_service_url %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %> </i></p>
   <hr>
 
   <h2 class="margin-bottom-0">
-    <label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label> 
+    <label for="assertion_consumer_logout_service_url">SP Initiated Login URL:</label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.sp_initiated_login_url %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.sp_initiated_login_url').html_safe %> </i></p>
   <hr>
 
   <h2 class="margin-bottom-0">
-    <label for="block_encryption">SAML Assertion Encryption:</label> 
+    <label for="block_encryption">SAML Assertion Encryption:</label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.block_encryption %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.saml_assertion_encryption') %> </i></p>
   <hr>
 
   <h2 class="margin-bottom-0">
-    <label for="signed_response_message_requested">Signed Response Message Requested:</label> 
+    <label for="signed_response_message_requested">Signed Response Message Requested:</label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.signed_response_message_requested? ? 'Yes' : 'No' %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.signed_response_requested') %> </i></p>
   <hr>
-                                                                  
-  <h2 class="margin-bottom-0">
-    <label for="return_to_sp_url">Return to App URL: </label>
-    <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
-  </h2>
-  <p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i></p>
-  <hr>
 <% end %>
+
+<h2 class="margin-bottom-0">
+  <label for="return_to_sp_url">Return to App URL: </label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
+</h2>
+<p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i></p>
+<hr>
 
 <h2>
   <label>Public certificates:</label>
@@ -194,14 +194,14 @@
 <hr>
 
 <h2 class="margin-bottom-0">
-  <label for="attribute_bundle">Attribute bundle:</label> 
+  <label for="attribute_bundle">Attribute bundle:</label>
   <span class="font-mono-xs margin-left-5"><%= sp_attribute_bundle(service_provider) %></span>
 </h2>
 <p><i> <%= I18n.t('service_provider_form.attribute_bundle').html_safe %> </i></p>
 <hr>
 
 <h2 class="margin-bottom-0">
-  <label for="active">Active:</label> 
+  <label for="active">Active:</label>
   <span class="font-mono-xs"><%= service_provider.active? ? 'Yes' : 'No' %></span>
 </h2>
 <hr>

@@ -1,6 +1,6 @@
 const showElement = (element) => element.classList.remove('display-none');
 const hideElement = (element) => element.classList.add('display-none');
-
+  /* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 function ialOptionSetup() {
   // Selectors
   const ialLevel = document.getElementById('service_provider_ial');
@@ -54,14 +54,37 @@ function protocolOptionSetup() {
   const samlFields = document.querySelectorAll('.saml-fields');
   const oidcFields = document.querySelectorAll('.oidc-fields');
   const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
+  const returnToSpUrlLabel = returnToSpUrl.previousSibling;
+  const abbrElement = document.createElement("ABBR");
+  const requiredText = document.createTextNode("(*required)");
 
-  // Functions
+  // Functions //
+
+  // Removes required form validations that were set in simple_form for protocols that don't require the attribute
+  const removeRequiredReturnUrlValidation = () => {
+    returnToSpUrl.removeAttribute('required');
+    returnToSpUrlLabel.classList.remove('usa-input-required', 'required');
+    returnToSpUrlLabel.removeChild(returnToSpUrlLabel.lastElementChild); // this removes the abbr element that contains the "required" text from the field
+  };
+
+  const addRequiredReturnUrlValidation = () => {
+    returnToSpUrl.setAttribute('required', 'required');
+    returnToSpUrlLabel.classList.add('usa-input-required', 'required');
+    abbrElement.setAttribute("class", "text-secondary-dark");
+    abbrElement.appendChild(requiredText);
+    returnToSpUrlLabel.appendChild(abbrElement);
+  };
+
   const toggleSAMLOptions = () => {
+    if (!returnToSpUrlLabel.lastElementChild) {
+      addRequiredReturnUrlValidation();
+    }
     samlFields.forEach(showElement);
     oidcFields.forEach(hideElement);
   };
 
   const toggleOIDCOptions = () => {
+    removeRequiredReturnUrlValidation();
     oidcFields.forEach(showElement);
     samlFields.forEach(hideElement);
   };
@@ -69,13 +92,13 @@ function protocolOptionSetup() {
   const toggleFormFields = (protocol) => {
     switch (protocol) {
       case 'openid_connect_private_key_jwt':
+        toggleOIDCOptions();
+        break;
       case 'openid_connect_pkce':
         toggleOIDCOptions();
-        returnToSpUrl.removeAttribute('required');
         break;
       case 'saml':
         toggleSAMLOptions();
-        returnToSpUrl.setAttribute('required', 'required');
         break;
       default:
         samlFields.forEach(showElement);

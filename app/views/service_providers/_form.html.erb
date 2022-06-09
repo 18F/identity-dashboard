@@ -265,17 +265,15 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                                       item_wrapper_tag: :li) do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
-    <% end %>  
+    <% end %>
   </div>
 
-  <div class='saml-fields'>
-    <%= form.input :return_to_sp_url,
+  <%= form.input :return_to_sp_url,
                   input_html: { class: 'usa-input' },
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
                   hint: I18n.t('service_provider_form.return_to_app_url').html_safe %>
-  </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
                  label: 'Failure to Proof URL',
