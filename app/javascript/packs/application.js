@@ -1,1 +1,1 @@
-import '@rails/ujs'
+import '@rails/ujs';

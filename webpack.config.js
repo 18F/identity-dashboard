@@ -1,5 +1,5 @@
-const path    = require("path")
-const webpack = require("webpack")
+const path = require("path");
+const webpack = require("webpack");
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProductionEnv = env === 'production';
@@ -32,4 +32,4 @@ module.exports = {
       },
     ],
   },
-}
+};
