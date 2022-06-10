@@ -39,7 +39,6 @@ gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.1', '>= 5.1.0'
 gem 'subprocess', require: false
 gem 'uglifier'
-gem 'webpacker', '~> 5.4', '>= 5.4.3'
 
 group :deploy do
   gem 'capistrano'
