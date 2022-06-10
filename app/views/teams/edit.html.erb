@@ -19,19 +19,22 @@
     ) %>
   </div>
 
-  <% if can_delete_team?(current_user) %>
-    <%= link_to(
-            'Delete',
-            team_path(@team),
-            method: :delete,
-            data: { confirm: 'Are you sure you want to delete this team?' },
-            class: 'usa-button usa-button--danger float-left',
-            )
-    %>
-  <% end %>
+  <div>
+    <% if can_delete_team?(current_user) %>
+      <%= button_to(
+              'Delete',
+              team_path(@team),
+              method: :delete,
+              form_class: 'display-inline',
+              data: { confirm: 'Are you sure you want to delete this team?' },
+              class: 'usa-button usa-button--danger display-inline',
+              )
+      %>
+    <% end %>
 
-  <%= form.button :submit, 'Update', class: "usa-button float-left" %>
+    <%= form.button :submit, 'Update', class: "usa-button" %>
 
-  <%= link_to t('forms.buttons.cancel'), teams_path,
-                class: 'usa-button usa-button--outline float-left' %>
+    <%= link_to t('forms.buttons.cancel'), teams_path,
+                  class: 'usa-button usa-button--outline' %>
+  </div>
 <% end %>
