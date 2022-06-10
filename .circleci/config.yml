@@ -54,6 +54,7 @@ jobs:
       - run:
           name: Test Setup
           command: |
+            yarn build
             cp config/application.yml.default config/application.yml
             bundle exec rake db:setup
 
