@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
   config.x_frame_options = 'SAMEORIGIN'
@@ -38,3 +39,4 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
+# rubocop:enable Metrics/BlockLength
