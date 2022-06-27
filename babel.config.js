@@ -5,7 +5,7 @@ module.exports = (api) => {
   if (isTestEnv) {
     targets = 'current node';
   } else {
-    targets = '> 1% or IE 11'
+    targets = '> 1% or IE 11';
   }
 
   return {
@@ -22,5 +22,5 @@ module.exports = (api) => {
       ],
       ['polyfill-regenerator', { method: 'usage-global', targets }],
     ],
-  }
+  };
 };
