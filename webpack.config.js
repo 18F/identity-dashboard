@@ -7,7 +7,7 @@ const isProductionEnv = env === 'production';
 
 module.exports = {
   mode: isProductionEnv ? 'production' : 'development',
-  devtool: isProductionEnv ? false : 'eval-source-map',
+  devtool: isProductionEnv ? false : 'source-map',
   entry: glob('app/javascript/packs/*.js').reduce((result, filepath) => {
     result[path.parse(filepath).name] = path.resolve(filepath);
     return result;
