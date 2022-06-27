@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@rails/ujs": "^6.0.5",
+    "fast-glob": "^3.2.7",
     "identity-style-guide": "^2.2.3",
     "kind-of": "^6.0.3",
     "minimist": "^1.2.6",
