@@ -5,7 +5,7 @@ module.exports = (api) => {
   if (isTestEnv) {
     targets = 'current node';
   } else {
-    targets = 'defaults'
+    targets = '> 1% or IE 11'
   }
 
   return {
