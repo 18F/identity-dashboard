@@ -599,11 +599,11 @@ DEPENDENCIES
   factory_bot_rails (~> 6.2, >= 6.2.0)
   fakefs
   faraday
-  i18n-tasks (>= 1.0.9)
+  i18n-tasks (>= 1.0.10)
   identity-hostdata!
   identity-logging!
   identity_validations!
-  jquery-rails (>= 4.4.0)
+  jquery-rails (>= 4.5.0)
   json-jwt (>= 1.13.0)
   jwt
   kaminari
@@ -621,7 +621,7 @@ DEPENDENCIES
   rack-canonical-host
   rack-timeout
   rack_session_access
-  rails (~> 6.1.5, >= 6.1.5.1)
+  rails (~> 6.1.6)
   rails-controller-testing (>= 1.0.5)
   rails_serve_static_assets
   recipient_interceptor
