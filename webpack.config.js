@@ -6,7 +6,7 @@ const isProductionEnv = env === 'production';
 
 module.exports = {
   mode: isProductionEnv ? 'production' : 'development',
-  devtool: "source-map",
+  devtool: isProductionEnv ? false : 'eval-source-map',
   entry: {
     application: "./app/javascript/packs/application.js",
     manage_users: "./app/javascript/packs/manage_users.js",
