@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
   config.x_frame_options = 'SAMEORIGIN'
@@ -10,8 +9,6 @@ SecureHeaders::Configuration.default do |config|
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'"]
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
-  script_src = ["'self'", '*.newrelic.com', '*.nr-data.net']
-  script_src << "'unsafe-eval'" if Rails.env.development? || Rails.env.test?
   config.csp = {
     default_src: ["'self'"],
     frame_src: ["'self'"], # deprecated in CSP 2.0
@@ -24,7 +21,7 @@ SecureHeaders::Configuration.default do |config|
     img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
     media_src: ["'self'"],
     object_src: ["'none'"],
-    script_src: script_src,
+    script_src: ["'self'", '*.newrelic.com', '*.nr-data.net'],
     style_src: ["'self'"],
     base_uri: ["'self'"],
   }
@@ -39,4 +36,3 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
-# rubocop:enable Metrics/BlockLength
