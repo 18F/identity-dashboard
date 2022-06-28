@@ -127,7 +127,7 @@ feature 'User teams CRUD' do
 
     visit teams_all_path
     find("a[href='#{edit_team_path(team)}']").click
-    find("a[href='#{team_path(team)}']", text: 'Delete').click
+    click_on 'Delete'
 
     expect(current_path).to eq(teams_path)
     expect(page).to have_content('Success')
@@ -142,7 +142,7 @@ feature 'User teams CRUD' do
     login_as(admin)
 
     visit edit_team_path(team)
-    find("a[href='#{team_path(team)}']", text: 'Delete').click
+    click_on 'Delete'
 
     expect(current_path).to eq(edit_team_path(team))
     expect(page).to have_content(I18n.t('notices.team_delete_failed'))
