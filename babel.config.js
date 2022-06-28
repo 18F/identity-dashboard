@@ -13,13 +13,7 @@ module.exports = (api) => {
       ['@babel/preset-env', { targets }],
     ],
     plugins: [
-      [
-        'polyfill-corejs3',
-        {
-          method: 'usage-global',
-          targets: targets ?? '> 1% and supports es6-module',
-        },
-      ],
+      ['polyfill-corejs3', { method: 'usage-global', targets }],
       ['polyfill-regenerator', { method: 'usage-global', targets }],
     ],
   };
