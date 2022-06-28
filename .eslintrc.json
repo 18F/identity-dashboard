@@ -5,8 +5,7 @@
     "browser": true
   },
   "globals": {
-    "expect": true,
-    "$": true
+    "expect": true
   },
   "rules": {
     "import/no-extraneous-dependencies": [
