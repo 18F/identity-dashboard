@@ -4,7 +4,7 @@
 <%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
-  <%= link_to(
+  <%= button_to(
           'Delete',
           user_path(@user),
           method: :delete,
