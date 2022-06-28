@@ -27,7 +27,7 @@ gem 'pry-rails'
 gem 'pundit', '>= 2.1.0'
 gem 'rack-canonical-host'
 gem 'rack-timeout', require: false
-gem 'rails', '~> 6.1.5', '>= 6.1.5.1'
+gem 'rails', '~> 6.1.6'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
@@ -58,7 +58,7 @@ end
 group :development, :test do
   gem 'bullet'
   gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
-  gem 'i18n-tasks', '>= 1.0.9'
+  gem 'i18n-tasks', '>= 1.0.10'
   gem 'pry-byebug'
   gem 'puma'
   gem 'rspec-rails', '~> 4.1', '>= 4.1.2'
