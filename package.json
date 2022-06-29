@@ -10,7 +10,6 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@18f/eslint-plugin-identity": "^1.0.0",
     "@babel/core": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/register": "^7.9.0",
@@ -24,6 +23,7 @@
     "webpack-cli": "^4.9.2"
   },
   "devDependencies": {
+    "@18f/eslint-plugin-identity": "^1.0.0",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.32.0",
