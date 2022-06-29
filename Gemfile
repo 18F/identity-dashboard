@@ -14,6 +14,7 @@ gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v3.3.0'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
 gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', tag: 'v0.7.4'
+gem 'jsbundling-rails'
 gem 'json-jwt', '>= 1.13.0'
 gem 'jwt'
 gem 'kaminari'
@@ -38,7 +39,6 @@ gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.1', '>= 5.1.0'
 gem 'subprocess', require: false
 gem 'uglifier'
-gem 'webpacker', '~> 5.4', '>= 5.4.3'
 
 group :deploy do
   gem 'capistrano'
