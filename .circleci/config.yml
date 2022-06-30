@@ -14,6 +14,10 @@ jobs:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: 39be7be4c9a09e955bd481daa7196fe4dccd67f3ee53e24e91535169eea78123
           COVERAGE: true
+          # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
+          # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM
+          # to use the version from .nvmrc instead.
+          NODE_VERSION: ''
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -32,6 +36,16 @@ jobs:
 
       - restore_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Switch Node.js version
+          command: |
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            . "$NVM_DIR/nvm.sh" --install
+            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV;
+            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV;
+            node -v
 
       - run:
           name: Install dependencies
