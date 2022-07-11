@@ -69,7 +69,7 @@
 
   <%= form.input :ial,
                  as: :select,
-                 collection: [['Authentication only', 1], ['Identity Verification permitted', 2]],
+                 collection: [['Authentication only (no verified attributes)', 1], ['Identity verification permitted', 2]],
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
@@ -78,9 +78,9 @@
   <%= form.input :default_aal,
                  as: :select,
                  collection: [
-                   ['', nil],
-                   ['AAL2', 2],
-                   ['AAL2 + Phishing-Resistant MFA', 3]],
+                   ['MFA required + remember device up to 30 days (AAL1)', 1],
+                   ['MFA required + remember device up to 12 hours (AAL2)', 2],
+                   ['Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)', 3]],
                  selected: form.object.default_aal,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)',
