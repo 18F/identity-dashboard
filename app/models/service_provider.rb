@@ -79,7 +79,8 @@ class ServiceProvider < ApplicationRecord
     when 2
       'MFA required + remember device up to 12 hours (AAL2)'
     when 3
-      'Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)'
+      'Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required +'\
+      ' remember device up to 12 hours (AAL2)'
     else
       default_aal.inspect
     end

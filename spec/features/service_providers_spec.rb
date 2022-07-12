@@ -19,7 +19,8 @@ feature 'Service Providers CRUD' do
       fill_in 'service_provider_logo', with: 'test.png'
       select user.teams[0].name, from: 'service_provider_group_id'
       select 'Identity Verification permitted', from: 'Level of Service'
-      select 'MFA required + remember device up to 12 hours (AAL2)', from: 'Authentication Assurance Level (AAL)'
+      select 'MFA required + remember device up to 12 hours (AAL2)',
+             from: 'Authentication Assurance Level (AAL)'
 
       check 'email'
       check 'first_name'
@@ -401,7 +402,9 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'
-      select 'Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)', from: 'Authentication Assurance Level (AAL)'
+      select 'Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device'\
+             ' up to 12 hours (AAL2)',
+             from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
       click_on 'Update'
 
@@ -410,7 +413,8 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('app description foobar')
       expect(page).to have_content('change service_provider name')
       expect(page).to have_content('email')
-      expect(page).to have_content('Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)')
+      expect(page).to have_content('Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards)'\
+                                   ' required + remember device up to 12 hours (AAL2)')
     end
     scenario 'user updates service provider but service provider is invalid' do
       user = create(:user)

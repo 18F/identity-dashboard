@@ -242,7 +242,8 @@ describe ServiceProvider do
       sp = build(:service_provider, default_aal: 2)
       expect(sp.aal_friendly).to eq('MFA required + remember device up to 12 hours (AAL2)')
       sp = build(:service_provider, default_aal: 3)
-      expect(sp.aal_friendly).to eq('Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)')
+      expect(sp.aal_friendly).to eq('Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards)'\
+                                    ' required + remember device up to 12 hours (AAL2)')
       sp = build(:service_provider, default_aal: 4)
       expect(sp.aal_friendly).to eq('4')
     end
