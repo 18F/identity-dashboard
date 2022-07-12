@@ -225,9 +225,9 @@ describe ServiceProvider do
 
     it 'converts integer to friendly IAL string' do
       sp = build(:service_provider, ial: nil)
-      expect(sp.ial_friendly).to eq('Authentication only')
+      expect(sp.ial_friendly).to eq('Authentication only (no verified attributes)')
       sp = build(:service_provider, ial: 1)
-      expect(sp.ial_friendly).to eq('Authentication only')
+      expect(sp.ial_friendly).to eq('Authentication only (no verified attributes)')
       sp = build(:service_provider, ial: 2)
       expect(sp.ial_friendly).to eq('Identity Verification permitted')
       sp = build(:service_provider, ial: 3)
@@ -236,13 +236,13 @@ describe ServiceProvider do
 
     it 'converts integer to friendly AAL string' do
       sp = build(:service_provider, default_aal: nil)
-      expect(sp.aal_friendly).to eq('')
+      expect(sp.aal_friendly).to eq('MFA required + remember device up to 30 days (AAL1)')
       sp = build(:service_provider, default_aal: 1)
-      expect(sp.aal_friendly).to eq('')
+      expect(sp.aal_friendly).to eq('MFA required + remember device up to 30 days (AAL1)')
       sp = build(:service_provider, default_aal: 2)
-      expect(sp.aal_friendly).to eq('AAL2')
+      expect(sp.aal_friendly).to eq('MFA required + remember device up to 12 hours (AAL2)')
       sp = build(:service_provider, default_aal: 3)
-      expect(sp.aal_friendly).to eq('AAL2 + Phishing-Resistant MFA')
+      expect(sp.aal_friendly).to eq('Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)')
       sp = build(:service_provider, default_aal: 4)
       expect(sp.aal_friendly).to eq('4')
     end

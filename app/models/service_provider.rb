@@ -64,7 +64,7 @@ class ServiceProvider < ApplicationRecord
   def ial_friendly
     case ial
     when 1, nil
-      'Authentication only'
+      'Authentication only (no verified attributes)'
     when 2
       'Identity Verification permitted'
     else
@@ -75,11 +75,11 @@ class ServiceProvider < ApplicationRecord
   def aal_friendly
     case default_aal
     when 1, nil
-      ''
+      'MFA required + remember device up to 30 days (AAL1)'
     when 2
-      'AAL2'
+      'MFA required + remember device up to 12 hours (AAL2)'
     when 3
-      'AAL2 + Phishing-Resistant MFA'
+      'Phishing-resistant MFA (e.g. webauthn or PIV/CAC cards) required + remember device up to 12 hours (AAL2)'
     else
       default_aal.inspect
     end
