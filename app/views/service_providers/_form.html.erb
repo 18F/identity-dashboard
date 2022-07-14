@@ -79,7 +79,7 @@
   <%= form.input :default_aal,
                  as: :select,
                  collection: [
-                   [I18n.t('service_provider_form.aal_option_nil'), nil],
+                   [I18n.t('service_provider_form.aal_option_default'), nil],
                    [I18n.t('service_provider_form.aal_option_2'), 2],
                    [I18n.t('service_provider_form.aal_option_3'), 3]],
                  selected: form.object.default_aal,
