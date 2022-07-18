@@ -64,9 +64,9 @@ class ServiceProvider < ApplicationRecord
   def ial_friendly
     case ial
     when 1, nil
-      'Authentication only'
+      I18n.t('service_provider_form.ial_option_1')
     when 2
-      'Identity Verification permitted'
+      I18n.t('service_provider_form.ial_option_2')
     else
       ial.inspect
     end
@@ -75,11 +75,11 @@ class ServiceProvider < ApplicationRecord
   def aal_friendly
     case default_aal
     when 1, nil
-      ''
+      I18n.t('service_provider_form.aal_option_default')
     when 2
-      'AAL2'
+      I18n.t('service_provider_form.aal_option_2')
     when 3
-      'AAL2 + Phishing-Resistant MFA'
+      I18n.t('service_provider_form.aal_option_3')
     else
       default_aal.inspect
     end
