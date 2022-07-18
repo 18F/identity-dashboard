@@ -39,7 +39,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
       expect(page).to have_content('email')
       expect(page).to have_content(user.teams[0].agency.name)
-      expect(page).to have_content('IAL2')
+      expect(page).to have_content(I18n.t('service_provider_form.ial_option_2'))
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_2'))
     end
 
