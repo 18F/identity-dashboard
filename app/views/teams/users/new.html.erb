@@ -1,0 +1,10 @@
+<h1 class="usa-display">Add New user</h1>
+
+<%= simple_form_for(@user,
+    html: { autocomplete: 'off', role: 'form' },
+    url: team_users_path(@team)) do |form| %>
+  <%= render 'form', form: form %>
+  <%= form.button :submit, 'Add', :class => "usa-button" %>
+  <%= link_to t('forms.buttons.cancel'), team_path(@team.id),
+              class: 'usa-button usa-button--outline float-left' %>
+<% end %>
