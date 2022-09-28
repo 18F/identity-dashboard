@@ -1,0 +1,16 @@
+<h1 class="usa-display padding-bottom-2 border-underline"> <%= I18n.t('headings.users.delete_confirm_title', { email: @user.email, team: @team.name }) %></h1>
+
+<h2><%= t('headings.users.delete_confirm_subhead') %></h2>
+<ul>
+<li> <%= t('headings.users.delete_confirm') %></li>
+</ul>
+
+<p class="border-underline padding-bottom-2 margin-top-4">
+
+<%= button_to t('headings.users.delete'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
+<p>
+
+  <%= link_to t('forms.buttons.cancel'), team_path(@team.id),
+              class: 'usa-button--unstyled' %>
+
+

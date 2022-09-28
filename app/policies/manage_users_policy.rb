@@ -14,6 +14,14 @@ class ManageUsersPolicy < BasePolicy
     in_team? || admin?
   end
 
+  def delete?
+    in_team? || admin?
+  end
+
+  def destroy?
+    in_team? || admin?
+  end
+
   private
 
   def admin?
