@@ -3,7 +3,7 @@ class Teams::UsersController < AuthenticatedController
 
     def delete
       @team = team
-      @user = User.find_by(id: params[:id])
+      @user = UserTeam.find_by(user_id: params[:id], team_id: params[:team_id])
       render :delete
     end
   

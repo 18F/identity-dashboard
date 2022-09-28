@@ -14,7 +14,7 @@ describe Teams::UsersController do
   describe '#delete' do
     let(:user_to_delete) { create(:user) }
 
-    context 'when user is not part of the team' do
+    context 'when user is not part of the team or an admin' do
       it 'renders an error' do
         get :delete, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(401)
