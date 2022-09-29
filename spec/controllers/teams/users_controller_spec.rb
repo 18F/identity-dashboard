@@ -65,7 +65,7 @@ describe Teams::UsersController do
       end
     end
 
-    context 'when the user is not an admin but is a team member and user to delete is team member' do
+    context 'when user not an admin but is a team member and user to delete is team member' do
         before do
             team.users << user_to_delete
             team.users << user
@@ -77,7 +77,7 @@ describe Teams::UsersController do
         end
     end
 
-    context 'when the user is not an admin but is a team member and user to delete is not team member' do
+    context 'when user not an admin but is a team member and user to delete is not team member' do
         before do
             team.users << user
             delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
