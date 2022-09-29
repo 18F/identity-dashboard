@@ -1,17 +1,25 @@
 class Teams::UsersController < AuthenticatedController
-   before_action -> { authorize team, policy_class: ManageUsersPolicy }
+   before_action -> { authorize team, policy_class: TeamUsersPolicy }
 
     def delete
       @team = team
-      @user = UserTeam.find_by(user_id: params[:id], team_id: params[:team_id])
-      render :delete
+      @user = team.users.find_by(id: params[:id])
+      if @user.present?
+        render :delete      
+      else
+        render_401
+      end
     end
   
     def destroy
-      user = User.find_by(id: params[:id])
-      return unless team.users.delete(user)
-      flash[:success] = I18n.t('notices.user_deleted', email: user.email)
-      redirect_to team_path(@team.id)
+      user = team.users.find_by(id: params[:id])
+      if user.present?
+        team.users.delete(user)
+        flash[:success] = I18n.t('notices.user_deleted', email: user.email)
+        redirect_to team_path(@team.id)
+      else
+        render_401
+      end
     end
   
     def none; end

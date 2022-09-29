@@ -1,4 +1,4 @@
-class ManageUsersPolicy < BasePolicy
+class TeamUsersPolicy < BasePolicy
   attr_reader :current_user, :team
 
   def initialize(current_user, team)
@@ -12,6 +12,14 @@ class ManageUsersPolicy < BasePolicy
 
   def create?
     in_team? || admin?
+  end
+
+  def delete?
+    (admin? || in_team?) 
+  end
+
+  def destroy?
+    (admin? || in_team?) 
   end
 
   private

@@ -25,12 +25,4 @@ describe ManageUsersPolicy do
       expect(ManageUsersPolicy).to_not permit(other_user, team)
     end
   end
-
-  permissions :delete? do
-    it 'allows team member or admin to delete' do
-      expect(ManageUsersPolicy).to permit(admin_user, team)
-      expect(ManageUsersPolicy).to permit(team_user, team)
-      expect(ManageUsersPolicy).to_not permit(other_user, team)
-    end
-  end
 end
