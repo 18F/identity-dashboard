@@ -83,7 +83,7 @@ en:
       the apps first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
-    user_team_deleted: Success! You have removed ${email} from the team.
+    user_team_deleted: Success! You have removed %{email} from the team.
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out
