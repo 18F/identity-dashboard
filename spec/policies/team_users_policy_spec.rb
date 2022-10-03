@@ -26,7 +26,7 @@ describe TeamUsersPolicy do
     end
   end
 
-  permissions :delete? do
+  permissions :remove_confirm? do
     it 'allows team member or admin to view delete page' do
       expect(TeamUsersPolicy).to permit(admin_user, team)
       expect(TeamUsersPolicy).to permit(team_user, team)

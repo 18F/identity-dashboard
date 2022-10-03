@@ -11,12 +11,12 @@ describe Teams::UsersController do
     sign_in user
   end
 
-  describe '#delete' do
+  describe '#remove_confirm' do
     let(:user_to_delete) { create(:user) }
 
     context 'when user is not part of the team or an admin' do
       it 'renders an error' do
-        get :delete, params: { team_id: team.id, id: user_to_delete.id }
+        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(401)
       end
     end
@@ -25,7 +25,7 @@ describe Teams::UsersController do
       it 'renders the delete confirmation page' do
         team.users << user
         team.users << user_to_delete
-        get :delete, params: { team_id: team.id, id: user_to_delete.id }
+        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:delete)
       end
@@ -34,7 +34,7 @@ describe Teams::UsersController do
     context 'when the user is part of the team but not the user to delete' do
         it 'renders an error' do
           team.users << user
-          get :delete, params: { team_id: team.id, id: user_to_delete.id }
+          get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
           expect(response.status).to eq(401)
         end
       end
@@ -43,7 +43,7 @@ describe Teams::UsersController do
       it 'renders the delete confirmation page' do
         user.admin = true
         team.users << user_to_delete
-        get :delete, params: { team_id: team.id, id: user_to_delete.id }
+        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:delete)
       end

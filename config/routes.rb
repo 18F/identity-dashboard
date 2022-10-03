@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   scope module: 'teams' do
     resources :teams do
-      get '/users/:id/delete' => 'users#delete'
+      get '/users/:id/remove_confirm' => 'users#remove_confirm'
       resources :users
     end
   end

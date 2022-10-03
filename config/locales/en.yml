@@ -34,11 +34,16 @@ en:
     users:
       edit: Edit user
       index: Users
-      delete: Remove user
+      delete: Delete user
       new_user: Create a new user
-      delete_confirm: They will no longer be able to see applications associated with the team using this email address.
-      delete_confirm_title: Are you sure you want to remove user "%{email}"? from "%{team}"?
-      delete_confirm_subhead: If you remove this user
+  teams:
+    users:
+      remove: 
+        success: Success! You have removed %{email} from the team.
+        button: Remove user
+        confirm_title: Are you sure you want to remove user "%{email}"? from "%{team}"?
+        confirm: They will no longer be able to see applications associated with the team using this email address.
+        confirm_subhead: If you remove this user
   home:
     body_dev_docs_html: Visit our %{href_dev_docs} to learn more.
     body_intro: Use the dashboard to manage your Login.gov test integrations.
@@ -83,7 +88,6 @@ en:
       the apps first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
-    user_team_deleted: Success! You have removed %{email} from the team.
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out

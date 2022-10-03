@@ -14,7 +14,7 @@ class TeamUsersPolicy < BasePolicy
     in_team? || admin?
   end
 
-  def delete?
+  def remove_confirm?
     (admin? || in_team?) 
   end
 
