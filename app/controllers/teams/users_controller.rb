@@ -2,9 +2,8 @@ class Teams::UsersController < AuthenticatedController
    before_action -> { authorize team, policy_class: TeamUsersPolicy }
 
     def remove_confirm
-      @team = team
-      @user = team.users.find_by(id: params[:id])
-      if @user.present? && @user != current_user
+      @user = find_user_by_team
+      if user_present_not_current_user(@user)
         render :remove_confirm      
       else
         render_401
@@ -12,22 +11,24 @@ class Teams::UsersController < AuthenticatedController
     end
   
     def destroy
-      user = team.users.find_by(id: params[:id])
-      if user.present? && user != current_user
+      user = find_user_by_team
+      if user_present_not_current_user(user)
         team.users.delete(user)
         flash[:success] = I18n.t('team.users.remove_success', email: user.email)
-        redirect_to team_path(@team.id)
+        redirect_to team_path(team.id)
       else
         render_401
       end
     end
   
-    def none; end
-  
     private
-  
-    def user_params
-      params.require(:user).permit(:email)
+
+    def find_user_by_team
+      team.users.find_by(id: params[:id])
+    end
+
+    def user_present_not_current_user(user)
+      user.present? && user != current_user
     end
 
     def team
