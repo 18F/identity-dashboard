@@ -4,7 +4,7 @@ class Teams::UsersController < AuthenticatedController
     def remove_confirm
       @team = team
       @user = team.users.find_by(id: params[:id])
-      if @user.present?
+      if @user.present? && @user != current_user
         render :remove_confirm      
       else
         render_401
@@ -13,7 +13,7 @@ class Teams::UsersController < AuthenticatedController
   
     def destroy
       user = team.users.find_by(id: params[:id])
-      if user.present?
+      if user.present? && user != current_user
         team.users.delete(user)
         flash[:success] = I18n.t('team.users.remove_success', email: user.email)
         redirect_to team_path(@team.id)

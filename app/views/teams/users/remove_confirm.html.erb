@@ -1,13 +1,13 @@
-<h1 class="usa-display padding-bottom-2 border-underline"> <%= I18n.t('teams.users.confirm_title', { email: @user.email, team: @team.name }) %></h1>
+<h1 class="usa-display padding-bottom-2 border-underline"> <%= I18n.t('teams.users.remove.confirm_title', { email: @user.email, team: @team.name }) %></h1>
 
-<h2><%= I18n.t('teams.users.confirm_subhead') %></h2>
+<h2><%= I18n.t('teams.users.remove.confirm_subhead') %></h2>
 <ul>
-<li> <%= I18n.t('teams.users.confirm') %></li>
+<li> <%= I18n.t('teams.users.remove.confirm') %></li>
 </ul>
 
 <p class="border-underline padding-bottom-2 margin-top-4">
 
-<%= button_to I18n.t('teams.users.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
+<%= button_to I18n.t('teams.users.remove.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
 <p>
 
   <%= link_to I18n.t('forms.buttons.cancel'), team_path(@team.id),

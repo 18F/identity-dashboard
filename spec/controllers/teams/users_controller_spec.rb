@@ -5,6 +5,7 @@ describe Teams::UsersController do
 
   let(:user) { create(:user) }
   let(:team) { create(:team) }
+  let(:user_to_delete) { create(:user) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -12,7 +13,6 @@ describe Teams::UsersController do
   end
 
   describe '#remove_confirm' do
-    let(:user_to_delete) { create(:user) }
 
     context 'when user is not part of the team or an admin' do
       it 'renders an error' do
@@ -27,7 +27,7 @@ describe Teams::UsersController do
         team.users << user_to_delete
         get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
-        expect(response).to render_template(:delete)
+        expect(response).to render_template(:remove_confirm)
       end
     end
 
@@ -39,19 +39,26 @@ describe Teams::UsersController do
         end
       end
 
+    context 'when the user belongs to team but tries to remove themselves from the team' do
+        it 'renders an error' do
+          team.users << user
+          get :remove_confirm, params: { team_id: team.id, id: user.id }
+          expect(response.status).to eq(401)
+        end
+    end
+
     context 'when the user is an admin and user to delete is part of the team' do
       it 'renders the delete confirmation page' do
         user.admin = true
         team.users << user_to_delete
         get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
-        expect(response).to render_template(:delete)
+        expect(response).to render_template(:remove_confirm)
       end
     end
   end
 
   describe '#destroy' do
-    let(:user_to_delete) { create(:user) }
 
     context 'when the user is an admin but not a team member and user to delete is team member' do
       before do
@@ -74,6 +81,14 @@ describe Teams::UsersController do
 
         it 'has a redirect response' do
             expect(response.status).to eq(302)
+        end
+    end
+
+    context 'when the user tries to remove themselves from the team' do
+        it 'renders an error' do
+          team.users << user
+          get :remove_confirm, params: { team_id: team.id, id: user.id }
+          expect(response.status).to eq(401)
         end
     end
 
