@@ -34,7 +34,6 @@ en:
     users:
       edit: Edit user
       index: Users
-      delete: Delete user
       new_user: Create a new user
   teams:
     users:
