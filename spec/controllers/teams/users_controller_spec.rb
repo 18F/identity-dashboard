@@ -94,20 +94,12 @@ describe Teams::UsersController do
         it 'has a redirect response' do
             expect(response.status).to eq(302)
         end
-    end
 
-    context 'when user is a team member and user to delete is team member' do
-      before do
-          team.users << user_to_delete
-          team.users << user
-          delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end
-
-      it 'user no longer in team' do
+        it 'user no longer in team' do
           deleted_user = team.users.find_by(id: user_to_delete.id)
           expect(deleted_user).to be_nil
       end
-  end
+    end
 
     context 'when the user tries to remove themselves from the team' do
         it 'renders an error' do
