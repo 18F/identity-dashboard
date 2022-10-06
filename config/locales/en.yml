@@ -35,6 +35,14 @@ en:
       edit: Edit user
       index: Users
       new_user: Create a new user
+  teams:
+    users:
+      remove: 
+        success: Success! You have removed %{email} from the team.
+        button: Remove user
+        confirm_title: Are you sure you want to remove user "%{email}"? from "%{team}"?
+        confirm: They will no longer be able to see applications associated with the team using this email address.
+        confirm_subhead: If you remove this user
   home:
     body_dev_docs_html: Visit our %{href_dev_docs} to learn more.
     body_intro: Use the dashboard to manage your Login.gov test integrations.
