@@ -29,11 +29,11 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    whitelisted_user? || admin?
+    allowed_email? || admin?
   end
 
   def new?
-    whitelisted_user? || admin?
+    allowed_email? || admin?
   end
 
   def all?
