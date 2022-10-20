@@ -1,5 +1,5 @@
 module TeamHelper
-  ALLOWED_DOMAINS = /@*.mil|@*.gov|@*.fed.us|@*state.*.us/
+  ALLOWED_DOMAINS = /@.+\.(mil|gov|fed\.us|state\..+\.us)$/
 
   def can_edit_teams?(user)
     !user.teams.empty? || user.admin?
