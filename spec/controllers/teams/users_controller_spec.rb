@@ -46,8 +46,6 @@ describe Teams::UsersController do
       it 'renders an error' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
         expect(response.status).to eq(401)
-        require 'pry'
-        binding.pry
       end
     end
 
