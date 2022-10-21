@@ -1,24 +1,30 @@
 class Teams::UsersController < AuthenticatedController
-   before_action -> { authorize team, policy_class: TeamUsersPolicy }
+    before_action -> { authorize team, policy_class: TeamUsersPolicy }
 
     def new
       @user = User.new
     end
   
     def create
-      add_email = user_params[:email].downcase
-      existing_user_emails = team.users.map(&:email)
-      if existing_user_emails.include?(add_email)
+      add_email = user_params.require(:email).downcase
+      if not valid_email_address?(add_email)
         @user = User.new
-        flash[:error] = "#{add_email} is already part of the team"
+        flash[:error] = I18n.t('teams.users.create.invalid_email', email: add_email)
         render :new
       else
-        @user = User.where(email: add_email).first || User.new(user_params)
-        if team.update(users: team.users + [@user])
-            flash[:success] = 'Success'
-            redirect_to team_path(@team.id)
+        existing_user_emails = team.users.map(&:email)
+        if existing_user_emails.include?(add_email)
+          @user = User.new
+          flash[:error] = I18n.t('teams.users.create.already_member', email: add_email)
+          render :new
         else
-            render :new
+          @user = User.where(email: add_email).first || User.new(email: add_email)
+          if team.update(users: team.users + [@user])
+              flash[:success] = I18n.t('teams.users.create.success', email: add_email)
+              redirect_to team_path(team.id)
+          else
+              render :new
+          end
         end
       end
     end
@@ -58,5 +64,10 @@ class Teams::UsersController < AuthenticatedController
     def team
       @team ||= Team.includes(:users).find(params[:team_id])
     end
+
+    def valid_email_address?(email)
+      return email.match(Devise.email_regexp)
+    end
+
 end
   

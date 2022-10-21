@@ -37,6 +37,10 @@ en:
       new_user: Create a new user
   teams:
     users:
+      create:
+        success: Success! You have added %{email} to the team.
+        invalid_email: "%{email} is not a valid email address."
+        already_member: "%{email} is already part of the team."
       remove: 
         success: Success! You have removed %{email} from the team.
         button: Remove user
