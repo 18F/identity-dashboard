@@ -4,6 +4,7 @@
     html: { autocomplete: 'off', role: 'form' },
     url: team_users_path(@team)) do |form| %>
   <%= render 'form', form: form %>
+  <br/>
   <%= form.button :submit, 'Add', :class => "usa-button" %>
   <%= link_to t('forms.buttons.cancel'), team_path(@team.id),
               class: 'usa-button usa-button--outline float-left' %>
