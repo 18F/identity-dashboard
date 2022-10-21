@@ -23,12 +23,6 @@
   class: 'margin-y-1 display-block',
 ) %>
 
-<%= link_to(
-  "Add user [Testing Only - Remove]",
-  new_team_user_path(@team),
-  class: 'margin-y-1 display-block',
-) %>
-
 <h2><label for="apps">Apps: (<%= @team.service_providers.count %>)</label></h2>
 <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="apps">
   <% @team.service_providers.each do |a| %>
