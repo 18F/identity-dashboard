@@ -41,6 +41,7 @@ describe Teams::UsersController do
 
   describe '#create' do
     let(:user_email) { 'user1@gsa.gov' }
+    let(:invalid_email) { 'invalid' }
 
     context 'when the user is not part of the team' do
       it 'renders an error' do
@@ -58,19 +59,18 @@ describe Teams::UsersController do
 
         saved_user_emails = team.reload.users.map(&:email)
 
-        expect(saved_user_emails).to include('user1@gsa.gov')
+        expect(saved_user_emails).to include(user_email)
       end
 
       it 'does not save invalid info and renders an error' do
         team.users << user
-        post :create, params: { team_id: team.id, user: { email: 'invalid' } }
+        post :create, params: { team_id: team.id, user: { email: invalid_email } }
 
         expect(response).to render_template(:new)
 
         saved_user_emails = team.reload.users.map(&:email)
 
-        expect(saved_user_emails).to_not include('user1@gsa.gov')
-        expect(saved_user_emails).to_not include('invalid')
+        expect(saved_user_emails).to_not include(invalid_email)
       end
     end
 
@@ -83,19 +83,18 @@ describe Teams::UsersController do
 
         saved_user_emails = team.reload.users.map(&:email)
 
-        expect(saved_user_emails).to include('user1@gsa.gov')
+        expect(saved_user_emails).to include(user_email)
       end
 
       it 'does not save invalid info and renders an error' do
         team.users << user
-        post :create, params: { team_id: team.id, user: { email: 'invalid' } }
+        post :create, params: { team_id: team.id, user: { email: invalid_email } }
 
         expect(response).to render_template(:new)
 
         saved_user_emails = team.reload.users.map(&:email)
 
-        expect(saved_user_emails).to_not include('user1@gsa.gov')
-        expect(saved_user_emails).to_not include('invalid')
+        expect(saved_user_emails).to_not include(invalid_email)
       end
     end
   end
