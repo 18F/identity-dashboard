@@ -5,8 +5,8 @@ feature 'add team user page access', :js do
     team = create(:team)
     user = create(:user, teams: [team])
     login_as user
-    visit team_users_path(team)+"/new"
-    expect(page).to have_content("Add New user")
+    visit team_users_path(team)+'/new'
+    expect(page).to have_content('Add New user')
   end
 
   scenario 'access permitted to admin', versioning: true do
@@ -14,16 +14,16 @@ feature 'add team user page access', :js do
     user = create(:user, teams: [])
     user.admin = true
     login_as user
-    visit team_users_path(team)+"/new"
-    expect(page).to have_content("Add New user")
+    visit team_users_path(team)+'/new'
+    expect(page).to have_content('Add New user')
   end
 
   scenario 'access denied to non-team member', versioning: true do
     team = create(:team)
     user = create(:user, teams: [])
     login_as user
-    visit team_users_path(team)+"/new"
-    expect(page).to have_content("Unauthorized")
+    visit team_users_path(team)+'/new'
+    expect(page).to have_content('Unauthorized')
   end
 end
 
@@ -35,7 +35,7 @@ feature 'add team users', :js do
     email_to_add = 'new_user@example.com'
 
     login_as user
-    visit team_users_path(team)+"/new"
+    visit team_users_path(team)+'/new'
     fill_in 'Email', with: email_to_add
     click_on 'Add'
     expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
@@ -50,10 +50,10 @@ feature 'add team users', :js do
     email_to_add = 'new_user@example.com'
 
     login_as user
-    visit team_users_path(team)+"/new"
+    visit team_users_path(team)+'/new'
     fill_in 'Email', with: email_to_add
     click_on 'Add'
-    visit team_users_path(team)+"/new"
+    visit team_users_path(team)+'/new'
     fill_in 'Email', with: email_to_add
     click_on 'Add'
     expect(page).to have_content(I18n.t('teams.users.create.already_member', email: email_to_add))
@@ -67,11 +67,11 @@ feature 'add team users', :js do
     invalid_email_to_add = 'invalid'
 
     login_as user
-    visit team_users_path(team)+"/new"
+    visit team_users_path(team)+'/new'
     fill_in 'Email', with: email_to_add
     click_on 'Add'
     team_member_emails = team.reload.users.map(&:email)
-    visit team_users_path(team)+"/new"
+    visit team_users_path(team)+'/new'
     fill_in 'Email', with: email_to_add
     click_on 'Add'
     fill_in 'Email', with: invalid_email_to_add
@@ -88,8 +88,8 @@ feature 'remove team user page access', :js do
     team = create(:team)
     user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, user)+"/remove_confirm"
-    expect(page).to have_content("Unauthorized")
+    visit team_user_path(team, user)+'/remove_confirm'
+    expect(page).to have_content('Unauthorized')
   end
 
   scenario 'access denied to non-team member', versioning: true do
@@ -97,8 +97,8 @@ feature 'remove team user page access', :js do
     user = create(:user, teams: [])
     other_user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, other_user)+"/remove_confirm"
-    expect(page).to have_content("Unauthorized")
+    visit team_user_path(team, other_user)+'/remove_confirm'
+    expect(page).to have_content('Unauthorized')
   end
 
   scenario 'access permitted to admin', versioning: true do
@@ -107,8 +107,9 @@ feature 'remove team user page access', :js do
     user.admin = true
     other_user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, other_user)+"/remove_confirm"
-    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title', email:other_user.email, team:team))
+    visit team_user_path(team, other_user)+'/remove_confirm'
+    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
+                                        email:other_user.email, team:team))
   end
 
   scenario 'access permitted to team member', versioning: true do
@@ -116,8 +117,9 @@ feature 'remove team user page access', :js do
     user = create(:user, teams: [team])
     other_user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, other_user)+"/remove_confirm"
-    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title', email:other_user.email, team:team))
+    visit team_user_path(team, other_user)+'/remove_confirm'
+    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
+                                        email:other_user.email, team:team))
   end
 end
 
@@ -127,8 +129,9 @@ feature 'remove team users', :js do
     user = create(:user, teams: [team])
     other_user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, other_user)+"/remove_confirm"
-    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title', email:other_user.email, team:team))
+    visit team_user_path(team, other_user)+'/remove_confirm'
+    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
+                                        email:other_user.email, team:team))
     click_on "Cancel"
     expect(current_path).to eq(team_path(team))
     expect(page).to have_content(other_user.email)
@@ -139,8 +142,9 @@ feature 'remove team users', :js do
     user = create(:user, teams: [team])
     other_user = create(:user, teams: [team])
     login_as user
-    visit team_user_path(team, other_user)+"/remove_confirm"
-    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title', email:other_user.email, team:team))
+    visit team_user_path(team, other_user)+'/remove_confirm'
+    expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
+                                        email:other_user.email, team:team))
     click_on I18n.t('teams.users.remove.button')
     expect(current_path).to eq(team_path(team))
     expect(page).to have_content(I18n.t('teams.users.remove.success', email:other_user.email))
