@@ -132,7 +132,7 @@ feature 'remove team users', :js do
     visit team_user_path(team, other_user)+'/remove_confirm'
     expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                         email:other_user.email, team:team))
-    click_on "Cancel"
+    click_on 'Cancel'
     expect(current_path).to eq(team_path(team))
     expect(page).to have_content(other_user.email)
   end
