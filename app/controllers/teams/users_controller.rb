@@ -64,9 +64,5 @@ class Teams::UsersController < AuthenticatedController
       @team ||= Team.includes(:users).find(params[:team_id])
     end
 
-    def valid_email_address?(email)
-      return email.match(Devise.email_regexp)
-    end
-
 end
   
