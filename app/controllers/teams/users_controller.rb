@@ -7,24 +7,21 @@ class Teams::UsersController < AuthenticatedController
   
     def create
       add_email = user_params.require(:email).downcase
-      existing_user_emails = team.users.map(&:email)
-      if existing_user_emails.include?(add_email)
+      @user = User.where(email: add_email).first || User.new(email: add_email)
+      if team.users.include?(@user)
         @user = User.new
         flash[:error] = I18n.t('teams.users.create.already_member', email: add_email)
         render :new
+      elsif not @user.valid?
+        flash[:error] = @user.errors.of_kind?(:email, :invalid) ?
+                        I18n.t('teams.users.create.invalid_email', email: add_email) : 
+                        @user.errors.objects.first.full_message
+        render :new
+      elsif team.update(users: team.users + [@user])
+        flash[:success] = I18n.t('teams.users.create.success', email: add_email)
+        redirect_to team_path(team.id)
       else
-        @user = User.where(email: add_email).first || User.new(email: add_email)
-        if not @user.valid?
-          flash[:error] = @user.errors.of_kind?(:email, :invalid) ?
-                          I18n.t('teams.users.create.invalid_email', email: add_email) : 
-                          @user.errors.objects.first.full_message
-          render :new
-        elsif team.update(users: team.users + [@user])
-          flash[:success] = I18n.t('teams.users.create.success', email: add_email)
-          redirect_to team_path(team.id)
-        else
-          render :new
-        end
+        render :new
       end
     end
 
