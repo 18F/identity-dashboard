@@ -11,18 +11,15 @@ class Teams::UsersController < AuthenticatedController
       if team.users.include?(@user)
         @user = User.new
         flash[:error] = I18n.t('teams.users.create.already_member', email: add_email)
-        render :new
       elsif not @user.valid?
         flash[:error] = @user.errors.of_kind?(:email, :invalid) ?
                         I18n.t('teams.users.create.invalid_email', email: add_email) : 
                         @user.errors.objects.first.full_message
-        render :new
       elsif team.update(users: team.users + [@user])
         flash[:success] = I18n.t('teams.users.create.success', email: add_email)
-        redirect_to team_path(team.id)
-      else
-        render :new
+        redirect_to team_path(team.id) and return
       end
+      render :new
     end
 
     def remove_confirm

@@ -51,8 +51,11 @@ describe Teams::UsersController do
     end
 
     context 'when ther user is part of the team' do
-      it 'saves valid info' do
+      before do
         team.users << user
+      end
+
+      it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
         expect(response).to redirect_to(team_path(team))
@@ -63,7 +66,6 @@ describe Teams::UsersController do
       end
 
       it 'does not save invalid info and renders an error' do
-        team.users << user
         post :create, params: { team_id: team.id, user: { email: invalid_email } }
 
         expect(response).to render_template(:new)
@@ -75,8 +77,11 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
       it 'saves valid info' do
-        team.users << user
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
         expect(response).to redirect_to(team_path(team))
@@ -87,7 +92,6 @@ describe Teams::UsersController do
       end
 
       it 'does not save invalid info and renders an error' do
-        team.users << user
         post :create, params: { team_id: team.id, user: { email: invalid_email } }
 
         expect(response).to render_template(:new)
