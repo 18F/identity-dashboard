@@ -7,7 +7,7 @@ class Teams::UsersController < AuthenticatedController
   
     def create
       add_email = user_params.require(:email).downcase
-      @user = User.where(email: add_email).first || User.new(email: add_email)
+      @user = User.find_or_initialize_by(email: add_email)
       if team.users.include?(@user)
         @user = User.new
         flash[:error] = I18n.t('teams.users.create.already_member', email: add_email)
