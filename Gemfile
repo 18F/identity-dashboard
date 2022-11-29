@@ -78,7 +78,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'shoulda-matchers'
   gem 'simplecov', '= 0.17.0'
-  gem 'sinatra', '>= 2.2.0'
+  gem 'sinatra', '>= 2.2.3'
   gem 'timecop'
   gem 'webdrivers', '~> 4.4', '>= 4.4.1'
   gem 'webmock'
