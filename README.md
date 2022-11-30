@@ -40,6 +40,17 @@ Run RSpec tests using:
 $ make test
 ```
 
+## Branching Strategy
+
+Branches should be specifically named in a standard format that closely matches the current style of `[TICKET-NUMBER]-feature-name/user-ticket-what-the-branch-does` This will group the branches of the feature together, and easily identified
+
+Branches should be specific to a specific feature. Sub-branches can be created for larger features that require development broken into multiple parts for completion.
+
+Branches should be rebased to main to keep the history on the main branch clear and easy to follow.
+
+Branches should be completed and sent for review via Pull Request and merged into main via squashed merge-commit to keep noise in main down.
+
+
 ## License
 
 [The project is in the public domain](LICENSE.md), and all contributions will also be released in the public domain. By submitting a pull request, you are agreeing to waive all rights to your contribution under the terms of the [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/).

@@ -127,9 +127,9 @@ describe UsersController do
     end
 
     context 'when the user is not an admin'
-    it 'has an error response' do
-      delete :destroy, params: { id: user_to_delete.id }
-      expect(response.status).to eq(401)
-    end
+      it 'has an error response' do
+        delete :destroy, params: { id: user_to_delete.id }
+        expect(response.status).to eq(401)
+      end
   end
 end
