@@ -332,7 +332,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.14.0)
     nio4r (2.5.8)
-    nokogiri (1.13.9)
+    nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     omniauth (1.8.1)
@@ -363,7 +363,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
-    racc (1.6.0)
+    racc (1.6.1)
     rack (2.2.4)
     rack-canonical-host (1.1.0)
       addressable (> 0, < 3)
@@ -600,7 +600,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.13, >= 1.13.9)
+  nokogiri (~> 1.13)
   omniauth-rails_csrf_protection (~> 0.1, >= 0.1.2)
   omniauth_login_dot_gov!
   paper_trail (~> 11.1, >= 11.1.0)
