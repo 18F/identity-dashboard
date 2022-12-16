@@ -4,7 +4,7 @@ class TeamsController < AuthenticatedController
 
   def new
     @team = Team.new
-    @agencies = Agency.all
+    @agencies = Agency.all.order(:name)
   end
 
   def create
@@ -14,12 +14,13 @@ class TeamsController < AuthenticatedController
       flash[:success] = 'Success'
       redirect_to new_team_manage_user_path(@team.id)
     else
+      @agencies = Agency.all.order(:name)
       render :new
     end
   end
 
   def edit
-    @agencies = Agency.all
+    @agencies = Agency.all.order(:name)
   end
 
   def update
@@ -27,6 +28,7 @@ class TeamsController < AuthenticatedController
       flash[:success] = 'Success'
       redirect_to team_path(@team.id)
     else
+      @agencies = Agency.all.order(:name)
       render :edit
     end
   end
