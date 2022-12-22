@@ -9,7 +9,7 @@ jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: cimg/ruby:2.7.3-browsers
+      - image: cimg/ruby:3.0.4-browsers
         environment:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: 39be7be4c9a09e955bd481daa7196fe4dccd67f3ee53e24e91535169eea78123
@@ -22,7 +22,7 @@ jobs:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: postgres:9.6
+      - image: postgres:13.5
         environment:
           POSTGRES_USER: circleci
           POSTGRES_PASSWORD: password
