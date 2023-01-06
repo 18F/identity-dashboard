@@ -20,14 +20,15 @@ class Teams::UsersController < AuthenticatedController
       # redirect_to team_path(team.id) and return
     # end
     # begin
-    # require 'pry'
-    # binding.pry
+   # require 'pry'
+    #@user = User.find_or_initialize_by(email: add_email)
+    #binding.pry
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     new_member.save!
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to team_path(team.id) and return
   rescue ActiveRecord::RecordInvalid => e
-    flash[:error] = "#{member_email}: " + e.record.errors.messages.values.flatten.pop
+    flash[:error] = "Email '#{member_email}': " + e.record.errors.messages.values.flatten.pop
     redirect_to new_team_user_path
   end
 
@@ -56,7 +57,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def new_member
-    @new_member ||= User.find_or_initialize_by(email: member_email)
+    @new_member ||= User.create!(email: member_email)
   end
 
   def user

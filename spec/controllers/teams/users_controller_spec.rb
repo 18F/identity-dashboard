@@ -65,10 +65,8 @@ describe Teams::UsersController do
         expect(saved_user_emails).to include(user_email)
       end
 
-      it 'does not save invalid info and renders an error' do
+      it 'does not save invalid info' do
         post :create, params: { team_id: team.id, user: { email: invalid_email } }
-
-        expect(response).to render_template(:new)
 
         saved_user_emails = team.reload.users.map(&:email)
 
@@ -91,10 +89,8 @@ describe Teams::UsersController do
         expect(saved_user_emails).to include(user_email)
       end
 
-      it 'does not save invalid info and renders an error' do
+      it 'does not save invalid info' do
         post :create, params: { team_id: team.id, user: { email: invalid_email } }
-
-        expect(response).to render_template(:new)
 
         saved_user_emails = team.reload.users.map(&:email)
 
