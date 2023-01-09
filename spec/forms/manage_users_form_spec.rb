@@ -8,7 +8,6 @@ describe ManageUsersForm do
 
   let(:user_emails) do
     [
-      user_already_on_the_team.email.upcase,
       user_not_already_on_the_team.email.upcase,
       email_for_nonexistent_user,
     ]
@@ -41,6 +40,21 @@ describe ManageUsersForm do
         expect(result).to eq(false)
         expect(subject.errors[:base]).to include('invalid is not a valid email address')
         expect(subject.errors[:base]).to include('not valid is not a valid email address')
+        expect(team_users).to include(user_already_on_the_team)
+        expect(team_users).to_not include(user_not_already_on_the_team)
+        expect(previously_nonexistent_user).to be_nil
+      end
+    end
+
+
+    context 'when adding user that already exists on team' do
+      it 'returns false and throws validation error' do
+        expect { subject.submit(user_emails: user_emails + [user_already_on_the_team.email]) }.to \
+        raise_error { ActiveRecord::RecordInvalid }
+
+        previously_nonexistent_user = User.find_by(email: email_for_nonexistent_user.downcase)
+        team_users = team.reload.users
+ 
         expect(team_users).to include(user_already_on_the_team)
         expect(team_users).to_not include(user_not_already_on_the_team)
         expect(previously_nonexistent_user).to be_nil

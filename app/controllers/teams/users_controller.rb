@@ -6,23 +6,6 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def create
-    # add_email =
-    # new_member = User.find_or_initialize_by(email: add_email)
-    # if team.users.include?(@user)
-    #   @user = User.new
-    #   flash[:error] = I18n.t('teams.users.create.already_member', email: add_email)
-    # if not @user.valid?
-    #   flash[:error] = @user.errors.of_kind?(:email, :invalid) ?
-    #                   I18n.t('teams.users.create.invalid_email', email: add_email) :
-    #                   @user.errors.objects.first.full_message
-    # if team.update(users: team.users + [@user])
-      # flash[:success] = I18n.t('teams.users.create.success', email: add_email)
-      # redirect_to team_path(team.id) and return
-    # end
-    # begin
-   # require 'pry'
-    #@user = User.find_or_initialize_by(email: add_email)
-    #binding.pry
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     new_member.save!
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
