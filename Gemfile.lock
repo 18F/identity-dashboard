@@ -223,7 +223,6 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    date (3.3.3)
     debug_inspector (1.1.0)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -319,11 +318,8 @@ GEM
       nokogiri (>= 1.5.9)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
-    mail (2.8.0)
+    mail (2.7.1)
       mini_mime (>= 0.1.1)
-      net-imap
-      net-pop
-      net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
@@ -338,17 +334,8 @@ GEM
     multipart-post (2.2.3)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
-    net-imap (0.3.2)
-      date
-      net-protocol
-    net-pop (0.1.2)
-      net-protocol
-    net-protocol (0.2.1)
-      timeout
     net-scp (4.0.0)
       net-ssh (>= 2.6.5, < 8.0.0)
-    net-smtp (0.3.3)
-      net-protocol
     net-ssh (7.0.1)
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
@@ -541,7 +528,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.11)
     timecop (0.9.6)
-    timeout (0.3.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
