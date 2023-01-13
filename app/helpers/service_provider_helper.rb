@@ -143,6 +143,7 @@ module ServiceProviderHelper
       'default_aal'=> sp_hash['default_aal'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'protocol' => sp_hash['protocol'],
+      'push_notification_url' => sp_hash['push_notification_url'],
       'restrict_to_deploy_env' => "'prod'",
       'help_text' => sp_hash['help_text'],
       'app_id' => '<REPLACE_WITH_COMMS>',

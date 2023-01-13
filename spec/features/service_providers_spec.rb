@@ -315,6 +315,21 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(sp.friendly_name)
     end
 
+    scenario 'can see push_notification_url in YAML generator' do
+      url = 'http://www.test.com'
+      admin = create(:admin)
+      sp = create(:service_provider, :with_team)
+      login_as(admin)
+
+      visit edit_service_provider_path(sp)
+      fill_in 'Push notification URL', with: url
+      click_on 'Update'
+
+      expect(page).to have_content('Success')
+
+      expect(page.find(:id, 'yaml')).to have_content("push_notification_url: '#{url}'")
+    end
+
     scenario 'can create service provider with user team' do
       admin = create(:admin)
       team = create(:team)
