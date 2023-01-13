@@ -16,6 +16,13 @@ Rails.application.routes.draw do
     resources :manage_users, only: %i[new create]
   end
 
+  scope module: 'teams' do
+    resources :teams do
+      get '/users/:id/remove_confirm' => 'users#remove_confirm'
+      resources :users
+    end
+  end
+
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
   resources :service_providers

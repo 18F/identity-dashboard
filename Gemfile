@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '~> 3.0'
+
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.13'
 gem 'active_record_upsert'
@@ -20,8 +22,9 @@ gem 'jwt'
 gem 'kaminari'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.13'
-gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git'
-gem 'omniauth-rails_csrf_protection', '~> 0.1', '>= 0.1.2'
+gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
+                              branch: 'main'
+gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 11.1', '>= 11.1.0'
 gem 'pg'
 gem 'pry-rails'
@@ -78,9 +81,9 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'shoulda-matchers'
   gem 'simplecov', '= 0.17.0'
-  gem 'sinatra', '>= 2.2.0'
+  gem 'sinatra', '>= 2.2.3'
   gem 'timecop'
-  gem 'webdrivers', '~> 4.4', '>= 4.4.1'
+  gem 'webdrivers', '~> 4.4', '>= 4.4.2'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
 end
