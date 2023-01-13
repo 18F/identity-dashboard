@@ -14,7 +14,7 @@ module.exports = (api) => {
     ],
     plugins: [
       ['polyfill-corejs3', { method: 'usage-global', targets }],
-      ['polyfill-regenerator', { method: 'usage-global', targets }],
+      ['polyfill-regenerator', { method: 'usage-global' }],
     ],
   };
 };
