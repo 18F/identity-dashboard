@@ -3,10 +3,10 @@ module Users
     include ::ActionView::Helpers::DateHelper
 
     def destroy
-      if session[:id_token] && post_logout_redirect_uri
+      if Rails.configuration.oidc['client_id'] && post_logout_redirect_uri
         sign_out(current_user)
         logout_request = self.class.logout_utility.build_request(
-          id_token: session[:id_token],
+          client_id: Rails.configuration.oidc['client_id'],
           post_logout_redirect_uri: post_logout_redirect_uri,
         )
         redirect_to(logout_request.redirect_uri)

@@ -9,9 +9,8 @@ RSpec.describe 'CVE-2015-9284', type: :request do
     end
 
     it do
-      expect do
-        post '/auth/logindotgov'
-      end.to raise_error(ActionController::InvalidAuthenticityToken)
+      post '/auth/logindotgov'
+      expect(response).to redirect_to(%r{^/auth/failure})
     end
 
     after do
