@@ -316,7 +316,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can see push_notification_url in YAML generator' do
-      url = "http://www.test.com"
+      url = 'http://www.test.com'
       admin = create(:admin)
       sp = create(:service_provider, :with_team)
       login_as(admin)
