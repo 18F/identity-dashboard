@@ -30,9 +30,9 @@ jobs:
     working_directory: ~/identity-dashboard
 
     steps:
-      - browser-tools/install-browser-tools
-
       - checkout
+
+      - browser-tools/install-browser-tools
 
       - restore_cache:
           key: identity-dashboard-{{ checksum "Gemfile.lock" }}
