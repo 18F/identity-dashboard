@@ -71,7 +71,6 @@ jobs:
             bin/rails assets:precompile
             cp config/application.yml.default config/application.yml
             bundle exec rake db:setup
-            yarn build
 
       - run:
           name: Run Tests
