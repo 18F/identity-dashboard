@@ -593,12 +593,12 @@ DEPENDENCIES
   colorize
   database_cleaner
   devise (~> 4.7.3)
-  dotenv-rails (~> 2.7, >= 2.7.6)
+  dotenv-rails (~> 2.8, >= 2.8.1)
   enum_help
   factory_bot_rails (~> 6.2, >= 6.2.0)
   fakefs
   faraday
-  i18n-tasks (>= 1.0.10)
+  i18n-tasks (>= 1.0.12)
   identity-hostdata!
   identity-logging!
   identity_validations!
@@ -620,7 +620,7 @@ DEPENDENCIES
   rack-canonical-host
   rack-timeout
   rack_session_access
-  rails (~> 6.1.6, >= 6.1.6.1)
+  rails (~> 6.1.7)
   rails-controller-testing (>= 1.0.5)
   rails_serve_static_assets
   recipient_interceptor
@@ -651,4 +651,4 @@ RUBY VERSION
    ruby 3.0.4p208
 
 BUNDLED WITH
-   2.1.4
+   2.2.33
