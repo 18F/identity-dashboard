@@ -30,8 +30,7 @@ jobs:
     working_directory: ~/identity-dashboard
 
     steps:
-      - checkout:
-          path: ~/identity-dashboard
+      - checkout
 
       - browser-tools/install-browser-tools
 
