@@ -32,6 +32,6 @@ yarn-debug.log*
 # Ignore the idp-config dir if it has been checked out
 /identity-idp-config/
 
-/app/assets/*
+/public/assets/*
 /app/assets/builds/*
 !/app/assets/builds/.keep
