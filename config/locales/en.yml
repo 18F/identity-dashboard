@@ -44,7 +44,7 @@ en:
       remove: 
         success: Success! You have removed %{email} from the team.
         button: Remove user
-        confirm_title: Are you sure you want to remove user "%{email}"? from "%{team}"?
+        confirm_title: Are you sure you want to remove user "%{email}?"" from "%{team}"?
         confirm: They will no longer be able to see applications associated with the team using this email address.
         confirm_subhead: If you remove this user
   home:
