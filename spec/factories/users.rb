@@ -8,6 +8,10 @@ FactoryBot.define do
       teams { create_list(:team, 3) }
     end
 
+    factory :team_member do
+      teams { create_list(:team, 1) }
+    end
+
     factory :admin do
       admin { true }
     end
