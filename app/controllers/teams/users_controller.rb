@@ -7,7 +7,6 @@ class Teams::UsersController < AuthenticatedController
 
   def create
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
-    new_member.save!
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to team_path(team.id) and return
   rescue ActiveRecord::RecordInvalid => e
@@ -40,7 +39,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def new_member
-    @new_member ||= User.create!(email: member_email)
+    @new_member ||= User.find_or_create_by!(email: member_email)
   end
 
   def user
