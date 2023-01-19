@@ -50,7 +50,7 @@ describe Teams::UsersController do
       end
     end
 
-    context 'when ther user is part of the team' do
+    context 'when the user is part of the team' do
       before do
         team.users << user
       end
@@ -58,7 +58,7 @@ describe Teams::UsersController do
       it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
-        expect(response).to redirect_to(team_path(team))
+        expect(response).to redirect_to(new_team_path(team))
 
         saved_user_emails = team.reload.users.map(&:email)
 
@@ -82,7 +82,7 @@ describe Teams::UsersController do
       it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
-        expect(response).to redirect_to(team_path(team))
+        expect(response).to redirect_to(new_team_path(team))
 
         saved_user_emails = team.reload.users.map(&:email)
 

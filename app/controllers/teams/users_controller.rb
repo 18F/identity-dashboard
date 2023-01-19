@@ -8,7 +8,7 @@ class Teams::UsersController < AuthenticatedController
   def create
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to team_path(team.id) and return
+    redirect_to new_team_path(team.id) and return
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Email '#{member_email}': " + e.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
@@ -43,7 +43,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def user
-    @user ||= team.users.find_by(id: params[:id])
+    @user ||= team_and_users.users.find_by(id: params[:id])
   end
 
   def user_present_not_current_user(user)
