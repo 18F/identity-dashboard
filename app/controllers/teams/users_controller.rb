@@ -8,7 +8,7 @@ class Teams::UsersController < AuthenticatedController
   def create
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_path(team.id) and return
+    redirect_to new_team_user_path and return
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Email '#{member_email}': " + e.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
@@ -26,7 +26,7 @@ class Teams::UsersController < AuthenticatedController
     if user_present_not_current_user(user)
       team_and_users.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
-      redirect_to team_path(team.id)
+      redirect_to new_team_user_path
     else
       render_401
     end

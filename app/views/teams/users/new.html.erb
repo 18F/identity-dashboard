@@ -6,7 +6,7 @@
   <%= render 'form', form: form %>
   <div class="margin-top-2">
     <%= form.button :submit, 'Add', :class => "usa-button" %>
-    <%= link_to t('forms.buttons.cancel'), team_path(@team.id),
+    <%= link_to 'Back', team_manage_users_path(@team)+'/new', 
                 class: 'usa-button usa-button--outline float-left' %>
   </div>
 <% end %>

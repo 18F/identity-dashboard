@@ -6,13 +6,6 @@ export const loadInitialEmailAddresses = () => {
   updateEmailAddressList();
 };
 
-export const addEmailAddressToList = (email) => {
-  window.manageUserEmailAddresses = Array.from(
-    new Set(window.manageUserEmailAddresses.concat(email))
-  ).sort();
-  updateEmailAddressList();
-};
-
 export const removeEmailAddressFromList = (email) => {
   window.manageUserEmailAddresses = window.manageUserEmailAddresses.filter((e) => e !== email);
   updateEmailAddressList();

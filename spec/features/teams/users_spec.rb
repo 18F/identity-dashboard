@@ -109,7 +109,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email:other_team_member.email, team:team))
       click_on I18n.t('teams.users.remove.button')
-      expect(current_path).to eq(team_path(team))
+      expect(current_path).to eq(team_users_path(team)+'/new')
       expect(page).to have_content(I18n.t('teams.users.remove.success', 
 email:other_team_member.email))
     end

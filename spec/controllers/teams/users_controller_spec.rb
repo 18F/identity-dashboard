@@ -58,7 +58,7 @@ describe Teams::UsersController do
       it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
-        expect(response).to redirect_to(new_team_path(team))
+        expect(response).to redirect_to(new_team_user_path(team))
 
         saved_user_emails = team.reload.users.map(&:email)
 
@@ -82,7 +82,7 @@ describe Teams::UsersController do
       it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
 
-        expect(response).to redirect_to(new_team_path(team))
+        expect(response).to redirect_to(new_team_user_path(team))
 
         saved_user_emails = team.reload.users.map(&:email)
 
