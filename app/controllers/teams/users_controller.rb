@@ -10,7 +10,7 @@ class Teams::UsersController < AuthenticatedController
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to team_path(team.id) and return
   rescue ActiveRecord::RecordInvalid => e
-    flash[:error] = "Email '#{member_email}': " + e.record.errors.messages.values.flatten.pop
+    flash[:error] = "Email '#{member_email}': " + e.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
   end
 
