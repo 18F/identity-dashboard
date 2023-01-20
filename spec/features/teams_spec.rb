@@ -40,10 +40,9 @@ feature 'User teams CRUD' do
       login_as(admin)
       visit edit_team_path(team2)
       click_on 'Manage users'
-      fill_in 'Email', with: user.email
       click_on 'Add user'
-      click_on 'Save'
-
+      fill_in 'Email', with: user.email
+      click_on 'Add'
       expect(user.teams).to include(team1, team2)
     end
   end

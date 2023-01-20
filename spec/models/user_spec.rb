@@ -123,6 +123,17 @@ describe User do
       user_with_same_email.save
       expect(user_with_same_email).to be_valid
     end
+  
+    it 'validity of email address' do
+      valid_email = 'joe@gsa.gov'
+      invalid_email = 'invalid'
+      user.email = invalid_email
+      user.save
+      expect(user).to be_invalid
+      user.email = valid_email
+      user.save
+      expect(user).to be_valid
+    end
   end
 
   describe 'paper_trail', versioning: true do

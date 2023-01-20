@@ -4,7 +4,6 @@ import {
 } from "../../support/manage_users/dom";
 
 import {
-  addEmailAddressToList,
   removeEmailAddressFromList,
   loadInitialEmailAddresses,
 } from "../../../../app/javascript/app/manage_users/actions";
@@ -33,37 +32,6 @@ describe("manage_users/actions", () => {
 
       expect(document.body.textContent).to.have.string("email1@example.com");
       expect(document.body.textContent).to.have.string("email2@example.com");
-    });
-  });
-
-  describe(".addEmailAddressToList", () => {
-    beforeEach(loadInitialEmailAddresses);
-
-    it("adds a new email to the list", () => {
-      addEmailAddressToList("email3@example.com");
-
-      expect(window.manageUserEmailAddresses).to.deep.equal([
-        "email1@example.com",
-        "email2@example.com",
-        "email3@example.com",
-      ]);
-    });
-
-    it("does not add duplicate emails to the list", () => {
-      addEmailAddressToList("email2@example.com");
-
-      expect(window.manageUserEmailAddresses).to.deep.equal([
-        "email1@example.com",
-        "email2@example.com",
-      ]);
-    });
-
-    it("renders a list item with the added email address", () => {
-      addEmailAddressToList("email3@example.com");
-
-      expect(document.body.textContent).to.have.string("email1@example.com");
-      expect(document.body.textContent).to.have.string("email2@example.com");
-      expect(document.body.textContent).to.have.string("email3@example.com");
     });
   });
 

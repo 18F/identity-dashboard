@@ -12,6 +12,93 @@ describe Teams::UsersController do
     sign_in user
   end
 
+  describe '#new' do
+    context 'when user is not part of the team' do
+      it 'renders an error' do
+        get :new, params: { team_id: team.id }
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is part of the team' do
+      it 'renders the manage users form' do
+        team.users << user
+        get :new, params: { team_id: team.id }
+        expect(response.status).to eq(200)
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'when the user is an admin' do
+      it 'renders the manage users form' do
+        user.admin = true
+        get :new, params: { team_id: team.id }
+        expect(response.status).to eq(200)
+        expect(response).to render_template(:new)
+      end
+    end
+  end
+
+  describe '#create' do
+    let(:user_email) { 'user1@gsa.gov' }
+    let(:invalid_email) { 'invalid' }
+
+    context 'when the user is not part of the team' do
+      it 'renders an error' do
+        post :create, params: { team_id: team.id, user: { email: user_email } }
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is part of the team' do
+      before do
+        team.users << user
+      end
+
+      it 'saves valid info' do
+        post :create, params: { team_id: team.id, user: { email: user_email } }
+
+        expect(response).to redirect_to(new_team_user_path(team))
+
+        saved_user_emails = team.reload.users.map(&:email)
+
+        expect(saved_user_emails).to include(user_email)
+      end
+
+      it 'does not save invalid info' do
+        post :create, params: { team_id: team.id, user: { email: invalid_email } }
+
+        saved_user_emails = team.reload.users.map(&:email)
+
+        expect(saved_user_emails).to_not include(invalid_email)
+      end
+    end
+
+    context 'when the user is an admin' do
+      before do
+        user.admin = true
+      end
+
+      it 'saves valid info' do
+        post :create, params: { team_id: team.id, user: { email: user_email } }
+
+        expect(response).to redirect_to(new_team_user_path(team))
+
+        saved_user_emails = team.reload.users.map(&:email)
+
+        expect(saved_user_emails).to include(user_email)
+      end
+
+      it 'does not save invalid info' do
+        post :create, params: { team_id: team.id, user: { email: invalid_email } }
+
+        saved_user_emails = team.reload.users.map(&:email)
+
+        expect(saved_user_emails).to_not include(invalid_email)
+      end
+    end
+  end
+
   describe '#remove_confirm' do
 
     context 'when user is not part of the team or an admin' do

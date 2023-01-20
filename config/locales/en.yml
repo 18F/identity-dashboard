@@ -37,10 +37,14 @@ en:
       new_user: Create a new user
   teams:
     users:
+      create:
+        success: Success! You have added %{email} to the team.
+        invalid_email: "%{email} is not a valid email address."
+        already_member: "%{email} is already part of the team."
       remove: 
         success: Success! You have removed %{email} from the team.
         button: Remove user
-        confirm_title: Are you sure you want to remove user "%{email}"? from "%{team}"?
+        confirm_title: Are you sure you want to remove user "%{email}?"" from "%{team}"?
         confirm: They will no longer be able to see applications associated with the team using this email address.
         confirm_subhead: If you remove this user
   home:
