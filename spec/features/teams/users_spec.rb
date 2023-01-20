@@ -12,13 +12,13 @@ describe 'users' do
     scenario 'access permitted to team member', versioning: true do
       login_as team_member
       visit team_users_path(team)+'/new'
-      expect(page).to have_content('Add New user')
+      expect(page).to have_content('Add new user')
     end
 
     scenario 'access permitted to admin', versioning: true do
       login_as admin_user
       visit team_users_path(team)+'/new'
-      expect(page).to have_content('Add New user')
+      expect(page).to have_content('Add new user')
     end
 
     scenario 'access denied to non-team member', versioning: true do
