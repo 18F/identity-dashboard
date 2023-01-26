@@ -5,7 +5,7 @@ development: &default
   min_messages: warning
   pool: <%= IdentityConfig.store.db_pool %>
   reaping_frequency: <%= IdentityConfig.store.dp_reaping_frequency %>
-  timeout: 10000
+  timeout: 5000
   host: localhost
 
 test:
