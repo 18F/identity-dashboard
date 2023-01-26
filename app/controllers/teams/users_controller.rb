@@ -24,7 +24,7 @@ class Teams::UsersController < AuthenticatedController
 
   def destroy
     if user_present_not_current_user(user)
-      team_and_users.users.delete(user)
+      team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to new_team_user_path
     else
@@ -43,7 +43,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def user
-    @user ||= Team.includes(:users).find(params[:team_id]).users.find_by(id: params[:id])
+    @user ||= team.users.find_by(id: params[:id])
   end
 
   def user_present_not_current_user(user)
@@ -54,11 +54,7 @@ class Teams::UsersController < AuthenticatedController
     params.require(:user).permit(:email)
   end
 
-  def team_and_users
-    @team ||= Team.includes(:users).find(params[:team_id])
-  end
-
   def team
-    @team ||= Team.find(params[:team_id])
+    @team ||= Team.includes(:users).find(params[:team_id])
   end
 end
