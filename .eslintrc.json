@@ -12,13 +12,5 @@
       "error",
       { "devDependencies": ["{spec,config}/**/*"] }
     ]
-  },
-  "overrides": [
-    {
-      "files": "app/javascript/app/manage_users/*",
-      "rules": {
-        "import/no-cycle": "off"
-      }
-    }
-  ]
+  }
 }

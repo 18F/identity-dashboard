@@ -1,0 +1,35 @@
+<h1>Manage users for <%= @team.name %></h1>
+
+<div class="actions">
+  <%= button_to "Add user", new_team_user_path(@team.id),
+      method: :get, class: 'usa-button usa-button--outline' %>
+</div>
+
+<div class="users">
+  <table class="usa-table">
+    <thead>
+      <tr>
+        <th scope="col">Email</th>
+        <th scope="col">Last Login</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @team.users.each do |user| %>
+        <tr>
+          <td><%= user.email %></td>
+          <td><%= user.last_sign_in_at || "Never" %></td>
+          <td>
+            <%= link_to 'Delete', "#{team_user_path(@team.id,user.id)}/remove_confirm",
+                        form_class: 'display-inline',
+                        method: :get,
+                        class: 'usa-button--unstyled usa-link margin-right-1' if user.id != current_user.id %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Back", team_path(@team.id), class: 'usa-button usa-button--outline' %>
+
+</div>
+
