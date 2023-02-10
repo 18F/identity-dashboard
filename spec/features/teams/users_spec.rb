@@ -152,7 +152,7 @@ describe 'users' do
     scenario 'delete button only present for other team member', versioning: true do
       login_as team_member
       visit team_users_path(team)
-      expect(page.all("a", text:"Delete").length).to eq(1)
+      expect(page.all('a', text:'Delete').length).to eq(1)
       click_on 'Delete'
       expect(current_path).to eq("#{team_user_path(team.id,other_team_member.id)}/remove_confirm")
     end
