@@ -20,9 +20,9 @@ describe Users::OmniauthController do
       subject.request.env['omniauth.auth'] = omniauth_hash
     end
 
-    context 'when a user exists' do
+    context 'when a user exists and is on a team or allowed to create teams' do
+      let(:user) { create(:team_member, email: email) }
       it 'signs the user in' do
-        user = create(:user, email: email)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
@@ -31,6 +31,19 @@ describe Users::OmniauthController do
 
         expect(user.reload.uuid).to eq(uuid)
         expect(response).to redirect_to(service_providers_url)
+      end
+    end
+
+    context 'when a user exists but is on no team and not allowed to create teams' do
+      it 'redirects to the empty user path' do
+        user = create(:user, email: email)
+        session[:requested_url] = service_providers_url
+
+        expect(subject).not_to receive(:sign_in)
+
+        get :callback
+
+        expect(response).to redirect_to(users_none_url)
       end
     end
 
