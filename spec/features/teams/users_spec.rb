@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 describe 'users' do
-  let(:ut_team_member) { create(:user_team) }
-  let(:team_member) { ut_team_member.user }
-  let(:ut_other_team_member) { create(:user_team) }
-  let(:other_team_member) { ut_other_team_member.user }
+  let(:user_team_member) { create(:user_team) }
+  let(:team_member) { user_team_member.user }
+  let(:other_user_team_member) { create(:user_team) }
+  let(:other_team_member) { other_user_team_member.user }
   let(:team) { create(:team) }
   let(:admin_user) { create(:admin) }
   let(:user) { create(:user) }
 
   before do
-    team.user_teams = [ut_team_member, ut_other_team_member]
+    team.user_teams = [user_team_member, other_user_team_member]
     team.save!
   end
 
