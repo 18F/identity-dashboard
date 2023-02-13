@@ -21,8 +21,22 @@ describe Users::OmniauthController do
     end
 
     context 'when a user exists and is on a team or allowed to create teams' do
-      let(:user) { create(:team_member, email: email) }
       it 'signs the user in' do
+        user=create(:team_member, email: email)
+        session[:requested_url] = service_providers_url
+
+        expect(subject).to receive(:sign_in).with(user)
+
+        get :callback
+
+        expect(user.reload.uuid).to eq(uuid)
+        expect(response).to redirect_to(service_providers_url)
+      end
+    end
+
+    context 'when a user exists, is not on a team, but is an admin' do
+      it 'signs the user in' do
+        user = create(:user, email: email, admin: true)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
