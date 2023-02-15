@@ -2,15 +2,14 @@
 
 <h2><%= I18n.t('teams.users.remove.confirm_subhead') %></h2>
 <ul>
-<li> <%= I18n.t('teams.users.remove.confirm') %></li>
+  <li> <%= I18n.t('teams.users.remove.confirm') %></li>
 </ul>
 
 <p class="border-underline padding-bottom-2 margin-top-4">
+  <%= button_to I18n.t('teams.users.remove.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
+</p>
 
-<%= button_to I18n.t('teams.users.remove.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
-<p>
-
-  <%= link_to I18n.t('forms.buttons.cancel'), team_path(@team.id),
-              class: 'usa-button--unstyled' %>
+<%= link_to I18n.t('forms.buttons.cancel'), team_users_path(@team.id),
+              class: 'usa-button usa-button--outline' %>
 
 

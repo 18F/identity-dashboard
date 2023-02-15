@@ -6,6 +6,10 @@ class TeamUsersPolicy < BasePolicy
     @team = team
   end
 
+  def index?
+    in_team? || admin?
+  end
+
   def new?
     in_team? || admin?
   end

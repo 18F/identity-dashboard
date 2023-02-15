@@ -107,7 +107,7 @@ describe TeamsController do
 
         expect(team).to_not be_nil
         expect(team.users).to eq([user])
-        expect(response).to redirect_to(new_team_manage_user_path(team))
+        expect(response).to redirect_to(team_users_path(team))
       end
     end
 
@@ -124,8 +124,7 @@ describe TeamsController do
 
           expect(team).to_not be_nil
           expect(team.users).to eq([])
-
-          expect(response).to redirect_to(new_team_manage_user_path(team))
+          expect(response).to redirect_to(team_users_path(team))
         end
       end
 

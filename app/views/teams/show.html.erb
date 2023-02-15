@@ -17,9 +17,10 @@
     <li><%= u.email %></li>
   <% end %>
 </ul>
+
 <%= link_to(
   "Manage users",
-  new_team_manage_user_path(@team),
+  team_users_path(@team),
   class: 'margin-y-1 display-block',
 ) %>
 

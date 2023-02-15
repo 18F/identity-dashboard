@@ -12,7 +12,7 @@ class TeamsController < AuthenticatedController
 
     if @team.save
       flash[:success] = 'Success'
-      redirect_to new_team_manage_user_path(@team.id)
+      redirect_to team_users_path(@team.id)
     else
       @agencies = Agency.all.order(:name)
       render :new

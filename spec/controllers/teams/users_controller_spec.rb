@@ -12,6 +12,33 @@ describe Teams::UsersController do
     sign_in user
   end
 
+  describe '#index' do
+    context 'when user is not part of the team' do
+      it 'renders an error' do
+        get :index, params: { team_id: team.id }
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when the user is part of the team' do
+      it 'renders the manage users page' do
+        team.users << user
+        get :index, params: { team_id: team.id }
+        expect(response.status).to eq(200)
+        expect(response).to render_template(:index)
+      end
+    end
+
+    context 'when the user is an admin' do
+      it 'renders the add new user page' do
+        user.admin = true
+        get :index, params: { team_id: team.id }
+        expect(response.status).to eq(200)
+        expect(response).to render_template(:index)
+      end
+    end
+  end
+
   describe '#new' do
     context 'when user is not part of the team' do
       it 'renders an error' do
@@ -21,7 +48,7 @@ describe Teams::UsersController do
     end
 
     context 'when the user is part of the team' do
-      it 'renders the manage users form' do
+      it 'renders the add new user form' do
         team.users << user
         get :new, params: { team_id: team.id }
         expect(response.status).to eq(200)
@@ -30,7 +57,7 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin' do
-      it 'renders the manage users form' do
+      it 'renders the add new user form' do
         user.admin = true
         get :new, params: { team_id: team.id }
         expect(response.status).to eq(200)

@@ -26,7 +26,7 @@ class Teams::UsersController < AuthenticatedController
     if user_present_not_current_user(user)
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
-      redirect_to new_team_user_path
+      redirect_to team_users_path
     else
       render_401
     end

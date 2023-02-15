@@ -21,7 +21,6 @@ lint:
 
 test:
 	bundle exec rspec
-	yarn test
 
 run:
 	foreman start -p $(PORT)

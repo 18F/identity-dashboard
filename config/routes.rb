@@ -12,9 +12,7 @@ Rails.application.routes.draw do
   resources :users
 
   get '/teams/all' => 'teams#all'
-  resources :teams do
-    resources :manage_users, only: %i[new create]
-  end
+  resources :teams
 
   scope module: 'teams' do
     resources :teams do
