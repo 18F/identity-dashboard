@@ -1,10 +1,12 @@
 module Users
   class OmniauthController < ApplicationController
+    include TeamHelper
+
     def callback
       omniauth_info = request.env['omniauth.auth']['info']
       @user = UserSession.new(omniauth_info).call
 
-      if @user
+      if @user && can_edit_teams?(@user)
         sign_in @user
         store_id_token
         redirect_to session[:requested_url]
