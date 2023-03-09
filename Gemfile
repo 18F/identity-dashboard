@@ -68,7 +68,7 @@ group :development, :test do
   gem 'rubocop', '~> 1.11.0'
   gem 'rubocop-rails', '~> 2.5.2'
   gem 'rubocop-rspec'
-  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'
+  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 end
 
 group :test do
