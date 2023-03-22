@@ -81,7 +81,7 @@ describe ServiceProviderHelper do
     }
     let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
     let(:sp_config_saml_attributes) do 
-      %w[
+      %i[
         agency_id
         friendly_name
         agency
@@ -107,7 +107,7 @@ describe ServiceProviderHelper do
       ]
     end
     let(:sp_config_oidc_attributes) do
-      %w[
+      %i[
         agency_id
         friendly_name
         agency
@@ -150,7 +150,7 @@ describe ServiceProviderHelper do
       expect(config_hash(saml_sp)).not_to include('email_nameid_format_allowed')
     end
     it 'returns a properly formatted yaml blurb for OIDC pkce' do
-      sp_config_oidc_attributes.push('pkce')
+      sp_config_oidc_attributes.push(:pkce)
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_pkce_sp)).to include(attribute_name)
       end
@@ -161,16 +161,16 @@ describe ServiceProviderHelper do
       end
     end
     it 'returns a hash with failure_to_proof_url if ial 2 - oidc' do
-      sp_config_oidc_attributes.push('failure_to_proof_url')
+      sp_config_oidc_attributes.push(:failure_to_proof_url)
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
       end
     end
     it 'returns the ial config as an integer instead of a string' do 
-      expect(config_hash(saml_sp_ial_2)['ial']).to be_an(Integer)
+      expect(config_hash(saml_sp_ial_2)[:ial]).to be_an(Integer)
     end
     it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
-      sp_config_saml_attributes.push('failure_to_proof_url')
+      sp_config_saml_attributes.push(:failure_to_proof_url)
       sp_config_saml_attributes.each do |attribute_name|
         expect(config_hash(saml_sp_ial_2)).to include(attribute_name)
       end

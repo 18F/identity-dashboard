@@ -74,7 +74,7 @@ module ServiceProviderHelper
   def yamlized_sp(service_provider)
     key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||
                       service_provider.issuer
-    yamlable_json = { "'#{key_from_issuer}'" => config_hash(service_provider) }
+    yamlable_json = { "'#{key_from_issuer}'": config_hash(service_provider) }
     yamlable_json.to_yaml.delete('\"')
   end
 
@@ -129,46 +129,53 @@ module ServiceProviderHelper
   end
   # rubocop:enable Layout/LineLength
 
+  #TODO see if YAML gem can consistently add quotes 
+
   def map_config_attributes(sp_hash, sp)
     agency = sp.agency || {}
     base_hash = {
-      'agency_id' => agency['id'],
-      'friendly_name' => sp_hash['friendly_name'],
-      'agency' => agency['name'],
-      'logo' => '<REPLACE_ME.png>',
-      'certs' => '<REPLACE_ME>',
-      'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'redirect_uris' => sp_hash['redirect_uris'],
-      'ial' => sp_hash['ial'],
-      'default_aal'=> sp_hash['default_aal'],
-      'attribute_bundle' => sp_hash['attribute_bundle'],
-      'protocol' => sp_hash['protocol'],
-      'push_notification_url' => sp_hash['push_notification_url'],
-      'restrict_to_deploy_env' => "'prod'",
-      'help_text' => sp_hash['help_text'],
-      'app_id' => '<REPLACE_WITH_COMMS>',
-      'launch_date' => '<REPLACE_ME>',
-      'iaa' => '<REPLACE_ME>',
-      'iaa_start_date' => '<REPLACE_ME>',
-      'iaa_end_date' => '<REPLACE_ME>',
+      agency_id: agency['id'],
+      friendly_name: sp_hash['friendly_name'],
+      agency: agency['name'],
+      logo: '<REPLACE_ME.png>',
+      certs: '<REPLACE_ME>',
+      ial: sp_hash['ial'],
+      default_aal: sp_hash['default_aal'],
+      attribute_bundle: sp_hash['attribute_bundle'],
+      protocol: sp_hash['protocol'],
+      restrict_to_deploy_env: "'prod'",
+      #TODO make sure help text is including quotes
+      help_text: sp_hash['help_text'],
+      app_id: '<REPLACE_WITH_COMMS>',
+      launch_date: '<REPLACE_ME>',
+      iaa: '<REPLACE_ME>',
+      iaa_start_date: '<REPLACE_ME>',
+      iaa_end_date: '<REPLACE_ME>',
+      #putting all urls at the bottom to make it easier to organize 
+      return_to_sp_url: sp_hash['return_to_sp_url'],
+      push_notification_url: sp_hash['push_notification_url'],
+      #TODO get redirect_uris to include quotes
+      redirect_uris: sp_hash['redirect_uris']
     }
     hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
-    if base_hash['protocol'] == 'saml'
+    # 1. add saml URL attributes first
+    # 2. add rest of attributes (oidc and saml non URL attributes)
+    if base_hash[:protocol] == 'saml'
       add_saml_attributes(hash_with_ial_attr, sp_hash)
     else
-      add_oidc_atttributes(hash_with_ial_attr)
+      add_oidc_attributes(hash_with_ial_attr)
     end
   end
 
   def add_saml_attributes(configs_hash, sp_hash)
     saml_attrs = {
-      'acs_url' => sp_hash['acs_url'],
+      acs_url: sp_hash['acs_url'],
       # rubocop:disable Layout/LineLength
-      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
+      assertion_consumer_logout_service_url: sp_hash['assertion_consumer_logout_service_url'],
+      sp_initiated_login_url: sp_hash['sp_initiated_login_url'],
       # rubocop:enable Layout/LineLength
-      'block_encryption' => sp_hash['block_encryption'],
-      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
-      'protocol' => 'saml',
+      block_encryption: sp_hash['block_encryption'],
+      protocol: 'saml',
     }
     if(sp_hash['signed_response_message_requested'] == "'true'")
       saml_attrs['signed_response_message_requested'] = true
@@ -180,15 +187,15 @@ module ServiceProviderHelper
   end
 
   def add_IAL_attribute(config_hash, failure_to_proof_url)
-    return config_hash if config_hash['ial'] != 2
-    config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
+    return config_hash if config_hash[:ial] != 2
+    config_hash.merge({failure_to_proof_url: failure_to_proof_url})
   end
 
-  def add_oidc_atttributes(config_hash)
-    if config_hash['protocol'] == 'openid_connect_pkce'
-      config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
+  def add_oidc_attributes(config_hash)
+    if config_hash[:protocol] == 'openid_connect_pkce'
+      config_hash.merge({pkce: true, protocol: 'oidc'})
     else
-      config_hash.merge({'protocol' => 'oidc'})
+      config_hash.merge({protocol: 'oidc'})
     end
   end
 end
