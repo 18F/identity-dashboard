@@ -141,7 +141,7 @@ module ServiceProviderHelper
       default_aal: sp_hash['default_aal'],
       attribute_bundle: sp_hash['attribute_bundle'],
       protocol: sp_hash['protocol'],
-      restrict_to_deploy_env: "prod",
+      restrict_to_deploy_env: 'prod',
       help_text: sp_hash['help_text'],
       app_id: '<REPLACE_WITH_COMMS>',
       launch_date: '<REPLACE_ME>',
@@ -150,7 +150,7 @@ module ServiceProviderHelper
       iaa_end_date: '<REPLACE_ME>',
       return_to_sp_url: sp_hash['return_to_sp_url'],
       push_notification_url: sp_hash['push_notification_url'],
-      redirect_uris: sp_hash['redirect_uris']
+      redirect_uris: sp_hash['redirect_uris'],
     }
     hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
 
@@ -171,10 +171,10 @@ module ServiceProviderHelper
       block_encryption: sp_hash['block_encryption'],
       protocol: 'saml',
     }
-    if(sp_hash["signed_response_message_requested"] == true)
+    if(sp_hash['signed_response_message_requested'] == true)
       saml_attrs[:signed_response_message_requested] = true
     end
-    if(sp_hash["email_nameid_format_allowed"] == true)
+    if(sp_hash['email_nameid_format_allowed'] == true)
       saml_attrs[:email_nameid_format_allowed] = true
     end
     configs_hash.merge!(saml_attrs)
