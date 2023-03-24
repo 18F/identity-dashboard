@@ -73,4 +73,38 @@ describe Users::OmniauthController do
       end
     end
   end
+
+  describe '#callback (allowed tld)' do
+    let(:uuid) { '123-asdf-qwerty' }
+    let(:email) { 'test@gsa.gov' }
+    let(:omniauth_hash) do
+      {
+        'info' => {
+          'email' => email,
+          'uuid' => uuid,
+        },
+        'credentials' => {
+          'id_token'=> 'abc123',
+        },
+      }
+    end
+
+    before do
+      subject.request.env['omniauth.auth'] = omniauth_hash
+    end
+
+    context 'when a user exists but is on no team' do
+      it 'signs the user in' do
+        user = create(:user, email: email)
+        session[:requested_url] = service_providers_url
+
+        expect(subject).to receive(:sign_in).with(user)
+
+        get :callback
+
+        expect(user.reload.uuid).to eq(uuid)
+        expect(response).to redirect_to(service_providers_url)
+      end
+    end
+  end
 end
