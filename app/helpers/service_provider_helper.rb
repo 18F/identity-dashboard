@@ -168,7 +168,7 @@ module ServiceProviderHelper
       'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       # rubocop:enable Layout/LineLength
       'block_encryption' => sp_hash['block_encryption'],
-      'protocol': 'saml'
+      'protocol' => 'saml',
     }
     if(sp_hash['signed_response_message_requested'] == true)
       saml_attrs['signed_response_message_requested'] = true
