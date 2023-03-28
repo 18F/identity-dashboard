@@ -72,9 +72,8 @@ module ServiceProviderHelper
   end
 
   def yamlized_sp(service_provider)
-    key_from_issuer = JSON.parse(service_provider.to_json).dig('production_issuer').presence ||
-                      service_provider.issuer
-    yamlable_json = { "'#{key_from_issuer}'" => config_hash(service_provider) }
+    key_from_issuer = service_provider.issuer
+    yamlable_json = { "#{key_from_issuer}" => config_hash(service_provider) }
     yamlable_json.to_yaml.delete('\"')
   end
 
@@ -123,7 +122,7 @@ module ServiceProviderHelper
       if %w[agency_id default_help_text help_text attribute_bundle redirect_uris].include?(config_key)
         [config_key, value]
       else
-        [config_key, "'#{value}'"]
+        [config_key, value]
       end
     end.to_h
   end
@@ -137,26 +136,27 @@ module ServiceProviderHelper
       'agency' => agency['name'],
       'logo' => '<REPLACE_ME.png>',
       'certs' => '<REPLACE_ME>',
-      'return_to_sp_url' => sp_hash['return_to_sp_url'],
-      'redirect_uris' => sp_hash['redirect_uris'],
       'ial' => sp_hash['ial'],
-      'default_aal'=> sp_hash['default_aal'],
+      'default_aal' => sp_hash['default_aal'],
       'attribute_bundle' => sp_hash['attribute_bundle'],
       'protocol' => sp_hash['protocol'],
-      'push_notification_url' => sp_hash['push_notification_url'],
-      'restrict_to_deploy_env' => "'prod'",
+      'restrict_to_deploy_env' => 'prod',
       'help_text' => sp_hash['help_text'],
       'app_id' => '<REPLACE_WITH_COMMS>',
       'launch_date' => '<REPLACE_ME>',
       'iaa' => '<REPLACE_ME>',
       'iaa_start_date' => '<REPLACE_ME>',
       'iaa_end_date' => '<REPLACE_ME>',
+      'return_to_sp_url' => sp_hash['return_to_sp_url'],
+      'push_notification_url' => sp_hash['push_notification_url'],
+      'redirect_uris' => sp_hash['redirect_uris'],
     }
     hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
+
     if base_hash['protocol'] == 'saml'
       add_saml_attributes(hash_with_ial_attr, sp_hash)
     else
-      add_oidc_atttributes(hash_with_ial_attr)
+      add_oidc_attributes(hash_with_ial_attr)
     end
   end
 
@@ -164,16 +164,16 @@ module ServiceProviderHelper
     saml_attrs = {
       'acs_url' => sp_hash['acs_url'],
       # rubocop:disable Layout/LineLength
-      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
+      'assertion_consumer_logout_service_url'=> sp_hash['assertion_consumer_logout_service_url'],
+      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       # rubocop:enable Layout/LineLength
       'block_encryption' => sp_hash['block_encryption'],
-      'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
       'protocol' => 'saml',
     }
-    if(sp_hash['signed_response_message_requested'] == "'true'")
+    if(sp_hash['signed_response_message_requested'] == true)
       saml_attrs['signed_response_message_requested'] = true
     end
-    if(sp_hash['email_nameid_format_allowed'] == "'true'")
+    if(sp_hash['email_nameid_format_allowed'] == true)
       saml_attrs['email_nameid_format_allowed'] = true
     end
     configs_hash.merge!(saml_attrs)
@@ -184,7 +184,7 @@ module ServiceProviderHelper
     config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
   end
 
-  def add_oidc_atttributes(config_hash)
+  def add_oidc_attributes(config_hash)
     if config_hash['protocol'] == 'openid_connect_pkce'
       config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
     else

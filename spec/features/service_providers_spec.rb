@@ -327,7 +327,7 @@ feature 'Service Providers CRUD' do
 
       expect(page).to have_content('Success')
 
-      expect(page.find(:id, 'yaml')).to have_content("push_notification_url: '#{url}'")
+      expect(page.find(:id, 'yaml')).to have_content("push_notification_url: #{url}")
     end
 
     scenario 'can create service provider with user team' do
