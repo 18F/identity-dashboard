@@ -31,7 +31,7 @@ gem 'pry-rails'
 gem 'pundit', '>= 2.3.0'
 gem 'rack-canonical-host'
 gem 'rack-timeout', require: false
-gem 'rails', '~> 6.1.7', '>= 6.1.7.1'
+gem 'rails', '~> 6.1.7', '>= 6.1.7.3'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
