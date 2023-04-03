@@ -1,0 +1,70 @@
+<h1>Validate SAML authentication request Signature</h1>
+
+<%= render 'form' %>
+
+<hr/>
+
+<% if @valid_request %>
+<div class="usa-alert usa-alert--success">
+<% else %>
+<div class="usa-alert usa-alert--error">
+<% end %>
+    <div class="usa-alert__body">
+        <h4 class="usa-alert__heading">
+            Request: <%= @valid_request ? "Valid" : "Invalid" %>
+        </h4>
+        <% if !@valid_request %>
+            There is something wrong with your SAML request.
+            <% if !@request %>
+                We could not decode your SAML request. Make sure it is encoded properly, as described in <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<% if @valid_signature %>
+<div class="usa-alert usa-alert--success">
+<% else %>
+<div class="usa-alert usa-alert--error">
+<% end %>
+    <div class="usa-alert__body">
+        <h4 class="usa-alert__heading">
+            Signature: <%= @valid_signature ? "Valid" : "Invalid" %>
+        </h4>
+        <% if @valid_signature %>
+            Public Certificate Serial Number:
+            <div>
+                <code><%= @matching_cert_sn.to_s %></code> (int)
+            </div>
+            <div>
+                <code><%= @matching_cert_sn.to_s(16) %></code> (hex)
+            </div>
+        <% end %>
+        <% if !@valid_signature %>
+            Possible reasons reasons:
+            <ul>
+                <li>
+                    <b>Wrong hashing algorithm:</b> Login.gov only supports SHA256
+                </li>
+                <li>
+                    <b>Wrong certificate:</b>
+                    <ul>
+                        <li>
+                            If you've pasted a certificate, the certificate may not match the private key used by your application.
+                        </li>
+                        <li>
+                            Otherwise, you need to add the public certificate to your Login.gov application configuration that belongs to the private key used by your application.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        <% end %>
+    </div>
+</div>
+
+<% if @xml&.length %>
+<p>
+    <b>SAML</b>
+    <pre><code><%= @xml %></code></pre>
+</p>
+<% end %>
