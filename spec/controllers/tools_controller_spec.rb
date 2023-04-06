@@ -4,36 +4,92 @@ describe ToolsController do
   include Devise::Test::ControllerHelpers
 
   describe "#index" do
+    before { get :index, params: params }
 
     describe "auth_url are not parseable" do
-      describe "no params['auth_url']" do
-        it "returns nil" do
-          get :index
-          expect(response).to be nil
-          # is that what we want here?
+      
+      describe "params['auth_url'] is an empty string" do
+        let(:params) { { auth_url: '' } }
+        
+        it "creates a flash error" do
+          expect(flash["error"]).to eq "Please submit an auth URL to be validated."
         end
 
-        describe "params['auth_url'] is not a url" do
-          it "returns nil" do
-            # is that what we want here?
-          end
+        it "instance variables are nil" do
+          expect(@valid_request).to be nil
+          expect(@valid_signature).to be nil
+          expect(@matching_cert_sn).to be nil
+        end
+
+        it 'does not call SamlIdp:Request' do
+          expect(SamlIdp::Request).not_to have_received(:from_deflated_request)
+        end
+      end
+
+      describe "params['auth_url'] is not a url" do
+        let(:params) { {auth_url: "i am not a url!"} }
+ 
+        it "creates a flash error" do
+          # is that what we want here? do we want a flash error?
+          expect(flash["error"]).to eq "Please submit an auth URL to be validated."
+        end
+
+        it "instance variables are nil" do
+          expect(@valid_request).to be nil
+          expect(@valid_signature).to be nil
+          expect(@matching_cert_sn).to be nil
+        end
+
+        it 'does not call SamlIdp:Request' do
+          expect(SamlIdp::Request).not_to have_received(:from_deflated_request)
         end
       end
     end
 
     describe "auth_url is not valid" do
-      let(:params) { {auth_url: "http://not-real!"} }
-      it "sets the instance variables to nil" do
-        get :index, params: params
-        expect(flash["error"]).to eq "Could not find any certificates to use. Please add a certificate to your application configuration or paste one below."
-        expect(@valid_request).to be nil
-        # etc etc
+      before { get :index, params: params }
+      
+      describe 'no cert is passed through' do
+        let(:params) { {auth_url: "http://not-real!"} }
+
+        it "creates a flash error" do
+          expect(flash["error"]).to eq "Could not find any certificates to use. Please add a certificate to your application configuration or paste one below."
+        end
+
+        it "sets the instance variables to nil" do
+          expect(@valid_request).to be nil
+          expect(@valid_signature).to be nil
+          expect(@matching_cert_sn).to be nil
+        end
       end
     end
 
     describe "auth_url is valid" do
+      let(:saml_idp_request) { double SamlIdp::Request }
+
       describe "a cert is not passed through the params" do
-        describe "the auth_url request does not have an issuer" do
+        let(:auth_url) { "https://secure.login.gov/api/saml/auth2023?SAMLRequest=test&other_value=test_too"}
+        let(:params) { { auth_url:  auth_url }}
+
+        describe "the auth_url does not have an issuer" do
+          # there are no certs 
+
+          it "creates a flash error" do
+            # expect(SamlIdp::Request).to receive(:from_deflated_request).and_return saml_idp_request
+            # expect(saml_idp_request).to receive(:issuer).and_return nil
+            expect(flash["error"]).to eq "Could not find any certificates to use. Please add a certificate to your application configuration or paste one below."
+          end
+  
+          it "sets the instance variables to nil" do
+            expect(@valid_request).to be nil
+            expect(@valid_signature).to be nil
+            expect(@matching_cert_sn).to be nil
+          end
+          
+        end
+        
+        describe "the service_provider does not have a cert" do
+          let(:service_provider) { create(:service_provider, :saml)}
           # is it possible for a valid auth_url request to not return an issuer:?
           # this is the use case where there are no certs
           it "adds a flash error" do
