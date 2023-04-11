@@ -13,7 +13,7 @@ class ToolsController < ApplicationController
 
     return if !auth_params
 
-    sp = ServiceProvider.find_by(issuer: auth_request.issuer)
+    sp = ServiceProvider.find_by(issuer: auth_request.issuer) unless cert_param
 
     begin
       certs = (cert_param || sp.certs).map { |cert| OpenSSL::X509::Certificate.new(cert) }
@@ -23,8 +23,10 @@ class ToolsController < ApplicationController
       flash[:error] = "Could not find any certificates to use. Please add a certificate to your application configuration or paste one below."
     end
 
-    auth_request&.service_provider&.certs = certs
+    # is it weird that we're altering this Request object?
+    auth_service_provider&.certs = certs
     @valid_request = valid_request
+
     @valid_signature = valid_signature
     @matching_cert_sn = matching_cert_sn
     # binding.pry
@@ -40,17 +42,21 @@ class ToolsController < ApplicationController
   end
 
   def valid_signature
-    auth_request&.service_provider&.valid_signature?(Saml::XML::Document.parse(auth_request&.raw_xml), true, auth_request&.options)
+    auth_service_provider&.valid_signature?(Saml::XML::Document.parse(auth_request&.raw_xml), true, auth_request&.options)
   end
 
   private
 
   def matching_cert_sn
-    auth_request&.service_provider&.matching_cert&.serial
+    auth_service_provider&.matching_cert&.serial
   end
 
   def auth_request
     @auth_request ||= SamlIdp::Request.from_deflated_request(auth_params[:SAMLRequest], get_params:auth_params)
+  end
+
+  def auth_service_provider
+    @auth_service_provider ||= auth_request&.service_provider
   end
 
   def auth_params
