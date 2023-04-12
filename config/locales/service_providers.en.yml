@@ -1,8 +1,8 @@
 ---
 en:
   service_provider_form:
-    app_name: "The name of your application as it appears in the signed Inter-Agency Agreement with Login.gov. Ex: DHS - CSP"
-    friendly_name: "The name of your app that will get displayed to users when logging in. Ex: DHS Customer Service Portal"
+    app_name: "The name of your application <span class='text-heavy'>as it appears in the signed Inter-Agency Agreement (IAA)</span> with Login.gov. Ex: DHS - CSP"
+    friendly_name: "The name of your app that will be <span class='text-heavy'>displayed to users</span> when logging in. Example: DHS Customer Service Portal"
     description: "A description of the app (may be helpful for your colleagues)."
     team: "Assign an agency team to this client."
     protocol: "This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you."
