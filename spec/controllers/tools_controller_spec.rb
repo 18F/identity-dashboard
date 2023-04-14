@@ -34,7 +34,9 @@ describe ToolsController do
 
       describe 'no cert is passed through' do
         it 'creates a flash error' do
-          expect(flash['error']).to eq 'Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.'
+          expect(flash['error']).to eq 'Could not find any certificates to use. Please add a' \
+                                       ' certificate to your application configuration or paste' \
+                                       ' one below.'
         end
 
         it 'sets the instance variables to nil' do
@@ -50,7 +52,7 @@ describe ToolsController do
 
       describe 'a cert is not passed through the params' do
         let(:auth_url) { 'https://secure.login.gov/api/saml/auth2023?SAMLRequest=test&other_value=test_too'}
-        let(:params) { { auth_url:  auth_url }}
+        let(:params) { { auth_url: auth_url }}
 
         before do
           expect(SamlIdp::Request).to receive(:from_deflated_request) { saml_idp_request }
@@ -63,7 +65,9 @@ describe ToolsController do
 
         describe 'the auth_url does not have an issuer' do
           it 'creates a flash error' do
-            expect(flash['error']).to eq 'Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.'
+            expect(flash['error']).to eq 'Could not find any certificates to use. Please add a' \
+                                         ' certificate to your application configuration or paste' \
+                                         ' one below.'
           end
 
           it 'sets the instance variables to nil' do
@@ -75,7 +79,7 @@ describe ToolsController do
         end
 
         describe 'the auth_url request has an issuer' do
-          let(:service_provider) { create(:service_provider, :saml)}
+          let(:service_provider) { create(:service_provider, :saml) }
 
           before do
             allow(saml_idp_request).to receive(:issuer) { service_provider.issuer }
@@ -85,7 +89,9 @@ describe ToolsController do
           describe 'the service_provider does not have a cert' do
             # this is the use case where there are no certs
             it 'creates a flash error' do
-              expect(flash['error']).to eq 'Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.'
+              expect(flash['error']).to eq 'Could not find any certificates to use. Please add a' \
+                                           ' certificate to your application configuration or' \
+                                           ' paste one below.'
             end
 
             it 'sets instance variables to whatever the SamlIdp::Request object returns' do
@@ -114,7 +120,7 @@ describe ToolsController do
             describe 'the cert is valid' do
               # dashboard has a validation for valid certs, so they are all valid.
               let(:cert) { build_pem }
-              let(:service_provider) { create(:service_provider, :saml, certs: [cert])}
+              let(:service_provider) { create(:service_provider, :saml, certs: [cert]) }
               let(:saml_sp) { double SamlIdp::ServiceProvider }
               let(:actual_cert) { OpenSSL::X509::Certificate.new(cert) }
 
@@ -154,6 +160,7 @@ describe ToolsController do
         before do
           allow(SamlIdp::Request).to receive(:from_deflated_request) { saml_idp_request }
           allow(saml_idp_request).to receive(:service_provider) { saml_sp }
+          # :certs= represents a setter method here
           allow(saml_sp).to receive(:certs=)
           allow(saml_idp_request).to receive(:options)
           allow(saml_sp).to receive(:valid_signature?) { true }

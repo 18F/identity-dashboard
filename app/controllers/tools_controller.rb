@@ -47,27 +47,33 @@ class ToolsController < ApplicationController
   end
 
   def auth_request
-    @auth_request ||= SamlIdp::Request.from_deflated_request(auth_params[:SAMLRequest], get_params:auth_params)
+    @auth_request ||= SamlIdp::Request.from_deflated_request(auth_url, get_params:auth_params)
   end
 
   def auth_service_provider
     @auth_service_provider ||= auth_request&.service_provider
   end
 
-  def auth_params
-    @auth_params ||= auth_request_params
-  end
-
   def cert_param
     [params['cert']] if params['cert'].present?
   end
 
+  def auth_params
+    @auth_params ||= auth_request_params
+  end
+
   def auth_request_params
-    auth_url = params['auth_url']
-    return nil if auth_url.length < 1
-    params = url_params(auth_url)
-    params = {SAMLRequest: auth_url} if !params.present?
-    return params
+    return nil if auth_url.empty?
+    return {SAMLRequest: auth_url} if !saml_request_params.present?
+    saml_request_params
+  end
+
+  def auth_url
+    @auth_url ||= params['auth_url']
+  end
+
+  def saml_request_params
+    url_params(auth_url)
   end
 
   def url_params(url)

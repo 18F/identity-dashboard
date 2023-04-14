@@ -3,7 +3,7 @@
         <fieldset class="usa-fieldset">
             <div>
                 <%= form.label :auth_url, "Auth URL", class: "usa-label usa_textarea" %>
-                <%= form.text_area :auth_url, class: "block col-12 optional usa-textarea"
+                <%= form.text_area :auth_url, class: "block col-12 optional usa-textarea", required: true
                 %>
                 <div class="usa-form-hint">Paste the entire URL of the auth request. If the signature is included in the SAML itself, you can also just paste the contents of the SAMLRequest parameter.</div>
             </div>
