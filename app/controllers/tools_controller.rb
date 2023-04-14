@@ -27,7 +27,7 @@ class ToolsController < ApplicationController
 
     if auth_request
       xml = REXML::Document.new(auth_request.raw_xml)
-      xml.write(@xml = "", 2)
+      xml.write(@xml = '', 2)
     end
 
   end
