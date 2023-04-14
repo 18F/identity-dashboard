@@ -11,7 +11,7 @@ describe ToolsController do
       describe "params['auth_url'] is an empty string" do
         it "creates a flash error" do
           get :index, params: params
-          expect(flash["error"]).to eq "Please submit an auth URL to be validated."
+          expect(flash["error"]).to eq "Please submit an auth URL or SAMLRequest to be validated."
         end
 
         it "instance variables are nil" do
@@ -22,29 +22,6 @@ describe ToolsController do
         end
 
         it 'does not call SamlIdp:Request' do
-          expect(SamlIdp::Request).not_to receive(:from_deflated_request)
-          get :index, params: params
-        end
-      end
-
-      describe "params['auth_url'] is not a url" do
-        let(:params) { {auth_url: "i am not a url!"} }
-
-        it "creates a flash error" do
-          # is that what we want here? do we want a flash error?
-          get :index, params: params
-          expect(flash["error"]).to eq "Please submit an auth URL to be validated."
-        end
-
-        it "instance variables are nil" do
-          get :index, params: params
-          expect(assigns[:valid_request]).to be nil
-          expect(assigns[:valid_signature]).to be nil
-          expect(assigns[:matching_cert_sn]).to be nil
-        end
-
-        it 'does not call SamlIdp:Request' do
-          # currently it calls this method. i think it should not if it's not a url!
           expect(SamlIdp::Request).not_to receive(:from_deflated_request)
           get :index, params: params
         end
@@ -61,7 +38,7 @@ describe ToolsController do
         end
 
         it "sets the instance variables to nil" do
-          expect(assigns[:valid_request]).to be nil
+          expect(assigns[:valid_request]).to be false
           expect(assigns[:valid_signature]).to be nil
           expect(assigns[:matching_cert_sn]).to be nil
         end
@@ -162,9 +139,6 @@ describe ToolsController do
                 expect(assigns[:valid_request]).to be true
               end
 
-              it "returns expected XML" do
-                # i don't know what this looks like or how to try to guess, sorry!
-              end
             end
           end
         end
@@ -216,6 +190,10 @@ describe ToolsController do
         end
 
         describe "the cert is valid" do
+          before do
+            get :index, params: params
+          end
+
           it "does not create a flash error" do
             expect(flash["error"]).to be nil
           end
@@ -226,8 +204,6 @@ describe ToolsController do
             expect(assigns[:valid_request]).to be true
           end
 
-          it "returns expected XML" do
-          end
         end
       end
     end

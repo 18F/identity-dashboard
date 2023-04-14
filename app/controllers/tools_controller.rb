@@ -1,35 +1,30 @@
 class ToolsController < ApplicationController
   require 'saml_idp'
 
-  # def new
-  #   @valid_request = ""
-  #   @valid_signature = ""
-  #   @matching_cert_sn = ""
-  #   @xml = ""
-  # end
-
   def index
     flash[:error] = nil
 
-    return if !auth_params
+    if !auth_params
+      flash[:error] = 'Please submit an auth URL or SAMLRequest to be validated.'
+      return
+    end
 
     sp = ServiceProvider.find_by(issuer: auth_request.issuer) unless cert_param
 
     begin
       certs = (cert_param || sp.certs).map { |cert| OpenSSL::X509::Certificate.new(cert) }
     rescue OpenSSL::X509::CertificateError
-      flash[:error] = "Something is wrong with the certificate you submitted."
+      flash[:error] = 'Something is wrong with the certificate you submitted.'
     rescue NoMethodError
-      flash[:error] = "Could not find any certificates to use. Please add a certificate to your application configuration or paste one below."
+      flash[:error] = 'Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.'
     end
 
-    # is it weird that we're altering this Request object?
     auth_service_provider&.certs = certs
     @valid_request = valid_request
 
     @valid_signature = valid_signature
     @matching_cert_sn = matching_cert_sn
-    # binding.pry
+
     if auth_request
       xml = REXML::Document.new(auth_request.raw_xml)
       xml.write(@xml = "", 2)
