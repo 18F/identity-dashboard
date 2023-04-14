@@ -8,7 +8,7 @@ describe ToolsController do
     describe 'auth_url are not parseable' do
       let(:params) {{ auth_url: '' }}
 
-      describe 'params['auth_url'] is an empty string' do
+      describe 'params[\'auth_url\'] is an empty string' do
         it 'creates a flash error' do
           get :index, params: params
           expect(flash['error']).to eq 'Please submit an auth URL or SAMLRequest to be validated.'
