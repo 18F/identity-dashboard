@@ -107,10 +107,10 @@
               </li>
 
               <li class="usa-nav__primary-item">
-                <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-2">
+                <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
                   <span>Tools</span>
                 </button>
-                <ul id="unique-id-2" class="usa-nav__submenu">
+                <ul id="unique-id-tools-dropdown" class="usa-nav__submenu">
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'SAML', tools_path %>
                   </li>
@@ -119,10 +119,10 @@
 
               <% if current_user.admin? %>
                 <li class="usa-nav__primary-item">
-                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-1">
+                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-admin-dropdown">
                     <span>Admin</span>
                   </button>
-                  <ul id="unique-id-1" class="usa-nav__submenu">
+                  <ul id="unique-id-admin-dropdown" class="usa-nav__submenu">
                     <li class="usa-nav__submenu-item">
                       <%= link_to 'All apps', service_providers_all_path %>
                     </li>
