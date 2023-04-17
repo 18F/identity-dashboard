@@ -4,12 +4,10 @@ class ToolsController < ApplicationController
   def index
     flash[:error] = nil
 
-    if !auth_params
+    if !auth_url.present?
       flash[:error] = 'Please submit an auth URL or SAMLRequest to be validated.'
       return
     end
-
-    sp = ServiceProvider.find_by(issuer: auth_request.issuer) unless cert_param
 
     begin
       certs = (cert_param || sp.certs).map { |cert| OpenSSL::X509::Certificate.new(cert) }
@@ -47,7 +45,7 @@ class ToolsController < ApplicationController
   end
 
   def auth_request
-    @auth_request ||= SamlIdp::Request.from_deflated_request(auth_url, get_params:auth_params)
+    @auth_request ||= SamlIdp::Request.from_deflated_request(auth_url, get_params: saml_params)
   end
 
   def auth_service_provider
@@ -58,22 +56,18 @@ class ToolsController < ApplicationController
     [params['cert']] if params['cert'].present?
   end
 
-  def auth_params
-    @auth_params ||= auth_request_params
-  end
-
-  def auth_request_params
-    return nil if auth_url.empty?
-    return {SAMLRequest: auth_url} if !saml_request_params.present?
-    saml_request_params
-  end
-
   def auth_url
     @auth_url ||= params['auth_url']
   end
 
-  def saml_request_params
-    url_params(auth_url)
+  def saml_params
+    @saml_params ||=
+      saml_params = url_params(auth_url)
+      saml_params.present? ? saml_params : { SAMLRequest: auth_url }
+  end
+
+  def sp
+    ServiceProvider.find_by(issuer: auth_request.issuer) unless cert_param
   end
 
   def url_params(url)
