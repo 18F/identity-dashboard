@@ -44,7 +44,7 @@ SimpleForm.setup do |config|
     b.use :label, class: 'usa-label'
     # changed input class from field to usa-input
     b.use :input, class: 'block col-12' # usa-input'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-form-hint' }
+    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 

@@ -105,12 +105,24 @@
               <li class="usa-nav__primary-item">
                 <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
               </li>
+
+              <li class="usa-nav__primary-item">
+                <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
+                  <span>Tools</span>
+                </button>
+                <ul id="unique-id-tools-dropdown" class="usa-nav__submenu">
+                  <li class="usa-nav__submenu-item">
+                    <%= link_to 'SAML', tools_path %>
+                  </li>
+                </ul>
+              </li>
+
               <% if current_user.admin? %>
                 <li class="usa-nav__primary-item">
-                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-1">
+                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-admin-dropdown">
                     <span>Admin</span>
                   </button>
-                  <ul id="unique-id-1" class="usa-nav__submenu">
+                  <ul id="unique-id-admin-dropdown" class="usa-nav__submenu">
                     <li class="usa-nav__submenu-item">
                       <%= link_to 'All apps', service_providers_all_path %>
                     </li>

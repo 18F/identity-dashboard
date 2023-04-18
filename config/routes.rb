@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/tools' => 'tools#new'
+  post '/tools' => 'tools#index'
+
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
   resources :service_providers

@@ -21,13 +21,13 @@
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'App name',
-                 hint: I18n.t('service_provider_form.app_name') %>
+                 hint: I18n.t('service_provider_form.app_name').html_safe %>
 
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: I18n.t('service_provider_form.friendly_name') %>
+                 hint: I18n.t('service_provider_form.friendly_name').html_safe %>
 
 
   <%= form.input :description,
