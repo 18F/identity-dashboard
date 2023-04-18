@@ -94,4 +94,3 @@ group :production do
 end
 
 gem 'autoprefixer-rails', '~> 10.1'
-
