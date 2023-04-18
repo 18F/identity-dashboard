@@ -16,7 +16,8 @@
         <% if !@valid_request %>
             There is something wrong with your SAML request.
             <% if !@request %>
-                We could not decode your SAML request. Make sure it is encoded properly, as described in <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.
+                <p>We could not decode your SAML request. Make sure it is encoded correctly, as described in <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.</p>
+                <p>Also note that all other URL parameters need to be properly URL-encoded.</p>
             <% end %>
         <% end %>
     </div>
@@ -43,6 +44,9 @@
         <% if !@valid_signature %>
             Possible reasons:
             <ul>
+                <li>
+                    <b>No signature:</b> Is the request signed? If not, you should check your application's SAML config settings and enable it.
+                </li>
                 <li>
                     <b>Wrong hashing algorithm:</b> Login.gov only supports SHA256
                 </li>
