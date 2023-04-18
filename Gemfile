@@ -36,7 +36,7 @@ gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
 gem 'rest-client', '~> 2.1'
-gem "rexml", "~> 3.2"
+gem 'rexml', '~> 3.2'
 gem 'ruby_regex'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
