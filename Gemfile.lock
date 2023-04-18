@@ -631,6 +631,7 @@ DEPENDENCIES
   redacted_struct
   responders (~> 3.0, >= 3.0.1)
   rest-client (~> 2.1)
+  rexml (~> 3.2)
   rspec-rails (~> 4.1, >= 4.1.2)
   rubocop (~> 1.11.0)
   rubocop-rails (~> 2.5.2)
