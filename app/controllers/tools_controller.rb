@@ -45,7 +45,7 @@ class ToolsController < ApplicationController
   end
 
   def auth_request
-    @auth_request ||= SamlIdp::Request.from_deflated_request(auth_url, get_params: saml_params)
+    @auth_request ||= SamlIdp::Request.from_deflated_request(saml_params[:SAMLRequest], get_params: saml_params)
   end
 
   def auth_service_provider
@@ -61,9 +61,10 @@ class ToolsController < ApplicationController
   end
 
   def saml_params
-    @saml_params ||=
-      saml_params = url_params(auth_url)
-      saml_params.present? ? saml_params : { SAMLRequest: auth_url }
+    @saml_params ||= begin
+      s_params = url_params(auth_url)
+      s_params.present? ? s_params : { SAMLRequest: auth_url }
+    end
   end
 
   def sp
