@@ -37,6 +37,7 @@ gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
 gem 'rest-client', '~> 2.1'
 gem 'ruby_regex'
+gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.1', '>= 5.1.0'
@@ -68,7 +69,6 @@ group :development, :test do
   gem 'rubocop', '~> 1.11.0'
   gem 'rubocop-rails', '~> 2.5.2'
   gem 'rubocop-rspec'
-  gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 end
 
 group :test do
