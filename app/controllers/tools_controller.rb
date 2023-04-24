@@ -23,7 +23,7 @@ class ToolsController < ApplicationController
     @valid_signature = valid_signature
     @matching_cert_sn = matching_cert_sn
 
-    if auth_request
+    if auth_request && @valid_request
       xml = REXML::Document.new(auth_request.raw_xml)
       xml.write(@xml = '', 2)
     end
