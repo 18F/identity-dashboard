@@ -47,7 +47,11 @@ RSpec.describe ServiceProviderLogoUpdater do
 
     it 'handles edge cases' do
       allow(Subprocess).to receive(:check_call).and_return(true)
-      allow(File).to receive(:directory?).and_return(true)
+
+      allow(File).to receive(:directory?).and_call_original
+      repo_dir = Rails.root.join(ServiceProviderLogoUpdater::IDP_CONFIG_CHECKOUT_NAME)
+      expect(File).to receive(:directory?).with(repo_dir).and_return(true)
+
       allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
       # don't call /api/service_providers on the dashboard
       # allow(updater).to receive(:load_idp_config).and_return(fake_config)
