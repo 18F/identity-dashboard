@@ -13,14 +13,14 @@
   <label for="name">App name: </label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.app_name %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.app_name') %> </i></p>
+<p><i> <%= sanitize I18n.t('service_provider_form.app_name') %> </i></p>
 <hr>
 
 <h2 class="margin-bottom-0">
   <label for="name">Friendly name:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.friendly_name %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.friendly_name') %> </i></p>
+<p><i> <%= sanitize I18n.t('service_provider_form.friendly_name') %> </i></p>
 <hr>
 
 <h2 class="margin-bottom-0">
