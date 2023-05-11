@@ -40,7 +40,7 @@ describe Api::ServiceProvidersController do
       serialized = ServiceProviderSerializer.new(sp).to_h
       get :show, params: {id: sp.id}
 
-      expect(response_from_json).to eq([serialized.deep_symbolize_keys])
+      expect(response_from_json).to eq(serialized.deep_symbolize_keys)
     end
 
   end

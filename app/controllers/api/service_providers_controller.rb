@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      render json: serialized_service_providers([service_provider])
+      render json: ServiceProviderSerializer.new(service_provider).as_json
     end
 
     def update
