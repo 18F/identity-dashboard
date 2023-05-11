@@ -35,7 +35,8 @@ RSpec.describe ServiceProviderSerializer do
           eq(service_provider.email_nameid_format_allowed)
         expect(as_json[:signed_response_message_requested]).to \
           eq(service_provider.signed_response_message_requested)
-        expect(as_json[:allow_prompt_login]).to eq(true)
+        expect(as_json[:allow_prompt_login]).to be true
+        expect(as_json[:protocol]).to eq 'oidc'
       end
     end
 
