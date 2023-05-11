@@ -6,6 +6,10 @@ module Api
       render json: serialized_service_providers(approved_service_providers)
     end
 
+    def show
+      render json: ServiceProviderSerializer.new(service_provider).as_json
+    end
+
     def update
       if ServiceProviderUpdater.ping == 200
         flash[:notice] = I18n.t('notices.service_providers_refreshed')
@@ -26,6 +30,14 @@ module Api
 
     def approved_service_providers
       ServiceProvider.includes(:agency, logo_file_attachment: :blob).all
+    end
+
+    def service_provider
+      @service_provider ||= ServiceProvider.includes(:agency, logo_file_attachment: :blob).find(id)
+    end
+
+    def id
+      @id ||= params[:id]
     end
   end
 end
