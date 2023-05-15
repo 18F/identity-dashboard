@@ -13,7 +13,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :default_aal,
     :issuer,
     :logo,
-    :protocol,
     :remote_logo_key,
     :redirect_uris,
     :return_to_sp_url,
@@ -37,14 +36,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def certs
     object.certificates.map(&:to_pem)
-  end
-
-  def protocol
-    if object['identity_protocol'] == 'saml'
-      'saml'
-    else
-      'oidc'
-    end
   end
 
   def updated_at
