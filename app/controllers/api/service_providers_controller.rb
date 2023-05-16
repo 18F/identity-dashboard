@@ -7,7 +7,7 @@ module Api
     end
 
     def show
-      render json: ServiceProviderSerializer.new(service_provider).as_json
+      render json: ServiceProviderSerializer.new(service_provider, action: :show).as_json
     end
 
     def update

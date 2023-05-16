@@ -26,6 +26,14 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :allow_prompt_login,
   )
 
+  # protocol is NOT a field in identity-idp. it should not be
+  # passed to the idp via the index method.
+  attribute :protocol, if: :show
+
+  def show
+    instance_options[:action] == :show
+  end
+
   def agency
     object&.agency&.name
   end
@@ -36,6 +44,14 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def certs
     object.certificates.map(&:to_pem)
+  end
+
+  def protocol
+    if object['identity_protocol'] == 'saml'
+      'saml'
+    else
+      'oidc'
+    end
   end
 
   def updated_at
