@@ -13,7 +13,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :default_aal,
     :issuer,
     :logo,
-    :protocol,
     :remote_logo_key,
     :redirect_uris,
     :return_to_sp_url,
@@ -26,6 +25,14 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :help_text,
     :allow_prompt_login,
   )
+
+  # protocol is NOT a field in identity-idp. it should not be
+  # passed to the idp via the index method.
+  attribute :protocol, if: :show
+
+  def show
+    instance_options[:action] == :show
+  end
 
   def agency
     object&.agency&.name

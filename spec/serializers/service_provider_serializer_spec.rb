@@ -36,12 +36,23 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:signed_response_message_requested]).to \
           eq(service_provider.signed_response_message_requested)
         expect(as_json[:allow_prompt_login]).to be true
-        expect(as_json[:protocol]).to eq 'oidc'
       end
     end
 
     it 'gets the agency_id from the team' do
       expect(as_json[:agency_id]).to eq(team_agency_id)
+    end
+
+    it 'there is no protocol attribute' do
+      expect(as_json.keys).to_not include :protocol
+    end
+
+
+    describe 'when the option "action: :show" is passed' do
+      subject(:serializer) { ServiceProviderSerializer.new(service_provider, action: :show) }
+      it 'passes the protocol attribute through' do
+        expect(as_json[:protocol]).to eq 'oidc'
+      end
     end
   end
 end
