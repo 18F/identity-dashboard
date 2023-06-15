@@ -26,9 +26,10 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :allow_prompt_login,
   )
 
-  # protocol is NOT a field in identity-idp. it should not be
-  # passed to the idp via the index method.
+  # these are attributes that should only be passed to the show
+  # endpoint
   attribute :protocol, if: :show
+  attribute :pkce, if: :show
 
   def show
     instance_options[:action] == :show
@@ -44,6 +45,10 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def certs
     object.certificates.map(&:to_pem)
+  end
+
+  def pkce
+    object.openid_connect_pkce?
   end
 
   def protocol
