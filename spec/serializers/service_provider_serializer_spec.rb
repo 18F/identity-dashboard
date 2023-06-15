@@ -47,11 +47,19 @@ RSpec.describe ServiceProviderSerializer do
       expect(as_json.keys).to_not include :protocol
     end
 
+    it 'there is no pkce attribute' do
+      expect(as_json.keys).to_not include :pkce
+    end
+
 
     describe 'when the option "action: :show" is passed' do
       subject(:serializer) { ServiceProviderSerializer.new(service_provider, action: :show) }
       it 'passes the protocol attribute through' do
         expect(as_json[:protocol]).to eq 'oidc'
+      end
+
+      it 'passes the pkce attribute through' do
+        expect(as_json[:pkce]).to be false
       end
     end
   end
