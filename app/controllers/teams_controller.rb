@@ -67,7 +67,7 @@ class TeamsController < AuthenticatedController
     params.require(:team).permit(:name, :agency_id, :description)
   end
 
-  def user_params
+  def existing_user_ids
     params[:user_ids]&.split(' ') || []
   end
 
@@ -75,8 +75,7 @@ class TeamsController < AuthenticatedController
     if current_user.admin?
       team_params
     else
-      user_ids = user_params
-      team_params.merge(user_ids: (user_ids << current_user.id.to_s).uniq)
+      team_params.merge(user_ids: (existing_user_ids + [current_user.id.to_s]).uniq)
     end
   end
 end
