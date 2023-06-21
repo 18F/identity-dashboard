@@ -12,6 +12,7 @@
         <li><%= u.email %></li>
       <% end %>
     </ul>
+    <%= hidden_field_tag "user_ids", [@team.users.map(&:id)] %>
     <%= link_to(
       "Manage users",
       team_users_path(@team),
