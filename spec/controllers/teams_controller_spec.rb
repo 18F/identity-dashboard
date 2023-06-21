@@ -190,6 +190,22 @@ describe TeamsController do
           patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
           expect(response.status).to eq(302)
         end
+
+        context 'when no update is made' do
+          let(:user1)  { create(:team_member, teams: [org])}
+          let(:user2)  { create(:team_member, teams: [org])}
+          before do
+            org.update(users: [user, user1, user2])
+          end
+
+          it 'has the same number of users after' do
+            expect(org.users.count).to eq 3
+            patch :update, params: {
+              id: org.id,
+              team: { name: org.name, agency_id: org.agency_id, description: org.description } }
+            expect(org.users.count).to eq 3
+          end
+        end
       end
 
       context 'when the update is unsuccessful' do
@@ -199,7 +215,7 @@ describe TeamsController do
 
         it 'renders the edit action' do
           patch :update, params: {
-            id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' }
+            id: org.id, team: { name: org.name }, new_user: { email: '' }
           }
           expect(response).to render_template(:edit)
         end
@@ -211,13 +227,38 @@ describe TeamsController do
         user.admin = false
         org.users << user
       end
+
+      context 'when no update is made' do
+        let(:user1)  { create(:team_member, teams: [org])}
+        let(:user2)  { create(:team_member, teams: [org])}
+        before do
+          org.update(users: [user, user1, user2])
+        end
+
+        it 'has the same number of users after' do
+          expect(org.users.count).to eq 3
+          patch :update, params: {
+            id: org.id,
+            team: {
+              name: org.name,
+              agency_id: org.agency_id,
+              description: org.description,
+            },
+          user_ids: "#{user.id} #{user1.id} #{user2.id}" }
+          expect(org.users.count).to eq 3
+        end
+      end
     end
 
     context 'when user is neither a admin nor a team member' do
       it 'has an unauthorized response' do
         patch :update, params: {
-          id: org.id, team: { name: org.name, user_ids: [user.id.to_s] }, new_user: { email: '' }
-        }
+          id: org.id,
+          team: {
+            name: org.name,
+            agency_id: org.agency_id,
+            description: org.description,
+          } }
         expect(response.status).to eq(401)
       end
     end
