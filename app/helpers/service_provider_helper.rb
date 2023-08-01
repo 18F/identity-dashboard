@@ -188,7 +188,7 @@ module ServiceProviderHelper
     if config_hash['protocol'] == 'openid_connect_pkce'
       config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
     else
-      config_hash.merge({'protocol' => 'oidc'})
+      config_hash.merge({'pkce' => false, 'protocol' => 'oidc'})
     end
   end
 end
