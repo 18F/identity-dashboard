@@ -29,7 +29,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   # these are attributes that should only be passed to the show
   # endpoint
-  attribute :pkce, if: :show
+  attribute :protocol, if: :show
 
   def show
     instance_options[:action] == :show
@@ -48,7 +48,9 @@ class ServiceProviderSerializer < ActiveModel::Serializer
   end
 
   def pkce
-    if object.openid_connect_pkce?
+    if IdentityConfig.store.service_providers_with_nil_pkce.include?(object.issuer)
+      nil
+    elsif object.openid_connect_pkce?
       true
     else
       false
