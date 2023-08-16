@@ -36,6 +36,7 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:signed_response_message_requested]).to \
           eq(service_provider.signed_response_message_requested)
         expect(as_json[:allow_prompt_login]).to be true
+        expect(as_json[:pkce]).to eq(false)
       end
     end
 
@@ -46,11 +47,6 @@ RSpec.describe ServiceProviderSerializer do
     it 'there is no protocol attribute' do
       expect(as_json.keys).to_not include :protocol
     end
-
-    it 'there is no pkce attribute' do
-      expect(as_json.keys).to_not include :pkce
-    end
-
 
     describe 'when the option "action: :show" is passed' do
       subject(:serializer) { ServiceProviderSerializer.new(service_provider, action: :show) }

@@ -66,6 +66,7 @@ class IdentityConfig
     config.add(:saml_sp_private_key_password, type: :string)
     config.add(:secret_key_base, type: :string)
     config.add(:serve_static_files, type: :boolean)
+    config.add(:service_providers_with_nil_pkce, type: :comma_separated_string_list)
     config.add(:smtp_address, type: :string)
     config.add(:smtp_domain, type: :string)
     config.add(:smtp_host, type: :string)
