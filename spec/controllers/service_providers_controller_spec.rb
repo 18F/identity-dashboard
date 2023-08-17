@@ -155,5 +155,16 @@ describe ServiceProvidersController do
       put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file } }
       expect(sp.reload.certs&.size).to equal(0)
     end
+
+    it 'sends a serialized service provider to the IDP' do
+      allow(Faraday).to receive(:post).and_call_original
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+
+      expect(Faraday).to have_received(:post).with(
+        IdentityConfig.store.idp_sp_url,
+        {service_provider: ServiceProviderSerializer.new(sp).as_json},
+        { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+      )
+    end
   end
 end

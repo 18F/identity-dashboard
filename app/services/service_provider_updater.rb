@@ -1,6 +1,6 @@
 class ServiceProviderUpdater
-  def self.ping
-    resp = Faraday.post(idp_url, nil, token_header)
+  def self.ping(body=nil)
+    resp = Faraday.post(idp_url, body, token_header)
 
     status_code = resp.status
     return status_code if status_code == 200

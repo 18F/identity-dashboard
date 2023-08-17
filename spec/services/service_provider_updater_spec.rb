@@ -14,6 +14,30 @@ describe ServiceProviderUpdater do
       it 'returns status code 200 for success' do
         expect(ServiceProviderUpdater.ping).to eq 200
       end
+
+      it 'does not pass a body through' do
+        allow(Faraday).to receive(:post).and_call_original
+        ServiceProviderUpdater.ping
+
+        expect(Faraday).to have_received(:post).with(
+          IdentityConfig.store.idp_sp_url,
+          nil,
+          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+        )
+      end
+    end
+
+    context 'when a body is passed in' do
+      it 'passes the body through the request' do
+        allow(Faraday).to receive(:post).and_call_original
+        ServiceProviderUpdater.ping({service_provider: {}})
+
+        expect(Faraday).to have_received(:post).with(
+          IdentityConfig.store.idp_sp_url,
+          {service_provider: {}},
+          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+        )
+      end
     end
 
     context 'when the HTTP request fails' do
