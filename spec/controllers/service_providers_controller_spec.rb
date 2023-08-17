@@ -163,7 +163,7 @@ describe ServiceProvidersController do
       expect(Faraday).to have_received(:post).with(
         IdentityConfig.store.idp_sp_url,
         {service_provider: ServiceProviderSerializer.new(sp).as_json},
-        { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+        { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token },
       )
     end
   end

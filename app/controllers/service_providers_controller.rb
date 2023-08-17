@@ -86,7 +86,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def publish_service_provider
-    if ServiceProviderUpdater.ping({service_provider: ServiceProviderSerializer.new(service_provider).as_json})
+    if ServiceProviderUpdater.ping({ service_provider: sp_attributes }) == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
@@ -226,6 +226,10 @@ class ServiceProvidersController < AuthenticatedController
       end
     end
     service_provider
+  end
+
+  def sp_attributes
+    ServiceProviderSerializer.new(service_provider).as_json
   end
 
   helper_method :service_provider

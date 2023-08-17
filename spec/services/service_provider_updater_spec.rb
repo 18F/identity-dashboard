@@ -22,7 +22,7 @@ describe ServiceProviderUpdater do
         expect(Faraday).to have_received(:post).with(
           IdentityConfig.store.idp_sp_url,
           nil,
-          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token },
         )
       end
     end
@@ -35,7 +35,7 @@ describe ServiceProviderUpdater do
         expect(Faraday).to have_received(:post).with(
           IdentityConfig.store.idp_sp_url,
           {service_provider: {}},
-          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+          { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token },
         )
       end
     end
