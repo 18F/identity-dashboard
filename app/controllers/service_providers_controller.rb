@@ -230,7 +230,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def body_attributes
     {
-      service_provider: ServiceProviderSerializer.new(service_provider).to_json,
+      service_provider: ServiceProviderSerializer.new(service_provider)
     }
   end
 

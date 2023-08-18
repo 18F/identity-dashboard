@@ -1,6 +1,6 @@
 class ServiceProviderUpdater
   def self.ping(body=nil)
-    resp = Faraday.post(idp_url, body, token_header)
+    resp = conn.post {|req| req.body = body.to_json if body.present? }
 
     status_code = resp.status
     return status_code if status_code == 200
@@ -14,12 +14,19 @@ class ServiceProviderUpdater
   end
 
   class << self
+    def conn
+      Faraday.new(url: idp_url, headers:)
+    end
+
     def idp_url
       IdentityConfig.store.idp_sp_url
     end
 
-    def token_header
-      { 'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token }
+    def headers
+      {
+        'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token,
+        'Content-Type' => 'application/json',
+      }
     end
 
     def handle_error(error)
