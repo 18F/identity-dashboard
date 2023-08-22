@@ -155,5 +155,16 @@ describe ServiceProvidersController do
       put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file } }
       expect(sp.reload.certs&.size).to equal(0)
     end
+
+    it 'sends a serialized service provider to the IDP' do
+      allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
+      allow(ServiceProviderUpdater).to receive(:ping).and_call_original
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+      provider = ServiceProvider.find_by(issuer: sp.issuer)
+
+      expect(ServiceProviderUpdater).to have_received(:ping).with(
+        { service_provider: 'attributes' },
+      )
+    end
   end
 end

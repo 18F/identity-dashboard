@@ -190,7 +190,7 @@ class ServiceProvider < ApplicationRecord
     true
   end
 
-  def contains_invalid_attribute? 
+  def contains_invalid_attribute?
     possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
     attribute_bundle.any? { |att| !possible_attributes.include?(att) }
   end
