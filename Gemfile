@@ -65,7 +65,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
   gem 'i18n-tasks', '>= 1.0.12'
   gem 'pry-byebug'
-  gem 'puma'
+  gem 'puma', '>= 6.3.1'
   gem 'rspec-rails', '~> 4.1', '>= 4.1.2'
   gem 'rubocop', '~> 1.11.0'
   gem 'rubocop-rails', '~> 2.5.2'
