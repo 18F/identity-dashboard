@@ -3,7 +3,7 @@ require 'capybara/rspec'
 require 'rack_session_access/capybara'
 
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = driver = Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--no-sandbox'
