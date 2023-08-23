@@ -25,7 +25,7 @@ class ServiceProviderUpdater
     def headers
       {
         'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token,
-        'Content-Type' => 'application/json',
+        'Content-Type' => 'gzip/json',
         'Content-Encoding' => 'gzip',
       }
     end
