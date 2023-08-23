@@ -1,6 +1,6 @@
 class ServiceProviderUpdater
   def self.ping(body=nil)
-    resp = conn.post {|req| req.body = body.to_json if body.present? }
+    resp = conn.post {|req| req.body = Zlib.gzip(body.to_json) if body.present? }
 
     status_code = resp.status
     return status_code if status_code == 200
@@ -26,6 +26,7 @@ class ServiceProviderUpdater
       {
         'X-LOGIN-DASHBOARD-TOKEN' => IdentityConfig.store.dashboard_api_token,
         'Content-Type' => 'application/json',
+        'Content-Encoding' => 'gzip',
       }
     end
 
