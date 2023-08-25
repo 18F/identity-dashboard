@@ -8,7 +8,8 @@ describe ServiceProviderUpdater do
   let(:headers) do
     {
       'X-LOGIN-DASHBOARD-TOKEN' => token,
-      'Content-Type' => 'application/json'
+      'Content-Type' => 'gzip/json',
+      'Content-Encoding' => 'gzip'
       }
   end
 
