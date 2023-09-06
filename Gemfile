@@ -57,7 +57,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
-  gem 'web-console', '>= 4.2.0'
+  gem 'web-console', '>= 4.2.1'
 end
 
 group :development, :test do
