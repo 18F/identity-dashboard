@@ -278,9 +278,10 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input' },
+                 label_html: { class: 'usa-input-required'},
                  label: 'Failure to Proof URL',
                  hint: I18n.t('service_provider_form.failure_to_proof_url'),
-                 required: true %>
+                 required: form.object.ial == 2 ? true : false %>
 
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },

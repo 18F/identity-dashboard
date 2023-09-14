@@ -7,6 +7,7 @@ function ialOptionSetup() {
   const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
   const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
+  const failureToProofURLInput = failureToProofURL.querySelector('input');
 
   // Functions
   const toggleIAL1Options = () => {
@@ -16,6 +17,7 @@ function ialOptionSetup() {
         hideElement(checkboxWrapper);
         checkboxInput.checked = false;
       }
+      failureToProofURLInput.required = false;
     });
   };
 
@@ -23,6 +25,7 @@ function ialOptionSetup() {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       showElement(checkboxWrapper);
     });
+    failureToProofURLInput.required = true;
   };
 
   const toggleIALOptions = (ial) => {
