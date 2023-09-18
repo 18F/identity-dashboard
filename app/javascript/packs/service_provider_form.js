@@ -17,7 +17,7 @@ function ialOptionSetup() {
         hideElement(checkboxWrapper);
         checkboxInput.checked = false;
       }
-      failureToProofURLInput.required = false;
+      failureToProofURLInput.removeAttribute('required');
     });
   };
 
@@ -25,7 +25,7 @@ function ialOptionSetup() {
     ialAttributesCheckboxes.forEach((checkboxWrapper) => {
       showElement(checkboxWrapper);
     });
-    failureToProofURLInput.required = true;
+    failureToProofURLInput.setAttribute('required', 'required');
   };
 
   const toggleIALOptions = (ial) => {
