@@ -336,20 +336,23 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                     class: 'usa-button margin-bottom-4' %>
   <%# END redirect_uris %>
 
-  <legend class='usa-sr-only'>Active</legend>
-  <%= form.label :admin,
-                 label: 'Active',
-                 class: 'usa-label',
-                 hint: I18n.t('service_provider_form.active').html_safe %>
-  <%= form.collection_radio_buttons(:active,
-                                    { "Yes" => true, "No" => false },
-                                    :last, :first,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
-    <%=  b.radio_button(class: "usa-radio__input") %>
-    <%=  b.label(class: "usa-radio__label")%>
-  <% end %>
+  <div class='active margin-bottom-4'>
+    <legend class='usa-sr-only'>Active</legend>
+    <%= form.label :admin,
+                   label: 'Active',
+                   class: 'usa-label',
+                   hint: I18n.t('service_provider_form.active').html_safe %>
+    <%= form.collection_radio_buttons(:active,
+                                      { "Yes" => true, "No" => false },
+                                      :last, :first,
+                                      collection_wrapper_tag: :ul,
+                                      collection_wrapper_class: 'usa-input-list',
+                                      item_wrapper_tag: :li) do |b| %>
+      <%=  b.radio_button(class: "usa-radio__input") %>
+      <%=  b.label(class: "usa-radio__label")%>
+    <% end %>
+    <%= I18n.t('service_provider_form.active').html_safe %>
+  </div>
 
   <fieldset class="usa-fieldset-inputs custom-help-text">
     <legend>Custom help text</legend>
