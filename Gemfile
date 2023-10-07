@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'actionmailer-text', '>= 0.1.1'
-gem 'active_model_serializers', '>= 0.10.13'
+gem 'active_model_serializers', '>= 0.10.14'
 gem 'active_record_upsert'
-gem 'acts_as_paranoid'
+gem 'acts_as_paranoid', '>= 0.9.0'
 gem 'aws-sdk-s3', require: false
 gem 'bundler'
 gem 'colorize'
