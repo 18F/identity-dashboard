@@ -1,3 +1,13 @@
+common: &default_settings
+  agent_enabled: false
+  code_level_metrics:
+    enabled: false
+  application_logging:
+    forwarding:
+      enabled: false
+development:
+  <<: *default_settings
+  monitor_mode: false
 production:
   agent_enabled: true
   app_name: dashboard.<%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
@@ -19,3 +29,6 @@ production:
     transaction_threshold: apdex_f
   proxy_host:
   proxy_port:
+test:
+  <<: *default_settings
+  monitor_mode: false
