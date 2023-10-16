@@ -171,7 +171,7 @@ GEM
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     builder (3.2.4)
-    bullet (7.0.4)
+    bullet (7.1.2)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bummr (0.6.0)
@@ -216,9 +216,9 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    database_cleaner (2.0.1)
-      database_cleaner-active_record (~> 2.0.0)
-    database_cleaner-active_record (2.0.1)
+    database_cleaner (2.0.2)
+      database_cleaner-active_record (>= 2, < 3)
+    database_cleaner-active_record (2.1.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
@@ -357,7 +357,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    paper_trail (11.1.0)
+    paper_trail (12.3.0)
       activerecord (>= 5.2)
       request_store (~> 1.1)
     parallel (1.22.1)
@@ -377,7 +377,7 @@ GEM
     public_suffix (5.0.1)
     puma (6.4.0)
       nio4r (~> 2.0)
-    pundit (2.3.0)
+    pundit (2.3.1)
       activesupport (>= 3.0.0)
     racc (1.6.2)
     rack (2.2.6.4)
@@ -446,23 +446,23 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.2.5)
-    rspec-core (3.12.1)
+    rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
-    rspec-expectations (3.12.2)
+    rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-mocks (3.12.5)
+    rspec-mocks (3.12.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-rails (4.1.2)
-      actionpack (>= 4.2)
-      activesupport (>= 4.2)
-      railties (>= 4.2)
+    rspec-rails (5.1.2)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
+      railties (>= 5.2)
       rspec-core (~> 3.10)
       rspec-expectations (~> 3.10)
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
-    rspec-support (3.12.0)
+    rspec-support (3.12.1)
     rubocop (1.11.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
@@ -474,10 +474,10 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.28.0)
       parser (>= 3.2.1.0)
-    rubocop-rails (2.5.2)
-      activesupport
+    rubocop-rails (2.6.0)
+      activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 0.72.0)
+      rubocop (>= 0.82.0)
     rubocop-rspec (2.4.0)
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
@@ -552,7 +552,7 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.9)
       rack (>= 2.0.9)
-    web-console (4.2.0)
+    web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
@@ -586,7 +586,7 @@ DEPENDENCIES
   axe-matchers
   better_errors
   binding_of_caller
-  bullet
+  bullet (>= 7.0.5)
   bummr
   bundler
   capistrano
@@ -596,7 +596,7 @@ DEPENDENCIES
   capybara-selenium (>= 0.0.6)
   codeclimate-test-reporter
   colorize
-  database_cleaner
+  database_cleaner (>= 2.0.2)
   devise (~> 4.8.0)
   dotenv-rails (~> 2.8, >= 2.8.1)
   enum_help
@@ -616,16 +616,16 @@ DEPENDENCIES
   nokogiri (~> 1.14)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
-  paper_trail (~> 11.1, >= 11.1.0)
+  paper_trail (~> 12.0, >= 12.0.0)
   pg
   pry-byebug
   pry-rails
   puma (>= 6.3.1)
-  pundit (>= 2.3.0)
+  pundit (>= 2.3.1)
   rack-canonical-host (>= 1.2.0)
   rack-timeout
   rack_session_access
-  rails (~> 6.1.7, >= 6.1.7.4)
+  rails (~> 6.1.7, >= 6.1.7.5)
   rails-controller-testing (>= 1.0.5)
   rails_serve_static_assets
   recipient_interceptor
@@ -633,9 +633,9 @@ DEPENDENCIES
   responders (~> 3.0, >= 3.0.1)
   rest-client (~> 2.1)
   rexml (~> 3.2)
-  rspec-rails (~> 4.1, >= 4.1.2)
+  rspec-rails (~> 5.0, >= 5.0.0)
   rubocop (~> 1.11.0)
-  rubocop-rails (~> 2.5.2)
+  rubocop-rails (~> 2.6.0)
   rubocop-rspec
   ruby_regex
   saml_idp!
@@ -648,7 +648,7 @@ DEPENDENCIES
   subprocess
   timecop
   uglifier
-  web-console (>= 4.2.0)
+  web-console (>= 4.2.1)
   webdrivers (~> 5.2.0)
   webmock
   websocket-driver (= 0.7.3)

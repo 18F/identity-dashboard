@@ -25,13 +25,13 @@ gem 'nokogiri', '~> 1.14'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
-gem 'paper_trail', '~> 11.1', '>= 11.1.0'
+gem 'paper_trail', '~> 12.0', '>= 12.0.0'
 gem 'pg'
 gem 'pry-rails'
-gem 'pundit', '>= 2.3.0'
+gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
-gem 'rails', '~> 6.1.7', '>= 6.1.7.4'
+gem 'rails', '~> 6.1.7', '>= 6.1.7.5'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.0', '>= 3.0.1'
@@ -57,18 +57,18 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
-  gem 'web-console', '>= 4.2.0'
+  gem 'web-console', '>= 4.2.1'
 end
 
 group :development, :test do
-  gem 'bullet'
+  gem 'bullet', '>= 7.0.5'
   gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'puma', '>= 6.3.1'
-  gem 'rspec-rails', '~> 4.1', '>= 4.1.2'
+  gem 'rspec-rails', '~> 5.0', '>= 5.0.0'
   gem 'rubocop', '~> 1.11.0'
-  gem 'rubocop-rails', '~> 2.5.2'
+  gem 'rubocop-rails', '~> 2.6.0'
   gem 'rubocop-rspec'
 end
 
@@ -76,7 +76,7 @@ group :test do
   gem 'axe-matchers'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'codeclimate-test-reporter', require: nil
-  gem 'database_cleaner'
+  gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
