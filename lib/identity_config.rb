@@ -9,11 +9,11 @@ class IdentityConfig
     # database_host: ['env', 'DATABASE_HOST']
     # To use a string value directly, you can specify a string explicitly:
     # database_host: 'localhost'
-    string: proc do |value|
-      if value.is_a?(Array) && value.length == 2 && value.first == 'env'
-        ENV.fetch(value[1])
-      elsif value.is_a?(String)
-        value
+    string: proc do |(key_or_env, env_var)|
+      if key_or_env == 'env' && env_var.present?
+        ENV.fetch(env_var)
+      elsif key_or_env.is_a?(String) && env_var.nil?
+        key_or_env
       else
         raise 'invalid system environment configuration value'
       end
