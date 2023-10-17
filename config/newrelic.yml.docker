@@ -1,0 +1,21 @@
+production:
+  agent_enabled: <%= ENV['NEW_RELIC_ENABLED'] || 'false' %>
+  app_name: dashboard.<%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
+  host: gov-collector.newrelic.com
+  audit_log:
+    enabled: false
+  browser_monitoring:
+    auto_instrument: false
+  error_collector:
+    capture_source: true
+    enabled: true
+  license_key: <%= IdentityConfig.store.newrelic_license_key %>
+  log_level: info
+  monitor_mode: true
+  transaction_tracer:
+    enabled: true
+    record_sql: obfuscated
+    stack_trace_threshold: 0.5
+    transaction_threshold: apdex_f
+  proxy_host:
+  proxy_port:
