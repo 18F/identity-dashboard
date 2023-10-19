@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'actionmailer-text', '>= 0.1.1'
-gem 'active_model_serializers', '>= 0.10.13'
+gem 'active_model_serializers', '>= 0.10.14'
 gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 gem 'aws-sdk-s3', require: false
@@ -34,7 +34,7 @@ gem 'rack-timeout', require: false
 gem 'rails', '~> 6.1.7', '>= 6.1.7.5'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
-gem 'responders', '~> 3.0', '>= 3.0.1'
+gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
 gem 'rexml', '~> 3.2'
 gem 'ruby_regex'
