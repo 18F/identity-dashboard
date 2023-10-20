@@ -91,9 +91,9 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    active_model_serializers (0.10.13)
-      actionpack (>= 4.1, < 7.1)
-      activemodel (>= 4.1, < 7.1)
+    active_model_serializers (0.10.14)
+      actionpack (>= 4.1)
+      activemodel (>= 4.1)
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     active_record_upsert (0.11.1)
@@ -120,9 +120,9 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    acts_as_paranoid (0.8.1)
-      activerecord (>= 5.2, < 7.1)
-      activesupport (>= 5.2, < 7.1)
+    acts_as_paranoid (0.9.0)
+      activerecord (>= 6.1, < 7.2)
+      activesupport (>= 6.1, < 7.2)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     aes_key_wrap (1.1.0)
@@ -265,7 +265,7 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     httpclient (2.8.3)
-    i18n (1.12.0)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.13)
       activesupport (>= 4.0.2)
@@ -326,7 +326,7 @@ GEM
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
-    minitest (5.18.0)
+    minitest (5.20.0)
     multi_json (1.15.0)
     multipart-post (2.3.0)
     mustermann (3.0.0)
@@ -437,7 +437,7 @@ GEM
     regexp_parser (2.7.0)
     request_store (1.5.1)
       rack (>= 1.4)
-    responders (3.1.0)
+    responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
     rest-client (2.1.0)
@@ -571,14 +571,14 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.7)
+    zeitwerk (2.6.12)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   actionmailer-text (>= 0.1.1)
-  active_model_serializers (>= 0.10.13)
+  active_model_serializers (>= 0.10.14)
   active_record_upsert
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
@@ -630,7 +630,7 @@ DEPENDENCIES
   rails_serve_static_assets
   recipient_interceptor
   redacted_struct
-  responders (~> 3.0, >= 3.0.1)
+  responders (~> 3.1, >= 3.1.1)
   rest-client (~> 2.1)
   rexml (~> 3.2)
   rspec-rails (~> 5.0, >= 5.0.0)
