@@ -145,9 +145,17 @@ COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
 RUN yarn install --cache-folder .cache/yarn
 
+
+# Generate and place SSL certificates for puma
+RUN mkdir -p $RAILS_ROOT/keys
+RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
+    -keyout $RAILS_ROOT/keys/localhost.key \
+    -out $RAILS_ROOT/keys/localhost.crt \
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
+
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
    
 EXPOSE 3001
 
-CMD ["bundle", "exec", "puma", "-b", "tcp://0.0.0.0:3001"]
+CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3001?key=/dashboard/keys/localhost.key&cert=/dashboard/keys/localhost.crt"]
