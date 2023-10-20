@@ -88,7 +88,24 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
- 
+ lint:
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
+      
 
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
@@ -130,24 +147,8 @@ build-dashboard-image:
       --cache=true
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
-lint:
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - rubocop.xml
-    reports:
-      junit: rubocop.xml
-      
+
+
 review-app:
   stage: review
   allow_failure: true
