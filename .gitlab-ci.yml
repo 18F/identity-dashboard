@@ -130,7 +130,24 @@ build-dashboard-image:
       --cache=true
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
-
+lint:
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
+      
 review-app:
   stage: review
   allow_failure: true
@@ -292,9 +309,9 @@ stop-review-app:
       when: never
 
 include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
 ecr-scan:
