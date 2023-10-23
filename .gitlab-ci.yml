@@ -88,24 +88,6 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
-lint:
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - rubocop.xml
-    reports:
-      junit: rubocop.xml
-      
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
 build-dashboard-image:
@@ -147,7 +129,24 @@ build-dashboard-image:
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
-
+lint:
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
+      
 review-app:
   stage: review
   allow_failure: true
@@ -243,8 +242,8 @@ review-app:
         {"name": "NEW_RELIC_ENABLED", "value": "false"},
         {"name": "IDP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "IDP_SP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "POST_LOGOUT_URL", "value": "$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov"},
-        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov"}
+        {"name": "POST_LOGOUT_URL", "value": "$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"}
       ]
       EOF
       )
@@ -277,10 +276,10 @@ review-app:
     - echo "Address of PIVCAC review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
     - echo "Address of Dashboard app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
