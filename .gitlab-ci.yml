@@ -88,7 +88,7 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
- lint:
+lint:
   stage: test
   cache:
     - <<: *ruby_cache
@@ -105,7 +105,7 @@ install:
       - rubocop.xml
     reports:
       junit: rubocop.xml
-
+      
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
 build-dashboard-image:
