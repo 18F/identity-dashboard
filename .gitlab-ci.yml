@@ -8,11 +8,11 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  IDP_CI_SHA: 'sha256:7e9a58e08b102db80d25a194abb20e820d7af7bcfa4fcf323eb5db1faa8b5667'
+  DASHBOARD_CI_SHA: 'sha256:7e9a58e08b102db80d25a194abb20e820d7af7bcfa4fcf323eb5db1faa8b5667'
   GITLAB_CI: 'true'
 
 default:
-  image: '${ECR_REGISTRY}/dashboard/ci@${IDP_CI_SHA}'
+  image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
@@ -131,6 +131,8 @@ build-dashboard-image:
 
 lint:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -139,7 +141,13 @@ lint:
     - *bundle_install
     - *yarn_install
     - make lint
-
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - rubocop.xml
+    reports:
+      junit: rubocop.xml
 
 review-app:
   stage: review
@@ -302,8 +310,9 @@ stop-review-app:
       when: never
 
 include:
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
