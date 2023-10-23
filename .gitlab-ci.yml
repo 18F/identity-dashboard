@@ -139,14 +139,8 @@ lint:
     - *bundle_install
     - *yarn_install
     - make lint
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - rubocop.xml
-    reports:
-      junit: rubocop.xml
-      
+
+
 review-app:
   stage: review
   allow_failure: true
