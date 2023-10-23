@@ -8,11 +8,11 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  IDP_CI_SHA: 'sha256:6915b54a913ebcb9066fdfaa88c3d42bda1f4505cfb59b9d5848576705954621'
+  IDP_CI_SHA: 'sha256:7e9a58e08b102db80d25a194abb20e820d7af7bcfa4fcf323eb5db1faa8b5667'
   GITLAB_CI: 'true'
 
 default:
-  image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
+  image: '${ECR_REGISTRY}/dashboard/ci@${IDP_CI_SHA}'
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
