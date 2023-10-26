@@ -1,0 +1,13 @@
+production:
+  adapter: postgresql
+  host: <%= ENV['POSTGRES_HOST'] || 'localhost' %>
+  database: <%= ENV['POSTGRES_DB'] || 'dashboard' %>
+  username: <%= ENV['POSTGRES_USERNAME'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  encoding: utf8
+  min_messages: warning
+  pool: <%= IdentityConfig.store.db_pool %>
+  reaping_frequency: <%= IdentityConfig.store.dp_reaping_frequency %>
+  timeout: 5000
+  sslmode: <%= ENV['POSTGRES_SSLMODE'] || 'disable' %>  
+  sslrootcert: <%= ENV['POSTGRES_SSLCERT'] || ' ' %>  
