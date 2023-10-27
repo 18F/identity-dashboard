@@ -1,11 +1,12 @@
 class ToolsController < ApplicationController
   require 'saml_idp'
 
-  def index
+  def saml_request
     flash[:error] = nil
+    @validation_attempted = true
 
     if !auth_url.present?
-      flash[:error] = 'Please submit an auth URL or SAMLRequest to be validated.'
+      @validation_attempted = false
       return
     end
 
