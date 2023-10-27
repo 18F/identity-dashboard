@@ -242,8 +242,6 @@ review-app:
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "postgres"},
         {"name": "NEW_RELIC_ENABLED", "value": "false"},
-        {"name": "LOGIN_ENV", "value": "$CI_ENVIRONMENT_SLUG" },
-        {"name": "LOGIN_DOMAIN", "value": "identitysandbox.gov"},
         {"name": "SAML_SP_ISSUER", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
         {"name": "IDP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "IDP_SP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
