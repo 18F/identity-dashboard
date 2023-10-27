@@ -8,7 +8,7 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  DASHBOARD_CI_SHA: 'sha256:7e9a58e08b102db80d25a194abb20e820d7af7bcfa4fcf323eb5db1faa8b5667'
+  DASHBOARD_CI_SHA: 'sha256:41a8d96815aa28c8198b99518b96d93c227bf0c5b97ebcca5dbd7f46cb942fab'
   GITLAB_CI: 'true'
 
 default:
@@ -242,9 +242,9 @@ review-app:
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "postgres"},
         {"name": "NEW_RELIC_ENABLED", "value": "false"},
-        {"name": "IDP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "IDP_SP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "POST_LOGOUT_URL", "value": "$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
+        {"name": "IDP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "IDP_SP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "POST_LOGOUT_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
         {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"}
       ]
       EOF
