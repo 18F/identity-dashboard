@@ -82,7 +82,7 @@ describe 'SAMLRequest' do
 
     describe 'if there is no Service Provider in the auth request' do
       before do
-        allow(decoded_request).to receive(:service_provider) { nil}
+        allow(decoded_request).to receive(:service_provider) { nil }
       end
 
       it 'returns false' do
@@ -126,6 +126,49 @@ describe 'SAMLRequest' do
       it 'has no errors' do
         subject.valid_signature
         expect(subject.errors).to eq []
+      end
+    end
+  end
+
+  describe '#run_validations' do
+    let(:decoded_request) { double SamlIdp::Request }
+    let(:validity) { true }
+    let(:sp) { SamlIdp::ServiceProvider.new }
+
+    before do
+      allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
+      allow(decoded_request).to receive(:service_provider) { sp }
+      allow(decoded_request).to receive(:valid?) { validity }
+    end
+
+    describe 'when valid is false' do
+      let(:validity) { false }
+
+      it 'does not run the valid_signature methods' do
+        expect(decoded_request).not_to receive(:service_provider)
+        subject.run_validations
+      end
+    end
+
+    describe 'when valid is true' do
+      it 'runs valid_signature' do
+        expect(decoded_request).to receive(:service_provider) { nil }
+        subject.run_validations
+      end
+    end
+
+    describe '#xml' do
+      let(:decoded_request) { double SamlIdp::Request }
+      let(:raw_xml) { '<XMLtag />' }
+      let(:xml) {  REXML::Document.new(raw_xml) }
+
+      before do
+        expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
+        expect(decoded_request).to receive(:raw_xml) { raw_xml}
+      end
+
+      it 'returns a REXML::Document object' do
+        expect(subject.xml.inspect).to eq xml.inspect
       end
     end
   end

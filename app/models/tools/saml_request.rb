@@ -18,6 +18,10 @@ module Tools
       auth_service_provider.matching_cert.serial
     end
 
+    def logout_request?
+      auth_request.logout_request?
+    end
+
     def xml
       REXML::Document.new(auth_request.raw_xml)
     end
