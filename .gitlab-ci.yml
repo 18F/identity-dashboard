@@ -340,7 +340,7 @@ ecr-scan:
   script:
     - >
       while true; do
-        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/dashboard --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
+        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-dashboard/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
         if echo "$SCAN_STATUS" | grep -q "ACTIVE"; then
           echo "Scan Complete"
           break
@@ -352,7 +352,7 @@ ecr-scan:
           sleep 15
         fi
       done
-    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/dashboard --image-id imageTag=$CI_COMMIT_SHA)
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-dashboard/review --image-id imageTag=$CI_COMMIT_SHA)
     - echo $SCAN_FINDINGS
     - >
       echo $SCAN_FINDINGS |
