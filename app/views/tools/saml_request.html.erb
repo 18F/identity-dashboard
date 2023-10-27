@@ -1,67 +1,69 @@
 <h1>Validate SAML Authentication Request Signature</h1>
 
-<%= render 'form' %>
-
 <% if @validation_attempted %>
   <hr/>
 
-  <div class=<%= @valid_request ? "usa-alert usa-alert--success" : "usa-alert usa-alert--error" %>>
+  <div class="usa-alert <%= @request.valid ? "usa-alert--success" : "usa-alert--error"%>">
     <div class="usa-alert__body">
       <h2 class="usa-alert__heading">
-        Request: <%= @valid_request ? "Valid" : "Invalid" %>
+        Request: <%= @request.valid ? "Valid" : "Invalid" %>
       </h2>
-      <% if !@valid_request %>
-        <p>There is something wrong with your SAML request.</p>
-        <% if !@request %>
-            <p>We could not decode your SAML request. Make sure it is encoded correctly, as described in <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.</p>
-            <p>Also note that all other URL parameters need to be properly URL-encoded.</p>
-        <% end %>
+      <% if !@request.valid %>
+        <p>
+          We could not decode your SAML request. Make sure it is encoded correctly, as described in
+          <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.<br />
+          Also note that all other URL parameters need to be properly URL-encoded.
+        </p>
       <% end %>
     </div>
   </div>
 
-  <div class=<%= @valid_signature ? "usa-alert usa-alert--success" : "usa-alert usa-alert--error" %>>
+  <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
     <div class="usa-alert__body">
       <h2 class="usa-alert__heading">
-        Signature: <%= @valid_signature ? "Valid" : "Invalid" %>
+        Signature: <%= @request.valid_signature ? "Valid" : "Invalid" %>
       </h2>
-      <% if @valid_signature %>
+      <% if @request.valid_signature %>
         Public Certificate Serial Number:
         <div>
-          <code><%= @matching_cert_sn.to_s %></code> (int)
+          <code><%= @request.matching_cert_sn.to_s %></code> (int)
         </div>
         <div>
-          <code><%= @matching_cert_sn.to_s(16) %></code> (hex)
+          <code><%= @request.matching_cert_sn.to_s(16) %></code> (hex)
         </div>
       <% else %>
-        <p>Possible reasons:</p>
-        <ul>
-          <li>
-            <b>No signature:</b> Is the request signed? If not, you should check your application's SAML config settings and enable it.
+        <h3>Specific problems found:</h3>
+        <ul class="usa-list">
           </li>
-          <li>
-            <b>Wrong hashing algorithm:</b> Login.gov only supports SHA256
-          </li>
-          <li>
-            <b>Wrong certificate:</b>
-            <ul>
-              <li>
-                If you've pasted a certificate, the certificate may not match the private key used by your application.
-              </li>
-              <li>
-                Otherwise, you need to add the public certificate to your Login.gov application configuration that belongs to the private key used by your application.
-              </li>
-            </ul>
-          </li>
+          <% @request.errors.each do |error| %>
+            <li> <%= error %> </li>
+          <% end %>
         </ul>
+        <h3>Other issues to look into:</h3>
+          <ul class="usa-list">
+            <li>
+              <span class="text-heavy">No signature:</span> Is the request signed? If not, you should check your application's SAML config settings and enable it.
+            </li>
+            <li>
+              <span class="text-heavy">Wrong hashing algorithm:</span> Login.gov only supports SHA256
+            </li>
+            <li>
+              <span class="text-heavy">Wrong certificate:</span>
+                If you've pasted a certificate, the certificate may not match the private key used by your application.<br />
+                Otherwise, you need to add the public certificate to your Login.gov application configuration that belongs to the private key used by your application.
+            </li>
+          </ul>
       <% end %>
     </div>
   </div>
 
-  <% if @xml&.length %>
+
+  <% unless @xml.nil? %>
     <p>
       <b>SAML</b>
       <pre><code><%= @xml %></code></pre>
     </p>
   <% end %>
 <% end %>
+
+<%= render 'form' %>
