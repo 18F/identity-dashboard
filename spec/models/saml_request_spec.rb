@@ -171,5 +171,33 @@ describe 'SAMLRequest' do
         expect(subject.xml.inspect).to eq xml.inspect
       end
     end
+
+    describe '#logout_request' do
+      let(:decoded_request) { double SamlIdp::Request }
+
+      before do
+        allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
+      end
+
+      describe 'it is a logout request' do
+        before do
+          expect(decoded_request).to receive(:logout_request?) { true }
+        end
+
+        it 'returns true' do
+          expect(subject.logout_request?).to be true
+        end
+      end
+
+      describe 'it is not a logout request' do
+        before do
+          expect(decoded_request).to receive(:logout_request?) { false }
+        end
+
+        it 'returns false' do
+          expect(subject.logout_request?).to be false
+        end
+      end
+    end
   end
 end
