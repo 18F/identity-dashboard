@@ -10,11 +10,9 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV PIDFILE /tmp/server.pid
-
 ENV YARN_VERSION 1.22.19
 ENV NODE_VERSION 18.16.1
 ENV BUNDLER_VERSION 2.4.4
-
 
 ENV POSTGRES_SSLMODE prefer 
 ENV POSTGRES_DB dashboard
@@ -132,7 +130,7 @@ COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 COPY --chown=app:app ./config/newrelic.yml.docker $RAILS_ROOT/config/newrelic.yml
 COPY --chown=app:app ./config/database.yml.docker $RAILS_ROOT/config/database.yml
-#COPY --chown=app:app ./config/oidc.yml.docker $RAILS_ROOT/config/oidc.yml
+ 
 
 RUN bundle config unset deployment
 RUN bundle config build.nokogiri --use-system-libraries
