@@ -47,8 +47,12 @@ describe ToolsController do
         before { post :saml_request, params: }
 
         it 'creates a flash warning' do
-          expect(flash['warning']).to eq 'You have passed a logout request. Currently, this tool is for ' +
-          'Authentication requests only.'
+          msg = 'You have passed a logout request. Currently, this tool is for ' +
+          'Authentication requests only. Please try this ' +
+          '<a href="https://www.samltool.com/validate_logout_req.php" target="_blank">' +
+          'tool</a> to authenticate logout requests'
+
+          expect(flash['warning']).to eq msg
         end
 
         it 'validation_attempted is set as false' do

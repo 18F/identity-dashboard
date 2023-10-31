@@ -14,7 +14,9 @@ class ToolsController < ApplicationController
 
     if @request.logout_request?
       flash[:warning] = 'You have passed a logout request. Currently, this tool is for ' +
-                        'Authentication requests only.'
+                        'Authentication requests only. Please try this ' +
+                        '<a href="https://www.samltool.com/validate_logout_req.php" ' +
+                        'target="_blank">tool</a> to authenticate logout requests'
       @validation_attempted = false
       return
     end
