@@ -22,6 +22,7 @@ ENV POSTGRES_PASSWORD password
 ENV POSTGRES_SSLCERT /usr/local/share/aws/rds-combined-ca-bundle.pem
 ENV NEW_RELIC_ENABLED false
 
+
 ENV SMPT_HOST changeme
 ENV SMPT_PASSWORD changeme
 ENV SMPT_PORT 2025
