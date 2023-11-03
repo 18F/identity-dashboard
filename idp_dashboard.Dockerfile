@@ -42,6 +42,8 @@ ENV MAILER_DOMAIN https://dashboard.login.gov
 ENV LOGIN_ENV dev
 ENV LOGIN_DOMAIN identitysandbox.gov
 
+ENV NEW_RELIC_LICENSE_KEY changeme
+
 # Prevent documentation installation
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
     echo 'path-exclude=/usr/share/man/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
