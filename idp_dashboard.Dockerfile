@@ -39,7 +39,6 @@ ENV SAML_SP_ISSUER http://localhost:3001
 ENV SMPT_ADDRESS changeme
 ENV SMPT_DOMAIN   changeme
 ENV MAILER_DOMAIN https://dashboard.login.gov
-ENV LOGIN_ENV dev
 ENV LOGIN_DOMAIN identitysandbox.gov
 
 ENV NEW_RELIC_LICENSE_KEY changeme
