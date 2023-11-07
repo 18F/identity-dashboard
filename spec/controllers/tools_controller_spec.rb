@@ -50,7 +50,7 @@ describe ToolsController do
           msg = 'You have passed a logout request. Currently, this tool is for ' +
           'Authentication requests only. Please try this ' +
           '<a href="https://www.samltool.com/validate_logout_req.php" target="_blank">' +
-          'tool</a> to authenticate logout requests'
+          'tool</a> to validate logout requests.'
 
           expect(flash['warning']).to eq msg
         end
