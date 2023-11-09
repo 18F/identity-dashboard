@@ -8,7 +8,7 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  DASHBOARD_CI_SHA: 'sha256:101fbd7db89ae8f62f4d2642b1db2f5d1fd40a6d5f665a2f042a93d4f9fa27d8'
+  DASHBOARD_CI_SHA: 'sha256:891298b0022d228af25ec8a7106d0b16bb83ab66335a998939edef03e29b8b72'
   GITLAB_CI: 'true'
 
 default:
