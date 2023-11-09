@@ -21,8 +21,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/tools' => 'tools#new'
-  post '/tools' => 'tools#index'
+  get '/tools/saml_request' => 'tools#saml_request'
+  post '/tools/saml_request' => 'tools#saml_request'
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
