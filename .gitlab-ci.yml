@@ -99,7 +99,7 @@ build-dashboard-image:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
-        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-dashboard/review:latest"
+        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-dashboard/review:main"
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -154,27 +154,13 @@ review-app:
   allow_failure: true
   needs:
     - job: build-dashboard-image
-  resource_group: $CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - |-
-      export PIVCAC_ENV=$(cat <<EOF
-      [
-        {"name": "CLIENT_CERT_S3_BUCKET", "value": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2"},
-        {"name": "POSTGRES_SSLMODE", "value": "prefer"},
-        {"name": "POSTGRES_NAME", "value": "identity_pki_production"},
-        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"},
-        {"name": "POSTGRES_USERNAME", "value": "postgres"},
-        {"name": "POSTGRES_PASSWORD", "value": "pivcac"},
-        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov"}
-      ]
-      EOF
-      )
     - |-
       export IDP_ENV=$(cat <<EOF
       [
@@ -200,7 +186,8 @@ review-app:
         {"name": "LOGIN_HOST_ROLE", "value": "idp" },
         {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" },
         {"name": "PIV_CAC_SERVICE_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
-        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"}
+        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
+        {"name": "DASHBOARD_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"}
       ]
       EOF
       )
@@ -234,6 +221,20 @@ review-app:
       EOF
       )
     - |-
+      export PIVCAC_ENV=$(cat <<EOF
+      [
+        {"name": "CLIENT_CERT_S3_BUCKET", "value": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2"},
+        {"name": "POSTGRES_SSLMODE", "value": "prefer"},
+        {"name": "POSTGRES_NAME", "value": "identity_pki_production"},
+        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"},
+        {"name": "POSTGRES_USERNAME", "value": "postgres"},
+        {"name": "POSTGRES_PASSWORD", "value": "pivcac"},
+        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov"}
+      ]
+      EOF
+      )
+    - |-
       export DASHBOARD_ENV=$(cat <<EOF
       [
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
@@ -255,18 +256,18 @@ review-app:
       helm upgrade --install --namespace review-apps
       --debug
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set idp.image.tag="${IDP_IMAGE_TAG}"
+      --set idp.image.tag="${CI_COMMIT_SHA}"
       --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set worker.image.tag="${IDP_WORKER_IMAGE_TAG}"
+      --set worker.image.tag="${CI_COMMIT_SHA}"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
-      --set dashboard.image.tag="${CI_COMMIT_SHA}"
+      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
+      --set-json dashboard.env="$DASHBOARD_ENV"
+      --set-json dashboard.enabled=true
       --set-json idp.env="$IDP_ENV"
       --set-json worker.env="$WORKER_ENV"
       --set-json pivcac.env="$PIVCAC_ENV"
-      --set-json dashboard.env="$DASHBOARD_ENV"
-      --set-json dashboard.enabled=true
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
@@ -278,7 +279,7 @@ review-app:
     - echo https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
-    - echo "Address of Dashboard app:"
+    - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
   environment:
     name: review/$CI_COMMIT_REF_NAME
