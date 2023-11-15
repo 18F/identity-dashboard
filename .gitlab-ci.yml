@@ -129,7 +129,7 @@ build-dashboard-image:
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
- build-idp-image:
+build-idp-image:
   stage: review
   needs: []
   environment:
@@ -174,7 +174,6 @@ build-dashboard-image:
       --cache=true
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-
 
 lint:
   stage: test
@@ -309,7 +308,7 @@ review-app:
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
-      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
+      --set dashboard.image.tag="${CI_COMMIT_SHA}"
       --set-json dashboard.env="$DASHBOARD_ENV"
       --set-json dashboard.enabled=true
       --set-json idp.env="$IDP_ENV"
