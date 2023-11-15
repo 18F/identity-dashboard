@@ -129,6 +129,53 @@ build-dashboard-image:
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
+ build-idp-image:
+  stage: review
+  needs: []
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+  interruptible: true
+  variables:
+    BRANCH_TAGGING_STRING: ''
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}'
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - mkdir -p /review-idp
+    - cd /review-idp
+    - git clone -b main --single-branch https://github.com/18F/identity-idp.git  
+    - >-
+      /kaniko/executor
+      --context "/review-idp/identity-idp"
+      --dockerfile "/review-idp/identity-idp/dockerfiles/idp_review_app.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
+      ${BRANCH_TAGGING_STRING}
+      --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
+      --cache-ttl=168h
+      --cache=true
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+
+
 lint:
   stage: test
   needs:
