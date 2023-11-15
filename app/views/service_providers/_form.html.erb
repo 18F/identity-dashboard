@@ -272,7 +272,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.input :return_to_sp_url,
                   input_html: { class: 'usa-input' },
                   label_html: { class: 'usa-input-required'},
-                  label: 'Return to App URL',
+                  label: 'Return to App (Cancel) URL',
                   required: true,
                   hint: I18n.t('service_provider_form.return_to_app_url').html_safe %>
   </div>
@@ -302,7 +302,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
     <div class='saml-fields'>
       <%= form.label :redirect_uris,
-                     label: 'Additional Redirect URIs',
+                     label: 'Redirect URIs',
                      class: 'usa-label' %>
       <% service_provider.errors[:redirect_uris].each do |error| %>
         <span class="usa-error-message js-bundle-input-error-message">
