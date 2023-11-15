@@ -23,7 +23,7 @@ en:
         redirect_uris_oidc: Redirect URIs
         redirect_uris_saml: Redirect (Cancel) URIs
         redirect_uris_oidc_label: One or more URIs that login.gov will redirect to after authentication.
-        return_to_sp_url: Return to App URL
+        return_to_sp_url: Return to App (Cancel) URL
         sp_initiated_login_url: SP Initiated Login URL
         identity_protocol: Identity Protocol
         team: Team
