@@ -62,7 +62,7 @@ end
 
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
-  gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
+  gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'puma', '>= 6.3.1'
