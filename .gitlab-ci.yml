@@ -12,7 +12,7 @@ variables:
   GITLAB_CI: 'true'
 
 default:
-  image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
+  image: '${ECR_REGISTRY}/dashboard/ci:latest'
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
