@@ -19,6 +19,9 @@ production:
   error_collector:
     capture_source: true
     enabled: true
+    ignore_classes:
+      - "ActionController::RoutingError"
+      - "ActionDispatch::Http::MimeNegotiation::InvalidType"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
   log_level: info
   monitor_mode: true
