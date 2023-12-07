@@ -43,7 +43,6 @@ gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.1', '>= 5.1.0'
-gem 'subprocess', require: false
 gem 'uglifier'
 
 group :deploy do
