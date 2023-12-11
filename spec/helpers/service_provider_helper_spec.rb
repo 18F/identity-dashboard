@@ -64,7 +64,7 @@ describe ServiceProviderHelper do
 
   describe '#yamlized_sp' do
     let(:sp) { create(:service_provider) }
-    
+
     it 'returns the sp issuer in the yaml blurb' do
       expect(yamlized_sp(sp)).to include(sp.issuer)
     end
@@ -80,7 +80,7 @@ describe ServiceProviderHelper do
       create(:service_provider, :saml, :without_signed_response_message_requested)
     }
     let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
-    let(:sp_config_saml_attributes) do 
+    let(:sp_config_saml_attributes) do
       %w[
         agency_id
         friendly_name
@@ -166,7 +166,7 @@ describe ServiceProviderHelper do
         expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
       end
     end
-    it 'returns the ial config as an integer instead of a string' do 
+    it 'returns the ial config as an integer instead of a string' do
       expect(config_hash(saml_sp_ial_2)['ial']).to be_an(Integer)
     end
     it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
@@ -216,6 +216,38 @@ describe ServiceProviderHelper do
     it 'filters out invalid attributes' do
       sp = instance_double(ServiceProvider, attribute_bundle: %w[first_name middle_name email])
       expect(sp_attribute_bundle(sp)).to eq('email, first_name')
+    end
+  end
+
+  describe '#sp_valid_logo_mime_types' do
+    it 'equals the valid mime types' do
+      expect(sp_valid_logo_mime_types).to eq(['image/png', 'image/svg+xml'])
+    end
+  end
+
+  describe '#mime_type' do
+    context 'the file is a png' do
+      let(:filename) { 'logo.png' }
+
+      it 'returns the PNG mime type' do
+        expect(mime_type(filename)).to eq 'image/png'
+      end
+    end
+
+    context 'the file is an svg' do
+      let(:filename) { 'logo.svg' }
+
+      it 'returns the SVG mime type' do
+        expect(mime_type(filename)).to eq 'image/svg+xml'
+      end
+    end
+
+    context 'the file is a different type' do
+      let(:filename) { 'logo.jpeg' }
+
+      it 'returns nil' do
+        expect(mime_type(filename)).to be nil
+      end
     end
   end
 end
