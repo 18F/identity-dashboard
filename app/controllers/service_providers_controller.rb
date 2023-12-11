@@ -93,24 +93,6 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-  def notify_users(service_provider, initial_action)
-    if initial_action == :new
-      notify_users_new_service_provider(service_provider)
-    elsif service_provider.recently_approved?
-      notify_users_approved_service_provider(service_provider)
-    end
-  end
-
-  def notify_users_new_service_provider(service_provider)
-    UserMailer.admin_new_service_provider(service_provider).deliver_later
-    UserMailer.user_new_service_provider(service_provider).deliver_later
-  end
-
-  def notify_users_approved_service_provider(service_provider)
-    UserMailer.admin_approved_service_provider(service_provider).deliver_later
-    UserMailer.user_approved_service_provider(service_provider).deliver_later
-  end
-
   def error_messages
     [[@errors] + [service_provider.errors.full_messages]].flatten.compact.to_sentence
   end

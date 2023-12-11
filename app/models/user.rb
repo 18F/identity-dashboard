@@ -63,6 +63,10 @@ class User < ApplicationRecord
     email.to_s.split('@')[1].to_s
   end
 
+  def unconfirmed?
+    last_sign_in_at.nil? && created_at < 14.days.ago
+  end
+
   private
 
   def member_service_providers

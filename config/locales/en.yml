@@ -41,7 +41,7 @@ en:
         success: Success! You have added %{email} to the team.
         invalid_email: "%{email} is not a valid email address."
         already_member: "%{email} is already part of the team."
-      remove: 
+      remove:
         success: Success! You have removed %{email} from the team.
         button: Remove user
         confirm_title: Are you sure you want to remove user "%{email}?" from "%{team}"?
@@ -69,10 +69,6 @@ en:
     teams: Manage user teams
     users: Manage users
   mailer:
-    approved_service_provider:
-      subject: Identity Service Provider approved %{id}
-    new_service_provider:
-      subject: New Identity Service Provider %{id}
     welcome:
       subject: Welcome to dashboard.login.gov
   notices:

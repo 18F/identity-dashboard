@@ -123,7 +123,7 @@ describe User do
       user_with_same_email.save
       expect(user_with_same_email).to be_valid
     end
-  
+
     it 'validity of email address' do
       valid_email = 'joe@gsa.gov'
       invalid_email = 'invalid'
@@ -153,6 +153,18 @@ describe User do
       user = create(:user)
 
       expect { user.destroy }.to change { PaperTrail::Version.count }.by(1)
+    end
+  end
+
+  describe '#unconfirmed?' do
+    it 'returns true if the user is has missed the sign-in deadline' do
+      user.created_at = 15.days.ago
+      expect(user.unconfirmed?).to be true
+    end
+
+    it 'returns false if the user is has not missed the sign-in deadline' do
+      user.created_at = 2.days.ago
+      expect(user.unconfirmed?).to be false
     end
   end
 end

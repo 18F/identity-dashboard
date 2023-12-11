@@ -46,30 +46,6 @@ describe 'Users::ServiceProviders' do
     end
   end
 
-  describe 'notifications' do
-    xit 'sends email to admin requesting approval' do
-      user = create(:user)
-      deliveries.clear
-      login_as(user)
-
-      mailer = instance_double(ActionMailer::MessageDelivery)
-      allow(UserMailer).to receive(:admin_new_service_provider).with(anything).and_return(mailer)
-      allow(UserMailer).to receive(:user_new_service_provider).with(anything).and_return(mailer)
-      allow(mailer).to receive(:deliver_later)
-
-      post service_providers_path, params: { service_provider: { friendly_name: 'test' } }
-
-      app = ServiceProvider.last
-
-      expect(UserMailer).to have_received(:admin_new_service_provider).with(app)
-      expect(UserMailer).to have_received(:user_new_service_provider).with(app)
-      expect(mailer).to have_received(:deliver_later).twice
-
-      expect(response.status).to eq(302)
-      expect(app.approved).to eq(false)
-    end
-  end
-
   describe 'view an app' do
     it 'allows owner to view' do
       app = create(:service_provider)

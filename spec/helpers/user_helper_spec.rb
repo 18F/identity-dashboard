@@ -2,18 +2,6 @@ require 'rails_helper'
 describe UserHelper do
   let(:user) { build(:user) }
 
-  describe '#unconfirmed?' do
-    it 'returns true if the user is has missed the sign-in deadline' do
-      user.created_at = 15.days.ago
-      expect(unconfirmed?(user)).to be true
-    end
-
-    it 'returns false if the user is has not missed the sign-in deadline' do
-      user.created_at = 2.days.ago
-      expect(unconfirmed?(user)).to be false
-    end
-  end
-
   describe '#deadline' do
     it 'returns date in MM/DD/YYYY format' do
       created_at = Time.zone.now
