@@ -14,20 +14,49 @@ describe ServiceProvider do
       )
     end
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+    let(:filename) { 'logo.svg'}
+    let(:content_type) { 'image/svg' }
 
-    it 'accepts a valid logo attachment' do
-      service_provider.logo_file.attach(io: File.open(fixture_path + '/logo.svg'),
-                               filename: 'logo.svg',
-                               content_type: 'image/svg')
-      expect(service_provider.logo_file).to be_attached
-      expect(service_provider).to be_valid
+    before do
+      service_provider.logo_file.attach(
+        io: File.open(fixture_path + '/' + filename),
+        filename:,
+        content_type:
+      )
     end
 
-    it 'rejects an unsupported mime-type' do
-      service_provider.logo_file.attach(io: File.open(fixture_path + '/invalid.txt'),
-                               filename: 'invalid.txt',
-                               content_type: 'text/plain')
-      expect(service_provider).to_not be_valid
+    describe 'logo with a png file extension' do
+      let(:filename) { 'logo.png' }
+      let(:content_type) { 'image/png' }
+
+      it 'is valid' do
+        expect(service_provider.logo_file).to be_attached
+        expect(service_provider).to be_valid
+      end
+
+      describe 'logo is greater than 1 mb' do
+        let(:filename) { 'big-logo.png' }
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+        end
+      end
+    end
+
+    describe 'logo with an svg file extension' do
+      it 'is valid' do
+        expect(service_provider.logo_file).to be_attached
+        expect(service_provider).to be_valid
+      end
+    end
+
+    describe 'logo with a different file extension' do
+      let(:filename) { 'invalid.txt' }
+      let(:content_type) { 'text/plain' }
+
+      it 'is not valid' do
+        expect(service_provider).to_not be_valid
+      end
     end
   end
 

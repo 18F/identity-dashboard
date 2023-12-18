@@ -15,6 +15,7 @@ class ServiceProvider < ApplicationRecord
   has_one :agency, through: :team
 
   has_one_attached :logo_file
+  validate :logo_is_less_than_mb
   validate :logo_file_mime_type
   validate :certs_are_pems
   validate :validate_attribute_bundle
@@ -146,6 +147,15 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
+
+  def logo_is_less_than_mb
+    return unless logo_file.attached?
+
+    if logo_file.blob.byte_size > 1.megabytes
+      errors.add(:logo_file, 'Logo must be less than 1MB')
+      logo_file = nil # rubocop:disable Lint/UselessAssignmentl
+    end
+  end
 
   def logo_file_mime_type
     return unless logo_file.attached?
