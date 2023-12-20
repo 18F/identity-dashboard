@@ -280,7 +280,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Failure to Proof URL',
-                 hint: I18n.t('service_provider_form.failure_to_proof_url'),
+                 hint: I18n.t('service_provider_form.failure_to_proof_url').html_safe,
                  required: true %>
 
   <%= form.input :push_notification_url,
