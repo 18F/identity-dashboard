@@ -21,7 +21,7 @@
   </div>
   <%= form.hint 'Upload an .svg file.
 <p>The agency logo will appear to the right of the Login.gov logo in the integration and highlights the partnership between your agency and Login.gov.</p>
-<p>See the Login.gov <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">user experience guidance</a> for more details.</p>'.html_safe %>
+<p>See the Login.gov <a href="https://developers.login.gov/user-experience/agency-logo/">user experience guidance</a> for more details.</p>'.html_safe %>
   <div class='usa-error-message' id='logo-upload-error'>
     <% if service_provider.errors[:logo_file].present? %>
       ERROR:
