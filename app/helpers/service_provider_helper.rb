@@ -20,6 +20,10 @@ module ServiceProviderHelper
     SVG_MIME_TYPE,
   ].freeze
 
+  SP_MIME_EXT_MAPPINGS = {
+    PNG_MIME_TYPE => '.png',
+    SVG_MIME_TYPE => '.svg',
+  }.freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
