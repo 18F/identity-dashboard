@@ -153,7 +153,7 @@ class ServiceProvider < ApplicationRecord
 
     if logo_file.blob.byte_size > 1.megabytes
       errors.add(:logo_file, 'Logo must be less than 1MB')
-      logo_file = nil # rubocop:disable Lint/UselessAssignmentl
+      logo_file = nil # rubocop:disable Lint/UselessAssignment
     end
   end
 
