@@ -20,12 +20,6 @@ module ServiceProviderHelper
     SVG_MIME_TYPE,
   ].freeze
 
-  PNG_EXT = '.png'.freeze
-  SVG_EXT = '.svg'.freeze
-  SP_VALID_LOGO_EXTENSIONS = [
-    PNG_EXT,
-    SVG_EXT,
-  ].freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
@@ -50,19 +44,6 @@ module ServiceProviderHelper
 
   def sp_valid_logo_mime_types
     SP_VALID_LOGO_MIME_TYPES
-  end
-
-  def valid_image_type?(filename)
-    SP_VALID_LOGO_EXTENSIONS.each do |ext|
-      return true if filename.downcase.end_with? ext
-    end
-  end
-
-  def mime_type(filename)
-    name = filename.downcase
-    return PNG_MIME_TYPE if name.end_with? PNG_EXT
-    return SVG_MIME_TYPE if name.end_with? SVG_EXT
-    nil
   end
 
   # Generate the list for the SP edit form, including a nil entry
