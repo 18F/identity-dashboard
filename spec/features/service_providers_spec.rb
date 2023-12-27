@@ -245,7 +245,7 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      # Redirect URIs (for oidc) is found in Redirect URIs (saml) so instead we assert that
+      # Redirect URIs (for oidc) is found in Additional Redirect URIs (saml) so instead we assert that
       # the oidc hint label is not found since the content there is dissimilar enough
       expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
     end
