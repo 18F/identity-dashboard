@@ -224,4 +224,50 @@ describe ServiceProviderHelper do
       expect(sp_valid_logo_mime_types).to eq(['image/png', 'image/svg+xml'])
     end
   end
+
+  describe '#titleize' do
+    describe 'when saml is passed in' do
+      it 'returns SAML' do
+        expect(titleize('saml')).to eq 'SAML'
+      end
+    end
+
+    describe 'when open_id_connect_pkce is passed in' do
+      it 'returns OpenID Connect PKCE' do
+        expect(titleize('openid_connect_pkce')).to eq 'OpenID Connect PKCE'
+      end
+    end
+
+    describe 'when open_id_connect_private_key_jwt is passed in' do
+      it 'returns OpenID Connect Private Key JWT' do
+        expect(titleize('openid_connect_private_key_jwt')).to eq 'OpenID Connect Private Key JWT'
+      end
+    end
+  end
+
+  describe '#mime_type' do
+    context 'the file is a png' do
+      let(:filename) { 'logo.png' }
+
+      it 'returns the PNG mime type' do
+        expect(mime_type(filename)).to eq 'image/png'
+      end
+    end
+
+    context 'the file is an svg' do
+      let(:filename) { 'logo.svg' }
+
+      it 'returns the SVG mime type' do
+        expect(mime_type(filename)).to eq 'image/svg+xml'
+      end
+    end
+
+    context 'the file is a different type' do
+      let(:filename) { 'logo.jpeg' }
+
+      it 'returns nil' do
+        expect(mime_type(filename)).to be nil
+      end
+    end
+  end
 end

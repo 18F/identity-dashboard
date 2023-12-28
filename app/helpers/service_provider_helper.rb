@@ -50,6 +50,30 @@ module ServiceProviderHelper
     SP_VALID_LOGO_MIME_TYPES
   end
 
+  def valid_image_type?(filename)
+    SP_VALID_LOGO_EXTENSIONS.each do |ext|
+      return true if filename.downcase.end_with? ext
+    end
+  end
+
+  def titleize(protocol)
+    case protocol
+    when 'saml'
+      'SAML'
+    when 'openid_connect_pkce'
+      'OpenID Connect PKCE'
+    when 'openid_connect_private_key_jwt'
+      'OpenID Connect Private Key JWT'
+    end
+  end
+
+  def mime_type(filename)
+    name = filename.downcase
+    return PNG_MIME_TYPE if name.end_with? PNG_EXT
+    return SVG_MIME_TYPE if name.end_with? SVG_EXT
+    nil
+  end
+
   # Generate the list for the SP edit form, including a nil entry
   def redirect_uri_list(service_provider = @service_provider)
     values = service_provider.redirect_uris || []

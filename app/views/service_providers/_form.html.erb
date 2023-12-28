@@ -59,7 +59,7 @@
                                 protocol,
                                 class: 'usa-radio__input' %>
           <%= form.label ('identity_protocol_' + protocol).to_sym,
-                         protocol.titleize,
+                         titleize(protocol),
                          class: 'usa-radio__label' %>
         <% end %>
       <% end %>
