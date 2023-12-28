@@ -1,3 +1,4 @@
+# rubocop:disable Layout/LineLength
 # Be sure to restart your server when you modify this file.
 #
 # This file eases your Rails 7.0 framework defaults upgrade.
@@ -141,3 +142,4 @@
 # Disables the deprecated #to_s override in some Ruby core classes
 # See https://guides.rubyonrails.org/configuring.html#config-active-support-disable-to-s-conversion for more information.
 # config.active_support.disable_to_s_conversion = true
+# rubocop:enable Layout/LineLength
