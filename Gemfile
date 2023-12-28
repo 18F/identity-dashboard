@@ -73,7 +73,8 @@ end
 
 group :test do
   gem 'axe-matchers'
-  gem 'capybara-selenium', '>= 0.0.6'
+  gem 'capybara'
+  gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
@@ -83,7 +84,6 @@ group :test do
   gem 'simplecov', '= 0.17.0'
   gem 'sinatra', '>= 3.0.5'
   gem 'timecop'
-  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
 end
