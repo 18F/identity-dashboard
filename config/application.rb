@@ -28,7 +28,10 @@ module IdentityDashboard
     IdentityConfig.build_store(configuration)
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.0
+    # TODO: once the Rails 7.0 upgrade is deployed, then come back to set 7.0 cache serialization
+    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-activesupport-cache-serialization-format
+    config.load_defaults 6.1
+    config.active_support.cache_format_version = 6.1
     config.assets.unknown_asset_fallback = true
 
     # Settings in config/environments/* take precedence over those specified here.
