@@ -337,7 +337,7 @@ feature 'Service Providers CRUD' do
 
       visit new_service_provider_path
 
-      select team, from: 'service_provider[group_id]'
+      select team.name, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
                         match: :prefer_exact
