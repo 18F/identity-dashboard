@@ -1,3 +1,4 @@
+# rubocop:disable Layout/LineLength
 # Be sure to restart your server when you modify this file.
 #
 # This file eases your Rails 7.1 framework defaults upgrade.
@@ -38,7 +39,7 @@
 
 ###
 # Active Record Encryption now uses SHA-256 as its hash digest algorithm.
-# 
+#
 # There are 3 scenarios to consider.
 #
 # 1. If you have data encrypted with previous Rails versions, and you have
@@ -281,3 +282,4 @@
 # In previous versions of Rails, these test helpers always used an HTML4 parser.
 #++
 # Rails.application.config.dom_testing_default_html_version = :html5
+# rubocop:enable Layout/LineLength

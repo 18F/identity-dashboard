@@ -5,7 +5,7 @@
   <%= form.file_field :logo_file,
                   class: 'input-file logo-input-file',
                   accept: sp_valid_logo_mime_types %>
-  <% if service_provider.logo_file.attached? %>
+  <% if service_provider.logo_file_exists? %>
     <p class="font-mono-xs margin-top-0" name="logo_file">
       <%= image_tag url_for(service_provider.logo_file), height: '120px' %>
     </p>

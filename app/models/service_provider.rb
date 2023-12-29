@@ -125,6 +125,11 @@ class ServiceProvider < ApplicationRecord
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
+  def logo_file_exists?
+    # a workaround for this https://github.com/rails/rails/issues/47047
+    logo_file.attached? && ActiveStorage::Blob.service.exist?(logo_file.key)
+  end
+
   private
 
   def sanitize_help_text_content
