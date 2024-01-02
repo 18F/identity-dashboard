@@ -50,6 +50,17 @@ module ServiceProviderHelper
     SP_VALID_LOGO_MIME_TYPES
   end
 
+  def titleize(protocol)
+    case protocol
+    when 'saml'
+      'SAML'
+    when 'openid_connect_pkce'
+      'OpenID Connect PKCE'
+    when 'openid_connect_private_key_jwt'
+      'OpenID Connect Private Key JWT'
+    end
+  end
+
   # Generate the list for the SP edit form, including a nil entry
   def redirect_uri_list(service_provider = @service_provider)
     values = service_provider.redirect_uris || []

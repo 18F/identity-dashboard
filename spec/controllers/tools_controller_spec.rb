@@ -18,12 +18,12 @@ describe ToolsController do
     end
 
     describe 'post' do
-      let(:saml_request) { double Tools::SAMLRequest }
+      let(:saml_request) { double Tools::SamlRequest }
       let(:params) {{ validation: { auth_url: 'url' } }}
       let(:logout_request) { false }
 
       before do
-        allow(Tools::SAMLRequest).to receive(:new) { saml_request }
+        allow(Tools::SamlRequest).to receive(:new) { saml_request }
         allow(saml_request).to receive(:logout_request?) { logout_request }
         allow(saml_request).to receive(:run_validations)
         allow(saml_request).to receive(:valid)
@@ -34,7 +34,7 @@ describe ToolsController do
         p = ActionController::Parameters.new(params)
         validation_params = p.require(:validation).permit(:auth_url, :cert)
 
-        expect(Tools::SAMLRequest).to have_received(:new).with(validation_params) { saml_request}
+        expect(Tools::SamlRequest).to have_received(:new).with(validation_params) { saml_request}
       end
 
       it 'validation_attempted is set as true' do

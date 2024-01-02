@@ -1,5 +1,5 @@
 module Tools
-  class SAMLRequest
+  class SamlRequest
     attr_reader :auth_url, :cert_body
     attr_accessor :errors
 
