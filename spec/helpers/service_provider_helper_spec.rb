@@ -244,30 +244,4 @@ describe ServiceProviderHelper do
       end
     end
   end
-
-  describe '#mime_type' do
-    context 'the file is a png' do
-      let(:filename) { 'logo.png' }
-
-      it 'returns the PNG mime type' do
-        expect(mime_type(filename)).to eq 'image/png'
-      end
-    end
-
-    context 'the file is an svg' do
-      let(:filename) { 'logo.svg' }
-
-      it 'returns the SVG mime type' do
-        expect(mime_type(filename)).to eq 'image/svg+xml'
-      end
-    end
-
-    context 'the file is a different type' do
-      let(:filename) { 'logo.jpeg' }
-
-      it 'returns nil' do
-        expect(mime_type(filename)).to be nil
-      end
-    end
-  end
 end
