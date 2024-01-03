@@ -15,7 +15,9 @@ class ServiceProvider < ApplicationRecord
   has_one :agency, through: :team
 
   has_one_attached :logo_file
+  validate :logo_is_less_than_mb
   validate :logo_file_mime_type
+  validate :logo_file_ext_matches_type
   validate :certs_are_pems
   validate :validate_attribute_bundle
 
@@ -146,6 +148,33 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
+
+  def logo_file_ext_matches_type
+    return unless logo_file.attached?
+
+    filename = logo_file.blob.filename.to_s
+
+    file_ext = Regexp.new(
+      /#{ServiceProviderHelper::SP_MIME_EXT_MAPPINGS[logo_file.content_type]}$/i,
+    )
+
+    return if filename.match(file_ext)
+
+    errors.add(
+      :logo_file,
+      "The extension of the logo file you uploaded (#{filename}) does not match the content.",
+    )
+  end
+
+
+  def logo_is_less_than_mb
+    return unless logo_file.attached?
+
+    if logo_file.blob.byte_size > 1.megabytes
+      errors.add(:logo_file, 'Logo must be less than 1MB')
+      logo_file = nil # rubocop:disable Lint/UselessAssignment
+    end
+  end
 
   def logo_file_mime_type
     return unless logo_file.attached?

@@ -14,20 +14,125 @@ describe ServiceProvider do
       )
     end
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+    let(:filename) { 'logo.svg'}
 
-    it 'accepts a valid logo attachment' do
-      service_provider.logo_file.attach(io: File.open(fixture_path + '/logo.svg'),
-                               filename: 'logo.svg',
-                               content_type: 'image/svg')
-      expect(service_provider.logo_file).to be_attached
-      expect(service_provider).to be_valid
+    before do
+      service_provider.logo_file.attach(
+        io: File.open(fixture_path + '/' + filename),
+        filename:,
+      )
     end
 
-    it 'rejects an unsupported mime-type' do
-      service_provider.logo_file.attach(io: File.open(fixture_path + '/invalid.txt'),
-                               filename: 'invalid.txt',
-                               content_type: 'text/plain')
-      expect(service_provider).to_not be_valid
+    describe 'logo that is a png file' do
+      let(:filename) { 'logo.png' }
+
+      it 'is valid' do
+        expect(service_provider.logo_file).to be_attached
+        expect(service_provider).to be_valid
+      end
+
+      describe 'extension is all caps' do
+        before do
+          service_provider.logo_file.filename = "logo.PNG"
+        end
+
+        it 'is valid' do
+          expect(service_provider.logo_file).to be_attached
+          expect(service_provider).to be_valid
+        end
+      end
+
+      describe 'logo is greater than 1 mb' do
+        let(:filename) { 'big-logo.png' }
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            'Logo must be less than 1MB',
+          )
+        end
+      end
+
+      describe "it has the wrong extension" do
+        before do
+          service_provider.logo_file.filename = "logo.svg"
+        end
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+          expect(service_provider.errors.first.message).to eq(
+            "The extension of the logo file you uploaded (logo.svg) does not match the content."
+          )
+        end
+      end
+
+      describe "it has no file extension" do
+        before do
+          service_provider.logo_file.filename = "logo"
+        end
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            "The extension of the logo file you uploaded (logo) does not match the content."
+          )
+        end
+      end
+    end
+
+    describe 'logo that is an svg file' do
+      it 'is valid' do
+        expect(service_provider.logo_file).to be_attached
+        expect(service_provider).to be_valid
+      end
+
+      describe "it has the wrong extension" do
+        before do
+          service_provider.logo_file.filename = "logo.png"
+        end
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+          expect(service_provider.errors.first.message).to eq(
+            "The extension of the logo file you uploaded (logo.png) does not match the content."
+          )
+        end
+      end
+
+      describe 'extension is all caps' do
+        before do
+          service_provider.logo_file.filename = "logo.SVG"
+        end
+
+        it 'is valid' do
+          expect(service_provider.logo_file).to be_attached
+          expect(service_provider).to be_valid
+        end
+      end
+
+      describe "it has no file extension" do
+        before do
+          service_provider.logo_file.filename = "logo"
+        end
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            "The extension of the logo file you uploaded (logo) does not match the content."
+          )
+        end
+      end
+    end
+
+    describe 'logo with a different file extension' do
+      let(:filename) { 'invalid.txt' }
+
+      it 'is not valid' do
+        expect(service_provider).to_not be_valid
+      end
     end
   end
 

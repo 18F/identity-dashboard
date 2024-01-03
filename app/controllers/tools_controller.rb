@@ -10,7 +10,7 @@ class ToolsController < ApplicationController
       return
     end
 
-    @request = Tools::SAMLRequest.new(validation_params)
+    @request = Tools::SamlRequest.new(validation_params)
 
     if @request.logout_request?
       flash[:warning] = 'You have passed a logout request. Currently, this tool is for ' +

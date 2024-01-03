@@ -26,12 +26,13 @@ gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_go
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 12.0', '>= 12.0.0'
+gem 'puma', '>= 6.3.1'
 gem 'pg'
 gem 'pry-rails'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
-gem 'rails', '~> 6.1.7', '>= 6.1.7.5'
+gem 'rails', '~> 7.0.0'
 gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
@@ -42,7 +43,6 @@ gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.1', '>= 5.1.0'
-gem 'subprocess', require: false
 gem 'uglifier'
 
 group :deploy do
@@ -65,7 +65,6 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
-  gem 'puma', '>= 6.3.1'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.0'
   gem 'rubocop', '~> 1.11.0'
   gem 'rubocop-rails', '~> 2.6.0'
@@ -74,7 +73,8 @@ end
 
 group :test do
   gem 'axe-matchers'
-  gem 'capybara-selenium', '>= 0.0.6'
+  gem 'capybara'
+  gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
@@ -84,7 +84,6 @@ group :test do
   gem 'simplecov', '= 0.17.0'
   gem 'sinatra', '>= 3.0.5'
   gem 'timecop'
-  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
 end

@@ -96,4 +96,10 @@ describe Team do
       expect { team.destroy }.to change { PaperTrail::Version.count }.by(1)
     end
   end
+
+  describe '#to_s' do
+    it 'returns the name' do
+      expect(team.to_s).to eq team.name
+    end
+  end
 end
