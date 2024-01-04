@@ -461,3 +461,8 @@ ecr-scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+
+include:
+  - template: Security/SAST-IaC.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
