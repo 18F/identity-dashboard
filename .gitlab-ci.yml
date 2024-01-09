@@ -322,6 +322,7 @@ include:
   - template: Security/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
+  stage: scan
   allow_failure: false
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
