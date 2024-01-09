@@ -1,4 +1,4 @@
-class MoveSAMLClientCertToCerts < ActiveRecord::Migration[6.1]
+class MoveSamlClientCertToCerts < ActiveRecord::Migration[6.1]
   def up
     ActiveRecord::Base.connection.execute <<-SQL
       UPDATE service_providers
