@@ -262,10 +262,13 @@ review-app:
       --debug
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${IDP_IMAGE_TAG}"
+      --set idp.image.pullPolicy="Always"
       --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set worker.image.tag="${IDP_WORKER_IMAGE_TAG}"
+      --set worker.image.pullPolicy="Always"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
+      --set pivcac.image.pullPolicy="Always"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
       --set dashboard.image.tag="${CI_COMMIT_SHA}"
       --set-json dashboard.env="$DASHBOARD_ENV"
