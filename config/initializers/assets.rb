@@ -22,6 +22,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w[ application.css
                                                   18f-logo.svg
+                                                  logo.svg
                                                   img/close.svg
                                                   img/favicons/favicon.ico
                                                   img/favicons/favicon.png
@@ -34,6 +35,5 @@ Rails.application.config.assets.precompile += %w[ application.css
                                                   img/icon-dot-gov.svg
                                                   img/icon-https.svg
                                                   img/illustrations/security-key.svg
-                                                  img/login-gov-logo.svg
                                                   img/us_flag_small.png
                                                   js/main.js ]
