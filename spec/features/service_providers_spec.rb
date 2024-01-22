@@ -245,7 +245,7 @@ feature 'Service Providers CRUD' do
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      # Redirect URIs (for oidc) is found in Redirect URIs (saml) so instead we assert that
+      # Redirect URIs (for oidc) is found in Additional Redirect URIs (saml) so instead we assert that
       # the oidc hint label is not found since the content there is dissimilar enough
       expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
     end
@@ -337,7 +337,7 @@ feature 'Service Providers CRUD' do
 
       visit new_service_provider_path
 
-      select team, from: 'service_provider[group_id]'
+      select team.name, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
                         match: :prefer_exact

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'SAMLRequest' do
+describe 'SamlRequest' do
   let(:cert) { build_pem(serial: 200) }
   let(:auth_url) { 'auth_url '}
   let(:params) { { auth_url:, cert: cert }.with_indifferent_access }
-  subject(:request) { Tools::SAMLRequest.new(params) }
+  subject(:request) { Tools::SamlRequest.new(params) }
 
   describe '#init' do
     it 'sets the attributes' do

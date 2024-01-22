@@ -23,4 +23,3 @@ module UserHelper
     "Icon indicating #{title(user)}".capitalize
   end
 end
-

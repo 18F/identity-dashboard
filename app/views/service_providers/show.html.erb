@@ -150,7 +150,7 @@
   <hr>
                                                                   
   <h2 class="margin-bottom-0">
-    <label for="return_to_sp_url">Return to App (Cancel) URL: </label>
+    <label for="return_to_sp_url">Return to App URL: </label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.return_to_sp_url %></span>
   </h2>
   <p><i> <%= I18n.t('service_provider_form.return_to_app_url').html_safe %> </i></p>
@@ -186,7 +186,7 @@
   <p><i> <%= I18n.t('service_provider_form.oidc_redirects').html_safe %> </i></p>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% else # SAML %>
-  <h2><label for="uris">Redirect URIs:</label></h2>
+  <h2><label for="uris">Additional Redirect URIs:</label></h2>
   <p><i> <%= I18n.t('service_provider_form.saml_redirects').html_safe %> </i></p>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% end %>
