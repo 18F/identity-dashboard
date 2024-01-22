@@ -377,6 +377,9 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
         <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
       <% end %>
     </fieldset>
+  <% else %>
+    <p class="usa-label">Help text</p>
+    <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com/agent">Contact us</a>.</p>
   <% end %>
 
 <%= javascript_include_tag 'service_provider_form' %>
