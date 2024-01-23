@@ -76,7 +76,7 @@ en:
     service_provider_deleted: Success! You have deleted %{issuer}
     service_provider_saved: Success! You have saved %{issuer}
     service_provider_iaa_notice:
-        All configuration changes or new configurations must be promoted to production following the process outlined in the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Docs</a>. We suggest allowing two weeks for integration launch or change requests.
+        All configuration changes or new configurations must be promoted to production following the process outlined in the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
         <br><br>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href="https://developers.login.gov/production" target="_blank">Login.gov Developer Docs</a> for more details or email <a href="mailto:partners@login.gov">partners@login.gov</a> with any questions.
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov
