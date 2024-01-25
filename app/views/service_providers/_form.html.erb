@@ -378,8 +378,26 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </fieldset>
   <% else %>
-    <p class="usa-label">Help text</p>
-    <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <fieldset class="usa-fieldset-inputs custom-help-text">
+        <legend class="usa-label">Custom help text</legend>
+          <p>You can view your existing help text here.</p>
+          <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+          <legend class="usa-label"><b>Sign-in help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
+
+          <legend class="usa-label"><b>Sign-up help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
+
+          <legend class="usa-label">Forgot password help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
+    </fieldset>
+        
   <% end %>
 
 <%= javascript_include_tag 'service_provider_form' %>
