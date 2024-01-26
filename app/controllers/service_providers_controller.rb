@@ -36,6 +36,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def new
     @service_provider = ServiceProvider.new
+    @help_text_empty = help_text_empty?
   end
 
   def edit
