@@ -378,7 +378,12 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </fieldset>
   <% else %>
-    <fieldset class="usa-fieldset-inputs custom-help-text">
+    <% if @help_text_empty %>
+      <p class="usa-label">Custom help text</p>
+      <p>You have no existing help text.</p>
+      <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <% else %>
+      <fieldset class="usa-fieldset-inputs custom-help-text">
         <legend class="usa-label">Custom help text</legend>
           <p>You can view your existing help text here.</p>
           <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
@@ -396,8 +401,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
           <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
-    </fieldset>
-        
+      </fieldset>
+    <% end %>
   <% end %>
 
 <%= javascript_include_tag 'service_provider_form' %>
