@@ -52,9 +52,9 @@ class ServiceProvidersController < AuthenticatedController
   private
 
   def help_text_empty?
-    service_provider.help_text["sign_in"].empty? &&
-    service_provider.help_text["sign_up"].empty? &&
-    service_provider.help_text["forgot_password"].empty?
+    service_provider.help_text['sign_in'].empty? &&
+      service_provider.help_text['sign_up'].empty? &&
+      service_provider.help_text['forgot_password'].empty?
   end
 
   def service_provider
