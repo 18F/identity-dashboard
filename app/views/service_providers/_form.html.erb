@@ -354,28 +354,55 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= I18n.t('service_provider_form.active').html_safe %>
   </div>
 
-  <fieldset class="usa-fieldset-inputs custom-help-text">
-    <legend>Custom help text</legend>
-    <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
-    <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
-    </p>
-    <%= form.fields_for :help_text do |h| %>
-      <br><legend><b>Sign-in help text:</b></legend>
-      <%= h.input "sign_in[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
-      <%= h.input "sign_in[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
-      <%= h.input "sign_in[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
+  <% if current_user.admin? %>
+    <fieldset class="usa-fieldset-inputs custom-help-text">
+      <legend>Custom help text</legend>
+      <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
+      <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
+      </p>
+      <%= form.fields_for :help_text do |h| %>
+        <br><legend><b>Sign-in help text:</b></legend>
+        <%= h.input "sign_in[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
+        <%= h.input "sign_in[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
+        <%= h.input "sign_in[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
 
-      <br><legend><b>Sign-up help text:</b></legend>
-      <%= h.input "sign_up[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
-      <%= h.input "sign_up[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
-      <%= h.input "sign_up[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
+        <br><legend><b>Sign-up help text:</b></legend>
+        <%= h.input "sign_up[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
+        <%= h.input "sign_up[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
+        <%= h.input "sign_up[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
 
-      <br><legend><b>Forgot password help text:</b></legend>
-      <%= h.input  "forgot_password[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
-      <%= h.input "forgot_password[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
-      <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
+        <br><legend><b>Forgot password help text:</b></legend>
+        <%= h.input  "forgot_password[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
+        <%= h.input "forgot_password[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
+        <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
+      <% end %>
+    </fieldset>
+  <% else %>
+    <% if @help_text_empty %>
+      <p class="usa-label">Custom help text</p>
+      <p>You have no existing help text.</p>
+      <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <% else %>
+      <fieldset class="usa-fieldset-inputs custom-help-text">
+        <legend class="usa-label">Custom help text</legend>
+          <p>You can view your existing help text here.</p>
+          <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+          <legend class="usa-label"><b>Sign-in help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
+
+          <legend class="usa-label"><b>Sign-up help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
+
+          <legend class="usa-label">Forgot password help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
+      </fieldset>
     <% end %>
-  </fieldset>
-</fieldset>
+  <% end %>
 
 <%= javascript_include_tag 'service_provider_form' %>
