@@ -153,6 +153,9 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
     -out $RAILS_ROOT/keys/localhost.crt \
     -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
 
+# Create PID folder in /tmp for server pid
+RUN mkdir -m 666 /tmp/pids
+
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
    
