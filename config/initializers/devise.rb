@@ -8,6 +8,11 @@ Devise.setup do |config|
   # by default. You can change it below and use your own secret key.
   # config.secret_key = 'c9aac5e1283cb3302f0a7a2217dbd287a8b8564070b519d96246666ba172191d3b1267d1b578c0e1771890a15fe2ef30edbd3adc3cac38d6b9a2b918b8421ab9'
 
+  # This fixes a deprecation warning caused by Devise referencing `Rails.application.secrets`, which has been
+  # deprecated in favor of `Rails.application.credentials`
+  # https://github.com/heartcombo/devise/issues/5644
+  config.secret_key = Rails.application.secret_key_base
+
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
