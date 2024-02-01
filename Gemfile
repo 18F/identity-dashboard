@@ -9,7 +9,7 @@ gem 'acts_as_paranoid'
 gem 'aws-sdk-s3', require: false
 gem 'bundler'
 gem 'colorize'
-gem 'devise', '~> 4.8.0'
+gem 'devise', '~> 4.9.3'
 gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
 gem 'enum_help'
 gem 'faraday'
