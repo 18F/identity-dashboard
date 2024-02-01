@@ -1,4 +1,5 @@
-# Be sure to restart your server when you modify this file.
+# rubocop:disable Layout/LineLength
+# Be sure to restart your server when you modify this file.O
 #
 # This file eases your Rails 7.1 framework defaults upgrade.
 #
@@ -282,3 +283,4 @@
 # In previous versions of Rails, these test helpers always used an HTML4 parser.
 #++
 # Rails.application.config.dom_testing_default_html_version = :html5
+# rubocop:enable Layout/LineLength
