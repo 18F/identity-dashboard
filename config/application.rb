@@ -52,6 +52,9 @@ module IdentityDashboard
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
 
+    # the new default raises, rather than ignoring the request to update the issuer
+    Rails.application.config.active_record.raise_on_assign_to_attr_readonly = false
+
     config.agencies = YAML.load_file 'config/agencies.yml'
   end
 end
