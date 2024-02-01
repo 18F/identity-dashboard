@@ -25,7 +25,7 @@ gem 'nokogiri', '~> 1.14'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
-gem 'paper_trail', '~> 12.0', '>= 12.0.0'
+gem 'paper_trail', '~> 15.0', '>= 15.0.0'
 gem 'puma', '>= 6.3.1'
 gem 'pg'
 gem 'pry-rails'

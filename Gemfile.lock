@@ -379,9 +379,9 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    paper_trail (12.3.0)
-      activerecord (>= 5.2)
-      request_store (~> 1.1)
+    paper_trail (15.1.0)
+      activerecord (>= 6.1)
+      request_store (~> 1.4)
     parallel (1.22.1)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -649,7 +649,7 @@ DEPENDENCIES
   nokogiri (~> 1.14)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
-  paper_trail (~> 12.0, >= 12.0.0)
+  paper_trail (~> 15.0, >= 15.0.0)
   pg
   pry-byebug
   pry-rails
