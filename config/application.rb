@@ -31,6 +31,7 @@ module IdentityDashboard
     config.load_defaults 7.1
     config.active_support.cache_format_version = 7.1
     config.assets.unknown_asset_fallback = true
+    config.action_view.button_to_generates_button_tag = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
