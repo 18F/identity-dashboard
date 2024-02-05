@@ -367,7 +367,7 @@ GEM
     net-ssh (7.0.1)
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
-    nio4r (2.5.9)
+    nio4r (2.7.0)
     nokogiri (1.14.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -399,7 +399,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (5.0.1)
-    puma (6.4.0)
+    puma (6.4.2)
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
