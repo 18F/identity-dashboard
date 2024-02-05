@@ -9,7 +9,7 @@ module Users
           client_id: Rails.configuration.oidc['client_id'],
           post_logout_redirect_uri: post_logout_redirect_uri,
         )
-        redirect_to(logout_request.redirect_uri)
+        redirect_to(logout_request.redirect_uri, allow_other_host: true)
       else
         super
       end
