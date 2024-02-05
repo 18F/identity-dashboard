@@ -16,7 +16,7 @@ gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v3.4.2'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
 gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', tag: 'v0.7.4'
-gem 'jsbundling-rails', '>= 1.1.2'
+gem 'jsbundling-rails', '>= 1.2.2'
 gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'
 gem 'kaminari'
@@ -42,7 +42,7 @@ gem 'ruby_regex'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'sass-rails', '~> 6.0', '>= 6.0.0'
 gem 'secure_headers', '~> 3.9'
-gem 'simple_form', '~> 5.1', '>= 5.1.0'
+gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
 
 group :deploy do
@@ -62,7 +62,7 @@ end
 
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
-  gem 'factory_bot_rails', '~> 6.2', '>= 6.2.0'
+  gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
