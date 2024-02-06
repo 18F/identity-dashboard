@@ -73,7 +73,7 @@ end
 
 group :test do
   gem 'axe-matchers'
-  gem 'capybara'
+  gem 'capybara', '>= 3.39.1'
   gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
