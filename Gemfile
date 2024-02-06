@@ -21,7 +21,7 @@ gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'
 gem 'kaminari'
 gem 'newrelic_rpm', '>= 6.14.0'
-gem 'nokogiri', '~> 1.14'
+gem 'nokogiri', '~> 1.16.2'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
