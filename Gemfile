@@ -82,7 +82,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'shoulda-matchers'
   gem 'simplecov', '= 0.17.0'
-  gem 'sinatra', '>= 3.0.5'
+  gem 'sinatra', '>= 4.0.0'
   gem 'timecop'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
