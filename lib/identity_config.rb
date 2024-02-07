@@ -54,6 +54,8 @@ class IdentityConfig
     @written_env
   end
 
+  attr_reader :written_env
+
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
     config.add(:admin_email, type: :string)
@@ -66,7 +68,6 @@ class IdentityConfig
     config.add(:dp_reaping_frequency, type: :integer)
     config.add(:certificate_expiration_warning_period, type: :integer)
     config.add(:dashboard_api_token, type: :string)
-    config.add(:email_recipients, type: :string)
     config.add(:idp_sp_url, type: :string)
     config.add(:idp_url, type: :string)
     config.add(:logo_upload_enabled, type: :boolean)
@@ -80,15 +81,8 @@ class IdentityConfig
     config.add(:secret_key_base, type: :string)
     config.add(:serve_static_files, type: :boolean)
     config.add(:service_providers_with_nil_pkce, type: :comma_separated_string_list)
-    config.add(:smtp_address, type: :string)
-    config.add(:smtp_domain, type: :string)
-    config.add(:smtp_host, type: :string)
-    config.add(:smtp_password, type: :string)
-    config.add(:smtp_port, type: :string)
-    config.add(:smtp_username, type: :string)
-    final_env = config.add(:smtp_username, type: :string)
 
-    @store = RedactedStruct.new('IdentityConfig', *final_env.keys, keyword_init: true).
-      new(**final_env)
+    @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
+      new(**config.written_env)
   end
 end
