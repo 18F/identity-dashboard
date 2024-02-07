@@ -20,6 +20,18 @@ describe 'Users::ServiceProviders' do
 
       expect(response.status).to eq(401)
     end
+
+    it 'allows admin to approve' do
+      app = create(:service_provider, :with_team)
+      admin_user = create(:user, admin: true)
+      login_as(admin_user)
+
+      put service_provider_path(app), params: { service_provider: { approved: 'true' } }
+
+      expect(response.status).to eq(302)  # redirect on success
+      app.reload
+      expect(app.approved?).to eq(true)
+    end
   end
 
   describe 'view an app' do
