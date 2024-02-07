@@ -6,7 +6,7 @@ SMTP_SETTINGS = {
   password: IdentityConfig.store.smtp_password,
   port: '587',
   user_name: IdentityConfig.store.smtp_username,
-}.freeze
+}
 
 if IdentityConfig.store.email_recipients.present?
   Mail.register_interceptor RecipientInterceptor.new(IdentityConfig.store.email_recipients)
