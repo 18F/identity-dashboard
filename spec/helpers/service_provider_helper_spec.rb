@@ -244,4 +244,22 @@ describe ServiceProviderHelper do
       end
     end
   end
+
+  describe '#sp_signed_response_message_requested_img_alt' do
+    context 'sp_response_message_requested is true' do
+      it 'returns a string saying signed response is requested' do
+        expect(sp_signed_response_message_requested_img_alt(
+          true),
+        ).to eq 'Signed response message requested'
+      end
+    end
+
+    context 'sp_response_message_requested is false' do
+      it 'returns a string saying signed response is not requested' do
+        expect(sp_signed_response_message_requested_img_alt(
+          false),
+        ).to eq 'Signed response message not requested'
+      end
+    end
+  end
 end

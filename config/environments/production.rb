@@ -66,9 +66,7 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.delivery_method = :smtp
-  require_relative '../initializers/smtp'
-  config.action_mailer.smtp_settings = SMTP_SETTINGS
+  config.action_mailer.delivery_method = :test
   config.action_mailer.default_url_options = {
     host: IdentityConfig.store.mailer_domain,
   }

@@ -33,7 +33,6 @@ gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 gem 'rails', '~> 7.1.0'
-gem 'recipient_interceptor'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
