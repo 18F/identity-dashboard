@@ -95,7 +95,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def publish_service_provider
-    if ServiceProviderUpdater.post_update(body_attributes) == 200
+    if ServiceProviderUpdater.ping(body_attributes) == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')

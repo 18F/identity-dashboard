@@ -128,7 +128,7 @@ class ServiceProvider < ApplicationRecord
   private
 
   def sanitize_help_text_content
-    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']].compact
+    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']]
     sections.each { |section| sanitize_section(section) }
   end
 

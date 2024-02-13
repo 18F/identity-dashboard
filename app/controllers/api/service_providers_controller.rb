@@ -11,7 +11,7 @@ module Api
     end
 
     def update
-      if ServiceProviderUpdater.post_update == 200
+      if ServiceProviderUpdater.ping == 200
         flash[:notice] = I18n.t('notices.service_providers_refreshed')
       else
         flash[:error] = I18n.t('notices.service_providers_refresh_failed')

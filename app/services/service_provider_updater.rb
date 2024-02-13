@@ -1,5 +1,5 @@
 class ServiceProviderUpdater
-  def self.post_update(body=nil)
+  def self.ping(body=nil)
     resp = conn.post {|req| req.body = Zlib.gzip(body.to_json) if body.present? }
 
     status_code = resp.status
