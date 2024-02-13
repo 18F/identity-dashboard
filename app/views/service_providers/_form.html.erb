@@ -361,21 +361,27 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
       </p>
       <%= form.fields_for :help_text do |h| %>
-        <br><legend><b>Sign-in help text:</b></legend>
-        <%= h.input "sign_in[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
-        <%= h.input "sign_in[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
-        <%= h.input "sign_in[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
+        <%= h.fields_for :sign_in do |s| %>
+          <br><legend><b>Sign-in help text:</b></legend>
+          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
+          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
+          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
+        <% end %>
 
-        <br><legend><b>Sign-up help text:</b></legend>
-        <%= h.input "sign_up[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
-        <%= h.input "sign_up[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
-        <%= h.input "sign_up[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
+        <%= h.fields_for :sign_up do |s| %>
+          <br><legend><b>Sign-up help text:</b></legend>
+          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
+          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
+          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
+        <% end %>
 
-        <br><legend><b>Forgot password help text:</b></legend>
-        <%= h.input  "forgot_password[en]", label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
-        <%= h.input "forgot_password[es]", label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
-        <%= h.input "forgot_password[fr]", label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
-      <% end %>
+        <%= h.fields_for :forgot_password do |f| %>
+          <br><legend><b>Forgot password help text:</b></legend>
+          <%= f.input  :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
+          <%= f.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
+          <%= f.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
+        <% end %>
+    <% end %>
     </fieldset>
   <% else %>
     <% if @help_text_empty %>
