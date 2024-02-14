@@ -103,11 +103,6 @@
               <li class="usa-nav__primary-item">
                 <%= link_to 'Teams', teams_path, class: 'usa-nav__link' %>
               </li>
-              <% if current_user.admin? %>
-                <li class="usa-nav__primary-item">
-                  <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
-                </li>
-              <% end %>
               <li class="usa-nav__primary-item">
                 <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
                   <span>Tools</span>
