@@ -14,7 +14,6 @@ production:
   rack_timeout_service_timeout_seconds: '15'
   secret_key_base: changeme
   serve_static_files: 'false'
-  service_providers_with_nil_pkce: ''
   dashboard_api_token: ['env', 'DASHBOARD_API_TOKEN']
   idp_sp_url:  ['env', 'IDP_SP_URL']
   idp_url:  ['env', 'IDP_URL']

@@ -14,7 +14,6 @@ newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
-service_providers_with_nil_pkce: ''
 
 development:
   dashboard_api_token: test_token
