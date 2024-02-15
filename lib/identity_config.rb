@@ -80,7 +80,6 @@ class IdentityConfig
     config.add(:saml_sp_private_key_password, type: :string)
     config.add(:secret_key_base, type: :string)
     config.add(:serve_static_files, type: :boolean)
-    config.add(:service_providers_with_nil_pkce, type: :comma_separated_string_list)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)

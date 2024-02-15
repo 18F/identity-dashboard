@@ -48,9 +48,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
   end
 
   def pkce
-    if IdentityConfig.store.service_providers_with_nil_pkce.include?(object.issuer)
-      nil
-    elsif object.openid_connect_pkce?
+    if object.openid_connect_pkce?
       true
     else
       false
