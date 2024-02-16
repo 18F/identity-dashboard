@@ -7,7 +7,7 @@ class ServiceProvidersController < AuthenticatedController
   def index
     all_apps = current_user.scoped_service_providers
 
-    prod_app = all_apps.select { |sp| sp.prod_config == true }
+    prod_apps = all_apps.select { |sp| sp.prod_config == true }
     sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
     @service_providers = [ 
