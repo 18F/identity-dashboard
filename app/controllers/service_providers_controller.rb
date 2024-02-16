@@ -8,12 +8,12 @@ class ServiceProvidersController < AuthenticatedController
     prod_apps = current_user.scoped_service_providers.select { 
                   |sp| sp.prod_config == true 
                 }
-    non_prod_apps = current_user.scoped_service_providers.select { 
+    sandbox_apps = current_user.scoped_service_providers.select { 
                   |sp| sp.prod_config == false 
                 }
 
     @service_providers = { 'My Production Apps' => prod_apps, 
-                           'My Non-Production Apps' => non_prod_apps }
+                           'My Sandbox Apps' => sandbox_apps }
     @show_created_at = false
   end
 
@@ -61,12 +61,12 @@ class ServiceProvidersController < AuthenticatedController
     prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
                   |sp| sp.prod_config == false 
                 }
-    non_prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
+    sandbox_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
                   |sp| sp.prod_config == false 
                 }
 
     @service_providers = { 'Production Apps' => prod_apps,
-                           'Non-Production Apps' => non_prod_apps }
+                           'Sandbox Apps' => sandbox_apps }
     @show_created_at = true
   end
 
