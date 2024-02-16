@@ -3,6 +3,9 @@
 
 <%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post, :class => "usa-button" %>
 
+
+<% prod_apps = @service_providers.select { |sp| sp.prod_config == true } %>
+<% unless prod_apps.blank? %>
 <table class="usa-table">
   <thead>
     <tr>
@@ -15,15 +18,19 @@
     </tr>
   </thead>
   <tbody>
-    <% @service_providers.select { |sp| sp.prod_config == true }.each do |app| %>
+    <% prod_apps.each do |app| %>
       <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
     <% end %>
   </tbody>
 </table>
-
+<% else %>
+  <h2>No apps to show.</h2>
+<% end %>
 
 <h1 class="usa-display">Non-Production Apps</h1>
 
+<% non_prod_apps = @service_providers.select { |sp| sp.prod_config == false } %>
+<% unless non_prod_apps.blank? %>
 <table class="usa-table">
   <thead>
     <tr>
@@ -36,8 +43,11 @@
     </tr>
   </thead>
   <tbody>
-    <% @service_providers.select { |sp| sp.prod_config == false }.each do |app| %>
+    <% non_prod_apps.each do |app| %>
       <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <h2>No apps to show.</h2>
+<% end %>
