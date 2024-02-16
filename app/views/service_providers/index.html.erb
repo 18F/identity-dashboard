@@ -1,6 +1,6 @@
-<h1 class="usa-display">My apps</h1>
-
 <%= button_to t('headings.service_providers.new_app'), new_service_provider_path, method: :get, :class => "usa-button" %>
+
+<h1 class="usa-display">My Production Apps</h1>
 
 <table class="usa-table">
   <thead>
@@ -13,14 +13,27 @@
     </tr>
   </thead>
   <tbody>
-    <% current_user.scoped_service_providers.each do |app| %>
+    <% current_user.scoped_service_providers.select { |sp| sp.prod_config == true }.each do |app| %>
+      <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: false } %>
+    <% end %>
+  </tbody>
+</table>
+
+<h1 class="usa-display">My Non-Production Apps</h1>
+
+<table class="usa-table">
+  <thead>
     <tr>
-      <th scope="row"><%= link_to(app.friendly_name, service_provider_path(app), :class => 'usa-link' ) %></th>
-      <td class="text-wrap"><%= app.issuer %></td>
-      <td><%= app.ial_friendly %></td>
-      <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27', :class =>'margin-bottom-neg-105' %></td>
-      <%= render partial: 'certificate_expiration_td', locals: { app: app } %>
+      <th scope="col">Friendly name</th>
+      <th scope="col">Issuer</th>
+      <th scope="col">IAL</th>
+      <th scope="col">Active</th>
+      <th scope="col">Cert Exp</th>
     </tr>
+  </thead>
+  <tbody>
+    <% current_user.scoped_service_providers.select { |sp| sp.prod_config == false }.each do |app| %>
+      <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: false } %>
     <% end %>
   </tbody>
 </table>
