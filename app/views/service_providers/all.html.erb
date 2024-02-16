@@ -7,16 +7,7 @@
 <% prod_apps = @service_providers.select { |sp| sp.prod_config == true } %>
 <% unless prod_apps.blank? %>
 <table class="usa-table">
-  <thead>
-    <tr>
-      <th scope="col">Friendly name</th>
-      <th scope="col">Issuer</th>
-      <th scope="col">IAL</th>
-      <th scope="col">Active</th>
-      <th scope="col">Cert Exp</th>
-      <th scope="col">Created</th>
-    </tr>
-  </thead>
+  <%= render partial: 'service_provider_table_header', locals: { show_created_at: true } %>
   <tbody>
     <% prod_apps.each do |app| %>
       <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
@@ -32,16 +23,7 @@
 <% non_prod_apps = @service_providers.select { |sp| sp.prod_config == false } %>
 <% unless non_prod_apps.blank? %>
 <table class="usa-table">
-  <thead>
-    <tr>
-      <th scope="col">Friendly name</th>
-      <th scope="col">Issuer</th>
-      <th scope="col">IAL</th>
-      <th scope="col">Active</th>
-      <th scope="col">Cert Exp</th>
-      <th scope="col">Created</th>
-    </tr>
-  </thead>
+  <%= render partial: 'service_provider_table_header', locals: { show_created_at: true } %>
   <tbody>
     <% non_prod_apps.each do |app| %>
       <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
