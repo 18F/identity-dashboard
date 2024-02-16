@@ -19,6 +19,15 @@ feature 'Nav links' do
 
       expect(page).to have_content('Users')
     end
+
+    scenario 'admin should see a security events link' do
+      admin = create(:admin)
+
+      login_as(admin)
+      visit service_providers_path
+
+      expect(page).to have_content('Security Events')
+    end
   end
 
   context 'user is not an admin' do
@@ -39,5 +48,15 @@ feature 'Nav links' do
 
       expect(page).to_not have_content('Users')
     end
+
+    scenario 'user should see a security events link' do
+      admin = create(:user)
+
+      login_as(admin)
+      visit service_providers_path
+
+      expect(page).to_not have_content('Security Events')
+    end
+
   end
 end
