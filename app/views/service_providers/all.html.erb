@@ -10,7 +10,7 @@
   <%= render partial: 'service_provider_table_header', locals: { show_created_at: true } %>
   <tbody>
     <% prod_apps.each do |app| %>
-      <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
+      <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: true } %>
     <% end %>
   </tbody>
 </table>
@@ -26,7 +26,7 @@
   <%= render partial: 'service_provider_table_header', locals: { show_created_at: true } %>
   <tbody>
     <% non_prod_apps.each do |app| %>
-      <%= render partial: 'service_provider_row', locals: { app: app, show_created_at: true } %>
+      <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: true } %>
     <% end %>
   </tbody>
 </table>
