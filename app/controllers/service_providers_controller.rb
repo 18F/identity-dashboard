@@ -59,7 +59,7 @@ class ServiceProvidersController < AuthenticatedController
   def all
     return unless current_user.admin?
     prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
-                  |sp| sp.prod_config == false 
+                  |sp| sp.prod_config == true 
                 }
     sandbox_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
                   |sp| sp.prod_config == false 
