@@ -13,15 +13,15 @@ class ServiceProvidersController < AuthenticatedController
                 }
 
     @service_providers = [ 
-                           {
-                             type: 'My Production Apps',
-                             apps: prod_apps
-                           },
-                           {
-                             type: 'My Sandbox Apps',
-                             apps: sandbox_apps
-                           },
-                         ]
+      {
+        type: 'My Production Apps',
+        apps: prod_apps,
+      },
+      {
+        type: 'My Sandbox Apps',
+        apps: sandbox_apps,
+      },
+    ]
   end
 
   def create
@@ -73,15 +73,15 @@ class ServiceProvidersController < AuthenticatedController
                 }
 
     @service_providers = [ 
-                           {
-                             type: 'Production Apps',
-                             apps: prod_apps
-                           },
-                           {
-                             type: 'Sandbox Apps',
-                             apps: sandbox_apps
-                           },
-                         ]
+      {
+        type: 'Production Apps',
+        apps: prod_apps,
+      },
+      {
+        type: 'Sandbox Apps',
+        apps: sandbox_apps,
+      },
+    ]
   end
 
   private
@@ -246,6 +246,19 @@ class ServiceProvidersController < AuthenticatedController
     {
       service_provider: ServiceProviderSerializer.new(service_provider),
     }
+  end
+
+  def build_service_provider_array(prod_apps, sandbox_apps)
+    return [ 
+      {
+        type: 'Production Apps',
+        apps: prod_apps,
+      },
+             {
+               type: 'Sandbox Apps',
+               apps: sandbox_apps,
+             },
+    ]
   end
 
   helper_method :service_provider
