@@ -5,12 +5,10 @@ class ServiceProvidersController < AuthenticatedController
   before_action :add_iaa_warning, except: %i[index destroy]
 
   def index
-    prod_apps = current_user.scoped_service_providers.select { 
-                  |sp| sp.prod_config == true 
-                }
-    sandbox_apps = current_user.scoped_service_providers.select { 
-                  |sp| sp.prod_config == false 
-                }
+    all_apps = current_user.scoped_service_providers
+
+    prod_app = all_apps.select { |sp| sp.prod_config == true }
+    sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
     @service_providers = [ 
       {
@@ -65,12 +63,10 @@ class ServiceProvidersController < AuthenticatedController
 
   def all
     return unless current_user.admin?
-    prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
-                  |sp| sp.prod_config == true 
-                }
-    sandbox_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { 
-                  |sp| sp.prod_config == false 
-                }
+    all_apps = ServiceProvider.all.sort_by(&:created_at).reverse
+
+    prod_apps = all_apps.select { |sp| sp.prod_config == true }
+    sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
     @service_providers = [ 
       {
