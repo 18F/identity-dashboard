@@ -4,7 +4,14 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :add_iaa_warning, except: %i[index destroy]
 
-  def index; end
+  def index
+    prod_apps = current_user.scoped_service_providers.select { |sp| sp.prod_config == true }
+    non_prod_apps = current_user.scoped_service_providers.select { |sp| sp.prod_config == false }
+
+    @service_providers = { "My Production Apps" => prod_apps, 
+                           "My Non-Production Apps" => non_prod_apps }
+    @show_created_at = false
+  end
 
   def create
     @service_provider = ServiceProvider.new
@@ -47,7 +54,12 @@ class ServiceProvidersController < AuthenticatedController
 
   def all
     return unless current_user.admin?
-    @service_providers = ServiceProvider.all.sort_by(&:created_at).reverse
+    prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { |sp| sp.prod_config == false }
+    non_prod_apps = ServiceProvider.all.sort_by(&:created_at).reverse.select { |sp| sp.prod_config == false }
+
+    @service_providers = { "Production Apps" => prod_apps,
+                           "Non-Production Apps" => non_prod_apps }
+    @show_created_at = true
   end
 
   private

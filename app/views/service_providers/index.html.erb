@@ -1,33 +1,3 @@
 <%= button_to t('headings.service_providers.new_app'), new_service_provider_path, method: :get, :class => "usa-button" %>
 
-<h1 class="usa-display">My Production Apps</h1>
-
-<% prod_apps = current_user.scoped_service_providers.select { |sp| sp.prod_config == true } %>
-<% unless prod_apps.blank? %>
-<table class="usa-table">
-  <%= render partial: 'service_provider_table_header', locals: { show_created_at: false } %>
-  <tbody>
-    <% prod_apps.each do |app| %>
-      <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: false } %>
-    <% end %>
-  </tbody>
-</table>
-<% else %>
-  <h2>No apps to show.</h2>
-<% end %>
-
-<h1 class="usa-display">My Non-Production Apps</h1>
-
-<% non_prod_apps = current_user.scoped_service_providers.select { |sp| sp.prod_config == false } %>
-<% unless non_prod_apps.blank? %>
-<table class="usa-table">
-  <%= render partial: 'service_provider_table_header', locals: { show_created_at: false } %>
-  <tbody>
-    <% non_prod_apps.each do |app| %>
-      <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: false } %>
-    <% end %>
-  </tbody>
-</table>
-<% else %>
-  <h2>No apps to show.</h2>
-<% end %>
+<%= render partial: 'service_provider_table', locals: { service_providers: @service_providers } %>
