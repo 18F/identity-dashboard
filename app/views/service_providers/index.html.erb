@@ -1,3 +1,3 @@
 <%= button_to t('headings.service_providers.new_app'), new_service_provider_path, method: :get, :class => "usa-button" %>
 
-<%= render partial: 'service_provider_table', locals: { service_providers: @service_providers } %>
+<%= render partial: 'service_provider_table', locals: { service_providers: @service_providers, show_created_at: false } %>

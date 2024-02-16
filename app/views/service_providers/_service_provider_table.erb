@@ -1,15 +1,15 @@
-<% @service_providers.each do |type, apps| %>
-  <h1 class="usa-display"><%= type %></h1>
+<% @service_providers.each do |sps| %>
+  <h1 class="usa-display"><%= sps[:type] %></h1>
 
-  <% unless apps.blank? %>
-  <table class="usa-table">
-    <%= render partial: 'service_provider_table_header', locals: { show_created_at: @show_created_at } %>
-    <tbody>
-      <% apps.each do |app| %>
-        <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: @show_created_at } %>
-      <% end %>
-    </tbody>
-  </table>
+  <% unless sps[:apps].blank? %>
+    <table class="usa-table">
+      <%= render partial: 'service_provider_table_header', locals: { show_created_at: show_created_at } %>
+      <tbody>
+        <% sps[:apps].each do |app| %>
+          <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: show_created_at } %>
+        <% end %>
+      </tbody>
+    </table>
   <% else %>
     <h2>No apps to show.</h2>
   <% end %>

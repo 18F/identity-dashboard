@@ -12,9 +12,16 @@ class ServiceProvidersController < AuthenticatedController
                   |sp| sp.prod_config == false 
                 }
 
-    @service_providers = { 'My Production Apps' => prod_apps, 
-                           'My Sandbox Apps' => sandbox_apps }
-    @show_created_at = false
+    @service_providers = [ 
+                           {
+                             type: 'My Production Apps',
+                             apps: prod_apps
+                           },
+                           {
+                             type: 'My Sandbox Apps',
+                             apps: sandbox_apps
+                           },
+                         ]
   end
 
   def create
@@ -65,9 +72,16 @@ class ServiceProvidersController < AuthenticatedController
                   |sp| sp.prod_config == false 
                 }
 
-    @service_providers = { 'Production Apps' => prod_apps,
-                           'Sandbox Apps' => sandbox_apps }
-    @show_created_at = true
+    @service_providers = [ 
+                           {
+                             type: 'Production Apps',
+                             apps: prod_apps
+                           },
+                           {
+                             type: 'Sandbox Apps',
+                             apps: sandbox_apps
+                           },
+                         ]
   end
 
   private
