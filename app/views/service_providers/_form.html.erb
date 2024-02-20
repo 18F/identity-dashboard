@@ -356,7 +356,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <% if current_user.admin? %>
     <fieldset class="usa-fieldset-inputs custom-help-text">
-      <legend>Custom help text</legend>
+      <legend>Help text</legend>
       <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
       <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
       </p>
@@ -385,25 +385,62 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     </fieldset>
   <% else %>
     <% if @help_text_empty %>
-      <p class="usa-label">Custom help text</p>
-      <p>You have no existing help text.</p>
-      <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+      <fieldset class="usa-fieldset-inputs custom-help-text">
+        <legend class="usa-label">Help text</legend>
+        <p>You have no existing help text.</p>
+        <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+        
+      </fieldset>
     <% else %>
       <fieldset class="usa-fieldset-inputs custom-help-text">
-        <legend class="usa-label">Custom help text</legend>
-          <p>You can view your existing help text here.</p>
-          <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
-          <legend class="usa-label"><b>Sign-in help text:</legend>
+        <legend class="usa-label">Help text</legend>
+          <p>You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
+          <p>If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section of the developer documentation. You should understand the guidance when you request support.</p>
+        <legend class="usa-label"><b>Sign-in help text:</b></legend>
+          <div>
+            <input type="radio" class="sign-in-text" name="english-sign-in" value="">
+            <label>No help text</label>
+          </div>
+          <div>
+            <input type="radio" class="sign-in-text" name="english-sign-in" value="">
+            <label>First time here from <%= service_provider.friendly_name.present? ? service_provider.friendly_name : ""  %>? Your old <%= service_provider.friendly_name.present? ? service_provider.friendly_name : "" %> username and password won’t work. Create a Login.gov account with the same email used previously.</label>
+          </div>
+          <div>
+            <input type="radio" class="sign-in-text" name="english-sign-in" value="">
+            <label>Sign in to Login.gov with your <%= service_provider.agency.name.present? ? service_provider.agency.name : "" %> email.</label>
+          </div>
+          <div>
+            <input type="radio" class="sign-in-text" name="english-sign-in" value="">
+            <label>Sign in to Login.gov with your <%= service_provider.agency.name.present? ? service_provider.agency.name : "" %> PIV/CAC.</label>
+          </div>
+          <% if service_provider.help_text.dig("sign_in", "en").present? %>
+            <div>
+              <input type="radio" class="sign-in-text" name="english-sign-in" value="" checked>
+              <label><%= service_provider.help_text.dig("sign_in", "en") %></label>
+          <% end %>
+
           <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
 
-          <legend class="usa-label"><b>Sign-up help text:</legend>
+          <legend class="usa-label"><b>Sign-up help text:</b></legend>
+          <select class="sign-up-text">
+            <option></option>
+            <option>First time here from <%= service_provider.friendly_name.present? ? service_provider.friendly_name : ""  %>? Your old <%= service_provider.friendly_name.present? ? service_provider.friendly_name : "" %> username and password won’t work. Create a Login.gov account with the same email used previously.</option>
+            <option>Create a Login.gov account with your <%= service_provider.agency.name.present? ? service_provider.agency.name : "" %> email.</option>
+            <option>Create a Login.gov account using the same email provided on your application.</option>
+          </select>
+
           <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
 
-          <legend class="usa-label">Forgot password help text:</legend>
+          <legend class="usa-label"><b>Forgot password help text:</b></legend>
+          <select class="forgot-password-text">
+            <option></option>
+            <option>If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.</option>
+          </select>
+
           <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
           <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
