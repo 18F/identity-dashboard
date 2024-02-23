@@ -26,11 +26,11 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= user.email %></td>
-          <td><%= image_tag sign_in_icon(user), height: '27', width: '27',
+          <td><%= image_tag asset_path(sign_in_icon(user)), height: '27', width: '27',
                             class: 'margin-bottom-neg-105',
                             title: title(user),
                             alt: alt(user) %></td>
-          <td><%= image_tag 'img/illustrations/security-key.svg',
+          <td><%= image_tag asset_path('illustrations/security-key.svg'),
                             height: '27', width: '27',
                             class: 'margin-bottom-neg-05',
                             alt: 'admin user icon' if user.admin? %></td>
