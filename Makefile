@@ -23,6 +23,6 @@ test:
 	bundle exec rspec
 
 run:
-	bin/dev
+	foreman start -p $(PORT)
 
 .PHONY: setup all lint run test check
