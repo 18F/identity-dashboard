@@ -6,7 +6,7 @@
   },
   "scripts": {
     "lint": "eslint . --ignore-pattern public --ignore-pattern vendor --ignore-pattern app/assets/builds",
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack",
     "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
   },
   "dependencies": {
@@ -19,7 +19,6 @@
     "core-js": "^3.23.4",
     "fast-glob": "^3.2.11",
     "identity-style-guide": "3.0.0",
-    "sass": "^1.71.1",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
   },
