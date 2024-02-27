@@ -1,20 +1,21 @@
 <h2>All Security Events</h2>
 
-<%= form_with url: security_events_search_path,
+  <section aria-label="Search component">
+    <%= form_with url: security_events_search_path,
               method: :post,
               class: "usa-search",
               role: "search" do |form| %>
-  <fieldset class="usa-fieldset">
-    <%= form.label :email, 'Search by email address', class: 'usa-sr-only' %>
-    <%= form.text_field :email,
-                        type: 'search',
-                        class: 'usa-input usa-input--md usa-search-input--joined-right',
-                        value: @user&.email %>
-    <button class="usa-button" type="submit">
-      <span class="usa-search__submit-text">Search by email address</span>
-    </button>
-   </fieldset>
-<% end %>
+      <%= form.label :email, 'Search by email address', class: 'usa-sr-only', for: 'search-field' %>
+      <%= form.text_field :email,
+                          type: 'search',
+                          id: 'search-field',
+                          class: 'usa-input',
+                          value: @user&.email %>
+      <button class="usa-button" type="submit">
+          <span class="usa-search__submit-text">Search by email address</span>
+      </button>
+    <% end %>
+  </section>
 
 <%= render partial: 'table',
            locals: {
