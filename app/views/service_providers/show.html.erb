@@ -225,30 +225,35 @@
 
 
 <% if current_user.admin? %>
-  <div class="clearfix"></div>
-  <div class="versionHistory">
-    <h3 id="versionToggle" class="closed">Version History (<%= service_provider.versions.count %>) </h3>
-    <div id="versions">
+  <div class="usa-accordion">
+    <button class="usa-accordion__button margin-top-105" aria-expanded="false" aria-controls="versions">
+      <h3 id="versionToggle" class="usa-accordion__heading">Version History (<%= service_provider.versions.count %>) </h3>
+    </button>
+    <div id="versions" class="usa-accordion__content">
     <% service_provider.versions.reverse.each do |v| %>
       <div class="event">
-        <h4>Action: <%= v.event.capitalize %></h4>
-        <h5>By: <%= v.whodunnit %></h5>
-        <h5>At: <%= v.created_at %></h5>
+        <h4 class="margin-0">Action: <%= v.event.capitalize %></h4>
+        <h5 class="margin-0">By: <%= v.whodunnit %></h5>
+        <h5 class="margin-0">At: <%= v.created_at %></h5>
         <% if v.event != 'create' %>
-          <table class="event-history">
-            <tr>
-              <th>Field</th>
-              <th>Previous Value</th>
-              <th>Updated Value</th>
-            </tr>
+          <table class="usa-table width-full">
+            <thead>
+              <tr>
+                <th scope="col">Field</th>
+                <th scope="col">Previous Value</th>
+                <th scope="col">Updated Value</th>
+              </tr>
+            </thead>
           <% v.object_changes.each do |field, change| %>
             <% if field != 'updated_at' %>
               <% before, after = change %>
-                <tr>
-                  <td><%= field %></td>
-                  <td><%= before %></td>
-                  <td><%= after %></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td><%= field %></td>
+                    <td><%= before %></td>
+                    <td><%= after %></td>
+                  </tr>
+                </tbody>
             <% end %>
           <% end %>
           </table>
@@ -258,5 +263,3 @@
     </div>
   </div>
 <% end %>
-
-<%= javascript_include_tag 'service_provider_show' %>
