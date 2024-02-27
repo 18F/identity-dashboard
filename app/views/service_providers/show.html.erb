@@ -222,3 +222,41 @@
   service_provider_path(service_provider),
   class: 'usa-button usa-button--outline float-left',
   method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
+
+
+<% if current_user.admin? %>
+  <div class="clearfix"></div>
+  <div class="versionHistory">
+    <h3 id="versionToggle" class="closed">Version History (<%= service_provider.versions.count %>) </h3>
+    <div id="versions">
+    <% service_provider.versions.reverse.each do |v| %>
+      <div class="event">
+        <h4>Action: <%= v.event.capitalize %></h4>
+        <h5>By: <%= v.whodunnit %></h5>
+        <h5>At: <%= v.created_at %></h5>
+        <% if v.event != 'create' %>
+          <table class="event-history">
+            <tr>
+              <th>Field</th>
+              <th>Previous Value</th>
+              <th>Updated Value</th>
+            </tr>
+          <% v.object_changes.each do |field, change| %>
+            <% if field != 'updated_at' %>
+              <% before, after = change %>
+                <tr>
+                  <td><%= field %></td>
+                  <td><%= before %></td>
+                  <td><%= after %></td>
+                </tr>
+            <% end %>
+          <% end %>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= javascript_include_tag 'service_provider_show' %>

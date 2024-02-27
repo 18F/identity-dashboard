@@ -147,3 +147,50 @@ $image-path: 'img';
 .text-heavy {
   font-weight: 800;
 }
+
+.versionHistory {
+  padding-top: 15px;
+  #versionToggle {
+    &:after {
+      padding-left: 10px;
+    }
+    &.open {
+      &:after {
+        content: '🔽';
+      }
+    }
+    &.closed {
+      &:after {
+        content: '▶️';
+      }
+    }
+  }
+  h3, h4, h5 {
+    margin: 0;
+  }
+  #versions {
+    display: none;
+    .event {
+      padding: 25px 0 25px 0;
+      border-top: 1px solid #858585;
+      &:first-of-type {
+        border-top: none;
+      }
+      .event-history {
+        margin-top: 5px;
+        border: 1px solid #b3b3b3;
+        width: 100%;
+        td, th {
+            border: 1px solid #b3b3b3;
+            padding: 5px;
+            width: 40%;
+            &:first-of-type {
+              width: 20%;
+            }
+
+        }
+        border-collapse: collapse;
+      }
+    }
+  }
+}
