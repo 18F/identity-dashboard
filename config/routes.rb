@@ -36,7 +36,6 @@ Rails.application.routes.draw do
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'
   get '/api/service_providers/:id' => 'api/service_providers#show'
-  post '/api/service_providers' => 'api/service_providers#update'
 
   root to: 'home#index'
 
