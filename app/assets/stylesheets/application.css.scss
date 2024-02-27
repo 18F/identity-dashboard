@@ -127,15 +127,3 @@ $image-path: '';
     display: block;
   }
 }
-
-// Search overrides based on identity-site
-
-.usa-search-input--joined-right {
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  max-width: 12rem;
-}
-
-.text-heavy {
-  font-weight: 800;
-}
