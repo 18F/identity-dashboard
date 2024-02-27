@@ -29,15 +29,17 @@
           <td><%= image_tag asset_path(sign_in_icon(user)), height: '27', width: '27',
                             class: 'margin-bottom-neg-105',
                             title: title(user),
-                            alt: alt(user) %></td>
+                            alt: alt(user),
+                            role: 'img' %></td>
           <td><%= image_tag asset_path('illustrations/security-key.svg'),
                             height: '27', width: '27',
                             class: 'margin-bottom-neg-05',
-                            alt: 'admin user icon' if user.admin? %></td>
+                            alt: 'admin user icon',
+                            role: 'img' if user.admin? %></td>
           <td>
             <%= button_to 'Delete', user_path(user.id), method: :delete,
                         form_class: 'display-inline',
-                        class: 'usa-button--unstyled usa-link margin-right-1',
+                        class: 'usa-button usa-button--unstyled usa-link margin-right-1',
                         data: { confirm: t('notices.confirm_delete') } %>
             <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
           </td>
