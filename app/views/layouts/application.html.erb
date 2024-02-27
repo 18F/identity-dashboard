@@ -99,7 +99,7 @@
         <div class="usa-navbar">
           <div class="usa-logo" id="basic-logo">
             <a href="/" title="Home" aria-label="Home">
-              <%= image_tag asset_path('logo.svg'), alt: 'Login.gov', role: 'img', class: 'usa-logo__img' %>
+              <%= image_tag 'logo.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' %>
               <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
             </a>
           </div>
@@ -107,7 +107,7 @@
         </div>
         <div class="usa-nav">
           <button class="usa-nav__close">
-            <%= image_tag 'close.svg', alt: 'Close' %>
+            <%= image_tag 'close.svg', alt: 'Close', role: 'img' %>
           </button>
           <ul class="usa-nav__primary usa-accordion">
             <% if user_signed_in? %>
