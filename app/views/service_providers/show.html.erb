@@ -244,9 +244,8 @@
                 <th scope="col">Updated Value</th>
               </tr>
             </thead>
-          <% v.object_changes.each do |field, change| %>
+          <% v.object_changes.each do |field, (before, after)| %>
             <% if field != 'updated_at' %>
-              <% before, after = change %>
                 <tbody>
                   <tr>
                     <td><%= field %></td>
