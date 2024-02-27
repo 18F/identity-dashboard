@@ -4,7 +4,11 @@
   </th>
   <td class="text-wrap"><%= app.issuer %></td>
   <td><%= app.ial_friendly %></td>
-  <td><%= image_tag app.active? ? 'img/alerts/success.svg' : 'img/alerts/error.svg', height: '27', width: '27' %></td>
+  <% if app.active? %>
+    <td><%= image_tag 'img/alerts/success.svg', alt: 'Active', title: 'Active', height: '27', width: '27' %></td>
+  <% else %>
+    <td><%= image_tag 'img/alerts/error.svg', alt: 'Inactive', title: 'Inactive', height: '27', width: '27' %></td>
+  <% end %>
   <%= render partial: 'certificate_expiration_td', locals: { app: app } %>
   <% if show_created_at %>
     <td><%= app.created_at.localtime.strftime("%F %T") %></td>
