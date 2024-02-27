@@ -9,9 +9,9 @@
   <%= form.collection_radio_buttons(:prod_config,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
+                                    collection_wrapper_tag: :div,
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: "usa-radio") do |b| %>
     <%=  b.radio_button(class: "usa-radio__input") %>
     <%=  b.label(class: "usa-radio__label")%>
   <% end %>
@@ -52,18 +52,18 @@
     <%= form.label :identity_protocol,
                    label: 'Authentication protocol',
                    class: 'usa-label' %>
-    <%= content_tag(:ul, class: 'usa-input-list') do
-      ServiceProvider.identity_protocols.each_key do |protocol| %>
-        <%= content_tag(:li) do %>
+    <div>
+      <% ServiceProvider.identity_protocols.each_key do |protocol| %>
+        <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
                                 protocol,
                                 class: 'usa-radio__input' %>
           <%= form.label ('identity_protocol_' + protocol).to_sym,
                          titleize(protocol),
                          class: 'usa-radio__label' %>
-        <% end %>
+        </div>
       <% end %>
-    <% end %>
+    </div>
     <%= form.hint I18n.t('service_provider_form.protocol') %>
   </fieldset>
 
@@ -102,10 +102,8 @@
     <%= form.collection_check_boxes(:attribute_bundle,
                                     ServiceProvider.possible_attributes,
                                     :first, :last,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li,
-                                    item_wrapper_class: 'ial-attr-wrapper') do |b| %>
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
       <%= b.check_box class: "usa-checkbox__input" %>
       <%= b.label class: "usa-checkbox__label" %>
     <% end %>
@@ -133,12 +131,12 @@
       <%= form.label :allow_prompt_login,
                       label: 'Enable <prompt=login>',
                       class: 'usa-label' %>
-      <ul class="usa-input-list">
-        <li>
+      <div>
+        <div class="usa-checkbox">
           <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
           <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
-        </li>
-      </ul>
+        </div>
+      </div>
     </fieldset>
 
     <%# email_nameid_format_allowed checkbox %>
@@ -147,12 +145,12 @@
       <%= form.label :email_nameid_format_allowed,
                       label: 'Allow Email NameID Format',
                       class: 'usa-label' %>
-      <ul class="usa-input-list">
-        <li>
+      <div>
+        <div class="usa-checkbox">
           <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
           <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
-        </li>
-      </ul>
+        </div>
+      </div>
     </fieldset>
   <% end %>
 
@@ -260,9 +258,9 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :ul,
-                                      collection_wrapper_class: 'usa-input-list',
-                                      item_wrapper_tag: :li) do |b| %>
+                                      collection_wrapper_tag: :div,
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
     <% end %>
@@ -345,13 +343,13 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :ul,
-                                      collection_wrapper_class: 'usa-input-list',
-                                      item_wrapper_tag: :li) do |b| %>
+                                      collection_wrapper_tag: :div,
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
     <% end %>
-    <%= I18n.t('service_provider_form.active').html_safe %>
+    <%= form.hint I18n.t('service_provider_form.active').html_safe %>
   </div>
 
   <% if current_user.admin? %>
