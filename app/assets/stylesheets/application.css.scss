@@ -5,8 +5,8 @@ $image-path: '';
 
 @mixin text-wrap-mixin {
   word-break: break-all;
-
 }
+
 .text-wrap {
   @include text-wrap-mixin;
 }
@@ -77,14 +77,14 @@ $image-path: '';
 
 .certificate-expired,
 .usa-table td.certificate-expired {
-  color: $theme-color-base-lightest;
   background: $theme-color-secondary;
+  color: $theme-color-base-lightest;
 }
 
 .certificate-warning,
 .usa-table td.certificate-warning {
-  color: $theme-color-base-ink;
   background: $theme-color-warning;
+  color: $theme-color-base-ink;
 }
 
 .bold-definition {
