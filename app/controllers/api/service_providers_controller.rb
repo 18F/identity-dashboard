@@ -1,6 +1,5 @@
 module Api
   class ServiceProvidersController < ApplicationController
-    before_action(:authenticate_user!, only: [:update])
 
     def index
       render json: serialized_service_providers(approved_service_providers)
@@ -8,15 +7,6 @@ module Api
 
     def show
       render json: ServiceProviderSerializer.new(service_provider, action: :show).as_json
-    end
-
-    def update
-      if ServiceProviderUpdater.post_update == 200
-        flash[:notice] = I18n.t('notices.service_providers_refreshed')
-      else
-        flash[:error] = I18n.t('notices.service_providers_refresh_failed')
-      end
-      redirect_to service_providers_path
     end
 
     private
