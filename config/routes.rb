@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
+  post '/service_providers/publish' => 'service_providers#publish'
   resources :service_providers
 
   get '/security_events/all' => 'security_events#all'

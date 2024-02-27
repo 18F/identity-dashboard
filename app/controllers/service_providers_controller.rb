@@ -80,6 +80,16 @@ class ServiceProvidersController < AuthenticatedController
     ]
   end
 
+  def publish
+    if ServiceProviderUpdater.post_update == 200
+      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+    else
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+    end
+    redirect_to service_providers_path
+  end
+
+
   private
 
   def help_text_empty?

@@ -1,3 +1,3 @@
-<%= button_to t('forms.buttons.trigger_idp_refresh'), api_service_providers_path, method: :post, :class => "usa-button" %>
+<%= button_to t('forms.buttons.trigger_idp_refresh'), service_providers_publish_path, method: :post, :class => "usa-button" %>
 
 <%= render partial: 'service_provider_table', locals: { service_providers: @service_providers, show_created_at: true } %>
