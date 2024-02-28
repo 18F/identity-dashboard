@@ -52,7 +52,6 @@
     <%= form.label :identity_protocol,
                    label: 'Authentication protocol',
                    class: 'usa-label' %>
-    <div>
       <% ServiceProvider.identity_protocols.each_key do |protocol| %>
         <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
@@ -62,8 +61,7 @@
                          titleize(protocol),
                          class: 'usa-radio__label' %>
         </div>
-      <% end %>
-    </div>
+     <% end %>
     <%= form.hint I18n.t('service_provider_form.protocol') %>
   </fieldset>
 
@@ -131,11 +129,9 @@
       <%= form.label :allow_prompt_login,
                       label: 'Enable <prompt=login>',
                       class: 'usa-label' %>
-      <div>
-        <div class="usa-checkbox">
-          <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
-          <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
-        </div>
+      <div class="usa-checkbox">
+        <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
+        <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
       </div>
     </fieldset>
 
@@ -145,11 +141,9 @@
       <%= form.label :email_nameid_format_allowed,
                       label: 'Allow Email NameID Format',
                       class: 'usa-label' %>
-      <div>
-        <div class="usa-checkbox">
-          <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
-          <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
-        </div>
+      <div class="usa-checkbox">
+        <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
+        <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
       </div>
     </fieldset>
   <% end %>
@@ -287,7 +281,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  hint: I18n.t('service_provider_form.push_notification_url') %>
 
   <%# BEGIN redirect_uris %>
-    <div class='oidc-fields'>
+    <div class='usa-hint oidc-fields'>
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
@@ -298,7 +292,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </div>
 
-    <div class='saml-fields'>
+    <div class='usa-hint saml-fields'>
       <%= form.label :redirect_uris,
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
