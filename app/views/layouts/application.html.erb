@@ -53,10 +53,7 @@
               </button>
             </div>
           </div>
-          <div class="usa-banner__content usa-accordion__content" id="gov-banner">
-            <%= javascript_tag(nonce: true) do %>
-              document.getElementById('gov-banner').setAttribute('hidden', '');
-            <% end %>
+          <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
             <div class="grid-row grid-gap-lg">
               <div class="usa-banner__guidance tablet:grid-col-6">
                 <%= image_tag 'icon-dot-gov.svg', alt: 'Dot gov', class: 'usa-banner__icon usa-media-block__img', role: 'img', aria: { hidden: true } %>
