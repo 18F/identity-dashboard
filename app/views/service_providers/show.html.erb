@@ -222,3 +222,43 @@
   service_provider_path(service_provider),
   class: 'usa-button usa-button--outline float-left',
   method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
+
+
+<% if current_user.admin? %>
+  <div class="usa-accordion">
+    <button class="usa-accordion__button margin-top-105" aria-expanded="false" aria-controls="versions">
+      <h3 id="versionToggle" class="usa-accordion__heading">Version History (<%= service_provider.versions.count %>) </h3>
+    </button>
+    <div id="versions" class="usa-accordion__content">
+    <% service_provider.versions.reverse.each do |v| %>
+      <div class="event">
+        <h4 class="margin-0">Action: <%= v.event.capitalize %></h4>
+        <h5 class="margin-0">By: <%= v.whodunnit %></h5>
+        <h5 class="margin-0">At: <%= v.created_at %></h5>
+        <% if v.event != 'create' %>
+          <table class="usa-table width-full">
+            <thead>
+              <tr>
+                <th scope="col">Field</th>
+                <th scope="col">Previous Value</th>
+                <th scope="col">Updated Value</th>
+              </tr>
+            </thead>
+          <% v.object_changes.each do |field, (before, after)| %>
+            <% if field != 'updated_at' %>
+                <tbody>
+                  <tr>
+                    <td><%= field %></td>
+                    <td><%= before %></td>
+                    <td><%= after %></td>
+                  </tr>
+                </tbody>
+            <% end %>
+          <% end %>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+    </div>
+  </div>
+<% end %>
