@@ -2757,10 +2757,10 @@ iconv-lite@0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
-identity-style-guide@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-3.0.0.tgz#9f0d1331b3200dad63073c928dd195c1c50c9378"
-  integrity sha512-PFoNrTStU7uOFMXi8qEC1Yx+Vq4IZMxpK5+5mFRU5Ef6e/9S0U9wKaVzCv4+jK7Z4yUPlsMe8Xd/K9XWjnm6fQ==
+identity-style-guide@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-4.0.0.tgz#c27546f6e904c4ef728fd7aa55611d480397e11e"
+  integrity sha512-lpd3NXiU6XnN/QsiVAyzney9i+kRjcZCOFVBbm4e8H6MhMcX2rke+MzFJ8+vBq/hqYk9LntprHa9f/uTvnB3sQ==
   dependencies:
     uswds "^2.9.0"
     zxcvbn "^4.4.2"

@@ -18,7 +18,7 @@
     "babel-plugin-polyfill-corejs3": "^0.8.0",
     "core-js": "^3.23.4",
     "fast-glob": "^3.2.11",
-    "identity-style-guide": "3.0.0",
+    "identity-style-guide": "4.0.0",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
   },
