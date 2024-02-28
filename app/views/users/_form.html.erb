@@ -8,9 +8,10 @@
     <%= form.collection_radio_buttons(:admin,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list margin-bottom-3',
-                                    item_wrapper_tag: :li) do |b| %>
+                                    collection_wrapper_tag: :div,
+                                    collection_wrapper_class: 'margin-bottom-3',
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: 'usa-radio') do |b| %>
         <%=  b.radio_button(class: "usa-radio__input") %>
         <%=  b.label(class: "usa-radio__label")%>
     <% end %>
