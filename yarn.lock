@@ -21,6 +21,13 @@
     lightningcss "^1.23.0"
     sass-embedded "^1.70.0"
 
+"@18f/identity-design-system@7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-7.0.0.tgz#ea57464f6407eb74122dcd3d3deaaa923f565032"
+  integrity sha512-rLw1oTK7qzGw+A2B7gYLjEOqX49MOkbe/yyK3M8e+DXpqFOxU1/GjxVzVOr/RuyzhsOeoIT+//xaqPr4dxZA5Q==
+  dependencies:
+    "@uswds/uswds" "^3.4.1"
+
 "@aduth/is-dependency@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@aduth/is-dependency/-/is-dependency-1.0.0.tgz#1e2efebae56fd8c1a29bdcd8141e63c185c3bb67"
@@ -1350,6 +1357,16 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
+"@uswds/uswds@^3.4.1":
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.7.1.tgz#455dee2d7a9c7b316192bb2e21ecd0df6fad3085"
+  integrity sha512-32u2S50bf5dwIujebqL+f1Jgx2rmRrpxcaccSZzdo3Qv9HaDUdcmeavlrxHqN30edHc7p8kRPjvjevOmOJKB7w==
+  dependencies:
+    classlist-polyfill "1.2.0"
+    object-assign "4.1.1"
+    receptor "1.0.0"
+    resolve-id-refs "0.1.0"
+
 "@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@^1.11.5":
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.6.tgz#db046555d3c413f8966ca50a95176a0e2c642e24"
@@ -2122,11 +2139,6 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-domready@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/domready/-/domready-1.0.8.tgz#91f252e597b65af77e745ae24dd0185d5e26d58c"
-  integrity sha512-uIzsOJUNk+AdGE9a6VDeessoMCzF8RrZvJCX/W8QtyfgdR6Uofn/MvRonih3OtCO79b2VDzDOymuiABrQ4z3XA==
-
 electron-to-chromium@^1.4.431:
   version "1.4.450"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.450.tgz#df232c961ee9bf4e8980f86e96a6e9f291720138"
@@ -2756,13 +2768,6 @@ iconv-lite@0.6.3:
   integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
-
-identity-style-guide@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.0.0.tgz#dc7c629c2744a77f4052e3adb5447fef3c2d7fca"
-  integrity sha512-JutK+sdE9RNYpdlMshI+eV6FmU/AIyavfPlyFsJMjOreyvPV/7L6F8X0j91puXiXj6xQPss9ZdENJrJ6/T24OA==
-  dependencies:
-    uswds "^2.11.2"
 
 ignore@^5.2.0:
   version "5.2.0"
@@ -4345,17 +4350,6 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
-
-uswds@^2.11.2:
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/uswds/-/uswds-2.14.0.tgz#f7861aec6512b38d8c6ec70f1e01b3590cdbd914"
-  integrity sha512-r5ebL3av9jOPcbXTxKnGiT5k5NVIAWmtYcO8LeJkA5Svh2qc90YRhzCUWbz9TbGdXJriMCPb7whiULPDxmRhxg==
-  dependencies:
-    classlist-polyfill "1.2.0"
-    domready "1.0.8"
-    object-assign "4.1.1"
-    receptor "1.0.0"
-    resolve-id-refs "0.1.0"
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
