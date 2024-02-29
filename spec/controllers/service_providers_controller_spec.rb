@@ -158,13 +158,55 @@ describe ServiceProvidersController do
 
     it 'sends a serialized service provider to the IDP' do
       allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
-      allow(ServiceProviderUpdater).to receive(:ping).and_call_original
+      allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
       put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
       provider = ServiceProvider.find_by(issuer: sp.issuer)
 
-      expect(ServiceProviderUpdater).to have_received(:ping).with(
+      expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },
       )
+    end
+  end
+
+  describe '#publish' do
+    context 'no user' do
+      it 'requires authentication' do
+        post :publish
+
+        expect(response).to redirect_to root_url
+      end
+    end
+
+    context 'with user' do
+      before do
+        user = create(:user)
+        sign_in(user)
+      end
+
+      it 'redirects to service_providers_path' do
+        post :publish
+
+        expect(response).to redirect_to service_providers_path
+      end
+
+      context 'when ServiceProviderUpdater fails' do
+        before do
+          stub_request(:post, IdentityConfig.store.idp_sp_url).
+            to_return(status: 404)
+        end
+
+        it 'redirects to service_providers_path' do
+          post :publish
+
+          expect(response).to redirect_to service_providers_path
+        end
+
+        it 'notifies NewRelic of the error' do
+          expect(::NewRelic::Agent).to receive(:notice_error)
+
+          post :publish
+        end
+      end
     end
   end
 end

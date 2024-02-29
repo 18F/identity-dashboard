@@ -4,7 +4,23 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :add_iaa_warning, except: %i[index destroy]
 
-  def index; end
+  def index
+    all_apps = current_user.scoped_service_providers
+
+    prod_apps = all_apps.select { |sp| sp.prod_config == true }
+    sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
+
+    @service_providers = [ 
+      {
+        type: 'My Production Apps',
+        apps: prod_apps,
+      },
+      {
+        type: 'My Sandbox Apps',
+        apps: sandbox_apps,
+      },
+    ]
+  end
 
   def create
     @service_provider = ServiceProvider.new
@@ -47,15 +63,39 @@ class ServiceProvidersController < AuthenticatedController
 
   def all
     return unless current_user.admin?
-    @service_providers = ServiceProvider.all.sort_by(&:created_at).reverse
+    all_apps = ServiceProvider.all.sort_by(&:created_at).reverse
+
+    prod_apps = all_apps.select { |sp| sp.prod_config == true }
+    sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
+
+    @service_providers = [ 
+      {
+        type: 'Production Apps',
+        apps: prod_apps,
+      },
+      {
+        type: 'Sandbox Apps',
+        apps: sandbox_apps,
+      },
+    ]
   end
+
+  def publish
+    if ServiceProviderUpdater.post_update == 200
+      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+    else
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+    end
+    redirect_to service_providers_path
+  end
+
 
   private
 
   def help_text_empty?
-    service_provider.help_text['sign_in'].empty? &&
-      service_provider.help_text['sign_up'].empty? &&
-      service_provider.help_text['forgot_password'].empty?
+    service_provider.help_text['sign_in'].blank? &&
+      service_provider.help_text['sign_up'].blank? &&
+      service_provider.help_text['forgot_password'].blank?
   end
 
   def service_provider
@@ -95,7 +135,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def publish_service_provider
-    if ServiceProviderUpdater.ping(body_attributes) == 200
+    if ServiceProviderUpdater.post_update(body_attributes) == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
@@ -212,6 +252,19 @@ class ServiceProvidersController < AuthenticatedController
     {
       service_provider: ServiceProviderSerializer.new(service_provider),
     }
+  end
+
+  def build_service_provider_array(prod_apps, sandbox_apps)
+    return [ 
+      {
+        type: 'Production Apps',
+        apps: prod_apps,
+      },
+             {
+               type: 'Sandbox Apps',
+               apps: sandbox_apps,
+             },
+    ]
   end
 
   helper_method :service_provider

@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   get '/emails' => 'emails#index'
   get '/service_providers/all' => 'service_providers#all'
+  post '/service_providers/publish' => 'service_providers#publish'
   resources :service_providers
 
   get '/security_events/all' => 'security_events#all'
@@ -35,7 +36,6 @@ Rails.application.routes.draw do
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'
   get '/api/service_providers/:id' => 'api/service_providers#show'
-  post '/api/service_providers' => 'api/service_providers#update'
 
   root to: 'home#index'
 

@@ -453,7 +453,7 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(app)
 
-      allow(ServiceProviderUpdater).to receive(:ping).and_return(false)
+      allow(ServiceProviderUpdater).to receive(:post_update).and_return(false)
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'app description foobar'

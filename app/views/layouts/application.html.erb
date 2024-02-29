@@ -103,10 +103,11 @@
               <li class="usa-nav__primary-item">
                 <%= link_to 'Teams', teams_path, class: 'usa-nav__link' %>
               </li>
-              <li class="usa-nav__primary-item">
-                <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
-              </li>
-
+              <% if current_user.admin? %>
+                <li class="usa-nav__primary-item">
+                  <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
+                </li>
+              <% end %>
               <li class="usa-nav__primary-item">
                 <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
                   <span>Tools</span>
@@ -176,9 +177,6 @@
         <div class="grid-container">
           <div class="usa-footer__logo grid-row grid-gap-2">
             <div class="grid-col">
-              <a href="https://18f.gsa.gov">
-                <%= image_tag '18f-logo.svg', alt: '18F logo image', class: 'usa-footer__logo-img usa-footer__slim usa-footer__medium margin-right-05' %>
-              </a>
               <%= image_tag 'img/gsa-logo-rev.svg', alt: 'U.S. General Services Administration logo', class: 'usa-footer__logo-img usa-footer__slim usa-footer__medium' %>
             </div>
 

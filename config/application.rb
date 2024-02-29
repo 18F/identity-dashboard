@@ -28,11 +28,10 @@ module IdentityDashboard
     IdentityConfig.build_store(configuration)
 
     # Initialize configuration defaults for originally generated Rails version.
-    # TODO: once the Rails 7.0 upgrade is deployed, then come back to set 7.0 cache serialization
-    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-activesupport-cache-serialization-format
-    config.load_defaults 6.1
-    config.active_support.cache_format_version = 6.1
+    config.load_defaults 7.1
+    config.active_support.cache_format_version = 7.1
     config.assets.unknown_asset_fallback = true
+    config.action_view.button_to_generates_button_tag = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -51,6 +50,9 @@ module IdentityDashboard
       generate.view_specs false
     end
     config.action_controller.action_on_unpermitted_parameters = :raise
+
+    # the new default raises, rather than ignoring the request to update the issuer
+    Rails.application.config.active_record.raise_on_assign_to_attr_readonly = false
 
     config.agencies = YAML.load_file 'config/agencies.yml'
   end
