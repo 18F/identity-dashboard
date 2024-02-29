@@ -2757,13 +2757,12 @@ iconv-lite@0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
-identity-style-guide@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-4.0.0.tgz#c27546f6e904c4ef728fd7aa55611d480397e11e"
-  integrity sha512-lpd3NXiU6XnN/QsiVAyzney9i+kRjcZCOFVBbm4e8H6MhMcX2rke+MzFJ8+vBq/hqYk9LntprHa9f/uTvnB3sQ==
+identity-style-guide@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-5.0.0.tgz#8710ceb1a25318e7db7c404f4ae25ba0a7c07d67"
+  integrity sha512-Kt18MDDSkJ8Lyy8Dj8Yry52lvypUWNwVlIkVvlueStTkACJPRM4X0ab5lAjjD8YtE3WCU+nvyXCArcNVw7Txdg==
   dependencies:
     uswds "^2.9.0"
-    zxcvbn "^4.4.2"
 
 ignore@^5.2.0:
   version "5.2.0"
@@ -4591,8 +4590,3 @@ yocto-queue@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-1.0.0.tgz#7f816433fb2cbc511ec8bf7d263c3b58a1a3c251"
   integrity sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==
-
-zxcvbn@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
-  integrity sha1-KOwXzwl0PtyrBW3dixsGJizHPDA=
