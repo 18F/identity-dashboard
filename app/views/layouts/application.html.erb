@@ -41,11 +41,14 @@
           <div class="usa-banner__header">
             <div class="usa-banner__inner">
               <div class="grid-col-auto">
-                <%= image_tag 'us_flag_small.png', class: 'usa-banner__header-flag', alt: 'U.S. flag' %>
+                <%= image_tag 'us_flag_small.png',
+                  class: 'usa-banner__header-flag',
+                  alt: '',
+                  aria: { hidden: true } %>
               </div>
-              <div class="grid-col-fill tablet:grid-col-auto">
+              <div class="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
                 <p class="usa-banner__header-text">An official website of the United States government</p>
-                <p class="usa-banner__header-action" aria-hidden="true">Here’s how you know</p>
+                <p class="usa-banner__header-action">Here’s how you know</p>
               </div>
               <button class="usa-accordion__button usa-banner__button"
                 aria-expanded="false" aria-controls="gov-banner">
@@ -53,10 +56,14 @@
               </button>
             </div>
           </div>
-          <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
+          <div class="usa-banner__content usa-accordion__content" id="gov-banner-default" hidden>
             <div class="grid-row grid-gap-lg">
               <div class="usa-banner__guidance tablet:grid-col-6">
-                <%= image_tag 'icon-dot-gov.svg', alt: 'Dot gov', class: 'usa-banner__icon usa-media-block__img', role: 'img', aria: { hidden: true } %>
+                <%= image_tag 'icon-dot-gov.svg',
+                  alt: '',
+                  class: 'usa-banner__icon usa-media-block__img',
+                  role: 'img',
+                  aria: { hidden: true } %>
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Official websites use .gov</strong>
@@ -70,16 +77,17 @@
                   alt: '',
                   class: 'usa-banner__icon usa-media-block__img',
                   role: 'img',
-                  aria: { hideen: true } %>
+                  aria: { hidden: true } %>
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Secure .gov websites use HTTPS</strong>
                     <br>
                     A <strong>lock</strong> (
                       <%= image_tag 'lock.svg',
-                        alt: 'A locked padlock',
+                        alt: '',
                         class: 'usa-banner__lock-image',
-                        role: 'img' %>
+                        role: 'img',
+                        aria: { hidden: true } %>
                     ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
                   </p>
                 </div>
