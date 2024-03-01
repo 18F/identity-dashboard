@@ -37,45 +37,6 @@
   }
 }
 
-.usa-label {
-  color: map-get($site-palette, 'site-dark-grey');
-}
-
-.usa-alertx {
-  margin-bottom: 1em;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-
-  form {
-    margin-bottom: 1em;
-  }
-}
-
-.users {
-  overflow-x: auto;
-
-  .usa-table {
-    margin-top: 0;
-  }
-}
-
-@media only screen and (max-width: 375px) {
-  .usa-navbar .usa-logo {
-    a {
-      width: 148px;
-    }
-  }
-
-  .actions {
-    form {
-      flex-grow: 1;
-    }
-  }
-}
-
 .certificate-expired,
 .usa-table td.certificate-expired {
   background: $theme-color-secondary;
@@ -130,7 +91,7 @@
 }
 
 .usa-button--tiny {
-  border-radius: 0.25rem;
-  font-size: 0.6654411765rem;
-  padding: 0.5rem 0.5rem;
+  border-radius: .25rem;
+  font-size: .6654411765rem;
+  padding: .5rem;
 }
