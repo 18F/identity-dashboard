@@ -1,8 +1,8 @@
-$font-path: '/fonts';
-$theme-image-path: '';
-
+@forward 'uswds' with(
+  $theme-font-path: '/fonts',
+  $theme-image-path: '',
+  );
 @use 'uswds-core' as *;
-@forward 'uswds';
 
 @mixin text-wrap-mixin {
   word-break: break-all;
