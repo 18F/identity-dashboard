@@ -30,6 +30,7 @@
 
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>
+    <%= javascript_include_tag 'uswds-init.js' %>
   </head>
 
   <body>
@@ -58,7 +59,7 @@
               </button>
             </div>
           </div>
-          <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
+          <div class="usa-banner__content usa-accordion__content" id="gov-banner">
             <div class="grid-row grid-gap-lg">
               <div class="usa-banner__guidance tablet:grid-col-6">
                 <%= image_tag 'icon-dot-gov.svg',
