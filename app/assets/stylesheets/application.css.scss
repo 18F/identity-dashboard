@@ -95,3 +95,13 @@
   font-size: .6654411765rem;
   padding: .5rem;
 }
+
+//  TODO: this may be updated in a future Login.gov design system release.
+// remove this if/when it is.
+.usa-nav__primary button {
+  &[aria-expanded='true'] {
+    &:hover {
+      background-color: $theme-color-primary-darker;
+    }
+  }
+}
