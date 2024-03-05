@@ -130,7 +130,12 @@
                     </li>
                   <% end %>
                   <li class="usa-nav__primary-item">
-                    <button type="button" class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
+                    <button
+                      type="button"
+                      class="usa-accordion__button usa-nav__link"
+                      aria-controls="unique-id-tools-dropdown"
+                      aria-expanded="false"
+                      >
                       <span>Tools</span>
                     </button>
                     <ul id="unique-id-tools-dropdown" class="usa-nav__submenu">
@@ -142,7 +147,11 @@
 
                   <% if current_user.admin? %>
                     <li class="usa-nav__primary-item">
-                      <button type="button" class="usa-accordion__button usa-nav__link" aria-controls="unique-id-admin-dropdown">
+                      <button
+                        type="button"
+                        class="usa-accordion__button usa-nav__link"
+                        aria-controls="unique-id-admin-dropdown"
+                        aria-expanded="false">
                         <span>Admin</span>
                       </button>
                       <ul id="unique-id-admin-dropdown" class="usa-nav__submenu">
