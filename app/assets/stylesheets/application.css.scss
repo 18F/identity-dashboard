@@ -1,7 +1,7 @@
 @forward 'uswds' with(
   $theme-font-path: '/fonts',
   $theme-image-path: '',
-  );
+);
 @use 'uswds-core' as *;
 
 @mixin text-wrap-mixin {
