@@ -10,7 +10,7 @@ en:
       required: required
       service_provider:
         acs_url: Assertion Consumer Service URL
-        active: Active
+        accessible: Accessible
         agency: Agency
         assertion_consumer_logout_service_url: Assertion Consumer Logout Service URL
         attribute_bundle: Attribute bundle

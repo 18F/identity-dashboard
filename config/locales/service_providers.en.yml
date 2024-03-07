@@ -29,4 +29,4 @@ en:
     attribute_bundle: "The default attributes that Login.gov will return to your application during authentication. Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
     help_text: "You can specify help text in these different areas to alert users of important information for logging into your app."
     prod_config: "Is this Dashboard configuration for a Production application?"
-    active: "Setting Active to “No” will remove this application from the Sandbox environment. This configuration setting will have no effect on Production applications."
+    accessible: "Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications."

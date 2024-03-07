@@ -25,7 +25,7 @@ if Rails.env.development? || Rails.env.test?
              # attribute_bundle: add once db is updated [:email],
              # logo: 'add once db updated svg string',
              # return_to_sp_url: 'add once db is updated',
-             active: true,
+             accessible: true,
              approved: true)
     end
   end

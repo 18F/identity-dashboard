@@ -7,7 +7,7 @@ module ServiceProviderHelper
     user_id
     description
     approved
-    active
+    accessible
     group_id
     identity_protocol
     production_issuer
@@ -73,9 +73,9 @@ module ServiceProviderHelper
     yamlable_json.to_yaml.delete('\"')
   end
 
-  def sp_active_img_alt(service_provider_is_active)
-    return 'Active service provider' if service_provider_is_active
-    'Inactive service provider'
+  def sp_active_img_alt(service_provider_is_accessible)
+    return 'Accessible service provider' if service_provider_is_accessible
+    'Inaccessible service provider'
   end
 
   def sp_allow_prompt_login_img_alt(sp_allows_prompt_login)

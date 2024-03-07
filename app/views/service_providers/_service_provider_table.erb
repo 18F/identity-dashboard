@@ -3,7 +3,7 @@
 
   <% unless sps[:apps].blank? %>
     <table class="usa-table">
-      <%= render partial: 'service_provider_table_header', locals: { show_created_at: show_created_at } %>
+      <%= render partial: 'service_provider_table_header', locals: { is_prod: sps[:apps][0].prod_config, show_created_at: show_created_at } %>
       <tbody>
         <% sps[:apps].each do |app| %>
           <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: show_created_at } %>

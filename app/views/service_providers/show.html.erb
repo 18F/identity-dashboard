@@ -200,10 +200,10 @@
 <hr>
 
 <h2 class="margin-bottom-0">
-  <label for="active">Active:</label> 
-  <span class="font-mono-xs"><%= service_provider.active? ? 'Yes' : 'No' %></span>
+  <label for="accessible">Accessible:</label>
+  <span class="font-mono-xs"><%= service_provider.accessible? ? 'Yes' : 'No' %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.active').html_safe %> </i></p>
+<p><i> <%= I18n.t('service_provider_form.accessible').html_safe %> </i></p>
 <hr>
 
 <% if current_user.admin? %>

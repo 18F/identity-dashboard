@@ -329,12 +329,12 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <%# END redirect_uris %>
 
   <div class='active margin-bottom-4'>
-    <legend class='usa-sr-only'>Active</legend>
+    <legend class='usa-sr-only'>Accessible</legend>
     <%= form.label :admin,
-                   label: 'Active',
+                   label: 'Accessible',
                    class: 'usa-label',
-                   hint: I18n.t('service_provider_form.active').html_safe %>
-    <%= form.collection_radio_buttons(:active,
+                   hint: I18n.t('service_provider_form.accessible').html_safe %>
+    <%= form.collection_radio_buttons(:accessible,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
                                       collection_wrapper_tag: :div,
@@ -343,7 +343,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
     <% end %>
-    <%= form.hint I18n.t('service_provider_form.active').html_safe %>
+    <%= form.hint I18n.t('service_provider_form.accessible').html_safe %>
   </div>
 
   <% if current_user.admin? %>

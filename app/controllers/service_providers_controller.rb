@@ -148,8 +148,8 @@ class ServiceProvidersController < AuthenticatedController
 
   def service_provider_params
     permit_params = [
+      :accessible,
       :acs_url,
-      :active,
       :agency_id,
       :allow_prompt_login,
       :approved,

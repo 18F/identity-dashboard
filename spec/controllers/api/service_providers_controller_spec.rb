@@ -6,8 +6,8 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#index' do
-    it 'returns active, approved SPs' do
-      sp = create(:service_provider, :with_team, active: true, approved: true)
+    it 'returns accessible, approved SPs' do
+      sp = create(:service_provider, :with_team, accessible: true, approved: true)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
@@ -16,7 +16,7 @@ describe Api::ServiceProvidersController do
     end
 
     xit 'does not return un-approved SPs' do
-      sp = create(:service_provider, :with_team, active: true, approved: false)
+      sp = create(:service_provider, :with_team, accessible: true, approved: false)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
@@ -24,8 +24,8 @@ describe Api::ServiceProvidersController do
       expect(response_from_json).to_not include serialized_sp
     end
 
-    it 'includes non-active SPs' do
-      sp = create(:service_provider, :with_team, active: false, approved: true)
+    it 'includes non-accessible SPs' do
+      sp = create(:service_provider, :with_team, accessible: false, approved: true)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
       get :index
@@ -33,7 +33,7 @@ describe Api::ServiceProvidersController do
     end
 
     it 'does not return the protocol attribute' do
-      sp = create(:service_provider, :with_team, active: true, approved: true)
+      sp = create(:service_provider, :with_team, accessible: true, approved: true)
 
       get :index
       expect(response_from_json.first.keys).to_not include :protocol

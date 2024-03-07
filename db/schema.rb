@@ -97,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_28_170507) do
     t.integer "block_encryption", default: 1, null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.boolean "active", default: true, null: false
+    t.boolean "accessible", default: true, null: false
     t.boolean "approved", default: false, null: false
     t.text "sp_initiated_login_url"
     t.text "return_to_sp_url"
