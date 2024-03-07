@@ -177,13 +177,13 @@ describe ServiceProviderHelper do
     end
   end
 
-  describe '#sp_active_img_alt' do
+  describe '#sp_accessible_img_alt' do
     it 'returns alt tag indicating accessible service provider' do
-      expect(sp_active_img_alt(true)).to eq('Accessible service provider')
+      expect(sp_accessible_img_alt(true)).to eq('Accessible service provider')
     end
 
     it 'returns alt tag indicating inaccessible service provider' do
-      expect(sp_active_img_alt(false)).to eq('Inaccessible service provider')
+      expect(sp_accessible_img_alt(false)).to eq('Inaccessible service provider')
     end
   end
 

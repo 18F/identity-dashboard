@@ -73,7 +73,7 @@ module ServiceProviderHelper
     yamlable_json.to_yaml.delete('\"')
   end
 
-  def sp_active_img_alt(service_provider_is_accessible)
+  def sp_accessible_img_alt(service_provider_is_accessible)
     return 'Accessible service provider' if service_provider_is_accessible
     'Inaccessible service provider'
   end
