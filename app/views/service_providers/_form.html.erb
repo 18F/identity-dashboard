@@ -9,7 +9,6 @@
   <%= form.collection_radio_buttons(:prod_config,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
-                                    collection_wrapper_tag: :div,
                                     item_wrapper_tag: :div,
                                     item_wrapper_class: "usa-radio") do |b| %>
     <%=  b.radio_button(class: "usa-radio__input") %>
@@ -252,7 +251,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :div,
                                       item_wrapper_tag: :div,
                                       item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
@@ -337,7 +335,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :div,
                                       item_wrapper_tag: :div,
                                       item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>

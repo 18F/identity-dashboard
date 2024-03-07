@@ -1,7 +1,8 @@
-$font-path: '/fonts';
-$image-path: '';
-
-@import 'identity-style-guide/dist/assets/scss/styles';
+@forward 'uswds' with(
+  $theme-font-path: '/fonts',
+  $theme-image-path: '',
+);
+@use 'uswds-core' as *;
 
 @mixin text-wrap-mixin {
   word-break: break-all;
@@ -33,45 +34,6 @@ $image-path: '';
 .lg-card {
   h2 {
     margin-top: 0;
-  }
-}
-
-.usa-label {
-  color: map-get($site-palette, 'site-dark-grey');
-}
-
-.usa-alertx {
-  margin-bottom: 1em;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-
-  form {
-    margin-bottom: 1em;
-  }
-}
-
-.users {
-  overflow-x: auto;
-
-  .usa-table {
-    margin-top: 0;
-  }
-}
-
-@media only screen and (max-width: 375px) {
-  .usa-navbar .usa-logo {
-    a {
-      width: 148px;
-    }
-  }
-
-  .actions {
-    form {
-      flex-grow: 1;
-    }
   }
 }
 
@@ -125,5 +87,23 @@ $image-path: '';
   dd::after {
     content: '';
     display: block;
+  }
+}
+
+.usa-button--tiny {
+  border-radius: .25rem;
+  font-size: .6654411765rem;
+  padding: .5rem;
+}
+
+//  TODO: this may be updated in a future Login.gov design system release.
+// remove this if/when it is.
+@include at-media($theme-header-min-width) {
+  .usa-nav__primary button {
+    &[aria-expanded='true'] {
+      &:hover {
+        background-color: $theme-color-primary-darker;
+      }
+    }
   }
 }

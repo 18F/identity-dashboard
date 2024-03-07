@@ -5,7 +5,8 @@ Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path
 Rails.application.config.assets.paths.push(
-  'node_modules/identity-style-guide/dist/assets/img',
-  'node_modules/identity-style-guide/dist/assets/fonts',
-  'node_modules/identity-style-guide/dist/assets/js',
+  'node_modules/@uswds/uswds/dist/js',
+  'node_modules/@18f/identity-design-system/dist/assets/img',
+  'node_modules/@18f/identity-design-system/dist/assets/fonts',
+  'node_modules/@18f/identity-design-system/dist/assets/js',
 )

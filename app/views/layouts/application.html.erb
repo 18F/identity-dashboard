@@ -30,22 +30,28 @@
 
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>
+    <%= javascript_include_tag 'uswds-init.min.js' %>
   </head>
 
   <body>
-    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+    <header>
+      <section>
+        <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+      </section>
 
-    <header class="usa-banner">
       <section class="usa-banner" aria-label="Official government website">
         <div class="usa-accordion">
           <div class="usa-banner__header">
             <div class="usa-banner__inner">
               <div class="grid-col-auto">
-                <%= image_tag 'us_flag_small.png', class: 'usa-banner__header-flag', alt: 'U.S. flag' %>
+                <%= image_tag 'us_flag_small.png',
+                  class: 'usa-banner__header-flag',
+                  alt: '',
+                  aria: { hidden: true } %>
               </div>
-              <div class="grid-col-fill tablet:grid-col-auto">
+              <div class="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
                 <p class="usa-banner__header-text">An official website of the United States government</p>
-                <p class="usa-banner__header-action" aria-hidden="true">Here’s how you know</p>
+                <p class="usa-banner__header-action">Here’s how you know</p>
               </div>
               <button class="usa-accordion__button usa-banner__button"
                 aria-expanded="false" aria-controls="gov-banner">
@@ -53,10 +59,14 @@
               </button>
             </div>
           </div>
-          <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden>
+          <div class="usa-banner__content usa-accordion__content" id="gov-banner">
             <div class="grid-row grid-gap-lg">
               <div class="usa-banner__guidance tablet:grid-col-6">
-                <%= image_tag 'icon-dot-gov.svg', alt: 'Dot gov', class: 'usa-banner__icon usa-media-block__img', role: 'img', aria: { hidden: true } %>
+                <%= image_tag 'icon-dot-gov.svg',
+                  alt: '',
+                  class: 'usa-banner__icon usa-media-block__img',
+                  role: 'img',
+                  aria: { hidden: true } %>
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Official websites use .gov</strong>
@@ -70,16 +80,17 @@
                   alt: '',
                   class: 'usa-banner__icon usa-media-block__img',
                   role: 'img',
-                  aria: { hideen: true } %>
+                  aria: { hidden: true } %>
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Secure .gov websites use HTTPS</strong>
                     <br>
                     A <strong>lock</strong> (
                       <%= image_tag 'lock.svg',
-                        alt: 'A locked padlock',
+                        alt: '',
                         class: 'usa-banner__lock-image',
-                        role: 'img' %>
+                        role: 'img',
+                        aria: { hidden: true } %>
                     ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
                   </p>
                 </div>
@@ -88,87 +99,95 @@
           </div>
         </div>
       </section>
-    </header>
 
-    <nav class="usa-header usa-header--basic">
-      <div class="usa-nav-container">
-        <div class="usa-navbar">
-          <div class="usa-logo" id="basic-logo">
-            <a href="/" title="Home" aria-label="Home">
-              <%= image_tag 'logo.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' %>
-              <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
-            </a>
-          </div>
-          <button class="usa-menu-btn">Menu</button>
-        </div>
-        <div class="usa-nav">
-          <button class="usa-nav__close">
-            <%= image_tag 'close.svg', alt: 'Close', role: 'img' %>
-          </button>
-          <ul class="usa-nav__primary usa-accordion">
-            <% if user_signed_in? %>
-              <li class="usa-nav__primary-item">
-                <%= link_to 'Apps', service_providers_path, class: 'usa-nav__link' %>
-              </li>
-              <li class="usa-nav__primary-item">
-                <%= link_to 'Teams', teams_path, class: 'usa-nav__link' %>
-              </li>
-              <% if current_user.admin? %>
-                <li class="usa-nav__primary-item">
-                  <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
-                </li>
-              <% end %>
-              <li class="usa-nav__primary-item">
-                <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-tools-dropdown">
-                  <span>Tools</span>
-                </button>
-                <ul id="unique-id-tools-dropdown" class="usa-nav__submenu">
-                  <li class="usa-nav__submenu-item">
-                    <%= link_to 'SAML Request Validation', tools_saml_request_path %>
-                  </li>
-                </ul>
-              </li>
-
-              <% if current_user.admin? %>
-                <li class="usa-nav__primary-item">
-                  <button class="usa-accordion__button usa-nav__link" aria-controls="unique-id-admin-dropdown">
-                    <span>Admin</span>
-                  </button>
-                  <ul id="unique-id-admin-dropdown" class="usa-nav__submenu">
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'All apps', service_providers_all_path %>
-                    </li>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'Users', users_path %>
-                    </li>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'All teams', teams_all_path %>
-                    </li>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'Emails', emails_path %>
-                    </li>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'All security events', security_events_all_path %>
-                    </li>
-                  </ul>
-                </li>
-              <% end %>
-              <li class="usa-nav__primary-item">
-                <a class="usa-nav__link" href="<%= destroy_user_session_path %>">
-                  <span><%= t('links.sign_out') %></span>
+      <div class="usa-overlay"></div>
+        <div class="usa-header usa-header--basic">
+          <div class="usa-nav-container">
+            <div class="usa-navbar">
+              <div class="usa-logo" id="basic-logo">
+                <a href="/" title="Home" aria-label="Home">
+                  <%= image_tag 'logo.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' %>
+                  <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
                 </a>
-              </li>
-              <% else %>
-              <li class="usa-nav__primary-item">
-                <%= button_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-button' %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    </nav>
+              </div>
+              <button class="usa-menu-btn">Menu</button>
+            </div>
+            <nav aria-label="Primary navigation" class="usa-nav">
+              <button class="usa-nav__close">
+                <%= image_tag 'close.svg', alt: 'Close', role: 'img' %>
+              </button>
+              <ul class="usa-nav__primary usa-accordion">
+                <% if user_signed_in? %>
+                  <li class="usa-nav__primary-item">
+                    <%= link_to 'Apps', service_providers_path, class: 'usa-nav__link' %>
+                  </li>
+                  <li class="usa-nav__primary-item">
+                    <%= link_to 'Teams', teams_path, class: 'usa-nav__link' %>
+                  </li>
+                  <% if current_user.admin? %>
+                    <li class="usa-nav__primary-item">
+                      <%= link_to 'Security Events', security_events_path, class: 'usa-nav__link' %>
+                    </li>
+                  <% end %>
+                  <li class="usa-nav__primary-item">
+                    <button
+                      type="button"
+                      class="usa-accordion__button usa-nav__link"
+                      aria-controls="unique-id-tools-dropdown"
+                      aria-expanded="false"
+                      >
+                      <span>Tools</span>
+                    </button>
+                    <ul id="unique-id-tools-dropdown" class="usa-nav__submenu">
+                      <li class="usa-nav__submenu-item">
+                        <%= link_to 'SAML Request Validation', tools_saml_request_path %>
+                      </li>
+                    </ul>
+                  </li>
 
-    <div class="usa-overlay"></div>
+                  <% if current_user.admin? %>
+                    <li class="usa-nav__primary-item">
+                      <button
+                        type="button"
+                        class="usa-accordion__button usa-nav__link"
+                        aria-controls="unique-id-admin-dropdown"
+                        aria-expanded="false">
+                        <span>Admin</span>
+                      </button>
+                      <ul id="unique-id-admin-dropdown" class="usa-nav__submenu">
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'All apps', service_providers_all_path %>
+                        </li>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'Users', users_path %>
+                        </li>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'All teams', teams_all_path %>
+                        </li>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'Emails', emails_path %>
+                        </li>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'All security events', security_events_all_path %>
+                        </li>
+                      </ul>
+                    </li>
+                  <% end %>
+                  <li class="usa-nav__primary-item">
+                    <a class="usa-nav__link" href="<%= destroy_user_session_path %>">
+                      <span><%= t('links.sign_out') %></span>
+                    </a>
+                  </li>
+                  <% else %>
+                  <li class="usa-nav__primary-item">
+                    <%= button_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-button' %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </nav>
+        </div>
+    </header>
 
     <main class="usa-layout-docs usa-section" id="main-content">
       <div class="grid-container">
@@ -194,7 +213,6 @@
       </div>
     </footer>
 
-    <%= javascript_include_tag 'main.js' %>
     <%= javascript_include_tag 'application.js' %>
   </body>
 </html>
