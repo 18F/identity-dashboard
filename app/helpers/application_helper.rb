@@ -1,5 +1,5 @@
 module ApplicationHelper
-  def classes(route, needed_classes='')
-    current_page?(route) ? needed_classes + ' usa-current' : needed_classes
+  def navigation_link_to(text, route)
+    link_to text, route, class: [current_page?(route) && 'usa-current', 'usa-nav__link']
   end
 end

@@ -23,14 +23,14 @@
         <ul class="usa-nav__primary usa-accordion">
           <% if user_signed_in? %>
             <li class="usa-nav__primary-item">
-              <%= link_to 'Apps', service_providers_path, class: classes(service_providers_path, 'usa-nav__link') %>
+              <%= navigation_link_to 'Apps', service_providers_path %>
             </li>
             <li class="usa-nav__primary-item">
-              <%= link_to 'Teams', teams_path, class: classes(teams_path, 'usa-nav__link') %>
+              <%= navigation_link_to 'Teams', teams_path %>
             </li>
             <% if current_user.admin? %>
               <li class="usa-nav__primary-item">
-                <%= link_to 'Security Events', security_events_path, class: classes(security_events_path, 'usa-nav__link') %>
+                <%= navigation_link_to 'Security Events', security_events_path %>
               </li>
             <% end %>
             <li class="usa-nav__primary-item">
