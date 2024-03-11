@@ -3,7 +3,9 @@
     <th scope="col">Friendly name</th>
     <th scope="col">Issuer</th>
     <th scope="col">IAL</th>
-    <th scope="col">Active</th>
+    <% if !is_prod %>
+      <th scope="col"><abbr title="Accessible in the Integration environment">Accessible</abbr></th>
+    <% end %>
     <th scope="col">Cert Exp</th>
     <% if show_created_at %>
       <th scope="col">Created</th>
