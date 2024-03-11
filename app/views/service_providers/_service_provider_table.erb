@@ -1,9 +1,9 @@
 <% @service_providers.each do |sps| %>
-  <h1 class="usa-display"><%= sps[:type] %></h1>
+  <h1 class="usa-display">My <%= sps[:type] %> Apps</h1>
 
   <% unless sps[:apps].blank? %>
     <table class="usa-table">
-      <%= render partial: 'service_provider_table_header', locals: { is_prod: sps[:apps][0].prod_config, show_created_at: show_created_at } %>
+      <%= render partial: 'service_provider_table_header', locals: { is_prod: sps[:type] == 'Production', show_created_at: show_created_at } %>
       <tbody>
         <% sps[:apps].each do |app| %>
           <%= render partial: 'service_provider_table_row', locals: { app: app, show_created_at: show_created_at } %>

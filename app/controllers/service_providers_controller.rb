@@ -12,11 +12,11 @@ class ServiceProvidersController < AuthenticatedController
 
     @service_providers = [ 
       {
-        type: 'My Production Apps',
+        type: 'Production',
         apps: prod_apps,
       },
       {
-        type: 'My Sandbox Apps',
+        type: 'Sandbox',
         apps: sandbox_apps,
       },
     ]
