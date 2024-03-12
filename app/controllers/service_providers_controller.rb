@@ -70,11 +70,11 @@ class ServiceProvidersController < AuthenticatedController
 
     @service_providers = [ 
       {
-        type: 'Production Apps',
+        type: 'Production',
         apps: prod_apps,
       },
       {
-        type: 'Sandbox Apps',
+        type: 'Sandbox',
         apps: sandbox_apps,
       },
     ]
@@ -257,11 +257,11 @@ class ServiceProvidersController < AuthenticatedController
   def build_service_provider_array(prod_apps, sandbox_apps)
     return [ 
       {
-        type: 'Production Apps',
+        type: 'Production',
         apps: prod_apps,
       },
              {
-               type: 'Sandbox Apps',
+               type: 'Sandbox',
                apps: sandbox_apps,
              },
     ]
