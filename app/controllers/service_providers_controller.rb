@@ -10,16 +10,7 @@ class ServiceProvidersController < AuthenticatedController
     prod_apps = all_apps.select { |sp| sp.prod_config == true }
     sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
-    @service_providers = [ 
-      {
-        type: 'My Production Apps',
-        apps: prod_apps,
-      },
-      {
-        type: 'My Sandbox Apps',
-        apps: sandbox_apps,
-      },
-    ]
+    @service_providers = build_service_provider_array(prod_apps, sandbox_apps)
   end
 
   def create
@@ -68,16 +59,7 @@ class ServiceProvidersController < AuthenticatedController
     prod_apps = all_apps.select { |sp| sp.prod_config == true }
     sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
-    @service_providers = [ 
-      {
-        type: 'Production Apps',
-        apps: prod_apps,
-      },
-      {
-        type: 'Sandbox Apps',
-        apps: sandbox_apps,
-      },
-    ]
+    @service_providers = build_service_provider_array(prod_apps, sandbox_apps)
   end
 
   def publish
@@ -257,13 +239,13 @@ class ServiceProvidersController < AuthenticatedController
   def build_service_provider_array(prod_apps, sandbox_apps)
     return [ 
       {
-        type: 'Production Apps',
+        type: 'Production',
         apps: prod_apps,
       },
-             {
-               type: 'Sandbox Apps',
-               apps: sandbox_apps,
-             },
+      {
+        type: 'Sandbox',
+        apps: sandbox_apps,
+      },
     ]
   end
 
