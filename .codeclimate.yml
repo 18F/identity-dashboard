@@ -29,6 +29,8 @@ checks:
     enabled: false
     config:
       threshold: # language-specific defaults. an override will affect all languages.
+  QualifyingElement:
+    enabled: false
 
 plugins:
   brakeman:

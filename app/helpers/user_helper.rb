@@ -8,9 +8,9 @@ module UserHelper
   end
 
   def sign_in_icon(user)
-    return 'img/alerts/success.svg' if user.uuid?
-    return 'img/alerts/warning.svg' if user.unconfirmed?
-    'img/alerts/error.svg'
+    return 'alerts/success.svg' if user.uuid?
+    return 'alerts/warning.svg' if user.unconfirmed?
+    'alerts/error.svg'
   end
 
   def title(user)

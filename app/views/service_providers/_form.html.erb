@@ -9,9 +9,8 @@
   <%= form.collection_radio_buttons(:prod_config,
                                     { "Yes" => true, "No" => false },
                                     :last, :first,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li) do |b| %>
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: "usa-radio") do |b| %>
     <%=  b.radio_button(class: "usa-radio__input") %>
     <%=  b.label(class: "usa-radio__label")%>
   <% end %>
@@ -52,18 +51,16 @@
     <%= form.label :identity_protocol,
                    label: 'Authentication protocol',
                    class: 'usa-label' %>
-    <%= content_tag(:ul, class: 'usa-input-list') do
-      ServiceProvider.identity_protocols.each_key do |protocol| %>
-        <%= content_tag(:li) do %>
+      <% ServiceProvider.identity_protocols.each_key do |protocol| %>
+        <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
                                 protocol,
                                 class: 'usa-radio__input' %>
           <%= form.label ('identity_protocol_' + protocol).to_sym,
                          titleize(protocol),
                          class: 'usa-radio__label' %>
-        <% end %>
-      <% end %>
-    <% end %>
+        </div>
+     <% end %>
     <%= form.hint I18n.t('service_provider_form.protocol') %>
   </fieldset>
 
@@ -102,10 +99,8 @@
     <%= form.collection_check_boxes(:attribute_bundle,
                                     ServiceProvider.possible_attributes,
                                     :first, :last,
-                                    collection_wrapper_tag: :ul,
-                                    collection_wrapper_class: 'usa-input-list',
-                                    item_wrapper_tag: :li,
-                                    item_wrapper_class: 'ial-attr-wrapper') do |b| %>
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
       <%= b.check_box class: "usa-checkbox__input" %>
       <%= b.label class: "usa-checkbox__label" %>
     <% end %>
@@ -133,12 +128,10 @@
       <%= form.label :allow_prompt_login,
                       label: 'Enable <prompt=login>',
                       class: 'usa-label' %>
-      <ul class="usa-input-list">
-        <li>
-          <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
-          <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
-        </li>
-      </ul>
+      <div class="usa-checkbox">
+        <%= form.check_box :allow_prompt_login, class: 'usa-checkbox__input' %>
+        <%= form.label :allow_prompt_login, 'Enabled', class: 'usa-checkbox__label' %>
+      </div>
     </fieldset>
 
     <%# email_nameid_format_allowed checkbox %>
@@ -147,12 +140,10 @@
       <%= form.label :email_nameid_format_allowed,
                       label: 'Allow Email NameID Format',
                       class: 'usa-label' %>
-      <ul class="usa-input-list">
-        <li>
-          <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
-          <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
-        </li>
-      </ul>
+      <div class="usa-checkbox">
+        <%= form.check_box :email_nameid_format_allowed, class: 'usa-checkbox__input' %>
+        <%= form.label :email_nameid_format_allowed, 'Enabled', class: 'usa-checkbox__label' %>
+      </div>
     </fieldset>
   <% end %>
 
@@ -260,9 +251,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :ul,
-                                      collection_wrapper_class: 'usa-input-list',
-                                      item_wrapper_tag: :li) do |b| %>
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
     <% end %>
@@ -289,7 +279,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  hint: I18n.t('service_provider_form.push_notification_url') %>
 
   <%# BEGIN redirect_uris %>
-    <div class='oidc-fields'>
+    <div class='usa-hint oidc-fields'>
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
@@ -300,7 +290,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </div>
 
-    <div class='saml-fields'>
+    <div class='usa-hint saml-fields'>
       <%= form.label :redirect_uris,
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
@@ -337,21 +327,20 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <%# END redirect_uris %>
 
   <div class='active margin-bottom-4'>
-    <legend class='usa-sr-only'>Active</legend>
+    <legend class='usa-sr-only'>Accessible</legend>
     <%= form.label :admin,
-                   label: 'Active',
+                   label: 'Accessible',
                    class: 'usa-label',
                    hint: I18n.t('service_provider_form.active').html_safe %>
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      collection_wrapper_tag: :ul,
-                                      collection_wrapper_class: 'usa-input-list',
-                                      item_wrapper_tag: :li) do |b| %>
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-radio') do |b| %>
       <%=  b.radio_button(class: "usa-radio__input") %>
       <%=  b.label(class: "usa-radio__label")%>
     <% end %>
-    <%= I18n.t('service_provider_form.active').html_safe %>
+    <%= form.hint I18n.t('service_provider_form.active').html_safe %>
   </div>
 
   <% if current_user.admin? %>
@@ -394,19 +383,19 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
           <p>You can view your existing help text here.</p>
           <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
           <legend class="usa-label"><b>Sign-in help text:</legend>
-          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
 
           <legend class="usa-label"><b>Sign-up help text:</legend>
-          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
 
           <legend class="usa-label">Forgot password help text:</legend>
-          <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
-          <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 text-normal optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
       </fieldset>
     <% end %>
   <% end %>

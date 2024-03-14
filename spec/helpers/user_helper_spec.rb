@@ -38,17 +38,17 @@ describe UserHelper do
   describe '#sign_in_icon' do
     it 'returns success image for user that has signed in' do
       user.uuid = '3298uekefjlsejoeioeiur'
-      expect(sign_in_icon(user)).to eq('img/alerts/success.svg')
+      expect(sign_in_icon(user)).to eq('alerts/success.svg')
     end
 
     it 'returns warning image for user that is unconfirmed' do
       user.created_at = 20.days.ago
-      expect(sign_in_icon(user)).to eq('img/alerts/warning.svg')
+      expect(sign_in_icon(user)).to eq('alerts/warning.svg')
     end
 
     it 'returns error image for user that has not yet signed in' do
       user.created_at = 2.days.ago
-      expect(sign_in_icon(user)).to eq('img/alerts/error.svg')
+      expect(sign_in_icon(user)).to eq('alerts/error.svg')
     end
   end
 

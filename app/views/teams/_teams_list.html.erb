@@ -1,7 +1,7 @@
 <% @teams.each do |team| %>
   <div class='lg-card margin-bottom-3'>
     <div class='grid-row flex-row flex-align-end'>
-      <div class='mobile-lg:grid-col-10'>
+      <div class='tablet:grid-col-10'>
         <h2 class='margin-y-05'>
           <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
         </h2>
@@ -32,7 +32,7 @@
           <% end %>
         </p>
       </div>
-      <div class='mobile-lg:grid-col-2 text-right'>
+      <div class='tablet:grid-col-2 text-right'>
         <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
       </div>
     </div>
