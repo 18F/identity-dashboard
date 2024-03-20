@@ -4,7 +4,7 @@
 #
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.4.6
+  browser-tools: circleci/browser-tools@1.4.8
 jobs:
   build:
     docker:
@@ -52,7 +52,7 @@ jobs:
           command: |
             gem install bundler
             bundle install --deployment --jobs=4 --retry=3 --without deploy development production --path vendor/bundle
-            npm install
+            yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
       - run:
           name: Install Code Climate Test Reporter
           command: |

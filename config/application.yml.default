@@ -10,18 +10,10 @@ aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
 db_pool: '5'
 dp_reaping_frequency: '10'
-email_recipients: ''
 newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
-smtp_address: changeme
-smtp_domain: changeme
-smtp_host: localhost
-smtp_password: changeme
-smtp_port: '2025'
-smtp_username: changeme
-service_providers_with_nil_pkce: ''
 
 development:
   dashboard_api_token: test_token

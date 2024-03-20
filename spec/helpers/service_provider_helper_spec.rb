@@ -177,16 +177,6 @@ describe ServiceProviderHelper do
     end
   end
 
-  describe '#sp_active_img_alt' do
-    it 'returns alt tag indicating active service provider' do
-      expect(sp_active_img_alt(true)).to eq('Active service provider')
-    end
-
-    it 'returns alt tag indicating inactive service provider' do
-      expect(sp_active_img_alt(false)).to eq('Inactive service provider')
-    end
-  end
-
   describe '#sp_allow_prompt_login_img_alt' do
     it 'returns alt tag indicating prompt=login enabled' do
       expect(sp_allow_prompt_login_img_alt(true)).to eq('prompt=login enabled')
@@ -241,6 +231,24 @@ describe ServiceProviderHelper do
     describe 'when open_id_connect_private_key_jwt is passed in' do
       it 'returns OpenID Connect Private Key JWT' do
         expect(titleize('openid_connect_private_key_jwt')).to eq 'OpenID Connect Private Key JWT'
+      end
+    end
+  end
+
+  describe '#sp_signed_response_message_requested_img_alt' do
+    context 'sp_response_message_requested is true' do
+      it 'returns a string saying signed response is requested' do
+        expect(sp_signed_response_message_requested_img_alt(
+          true),
+        ).to eq 'Signed response message requested'
+      end
+    end
+
+    context 'sp_response_message_requested is false' do
+      it 'returns a string saying signed response is not requested' do
+        expect(sp_signed_response_message_requested_img_alt(
+          false),
+        ).to eq 'Signed response message not requested'
       end
     end
   end

@@ -14,6 +14,16 @@ RSpec.describe SecurityEventsController do
   end
 
   describe '#index' do
+    context 'user is not an admin' do
+      let(:user) { other_user }
+      it 'renders unauthorized' do
+        get :index
+        expect(user.admin).to be false
+        expect(response).to be_unauthorized
+      end
+    end
+
+    let(:user) { create(:admin) }
     it 'renders security events for the current user only' do
       get :index
 
