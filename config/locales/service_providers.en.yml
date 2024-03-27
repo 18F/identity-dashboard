@@ -28,5 +28,4 @@ en:
     saml_redirects: "One or more URIs that Login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#saml-return-to-sp-url'>user experience guidance</a> for more details."
     attribute_bundle: "The default attributes that Login.gov will return to your application during authentication. Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
     help_text: "You can specify help text in these different areas to alert users of important information for logging into your app."
-    prod_config: "Is this Dashboard configuration for a Production application?"
     active: "Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications."

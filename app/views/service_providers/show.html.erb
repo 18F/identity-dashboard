@@ -3,10 +3,9 @@
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
 
 <h2 class="margin-bottom-0">
-  <label for="identity_protocol">Production Configuration:</label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Yes' : 'No' %></span>
+  <label for="identity_protocol">Dashboard Configuration:</label>
+  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Production' : 'Sandbox' %></span>
 </h2>
-<p><i> <%= I18n.t('service_provider_form.prod_config') %> </i></p>
 <hr>
 
 <h2 class="margin-bottom-0">
