@@ -1,6 +1,8 @@
 <fieldset class="usa-fieldset">
+  <%= form.label :email, class: 'usa-label usa-input-required' %>
   <%= form.input :email,
-      label: "<b>Email</b>".html_safe, label_html: { class: 'usa-label usa-input-required' }, input_html: { class: 'usa-input' }, required: true %>
+       input_html: { class: 'usa-input', aria: { invalid: false }},
+       required: true %>
     <legend class='usa-sr-only'>Make admin?</legend>
     <%= form.label :admin,
                    label: 'Make admin?',
