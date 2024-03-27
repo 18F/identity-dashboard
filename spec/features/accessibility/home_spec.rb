@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'axe-rspec'
 
 feature 'Home page', :js do
   scenario 'is accessible' do
@@ -7,6 +8,6 @@ feature 'Home page', :js do
     login_as(user)
     visit root_path
 
-    expect(page).to be_accessible
+    expect_page_to_have_no_accessibility_violations(page)
   end
 end
