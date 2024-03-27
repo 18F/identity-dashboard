@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'axe-rspec'
 
 feature 'Service provider pages', :js do
   before do
@@ -11,7 +12,7 @@ feature 'Service provider pages', :js do
       login_as(admin)
 
       visit service_providers_all_path
-      expect(page).to be_accessible
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 
@@ -24,12 +25,12 @@ feature 'Service provider pages', :js do
 
     scenario 'index page is accessible' do
       visit service_providers_path
-      expect(page).to be_accessible
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'new service provider page is accessible' do
       visit new_service_provider_path
-      expect(page).to be_accessible
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'service provider details page is accessible' do
@@ -37,7 +38,7 @@ feature 'Service provider pages', :js do
       login_as(user)
 
       visit service_provider_path(app)
-      expect(page).to be_accessible
+      expect_page_to_have_no_accessibility_violations(page)
     end
 
     scenario 'service provider details edit page is accessible' do
@@ -45,7 +46,7 @@ feature 'Service provider pages', :js do
       login_as(user)
 
       visit edit_service_provider_path(app)
-      expect(page).to be_accessible
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 end

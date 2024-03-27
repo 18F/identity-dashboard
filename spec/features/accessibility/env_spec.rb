@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'axe-rspec'
 
 feature 'Environments page', :js do
   include DeployStatusCheckerHelper
@@ -12,6 +13,6 @@ feature 'Environments page', :js do
 
     login_as(user)
     visit env_path
-    expect(page).to be_accessible
+    expect_page_to_have_no_accessibility_violations(page)
   end
 end

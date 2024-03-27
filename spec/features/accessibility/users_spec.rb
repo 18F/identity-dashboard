@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'axe-rspec'
 
 feature 'User pages', :js do
   before do
@@ -8,17 +9,17 @@ feature 'User pages', :js do
 
   scenario 'all users page is accessible' do
     visit users_path
-    expect(page).to be_accessible
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'new user page is accessible' do
     visit new_user_path
-    expect(page).to be_accessible
+    expect_page_to_have_no_accessibility_violations(page)
   end
 
   scenario 'edit user page is accessible' do
     user = create(:user)
     visit edit_user_path(user)
-    expect(page).to be_accessible
+    expect_page_to_have_no_accessibility_violations(page)
   end
 end
