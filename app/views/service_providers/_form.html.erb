@@ -5,18 +5,16 @@
   <%= form.label :prod_config,
                  label: 'Dashboard Configuration',
                  class: 'usa-label' %>
-  <ul class="usa-button-group usa-button-group--segmented">
-    <li class="usa-button-group__item">
-      <input type="radio" id="radio-production" name="dashboard-config_radio"
-      value="true" class="usa_radio__input" hidden="true">
-      <label for="radio-production" class="usa-button">Production</label>
+  <%= form.collection_radio_buttons(:prod_config,
+    { "Production" => true, "Sandbox" => false },
+    :last, :first,
+    item_wrapper_tag: :ul,
+    item_wrapper_class: "usa-input-list") do |b| %>
+    <li>
+      <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+      <%=  b.label(class: "usa-radio__label")%>
     </li>
-    <li class="usa-button-group__item">
-      <input type="radio" id="radio-sandbox" name="dashboard-config_radio"
-      value="false" class="usa_radio__input" hidden="true" checked>
-      <label for="radio-sandbox" class="usa-button">Sandbox</label>
-    </li>
-  </ul>
+  <% end %>
 
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
