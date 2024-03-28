@@ -182,4 +182,8 @@ module ServiceProviderHelper
       config_hash.merge({'pkce' => false, 'protocol' => 'oidc'})
     end
   end
+
+  def readonly_help_text?
+    !current_user.admin?
+  end
 end

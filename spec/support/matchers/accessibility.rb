@@ -70,11 +70,14 @@ end
 
 RSpec::Matchers.define :have_valid_markup do
   def page_html
-    # ChromeDriver repairs most invalid HTML, as well as not returning the DOCTYPE
-    # as part of the page.html, thus defeating the purpose of this test
+    # ChromeDriver repairs most invalid HTML, thus defeating the purpose of this test
+    # Switching drivers does not preserve the original session, hence the cookie management
+    # This fix mirrors the IdP's implementation
+    cookies = page.driver.browser.send(:bridge).cookies
+    session_value = cookies.find { |c| c['name'] == '_identity-dashboard_session' }&.[]('value')
     original_path_with_params = URI.parse(current_url).request_uri
     Capybara.using_driver(:accessibility_driver) do
-      default_url_options = Rails.application.routes.default_url_options
+      page.driver.browser.set_cookie "_identity-dashboard_session=#{session_value}" if session_value
       page.driver.get(original_path_with_params)
       page.html
     end
