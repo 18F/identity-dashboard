@@ -356,7 +356,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <legend>Custom help text</legend>
       <% if current_user.admin? %>
         <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
-        <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
+        <%= safe_join(ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
         </p>
       <% else %>
         <p>You can view your existing help text here.</p>
