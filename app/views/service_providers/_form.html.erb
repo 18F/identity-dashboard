@@ -1,20 +1,20 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
-  <legend class='usa-sr-only'>Production Configuration</legend>
+  <legend class='usa-sr-only'>Dashboard Configuration</legend>
   <%= form.label :prod_config,
-                 label: 'Production Configuration',
-                 class: 'usa-label',
-                 hint: I18n.t('service_provider_form.prod_config').html_safe %>
+                 label: 'Dashboard Configuration',
+                 class: 'usa-label' %>
   <%= form.collection_radio_buttons(:prod_config,
-                                    { "Yes" => true, "No" => false },
+                                    { "Production" => true, "Sandbox" => false },
                                     :last, :first,
-                                    item_wrapper_tag: :div,
-                                    item_wrapper_class: "usa-radio") do |b| %>
-    <%=  b.radio_button(class: "usa-radio__input") %>
-    <%=  b.label(class: "usa-radio__label")%>
+                                    item_wrapper_tag: :ul,
+                                    item_wrapper_class: "usa-input-list") do |b| %>
+    <li>
+      <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+      <%=  b.label(class: "usa-radio__label")%>
+    </li>
   <% end %>
-  <%= form.hint I18n.t('service_provider_form.prod_config') %>
 
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
@@ -337,10 +337,12 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      item_wrapper_tag: :div,
-                                      item_wrapper_class: 'usa-radio') do |b| %>
-      <%=  b.radio_button(class: "usa-radio__input") %>
-      <%=  b.label(class: "usa-radio__label")%>
+                                      item_wrapper_tag: :ul,
+                                      item_wrapper_class: 'usa-input-list') do |b| %>
+      <li>
+        <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+        <%=  b.label(class: "usa-radio__label")%>
+      </li>
     <% end %>
     <%= form.hint I18n.t('service_provider_form.active').html_safe %>
   </div>
