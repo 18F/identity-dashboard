@@ -1,3 +1,6 @@
+# These accessibility matchers have been copied over from the IdP, with some
+# fine-tuning for relevancy on the Dashboard.
+# https://github.com/18F/identity-idp/blob/main/spec/support/matchers/accessibility.rb
 RSpec::Matchers.define :have_valid_idrefs do
   invalid_idref_messages = []
 
