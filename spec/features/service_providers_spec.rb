@@ -50,7 +50,7 @@ feature 'Service Providers CRUD' do
 
       visit service_provider_path(service_provider)
 
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_redirects_html')))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_redirects_html'))
       expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
     end
 
@@ -61,7 +61,7 @@ feature 'Service Providers CRUD' do
 
       visit service_provider_path(service_provider)
 
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.oidc_redirects_html')))
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_redirects_html'))
     end
 
     scenario 'saml fields are shown on sp edit page when saml is selected' do
@@ -71,11 +71,11 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.saml_redirects_html')))
+      expect(page).to have_content(I18n.t('service_provider_form.saml_redirects_html'))
       expect(page).to have_content(I18n.t('service_provider_form.saml_assertion_encryption'))
       # rubocop:disable Layout/LineLength
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_service_url_html')))
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.assertion_consumer_logout_service_url_html')))
+      expect(page).to have_content(I18n.t('service_provider_form.assertion_consumer_service_url_html'))
+      expect(page).to have_content(I18n.t('service_provider_form.assertion_consumer_logout_service_url_html'))
       # rubocop:enable Layout/LineLength
     end
 
@@ -86,7 +86,7 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).to have_content(strip_tags(I18n.t('service_provider_form.oidc_redirects_html')))
+      expect(page).to have_content(I18n.t('service_provider_form.oidc_redirects_html'))
     end
 
     scenario 'can update service provider team', :js do
@@ -291,7 +291,7 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects_html')))
+      expect(page).to have_content(t('service_provider_form.oidc_redirects_html'))
     end
 
     scenario 'IAL1 attributes shown when IAL1 is selected', :js do
@@ -622,9 +622,5 @@ feature 'Service Providers CRUD' do
 
       it_behaves_like 'a page with an IAA banner'
     end
-  end
-
-  def strip_tags(string)
-    ActionController::Base.helpers.strip_tags(string)
   end
 end
