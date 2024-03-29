@@ -96,6 +96,10 @@ module ServiceProviderHelper
     end.sort.join(', ')
   end
 
+  def readonly_help_text?
+    !current_user.admin?
+  end
+
   private
 
   def config_hash(service_provider)
@@ -181,9 +185,5 @@ module ServiceProviderHelper
     else
       config_hash.merge({'pkce' => false, 'protocol' => 'oidc'})
     end
-  end
-
-  def readonly_help_text?
-    !current_user.admin?
   end
 end
