@@ -20,13 +20,13 @@
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'App name',
-                 hint: I18n.t('service_provider_form.app_name').html_safe %>
+                 hint: I18n.t('service_provider_form.app_name_html') %>
 
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: I18n.t('service_provider_form.friendly_name').html_safe %>
+                 hint: I18n.t('service_provider_form.friendly_name_html') %>
 
 
   <%= form.input :description,
@@ -71,7 +71,7 @@
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
-                 hint: I18n.t('service_provider_form.identity_assurance_level').html_safe %>
+                 hint: I18n.t('service_provider_form.identity_assurance_level_html') %>
 
   <%= form.input :default_aal,
                  as: :select,
@@ -90,7 +90,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint I18n.t('service_provider_form.attribute_bundle').html_safe %>
+    <%= form.hint I18n.t('service_provider_form.attribute_bundle_html') %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -114,7 +114,7 @@
                  hint: if form.object.persisted?
                      I18n.t('service_provider_form.change_issuer')
                    else
-                     I18n.t('service_provider_form.issuer').html_safe
+                     I18n.t('service_provider_form.issuer_html')
                    end %>
 
   <% if current_user.admin? %>
@@ -155,7 +155,7 @@
                    placeholder: 'generic.svg',
                    label: 'Logo',
                    input_html: { class: 'usa-input' },
-                   hint: I18n.t('service_provider_form.logo').html_safe %>
+                   hint: I18n.t('service_provider_form.logo_html') %>
   <% end %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
@@ -227,17 +227,17 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    label_html: { class: 'usa-input-required'},
                    label: 'Assertion Consumer Service URL',
                    required: true,
-                   hint: I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %>
+                   hint: I18n.t('service_provider_form.assertion_consumer_service_url_html') %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
                    label: 'Assertion Consumer Logout Service URL',
-                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %>
+                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url_html') %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
                    label: 'SP Initiated Login URL',
-                   hint: I18n.t('service_provider_form.sp_initiated_login_url').html_safe %>
+                   hint: I18n.t('service_provider_form.sp_initiated_login_url_html') %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
@@ -249,7 +249,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested',
                   class: 'usa-label',
-                  hint: I18n.t('service_provider_form.signed_response_requested').html_safe %>
+                  hint: I18n.t('service_provider_form.signed_response_requested') %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -266,13 +266,13 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
-                  hint: I18n.t('service_provider_form.return_to_app_url').html_safe %>
+                  hint: I18n.t('service_provider_form.return_to_app_url_html') %>
   </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  label_html: { class: 'usa-input-required'},
                  label: 'Failure to Proof URL',
-                 hint: I18n.t('service_provider_form.failure_to_proof_url').html_safe,
+                 hint: I18n.t('service_provider_form.failure_to_proof_url'),
                  required: true %>
 
   <%= form.input :push_notification_url,
@@ -314,11 +314,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= I18n.t('service_provider_form.oidc_redirects').html_safe %>
+      <%= I18n.t('service_provider_form.oidc_redirects_html') %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint I18n.t('service_provider_form.saml_redirects').html_safe %>
+      <%= form.hint I18n.t('service_provider_form.saml_redirects_html') %>
     </div>
 
     <%= form.button :button,
@@ -333,7 +333,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.label :admin,
                    label: 'Accessible',
                    class: 'usa-label',
-                   hint: I18n.t('service_provider_form.active').html_safe %>
+                   hint: I18n.t('service_provider_form.active') %>
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -344,7 +344,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
         <%=  b.label(class: "usa-radio__label")%>
       </li>
     <% end %>
-    <%= form.hint I18n.t('service_provider_form.active').html_safe %>
+    <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
   <% if @help_text_empty %>
