@@ -1,8 +1,12 @@
 <fieldset class="usa-fieldset">
-  <%= form.input :name, label: "Name".html_safe, label_html: { class: 'usa-label usa-input-required' }, input_html: { class: 'usa-input' } %>
+  <%= form.input :name,
+    label: "Name",
+    label_html: { class: 'usa-label usa-input-required' },
+    input_html: { class: 'usa-input', aria: { invalid: false } }
+  %>
 
   <%= form.input :agency_id,
-                   input_html: { class: 'usa-select' },
+                   input_html: { class: 'usa-select', aria: { invalid: false } },
                    collection: @agencies,
                    label: 'Agency'.html_safe,
                    label_html: { class: 'usa-input-required'},

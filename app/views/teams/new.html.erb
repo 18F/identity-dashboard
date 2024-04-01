@@ -1,7 +1,7 @@
 <h1 class="usa-display">New team</h1>
 
 <%= simple_form_for(@team,
-    html: { autocomplete: 'off', role: 'form', class: 'usa-form usa-form--large' },
+    html: { autocomplete: 'off', class: 'usa-form usa-form--large' },
     url: teams_path) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>
