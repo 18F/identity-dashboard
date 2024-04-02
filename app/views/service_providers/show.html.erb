@@ -207,9 +207,7 @@
 
 <% if current_user.admin? %>
   <h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
-  <p class="font-mono-xs margin-top-0" name="service_provider_yaml">
-    <%= render 'service_provider_yaml' %>
-  </p>
+  <%= render 'service_provider_yaml' %>
 <% end %>
 
 <%= button_to t('forms.buttons.edit_service_provider'),
