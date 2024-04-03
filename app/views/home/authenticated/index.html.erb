@@ -8,9 +8,9 @@
 
 <h1 class="usa-display">Hello</h1>
 <% if whitelisted_user?(current_user) %>
-  <p class='usa-intro'>Let's integrate apps with login.gov</p>
+  <p class='usa-intro'>Let's integrate apps with Login.gov</p>
 <% elsif current_user.admin? %>
-  <p class='usa-intro'>Let's help our Partners integrate apps with login.gov</p>
+  <p class='usa-intro'>Let's help our Partners integrate apps with Login.gov</p>
 <% end %>
 
 <% if @teams.count > 0 %>
