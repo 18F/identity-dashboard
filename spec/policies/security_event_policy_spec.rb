@@ -3,30 +3,30 @@ require 'rails_helper'
 RSpec.describe SecurityEventPolicy do
   subject(:policy) { SecurityEventPolicy.new(user, model) }
 
-  describe '#index?' do
+  permissions :index? do
     let(:model) { SecurityEvent }
 
-    context 'when logged out' do
+    context 'a logged out user' do
       let(:user) { nil }
 
-      it 'is false' do
-        expect(policy.index?).to eq(false)
+      it 'is not given access to the security event view' do
+        expect(SecurityEventPolicy).to_not permit(user, model)
       end
     end
 
-    context 'for a non-admin user' do
+    context 'a non-admin user' do
       let(:user) { build(:user) }
 
-      it 'is true' do
-        expect(policy.index?).to eq(true)
+      it 'is not given access to the security event view' do
+        expect(SecurityEventPolicy).to_not permit(user, model)
       end
     end
 
-    context 'for an admin user' do
+    context 'an admin user' do
       let(:user) { build(:admin) }
 
-      it 'is true' do
-        expect(policy.index?).to eq(true)
+      it 'is given access to the security event view' do
+        expect(SecurityEventPolicy).to permit(user, model)
       end
     end
   end
