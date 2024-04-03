@@ -70,7 +70,7 @@ feature 'Service provider pages', :js do
               :saml,
               :with_users_team,
               user: user,
-              logo: 'generic.svg'
+              logo: 'generic.svg',
             )
           end
 

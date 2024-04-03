@@ -23,9 +23,11 @@ feature 'Tools views', :js do
     end
 
     context 'good SAML auth input' do
+      # rubocop:disable Layout/LineLength
       let(:auth) do
         'fVJdj9MwEHxH4j9YlspbPns0qWlaVS1IlQ6E7oAHXtDGce4sHNt4N+Xu3+ME9XQS4l7tmdnZmd3sHgbDziqgdrbhRZrz3fb1qw3CYLzYj3Rvb9SvUSGxCLQopo+Gj8EKB6hRWBgUCpLidv/xWpRpLgBRBYpy/BnFv8zxwZGTznC2v7APzuI4qHCrwllL9fXmuuH3RB5FlqFPtaVUd8qSpkcE27XuIb1z5wyi5WyamEkwpgX5czdSXzeL9+VifVisl29g8O+Mg6bg7Bj30hZo3v0irrsX1L3+Kz6N4ex0bPiPVS+haqs6WUNbJVfr/m3SdqsyKWp5VSuQS7mqIxRxVCeLBJYaXuZFleRlUi6/lLlYrkRRfefs26WGGAmPLTA29yBmbthOAUYT4g7hKbk0JtdrE+NELxCdCKANJtH/JnvOfRLz4lNM/3T87IyWj2xvjPt9CApINZzCqDj74MIA9P++irSYX3SX9DNU+Mk3UoyLZ9PxZP9ez/YP'
       end
+      # rubocop:enable Layout/LineLength
 
       scenario 'is accessible' do
         visit tools_saml_request_path
