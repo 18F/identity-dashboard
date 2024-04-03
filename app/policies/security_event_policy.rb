@@ -17,6 +17,6 @@ class SecurityEventPolicy < BasePolicy
   alias_method :search?, :all?
 
   def show?
-    current_user.present? && (current_user.admin? || model.user == current_user)
+    current_user&.admin?
   end
 end
