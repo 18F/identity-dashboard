@@ -3,8 +3,8 @@ require 'rails_helper'
 describe TeamPolicy do
   let(:admin_user) { build(:user, admin: true) }
   let(:team_user) { build(:user) }
-  let(:whitelist_user) { build(:user, email: 'user@example.gov') }
-  let(:other_user) { build(:user) }
+  let(:gov_email_user) { build(:user) }
+  let(:nongov_email_user) { build(:user, email: 'user@example.com') }
   let(:team) { build(:team) }
 
   before do
@@ -12,50 +12,154 @@ describe TeamPolicy do
   end
 
   permissions :create? do
-    it 'allows admin user or whitelisted user to create' do
-      expect(TeamPolicy).to permit(admin_user)
-      expect(TeamPolicy).to permit(whitelist_user)
-      expect(TeamPolicy).to_not permit(other_user)
+    context 'users with gov email addresses' do
+      it 'admin users are allowed to create teams' do
+        expect(TeamPolicy).to permit(admin_user)
+      end
+
+      it 'are allowed to create teams' do
+        expect(TeamPolicy).to permit(gov_email_user)
+      end
+    end
+
+    context 'users with non gov email address' do
+      it 'are not allowed to create teams' do
+        expect(TeamPolicy).to_not permit(nongov_email_user)
+      end
+
+      context 'if they are admins' do
+        before { admin_user.update(email: 'user@examle.com') }
+
+        it 'are allowed to create teams' do
+          expect(TeamPolicy).to permit(admin_user)
+        end
+      end
     end
   end
 
   permissions :edit? do
-    it 'allows team member or admin to edit' do
-      expect(TeamPolicy).to permit(admin_user, team)
-      expect(TeamPolicy).to permit(team_user, team)
-      expect(TeamPolicy).to_not permit(other_user, team)
+    context 'team members' do
+      it 'are allowed to edit their team' do
+        expect(TeamPolicy).to permit(team_user, team)
+      end
+    end
+
+    context 'admins' do
+      it 'are allowed to edit any team' do
+        expect(TeamPolicy).to permit(admin_user, team)
+      end
+    end
+
+    context 'non team members' do
+      it 'are not allowed to edit the team' do
+        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+      end
     end
   end
 
   permissions :update? do
-    it 'allows team member or admin to update' do
-      expect(TeamPolicy).to permit(admin_user, team)
-      expect(TeamPolicy).to permit(team_user, team)
-      expect(TeamPolicy).to_not permit(other_user, team)
+    context 'team members' do
+      it 'are allowed to update their team' do
+        expect(TeamPolicy).to permit(team_user, team)
+      end
+    end
+
+    context 'admins' do
+      it 'are allowed to update any team' do
+        expect(TeamPolicy).to permit(admin_user, team)
+      end
+    end
+
+    context 'non team members' do
+      it 'are not allowed to update the team' do
+        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+      end
     end
   end
 
   permissions :new? do
-    it 'allows admin user or whitelisted user to initiate' do
-      expect(TeamPolicy).to permit(admin_user)
-      expect(TeamPolicy).to permit(whitelist_user)
-      expect(TeamPolicy).to_not permit(other_user)
+    context 'users with gov email addresses' do
+      it 'admin users can initiate team creation' do
+        expect(TeamPolicy).to permit(admin_user)
+      end
+
+      it 'can initiate team creation' do
+        expect(TeamPolicy).to permit(gov_email_user)
+      end
+    end
+
+    context 'users with non gov email address' do
+      it 'cannot initiate team creation' do
+        expect(TeamPolicy).to_not permit(nongov_email_user)
+      end
+
+      context 'admins' do
+        before { admin_user.update(email: 'user@examle.com') }
+
+        it 'can initiate team creation' do
+          expect(TeamPolicy).to permit(admin_user)
+        end
+      end
     end
   end
 
   permissions :destroy? do
-    it 'allows only admin to destroy' do
-      expect(TeamPolicy).to permit(admin_user, team)
-      expect(TeamPolicy).to_not permit(team_user, team)
-      expect(TeamPolicy).to_not permit(other_user, team)
+    context 'admins' do
+      it 'can destroy teams' do
+        expect(TeamPolicy).to permit(admin_user, team)
+      end
+    end
+
+    context 'team users' do
+      it 'cannot destroy teams' do
+        expect(TeamPolicy).to_not permit(team_user, team)
+      end
+    end
+
+    context 'random users' do
+      it 'cannot destroy teams' do
+        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+      end
     end
   end
 
   permissions :show? do
-    it 'allows team member or admin to show' do
-      expect(TeamPolicy).to permit(admin_user, team)
-      expect(TeamPolicy).to permit(team_user, team)
-      expect(TeamPolicy).to_not permit(other_user, team)
+    context 'admins' do
+      it 'can look at any team' do
+        expect(TeamPolicy).to permit(admin_user, team)
+      end
+    end
+
+    context 'team users' do
+      it 'can look at their teams' do
+        expect(TeamPolicy).to_not permit(team_user, team)
+      end
+    end
+
+    context 'random users' do
+      it 'cannot look at a team they are not a part of' do
+        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+      end
+    end
+  end
+
+  permissions :all? do
+    context 'admins' do
+      it 'can view all teams' do
+        expect(TeamPolicy).to permit(admin_user)
+      end
+    end
+
+    context 'users with gov email addresses' do
+      it 'cannot view all teams' do
+        expect(TeamPolicy).to_not permit(gov_email_user)
+      end
+    end
+
+    context 'random users' do
+      it 'cannot view all teams' do
+        expect(TeamPolicy).to_not permit(nongov_email_user)
+      end
     end
   end
 end
