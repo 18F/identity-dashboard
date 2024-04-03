@@ -63,12 +63,51 @@ feature 'Service provider pages', :js do
           visit service_provider_path(app)
           expect_page_to_have_no_accessibility_violations(page)
         end
+
+        context 'with a SAML app' do
+          let(:app) do
+            create(:service_provider,
+              :saml,
+              :with_users_team,
+              user: user,
+              logo: 'generic.svg'
+            )
+          end
+
+          scenario 'is accessible' do
+            visit service_provider_path(app)
+            expect_page_to_have_no_accessibility_violations(page)
+          end
+        end
       end
 
       context 'edit page' do
         scenario 'is accessible' do
           visit edit_service_provider_path(app)
           expect_page_to_have_no_accessibility_violations(page)
+        end
+      end
+
+      context 'edit page' do
+        context 'switching to a a SAML app' do
+          before do
+            visit edit_service_provider_path(app)
+            find('label[for=service_provider_identity_protocol_saml]').click
+          end
+
+          scenario 'is accessible' do
+            expect_page_to_have_no_accessibility_violations(page)
+          end
+
+          context 'getting an error' do
+            before do
+              click_on 'Update'
+            end
+
+            scenario 'view is still accessible' do
+              expect_page_to_have_no_accessibility_violations(page)
+            end
+          end
         end
       end
     end
