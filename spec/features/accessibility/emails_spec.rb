@@ -2,18 +2,25 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Email pages', :js do
-  let(:admin) { create(:admin) }
+  let(:user) { create(:user) }
 
-  scenario 'unauthorized user page is accessible' do
-    visit emails_path
-    expect_page_to_have_no_accessibility_violations(page)
-  end
+  context 'emails index page' do
+    before do
+      login_as(user)
+      visit emails_path
+    end
 
+    context 'with an unauthorized user' do
+      scenario 'error page is accessible' do
+        expect_page_to_have_no_accessibility_violations(page)
+      end
+    end
 
-  scenario 'index page is accessible' do
-    login_as(admin)
-
-    visit emails_path
-    expect_page_to_have_no_accessibility_violations(page)
+    context 'with an admin user' do
+      let(:user) { create(:admin) }
+      scenario 'is accessible' do
+        expect_page_to_have_no_accessibility_violations(page)
+      end
+    end
   end
 end
