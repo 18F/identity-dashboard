@@ -132,7 +132,7 @@ describe TeamPolicy do
 
     context 'team users' do
       it 'can look at their teams' do
-        expect(TeamPolicy).to_not permit(team_user, team)
+        expect(TeamPolicy).to permit(team_user, team)
       end
     end
 
