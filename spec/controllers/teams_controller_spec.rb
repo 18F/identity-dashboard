@@ -103,7 +103,7 @@ describe TeamsController do
         end
       end
 
-      context 'has a whitelisted email address' do
+      context 'has a government email address' do
         before do
           post :create, params: { team: { name:, agency_id: agency.id } }
         end
