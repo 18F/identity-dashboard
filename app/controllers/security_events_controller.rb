@@ -7,7 +7,6 @@ class SecurityEventsController < ApplicationController
   end
 
   def index
-    render_401 unless current_user.admin?
     @security_events = current_user.security_events.
                        order('issued_at DESC').
                        page(params[:page])
