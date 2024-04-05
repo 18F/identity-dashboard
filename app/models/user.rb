@@ -8,6 +8,11 @@ class User < ApplicationRecord
   has_many :teams, through: :user_teams
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy
+  enum role: {
+    restricted_ic: 0,
+    ic: 1,
+    login_engineer: 2
+  }
 
   validates :email, format: { with: Devise.email_regexp }
 
