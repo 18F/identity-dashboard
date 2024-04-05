@@ -1,69 +1,34 @@
 require 'rails_helper'
 
 describe UserPolicy do
-  let(:admin_user) { build(:user, admin: true) }
-  let(:other_user) { build(:user) }
-  let(:owner)      { build(:user) }
-  let(:user)       { build(:user) }
-  let(:app)        { build(:service_provider, user: owner) }
+  let(:login_engineer) { build(:admin) }
+  let(:ic_user) { build(:ic) }
+  let(:restricted_user) { build(:user) }
+  let(:user_record) { build(:user) }
 
-  permissions :create? do
-    it 'allows any user to create' do
-      expect(ServiceProviderPolicy).to permit(user, app)
+  permissions :login_engineer? do
+    it 'authorizes a Login engineer' do
+      expect(UserPolicy).to permit(login_engineer, user_record)
+    end
+    it 'does not authorize an IC user' do
+      expect(UserPolicy).to_not permit(ic_user, user_record)
+    end
+    it 'does not authorize other users' do
+      expect(UserPolicy).to_not permit(restricted_user, user_record)
     end
   end
 
-  permissions :edit? do
-    it 'allows owner to edit' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
+  permissions :none? do
+    it 'gives access to Login engineers' do
+      expect(UserPolicy).to permit(login_engineer, user_record)
     end
-    it 'allows admin to edit' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
-    end
-    it 'does not allow other users to edit' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, app)
-    end
-  end
 
-  permissions :update? do
-    it 'allows owner to update' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
+    it 'gives access to an IC user' do
+      expect(UserPolicy).to permit(ic_user, user_record)
     end
-    it 'allows admin to update' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
-    end
-    it 'does not allow other users to update' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, app)
-    end
-  end
 
-  permissions :new? do
-    it 'allows any user to initiate' do
-      expect(ServiceProviderPolicy).to permit(user, app)
-    end
-  end
-
-  permissions :destroy? do
-    it 'allows owner to destroy' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
-    end
-    it 'allows admin to destroy' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
-    end
-    it 'does not allow other users to destroy' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, app)
-    end
-  end
-
-  permissions :show? do
-    it 'allows owner to show' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
-    end
-    it 'allows admin to show' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
-    end
-    it 'does not allow other users to show' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, app)
+    it 'gives access to restricted ICs' do
+      expect(UserPolicy).to permit(restricted_user, user_record)
     end
   end
 end

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:admin_user) { build(:user, admin: true) }
+  let(:admin_user) { build(:admin_user) }
   let(:team_user) { build(:user) }
-  let(:gov_email_user) { build(:user) }
-  let(:nongov_email_user) { build(:user, email: 'user@example.com') }
+  let(:ic_user) { build(:ic) }
+  let(:restricted_ic_user) { build(:user) }
   let(:team) { build(:team) }
 
   before do
@@ -18,13 +18,13 @@ describe TeamPolicy do
       end
 
       it 'are allowed to create teams' do
-        expect(TeamPolicy).to permit(gov_email_user)
+        expect(TeamPolicy).to permit(ic_user)
       end
     end
 
     context 'users with non gov email address' do
       it 'are not allowed to create teams' do
-        expect(TeamPolicy).to_not permit(nongov_email_user)
+        expect(TeamPolicy).to_not permit(restricted_ic_user)
       end
 
       context 'if they are admins' do
@@ -52,7 +52,7 @@ describe TeamPolicy do
 
     context 'non team members' do
       it 'are not allowed to edit the team' do
-        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+        expect(TeamPolicy).to_not permit(restricted_ic_user, team)
       end
     end
   end
@@ -72,7 +72,7 @@ describe TeamPolicy do
 
     context 'non team members' do
       it 'are not allowed to update the team' do
-        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+        expect(TeamPolicy).to_not permit(restricted_ic_user, team)
       end
     end
   end
@@ -84,13 +84,13 @@ describe TeamPolicy do
       end
 
       it 'can initiate team creation' do
-        expect(TeamPolicy).to permit(gov_email_user)
+        expect(TeamPolicy).to permit(ic_user)
       end
     end
 
     context 'users with non gov email address' do
       it 'cannot initiate team creation' do
-        expect(TeamPolicy).to_not permit(nongov_email_user)
+        expect(TeamPolicy).to_not permit(restricted_ic_user)
       end
 
       context 'admins' do
@@ -118,7 +118,7 @@ describe TeamPolicy do
 
     context 'random users' do
       it 'cannot destroy teams' do
-        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+        expect(TeamPolicy).to_not permit(restricted_ic_user, team)
       end
     end
   end
@@ -138,7 +138,7 @@ describe TeamPolicy do
 
     context 'random users' do
       it 'cannot look at a team they are not a part of' do
-        expect(TeamPolicy).to_not permit(nongov_email_user, team)
+        expect(TeamPolicy).to_not permit(restricted_ic_user, team)
       end
     end
   end
@@ -152,13 +152,13 @@ describe TeamPolicy do
 
     context 'users with gov email addresses' do
       it 'cannot view all teams' do
-        expect(TeamPolicy).to_not permit(gov_email_user)
+        expect(TeamPolicy).to_not permit(ic_user)
       end
     end
 
     context 'random users' do
       it 'cannot view all teams' do
-        expect(TeamPolicy).to_not permit(nongov_email_user)
+        expect(TeamPolicy).to_not permit(restricted_ic_user)
       end
     end
   end

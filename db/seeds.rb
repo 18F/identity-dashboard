@@ -12,6 +12,6 @@ if Rails.env.development? || Rails.env.test?
   User.find_or_create_by email: 'admin@gsa.gov' do |user|
     user.first_name = 'Addy'
     user.last_name = 'Ministrator'
-    user.admin = true
+    user.update(role: 2)
   end
 end

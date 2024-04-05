@@ -12,8 +12,13 @@ FactoryBot.define do
       teams { create_list(:team, 1) }
     end
 
+    # i left this as admin for this spike as changing it would be noisy
     factory :admin do
-      admin { true }
+      role { 2 }
+    end
+
+    factory :ic do
+      role { 1 }
     end
   end
 end

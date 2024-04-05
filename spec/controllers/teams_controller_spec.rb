@@ -62,7 +62,7 @@ describe TeamsController do
   describe '#show' do
     context 'when admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'shows the team template' do
@@ -124,7 +124,7 @@ describe TeamsController do
 
     context 'when the user is an admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       context 'when it creates successfully' do
@@ -151,7 +151,7 @@ describe TeamsController do
   describe '#destroy' do
     context 'when the user is an admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'has a redirect response' do
@@ -169,7 +169,7 @@ describe TeamsController do
   describe '#edit' do
     context 'when admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
       it 'shows the edit template' do
         get :edit, params: { id: org.id }
@@ -193,7 +193,7 @@ describe TeamsController do
   describe '#update' do
     context 'when user is an admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       context 'when the update is successful' do

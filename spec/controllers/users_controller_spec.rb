@@ -10,9 +10,9 @@ describe UsersController do
   end
 
   describe '#new' do
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'has a success response' do
@@ -29,9 +29,9 @@ describe UsersController do
   end
 
   describe '#index' do
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'has a success response' do
@@ -48,9 +48,9 @@ describe UsersController do
   end
 
   describe '#edit' do
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'has a success response' do
@@ -67,9 +67,9 @@ describe UsersController do
   end
 
   describe '#update' do
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'has a redirect response' do
@@ -86,9 +86,9 @@ describe UsersController do
   end
 
   describe '#create' do
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       context 'when the user is valid' do
@@ -115,9 +115,9 @@ describe UsersController do
   describe '#destroy' do
     let(:user_to_delete) { create(:user) }
 
-    context 'when the user is an admin' do
+    context 'when the user is a Login.gov engineer' do
       before do
-        user.admin = true
+        user.update(role: 2)
         delete :destroy, params: { id: user_to_delete.id }
       end
 

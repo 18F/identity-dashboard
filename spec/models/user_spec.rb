@@ -103,7 +103,7 @@ describe User do
       2.times do
         create(:team)
       end
-      user.admin = true
+      user.update(role: 2)
       user.save
 
       expect(user.scoped_teams).to eq(Team.all)

@@ -31,7 +31,7 @@ describe Teams::UsersController do
 
     context 'when the user is an admin' do
       it 'renders the add new user page' do
-        user.admin = true
+        user.update(role: 2)
         get :index, params: { team_id: team.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:index)
@@ -58,7 +58,7 @@ describe Teams::UsersController do
 
     context 'when the user is an admin' do
       it 'renders the add new user form' do
-        user.admin = true
+        user.update(role: 2)
         get :new, params: { team_id: team.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:new)
@@ -103,7 +103,7 @@ describe Teams::UsersController do
 
     context 'when the user is an admin' do
       before do
-        user.admin = true
+        user.update(role: 2)
       end
 
       it 'saves valid info' do
@@ -163,7 +163,7 @@ describe Teams::UsersController do
 
     context 'when the user is an admin and user to delete is part of the team' do
       it 'renders the delete confirmation page' do
-        user.admin = true
+        user.update(role: 2)
         team.users << user_to_delete
         get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
@@ -188,7 +188,7 @@ describe Teams::UsersController do
 
     context 'when the user is an admin but not a team member and user to delete is team member' do
       before do
-        user.admin = true
+        user.update(role: 2)
         team.users << user_to_delete
         delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
       end

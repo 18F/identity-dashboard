@@ -13,37 +13,40 @@ class TeamPolicy < BasePolicy
   end
 
   def show?
-    in_team? || admin?
+    in_team? || login_engineer?
   end
 
   def update?
-    in_team? || admin?
+    in_team? || login_engineer?
   end
 
   def edit?
-    in_team? || admin?
+    in_team? || login_engineer?
   end
 
   def destroy?
-    admin?
+    login_engineer?
   end
 
   def create?
-    allowlisted_user?(current_user) || admin?
+    !restricted_ic?
   end
 
   def new?
-    allowlisted_user?(current_user) || admin?
+    !restricted_ic?
   end
 
   def all?
-    admin?
+    login_engineer?
   end
 
   private
+  def login_engineer?
+    current_user&.login_engineer?
+  end
 
-  def admin?
-    current_user&.admin?
+  def restricted_ic?
+    current_user.restricted_ic?
   end
 
   def in_team?

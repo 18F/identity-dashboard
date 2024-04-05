@@ -35,7 +35,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def all?
-    admin?
+    login_engineer?
   end
 
   private
@@ -44,16 +44,15 @@ class ServiceProviderPolicy < BasePolicy
     sp.user == current_user
   end
 
-  def admin?
-    current_user.admin?
+  def login_engineer?
+    current_user.login_engineer?
   end
 
   def member?
-    team = sp.team
-    team.present? && current_user.teams.include?(team)
+    sp.team.users.include?(current_user)
   end
 
   def member_or_admin?
-    owner? || admin? || member?
+    owner? || login_engineer? || member?
   end
 end

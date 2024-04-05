@@ -10,7 +10,7 @@ describe TeamUsersPolicy do
     team.users << team_user
   end
 
-  permissions :new? do
+  permissions :manage? do
     it 'allows team member or admin to initiate' do
       expect(TeamUsersPolicy).to permit(admin_user, team)
       expect(TeamUsersPolicy).to permit(team_user, team)
@@ -18,27 +18,35 @@ describe TeamUsersPolicy do
     end
   end
 
-  permissions :create? do
-    it 'allows team member or admin to create' do
-      expect(TeamUsersPolicy).to permit(admin_user, team)
-      expect(TeamUsersPolicy).to permit(team_user, team)
-      expect(TeamUsersPolicy).to_not permit(other_user, team)
-    end
-  end
+  # permissions :new? do
+  #   it 'allows team member or admin to initiate' do
+  #     expect(TeamUsersPolicy).to permit(admin_user, team)
+  #     expect(TeamUsersPolicy).to permit(team_user, team)
+  #     expect(TeamUsersPolicy).to_not permit(other_user, team)
+  #   end
+  # end
 
-  permissions :remove_confirm? do
-    it 'allows team member or admin to view delete page' do
-      expect(TeamUsersPolicy).to permit(admin_user, team)
-      expect(TeamUsersPolicy).to permit(team_user, team)
-      expect(TeamUsersPolicy).to_not permit(other_user, team)
-    end
-  end
+  # permissions :create? do
+  #   it 'allows team member or admin to create' do
+  #     expect(TeamUsersPolicy).to permit(admin_user, team)
+  #     expect(TeamUsersPolicy).to permit(team_user, team)
+  #     expect(TeamUsersPolicy).to_not permit(other_user, team)
+  #   end
+  # end
 
-  permissions :destroy? do
-    it 'allows team member or admin to view delete page' do
-      expect(TeamUsersPolicy).to permit(admin_user, team)
-      expect(TeamUsersPolicy).to permit(team_user, team)
-      expect(TeamUsersPolicy).to_not permit(other_user, team)
-    end
-  end
+  # permissions :remove_confirm? do
+  #   it 'allows team member or admin to view delete page' do
+  #     expect(TeamUsersPolicy).to permit(admin_user, team)
+  #     expect(TeamUsersPolicy).to permit(team_user, team)
+  #     expect(TeamUsersPolicy).to_not permit(other_user, team)
+  #   end
+  # end
+
+  # permissions :destroy? do
+  #   it 'allows team member or admin to view delete page' do
+  #     expect(TeamUsersPolicy).to permit(admin_user, team)
+  #     expect(TeamUsersPolicy).to permit(team_user, team)
+  #     expect(TeamUsersPolicy).to_not permit(other_user, team)
+  #   end
+  # end
 end

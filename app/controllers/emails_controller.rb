@@ -1,5 +1,5 @@
 class EmailsController < ApplicationController
-  before_action -> { authorize User }
+  before_action -> { authorize User, :login_engineer? }
 
   def index
     @users = User.all.sort_by(&:domain)

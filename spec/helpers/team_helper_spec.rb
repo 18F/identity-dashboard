@@ -14,7 +14,7 @@ describe TeamHelper do
     end
 
     it 'returns true if user is an admin' do
-      user.admin = true
+      user.update(role: 2)
       user.save
 
       expect(can_edit_teams?(user)).to eq(true)

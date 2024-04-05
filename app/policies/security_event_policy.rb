@@ -7,16 +7,16 @@ class SecurityEventPolicy < BasePolicy
   end
 
   def index?
-    current_user&.admin?
+    current_user&.login_engineer?
   end
 
   def all?
-    current_user&.admin?
+    current_user&.login_engineer?
   end
 
   alias_method :search?, :all?
 
   def show?
-    current_user&.admin?
+    current_user&.login_engineer?
   end
 end

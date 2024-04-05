@@ -1,5 +1,5 @@
 class Teams::UsersController < AuthenticatedController
-  before_action -> { authorize team, policy_class: TeamUsersPolicy }
+  before_action -> { authorize_user }
 
   def new
     @user = User.new
@@ -33,6 +33,10 @@ class Teams::UsersController < AuthenticatedController
   end
 
   private
+
+  def authorize_user
+    authorize team, :manage?, policy_class: TeamUsersPolicy
+  end
 
   def member_email
     user_params.require(:email).downcase

@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action -> { authorize User }
+  before_action :authorize_user, except: [:none]
+  before_action -> { authorize User }, only: [:none]
 
   def index
     @users = User.all.sorted
@@ -40,6 +41,10 @@ class UsersController < ApplicationController
   def none; end
 
   private
+
+  def authorize_user
+    authorize User, :login_engineer?
+  end
 
   def user_params
     params.require(:user).permit(:email, :admin)

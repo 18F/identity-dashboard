@@ -1,6 +1,6 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action :authorize_service_provider
-  before_action :authorize_approval, only: [:update]
+  before_action -> { authorize ServiceProvider }, only: [:all]
+  before_action -> { authorize service_provider }, only: %i[update edit show destroy update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :add_iaa_warning, except: %i[index destroy]
 
@@ -84,15 +84,6 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider ||= ServiceProvider.find(params[:id])
   end
 
-  def authorize_service_provider
-    authorize service_provider if %i[update edit show destroy].include?(action_name.to_sym)
-    authorize ServiceProvider if action_name == 'all'
-  end
-
-  def authorize_approval
-    return unless params.require(:service_provider).key?(:approved) && !current_user.admin?
-    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
-  end
 
   def authorize_allow_prompt_login
     return unless params.require(:service_provider).key?(:allow_prompt_login) &&
@@ -237,7 +228,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def build_service_provider_array(prod_apps, sandbox_apps)
-    return [ 
+    return [
       {
         type: 'Production',
         apps: prod_apps,

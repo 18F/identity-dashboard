@@ -14,7 +14,7 @@ describe UserHelper do
   describe('#can_delete_unconfirmed_users?') do
     it 'returns true if any users are unconfirmed and the current user is an admin' do
       current_user = build(:user)
-      current_user.admin = true
+      current_user.update(role: 2)
       user.created_at = 15.days.ago
       users = [user]
       expect(can_delete_unconfirmed_users?(current_user, users)).to be true
