@@ -29,7 +29,7 @@ describe User do
   describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
       team = create(:team)
-      user_team = create(:user_team)
+      user_team = create(:restricted_ic_team)
       user_team.destroy
       deletion_history = user_team.user.user_deletion_history
       expect(deletion_history.count).to eq(1)
@@ -54,7 +54,7 @@ describe User do
   describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history for user' do
       team = create(:team)
-      user_team = create(:user_team)
+      user_team = create(:restricted_ic_team)
       user = user_team.user
       user_team.destroy
       deletion_report = user.user_deletion_history_report
@@ -140,17 +140,17 @@ describe User do
     it { is_expected.to be_versioned }
 
     it 'tracks creation' do
-      expect { create(:user) }.to change { PaperTrail::Version.count }.by(1)
+      expect { create(:restricted_ic) }.to change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks updates' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       expect { user.update!(admin: true) }.to change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks deletion' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       expect { user.destroy }.to change { PaperTrail::Version.count }.by(1)
     end

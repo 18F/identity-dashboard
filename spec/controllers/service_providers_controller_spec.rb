@@ -6,7 +6,7 @@ describe ServiceProvidersController do
       sign_in(user)
     end
 
-    let(:user) { create(:user, :with_teams) }
+    let(:user) { create(:restricted_ic, :with_teams) }
     let(:sp) { create(:service_provider, :with_users_team, user: user) }
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
     let(:logo_file_params) do
@@ -51,8 +51,6 @@ describe ServiceProvidersController do
 
     context 'when uploading a logo' do
       before do
-        allow(subject).to receive(:authorize_service_provider).and_return(true)
-        allow(subject).to receive(:authorize_approval).and_return(true)
         allow(subject).to receive(:logo_file_param).and_return(logo_file_params)
       end
 
@@ -179,7 +177,7 @@ describe ServiceProvidersController do
 
     context 'with user' do
       before do
-        user = create(:user)
+        user = create(:restricted_ic)
         sign_in(user)
       end
 

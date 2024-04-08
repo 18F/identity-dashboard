@@ -36,7 +36,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists, is not on a team, but is an admin' do
       it 'signs the user in' do
-        user = create(:user, email: email, admin: true)
+        user = create(:admin, email: email)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
@@ -50,7 +50,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists but is on no team and not allowed to create teams' do
       it 'redirects to the empty user path' do
-        user = create(:user, email: email)
+        user = create(:restricted_ic, email: email)
         session[:requested_url] = service_providers_url
 
         expect(subject).not_to receive(:sign_in)
@@ -95,7 +95,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists but is on no team' do
       it 'signs the user in' do
-        user = create(:user, email: email)
+        user = create(:restricted_ic, email: email)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)

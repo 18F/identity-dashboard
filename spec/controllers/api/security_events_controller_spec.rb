@@ -9,7 +9,7 @@ RSpec.describe Api::SecurityEventsController do
     before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
 
     context 'with a valid JWT' do
-      let(:user) { create(:user) }
+      let(:user) { create(:restricted_ic) }
 
       let(:payload) do
         {

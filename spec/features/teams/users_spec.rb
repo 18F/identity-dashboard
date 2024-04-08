@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe 'users' do
-  let(:user_team_member) { create(:user_team) }
+  let(:user_team_member) { create(:restricted_ic_team) }
   let(:team_member) { user_team_member.user }
-  let(:other_user_team_member) { create(:user_team) }
+  let(:other_user_team_member) { create(:restricted_ic_team) }
   let(:other_team_member) { other_user_team_member.user }
   let(:team) { create(:team) }
   let(:admin_user) { create(:admin) }
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   before do
     team.user_teams = [user_team_member, other_user_team_member]
@@ -116,13 +116,13 @@ describe 'users' do
                                           email:other_team_member.email, team:team))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
-      expect(page).to have_content(I18n.t('teams.users.remove.success', 
+      expect(page).to have_content(I18n.t('teams.users.remove.success',
                                           email:other_team_member.email))
     end
   end
 
   feature 'manage users page', :js do
-  
+
     scenario 'access denied to non-team member', versioning: true do
       login_as user
       visit team_users_path(team)

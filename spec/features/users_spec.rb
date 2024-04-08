@@ -37,7 +37,7 @@ feature 'admin manages users' do
 
   xscenario 'admin edits users' do
     admin = create(:admin)
-    user = create(:user)
+    user = create(:restricted_ic)
 
     login_as(admin)
     visit users_path

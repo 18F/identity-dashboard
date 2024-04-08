@@ -4,7 +4,7 @@ describe EnvController do
   include Devise::Test::ControllerHelpers
   include DeployStatusCheckerHelper
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   before do
     stub_deploy_status

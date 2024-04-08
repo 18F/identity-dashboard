@@ -3,7 +3,7 @@ require 'rails_helper'
 describe EmailsController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)

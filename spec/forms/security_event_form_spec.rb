@@ -8,7 +8,7 @@ RSpec.describe SecurityEventForm do
   before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
 
   let(:jwt) { JWT.encode(payload, idp_private_key, 'RS256', typ: 'secevent+jwt') }
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   let(:payload) do
     {

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController do
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:trace_id) { 'some-trace-id-abcdef' }
 
   before do

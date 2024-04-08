@@ -3,9 +3,9 @@ require 'rails_helper'
 describe Teams::UsersController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:team) { create(:team) }
-  let(:user_to_delete) { create(:user) }
+  let(:user_to_delete) { create(:restricted_ic) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -30,8 +30,8 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin' do
+      let(:user) { create(:admin) }
       it 'renders the add new user page' do
-        user.admin = true
         get :index, params: { team_id: team.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:index)
@@ -57,8 +57,8 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin' do
+      let(:user) { create(:admin) }
       it 'renders the add new user form' do
-        user.admin = true
         get :new, params: { team_id: team.id }
         expect(response.status).to eq(200)
         expect(response).to render_template(:new)
@@ -102,9 +102,7 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'saves valid info' do
         post :create, params: { team_id: team.id, user: { email: user_email } }
@@ -162,8 +160,8 @@ describe Teams::UsersController do
     end
 
     context 'when the user is an admin and user to delete is part of the team' do
+      let(:user) { create(:admin) }
       it 'renders the delete confirmation page' do
-        user.admin = true
         team.users << user_to_delete
         get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
         expect(response.status).to eq(200)
@@ -187,8 +185,8 @@ describe Teams::UsersController do
   describe '#destroy' do
 
     context 'when the user is an admin but not a team member and user to delete is team member' do
+      let(:user) { create(:admin) }
       before do
-        user.admin = true
         team.users << user_to_delete
         delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
       end

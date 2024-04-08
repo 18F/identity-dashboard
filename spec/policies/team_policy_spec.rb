@@ -1,15 +1,11 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:admin_user) { build(:user, admin: true) }
-  let(:team_user) { build(:user) }
-  let(:gov_email_user) { build(:user) }
-  let(:nongov_email_user) { build(:user, email: 'user@example.com') }
-  let(:team) { build(:team) }
-
-  before do
-    team.users << team_user
-  end
+  let(:admin_user) { create(:admin) }
+  let(:team_user) { create(:restricted_ic, :with_teams) }
+  let(:gov_email_user) { create(:ic) }
+  let(:nongov_email_user) { create(:restricted_ic) }
+  let(:team) { team_user.teams.first }
 
   permissions :create? do
     context 'users with gov email addresses' do

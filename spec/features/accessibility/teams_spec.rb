@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Team pages', :js do
-  let(:user) { create(:user, :with_teams) }
+  let(:user) { create(:restricted_ic, :with_teams) }
   let(:team) { user.teams.first }
 
   before  { login_as(user) }

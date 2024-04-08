@@ -23,7 +23,7 @@ feature 'User pages', :js do
 
     context 'edit_user view' do
       scenario 'is accessible' do
-        user = create(:user)
+        user = create(:restricted_ic)
         visit edit_user_path(user)
         expect_page_to_have_no_accessibility_violations(page)
       end
@@ -33,7 +33,7 @@ feature 'User pages', :js do
   context 'as a non-admin' do
     # these are unauthorized views, but we should ensure that error
     # views pass accessibility tests
-    let(:user) { create(:user) }
+    let(:user) { create(:restricted_ic) }
     before { login_as(user) }
 
     context 'all_users view' do

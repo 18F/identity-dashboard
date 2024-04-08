@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User teams CRUD' do
   scenario 'Create' do
     admin = create(:admin)
-    user = create(:user)
+    user = create(:restricted_ic)
     create(:agency, name: 'GSA')
 
     login_as(admin)
@@ -22,7 +22,7 @@ feature 'User teams CRUD' do
   context 'User already in a team' do
     scenario 'User does show up in user team that they are assigned to' do
       admin = create(:admin)
-      user = create(:user)
+      user = create(:restricted_ic)
       team = create(:team, users: [user])
 
       login_as(admin)
@@ -33,7 +33,7 @@ feature 'User teams CRUD' do
 
     scenario 'User can be added to another team', :js do
       admin = create(:admin)
-      user = create(:user)
+      user = create(:restricted_ic)
       team1 = create(:team, users: [user])
       team2 = create(:team)
 
@@ -92,7 +92,7 @@ feature 'User teams CRUD' do
     scenario 'admin views a team' do
       admin = create(:admin)
       team = create(:team)
-      user = create(:user, teams: [team])
+      user = create(:restricted_ic, teams: [team])
       create(:service_provider, team: team)
 
       login_as(admin)
@@ -106,7 +106,7 @@ feature 'User teams CRUD' do
     end
 
     scenario 'regular user attempts to view a team' do
-      user = create(:user)
+      user = create(:restricted_ic)
       team = create(:team)
       create(:service_provider, team: team)
 

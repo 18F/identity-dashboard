@@ -3,7 +3,7 @@ require 'rails_helper'
 xfeature 'Service Provider approval' do
   context 'user is an admin' do
     scenario 'has option to approve service provider' do
-      admin_user = create(:user, admin: true)
+      admin_user = create(:admin)
 
       login_as(admin_user)
       visit new_service_provider_path
@@ -14,7 +14,7 @@ xfeature 'Service Provider approval' do
 
   context 'user is not an admin' do
     scenario 'does not have option to approve service provider' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       login_as(user)
       visit new_service_provider_path

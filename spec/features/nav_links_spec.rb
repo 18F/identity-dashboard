@@ -32,7 +32,7 @@ feature 'Nav links' do
 
   context 'user is not an admin' do
     scenario 'user should see manage user teams link' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       login_as(user)
       visit service_providers_path
@@ -41,7 +41,7 @@ feature 'Nav links' do
     end
 
     scenario 'user should not see a manage users link' do
-      admin = create(:user)
+      admin = create(:restricted_ic)
 
       login_as(admin)
       visit service_providers_path
@@ -50,7 +50,7 @@ feature 'Nav links' do
     end
 
     scenario 'user should see a security events link' do
-      admin = create(:user)
+      admin = create(:restricted_ic)
 
       login_as(admin)
       visit service_providers_path

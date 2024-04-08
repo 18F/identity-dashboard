@@ -29,11 +29,11 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    allowlisted_user?(current_user) || admin?
+    ic || admin?
   end
 
   def new?
-    allowlisted_user?(current_user) || admin?
+    ic || admin?
   end
 
   def all?
@@ -43,7 +43,11 @@ class TeamPolicy < BasePolicy
   private
 
   def admin?
-    current_user&.admin?
+    current_user.admin?
+  end
+
+  def ic
+    current_user.ic?
   end
 
   def in_team?

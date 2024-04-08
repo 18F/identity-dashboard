@@ -25,7 +25,7 @@ feature 'Home' do
 
   context 'a user who is not an admin' do
     scenario 'should see manage teams and not see manage users' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       login_as(user)
       visit root_path

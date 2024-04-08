@@ -256,7 +256,7 @@ describe ServiceProviderHelper do
   describe '#readonly_help_text' do
     include Devise::Test::ControllerHelpers
 
-    let(:user) { create(:user) }
+    let(:user) { create(:restricted_ic) }
     before do
       sign_in user
     end

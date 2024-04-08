@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TeamsController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:org) { create(:team) }
   let(:agency) { create(:agency) }
 
@@ -14,7 +14,7 @@ describe TeamsController do
 
   describe '#new' do
     context 'when the user is an admin' do
-      before { user.update(admin: true) }
+      let(:user) { create(:admin) }
 
       it 'has a success response' do
         get :new
@@ -23,13 +23,16 @@ describe TeamsController do
     end
 
     context 'when the user is not an admin' do
-      it 'has a success response' do
-        get :new
-        expect(response.status).to eq(200)
+      context 'but is a fed' do
+        let(:user) { create(:ic) }
+
+        it 'has a success response' do
+          get :new
+          expect(response.status).to eq(200)
+        end
       end
 
       context 'the user is not a fed' do
-        before { user.update(email: 'user@example.com') }
         it 'has an error response' do
           get :new
           expect(response.status).to eq(401)
@@ -61,9 +64,7 @@ describe TeamsController do
 
   describe '#show' do
     context 'when admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin)}
 
       it 'shows the team template' do
         get :show, params: { id: org.id }
@@ -89,7 +90,6 @@ describe TeamsController do
 
       context 'and no fed email address' do
         before do
-          user.update(email: 'user@example.com')
           post :create, params: { team: { name:, agency_id: agency.id } }
         end
 
@@ -104,6 +104,7 @@ describe TeamsController do
       end
 
       context 'has a government email address' do
+        let(:user) { create(:ic) }
         before do
           post :create, params: { team: { name:, agency_id: agency.id } }
         end
@@ -123,9 +124,7 @@ describe TeamsController do
     end
 
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin)}
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
@@ -150,9 +149,7 @@ describe TeamsController do
 
   describe '#destroy' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'has a redirect response' do
         delete :destroy, params: { id: org.id }
@@ -168,9 +165,8 @@ describe TeamsController do
 
   describe '#edit' do
     context 'when admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin)}
+
       it 'shows the edit template' do
         get :edit, params: { id: org.id }
         expect(response).to render_template(:edit)
@@ -179,7 +175,6 @@ describe TeamsController do
 
     context 'when not an admin but a team member' do
       before do
-        user.admin = false
         org.users << user
       end
 
@@ -192,9 +187,7 @@ describe TeamsController do
 
   describe '#update' do
     context 'when user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin)}
 
       context 'when the update is successful' do
         it 'has a redirect response' do
@@ -235,7 +228,6 @@ describe TeamsController do
 
     context 'when user is not an admin but a member of the team' do
       before do
-        user.admin = false
         org.users << user
       end
 

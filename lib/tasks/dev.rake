@@ -6,7 +6,7 @@ if Rails.env.development? || Rails.env.test?
     task prime: 'db:reset' do
       include FactoryBot::Syntax::Methods
 
-      user = create(:user, email: 'user@example.com')
+      user = create(:restricted_ic)
 
       issuer = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local'
 

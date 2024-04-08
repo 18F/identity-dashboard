@@ -10,20 +10,8 @@ class ServiceProviderPolicy < BasePolicy
     true
   end
 
-  def show?
-    member_or_admin?
-  end
-
-  def update?
-    member_or_admin?
-  end
-
-  def edit?
-    member_or_admin?
-  end
-
-  def destroy?
-    member_or_admin?
+  def member_or_admin?
+    owner? || admin? || member?
   end
 
   def create?
@@ -51,9 +39,5 @@ class ServiceProviderPolicy < BasePolicy
   def member?
     team = sp.team
     team.present? && current_user.teams.include?(team)
-  end
-
-  def member_or_admin?
-    owner? || admin? || member?
   end
 end

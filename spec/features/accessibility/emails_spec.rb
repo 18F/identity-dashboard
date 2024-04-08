@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Email pages', :js do
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   context 'emails index page' do
     before do

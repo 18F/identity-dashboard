@@ -9,7 +9,7 @@ feature 'Environemnts' do
 
   context 'any user viewing the environemnts page' do
     scenario 'should see prod, staging, int and dev environments' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       login_as(user)
       visit env_path

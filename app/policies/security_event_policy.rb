@@ -6,15 +6,9 @@ class SecurityEventPolicy < BasePolicy
     @model = model
   end
 
-  def index?
+  def manage_security_events?
     current_user&.admin?
   end
-
-  def all?
-    current_user&.admin?
-  end
-
-  alias_method :search?, :all?
 
   def show?
     current_user&.admin?

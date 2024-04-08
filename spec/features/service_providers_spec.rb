@@ -7,7 +7,7 @@ feature 'Service Providers CRUD' do
 
   context 'Regular user' do
     scenario 'can create service provider' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       login_as(user)
 
       visit new_service_provider_path
@@ -44,7 +44,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'saml fields are shown on sp show page when saml is selected' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, user: user)
       login_as(user)
 
@@ -55,7 +55,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'oidc fields are shown on sp show page when oidc is selected' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :with_oidc_jwt, user: user)
       login_as(user)
 
@@ -65,7 +65,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'saml fields are shown on sp edit page when saml is selected' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, user: user)
       login_as(user)
 
@@ -80,7 +80,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'oidc fields are shown on sp edit page when oidc is selected' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :with_oidc_jwt, user: user)
       login_as(user)
 
@@ -90,7 +90,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update service provider team', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, user: user)
       login_as(user)
 
@@ -105,7 +105,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
@@ -132,7 +132,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can view all saml fields when editing a saml app', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
       login_as(user)
@@ -155,7 +155,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'ACS URL is required with SAML protocol', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
       login_as(user)
@@ -184,7 +184,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
       login_as(user)
@@ -213,7 +213,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
@@ -240,7 +240,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'cannot edit allow_prompt_login' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
@@ -250,7 +250,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'cannot edit email_nameid_format_allowed' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
 
@@ -261,7 +261,7 @@ feature 'Service Providers CRUD' do
 
     # rubocop:disable Layout/LineLength
     scenario 'saml fields are shown when saml is selected', :js do
-      user = create(:user)
+      user = create(:restricted_ic)
       login_as(user)
 
       visit new_service_provider_path
@@ -279,7 +279,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'oidc fields are shown when oidc is selected', :js do
-      user = create(:user)
+      user = create(:restricted_ic)
       login_as(user)
 
       visit new_service_provider_path
@@ -295,7 +295,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'IAL1 attributes shown when IAL1 is selected', :js do
-      user = create(:user)
+      user = create(:restricted_ic)
       login_as(user)
 
       visit new_service_provider_path
@@ -315,7 +315,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'IAL2 attributes shown when IAL2 is selected', :js do
-      user = create(:user)
+      user = create(:restricted_ic)
       login_as(user)
 
       visit new_service_provider_path
@@ -437,7 +437,7 @@ feature 'Service Providers CRUD' do
 
   context 'Update' do
     scenario 'user updates service provider' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
@@ -458,7 +458,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_3'))
     end
     scenario 'user updates service provider but service provider is invalid' do
-      user = create(:user)
+      user = create(:restricted_ic)
       app = create(:service_provider, user: user)
       login_as(user)
 
@@ -475,7 +475,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
     scenario 'user updates service provider but service provider updater fails' do
-      user = create(:user, :with_teams)
+      user = create(:restricted_ic, :with_teams)
       app = create(:service_provider, :with_users_team, user: user)
       login_as(user)
 
@@ -495,7 +495,7 @@ feature 'Service Providers CRUD' do
     context 'managing certificates' do
       let(:existing_serial) { '111222333444' }
 
-      let(:user) { create(:user, :with_teams) }
+      let(:user) { create(:restricted_ic, :with_teams) }
       let(:sp) do
         create(:service_provider,
                      :with_users_team,
@@ -568,7 +568,7 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Read' do
-    user = create(:user)
+    user = create(:restricted_ic)
     team = create(:team)
     app = create(:service_provider, team: team, user: user)
     login_as(user)
@@ -581,7 +581,7 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Delete' do
-    user = create(:user)
+    user = create(:restricted_ic)
     app = create(:service_provider, user: user)
     login_as(user)
 
@@ -593,7 +593,7 @@ feature 'Service Providers CRUD' do
 
   describe 'IAA banner' do
     shared_examples 'a page with an IAA banner' do
-      let(:user) { create(:user) }
+      let(:user) { create(:restricted_ic) }
       let(:sp) { create(:service_provider, user: user) }
       let(:prod_url) { 'https://developers.login.gov/production' }
       let(:partners_email) { 'partners@login.gov' }

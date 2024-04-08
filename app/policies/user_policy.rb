@@ -5,37 +5,11 @@ class UserPolicy < BasePolicy
     @current_user = current_user
   end
 
-  def index?
-    admin?
-  end
-
-  def new?
-    admin?
-  end
-
-  def create?
-    admin?
-  end
-
-  def update?
-    admin?
-  end
-
-  def edit?
-    admin?
-  end
-
-  def destroy?
-    admin?
+  def manage_users?
+    current_user&.admin?
   end
 
   def none?
     true
-  end
-
-  private
-
-  def admin?
-    current_user&.admin?
   end
 end

@@ -10,15 +10,15 @@ RSpec.describe UserTeam, type: :model do
     it { is_expected.to be_versioned }
 
     it 'tracks creation' do
-      user = create(:user)
+      user = create(:restricted_ic)
       team = create(:team)
 
-      expect { create(:user_team, user: user, team: team) }.to \
+      expect { create(:restricted_ic_team, user: user, team: team) }.to \
         change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks updates' do
-      user_team = create(:user_team)
+      user_team = create(:restricted_ic_team)
       other_team = create(:team)
 
       expect { user_team.update!(team: other_team) }.to \
@@ -26,7 +26,7 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'tracks deletion' do
-      user_team = create(:user_team)
+      user_team = create(:restricted_ic_team)
 
       expect { user_team.destroy }.to change { PaperTrail::Version.count }.by(1)
     end

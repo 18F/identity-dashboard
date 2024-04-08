@@ -4,7 +4,7 @@ require 'axe-rspec'
 feature 'Home page', :js do
   context 'as a logged in user' do
     scenario 'is accessible' do
-      user = create(:user)
+      user = create(:restricted_ic)
 
       login_as(user)
       visit root_path

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe Team do
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:team) { create(:team) }
-  let(:user_team) { create(:user_team) }
+  let(:user_team) { create(:restricted_ic_team) }
 
   describe 'Associations' do
     it { should have_many(:users) }
@@ -24,9 +24,9 @@ describe Team do
 
   describe '.sorted' do
     it 'returns users in alpha ordered by email' do
-      b_user = create(:user, email: 'b@example.com')
-      c_user = create(:user, email: 'c@example.com')
-      a_user = create(:user, email: 'a@example.com')
+      b_user = create(:restricted_ic, email: 'b@example.com')
+      c_user = create(:restricted_ic, email: 'c@example.com')
+      a_user = create(:restricted_ic, email: 'a@example.com')
 
       expect(User.sorted).to eq([a_user, b_user, c_user])
     end

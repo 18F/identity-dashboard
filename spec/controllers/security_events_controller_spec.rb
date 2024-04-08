@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe SecurityEventsController do
-  let(:user) { create(:user, uuid: SecureRandom.uuid) }
-  let(:other_user) { create(:user, uuid: SecureRandom.uuid) }
+  let(:user) { create(:restricted_ic, uuid: SecureRandom.uuid) }
+  let(:other_user) { create(:restricted_ic, uuid: SecureRandom.uuid) }
 
   before do
     sign_in(user)

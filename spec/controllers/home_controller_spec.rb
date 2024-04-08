@@ -3,7 +3,7 @@ require 'rails_helper'
 describe HomeController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:org) { create(:team) }
 
   before do

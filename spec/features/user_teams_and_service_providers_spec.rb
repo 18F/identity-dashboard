@@ -5,8 +5,8 @@ feature 'Users can access service providers that belong to their user team' do
     context 'Index' do
       scenario 'users in the related user team can see the service provider' do
         team = create(:team)
-        user1 = create(:user, teams: [team])
-        user2 = create(:user)
+        user1 = create(:restricted_ic, teams: [team])
+        user2 = create(:restricted_ic)
         user_team_app = create(:service_provider, team: team, user: user2)
         user_created_app = create(:service_provider, user: user1)
         na_app = create(:service_provider)
@@ -23,8 +23,8 @@ feature 'Users can access service providers that belong to their user team' do
     context 'Edit' do
       scenario 'user can edit a service provider from their user team' do
         team = create(:team)
-        user1 = create(:user, teams: [team])
-        user2 = create(:user)
+        user1 = create(:restricted_ic, teams: [team])
+        user2 = create(:restricted_ic)
         app = create(:service_provider, ial: 2, team: team, user: user2)
         new_name = 'New Service Name'
         new_description = 'New Description'

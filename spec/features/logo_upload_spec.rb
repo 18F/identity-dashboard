@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Logo upload' do
-  let(:user) { create(:user, :with_teams) }
+  let(:user) { create(:restricted_ic, :with_teams) }
   before do
     allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(true)
   end

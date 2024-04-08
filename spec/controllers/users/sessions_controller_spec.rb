@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Users::SessionsController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   describe '#destroy' do
     before do

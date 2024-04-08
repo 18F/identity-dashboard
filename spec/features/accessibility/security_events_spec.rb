@@ -4,7 +4,7 @@ require 'axe-rspec'
 feature 'Security events pages', :js do
   context 'index view' do
     context 'as a logged in user' do
-      let(:user) { create(:user) }
+      let(:user) { create(:restricted_ic) }
 
       before { login_as user }
 
@@ -47,7 +47,7 @@ feature 'Security events pages', :js do
 
   context 'all security events view' do
     context 'as a logged in user' do
-      let(:user) { create(:user) }
+      let(:user) { create(:restricted_ic) }
 
       before { login_as user }
 
@@ -89,7 +89,7 @@ feature 'Security events pages', :js do
   end
 
   context 'individual security events show view' do
-    let(:user) { create(:user) }
+    let(:user) { create(:restricted_ic) }
     let(:event) { create(:security_event, user: user) }
 
     context 'as a logged in user' do

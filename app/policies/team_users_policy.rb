@@ -6,24 +6,8 @@ class TeamUsersPolicy < BasePolicy
     @team = team
   end
 
-  def index?
+  def manage?
     in_team? || admin?
-  end
-
-  def new?
-    in_team? || admin?
-  end
-
-  def create?
-    in_team? || admin?
-  end
-
-  def remove_confirm?
-    (admin? || in_team?) 
-  end
-
-  def destroy?
-    (admin? || in_team?) 
   end
 
   private
@@ -33,6 +17,6 @@ class TeamUsersPolicy < BasePolicy
   end
 
   def in_team?
-    team.users.include?(current_user)
+    current_user.teams.include?(team)
   end
 end

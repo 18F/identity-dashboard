@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UsersController do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -11,9 +11,7 @@ describe UsersController do
 
   describe '#new' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'has a success response' do
         get :new
@@ -30,9 +28,7 @@ describe UsersController do
 
   describe '#index' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'has a success response' do
         get :index
@@ -49,9 +45,7 @@ describe UsersController do
 
   describe '#edit' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'has a success response' do
         get :edit, params: { id: 1 }
@@ -68,15 +62,14 @@ describe UsersController do
 
   describe '#update' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response.status).to eq(302)
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
@@ -87,9 +80,7 @@ describe UsersController do
 
   describe '#create' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      let(:user) { create(:admin) }
 
       context 'when the user is valid' do
         it 'has a redirect response' do
@@ -97,6 +88,7 @@ describe UsersController do
           expect(response.status).to eq(302)
         end
       end
+
       context 'when the user is invalid' do
         it "renders the 'new' view" do
           patch :create, params: { user: { admin: true, email: user.email } }
@@ -104,6 +96,7 @@ describe UsersController do
         end
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
@@ -113,11 +106,11 @@ describe UsersController do
   end
 
   describe '#destroy' do
-    let(:user_to_delete) { create(:user) }
+    let(:user_to_delete) { create(:restricted_ic) }
 
     context 'when the user is an admin' do
+      let(:user) { create(:admin) }
       before do
-        user.admin = true
         delete :destroy, params: { id: user_to_delete.id }
       end
 

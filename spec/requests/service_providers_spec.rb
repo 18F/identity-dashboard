@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
-  let(:user) { create(:user) }
-  let(:admin_user) { create(:user, admin: true) }
+  let(:user) { create(:restricted_ic) }
+  let(:admin_user) { create(:admin) }
   describe 'approve on update' do
     it 'disallows app owner from approving the app' do
       login_as(sp.user)

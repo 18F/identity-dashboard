@@ -1,5 +1,5 @@
 class SecurityEventsController < ApplicationController
-  before_action -> { authorize SecurityEvent }, only: %i[index all search]
+  before_action -> { authorize SecurityEvent, :manage_security_events? }, only: %i[index all search]
   before_action -> { authorize security_event }, only: %i[show]
 
   rescue_from ActiveRecord::RecordNotFound do

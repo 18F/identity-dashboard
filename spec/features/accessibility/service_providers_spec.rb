@@ -16,7 +16,7 @@ feature 'Service provider pages', :js do
     end
 
     context 'a service provider exists' do
-      let(:user) { create(:user, :with_teams) }
+      let(:user) { create(:restricted_ic, :with_teams) }
       let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
 
       context 'show page' do
@@ -37,7 +37,7 @@ feature 'Service provider pages', :js do
   end
 
   context 'for users' do
-    let(:user) { create(:user, :with_teams) }
+    let(:user) { create(:restricted_ic, :with_teams) }
 
     before { login_as(user) }
 

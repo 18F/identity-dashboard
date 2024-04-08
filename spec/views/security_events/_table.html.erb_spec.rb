@@ -11,7 +11,7 @@ RSpec.describe 'security_events/table.html.erb' do
           }
   end
 
-  let(:user) { create(:user) }
+  let(:user) { create(:restricted_ic) }
   let(:security_events) do
     2.times.map { create(:security_event, user: user) }
   end

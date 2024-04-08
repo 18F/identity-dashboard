@@ -1,115 +1,34 @@
 require 'rails_helper'
 
-RSpec.describe SecurityEventPolicy do
-  subject(:policy) { SecurityEventPolicy.new(user, model) }
+describe SecurityEventPolicy do
+  let(:admin) { create(:admin) }
+  let(:ic_user) { create(:ic) }
+  let(:restricted_user) { create(:restricted_ic) }
+  let(:security_event) { create(:security_event, user: restricted_user) }
 
-  permissions :index? do
-    let(:model) { SecurityEvent }
-
-    context 'a logged out user' do
-      let(:user) { nil }
-
-      it 'is not given access to the security event view' do
-        expect(SecurityEventPolicy).to_not permit(user, model)
-      end
+  permissions :manage_security_events? do
+    it 'authorizes an admin' do
+      expect(SecurityEventPolicy).to permit(admin, SecurityEvent)
     end
-
-    context 'a non-admin user' do
-      let(:user) { build(:user) }
-
-      it 'is not given access to the security event view' do
-        expect(SecurityEventPolicy).to_not permit(user, model)
-      end
+    it 'does not authorize an IC user' do
+      expect(SecurityEventPolicy).to_not permit(ic_user, SecurityEvent)
     end
-
-    context 'an admin user' do
-      let(:user) { build(:admin) }
-
-      it 'is given access to the security event view' do
-        expect(SecurityEventPolicy).to permit(user, model)
-      end
-    end
-  end
-
-  describe '#all?' do
-    let(:model) { SecurityEvent }
-
-    context 'for a non-admin user' do
-      let(:user) { build(:user) }
-
-      it 'is false' do
-        expect(policy.all?).to eq(false)
-      end
-    end
-
-    context 'for an admin user' do
-      let(:user) { build(:admin) }
-
-      it 'is true' do
-        expect(policy.all?).to eq(true)
-      end
+    it 'does not authorize other users' do
+      expect(SecurityEventPolicy).to_not permit(restricted_user, SecurityEvent)
     end
   end
 
   permissions :show? do
-    let(:model) { build(:security_event) }
-
-    context 'a logged out user' do
-      let(:user) { nil }
-
-      it 'is not given access to invidual security event views' do
-        expect(SecurityEventPolicy).to_not permit(user, model)
-      end
+    it 'gives access to an admin' do
+      expect(SecurityEventPolicy).to permit(admin, security_event)
     end
 
-    context 'a non-admin user' do
-      let(:user) { build(:user) }
-
-
-      context 'when the event belongs to the user' do
-        let(:model) { build(:security_event, user: user) }
-
-        it 'is not given access to invidual security event views' do
-          expect(SecurityEventPolicy).to_not permit(user, model)
-        end
-      end
-
-      context 'when the event belongs to another user' do
-        let(:another_user) { build(:user) }
-        let(:model) { build(:security_event, user: another_user) }
-
-        it 'is not given access to invidual security event views' do
-          expect(SecurityEventPolicy).to_not permit(user, model)
-        end
-      end
+    it 'does not give access to an IC user' do
+      expect(SecurityEventPolicy).to_not permit(ic_user, security_event)
     end
 
-    context 'an admin user' do
-      let(:user) { build(:admin) }
-
-      it 'is given access to invidual security event views' do
-        expect(SecurityEventPolicy).to permit(user, model)
-      end
-    end
-  end
-
-  describe '#search?' do
-    let(:model) { SecurityEvent }
-
-    context 'for a non-admin user' do
-      let(:user) { build(:user) }
-
-      it 'is false' do
-        expect(policy.search?).to eq(false)
-      end
-    end
-
-    context 'for an admin user' do
-      let(:user) { build(:admin) }
-
-      it 'is true' do
-        expect(policy.search?).to eq(true)
-      end
+    it 'does not give access to restricted ICs' do
+      expect(SecurityEventPolicy).to_not permit(restricted_user, security_event)
     end
   end
 end
