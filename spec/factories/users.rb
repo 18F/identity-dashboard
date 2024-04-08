@@ -13,7 +13,27 @@ FactoryBot.define do
     end
 
     factory :admin do
-      admin { true }
+      after(:create) do |user|
+        user.roles.destroy_all
+        create(:admin_user_role, user: user)
+        user.reload
+      end
+    end
+
+    factory :ic do
+      after(:create) do |user|
+        user.roles.destroy_all
+        create(:ic_user_role, user: user)
+        user.reload
+      end
+    end
+
+    factory :restricted_ic do
+      after(:create) do |user|
+        user.roles.destroy_all
+        create(:user_role, user: user)
+        user.reload
+      end
     end
   end
 end
