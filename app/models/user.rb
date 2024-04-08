@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_many :teams, through: :user_teams
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy
+  has_many :user_roles
+  has_many :roles, through: :user_roles
 
   validates :email, format: { with: Devise.email_regexp }
 
@@ -65,6 +67,22 @@ class User < ApplicationRecord
 
   def unconfirmed?
     last_sign_in_at.nil? && created_at < 14.days.ago
+  end
+
+  def has_role?(title)
+    roles.include? Role.find_by(title:)
+  end
+
+  def admin?
+    has_role? 'login_engineer'
+  end
+
+  def ic?
+    has_role? 'ic'
+  end
+
+  def restricted_ic?
+    has_role? 'restricted_ic'
   end
 
   private
