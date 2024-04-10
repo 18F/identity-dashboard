@@ -1,10 +1,13 @@
 <h1>Manage users for <%= @team.name %></h1>
 
+<div>
+  <%= button_to "Add user",
+    new_team_user_path(@team.id),
+    method: :get,
+    class: 'usa-button usa-button--outline'
+  %>
+</div>
 <table class="usa-table">
-  <div>
-    <%= button_to "Add user", new_team_user_path(@team.id),
-        method: :get, class: 'usa-button usa-button--outline' %>
-  </div>
   <thead>
     <tr>
       <th scope="col">Email</th>
