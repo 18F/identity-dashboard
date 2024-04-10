@@ -22,7 +22,7 @@ describe UserSession do
       end
     end
 
-    context 'when the user email ends with a allowlisted tld' do
+    context 'when the user email ends with a whitelisted tld' do
       let(:email) { 'test@test.agency.gov' }
 
       it 'returns the user' do
@@ -31,7 +31,7 @@ describe UserSession do
       end
     end
 
-    context 'when the user does not exist and does not have a allowlisted email' do
+    context 'when the user does not exist and does not have a whitelisted email' do
       it 'returns nil' do
         auth_hash['email'] = 'test@bad.email'
         expect(subject).to eq(nil)

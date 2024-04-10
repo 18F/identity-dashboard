@@ -1,4 +1,4 @@
-<% if allowlisted_user?(current_user) %>
+<% if whitelisted_user?(current_user) %>
   <div class="usa-alert usa-alert--info">
     <div class="usa-alert__body">
       <p class="usa-alert__text">You can now create teams.</p>
@@ -7,10 +7,10 @@
 <% end %>
 
 <h1 class="usa-display">Hello</h1>
-<% if allowlisted_user?(current_user) %>
-  <p class='usa-intro'>Let's integrate apps with Login.gov</p>
+<% if whitelisted_user?(current_user) %>
+  <p class='usa-intro'>Let's integrate apps with login.gov</p>
 <% elsif current_user.admin? %>
-  <p class='usa-intro'>Let's help our Partners integrate apps with Login.gov</p>
+  <p class='usa-intro'>Let's help our Partners integrate apps with login.gov</p>
 <% end %>
 
 <% if @teams.count > 0 %>
@@ -20,7 +20,7 @@
         new_team_path,
         method: :get,
         class: "usa-button margin-top-4 margin-bottom-4",
-        ) if allowlisted_user?(current_user)
+        ) if whitelisted_user?(current_user)
   %>
   <h1 class='margin-bottom-3'>My teams</h1>
   <%= render 'teams/teams_list' %>

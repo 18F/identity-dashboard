@@ -1,32 +1,32 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
-  <legend class='usa-sr-only'>Dashboard Configuration</legend>
+  <legend class='usa-sr-only'>Production Configuration</legend>
   <%= form.label :prod_config,
-                 label: 'Dashboard Configuration',
-                 class: 'usa-label' %>
+                 label: 'Production Configuration',
+                 class: 'usa-label',
+                 hint: I18n.t('service_provider_form.prod_config').html_safe %>
   <%= form.collection_radio_buttons(:prod_config,
-                                    { "Production" => true, "Sandbox" => false },
+                                    { "Yes" => true, "No" => false },
                                     :last, :first,
-                                    item_wrapper_tag: :ul,
-                                    item_wrapper_class: "usa-input-list") do |b| %>
-    <li>
-      <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
-      <%=  b.label(class: "usa-radio__label")%>
-    </li>
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: "usa-radio") do |b| %>
+    <%=  b.radio_button(class: "usa-radio__input") %>
+    <%=  b.label(class: "usa-radio__label")%>
   <% end %>
+  <%= form.hint I18n.t('service_provider_form.prod_config') %>
 
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'App name',
-                 hint: I18n.t('service_provider_form.app_name_html') %>
+                 hint: I18n.t('service_provider_form.app_name').html_safe %>
 
   <%= form.input :friendly_name,
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: I18n.t('service_provider_form.friendly_name_html') %>
+                 hint: I18n.t('service_provider_form.friendly_name').html_safe %>
 
 
   <%= form.input :description,
@@ -71,7 +71,7 @@
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
-                 hint: I18n.t('service_provider_form.identity_assurance_level_html') %>
+                 hint: I18n.t('service_provider_form.identity_assurance_level').html_safe %>
 
   <%= form.input :default_aal,
                  as: :select,
@@ -90,7 +90,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint I18n.t('service_provider_form.attribute_bundle_html') %>
+    <%= form.hint I18n.t('service_provider_form.attribute_bundle').html_safe %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -109,12 +109,12 @@
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
                  label: 'Issuer',
-                 label_html: { class: 'usa-input-required' },
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 label_html: { class: 'usa-input-required'},
+                 input_html: { class: 'usa-input'},
                  hint: if form.object.persisted?
                      I18n.t('service_provider_form.change_issuer')
                    else
-                     I18n.t('service_provider_form.issuer_html')
+                     I18n.t('service_provider_form.issuer').html_safe
                    end %>
 
   <% if current_user.admin? %>
@@ -155,7 +155,7 @@
                    placeholder: 'generic.svg',
                    label: 'Logo',
                    input_html: { class: 'usa-input' },
-                   hint: I18n.t('service_provider_form.logo_html') %>
+                   hint: I18n.t('service_provider_form.logo').html_safe %>
   <% end %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
@@ -223,21 +223,21 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <div class='saml-fields'>
     <%= form.input :acs_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
+                   input_html: { class: 'usa-input' },
                    label_html: { class: 'usa-input-required'},
                    label: 'Assertion Consumer Service URL',
                    required: true,
-                   hint: I18n.t('service_provider_form.assertion_consumer_service_url_html') %>
+                   hint: I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
                    label: 'Assertion Consumer Logout Service URL',
-                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url_html') %>
+                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url').html_safe %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
                    label: 'SP Initiated Login URL',
-                   hint: I18n.t('service_provider_form.sp_initiated_login_url_html') %>
+                   hint: I18n.t('service_provider_form.sp_initiated_login_url').html_safe %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
@@ -249,7 +249,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested',
                   class: 'usa-label',
-                  hint: I18n.t('service_provider_form.signed_response_requested') %>
+                  hint: I18n.t('service_provider_form.signed_response_requested').html_safe %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -262,17 +262,17 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <div class='saml-fields'>
     <%= form.input :return_to_sp_url,
-                  input_html: { class: 'usa-input', aria: { invalid: false } },
+                  input_html: { class: 'usa-input' },
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
-                  hint: I18n.t('service_provider_form.return_to_app_url_html') %>
+                  hint: I18n.t('service_provider_form.return_to_app_url').html_safe %>
   </div>
   <%= form.input :failure_to_proof_url,
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Failure to Proof URL',
-                 hint: I18n.t('service_provider_form.failure_to_proof_url'),
+                 hint: I18n.t('service_provider_form.failure_to_proof_url').html_safe,
                  required: true %>
 
   <%= form.input :push_notification_url,
@@ -314,11 +314,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= I18n.t('service_provider_form.oidc_redirects_html') %>
+      <%= I18n.t('service_provider_form.oidc_redirects').html_safe %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint I18n.t('service_provider_form.saml_redirects_html') %>
+      <%= form.hint I18n.t('service_provider_form.saml_redirects').html_safe %>
     </div>
 
     <%= form.button :button,
@@ -333,59 +333,73 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.label :admin,
                    label: 'Accessible',
                    class: 'usa-label',
-                   hint: I18n.t('service_provider_form.active') %>
+                   hint: I18n.t('service_provider_form.active').html_safe %>
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
-                                      item_wrapper_tag: :ul,
-                                      item_wrapper_class: 'usa-input-list') do |b| %>
-      <li>
-        <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
-        <%=  b.label(class: "usa-radio__label")%>
-      </li>
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-radio') do |b| %>
+      <%=  b.radio_button(class: "usa-radio__input") %>
+      <%=  b.label(class: "usa-radio__label")%>
     <% end %>
-    <%= form.hint I18n.t('service_provider_form.active') %>
+    <%= form.hint I18n.t('service_provider_form.active').html_safe %>
   </div>
 
-  <% if @help_text_empty %>
-    <p class="usa-label">Custom help text</p>
-    <p>You have no existing help text.</p>
-    <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
-  <% else%>
+  <% if current_user.admin? %>
     <fieldset class="usa-fieldset-inputs custom-help-text">
       <legend>Custom help text</legend>
-      <% if current_user.admin? %>
-        <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
-        <%= safe_join(ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
-        </p>
-      <% else %>
-        <p>You can view your existing help text here.</p>
-        <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
-      <% end %>
+      <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
+      <%= ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| "<code>#{t}</code>" }.join(", ").html_safe %>.
+      </p>
       <%= form.fields_for :help_text do |h| %>
         <%= h.fields_for :sign_in do |s| %>
-          <br><legend><span class="text-heavy">Sign-in help text:</span></legend>
-          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en"), readonly: readonly_help_text? } %>
-          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es"), readonly: readonly_help_text?  } %>
-          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr"), readonly: readonly_help_text? } %>
+          <br><legend><b>Sign-in help text:</b></legend>
+          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en") } %>
+          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es") } %>
+          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr") } %>
         <% end %>
 
         <%= h.fields_for :sign_up do |s| %>
           <br><legend><b>Sign-up help text:</b></legend>
-          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en"),readonly: readonly_help_text? } %>
-          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es"), readonly: readonly_help_text? } %>
-          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr"), readonly: readonly_help_text? } %>
+          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en") } %>
+          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es") } %>
+          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr") } %>
         <% end %>
 
         <%= h.fields_for :forgot_password do |f| %>
           <br><legend><b>Forgot password help text:</b></legend>
-          <%= f.input  :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en"), readonly: readonly_help_text? } %>
-          <%= f.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es"), readonly: readonly_help_text? } %>
-          <%= f.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr"), readonly: readonly_help_text? } %>
+          <%= f.input  :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en") } %>
+          <%= f.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es") } %>
+          <%= f.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr") } %>
         <% end %>
+    <% end %>
     </fieldset>
+  <% else %>
+    <% if @help_text_empty %>
+      <p class="usa-label">Custom help text</p>
+      <p>You have no existing help text.</p>
+      <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <% else %>
+      <fieldset class="usa-fieldset-inputs custom-help-text">
+        <legend class="usa-label">Custom help text</legend>
+          <p>You can view your existing help text here.</p>
+          <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+          <legend class="usa-label"><b>Sign-in help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-in">English</label><textarea id="english-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-in">Español</label><textarea id="espanol-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-in">Français</label><textarea id="french-sign-in" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_in", "fr") %></textarea></div>
+
+          <legend class="usa-label"><b>Sign-up help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-sign-up">English</label><textarea id="english-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-sign-up">Español</label><textarea id="espanol-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-sign-up">Français</label><textarea id="french-sign-up" class="block col-12 optional" readonly><%= service_provider.help_text.dig("sign_up", "fr") %></textarea></div>
+
+          <legend class="usa-label">Forgot password help text:</legend>
+          <div class="mb2 text optional"><label class="usa-label optional" for="english-forgot-pass">English</label><textarea id="english-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "en") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="espanol-forgot-pass">Español</label><textarea id="espanol-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "es") %></textarea></div>
+          <div class="mb2 text optional"><label class="usa-label optional" for="french-forgot-pass">Français</label><textarea id="french-forgot-pass" class="block col-12 optional" readonly><%= service_provider.help_text.dig("forgot_password", "fr") %></textarea></div>
+      </fieldset>
     <% end %>
   <% end %>
-</fieldset>
 
 <%= javascript_include_tag 'service_provider_form' %>

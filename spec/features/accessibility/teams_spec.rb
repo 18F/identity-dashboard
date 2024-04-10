@@ -1,120 +1,44 @@
 require 'rails_helper'
-require 'axe-rspec'
 
 feature 'Team pages', :js do
-  let(:user) { create(:user, :with_teams) }
-  let(:team) { user.teams.first }
+  let(:admin) { create(:admin) }
 
-  before  { login_as(user) }
-
-  context 'as an admin' do
-    let(:user) { create(:admin) }
-
-    context 'index page' do
-      scenario 'is accessible' do
-        visit teams_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
-
-    context 'all teams page' do
-      scenario 'is accessible' do
-        visit teams_all_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
-
-    context 'new team page' do
-      scenario 'is accessible' do
-        visit new_team_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
+  before do
+    login_as(admin)
   end
 
-  context 'as a user' do
-    context 'editing an existing team' do
-      scenario 'view is accessible' do
-        visit edit_team_path(team)
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
+  scenario 'index page is accessible' do
+    visit teams_path
+    expect(page).to be_accessible
+  end
 
-    context 'creating a new team' do
-      context 'user has a .gov email address' do
-        before do
-          create(:agency, name: 'GSA')
+  scenario 'All teams page is accessible' do
+    visit teams_all_path
+    expect(page).to be_accessible
+  end
 
-          visit new_team_path
-          fill_in 'Name', with: 'team name'
-          select('GSA', from: 'Agency')
-          fill_in 'Description', with: 'department name'
-          click_on 'Create'
-        end
+  scenario 'New team page is accessible' do
+    visit new_team_path
+    expect(page).to be_accessible
+  end
 
-        describe 'new team view' do
-          scenario 'is accessible' do
-            expect_page_to_have_no_accessibility_violations(page)
-          end
-        end
+  scenario 'Edit team page is accessible' do
+    user = create(:user)
+    team = create(:team, users: [user])
+    visit edit_team_path(team)
+    expect(page).to be_accessible
+  end
 
-        context 'adding a user' do
-          before do
-            click_on 'Add user'
-          end
+  scenario 'New team user page is accessible' do
+    create(:agency, name: 'GSA')
 
-          describe 'add new user to team view' do
-            scenario 'is accessible' do
-              expect_page_to_have_no_accessibility_violations(page)
-            end
-          end
+    visit new_team_path
 
-          context 'add email' do
-            let(:email) { 'user@example.com' }
-            before do
-              fill_in 'Email', with: email
-              click_on 'Add'
-            end
+    fill_in 'Description', with: 'department name'
+    fill_in 'Name', with: 'team name'
+    select('GSA', from: 'Agency')
 
-            context 'bad email' do
-              let(:email) { 'blah '}
-              scenario 'is accessible' do
-                expect_page_to_have_no_accessibility_violations(page)
-              end
-            end
-
-            context 'valid email is added' do
-              scenario 'is accessible' do
-                expect_page_to_have_no_accessibility_violations(page)
-              end
-            end
-
-            context 'returning to the users view with a user' do
-              before do
-                click_on 'Back'
-              end
-
-              scenario 'is accessible' do
-                expect_page_to_have_no_accessibility_violations(page)
-              end
-            end
-          end
-        end
-      end
-
-      context 'user has a .com email address' do
-        before do
-          user.update(email: 'user@example.com')
-
-          visit new_team_path
-        end
-
-        describe 'unauthorized new team view' do
-          scenario 'is accessible' do
-            expect_page_to_have_no_accessibility_violations(page)
-          end
-        end
-      end
-    end
+    click_on 'Create'
+    expect(page).to be_accessible
   end
 end

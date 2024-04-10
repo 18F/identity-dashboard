@@ -1,7 +1,7 @@
 <h1 class="usa-display">New user</h1>
 
 <%= simple_form_for(@user,
-    html: { autocomplete: 'off' },
+    html: { autocomplete: 'off', role: 'form' },
     url: users_path) do |form| %>
   <%= render 'form', form: form %>
   <%= form.button :submit, 'Create', :class => "usa-button" %>
