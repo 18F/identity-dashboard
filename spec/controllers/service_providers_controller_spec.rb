@@ -51,7 +51,6 @@ describe ServiceProvidersController do
 
     context 'when uploading a logo' do
       before do
-        allow(subject).to receive(:authorize_service_provider).and_return(true)
         allow(subject).to receive(:authorize_approval).and_return(true)
         allow(subject).to receive(:logo_file_param).and_return(logo_file_params)
       end
