@@ -8,10 +8,4 @@ class UserPolicy < BasePolicy
   def none?
     true
   end
-
-  private
-
-  def admin?
-    user&.admin?
-  end
 end

@@ -27,10 +27,6 @@ class ServiceProviderPolicy < BasePolicy
     record.user == user
   end
 
-  def admin?
-    user.admin?
-  end
-
   def member?
     team = record.team
     team.present? && user.teams.include?(team)

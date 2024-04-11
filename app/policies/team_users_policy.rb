@@ -6,10 +6,6 @@ class TeamUsersPolicy < BasePolicy
 
   private
 
-  def admin?
-    user&.admin?
-  end
-
   def in_team?
     record.users.include?(user)
   end

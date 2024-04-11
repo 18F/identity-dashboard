@@ -1,15 +1,28 @@
 class TeamPolicy < BasePolicy
   include TeamHelper
 
-  attr_reader :current_user, :team
+  def all?
+    admin?
+  end
 
-  def initialize(current_user, model)
-    @current_user = current_user
-    @team = model
+  def create?
+    allowlisted_user?(user) || admin?
+  end
+
+  def destroy?
+    admin?
+  end
+
+  def edit?
+    in_team? || admin?
   end
 
   def index?
     true
+  end
+
+  def new?
+    allowlisted_user?(user) || admin?
   end
 
   def show?
@@ -20,33 +33,9 @@ class TeamPolicy < BasePolicy
     in_team? || admin?
   end
 
-  def edit?
-    in_team? || admin?
-  end
-
-  def destroy?
-    admin?
-  end
-
-  def create?
-    allowlisted_user?(current_user) || admin?
-  end
-
-  def new?
-    allowlisted_user?(current_user) || admin?
-  end
-
-  def all?
-    admin?
-  end
-
   private
 
-  def admin?
-    current_user&.admin?
-  end
-
   def in_team?
-    @team.users.include?(current_user)
+    record.users.include?(user)
   end
 end
