@@ -15,7 +15,7 @@ if Rails.env.development? || Rails.env.test?
              issuer: issuer,
              agency: Agency.find_by(name: 'General Services Administration'),
              friendly_name: Rails.application.config.app_name,
-             description: 'user friendly login.gov dashboard',
+             description: 'user friendly Login.gov dashboard',
              metadata_url: "http://localhost:3001/api/service_providers/#{issuer}",
              acs_url: 'http://localhost:3001/users/auth/saml/callback',
              assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout',

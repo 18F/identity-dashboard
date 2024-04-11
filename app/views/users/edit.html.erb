@@ -1,7 +1,7 @@
 
 <h1 class="usa-display">Edit user "<%= @user.email %>"</h1>
 
-<%= simple_form_for(@user, html: { autocomplete: 'off', role: 'form' }) do |form| %>
+<%= simple_form_for(@user, html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form %>
   <%= link_to(

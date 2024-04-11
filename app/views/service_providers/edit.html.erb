@@ -1,7 +1,7 @@
 
 <h1 class="usa-display">Editing "<%= service_provider.friendly_name %>"</h1>
 
-<%= simple_form_for(service_provider, html: { autocomplete: 'off', role: 'form', class: 'service-provider-form usa-form usa-form--large' }) do |form| %>
+<%= simple_form_for(service_provider, html: { autocomplete: 'off', class: 'service-provider-form usa-form usa-form--large' }) do |form| %>
   <% selected_team = @service_provider.group_id %>
   <%= render 'form', form: form, selected_team: selected_team %>
     <br><br>
