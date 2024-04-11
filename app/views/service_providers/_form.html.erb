@@ -224,9 +224,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <div class='saml-fields'>
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input' },
-                   label_html: { class: 'usa-input-required'},
                    label: 'Assertion Consumer Service URL',
-                   required: true,
                    hint: I18n.t('service_provider_form.assertion_consumer_service_url').html_safe %>
 
     <%= form.input :assertion_consumer_logout_service_url,

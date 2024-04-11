@@ -155,35 +155,6 @@ feature 'Service Providers CRUD' do
       )
     end
 
-    scenario 'ACS URL is required with SAML protocol', :js do
-      user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
-
-      login_as(user)
-
-      visit edit_service_provider_path(service_provider)
-      acs_input = find_field('service_provider_acs_url')
-      submit_btn = find('input[name="commit"]')
-      # unset required field
-      acs_input.set('')
-
-      submit_btn.click
-      message = acs_input.native.attribute('validationMessage')
-      expect(message).to eq 'Please fill out this field.'
-
-      # fill field with invalid string
-      acs_input.set('lorem ipsum')
-
-      submit_btn.click
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('is invalid')
-
-      # ensure that valid URL now submits properly
-      acs_input.set('https://fake.gov/test/saml/sp_login')
-
-      submit_btn.click
-      expect(page).to have_no_selector('.usa-error-message')
-    end
-
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
