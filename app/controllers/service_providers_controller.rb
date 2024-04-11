@@ -1,6 +1,7 @@
 class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all]
-  before_action -> { authorize service_provider, :member_or_admin? }, only: %i[update edit show destroy]
+  before_action -> {
+ authorize service_provider, :member_or_admin? }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :add_iaa_warning, except: %i[index destroy]
