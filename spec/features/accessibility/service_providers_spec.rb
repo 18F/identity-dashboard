@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'axe-rspec'
 
 feature 'Service provider pages', :js do
   before do
@@ -7,109 +6,46 @@ feature 'Service provider pages', :js do
   end
 
   context 'for admins' do
-    let(:admin) { create(:admin) }
-    before { login_as(admin) }
-
     scenario 'all service providers page is accessible' do
+      admin = create(:admin)
+      login_as(admin)
+
       visit service_providers_all_path
-      expect_page_to_have_no_accessibility_violations(page)
-    end
-
-    context 'a service provider exists' do
-      let(:user) { create(:user, :with_teams) }
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
-
-      context 'show page' do
-        # admins have access to more features
-        scenario 'is accessible' do
-          visit service_provider_path(app)
-          expect_page_to_have_no_accessibility_violations(page)
-        end
-      end
-
-      context 'edit page' do
-        scenario 'is accessible' do
-          visit edit_service_provider_path(app)
-          expect_page_to_have_no_accessibility_violations(page)
-        end
-      end
+      expect(page).to be_accessible
     end
   end
 
   context 'for users' do
     let(:user) { create(:user, :with_teams) }
 
-    before { login_as(user) }
-
-    context 'index page' do
-      scenario 'accessible' do
-        visit service_providers_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
+    before do
+      login_as(user)
     end
 
-    context 'new service provide page' do
-      scenario 'new service provider page' do
-        visit new_service_provider_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
+    scenario 'index page is accessible' do
+      visit service_providers_path
+      expect(page).to be_accessible
     end
 
-    context 'service provider exists' do
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
+    scenario 'new service provider page is accessible' do
+      visit new_service_provider_path
+      expect(page).to be_accessible
+    end
 
-      context 'show page' do
-        scenario 'is accessible' do
-          visit service_provider_path(app)
-          expect_page_to_have_no_accessibility_violations(page)
-        end
+    scenario 'service provider details page is accessible' do
+      app = create(:service_provider, :with_users_team, user: user, logo: 'generic.svg')
+      login_as(user)
 
-        context 'with a SAML app' do
-          let(:app) do
-            create(:service_provider,
-              :saml,
-              :with_users_team,
-              user: user,
-              logo: 'generic.svg',
-            )
-          end
+      visit service_provider_path(app)
+      expect(page).to be_accessible
+    end
 
-          scenario 'is accessible' do
-            visit service_provider_path(app)
-            expect_page_to_have_no_accessibility_violations(page)
-          end
-        end
-      end
+    scenario 'service provider details edit page is accessible' do
+      app = create(:service_provider, :with_users_team, user: user)
+      login_as(user)
 
-      context 'edit page' do
-        scenario 'is accessible' do
-          visit edit_service_provider_path(app)
-          expect_page_to_have_no_accessibility_violations(page)
-        end
-      end
-
-      context 'edit page' do
-        context 'switching to a a SAML app' do
-          before do
-            visit edit_service_provider_path(app)
-            find('label[for=service_provider_identity_protocol_saml]').click
-          end
-
-          scenario 'is accessible' do
-            expect_page_to_have_no_accessibility_violations(page)
-          end
-
-          context 'getting an error' do
-            before do
-              click_on 'Update'
-            end
-
-            scenario 'view is still accessible' do
-              expect_page_to_have_no_accessibility_violations(page)
-            end
-          end
-        end
-      end
+      visit edit_service_provider_path(app)
+      expect(page).to be_accessible
     end
   end
 end

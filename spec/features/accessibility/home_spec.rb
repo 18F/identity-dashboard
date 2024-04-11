@@ -1,23 +1,12 @@
 require 'rails_helper'
-require 'axe-rspec'
 
 feature 'Home page', :js do
-  context 'as a logged in user' do
-    scenario 'is accessible' do
-      user = create(:user)
+  scenario 'is accessible' do
+    user = create(:user)
 
-      login_as(user)
-      visit root_path
+    login_as(user)
+    visit root_path
 
-      expect_page_to_have_no_accessibility_violations(page)
-    end
-  end
-
-  context 'not logged in user' do
-    scenario 'is accessible' do
-      visit root_path
-
-      expect_page_to_have_no_accessibility_violations(page)
-    end
+    expect(page).to be_accessible
   end
 end

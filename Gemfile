@@ -72,7 +72,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-core-rspec', '~> 4.2'
+  gem 'axe-matchers'
   gem 'capybara', '>= 3.39.1'
   gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil

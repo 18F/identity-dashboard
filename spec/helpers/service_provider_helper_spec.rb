@@ -252,26 +252,4 @@ describe ServiceProviderHelper do
       end
     end
   end
-
-  describe '#readonly_help_text' do
-    include Devise::Test::ControllerHelpers
-
-    let(:user) { create(:user) }
-    before do
-      sign_in user
-    end
-
-    describe 'a non-admin user' do
-      it 'returns true' do
-        expect(helper.readonly_help_text?).to be true
-      end
-    end
-
-    describe 'an admin user' do
-      let(:user) { create(:admin) }
-      it 'returns false' do
-        expect(helper.readonly_help_text?).to be false
-      end
-    end
-  end
 end

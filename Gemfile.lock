@@ -162,13 +162,9 @@ GEM
       aws-sigv4 (~> 1.4)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-core-api (4.8.2)
-      dumb_delegator
-      virtus
-    axe-core-rspec (4.8.2)
-      axe-core-api
-      dumb_delegator
-      virtus
+    axe-matchers (2.6.1)
+      dumb_delegator (~> 0.8)
+      virtus (~> 1.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -262,9 +258,10 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     drb (2.2.1)
-    dumb_delegator (1.0.0)
+    dumb_delegator (0.8.1)
     enum_help (0.0.19)
       activesupport (>= 3.0.0)
+    equalizer (0.0.11)
     erubi (1.12.0)
     execjs (2.8.1)
     factory_bot (6.4.6)
@@ -473,7 +470,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rdoc (6.6.3.1)
+    rdoc (6.6.2)
       psych (>= 4.0.0)
     redacted_struct (1.1.0)
     regexp_parser (2.7.0)
@@ -573,10 +570,11 @@ GEM
     unicode-display_width (2.4.2)
     uniform_notifier (1.16.0)
     useragent (0.16.10)
-    virtus (2.0.0)
+    virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -607,7 +605,7 @@ DEPENDENCIES
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
   aws-sdk-s3
-  axe-core-rspec (~> 4.2)
+  axe-matchers
   better_errors
   binding_of_caller
   bullet (>= 7.0.5)

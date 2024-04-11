@@ -29,11 +29,11 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    allowlisted_user?(current_user) || admin?
+    whitelisted_user?(current_user) || admin?
   end
 
   def new?
-    allowlisted_user?(current_user) || admin?
+    whitelisted_user?(current_user) || admin?
   end
 
   def all?
