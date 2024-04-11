@@ -14,9 +14,8 @@ describe TeamsController do
 
   describe '#new' do
     context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+      before { user.update(admin: true) }
+
       it 'has a success response' do
         get :new
         expect(response.status).to eq(200)
@@ -24,20 +23,17 @@ describe TeamsController do
     end
 
     context 'when the user is not an admin' do
-      it 'has an error response' do
-        get :new
-        expect(response.status).to eq(401)
-      end
-    end
-
-    context 'when the user is not an admin but has a whitelisted email address' do
-      before do
-        user.email = 'example@gsa.gov'
-      end
-
-      it 'has a success reponse' do
+      it 'has a success response' do
         get :new
         expect(response.status).to eq(200)
+      end
+
+      context 'the user is not a fed' do
+        before { user.update(email: 'user@example.com') }
+        it 'has an error response' do
+          get :new
+          expect(response.status).to eq(401)
+        end
       end
     end
   end
@@ -89,25 +85,40 @@ describe TeamsController do
 
   describe '#create' do
     context 'when the user is not an admin' do
-      it 'creates the team' do
-        post :create, params: { team: { name: 'unique name' }, agency_id: agency.id }
-        expect(response.status).to eq(401)
+      let(:name) { 'unique name'}
+
+      context 'and no fed email address' do
+        before do
+          user.update(email: 'user@example.com')
+          post :create, params: { team: { name:, agency_id: agency.id } }
+        end
+
+        it 'returns a 401' do
+          expect(response.status).to eq(401)
+        end
+
+        it 'does not create the team' do
+          team = Team.find_by(name:)
+          expect(team).to be_nil
+        end
       end
-    end
 
-    context 'when the user is not an admin but has a whitelisted email address' do
-      before do
-        user.email = 'example@gsa.gov'
-      end
+      context 'has a government email address' do
+        before do
+          post :create, params: { team: { name:, agency_id: agency.id } }
+        end
 
-      it 'creates the team and has a redirect response' do
-        post :create, params: { team: { name: 'unique name', agency_id: agency.id } }
+        it 'creates the team' do
+          team = Team.find_by(name: 'unique name')
 
-        team = Team.find_by(name: 'unique name')
+          expect(team).to_not be_nil
+          expect(team.users).to eq([user])
+        end
 
-        expect(team).to_not be_nil
-        expect(team.users).to eq([user])
-        expect(response).to redirect_to(team_users_path(team))
+        it 'redirects' do
+          team = Team.find_by(name: 'unique name')
+          expect(response).to redirect_to(team_users_path(team))
+        end
       end
     end
 
