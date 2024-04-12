@@ -1,7 +1,7 @@
 class TeamUsersPolicy < BasePolicy
 
   def manage_team_users?
-    in_team? || admin?
+    admin? || in_team?
   end
 
   private

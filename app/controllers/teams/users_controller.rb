@@ -1,5 +1,5 @@
 class Teams::UsersController < AuthenticatedController
-  before_action -> { authorize team, :manage_team_users?, policy_class: TeamUsersPolicy }
+  before_action -> { authorize(team, :manage_team_users?, policy_class: TeamUsersPolicy) }
 
   def new
     @user = User.new

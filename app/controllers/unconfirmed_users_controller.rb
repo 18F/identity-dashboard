@@ -1,5 +1,5 @@
 class UnconfirmedUsersController < ApplicationController
-  before_action -> { authorize User }
+  before_action -> { authorize(User, :manage_users?) }
 
   def destroy
     count = DeleteUnconfirmedUsers.call

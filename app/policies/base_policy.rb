@@ -54,6 +54,6 @@ class BasePolicy
   private
 
   def admin?
-    user.admin?
+    user&.admin?
   end
 end
