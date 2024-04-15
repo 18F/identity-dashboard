@@ -61,6 +61,7 @@ stages:
   - test
   - review
   - scan
+  - eks_release
 
 workflow:
   rules:
@@ -68,7 +69,7 @@ workflow:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod" || $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
 
 install:
@@ -501,3 +502,93 @@ ecr-scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+
+############################################
+# EKS Container Lifecycle Pipelines
+############################################
+
+.eks_trigger_rules:
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+    - when: never
+
+.eks_deploy:
+  before_script:
+    - apt-get update && apt-get install -y yq
+    - git config --global user.email "login-team-mary@login.gov"
+    - git config --global user.name "GitLab"
+  script:
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
+    - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
+    - yqFilter=".dashboard.image.repository=\"${rcRepoName}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".dashboard.image.tag=\"${rcTag}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
+    - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
+
+# Build the RC container on RC Branch creation
+build-rc-container:
+  extends:
+    - .eks_trigger_rules
+  stage: eks_release
+  needs: []
+  environment:
+    name: $CI_COMMIT_BRANCH
+  interruptible: true
+  variables:
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi 
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/idp_dashboard.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}"
+      --cache-repo="${ECR_REGISTRY}/identity-dashboard/rc/cache"
+      --cache-ttl=168h 
+      --cache=true
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}"
+      --build-arg "https_proxy=${https_proxy}"
+      --build-arg "no_proxy=${no_proxy}"
+      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" 
+      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
+      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+
+# Deploy RC Container to testing environment. Requires updating identity-idp-helm-chart, creating and merging an MR.
+test-deployment:
+  extends:
+    - .eks_trigger_rules
+    - .eks_deploy
+  stage: eks_release
+  needs:
+    - job: build-rc-container
+  environment:
+    name: $CI_COMMIT_BRANCH
+  variables:
+    testEnvironment: 'ekstest'
+    gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
+    gitMRTarget: 'cmccarthy/lifecycle-checks'
+    gitMRTitle: "Deploy Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}"
+    gitMRDescription: "Updates the Dashboard container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
+    rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
+  interruptible: true
+  tags:
+    - build-pool
+  image:
+    name: bitnami/git:latest
+    entrypoint: ['']
