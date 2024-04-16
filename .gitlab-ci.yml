@@ -513,11 +513,10 @@ ecr-scan:
     - when: never
 
 .eks_deploy:
-  image:
-    name: amazon/aws-cli
-    entrypoint: ['']
   before_script:
-    - apt-get update && apt-get install -y yq git
+#    - apt-get update && apt-get install -y yq git
+    - yum install -y git wget
+    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
     - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
     - git config --global user.email "login-team-mary@login.gov"
     - git config --global user.name "GitLab"
@@ -609,6 +608,6 @@ test-deployment:
   interruptible: true
   tags:
     - build-pool
-#  image:
-#    name: bitnami/git:latest
-#    entrypoint: ['']
+  image:
+    name: amazon/aws-cli
+    entrypoint: ['']
