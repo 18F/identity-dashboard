@@ -1,59 +1,34 @@
 class ServiceProviderPolicy < BasePolicy
-  attr_reader :current_user, :sp
+  attr_reader :user, :record
 
-  def initialize(current_user, model)
-    @current_user = current_user
-    @sp = model
-  end
-
-  def index?
-    true
-  end
-
-  def show?
-    member_or_admin?
-  end
-
-  def update?
-    member_or_admin?
-  end
-
-  def edit?
-    member_or_admin?
-  end
-
-  def destroy?
-    member_or_admin?
+  def all?
+    admin?
   end
 
   def create?
     true
   end
 
-  def new?
+  def index?
     true
   end
 
-  def all?
-    admin?
+  def member_or_admin?
+    owner? || admin? || member?
+  end
+
+  def new?
+    true
   end
 
   private
 
   def owner?
-    sp.user == current_user
-  end
-
-  def admin?
-    current_user.admin?
+    record.user == user
   end
 
   def member?
-    team = sp.team
-    team.present? && current_user.teams.include?(team)
-  end
-
-  def member_or_admin?
-    owner? || admin? || member?
+    team = record.team
+    team.present? && user.teams.include?(team)
   end
 end

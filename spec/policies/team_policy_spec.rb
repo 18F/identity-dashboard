@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:admin_user) { build(:user, admin: true) }
+  let(:admin_user) { build(:admin) }
   let(:team_user) { build(:user) }
   let(:gov_email_user) { build(:user) }
   let(:nongov_email_user) { build(:user, email: 'user@example.com') }
@@ -28,10 +28,10 @@ describe TeamPolicy do
       end
 
       context 'if they are admins' do
-        before { admin_user.update(email: 'user@examle.com') }
+        before { nongov_email_user.update(admin: true) }
 
         it 'are allowed to create teams' do
-          expect(TeamPolicy).to permit(admin_user)
+          expect(TeamPolicy).to permit(nongov_email_user)
         end
       end
     end

@@ -15,5 +15,9 @@ FactoryBot.define do
     factory :admin do
       admin { true }
     end
+
+    factory :restricted_ic do
+      sequence(:email) { |n| "user#{n}@example.com" }
+    end
   end
 end
