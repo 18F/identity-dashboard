@@ -529,9 +529,9 @@ ecr-scan:
     - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
     - yqFilter=".dashboard.image.repository=\"${rcRepoName}\""
-    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
     - yqFilter=".dashboard.image.tag=\"${rcTag}\""
-    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
     - kubectl config get-contexts
