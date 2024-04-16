@@ -512,7 +512,7 @@ ecr-scan:
     - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
     - when: never
 
-.eks_deploy
+.eks_deploy:
   image:
     name: dtzar/helm-kubectl:latest
   before_script:
