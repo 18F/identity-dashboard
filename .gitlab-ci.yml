@@ -514,9 +514,10 @@ ecr-scan:
 
 .eks_deploy:
   before_script:
-#    - apt-get update && apt-get install -y yq git
-    - yum install -y git wget
-    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+    - apt-get update && apt-get install -y yq git
+#    - echo "sslverify=false" >> /etc/yum.conf
+#    - yum install -y git wget
+#    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
     - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
     - git config --global user.email "login-team-mary@login.gov"
     - git config --global user.name "GitLab"
@@ -542,7 +543,7 @@ ecr-scan:
           echo "Awaiting image to update in manifest"
         fi
       done
-    - aws eks update-kubeconfig --region ${awsRegion} --name ${eksClusterName}
+    #- aws eks update-kubeconfig --region ${awsRegion} --name ${eksClusterName}
     - argocd app wait "${testEnvironment}"-logingov 
 
 # Build the RC container on RC Branch creation
@@ -597,8 +598,8 @@ test-deployment:
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
-    awsRegion: 'us-west-2'
-    eksClusterName: 'sandbox'
+#    awsRegion: 'us-west-2'
+#    eksClusterName: 'sandbox'
     testEnvironment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
@@ -609,5 +610,5 @@ test-deployment:
   tags:
     - build-pool
   image:
-    name: amazon/aws-cli
+    name: bitnami/git:latest
     entrypoint: ['']
