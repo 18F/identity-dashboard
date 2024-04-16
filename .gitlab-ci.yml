@@ -527,6 +527,18 @@ ecr-scan:
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
+    - |-
+      updateComplete=0
+      while [ $updateComplete -lt 1]; do
+        sleep 10
+        imageArray=$(argocd app manifests ${testEnvironment}-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-dashboard)
+        if [ "${imageArray}" -eq "${rcRepoName}:${rcTag}" ]; then
+          updateComplete=1
+          echo "Image updated in manifest"
+        else
+          echo "Awaiting image to update in manifest"
+      done
+    - argocd app wait ${testEnvironment}-logingov 
 
 # Build the RC container on RC Branch creation
 build-rc-container:
