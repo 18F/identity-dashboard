@@ -537,6 +537,7 @@ ecr-scan:
           echo "Image updated in manifest"
         else
           echo "Awaiting image to update in manifest"
+        fi
       done
     - argocd app wait ${testEnvironment}-logingov 
 
