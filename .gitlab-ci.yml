@@ -161,7 +161,7 @@ review-app:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep review | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - |-
       export IDP_ENV=$(cat <<EOF
@@ -303,7 +303,7 @@ review-app:
 stop-review-app:
   resource_group: $CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov
   script:
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep review | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
   stage: review
@@ -535,7 +535,7 @@ ecr-scan:
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
     - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep sandbox | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &
     - sleep 5
@@ -612,7 +612,7 @@ test-deployment:
     name: $CI_COMMIT_BRANCH
   variables:
 #    awsRegion: 'us-west-2'
-#    eksClusterName: 'sandbox'
+    eksClusterName: 'sandbox'
     testEnvironment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
