@@ -542,17 +542,19 @@ ecr-scan:
     - argocd login localhost:8080 --insecure --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
     - |-
       updateComplete=0
-      while [ "$updateComplete" -lt 1 ]; do
+      timeoutCounter=0
+      while [ "$updateComplete" -lt 1 ] && [ "$timeoutCounter" -lt 60 ]; do
         sleep 10
         imageArray=$(argocd app manifests "${testEnvironment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-dashboard)
         if [ "${imageArray}" == "${rcRepoName}:${rcTag}" ]; then
           updateComplete=1
           echo "Image updated in manifest"
         else
-          echo "Awaiting image to update in manifest"
+          ((timeoutCounter+=1))
+          echo "Awaiting image to update in manifest. Timeout Counter: ${timeoutCounter}"
         fi
       done
-    - argocd app wait "${testEnvironment}"-logingov
+    - argocd app wait "${testEnvironment}"-logingov --timeout 600
     - argocd logout localhost:8080
 
 # Build the RC container on RC Branch creation
