@@ -533,7 +533,7 @@ ecr-scan:
     - yqFilter=".dashboard.image.tag=\"${rcTag}\""
     - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
-#    - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
+    - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep sandbox | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
@@ -552,16 +552,15 @@ ecr-scan:
           echo "Awaiting image to update in manifest"
         fi
       done
-    #- aws eks update-kubeconfig --region ${awsRegion} --name ${eksClusterName}
     - argocd app wait "${testEnvironment}"-logingov
     - argocd logout localhost:8080
 
 # Build the RC container on RC Branch creation
 build-rc-container:
-#  extends:
-#    - .eks_trigger_rules
-  rules: 
-    - when: never
+  extends:
+    - .eks_trigger_rules
+#  rules: 
+#    - when: never
   stage: eks_release
   needs: []
   environment:
@@ -605,8 +604,8 @@ test-deployment:
     - .eks_trigger_rules
     - .eks_deploy
   stage: eks_release
-  needs: []
-#    - job: build-rc-container
+  needs: 
+    - job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
