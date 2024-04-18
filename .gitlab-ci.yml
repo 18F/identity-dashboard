@@ -516,10 +516,6 @@ ecr-scan:
   image:
     name: dtzar/helm-kubectl:latest
   before_script:
-#    - apt-get update && apt-get install -y yq git
-#    - echo "sslverify=false" >> /etc/yum.conf
-#    - yum install -y git wget
-#    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
     - apk add git yq
     - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
     - git config --global user.email "login-team-mary@login.gov"
@@ -561,8 +557,6 @@ ecr-scan:
 build-rc-container:
   extends:
     - .eks_trigger_rules
-#  rules: 
-#    - when: never
   stage: eks_release
   needs: []
   environment:
@@ -611,7 +605,6 @@ test-deployment:
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
-#    awsRegion: 'us-west-2'
     eksClusterName: 'sandbox'
     testEnvironment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
@@ -622,6 +615,32 @@ test-deployment:
   interruptible: true
   tags:
     - build-pool
-#  image:
-#    name: bitnami/git:latest
-#    entrypoint: ['']
+
+integration-tests:
+  extends:
+    - .eks_trigger_rules
+  stage: eks_release
+  needs:
+    - job: test-deployment
+  environment:
+    name: $CI_COMMIT_BRANCH
+  interruptible: true
+  tags:
+    - test-pool
+  script:
+    - echo "This is where integrations tests should execute on the test environment if/when they exist"
+
+sign-image:
+  extends:
+    - .eks_trigger_rules
+  stage: eks_release
+  needs:
+    - job: integration-tests
+  environment:
+    name: $CI_COMMIT_BRANCH
+  interruptible: true
+  tags:
+    - build-pool
+  script:
+    - echo "Signing not yet implemented"
+
