@@ -655,5 +655,5 @@ sign-image:
   script:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY} 
-    - cosign sign --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}
+    - cosign sign -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}
 
