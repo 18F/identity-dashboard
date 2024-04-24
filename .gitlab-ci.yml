@@ -568,6 +568,9 @@ build-rc-container:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
+  artifacts:
+    paths:
+      - imageDigest.tmp
   script:
     - mkdir -p /kaniko/.docker
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
@@ -584,6 +587,7 @@ build-rc-container:
       --dockerfile "${CI_PROJECT_DIR}/idp_dashboard.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}"
       --cache-repo="${ECR_REGISTRY}/identity-dashboard/rc/cache"
+      --digest-file=imageDigest.tmp
       --cache-ttl=168h 
       --cache=true
       --compressed-caching=false
@@ -654,6 +658,9 @@ sign-image:
       dpkg -i cosign_${LATEST_VERSION}_amd64.deb
   script:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
+    - rcDigest=$(cat imageDigest.tmp)
+    - echo "Image Digest: ${rcDigest}"
+#    - rcDigest=${aws ecr describe-images --repository-name identity-dashboard/rc --image-ids "imageTag=${rcTag}" --query imageDetails[].imageDigest --output text)
     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY} 
-    - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}
+    - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcDigest}
 
