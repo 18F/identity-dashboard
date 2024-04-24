@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action -> { authorize User }
+  before_action -> { authorize User, :manage_users? }, except: [:none]
+  before_action -> { authorize User }, only: [:none]
 
   def index
     @users = User.all.sorted

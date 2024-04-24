@@ -8,7 +8,7 @@
 
 <h1 class="usa-display">Hello</h1>
 <% if allowlisted_user?(current_user) %>
-  <p class='usa-intro'>Let's integrate apps with Login.gov</p>
+  <p class='usa-intro'>Access your existing testing and production apps, create new apps, and manage teams with this dashboard.</p>
 <% elsif current_user.admin? %>
   <p class='usa-intro'>Let's help our Partners integrate apps with Login.gov</p>
 <% end %>
@@ -23,6 +23,7 @@
         ) if allowlisted_user?(current_user)
   %>
   <h1 class='margin-bottom-3'>My teams</h1>
+  <p class='usa-intro'>You are a member of these teams and have access to these apps.</p>
   <%= render 'teams/teams_list' %>
 <% else %>
   <%= render "teams/no_teams" %>

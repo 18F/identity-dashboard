@@ -20,13 +20,13 @@
                  input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'App name',
-                 hint: I18n.t('service_provider_form.app_name_html') %>
+                 hint: t('service_provider_form.app_name_html') %>
 
   <%= form.input :friendly_name,
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: I18n.t('service_provider_form.friendly_name_html') %>
+                 hint: t('service_provider_form.friendly_name_html') %>
 
 
   <%= form.input :description,
@@ -71,7 +71,7 @@
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
-                 hint: I18n.t('service_provider_form.identity_assurance_level_html') %>
+                 hint: t('service_provider_form.identity_assurance_level_html') %>
 
   <%= form.input :default_aal,
                  as: :select,
@@ -90,7 +90,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint I18n.t('service_provider_form.attribute_bundle_html') %>
+    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -114,7 +114,7 @@
                  hint: if form.object.persisted?
                      I18n.t('service_provider_form.change_issuer')
                    else
-                     I18n.t('service_provider_form.issuer_html')
+                     t('service_provider_form.issuer_html')
                    end %>
 
   <% if current_user.admin? %>
@@ -155,7 +155,7 @@
                    placeholder: 'generic.svg',
                    label: 'Logo',
                    input_html: { class: 'usa-input' },
-                   hint: I18n.t('service_provider_form.logo_html') %>
+                   hint: t('service_provider_form.logo_html') %>
   <% end %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
@@ -227,17 +227,17 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    label_html: { class: 'usa-input-required'},
                    label: 'Assertion Consumer Service URL',
                    required: true,
-                   hint: I18n.t('service_provider_form.assertion_consumer_service_url_html') %>
+                   hint: t('service_provider_form.assertion_consumer_service_url_html') %>
 
     <%= form.input :assertion_consumer_logout_service_url,
                    input_html: { class: 'usa-input' },
                    label: 'Assertion Consumer Logout Service URL',
-                   hint: I18n.t('service_provider_form.assertion_consumer_logout_service_url_html') %>
+                   hint: t('service_provider_form.assertion_consumer_logout_service_url_html') %>
 
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
                    label: 'SP Initiated Login URL',
-                   hint: I18n.t('service_provider_form.sp_initiated_login_url_html') %>
+                   hint: t('service_provider_form.sp_initiated_login_url_html') %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
@@ -266,7 +266,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
-                  hint: I18n.t('service_provider_form.return_to_app_url_html') %>
+                  hint: t('service_provider_form.return_to_app_url_html') %>
   </div>
   <%= form.input :failure_to_proof_url,
                  input_html: { class: 'usa-input', aria: { invalid: false } },
@@ -314,11 +314,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= I18n.t('service_provider_form.oidc_redirects_html') %>
+      <%= t('service_provider_form.oidc_redirects_html') %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint I18n.t('service_provider_form.saml_redirects_html') %>
+      <%= form.hint t('service_provider_form.saml_redirects_html') %>
     </div>
 
     <%= form.button :button,

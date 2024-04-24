@@ -1,6 +1,10 @@
 <% @service_providers.each do |sps| %>
   <h1 class="usa-display">My <%= sps[:type] %> Apps</h1>
-
+  <% if sps[:type] == 'Production' %>
+    <p class='usa-intro'>These apps are live. Changes need to be approved by the partner support help desk before going into production.</p>
+    <% else %>
+    <p class='usa-intro'>The sandbox environment lets you test different scenarios without changes to the live app.</p>
+  <% end %>
   <% unless sps[:apps].blank? %>
     <table class="usa-table">
       <%= render partial: 'service_provider_table_header', locals: { is_prod: sps[:type] == 'Production', show_created_at: show_created_at } %>

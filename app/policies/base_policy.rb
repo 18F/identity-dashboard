@@ -50,4 +50,10 @@ class BasePolicy
       scope
     end
   end
+
+  private
+
+  def admin?
+    user&.admin?
+  end
 end
