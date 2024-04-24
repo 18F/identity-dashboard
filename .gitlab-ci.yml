@@ -640,6 +640,7 @@ sign-image:
   stage: eks_release
   needs:
     - job: integration-tests
+    - job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
   interruptible: true
