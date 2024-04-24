@@ -659,7 +659,7 @@ sign-image:
   script:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - rcDigest=$(cat imageDigest.tmp)
-    - echo "Image Digest: ${rcDigest}"
+    - echo "Image Digest - ${rcDigest}"
 #    - rcDigest=${aws ecr describe-images --repository-name identity-dashboard/rc --image-ids "imageTag=${rcTag}" --query imageDetails[].imageDigest --output text)
     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY} 
     - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcDigest}
