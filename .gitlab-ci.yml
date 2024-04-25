@@ -664,5 +664,5 @@ sign-image:
     - echo "Image Digest - ${rcDigest}"
 #    - rcDigest=${aws ecr describe-images --repository-name identity-dashboard/rc --image-ids "imageTag=${rcTag}" --query imageDetails[].imageDigest --output text)
     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY} 
-    - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc:${rcDigest}
+    - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-dashboard/rc@${rcDigest}
 
