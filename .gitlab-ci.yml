@@ -104,9 +104,6 @@ specs:
     POSTGRES_PASSWORD: postgres_password
   services:
     - name: postgres:13.9
-      environment:
-        POSTGRES_USER: postgres_user
-        POSTGRES_PASSWORD: postgres_password
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   artifacts:
