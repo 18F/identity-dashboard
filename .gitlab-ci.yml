@@ -674,7 +674,7 @@ integration-tests:
 staging-deployment:
   extends:
     - .eks_trigger_rules
-    - .eks_deploy
+    - .eks_push_image_to_environment
   stage: eks_release
   when: manual
   needs:
