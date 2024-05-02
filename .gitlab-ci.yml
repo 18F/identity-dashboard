@@ -123,11 +123,11 @@ build-dashboard-image:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/idp_dashboard.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-dashboard/review:${CI_COMMIT_SHA}"
-      ${BRANCH_TAGGING_STRING}
+      --destination "identity-dashboard/review-testing:${CI_COMMIT_SHA}"
       --cache-repo="${ECR_REGISTRY}/identity-dashboard/review/cache"
       --cache-ttl=168h
       --cache=true
+      --no-push 
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
