@@ -622,13 +622,7 @@ test-deployment:
     testEnvironment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
-    gitMRTitle: |-
-      EKS Deployment Pipeline:  Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}
-      Repository: identity-dashboard
-      Branch: ${CI_COMMIT_BRANCH}
-      Environment: ${testEnvironment}
-      GitLab Project ID: ${CI_PROJECT_ID}
-      GitLab Pipeline ID: ${CI_PIPELINE_ID}
+    gitMRTitle: "EKS Deployment Pipeline:  Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}\nRepository: identity-dashboard\nBranch: ${CI_COMMIT_BRANCH}\nEnvironment: ${testEnvironment}\nGitLab Project ID: ${CI_PROJECT_ID}\nGitLab Pipeline ID: ${CI_PIPELINE_ID}"
     gitMRDescription: "Updates the Dashboard container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
     rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
   interruptible: true
