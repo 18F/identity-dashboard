@@ -534,7 +534,7 @@ ecr-scan:
       Branch: ${CI_COMMIT_BRANCH}
       Environment: ${testEnvironment}
       GitLab Project ID: ${CI_PROJECT_ID}
-      GitLab Pipeline ID: ${CI_PIPELINE_ID"
+      GitLab Pipeline ID: ${CI_PIPELINE_ID}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.remove_source_branch origin "${gitBranch}"
 #-o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
 
