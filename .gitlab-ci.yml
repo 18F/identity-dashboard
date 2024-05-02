@@ -172,6 +172,7 @@ specs:
   script:
     - *bundle_install
     - *yarn_install
+    -  cp config/application.yml.default config/application.yml
     -  bundle exec rake db:setup
     -  make lint test
     -  bundle exec rubocop
