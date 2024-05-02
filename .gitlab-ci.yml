@@ -88,38 +88,7 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
-specs:
-  stage: test
-  needs:
-    - job: install
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  variables:
-    COVERAGE: 'true'
-    DOCKER_DB_HOST: db-postgres
-    POSTGRES_USER: postgres_user
-    POSTGRES_PASSWORD: postgres_password
-  services:
-    - name: postgres:13.9
-      alias: db-postgres
-      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-      - rspec.xml
-      - rspec_json/
-    reports:
-      junit: rspec.xml
-  script:
-    - *bundle_install
-    - *yarn_install
-    -  bundle exec rake db:setup
-    -  make lint test
-    -  bundle exec rubocop
+
 
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
@@ -182,6 +151,30 @@ lint:
       - rubocop.xml
     reports:
       junit: rubocop.xml
+
+specs:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    COVERAGE: 'true'
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+  services:
+    - name: postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - *yarn_install
+    -  bundle exec rake db:setup
+    -  make lint test
+    -  bundle exec rubocop
 
 review-app:
   stage: review
