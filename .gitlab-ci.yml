@@ -678,7 +678,7 @@ staging-deployment:
   stage: eks_release
   when: manual
   needs:
-    - job: sign-image
+    - job: integration-tests
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
