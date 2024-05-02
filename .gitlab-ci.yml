@@ -152,30 +152,37 @@ lint:
     reports:
       junit: rubocop.xml
 
+
 specs:
   stage: test
-  needs:
-    - job: install
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
+  needs: []
+  interruptible: true
   variables:
-    COVERAGE: 'true'
-    DOCKER_DB_HOST: db-postgres
-    POSTGRES_USER: postgres_user
-    POSTGRES_PASSWORD: postgres_password
-  services:
-    - name: postgres:13.9
-      alias: db-postgres
-      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+    BRANCH_TAGGING_STRING: ''
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
   script:
-    - *bundle_install
-    - *yarn_install
-    -  cp config/application.yml.default config/application.yml
-    -  bundle exec rake db:setup
-    -  make lint test
-    -  bundle exec rubocop
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/idp_dashboard_testing.Dockerfile"
+      --destination ${BRANCH_TAGGING_STRING}
+      --cache-repo="${ECR_REGISTRY}/identity-dashboard/review/cache"
+      --cache-ttl=168h
+      --cache=true
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 review-app:
   stage: review
