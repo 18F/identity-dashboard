@@ -522,6 +522,12 @@ ecr-scan:
     - git config --global user.name "GitLab"
   script:
     - |-
+      filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\")"
+      echo "Curl1:------------------------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}"
+      echo "Curl2:------------------------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}" | jq '.id'
+      echo "Test3--------------------------------------; test=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs"); echo $test
+      echo "Test4--------------------------------------; test=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}"); echo $test
+      echo "Test5--------------------------------------; test=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}" | jq '.id'); echo $test
       echo "Curl3:\n------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq '.[] | select(.name=="verify-ekstest-deployment")' | jq '.id'
       rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
       git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
