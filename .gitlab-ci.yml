@@ -524,13 +524,16 @@ ecr-scan:
     - |-
       echo "Project ID: ${CI_PROJECT_ID}"
       echo "Pipeline ID: ${CI_PIPELINE_ID}"
+      echo "Curl1:\n------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs"
+      echo "Curl2:\n------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq '.[] | select(.name=="verify-ekstest-deployment")'
+      echo "Curl3:\n------------------"; curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq '.[] | select(.name=="verify-ekstest-deployment") | .id'
+      echo "FILTER CHECK\n----------------"; filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\") | .id"; echo "Filter: ${filter}"
       rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
       git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
       cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
       yqFilter=".dashboard.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
       yqFilter=".dashboard.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-      curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs
-      filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\") | .id"; echo "Filter: ${filter}"; verifyJobid=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}")
+      filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\") | .id"; echo "Filter: ${filter}"; verifyJobId=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}")
       git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}. Cont JobID:${verifyJobId}"
       git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.remove_source_branch origin "${gitBranch}"
 
