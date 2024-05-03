@@ -528,7 +528,7 @@ ecr-scan:
       cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
       yqFilter=".dashboard.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
       yqFilter=".dashboard.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-      filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\")"; verifyJobId=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}"i | jq '.id')
+      filter=".[] | select(.name==\"verify-${testEnvironment}}-deployment\")"; verifyJobId=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}" | jq '.id')
       git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}. Cont Project-JobID:${CI_PROJECT_ID}-${verifyJobId}"
       git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.remove_source_branch origin "${gitBranch}"
 
