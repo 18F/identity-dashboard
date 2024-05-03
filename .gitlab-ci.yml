@@ -522,6 +522,8 @@ ecr-scan:
     - git config --global user.name "GitLab"
   script:
     - |-
+      echo "Project ID: ${CI_PROJECT_ID}"
+      echo "Pipeline ID: ${CI_PIPELINE_ID}"
       rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
       git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
       cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
