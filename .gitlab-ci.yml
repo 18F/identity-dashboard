@@ -583,7 +583,6 @@ build-rc-container:
   variables:
   tags:
     - build-pool
-  when: manual
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
@@ -623,7 +622,8 @@ ekstest-deployment:
     - .eks_trigger_rules
     - .eks_push_image_to_environment
   stage: eks_release
-  when: manual
+  needs:
+    job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
