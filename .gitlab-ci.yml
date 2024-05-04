@@ -583,7 +583,7 @@ build-rc-container:
   variables:
   tags:
     - build-pool
-  when: never
+  when: manual
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
