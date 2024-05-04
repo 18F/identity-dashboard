@@ -623,8 +623,6 @@ ekstest-deployment:
     - .eks_trigger_rules
     - .eks_push_image_to_environment
   stage: eks_release
-#  needs: 
-#    - job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
