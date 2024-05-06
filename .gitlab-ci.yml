@@ -522,14 +522,18 @@ ecr-scan:
     - git config --global user.name "GitLab"
   script:
     - |-
+      gitCmdAutoMerge=''
+      if [ "${autoMerge}" == "true" ]; then
+        gitCmdAutoMerge=' -o merge_request.merge_when_pipeline_succeeds'
+      fi 
       rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
       git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
       cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-      yqFilter=".dashboard.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-      yqFilter=".dashboard.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-      filter=".[] | select(.name==\"verify-${testEnvironment}-deployment\")"; verifyJobId=$(curl --header "PRIVATE-TOKEN: SSZyGJBcyTzUbnCmAxAx" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}" | jq '.id')
-      git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}. Verify Project-JobID:${CI_PROJECT_ID}-${verifyJobId}"
-      git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.remove_source_branch origin "${gitBranch}"
+      yqFilter=".dashboard.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${environment}.yaml
+      yqFilter=".dashboard.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${environment}.yaml
+      filter=".[] | select(.name==\"verify-${environment}-deployment\")"; verifyJobId=$(curl --header "PRIVATE-TOKEN: ${GITLAB_API_PAT}" "https://gitlab.login.gov/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs" | jq "${filter}" | jq '.id')
+      git add ./environments/${environment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${environment}. Verify Project-JobID:${CI_PROJECT_ID}-${verifyJobId}"
+      git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.remove_source_branch origin "${gitBranch}"${gitCmdAutoMerge}
 
 .eks_verify_deployment:
   image:
@@ -538,6 +542,7 @@ ecr-scan:
     - apk add yq
     - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
   script:
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
@@ -550,7 +555,7 @@ ecr-scan:
       timeoutCounter=0
       while [ "$updateComplete" -lt 1 ] && [ "$timeoutCounter" -lt 60 ]; do
         sleep 10
-        imageArray=$(argocd app manifests "${testEnvironment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-dashboard)
+        imageArray=$(argocd app manifests "${environment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-dashboard)
         if [ "${imageArray}" == "${rcRepoName}:${rcTag}" ]; then
           updateComplete=1
           echo "Image updated in manifest"
@@ -559,7 +564,7 @@ ecr-scan:
           echo "Awaiting image to update in manifest. Timeout Counter: ${timeoutCounter}"
         fi
       done
-    - argocd app wait "${testEnvironment}"-logingov --timeout 600
+    - argocd app wait "${environment}"-logingov --timeout 600
     - argocd logout localhost:8080
 
 # Build the RC container on RC Branch creation
@@ -618,13 +623,11 @@ ekstest-deployment:
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
-    #eksClusterName: 'sandbox'
-    testEnvironment: 'ekstest'
-    gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
+    environment: 'ekstest'
+    gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${environment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
-    gitMRTitle: "EKS Deployment Pipeline:  Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}\nRepository: identity-dashboard\nBranch: ${CI_COMMIT_BRANCH}\nEnvironment: ${testEnvironment}\nGitLab Project ID: ${CI_PROJECT_ID}\nGitLab Pipeline ID: ${CI_PIPELINE_ID}"
-    gitMRDescription: "Updates the Dashboard container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
     rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
+    autoMerge: 'true'
   interruptible: true
   tags:
     - build-pool
@@ -641,11 +644,7 @@ verify-ekstest-deployment:
     name: $CI_COMMIT_BRANCH
   variables:
     eksClusterName: 'sandbox'
-    testEnvironment: 'ekstest'
-    #gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
-    #gitMRTarget: 'cmccarthy/lifecycle-checks'
-    #gitMRTitle: "Deploy Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}"
-    #gitMRDescription: "Updates the Dashboard container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
+    environment: 'ekstest'
     rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
   interruptible: true
   tags:
@@ -665,7 +664,7 @@ integration-tests:
   script:
     - echo "This is where integrations tests should execute on the test environment if/when they exist"
 
-staging-deployment:
+eksstage-deployment:
   extends:
     - .eks_trigger_rules
     - .eks_push_image_to_environment
@@ -676,12 +675,28 @@ staging-deployment:
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
-    eksClusterName: 'cmccarthytest'
-    testEnvironment: 'eksstaging'  
-    gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
+    environment: 'eksstaging'  
+    gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${environment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
-    gitMRTitle: "Deploy Dashboard ${CI_COMMIT_BRANCH} to ${testEnvironment}"
-    gitMRDescription: "Updates the Dashboard container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
+    rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
+    autoMerge: 'false'
+  interruptible: true
+  tags:
+    - build-pool
+
+verify-eksstage-deployment:
+  extends:
+    - .eks_trigger_rules
+    - .eks_verify_deployment
+  stage: eks_release
+  needs:
+    - job: eksstage-deployment
+  when: manual
+  environment:
+    name: $CI_COMMIT_BRANCH
+  variables:
+    eksClusterName: 'cmccarthytest'
+    environment: 'eksstage'
     rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
   interruptible: true
   tags:
