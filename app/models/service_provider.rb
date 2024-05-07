@@ -125,6 +125,10 @@ class ServiceProvider < ApplicationRecord
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
+  def help_text_opts
+    I18n.t('service_provider_form.help_text.sign_in')
+  end
+
   private
 
   def sanitize_help_text_content

@@ -27,5 +27,10 @@ en:
     oidc_redirects_html: "One or more URIs that Login.gov will redirect to after authentication. Login.gov will only redirect to URIs listed here. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#oidc-redirect-uri'>user experience guidance</a> for more details."
     saml_redirects_html: "One or more URIs that Login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#saml-return-to-sp-url'>user experience guidance</a> for more details."
     attribute_bundle_html: "The default attributes that Login.gov will return to your application during authentication. Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
-    help_text: "You can specify help text in these different areas to alert users of important information for logging into your app."
     active: "Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications."
+    help_text:
+      sign_in:
+        0: "Leave blank"
+        1: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
+        2: "Sign in to Login.gov with your %{agency} email."
+        3: "Sign in to Login.gov with your %{agency} PIV/CAC."

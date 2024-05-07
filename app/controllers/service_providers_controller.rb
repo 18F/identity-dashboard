@@ -71,7 +71,6 @@ class ServiceProvidersController < AuthenticatedController
     redirect_to service_providers_path
   end
 
-
   private
 
   def service_provider
