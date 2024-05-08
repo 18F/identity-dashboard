@@ -87,6 +87,15 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def help_text_opts
+      options = ['sign_in', 'sign_up', 'forgot_password']
+      # for options do |i|
+
+      {
+        'sign_in' => I18n.t('service_provider_form.help_text.sign_in_1', deep_interpolation: true, sp_name: 'hello'),
+      }
+  end
+
   def self.possible_attributes
     Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
   end
@@ -123,10 +132,6 @@ class ServiceProvider < ApplicationRecord
 
   def oidc?
     openid_connect_pkce? || openid_connect_private_key_jwt?
-  end
-
-  def help_text_opts
-    I18n.t('service_provider_form.help_text.sign_in')
   end
 
   private

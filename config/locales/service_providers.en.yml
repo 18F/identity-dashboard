@@ -29,8 +29,13 @@ en:
     attribute_bundle_html: "The default attributes that Login.gov will return to your application during authentication. Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
     active: "Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications."
     help_text:
-      sign_in:
-        0: "Leave blank"
-        1: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
-        2: "Sign in to Login.gov with your %{agency} email."
-        3: "Sign in to Login.gov with your %{agency} PIV/CAC."
+      sign_in_0: "Leave blank"
+      sign_in_1: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
+      sign_in_2: "Sign in to Login.gov with your %{agency} email."
+      sign_in_3: "Sign in to Login.gov with your %{agency} PIV/CAC."
+      sign_up_0: "Leave blank"
+      sign_up_1: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
+      sign_up_2: "Create a Login.gov account using your %{agency} email."
+      sign_up_3: "Create a Login.gov account using the same email provided on your application."
+      forgot_password_0: "Leave blank"
+      forgot_password_1: "If you are having trouble accessing your Login.gov account, <a href='http://login.gov/help'>visit the Login.gov help center</a> for support.<p>"
