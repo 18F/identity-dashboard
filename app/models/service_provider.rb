@@ -88,12 +88,23 @@ class ServiceProvider < ApplicationRecord
   end
 
   def help_text_opts
-      options = ['sign_in', 'sign_up', 'forgot_password']
-      # for options do |i|
+      options = {}
+      friendly_name ||= '(Service Provider)'
+      agency ||= '(Agency)'
+      ['sign_in', 'sign_up', 'forgot_password'].each do |opt|
+        options[opt] ||= {}
+        I18n.t("service_provider_form.help_text", deep_interpolation: true, sp_name: friendly_name, agency: agency).each do |key, text|
+          if(key.match? opt)
+            options[opt][key] = text
+          end
+        end
+      end
 
-      {
-        'sign_in' => I18n.t('service_provider_form.help_text.sign_in_1', deep_interpolation: true, sp_name: 'hello'),
-      }
+      return options
+  end
+
+  def custom_help_text
+
   end
 
   def self.possible_attributes

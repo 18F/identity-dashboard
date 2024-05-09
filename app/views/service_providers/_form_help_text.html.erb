@@ -7,18 +7,22 @@
     <%= h.fields_for :sign_in do |s| %>
       <legend>Sign-in help text:</legend>
       <%= s.collection_radio_buttons :help_text,
-                                      service_provider.help_text_opts,
+                                      service_provider.help_text_opts['sign_in'],
                                       :first, :last %>
     <% end %>
 
     <%= h.fields_for :sign_up do |s| %>
       <legend>Sign-up help text:</legend>
-      
+      <%= s.collection_radio_buttons :help_text,
+                                      service_provider.help_text_opts['sign_up'],
+                                      :first, :last %>
     <% end %>
 
     <%= h.fields_for :forgot_password do |f| %>
       <legend>Forgot password help text:</legend>
-  
+      <%= f.collection_radio_buttons :help_text,
+                                      service_provider.help_text_opts['forgot_password'],
+                                      :first, :last %>
     <% end %>
 </fieldset>
 <% end %>
