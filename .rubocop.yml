@@ -26,7 +26,7 @@ AllCops:
     - 'vendor/**/*'
     - 'public/**/*'
     - 'node_modules/**/*'
-  TargetRubyVersion: 3.2.2
+  TargetRubyVersion: <%= File.read(File.join(__dir__, '.ruby-version')).strip %>
   TargetRailsVersion: 7.1
   UseCache: true
   DisabledByDefault: true

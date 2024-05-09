@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
-# If you update the rails version, please change the targeted
-# version in .rubocop.yml
-ruby file: ".ruby-version"
+ruby file: '.ruby-version'
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
