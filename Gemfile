@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
+# If you update the rails version, please change the targeted
+# version in .rubocop.yml
+ruby file: ".ruby-version"
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
@@ -34,6 +36,8 @@ gem 'pry-rails'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
+# If you update the rails version, please change the targeted
+# version in .rubocop.yml
 gem 'rails', '~> 7.1.3'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
