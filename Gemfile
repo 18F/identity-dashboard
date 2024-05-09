@@ -66,9 +66,9 @@ group :development, :test do
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
-  gem 'rubocop', '~> 1.11.0'
-  gem 'rubocop-rails', '~> 2.6.0'
-  gem 'rubocop-rspec'
+  gem 'rubocop', '~> 1.62.0', require: false
+  gem 'rubocop-rails', '>= 2.9', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do

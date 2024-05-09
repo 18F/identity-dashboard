@@ -7,9 +7,9 @@ class ServiceProviderCertificate
     @cert = cert
   end
 
-  def method_missing(name, *args, &block)
+  def method_missing(name, *, &)
     if cert.respond_to?(name)
-      cert.send(name, *args, &block)
+      cert.send(name, *, &)
     else
       super
     end

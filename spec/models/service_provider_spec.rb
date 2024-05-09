@@ -33,7 +33,7 @@ describe ServiceProvider do
 
       describe 'extension is all caps' do
         before do
-          service_provider.logo_file.filename = "logo.PNG"
+          service_provider.logo_file.filename = 'logo.PNG'
         end
 
         it 'is valid' do
@@ -54,29 +54,29 @@ describe ServiceProvider do
         end
       end
 
-      describe "it has the wrong extension" do
+      describe 'it has the wrong extension' do
         before do
-          service_provider.logo_file.filename = "logo.svg"
+          service_provider.logo_file.filename = 'logo.svg'
         end
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
           expect(service_provider.errors.first.message).to eq(
-            "The extension of the logo file you uploaded (logo.svg) does not match the content."
+            'The extension of the logo file you uploaded (logo.svg) does not match the content.',
           )
         end
       end
 
-      describe "it has no file extension" do
+      describe 'it has no file extension' do
         before do
-          service_provider.logo_file.filename = "logo"
+          service_provider.logo_file.filename = 'logo'
         end
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
           expect(service_provider.errors.first.message).to eq(
-            "The extension of the logo file you uploaded (logo) does not match the content."
+            'The extension of the logo file you uploaded (logo) does not match the content.',
           )
         end
       end
@@ -88,22 +88,22 @@ describe ServiceProvider do
         expect(service_provider).to be_valid
       end
 
-      describe "it has the wrong extension" do
+      describe 'it has the wrong extension' do
         before do
-          service_provider.logo_file.filename = "logo.png"
+          service_provider.logo_file.filename = 'logo.png'
         end
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
           expect(service_provider.errors.first.message).to eq(
-            "The extension of the logo file you uploaded (logo.png) does not match the content."
+            'The extension of the logo file you uploaded (logo.png) does not match the content.',
           )
         end
       end
 
       describe 'extension is all caps' do
         before do
-          service_provider.logo_file.filename = "logo.SVG"
+          service_provider.logo_file.filename = 'logo.SVG'
         end
 
         it 'is valid' do
@@ -112,16 +112,16 @@ describe ServiceProvider do
         end
       end
 
-      describe "it has no file extension" do
+      describe 'it has no file extension' do
         before do
-          service_provider.logo_file.filename = "logo"
+          service_provider.logo_file.filename = 'logo'
         end
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
           expect(service_provider.errors.first.message).to eq(
-            "The extension of the logo file you uploaded (logo) does not match the content."
+            'The extension of the logo file you uploaded (logo) does not match the content.',
           )
         end
       end

@@ -27,7 +27,7 @@ describe 'Users::ServiceProviders' do
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }
 
-      expect(response.status).to eq(302)  # redirect on success
+      expect(response.status).to eq(302) # redirect on success
       sp.reload
       expect(sp.approved).to eq(true)
     end

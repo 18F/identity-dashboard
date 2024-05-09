@@ -46,12 +46,19 @@ module Tools
       @valid_signature ||= begin
 
         if certs.nil?
-          @errors.push('Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.')
+          @errors.push(
+            'Could not find any certificates to use. Please add a ' +
+            'certificate to your application configuration or paste one below.',
+          )
+
           return false
         end
 
         if auth_service_provider.nil?
-          @errors.push("No matching Service Provider founded in this request. Please check issuer attribute.")
+          @errors.push(
+            'No matching Service Provider founded in this request. ' +
+            'Please check issuer attribute.',
+          )
           return false
         end
 
@@ -73,7 +80,11 @@ module Tools
     end
 
     def auth_request
-      @auth_request ||= SamlIdp::Request.from_deflated_request(saml_params[:SAMLRequest], get_params: saml_params)
+      @auth_request ||= SamlIdp::Request.
+        from_deflated_request(
+          saml_params[:SAMLRequest],
+          get_params: saml_params,
+        )
     end
 
     def auth_service_provider
