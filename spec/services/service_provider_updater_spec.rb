@@ -9,7 +9,7 @@ describe ServiceProviderUpdater do
     {
       'X-LOGIN-DASHBOARD-TOKEN' => token,
       'Content-Type' => 'gzip/json',
-      'Content-Encoding' => 'gzip'
+      'Content-Encoding' => 'gzip',
       }
   end
 

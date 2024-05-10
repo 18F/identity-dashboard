@@ -75,8 +75,12 @@ describe 'SamlRequest' do
       end
 
       it 'adds an error' do
+        err = <<~EOS.squish
+          Could not find any certificates to use. Please add a
+          certificate to your application configuration or paste one below.
+        EOS
         subject.valid_signature
-        expect(subject.errors).to eq ['Could not find any certificates to use. Please add a certificate to your application configuration or paste one below.']
+        expect(subject.errors).to eq [err]
       end
     end
 
@@ -90,8 +94,10 @@ describe 'SamlRequest' do
       end
 
       it 'adds an error' do
+        err = 'No matching Service Provider founded in this request. ' +
+              'Please check issuer attribute.'
         subject.valid_signature
-        expect(subject.errors).to eq ['No matching Service Provider founded in this request. Please check issuer attribute.']
+        expect(subject.errors).to eq [err]
       end
     end
 
@@ -160,7 +166,7 @@ describe 'SamlRequest' do
     describe '#xml' do
       let(:decoded_request) { double SamlIdp::Request }
       let(:raw_xml) { '<XMLtag />' }
-      let(:xml) {  REXML::Document.new(raw_xml) }
+      let(:xml) { REXML::Document.new(raw_xml) }
 
       before do
         expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
