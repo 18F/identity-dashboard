@@ -46,12 +46,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def new
     @service_provider = ServiceProvider.new
-    @help_text_empty = help_text_empty?
   end
 
-  def edit
-    @help_text_empty = help_text_empty?
-  end
+  def edit; end
 
   def show; end
 
@@ -76,12 +73,6 @@ class ServiceProvidersController < AuthenticatedController
 
 
   private
-
-  def help_text_empty?
-    service_provider.help_text['sign_in'].blank? &&
-      service_provider.help_text['sign_up'].blank? &&
-      service_provider.help_text['forgot_password'].blank?
-  end
 
   def service_provider
     @service_provider ||= ServiceProvider.find(params[:id])

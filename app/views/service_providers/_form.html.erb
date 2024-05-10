@@ -347,7 +347,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if @help_text_empty %>
+  <% if show_minimal_help_text_element?(service_provider.help_text) %>
     <p class="usa-label">Custom help text</p>
     <p>You have no existing help text.</p>
     <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
