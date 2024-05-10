@@ -78,9 +78,10 @@ class ServiceProvidersController < AuthenticatedController
   private
 
   def help_text_empty?
-    service_provider.help_text['sign_in'].blank? &&
-      service_provider.help_text['sign_up'].blank? &&
-      service_provider.help_text['forgot_password'].blank?
+    service_provider.
+      help_text.
+      values.
+      all? {|text| text.values.all?('')}
   end
 
   def service_provider
