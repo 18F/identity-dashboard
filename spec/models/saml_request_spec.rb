@@ -75,8 +75,10 @@ describe 'SamlRequest' do
       end
 
       it 'adds an error' do
-        err = 'Could not find any certificates to use. Please add a ' +
-              'certificate to your application configuration or paste one below.'
+        err = <<~EOS.squish
+          Could not find any certificates to use. Please add a
+          certificate to your application configuration or paste one below.
+        EOS
         subject.valid_signature
         expect(subject.errors).to eq [err]
       end

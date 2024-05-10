@@ -47,10 +47,12 @@ describe ToolsController do
         before { post :saml_request, params: }
 
         it 'creates a flash warning' do
-          msg = 'You have passed a logout request. Currently, this tool is for ' +
-                'Authentication requests only. Please try this ' +
-                '<a href="https://www.samltool.com/validate_logout_req.php" target="_blank">' +
-                'tool</a> to validate logout requests.'
+          msg = <<~EOS.squish
+            You have passed a logout request. Currently, this tool is for
+            Authentication requests only. Please try this
+            <a href="https://www.samltool.com/validate_logout_req.php" target="_blank">tool</a>
+            to validate logout requests.
+          EOS
 
           expect(flash['warning']).to eq msg
         end

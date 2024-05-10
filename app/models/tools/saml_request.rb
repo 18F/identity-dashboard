@@ -46,19 +46,20 @@ module Tools
       @valid_signature ||= begin
 
         if certs.nil?
-          @errors.push(
-            'Could not find any certificates to use. Please add a ' +
-            'certificate to your application configuration or paste one below.',
-          )
+          @errors.push(<<~EOS.squish)
+            Could not find any certificates to use. Please add a
+            certificate to your application configuration or paste one below.
+          EOS
 
           return false
         end
 
         if auth_service_provider.nil?
-          @errors.push(
-            'No matching Service Provider founded in this request. ' +
-            'Please check issuer attribute.',
-          )
+          @errors.push(<<~EOS.squish)
+            No matching Service Provider founded in this request.
+            Please check issuer attribute.
+          EOS
+
           return false
         end
 

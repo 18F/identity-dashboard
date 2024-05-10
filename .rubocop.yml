@@ -251,7 +251,7 @@ Lint/DuplicateRegexpCharacterClassElement:
   Enabled: true
 
 Style/ArgumentsForwarding:
-  Enabled: true
+  Enabled: false
 
 Style/ClassEqualityComparison:
   Enabled: true
