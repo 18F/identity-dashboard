@@ -4,7 +4,9 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 
-require: rubocop-rails
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
 AllCops:
   Exclude:
@@ -24,10 +26,11 @@ AllCops:
     - 'vendor/**/*'
     - 'public/**/*'
     - 'node_modules/**/*'
-  TargetRubyVersion: 2.5
-  TargetRailsVersion: 6.1
+  TargetRubyVersion: <%= File.read(File.join(__dir__, '.ruby-version')).strip %>
+  TargetRailsVersion: 7.1
   UseCache: true
   DisabledByDefault: true
+  SuggestExtensions: false
 
 Rails:
   Enabled: false
@@ -248,7 +251,7 @@ Lint/DuplicateRegexpCharacterClassElement:
   Enabled: true
 
 Style/ArgumentsForwarding:
-  Enabled: true
+  Enabled: false
 
 Style/ClassEqualityComparison:
   Enabled: true
