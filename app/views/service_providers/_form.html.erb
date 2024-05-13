@@ -347,9 +347,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if current_user.admin? %>
-    <%= render 'form_help_text', form: form, service_provider: @service_provider %>
-  <% end %>
+  <%= render 'form_help_text', form: form, service_provider: @service_provider %>
 </fieldset>
 
 <%= javascript_include_tag 'service_provider_form' %>

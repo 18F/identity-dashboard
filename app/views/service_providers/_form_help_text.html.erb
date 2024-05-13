@@ -1,28 +1,55 @@
 
 <fieldset class="usa-fieldset-inputs custom-help-text">
   <legend>Custom help text</legend>
-    <p>You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
-    <p>If your app requires custom help text, reach out to the <a href="https://zendesk.login.gov">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section of the developer documentation. You should understand the guidance when you request support.</p>
+  <p>You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
+  <p>If your app requires custom help text, reach out to the <a href="https://zendesk.login.gov">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section of the developer documentation. You should understand the guidance when you request support.</p>
   <%= form.fields_for :help_text do |h| %>
     <%= h.fields_for :sign_in do |s| %>
-      <legend>Sign-in help text:</legend>
-      <%= s.collection_radio_buttons :default,
-                                      service_provider.help_text_opts['sign_in'],
-                                      :first, :last %>
+      <%= s.label :default,
+                  label: 'Sign-in help text:',
+                  class: 'usa-label' %>
+      <%= s.collection_radio_buttons(:default,
+                                    service_provider.help_text_opts['sign_in'],
+                                    :first, :last,
+                                    item_wrapper_tag: :ul,
+                                    item_wrapper_class: 'usa-input-list') do |r| %>
+        <li>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label') %>
+        </li>
+      <% end %>
     <% end %>
 
     <%= h.fields_for :sign_up do |s| %>
-      <legend>Sign-up help text:</legend>
-      <%= s.collection_radio_buttons :default,
-                                      service_provider.help_text_opts['sign_up'],
-                                      :first, :last %>
+      <%= s.label :default,
+                  label: 'Sign-up help text:',
+                  class: 'usa-label' %>
+      <%= s.collection_radio_buttons(:default,
+                                    service_provider.help_text_opts['sign_up'],
+                                    :first, :last,
+                                    item_wrapper_tag: :ul,
+                                    item_wrapper_class: 'usa-input-list') do |r| %>
+        <li>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label') %>
+        </li>
+      <% end %>
     <% end %>
 
     <%= h.fields_for :forgot_password do |f| %>
-      <legend>Forgot password help text:</legend>
-      <%= f.collection_radio_buttons :default,
-                                      service_provider.help_text_opts['forgot_password'],
-                                      :first, :last %>
+      <%= f.label :default,
+                  label: 'Forgot password help text:',
+                  class: 'usa-label' %>
+      <%= f.collection_radio_buttons(:default,
+                                    service_provider.help_text_opts['forgot_password'],
+                                    :first, :last,
+                                    item_wrapper_tag: :ul,
+                                    item_wrapper_class: 'usa-input-list') do |r| %>
+        <li>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label') %>
+        </li>
+      <% end %>
     <% end %>
+  <% end %>
 </fieldset>
-<% end %>
