@@ -176,8 +176,8 @@ specs:
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
-    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    - chmod +x ./cc-test-reporter
+    #- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    #- chmod +x ./cc-test-reporter
     - *bundle_install
     - *yarn_install
     - cp config/application.yml.default config/application.yml
@@ -185,7 +185,7 @@ specs:
     - bundle exec rake db:migrate --trace
     - bundle exec rake db:seed  --trace
     - mkdir /tmp/test-results
-    - ./cc-test-reporter before-build
+    #- ./cc-test-reporter before-build
     - bundle exec rubocop
     
 
