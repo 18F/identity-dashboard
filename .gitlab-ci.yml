@@ -154,7 +154,6 @@ specs:
   stage: test
   needs:
     - job: install
-  parallel: 22
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -180,7 +179,6 @@ specs:
     - *bundle_install
     - *yarn_install
     - cp config/application.yml.default config/application.yml
-    - cp config/database.yml config/database.yml
     - bundle exec rake db:create --trace
     - bundle exec rake db:migrate --trace
     - bundle exec rake db:seed  --trace
