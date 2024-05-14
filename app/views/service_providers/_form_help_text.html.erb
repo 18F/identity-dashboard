@@ -7,48 +7,48 @@
     <%= h.fields_for :sign_in do |s| %>
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Sign-in help text:</legend>
-        <%= s.collection_radio_buttons(:default,
-                                      service_provider.help_text_opts['sign_in'],
-                                      :first, :last,
-                                      item_wrapper_tag: :ul,
-                                      item_wrapper_class: 'usa-input-list') do |r| %>
-          <li>
+        <ul class="usa-input-list">
+          <%= s.collection_radio_buttons(:prefill,
+                                        service_provider.help_text_opts['sign_in'],
+                                        :first, :last,
+                                        { checked: service_provider.help_text['sign_in']['prefill'],
+                                          item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label') %>
-          </li>
-        <% end %>
+          <% end %>
+        </ul>
       </fieldset>
     <% end %>
 
     <%= h.fields_for :sign_up do |s| %>
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Sign-up help text:</legend>
-        <%= s.collection_radio_buttons(:default,
-                                      service_provider.help_text_opts['sign_up'],
-                                      :first, :last,
-                                      item_wrapper_tag: :ul,
-                                      item_wrapper_class: 'usa-input-list') do |r| %>
-          <li>
+        <ul class="usa-input-list">
+          <%= s.collection_radio_buttons(:prefill,
+                                        service_provider.help_text_opts['sign_up'],
+                                        :first, :last,
+                                        { checked: service_provider.help_text['sign_up']['prefill'],
+                                          item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label') %>
-          </li>
-        <% end %>
+          <% end %>
+        </ul>
       </fieldset>
     <% end %>
 
     <%= h.fields_for :forgot_password do |f| %>
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Forgot password help text:</legend>
-        <%= f.collection_radio_buttons(:default,
-                                      service_provider.help_text_opts['forgot_password'],
-                                      :first, :last,
-                                      item_wrapper_tag: :ul,
-                                      item_wrapper_class: 'usa-input-list') do |r| %>
-          <li>
+        <ul class="usa-input-list">
+          <%= f.collection_radio_buttons(:prefill,
+                                        service_provider.help_text_opts['forgot_password'],
+                                        :first, :last,
+                                        { checked: service_provider.help_text['forgot_password']['prefill'],
+                                          item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label') %>
-          </li>
-        <% end %>
+          <% end %>
+        </ul>
       </fieldset>
     <% end %>
   <% end %>

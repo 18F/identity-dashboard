@@ -38,4 +38,4 @@ en:
       sign_up_2: "Create a Login.gov account using your %{agency} email."
       sign_up_3: "Create a Login.gov account using the same email provided on your application."
       forgot_password_0: "Leave blank"
-      forgot_password_1: "If you are having trouble accessing your Login.gov account, <a href='http://login.gov/help'>visit the Login.gov help center</a> for support.<p>"
+      forgot_password_1_html: "If you are having trouble accessing your Login.gov account, <a href='http://login.gov/help'>visit the Login.gov help center</a> for support.<p>"

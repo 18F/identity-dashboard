@@ -92,11 +92,15 @@ class ServiceProvider < ApplicationRecord
       friendly_name ||= '(Service Provider)'
       agency ||= '(Agency)'
       ['sign_in', 'sign_up', 'forgot_password'].each do |opt|
-        options[opt] ||= {}
+        options[opt] ||= []
         I18n.t("service_provider_form.help_text", deep_interpolation: true, sp_name: friendly_name, agency: agency).each do |key, text|
           if(key.match? opt)
-            options[opt][key] = text
+            safeKey = key.to_s.gsub("_html", "")
+            options[opt].push([safeKey, text])
           end
+        end
+        if(help_text[opt]['en'])
+          options[opt].push(['en', help_text[opt]['en']])
         end
       end
 
