@@ -9,6 +9,7 @@ development: &default
   host: localhost
 
 test:
+  host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
   <<: *default
   database: identity-dashboard_test
 
