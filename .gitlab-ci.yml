@@ -545,8 +545,8 @@ ecr-scan:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
-    - kubectl config use-context "$CONTEXT"
-    - kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &; sleep 5
+    - kubectl config use-context "$CONTEXT; kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &
+    - sleep 5
     - passwordVariable=`echo "ARGOCD_${eksClusterName}_PASSWORD" | tr '[:lower:]' '[:upper:]'`
     #TODO: Create argocd readonly user to log in as here
     - argocd login localhost:8080 --insecure --username gitlabReadOnly --password ${!passwordVariable}
