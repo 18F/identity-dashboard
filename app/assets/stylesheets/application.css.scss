@@ -109,3 +109,9 @@
     }
   }
 }
+
+legend.usa-label:before {
+  content: ' ';
+  display: block;
+  margin-bottom: 1.5rem;
+}
