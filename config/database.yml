@@ -9,7 +9,7 @@ development: &default
   host: localhost
 
 test:
-    <<: *defaults
+    <<: *default
     adapter: postgresql
     pool: 10
     checkout_timeout: 10
