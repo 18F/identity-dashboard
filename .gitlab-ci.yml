@@ -546,10 +546,10 @@ ecr-scan:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &
-    - sleep 5
+    - kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &; sleep 5
+    - passwordVariable=`echo "ARGOCD_${eksClusterName}_PASSWORD" | tr '[:lower:]' '[:upper:]'`
     #TODO: Create argocd readonly user to log in as here
-    - argocd login localhost:8080 --insecure --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+    - argocd login localhost:8080 --insecure --username gitlabReadOnly --password ${!passwordVariable}
     - |-
       updateComplete=0
       timeoutCounter=0
@@ -582,9 +582,6 @@ build-rc-container:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
-  artifacts:
-    paths:
-      - imageDigest.tmp
   script:
     - mkdir -p /kaniko/.docker
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
@@ -601,7 +598,6 @@ build-rc-container:
       --dockerfile "${CI_PROJECT_DIR}/idp_dashboard.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-dashboard/rc:${rcTag}"
       --cache-repo="${ECR_REGISTRY}/identity-dashboard/rc/cache"
-      --digest-file=imageDigest.tmp
       --cache-ttl=168h 
       --cache=true
       --compressed-caching=false
@@ -673,7 +669,7 @@ eksstage-deployment:
   needs:
     - job: integration-tests
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: 'eksstaging'
   variables:
     environment: 'eksstaging'  
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${environment}'
@@ -693,7 +689,7 @@ verify-eksstage-deployment:
     - job: eksstage-deployment
   when: manual
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: eksstaging
   variables:
     eksClusterName: 'cmccarthytest'
     environment: 'eksstage'
