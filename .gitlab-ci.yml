@@ -617,7 +617,7 @@ ekstest-deployment:
   needs:
     job: build-rc-container
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: ekstest
   variables:
     environment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-dashboard-${CI_COMMIT_BRANCH}-to-${environment}'
@@ -689,7 +689,7 @@ verify-eksstaging-deployment:
     - job: eksstaging-deployment
   when: manual
   environment:
-    name: eksstaging
+    name: $CI_COMMIT_BRANCH 
   variables:
     eksClusterName: 'cmccarthytest'
     environment: 'eksstaging'
