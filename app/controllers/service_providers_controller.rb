@@ -33,6 +33,7 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
+    munge_help_text
 
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
@@ -149,6 +150,19 @@ class ServiceProvidersController < AuthenticatedController
     permit_params << :production_issuer if current_user.admin?
     permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
+  end
+
+  def munge_help_text
+    # return if params.dig(:service_provider, :help_text).blank?
+    sp = ServiceProvider.find(params[:id])
+    words = [{"test": "yes"}, {"en": "hello"}, {"es": "hola"}, {"fr": "bonjour"}]
+    words.each { |word|
+      ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
+        current_help_text = sp.help_text
+        current_help_mode = current_help_text[mode].merge!(word)
+        sp.update(help_text: current_help_text)
+      }
+    }
   end
 
   # relies on ServiceProvider#certs_are_pems for validation
