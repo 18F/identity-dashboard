@@ -660,7 +660,7 @@ integration-tests:
   script:
     - echo "This is where integrations tests should execute on the test environment if/when they exist"
 
-eksstage-deployment:
+eksstaging-deployment:
   extends:
     - .eks_trigger_rules
     - .eks_push_image_to_environment
@@ -680,19 +680,19 @@ eksstage-deployment:
   tags:
     - build-pool
 
-verify-eksstage-deployment:
+verify-eksstaging-deployment:
   extends:
     - .eks_trigger_rules
     - .eks_verify_deployment
   stage: eks_release
   needs:
-    - job: eksstage-deployment
+    - job: eksstaging-deployment
   when: manual
   environment:
     name: eksstaging
   variables:
     eksClusterName: 'cmccarthytest'
-    environment: 'eksstage'
+    environment: 'eksstaging'
     rcRepoName: "${ECR_REGISTRY}/identity-dashboard/rc"
   interruptible: true
   tags:
