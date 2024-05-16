@@ -138,6 +138,8 @@ lint:
     - <<: *ruby_cache
     - <<: *yarn_cache
     - <<: *assets_cache
+  variables:
+    JUNIT_OUTPUT: 'true'
   script:
     - *bundle_install
     - *yarn_install
@@ -165,6 +167,7 @@ specs:
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
+    COBERTURA_FORMATTER_ENABLED: 'true'
     DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity-dashboard_test
     POSTGRES_USER: postgres_user
@@ -176,18 +179,20 @@ specs:
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
-    #- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    #- chmod +x ./cc-test-reporter
+    - mkdir coverage
     - *bundle_install
     - *yarn_install
     - cp config/application.yml.default config/application.yml
-    - bundle exec rake db:create --trace
-    - bundle exec rake db:migrate --trace
-    - bundle exec rake db:seed  --trace
-    - mkdir /tmp/test-results
-    #- ./cc-test-reporter before-build
-    - bundle exec rubocop
-    
+    - bundle exec rake db:setup
+    - bundle exec rspec
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
+    expire_in: 31d
+    paths:
+      - coverage/coverage.xml
 
 review-app:
   stage: review

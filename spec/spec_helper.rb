@@ -1,5 +1,9 @@
 if ENV['COVERAGE']
   require 'simplecov'
+  if ENV['COBERTURA_FORMATTER_ENABLED']
+    require 'simplecov-cobertura'
+    SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+  end
   SimpleCov.start 'rails' do
     add_filter '/config/'
   end
