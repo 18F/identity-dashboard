@@ -40,7 +40,7 @@ gem 'rails', '~> 7.1.3'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
-gem 'rexml', '~> 3.2'
+gem 'rexml', '~> 3.2', '>= 3.2.7'
 gem 'ruby_regex'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
 gem 'secure_headers', '~> 3.9'
@@ -68,15 +68,15 @@ group :development, :test do
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
-  gem 'rubocop', '~> 1.62.0', require: false
-  gem 'rubocop-rails', '>= 2.9', require: false
-  gem 'rubocop-rspec', require: false
+  gem 'rubocop', '~> 1.63.0', require: false
+  gem 'rubocop-rails', '>= 2.25.0', require: false
+  gem 'rubocop-rspec', '>= 2.5.0', require: false
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara', '>= 3.39.1'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '>= 4.9.0'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
@@ -86,7 +86,7 @@ group :test do
   gem 'simplecov', '= 0.17.0'
   gem 'sinatra', '>= 4.0.0'
   gem 'timecop'
-  gem 'webmock'
+  gem 'webmock', '>= 3.19.0'
   gem 'websocket-driver', '= 0.7.3'
 end
 
