@@ -185,6 +185,7 @@ specs:
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
     - bundle exec rspec spec/models
+  coverage: '/\(\d+.\d+\%\) covered/'
   artifacts:
     reports:
       coverage_report:
