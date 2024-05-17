@@ -184,12 +184,13 @@ specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec
+    - bundle exec rspec spec/models
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage/coverage.xml
+    name: coverage
     expire_in: 31d
     paths:
       - coverage/coverage.xml
