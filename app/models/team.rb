@@ -56,4 +56,9 @@ class Team < ApplicationRecord
       sp.update(agency_id: agency.id) if agency
     end
   end
+
+  def my_untested_method
+      1 +
+      2
+  end
 end
