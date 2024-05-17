@@ -6,6 +6,9 @@ if ENV['COVERAGE']
   end
   SimpleCov.start 'rails' do
     add_filter '/config/'
+    add_filter %r{/vendor/ruby/}
+    add_filter '/vendor/bundle/'
+    add_filter %r{^/db/}
   end
 end
 
