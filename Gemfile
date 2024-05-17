@@ -71,6 +71,7 @@ group :development, :test do
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rspec_junit_formatter'
 end
 
 group :test do
