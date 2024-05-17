@@ -184,17 +184,19 @@ specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec spec/models
+    - bundle exec rspec spec/models --format documentation --format RspecJunitFormatter --out rspec.xml
   coverage: '/\(\d+.\d+\%\) covered/'
   artifacts:
+    when: always
     reports:
+      junit: rspec.xml
       coverage_report:
         coverage_format: cobertura
         path: coverage/coverage.xml
-    name: coverage
     expire_in: 31d
     paths:
       - coverage/coverage.xml
+      - rspec.xml
 
 review-app:
   stage: review
