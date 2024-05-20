@@ -31,9 +31,9 @@ class ServiceProvidersController < AuthenticatedController
     attach_cert
     remove_certificates
 
-    service_provider.assign_attributes(service_provider_params)
+    # updated_params = update_help_text || service_provider_params
+    service_provider.assign_attributes(update_help_text)
     attach_logo_file if logo_file_param
-    munge_help_text
 
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
@@ -152,17 +152,17 @@ class ServiceProvidersController < AuthenticatedController
     params.require(:service_provider).permit(*permit_params)
   end
 
-  def munge_help_text
-    # return if params.dig(:service_provider, :help_text).blank?
-    sp = ServiceProvider.find(params[:id])
-    words = [{"test": "yes"}, {"en": "hello"}, {"es": "hola"}, {"fr": "bonjour"}]
-    words.each { |word|
+  def update_help_text
+    current_help_text = service_provider_params['help_text']
+    locales = ["en", "es", "fr"]
+    locales.each { |locale|
       ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
-        current_help_text = sp.help_text
-        current_help_mode = current_help_text[mode].merge!(word)
-        sp.update(help_text: current_help_text)
+        return if service_provider['help_text'][mode][locale].to_s.empty?
+        current_help_text[mode].merge!(service_provider['help_text'][mode])
       }
     }
+    puts "newhelptext: #{service_provider_params.merge(help_text: current_help_text)}"
+    return service_provider_params.merge(help_text: current_help_text)
   end
 
   # relies on ServiceProvider#certs_are_pems for validation

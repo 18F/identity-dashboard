@@ -99,8 +99,8 @@ class ServiceProvider < ApplicationRecord
             options[opt].push([safeKey, text])
           end
         end
-        if(help_text[opt]['en'])
-          options[opt].push(['en', help_text[opt]['en']])
+        if(not options[opt].map{ |o| o[1] }.include? help_text[opt]['en'])
+          options[opt].push(['custom', help_text[opt]['en']])
         end
       end
 

@@ -39,6 +39,7 @@
                        collection: current_user.scoped_teams,
                        label: 'Team',
                        disabled: !can_edit_teams?(current_user),
+                       required: true,
                        hint: I18n.t('service_provider_form.team') %>
 
 

@@ -8,10 +8,10 @@
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Sign-in help text:</legend>
         <ul class="usa-input-list">
-          <%= s.collection_radio_buttons(:prefill,
+          <%= s.collection_radio_buttons(:en,
                                         service_provider.help_text_opts['sign_in'],
-                                        :first, :last,
-                                        { checked: service_provider.help_text['sign_in']['prefill'],
+                                        :last, :last,
+                                        { checked: service_provider.help_text['sign_in']['en'],
                                           item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label') %>
@@ -24,10 +24,10 @@
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Sign-up help text:</legend>
         <ul class="usa-input-list">
-          <%= s.collection_radio_buttons(:prefill,
+          <%= s.collection_radio_buttons(:en,
                                         service_provider.help_text_opts['sign_up'],
-                                        :first, :last,
-                                        { checked: service_provider.help_text['sign_up']['prefill'],
+                                        :last, :last,
+                                        { checked: service_provider.help_text['sign_up']['en'],
                                           item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label')%>
@@ -40,10 +40,10 @@
       <fieldset class="usa-fieldset">
         <legend class="usa-label">Forgot password help text:</legend>
         <ul class="usa-input-list">
-          <%= f.collection_radio_buttons(:prefill,
+          <%= f.collection_radio_buttons(:en,
                                         service_provider.help_text_opts['forgot_password'],
-                                        :first, :last,
-                                        { checked: service_provider.help_text['forgot_password']['prefill'],
+                                        :last, :last,
+                                        { checked: service_provider.help_text['forgot_password']['en'],
                                           item_wrapper_tag: :li }) do |r| %>
             <%= r.radio_button(class: 'usa-radio__input') %>
             <%= r.label(class: 'usa-radio__label') %>
