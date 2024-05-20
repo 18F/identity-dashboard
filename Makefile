@@ -15,7 +15,11 @@ check: lint test
 
 lint:
 	@echo "--- rubocop ---"
-	bundle exec rubocop
+ifdef JUNIT_OUTPUT
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+else
+	bundle exec rubocop --parallel
+endif
 	@echo "--- eslint ---"
 	yarn lint
 

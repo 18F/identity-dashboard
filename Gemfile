@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby file: '.ruby-version'
+ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
@@ -71,6 +71,7 @@ group :development, :test do
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rspec_junit_formatter'
 end
 
 group :test do
@@ -83,7 +84,8 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'shoulda-matchers'
-  gem 'simplecov', '= 0.17.0'
+  gem 'simplecov', '~> 0.22.0'
+  gem 'simplecov-cobertura'
   gem 'sinatra', '>= 4.0.0'
   gem 'timecop'
   gem 'webmock'

@@ -138,6 +138,8 @@ lint:
     - <<: *ruby_cache
     - <<: *yarn_cache
     - <<: *assets_cache
+  variables:
+    JUNIT_OUTPUT: 'true'
   script:
     - *bundle_install
     - *yarn_install
@@ -149,6 +151,52 @@ lint:
       - rubocop.xml
     reports:
       junit: rubocop.xml
+
+specs:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    AWS_ACCESS_KEY_ID: test
+    AWS_DEFAULT_REGION: us-west-2
+    AWS_REGION: us-west-2
+    AWS_SECRET_ACCESS_KEY: test
+    CAPYBARA_WAIT_TIME_SECONDS: 5
+    COVERAGE: 'true'
+    COBERTURA_FORMATTER_ENABLED: 'true'
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity-dashboard_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - mkdir coverage
+    - *bundle_install
+    - *yarn_install
+    - cp config/application.yml.default config/application.yml
+    - bundle exec rake db:setup
+    - bundle exec rspec --format documentation --format RspecJunitFormatter --out rspec.xml
+  coverage: '/\(\d+.\d+\%\) covered/'
+  artifacts:
+    when: always
+    reports:
+      junit: rspec.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
+    expire_in: 31d
+    paths:
+      - coverage/coverage.xml
+      - rspec.xml
 
 review-app:
   stage: review
