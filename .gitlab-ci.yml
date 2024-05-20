@@ -184,7 +184,7 @@ specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec spec/models --format documentation --format RspecJunitFormatter --out rspec.xml
+    - bundle exec rspec --format documentation --format RspecJunitFormatter --out rspec.xml
   coverage: '/\(\d+.\d+\%\) covered/'
   artifacts:
     when: always
