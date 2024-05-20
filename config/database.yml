@@ -9,8 +9,13 @@ development: &default
   host: localhost
 
 test:
-  <<: *default
-  database: identity-dashboard_test
-
+    <<: *default
+    adapter: postgresql
+    pool: 10
+    checkout_timeout: 10
+    database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
+    user: <%= ENV['POSTGRES_USER'] %>
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
+    host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
 # This whole file is overwritten by chef in production.
 #production:
