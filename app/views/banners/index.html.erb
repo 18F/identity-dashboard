@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Banners</h1>
+
+<div id="banners">
+  <% @banners.each do |banner| %>
+    <%= render banner %>
+    <p>
+      <%= link_to "Show this banner", banner %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New banner", new_banner_path %>
