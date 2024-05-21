@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/env' => 'env#index'
 
   resources :users
+  resources :banners, except: :destroy
 
   get '/teams/all' => 'teams#all'
   resources :teams

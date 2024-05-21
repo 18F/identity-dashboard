@@ -1,0 +1,18 @@
+<%= simple_form_for(banner) do |form| %>
+  <% if banner.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(banner.errors.count, "error") %> prohibited this banner from being saved:</h2>
+
+      <ul>
+        <% banner.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.input :message %>
+    <%= form.submit %>
+  </div>
+<% end %>

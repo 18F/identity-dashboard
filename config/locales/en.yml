@@ -35,6 +35,9 @@ en:
       edit: Edit user
       index: Users
       new_user: Create a new user
+  banners:
+    new_banner: Create a new banner
+    edit: Edit banner
   teams:
     users:
       create:

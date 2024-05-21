@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @banner %>
+
+<div>
+  <%= link_to "Edit this banner", edit_banner_path(@banner) %> |
+  <%= link_to "Back to banners", banners_path %>
+
+  <%= button_to "Destroy this banner", @banner, method: :delete %>
+</div>
