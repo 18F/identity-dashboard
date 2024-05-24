@@ -11,8 +11,14 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.input :message %>
-    <%= form.submit %>
-  </div>
+  <fieldset class='usa-fieldset'>
+    <%= 
+      form.input :message, 
+        input_html: { class: 'usa-input' },
+        label_html: { class: 'usa-input-required'},
+        label: 'Message'
+    %>
+  </fieldset>
+  <br>
+  <%= form.button :submit, 'Save', :class => "usa-button" %>
 <% end %>
