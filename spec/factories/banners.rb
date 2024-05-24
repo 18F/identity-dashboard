@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :banner do
-    message { "MyText" }
+    message { 'MyText' }
   end
 end

@@ -15,6 +15,10 @@ class BannerPolicy < BasePolicy
     admin?
   end
 
+  def edit?
+    admin?
+  end
+
   def update?
     admin?
   end
@@ -26,7 +30,7 @@ class BannerPolicy < BasePolicy
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      user.admin? ? scope.all : scope.none
+      user&.admin? ? scope.all : scope.none
     end
   end
 end

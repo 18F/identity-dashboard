@@ -1,14 +1,17 @@
 class BannersController < ApplicationController
   before_action :set_banner, only: %i[ show edit update destroy ]
+  after_action :verify_authorized
+  after_action :verify_policy_scoped
 
   # GET /banners
   def index
+    authorize Banner
     @banners = policy_scope(Banner.all)
   end
 
   # GET /banners/new
   def new
-    @banner = authorize(Banner).new
+    @banner = authorize(policy_scope(Banner).new)
   end
 
   # GET /banners/1/edit
@@ -17,10 +20,10 @@ class BannersController < ApplicationController
 
   # POST /banners
   def create
-    @banner = authorize(Banner).new(banner_params)
+    @banner = authorize(policy_scope(Banner)).new(banner_params)
 
     if @banner.save
-      redirect_to @banner, notice: "Banner was successfully created."
+      redirect_to @banner, notice: 'Banner was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +32,7 @@ class BannersController < ApplicationController
   # PATCH/PUT /banners/1
   def update
     if @banner.update(banner_params)
-      redirect_to banners_path, notice: "Banner was successfully updated.", status: :see_other
+      redirect_to banners_path, notice: 'Banner was successfully updated.', status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -38,7 +41,8 @@ class BannersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_banner
-      @banner = authorize(Banner.find(params[:id]))
+      authorize Banner
+      @banner = policy_scope(Banner).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
