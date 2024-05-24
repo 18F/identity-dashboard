@@ -1,14 +1,14 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Banners</h1>
+<h1 class="usa-display">Banners</h1>
 
 <div id="banners">
   <% @banners.each do |banner| %>
-    <%= render banner %>
-    <p>
-      <%= link_to "Show this banner", banner %>
-    </p>
+    <div>
+      <%= render banner %>
+      <% if policy(banner).edit? %>
+        <p><%= link_to "Edit this banner", edit_banner_path(banner), class: 'usa-button' %></p>
+      <% end %>
+    </div>
   <% end %>
 </div>
 
-<%= link_to "New banner", new_banner_path %>
+<%= link_to "New banner", new_banner_path, class: 'usa-button'%>

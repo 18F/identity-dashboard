@@ -1,10 +1,7 @@
-<h1>Editing banner</h1>
+<h1 class="usa-display">Editing banner</h1>
 
 <%= render "form", banner: @banner %>
 
 <br>
 
-<div>
-  <%= link_to "Show this banner", @banner %> |
-  <%= link_to "Back to banners", banners_path %>
-</div>
+<%= link_to "Cancel and return to banners", banners_path, class: 'usa-button' %>
