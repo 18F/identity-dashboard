@@ -18,7 +18,26 @@
         label_html: { class: 'usa-input-required'},
         label: 'Message'
     %>
-  </fieldset>
+
+    <%# Since this is an admin-only UI, opting for html5 date inputs instead of the design system's date inputs %>
+
+    <%=
+      form.input :start_date, 
+        as: :date,
+        html5: true,
+        label_html: { class: 'usa-label' },
+        input_html: { class: 'usa-select' }
+
+    %>
+    <%=
+      form.input :end_date, 
+        as: :date,
+        html5: true,
+        label_html: { class: 'usa-label' },
+        input_html: { class: 'usa-select' }
+    %>
+
+    </fieldset>
   <br>
   <%= form.button :submit, 'Save', :class => "usa-button" %>
 <% end %>
