@@ -6,10 +6,6 @@ class BannersController < ApplicationController
     @banners = policy_scope(Banner.all)
   end
 
-  # GET /banners/1
-  def show
-  end
-
   # GET /banners/new
   def new
     @banner = authorize(Banner).new
@@ -33,7 +29,7 @@ class BannersController < ApplicationController
   # PATCH/PUT /banners/1
   def update
     if @banner.update(banner_params)
-      redirect_to @banner, notice: "Banner was successfully updated.", status: :see_other
+      redirect_to banners_path, notice: "Banner was successfully updated.", status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,6 +43,6 @@ class BannersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def banner_params
-      params.fetch(:banner, {}).permit(:message)
+      params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
     end
 end
