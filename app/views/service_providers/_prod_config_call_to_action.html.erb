@@ -1,20 +1,20 @@
 <div class="grid-container border-05 border-base-lightest radius-lg padding-bottom-2 margin-bottom-5">
   <div class="display-flex flex-column flex-align-center">
-    <h2 class="font-sans-lg text-primary">Ready to deploy or make an update?</h2>
-    <p class="margin-top-0">All changes to integrations between Login.gov and your application must be reviewed before being deployed. </p>
+    <h2 class="font-sans-lg text-primary"><%= t('call_to_action.ready_to_deploy') %></h2>
+    <p class="margin-top-0"><%= t('call_to_action.review_changes') %></p>
     <div class="grid-row"> 
       <button class="usa-button usa-button--outline align-center" type="button">
-        <a class="usa-link usa-link--external text-primary text-no-underline" href="https://developers.login.gov/production/">Read production configuration process</a>
+        <a class="usa-link usa-link--external text-primary text-no-underline" href="https://developers.login.gov/production/"><%= t('call_to_action.read_process') %></a>
       </button>
       <button class="usa-button align-center usa-dark-background" type="button">
-        <a class="usa-link usa-link--external text-no-underline" href="https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332">Submit a request</a>
+        <a class="usa-link usa-link--external text-no-underline" href="https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332"><%= t('call_to_action.submit_request') %></a>
       </button>
     </div>
     <div class="grid-row margin-top-2">
       <div class="usa-alert measure-5 usa-alert--warning">
         <div class="usa-alert__body">
           <p class="usa-alert__text">
-            Please allow two weeks for integration launch or change requests.
+          <%= t('call_to_action.two_weeks') %>
           </p>
         </div>
       </div>
