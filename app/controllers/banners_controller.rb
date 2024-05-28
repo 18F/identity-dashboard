@@ -1,17 +1,17 @@
 class BannersController < ApplicationController
-  before_action :set_banner, only: %i[ show edit update destroy ]
+  before_action -> { authorize Banner, :manage_banners?}
+  before_action :set_banner, only: %i[ show edit update ]
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
   # GET /banners
   def index
-    authorize Banner
     @banners = policy_scope(Banner.all)
   end
 
   # GET /banners/new
   def new
-    @banner = authorize(policy_scope(Banner).new)
+    @banner = policy_scope(Banner).new
   end
 
   # GET /banners/1/edit
@@ -20,7 +20,7 @@ class BannersController < ApplicationController
 
   # POST /banners
   def create
-    @banner = authorize(policy_scope(Banner)).new(banner_params)
+    @banner = policy_scope(Banner).new(banner_params)
 
     if @banner.save
       redirect_to @banner, notice: 'Banner was successfully created.'
@@ -41,7 +41,6 @@ class BannersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_banner
-      authorize Banner
       @banner = policy_scope(Banner).find(params[:id])
     end
 

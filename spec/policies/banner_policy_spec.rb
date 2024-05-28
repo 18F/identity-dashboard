@@ -17,19 +17,12 @@ RSpec.describe BannerPolicy, type: :policy do
     end
   end
 
-  permissions :index?, :show?, :new?, :update? do
+  permissions :manage_banners? do
     it 'denies users by default' do
       expect(subject).not_to permit(user, banner)
     end
     it 'allows admins' do
       expect(subject).to permit(admin, banner)
-    end
-  end
-
-  permissions :destroy? do
-    it 'is not permitted for anyone' do
-      expect(subject).not_to permit(user, banner)
-      expect(subject).not_to permit(admin, banner)
     end
   end
 end
