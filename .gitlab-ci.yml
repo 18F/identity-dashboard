@@ -208,7 +208,7 @@ review-app:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - |-
       export IDP_ENV=$(cat <<EOF
@@ -350,7 +350,7 @@ review-app:
 stop-review-app:
   resource_group: $CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov
   script:
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
   stage: review
