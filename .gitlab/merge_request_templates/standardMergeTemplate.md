@@ -2,6 +2,8 @@
 
 ### Description of Changes:
 
+<!-- Insert screenshots here if this includes a UI change -->
+
 ### MR Checklist:
 
 1. [ ] Have you linted and tested your code locally prior to submission?

@@ -9,7 +9,7 @@
 
 ### Current behavior: Describe the behaviors current state.
 
-Include screenshots or links to repos
+(Include screenshots or links to repos here)
 
 ### AC:
 
