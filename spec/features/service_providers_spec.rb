@@ -595,36 +595,20 @@ feature 'Service Providers CRUD' do
     expect(page).to have_content('Success')
   end
 
-  describe 'IAA banner' do
-    shared_examples 'a page with an IAA banner' do
+  describe 'Call to Action' do
+    shared_examples 'a page with a CTA for production applications' do
       let(:user) { create(:user) }
-      let(:sp) { create(:service_provider, user: user) }
+      let(:sp) { create(:service_provider, user: user, prod_config: true) }
       let(:prod_url) { 'https://developers.login.gov/production' }
-      let(:partners_email) { 'partners@login.gov' }
+      let(:zendesk_ticket) { 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332' }
 
       before { login_as(user) }
 
-      it 'displays the banner' do
+      it 'displays the call to action' do
         visit path
         expect(page).to have_selector(:css, "a[href='#{prod_url}']")
-        expect(page).to have_selector(:css, "a[href='mailto:#{partners_email}']")
+        expect(page).to have_selector(:css, "a[href='#{zendesk_ticket}']")
       end
-    end
-
-    context 'new page' do
-      let(:path) { new_service_provider_path }
-
-      it_behaves_like 'a page with an IAA banner'
-    end
-    context 'show page' do
-      let(:path) { service_provider_path(sp) }
-
-      it_behaves_like 'a page with an IAA banner'
-    end
-    context 'edit page' do
-      let(:path) { edit_service_provider_path(sp) }
-
-      it_behaves_like 'a page with an IAA banner'
     end
   end
 end
