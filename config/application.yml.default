@@ -10,6 +10,7 @@ aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
 db_pool: '5'
 dp_reaping_frequency: '10'
+help_text_options_feature_enabled: true
 newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
@@ -25,6 +26,7 @@ development:
   saml_sp_issuer: 'http://localhost:3001'
 production:
   dashboard_api_token: changeme
+  help_text_options_feature_enabled: false
   idp_sp_url: changeme
   idp_url: changeme
   logo_upload_enabled: 'true'
