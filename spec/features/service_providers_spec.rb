@@ -243,7 +243,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
-    scenario 'cannot edit existing custom help text' do
+    scenario 'can view but not edit existing custom help text' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :with_users_team, user: user)
 
@@ -251,8 +251,8 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).to have_content('Do you need to edit the custom help text for your application? Contact us.')
-      expect(page).not_to have_css('service_provider_help_text_sign_in_en')
+      expect(page).to have_content('You can view your existing help text here')
+      expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
     end
     
     scenario 'can select default help text options for new configurations' do
@@ -272,7 +272,7 @@ feature 'Service Providers CRUD' do
       visit new_service_provider_path
 
       expect(page).to have_content('Do you need to add help text for your application? Contact us.')
-      expect(page).not_to have_css('service_provider_help_text_sign_in_en')
+      expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
     end
 
     scenario 'cannot edit allow_prompt_login' do
