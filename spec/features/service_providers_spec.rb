@@ -369,7 +369,7 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can view SP with no team', :js do
+    scenario 'can view SP with no team' do
       admin = create(:admin)
       sp = create(:service_provider)
       login_as(admin)
