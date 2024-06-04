@@ -1,0 +1,23 @@
+<h1 class="usa-display">Banners</h1>
+
+<div id="banners">
+  <table class='usa-table'>
+    <thead>
+    <% if @banners.any? %>
+      <tr><th>Message</th><th>Start</th><th>End</th><th>Active?</th><th /></tr>
+    <% else %>
+      <tr><th>No banners found</th></tr>
+    <% end %>
+    </thead>
+    <% @banners.each do |banner| %>
+      <tr id="<%= dom_id banner %>">
+        <%= render banner %>
+        <td><% if policy(banner).edit? %>
+          <p><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></p>
+        <% end %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<%= link_to "New banner", new_banner_path, class: 'usa-button'%>
