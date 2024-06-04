@@ -349,8 +349,15 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <% if show_minimal_help_text_element?(service_provider.help_text) %>
     <p class="usa-label">Custom help text</p>
-    <p>You have no existing help text.</p>
-    <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <% if help_text_options_enabled? %>
+     <p>You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
+     <p>If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
+      of the developer documentation. You should understand the guidance when you request support.</p>                                 
+      <strong class="text-uppercase"> Radio buttons will go here </strong>
+    <% else %>
+      <p>You have no existing help text.</p>
+      <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
+    <% end %>
   <% else%>
     <fieldset class="usa-fieldset-inputs custom-help-text">
       <legend>Custom help text</legend>

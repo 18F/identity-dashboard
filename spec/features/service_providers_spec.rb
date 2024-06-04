@@ -243,6 +243,38 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
+    scenario 'can view but not edit existing custom help text' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider, :with_users_team, user: user)
+
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content('You can view your existing help text here')
+      expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
+    end
+    
+    scenario 'can select default help text options for new configurations' do
+      user = create(:user, :with_teams)
+      login_as(user)
+      
+      visit new_service_provider_path
+
+      expect(page).to have_content('You can choose from the default help text options')
+    end
+
+    scenario 'cannot add help text for new configurations when feature flag is off' do
+      allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
+      user = create(:user, :with_teams)
+      login_as(user)
+      
+      visit new_service_provider_path
+
+      expect(page).to have_content('Do you need to add help text for your application? Contact us.')
+      expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
+    end
+
     scenario 'cannot edit allow_prompt_login' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
@@ -345,6 +377,23 @@ feature 'Service Providers CRUD' do
       visit service_provider_path(sp)
 
       expect(page).to have_content(sp.friendly_name)
+    end
+
+    scenario 'can edit help text' do
+      help_text = '<p>Text with some basic <a href="www.hello.com">html tags</a></p>'
+      admin = create(:admin)
+      service_provider = create(:service_provider)
+      login_as(admin)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content('You can specify help text')
+      fill_in 'service_provider_help_text_sign_in_en', with: help_text
+      click_on 'Update'
+
+      service_provider.reload
+
+      expect(page).to have_content(help_text)
     end
 
     scenario 'can see push_notification_url in YAML generator' do
