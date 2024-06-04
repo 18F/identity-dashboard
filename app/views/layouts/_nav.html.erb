@@ -85,6 +85,16 @@
                 <span><%= t('links.sign_out') %></span>
               </a>
             </li>
+            <% if Rails.configuration.oidc['client_id'] && IdentityConfig.store.post_logout_redirect_uri %>
+              <li class="usa-nav__primary-item">
+                <form action="<%= OmniAuth::LoginDotGov::IdpConfiguration.new(idp_base_url: Rails.configuration.oidc['idp_url']).end_session_endpoint %>" method="post">
+                  <input type="hidden" name="client_id" value="<%= Rails.configuration.oidc['client_id'] %>"/>
+                  <input type="hidden" name="state" value="ABC123456789012345567890ABC123456789012345567890"/>
+                  <input type="hidden" name="post_logout_redirect_uri" value="<%= IdentityConfig.store.post_logout_redirect_uri %>"/>
+                  <input type="submit" value="<%= t('links.sign_out') %>" />
+                </form>
+              </li>
+            <% end %>
             <% else %>
             <li class="usa-nav__primary-item">
               <%= button_to t('links.sign_in'), '/auth/logindotgov', method: :post, class: 'usa-button' %>
