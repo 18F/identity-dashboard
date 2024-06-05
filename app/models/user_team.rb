@@ -8,4 +8,23 @@ class UserTeam < ApplicationRecord
 
   validates_uniqueness_of :user_id, scope: :group_id, on: :create,
                           :message=> 'This user is already a member of the team.'
+
+  # This will return all possibly relevant PaperTrail::Version results
+  def self.paper_trail_by_team_id(team_id)
+    PaperTrail::Version.where(item_type: 'UserTeam').where(%-object_changes @> '{"group_id":[?]}'-, team_id)
+=begin
+
+In theory, there's no path through the web site where someone could grab a UserTeam record and alter the user_id without making other changes.
+To catch that scenario, the folowing would need to be added to this query:
+
+```
+.or(
+      PaperTrail::Version.where(item_type: 'UserTeam').where(%-object @> '{"group_id": ?}'-, team_id)
+    )
+```
+
+which looks more complicated in Ruby than the resulting SQL query
+
+=end
+  end
 end

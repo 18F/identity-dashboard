@@ -31,4 +31,43 @@ RSpec.describe UserTeam, type: :model do
       expect { user_team.destroy }.to change { PaperTrail::Version.count }.by(1)
     end
   end
+
+  describe '.paper_trail_by_team_id', versioning: true do
+    it 'can find creations and deletions' do
+      PaperTrail.config.version_limit = nil
+      team = create(:team)
+      wrong_team = create(:team)
+      added_user = create(:user)
+      added_and_removed_user = create(:user)
+      added_and_destroyed_user = create(:user)
+      wrong_user = create(:user)
+
+      team.users << added_user
+
+      team.users << added_and_removed_user
+      team.users.delete(added_and_removed_user)
+
+      team.users << added_and_destroyed_user
+      added_and_destroyed_user.destroy!
+
+      wrong_team.users << wrong_user
+
+      trail = UserTeam.paper_trail_by_team_id(team.id)
+
+      expect(trail[0].event).to eq('create')
+      expect(trail[0].object_changes['user_id']).to eq([nil, added_user.id])
+
+      expect(trail[1].event).to eq('create')
+      expect(trail[1].object_changes['user_id']).to eq([nil, added_and_removed_user.id])
+
+      expect(trail[2].event).to eq('destroy')
+      expect(trail[2].object_changes['user_id']).to eq([added_and_removed_user.id, nil])
+
+      expect(trail[3].event).to eq('create')
+      expect(trail[3].object_changes['user_id']).to eq([nil, added_and_destroyed_user.id])
+
+      expect(team.users.count).to be(1)
+      expect(team.users[0]).to eq(added_user)
+    end
+  end
 end
