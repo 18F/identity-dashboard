@@ -23,7 +23,7 @@ class BannersController < ApplicationController
     @banner = policy_scope(Banner).new(banner_params)
 
     if @banner.save
-      redirect_to @banner, notice: 'Banner was successfully created.'
+      redirect_to banners_path, notice: 'Banner was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end

@@ -22,6 +22,14 @@ RSpec.describe BannersController do
       patch :update, params: banner.attributes
       expect(response).to be_redirect
     end
+
+    describe 'create' do
+      it 'redirects to the banner index' do
+        allow(Banner).to receive(:new).and_return(instance_double(Banner, save: true))
+        get :create, params: { banner: { message: 'test message' }}
+        expect(response.redirect_url).to eq(banners_url)
+      end
+    end
   end
 
   context 'when not logged in ' do
