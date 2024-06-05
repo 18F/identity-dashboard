@@ -10,8 +10,8 @@ gem 'aws-sdk-s3', require: false
 gem 'bundler'
 gem 'colorize'
 gem 'cssbundling-rails'
-gem 'devise', '~> 4.9.3'
-gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'devise', '~> 4.9.4'
+gem 'dotenv-rails', '~> 3.0', '>= 3.0.0'
 gem 'enum_help'
 gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v3.4.2'
@@ -25,18 +25,18 @@ gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.16.2'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
-gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-rails_csrf_protection', '>= 1.0.2'
 gem 'paper_trail', '~> 15.0', '>= 15.0.0'
 gem 'puma', '>= 6.4.2'
 gem 'pg'
-gem 'propshaft'
+gem 'propshaft', '>= 0.9.0'
 gem 'pry-rails'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
-gem 'rails', '~> 7.1.3'
+gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
@@ -44,7 +44,7 @@ gem 'rexml', '~> 3.2'
 gem 'ruby_regex'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.1-18f'
 gem 'secure_headers', '~> 3.9'
-gem 'simple_form', '~> 5.3', '>= 5.3.0'
+gem 'simple_form', '~> 5.3', '>= 5.3.1'
 gem 'uglifier'
 
 group :deploy do
@@ -65,9 +65,9 @@ end
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
-  gem 'i18n-tasks', '>= 1.0.13'
+  gem 'i18n-tasks', '>= 1.0.14'
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
+  gem 'rspec-rails', '~> 6.1', '>= 6.1.2'
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
