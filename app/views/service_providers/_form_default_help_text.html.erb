@@ -1,0 +1,49 @@
+<%= form.fields_for :help_text do |h| %>
+  <fieldset class="usa-fieldset-inputs custom-help-text border-0 padding-0">
+  <%= h.fields_for :sign_in do |s| %>
+    <fieldset class="usa-fieldset">
+      <legend class="usa-label">Sign-in help text:</legend>
+      <ul class="usa-input-list">
+        <%= s.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.sign_in', deep_interpolation: true, sp_name: service_provider.friendly_name || 'Friendly Name', agency: service_provider.agency || 'Agency'),
+                                      :last, :last,
+                                      { checked: service_provider.help_text['sign_in']['en'],
+                                        item_wrapper_tag: :li }) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label') %>
+        <% end %>
+      </ul>
+    </fieldset>
+  <% end %>
+  <%= h.fields_for :sign_up do |s| %>
+    <fieldset class="usa-fieldset">
+      <legend class="usa-label">Sign-up help text:</legend>
+      <ul class="usa-input-list">
+        <%= s.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.sign_up', deep_interpolation: true, sp_name: service_provider.friendly_name || 'Friendly Name', agency: service_provider.agency || 'Agency'),
+                                      :last, :last,
+                                      { checked: service_provider.help_text['sign_up']['en'],
+                                        item_wrapper_tag: :li }) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label')%>
+        <% end %>
+      </ul>
+    </fieldset>
+  <% end %>
+  <%= h.fields_for :forgot_password do |f| %>
+    <fieldset class="usa-fieldset">
+      <legend class="usa-label">Forgot password help text:</legend>
+      <ul class="usa-input-list">
+        <%== f.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.forgot_password', deep_interpolation: true),
+                                      :last, :last,
+                                      { checked: service_provider.help_text['forgot_password']['en'],
+                                        item_wrapper_tag: :li }) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label') %>
+        <% end %>
+      </ul>
+    </fieldset>
+  <% end %>
+  </fieldset>
+<% end %>
