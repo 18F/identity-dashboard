@@ -23,7 +23,7 @@ To catch that scenario, the folowing would need to be added to this query:
     )
 ```
 
-which looks more complicated in Ruby than the resulting SQL query
+which looks more complicated in Ruby than in the resulting SQL query
 
 =end
   end
