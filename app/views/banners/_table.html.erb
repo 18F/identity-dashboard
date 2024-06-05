@@ -1,0 +1,19 @@
+<table class="usa-table">
+  <caption><h2 class="usa_display">
+    <%= timing.capitalize %> messages
+  </h2></caption>
+  <thead>
+    <tr>
+      <th scope="col">Message</th>
+      <th scope="col">Start date</th>
+      <th scope="col">End date</th>
+      <th scope="col">Currently displayed</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% banners.each do |banner| %>
+      <%= render partial: 'table_row', locals: { banner: banner } %>
+    <% end %>
+  </tbody>
+</table>
