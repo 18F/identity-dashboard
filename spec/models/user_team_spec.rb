@@ -66,6 +66,11 @@ RSpec.describe UserTeam, type: :model do
       expect(trail[3].event).to eq('create')
       expect(trail[3].object_changes['user_id']).to eq([nil, added_and_destroyed_user.id])
 
+      expect(trail[4].event).to eq('destroy')
+      expect(trail[4].object_changes['user_id']).to eq([added_and_destroyed_user.id, nil])
+
+      expect(trail.count).to be(5)
+
       expect(team.users.count).to be(1)
       expect(team.users[0]).to eq(added_user)
     end
