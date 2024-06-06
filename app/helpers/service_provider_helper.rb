@@ -100,6 +100,10 @@ module ServiceProviderHelper
     !current_user.admin?
   end
 
+  def help_text_options_enabled?
+    IdentityConfig.store.help_text_options_feature_enabled
+  end
+
   def show_minimal_help_text_element?(help_text)
     return false if current_user.admin?
 

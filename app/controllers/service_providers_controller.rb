@@ -5,7 +5,6 @@ class ServiceProvidersController < AuthenticatedController
     }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
-  before_action :add_iaa_warning, except: %i[index destroy]
 
   def index
     all_apps = current_user.scoped_service_providers
@@ -185,10 +184,6 @@ class ServiceProvidersController < AuthenticatedController
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
-  end
-
-  def add_iaa_warning
-    flash.now[:warning] = I18n.t('notices.service_provider_iaa_notice')
   end
 
   def clear_formatting(service_provider)

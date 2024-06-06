@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby file: '.ruby-version'
+ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
@@ -42,7 +42,7 @@ gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
 gem 'rexml', '~> 3.2'
 gem 'ruby_regex'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.18.1-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.1-18f'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
@@ -71,6 +71,7 @@ group :development, :test do
   gem 'rubocop', '~> 1.62.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rspec_junit_formatter'
 end
 
 group :test do
@@ -83,7 +84,8 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'shoulda-matchers'
-  gem 'simplecov', '= 0.17.0'
+  gem 'simplecov', '~> 0.22.0'
+  gem 'simplecov-cobertura'
   gem 'sinatra', '>= 4.0.0'
   gem 'timecop'
   gem 'webmock'
