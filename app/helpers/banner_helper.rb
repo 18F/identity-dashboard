@@ -14,8 +14,9 @@ module BannerHelper
     # Sort upcoming by start then end, past by end then start.
     # These are not DateTime values, they're ActiveSupport::TimeWithZone, and can be nil.
     upcoming.sort! { |a,b| 
-      a_int = (a.start_date.to_s.gsub(/\D/,'') + a.end_date.to_s.gsub(/\D/,'')).to_i
-      b_int = (b.start_date.to_s.gsub(/\D/,'') + b.end_date.to_s.gsub(/\D/,'')).to_i
+      a_int = (a.start_date.to_s.gsub(/\D/,'') + '.' + a.end_date.to_s.gsub(/\D/,'')).to_i
+      b_int = (b.start_date.to_s.gsub(/\D/,'') + '.' + b.end_date.to_s.gsub(/\D/,'')).to_i
+      puts('*****',a_int)
       a_int <=> b_int
     }
     past.sort! { |a,b| 

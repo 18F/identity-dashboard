@@ -2,6 +2,8 @@
   <th scope="row"><%= banner.message %></th>
   <td><%= banner.start_date ? DateTime.parse(banner.start_date.to_s).strftime("%m/%d/%Y") : "" %></td>
   <td><%= banner.end_date ? DateTime.parse(banner.end_date.to_s).strftime("%m/%d/%Y") : "" %></td>
-  <td><%= banner.active? ? 'Yes' : 'No' %></td>
-  <td><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></td>
+  <% if timing == 'upcoming' %>
+    <td><%= banner.active? ? 'Yes' : 'No' %></td>
+    <td><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></td>
+    <% end %>
 </tr>

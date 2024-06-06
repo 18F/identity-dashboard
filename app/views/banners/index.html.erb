@@ -2,7 +2,7 @@
 <div id="banners">
   <% if @banners.any? %>
     <% splitBannersByTiming.each_pair do |timing, banners| %>
-      <%= render partial: 'table', locals: { timing: timing, banners: banners } %>
+      <%= render partial: 'table', locals: { timing: timing.to_s, banners: banners } %>
     <% end %>
   <% else %>
     <p>No banners found</p>

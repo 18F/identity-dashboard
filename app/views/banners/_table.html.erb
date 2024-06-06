@@ -2,18 +2,27 @@
   <caption><h2 class="usa_display">
     <%= timing.capitalize %> messages
   </h2></caption>
+  <% if timing == 'past' %>
+    <colgroup>
+      <col span="1" style="width: 50%">
+      <col span="1" style="width: 25%">
+      <col span="1" style="width: 25%">
+    </colgroup>
+  <% end %>
   <thead>
     <tr>
       <th scope="col">Message</th>
       <th scope="col">Start date</th>
       <th scope="col">End date</th>
-      <th scope="col">Currently displayed</th>
-      <th scope="col">Actions</th>
+      <% if timing == 'upcoming' %>
+        <th scope="col">Currently displayed</th>
+        <th scope="col">Actions</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
     <% banners.each do |banner| %>
-      <%= render partial: 'table_row', locals: { banner: banner } %>
+      <%= render partial: 'table_row', locals: { banner: banner, timing: timing } %>
     <% end %>
   </tbody>
 </table>
