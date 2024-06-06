@@ -280,17 +280,17 @@ feature 'Service Providers CRUD' do
       user = create(:user, :with_teams)
       login_as(user)
 
-      friendly_name = "<Application Friendly Name>"
-      agency = "<Agency>"
+      friendly_name = '<Application Friendly Name>'
+      agency = '<Agency>'
 
       #taken from service_providers.en.yml
-      default_help_text_options = ["Leave blank", 
+      default_help_text_options = ['Leave blank', 
       "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
       "Sign in to Login.gov with your #{agency} email.",
       "Sign in to Login.gov with your #{agency} PIV/CAC.",
       "Create a Login.gov account using your #{agency} email.",
-      "Create a Login.gov account using the same email provided on your application.",
-      "If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support."
+      'Create a Login.gov account using the same email provided on your application.',
+      'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.',
       ]
       
       visit new_service_provider_path
