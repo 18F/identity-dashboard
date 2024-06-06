@@ -1,10 +1,14 @@
 <%= link_to "Create a new message", new_banner_path, class: 'usa-button'%>
 <div id="banners">
   <% if @banners.any? %>
-    <% splitBannersByTiming.each_pair do |timing, banners| %>
-      <%= render partial: 'table', locals: { timing: timing.to_s, banners: banners } %>
+    <% sort_banners_by_timing(@banners).each_pair do |timing, banners| %>
+      <% if banners.any? %>
+        <%= render partial: 'table', locals: { timing: timing.to_s, banners: banners } %>
+      <% else %>
+        <h2 class="usa-display font-heading-xl">No <%= timing %> messages found</h2>
+      <% end %>
     <% end %>
   <% else %>
-    <p>No banners found</p>
+    <h2 class="usa-display">No messages found</h2>
   <% end %>
 </div>
