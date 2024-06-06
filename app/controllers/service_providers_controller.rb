@@ -72,7 +72,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def deleted
     return unless current_user.admin?
-    @service_providers = deleted_service_provider
+    @service_providers = deleted_service_providers
   end
 
 
