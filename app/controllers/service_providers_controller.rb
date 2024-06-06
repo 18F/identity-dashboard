@@ -239,10 +239,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def deleted_service_providers
-    PaperTrail::Version.where(:item_type => 'ServiceProvider')
-                       .where(:event => 'destroy')
-                       .where('created_at > ?', 12.months.ago)
-                       .order(created_at: :desc)
+    PaperTrail::Version.where(:item_type => 'ServiceProvider').
+                       where(:event => 'destroy').
+                       where('created_at > ?', 12.months.ago).
+                       order(created_at: :desc)
   end
 
   helper_method :service_provider
