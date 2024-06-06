@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all]
+  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all, :deleted]
   before_action -> {
       authorize(service_provider, :member_or_admin?)
     }, only: %i[update edit show destroy]
