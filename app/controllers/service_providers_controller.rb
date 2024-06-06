@@ -72,10 +72,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def deleted
     return unless current_user.admin?
-    deleted_apps = PaperTrail::Version.where(:item_type => 'ServiceProvider')
-                                      .where(:event => 'destroy')
-                                      .where('created_at > ?', 12.months.ago)
-
+    deleted_apps = deleted_service_providers
     @service_providers = deleted_apps
   end
 
@@ -240,6 +237,12 @@ class ServiceProvidersController < AuthenticatedController
         apps: sandbox_apps,
       },
     ]
+  end
+
+  def deleted_service_providers
+    PaperTrail::Version.where(:item_type => 'ServiceProvider')
+                       .where(:event => 'destroy')
+                       .where('created_at > ?', 12.months.ago)
   end
 
   helper_method :service_provider

@@ -8,6 +8,7 @@ describe ServiceProvidersController do
 
     let(:user) { create(:user, :with_teams) }
     let(:sp) { create(:service_provider, :with_users_team, user: user) }
+    let(:sp_to_delete) { create(:service_provider, :with_users_team, user: user) }
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
     let(:logo_file_params) do
       {
@@ -223,11 +224,11 @@ describe ServiceProvidersController do
 
       context 'when user is admin' do
         before do
-          user = create(:admin)
-          sign_in(user)
+          admin = create(:admin)
+          sign_in(admin)
         end
 
-        it 'blocks non-Login Admin users' do
+        it 'allows Login Admin users' do
           get :deleted
           expect(response.status).to eq(200)
         end
