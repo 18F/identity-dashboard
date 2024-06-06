@@ -1,0 +1,13 @@
+<h1 class="usa-display">Deleted Apps</h1>
+<% if @service_providers.blank? %>
+  <h2>No apps to show.</h2>
+<% else %>
+  <table class="usa-table">
+    <%= render partial: 'deleted_service_provider_table_header' %>
+    <tbody>
+    <% @service_providers.each do |record| %>
+      <%= render partial: 'deleted_service_provider_table_row', locals: { deleted_at: record[:created_at], app: record[:object] } %>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

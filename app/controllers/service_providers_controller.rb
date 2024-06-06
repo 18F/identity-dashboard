@@ -70,6 +70,13 @@ class ServiceProvidersController < AuthenticatedController
     redirect_to service_providers_path
   end
 
+  def deleted
+    return unless current_user.admin?
+    deleted_apps = PaperTrail::Version.where(:item_type => 'ServiceProvider').where(:event => 'destroy').where('created_at > ?', 12.months.ago)
+
+    @service_providers = deleted_apps
+  end
+
 
   private
 
