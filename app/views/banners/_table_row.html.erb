@@ -4,6 +4,10 @@
   <td><%= banner.end_date ? DateTime.parse(banner.end_date.to_s).strftime("%m/%d/%Y") : "" %></td>
   <% if timing == 'upcoming' %>
     <td><%= banner.active? ? 'Yes' : 'No' %></td>
-    <td><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></td>
+    <td>
+      <% if policy(banner).edit? %>
+        <%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %>
+      <% end %>
+    </td>
     <% end %>
 </tr>
