@@ -5,7 +5,7 @@ RSpec.describe BannersController do
   let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
   let(:banner) { create(:banner) }
 
-  let (:updated_message) { "Updated Banner" }
+  let (:updated_message) { 'Updated Banner' }
   let (:updated_start_date) { Date.today - 1.year }
   let (:updated_end_date) { Date.today + 1.year } 
 
@@ -43,7 +43,7 @@ RSpec.describe BannersController do
             message: updated_message,
             start_date: updated_start_date,
             end_date: updated_end_date,
-          }
+          },
         }
         banner.reload
         expect(banner.message).to eq(updated_message)
