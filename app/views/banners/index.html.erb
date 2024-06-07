@@ -5,10 +5,10 @@
       <% if banners.any? %>
         <%= render partial: 'table', locals: { timing: timing.to_s, banners: banners } %>
       <% else %>
-        <h2 class="usa-display font-heading-xl">No <%= timing %> messages found</h2>
+        <h2 class="font-heading-xl">No <%= timing %> messages found</h2>
       <% end %>
     <% end %>
   <% else %>
-    <h2 class="usa-display">No messages found</h2>
+    <h2 class="font-heading-xl">No messages found</h2>
   <% end %>
 </div>
