@@ -1,23 +1,14 @@
-<h1 class="usa-display">Banners</h1>
-
+<%= link_to "Create a new message", new_banner_path, class: 'usa-button'%>
 <div id="banners">
-  <table class='usa-table'>
-    <thead>
-    <% if @banners.any? %>
-      <tr><th>Message</th><th>Start</th><th>End</th><th>Active?</th><th /></tr>
-    <% else %>
-      <tr><th>No banners found</th></tr>
+  <% if @banners.any? %>
+    <% sort_banners_by_timing(@banners).each_pair do |timing, banners| %>
+      <% if banners.any? %>
+        <%= render partial: 'table', locals: { timing: timing.to_s, banners: banners } %>
+      <% else %>
+        <h2 class="font-heading-xl">No <%= timing %> messages found</h2>
+      <% end %>
     <% end %>
-    </thead>
-    <% @banners.each do |banner| %>
-      <tr id="<%= dom_id banner %>">
-        <%= render banner %>
-        <td><% if policy(banner).edit? %>
-          <p><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></p>
-        <% end %></td>
-      </tr>
-    <% end %>
-  </table>
+  <% else %>
+    <h2 class="font-heading-xl">No messages found</h2>
+  <% end %>
 </div>
-
-<%= link_to "New banner", new_banner_path, class: 'usa-button'%>
