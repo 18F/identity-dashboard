@@ -350,10 +350,10 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <% if show_minimal_help_text_element?(service_provider.help_text) %>
     <p class="usa-label">Custom help text</p>
     <% if help_text_options_enabled? %>
-     <p>You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
-     <p>If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
+     <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
+     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
       of the developer documentation. You should understand the guidance when you request support.</p>                                 
-      <strong class="text-uppercase"> Radio buttons will go here </strong>
+      <%= render 'form_default_help_text', form: form, service_provider: @service_provider %>
     <% else %>
       <p>You have no existing help text.</p>
       <p>Do you need to add help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
@@ -369,29 +369,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
         <p>You can view your existing help text here.</p>
         <p>Do you need to edit the custom help text for your application? <a href="https://logingov.zendesk.com">Contact us</a>.</p>
       <% end %>
-      <%= form.fields_for :help_text do |h| %>
-        <%= h.fields_for :sign_in do |s| %>
-          <br><legend><span class="text-heavy">Sign-in help text:</span></legend>
-          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "en"), readonly: readonly_help_text? } %>
-          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "es"), readonly: readonly_help_text?  } %>
-          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_in", "fr"), readonly: readonly_help_text? } %>
-        <% end %>
-
-        <%= h.fields_for :sign_up do |s| %>
-          <br><legend><b>Sign-up help text:</b></legend>
-          <%= s.input :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "en"),readonly: readonly_help_text? } %>
-          <%= s.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "es"), readonly: readonly_help_text? } %>
-          <%= s.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("sign_up", "fr"), readonly: readonly_help_text? } %>
-        <% end %>
-
-        <%= h.fields_for :forgot_password do |f| %>
-          <br><legend><b>Forgot password help text:</b></legend>
-          <%= f.input  :en, label: "English", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "en"), readonly: readonly_help_text? } %>
-          <%= f.input :es, label: "Español", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "es"), readonly: readonly_help_text? } %>
-          <%= f.input :fr, label: "Français", as: :text, required: false, input_html: { value: service_provider.help_text.dig("forgot_password", "fr"), readonly: readonly_help_text? } %>
-        <% end %>
+      <%= render 'form_custom_help_text', form: form, service_provider: @service_provider %>
     </fieldset>
-    <% end %>
   <% end %>
 </fieldset>
 

@@ -254,26 +254,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('You can view your existing help text here')
       expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
     end
-    
-    scenario 'can select default help text options for new configurations' do
-      user = create(:user, :with_teams)
-      login_as(user)
-      
-      visit new_service_provider_path
-
-      expect(page).to have_content('You can choose from the default help text options')
-    end
-
-    scenario 'cannot add help text for new configurations when feature flag is off' do
-      allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
-      user = create(:user, :with_teams)
-      login_as(user)
-      
-      visit new_service_provider_path
-
-      expect(page).to have_content('Do you need to add help text for your application? Contact us.')
-      expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
-    end
 
     scenario 'cannot edit allow_prompt_login' do
       user = create(:user, :with_teams)
@@ -296,6 +276,32 @@ feature 'Service Providers CRUD' do
     end
 
     # rubocop:disable Layout/LineLength
+    scenario 'can select default help text options for new configurations' do
+      user = create(:user, :with_teams)
+      login_as(user)
+
+      friendly_name = '<Application Friendly Name>'
+      agency = '<Agency>'
+
+      #taken from service_providers.en.yml
+      default_help_text_options = ['Leave blank', 
+      "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
+      "Sign in to Login.gov with your #{agency} email.",
+      "Sign in to Login.gov with your #{agency} PIV/CAC.",
+      "Create a Login.gov account using your #{agency} email.",
+      'Create a Login.gov account using the same email provided on your application.',
+      'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.',
+      ]
+      
+      visit new_service_provider_path
+
+      expect(page).to have_content('You can choose from the default help text options')
+
+      default_help_text_options.each do |text|
+        expect(page).to have_content(text)
+      end
+    end
+
     scenario 'saml fields are shown when saml is selected', :js do
       user = create(:user)
       login_as(user)
@@ -365,6 +371,23 @@ feature 'Service Providers CRUD' do
         expect(page).to have_selector(selector, wait: 0.1)
       end
     end
+
+    context 'help_text_options_feature_disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
+      end
+
+      scenario 'cannot add help text for new configurations' do
+        user = create(:user, :with_teams)
+        login_as(user)
+        
+        visit new_service_provider_path
+  
+        expect(page).to have_content('Do you need to add help text for your application? Contact us.')
+        expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
+      end
+    end
+
     # rubocop:enable Layout/LineLength
   end
 
