@@ -5,6 +5,10 @@ RSpec.describe BannersController do
   let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
   let(:banner) { create(:banner) }
 
+  let (:updated_message) { "Updated Banner" }
+  let (:updated_start_date) { Date.today - 1.year }
+  let (:updated_end_date) { Date.today + 1.year } 
+
   context 'when logged in as admin' do
     before do
       sign_in admin
@@ -28,6 +32,23 @@ RSpec.describe BannersController do
         allow(Banner).to receive(:new).and_return(instance_double(Banner, save: true))
         get :create, params: { banner: { message: 'test message' }}
         expect(response.redirect_url).to eq(banners_url)
+      end
+    end
+
+    describe 'update' do
+      it 'redirects to the banner index' do
+        put :update, params: { 
+          id: banner.id,
+          banner: {
+            message: updated_message,
+            start_date: updated_start_date,
+            end_date: updated_end_date,
+          }
+        }
+        banner.reload
+        expect(banner.message).to eq(updated_message)
+        expect(banner.start_date).to eq(updated_start_date)
+        expect(banner.end_date).to eq(updated_end_date)
       end
     end
   end

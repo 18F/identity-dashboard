@@ -12,9 +12,13 @@
     <% @banners.each do |banner| %>
       <tr id="<%= dom_id banner %>">
         <%= render banner %>
-        <td><% if policy(banner).edit? %>
-          <p><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></p>
-        <% end %></td>
+        <td>
+          <% if policy(banner).edit? %>
+            <p><%= link_to "Edit", edit_banner_path(banner), class: 'usa-button' %></p>
+          <% else %>
+            <p><button class="usa-button disabled" disabled="disabled">Edit</button></p>
+          <% end %>
+      </td>
       </tr>
     <% end %>
   </table>

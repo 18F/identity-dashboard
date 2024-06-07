@@ -4,6 +4,7 @@ RSpec.describe BannerPolicy, type: :policy do
   let(:user) { User.new }
   let(:admin) { User.new(admin: true )}
   let(:banner) { build(:banner)}
+  let(:ended_banner) { build(:banner, start_date: Time.now.beginning_of_day - 2.days, end_date: Time.now.beginning_of_day - 1.day)}
 
   subject { described_class }
 
@@ -23,6 +24,18 @@ RSpec.describe BannerPolicy, type: :policy do
     end
     it 'allows admins' do
       expect(subject).to permit(admin, banner)
+    end
+  end
+
+  permissions :edit? do
+    it 'denies users by default' do
+      expect(subject).not_to permit(user, banner)
+    end
+    it 'allows admins' do
+      expect(subject).to permit(admin, banner)
+    end
+    it 'denies when banner was displayed in the past' do
+      expect(subject).not_to permit(admin, ended_banner)
     end
   end
 end
