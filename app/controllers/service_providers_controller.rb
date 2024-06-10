@@ -19,6 +19,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider = ServiceProvider.new
     attach_cert
 
+    # help_text_i18n
     @service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
@@ -30,6 +31,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_cert
     remove_certificates
 
+    # help_text_i18n
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
 
@@ -149,6 +151,20 @@ class ServiceProvidersController < AuthenticatedController
     permit_params << :production_issuer if current_user.admin?
     permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
+  end
+
+  # include translations of help text in DB
+  def help_text_i18n
+    current_help_text = service_provider_params['help_text']
+    locales = ["en", "es", "fr", "zh"]
+    puts "current help text: #{current_help_text}"
+    # locales.each { |locale|
+    #   ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
+    #     return if service_provider['help_text'][mode][locale].to_s.empty?
+    #     current_help_text[mode].merge!(I18n.t("service_provider_form.help_text.#{mode}", locale: locale))
+    #   }
+    # }
+    # puts "newhelptext: #{current_help_text}"
   end
 
   # relies on ServiceProvider#certs_are_pems for validation
