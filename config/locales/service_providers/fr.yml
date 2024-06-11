@@ -9,7 +9,7 @@ fr:
         piv_cac: "Connectez-vous à Login.gov à l’aide de votre carte PIV/CAC de ${agency}"
       sign_up:
         blank: Leave blank
-        first_time: "C’est la première fois que vous vous connectez à ${sp_name} ? Vos anciens nom d’utilisateur ${sp_name} et mot de passe ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement."
+        first_time: "C’est la première fois que vous vous connectez à ${sp_name} ? Vos anciens nom d’utilisateur et mot de passe pour accéder à ${sp_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement."
         agency_email: "Créez un compte Login.gov avec votre adresse e-mail liée à ${agency}."
         same_email: "Créez un compte Login.gov à l’aide de la même adresse e-mail que celle que vous avez fournie dans votre demande."
       forgot_password:
