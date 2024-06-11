@@ -14,4 +14,4 @@ es:
         same_email: "Cree una cuenta de Login.gov con el mismo correo electrónico que usó en su aplicación."
       forgot_password:
         blank: Leave blank
-        troubleshoot_html: "Si tiene problemas para acceder a su cuenta de Login.gov, <a href="https://login.gov/es/help">visite el centro de ayuda de Login.gov</a> para obtener asistencia."
+        troubleshoot_html: "Si tiene problemas para acceder a su cuenta de Login.gov, <a href='https://login.gov/es/help'>visite el centro de ayuda de Login.gov</a> para obtener asistencia."
