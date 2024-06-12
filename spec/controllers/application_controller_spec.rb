@@ -34,5 +34,43 @@ RSpec.describe ApplicationController do
         expect(payload).to include(user_uuid: nil)
       end
     end
+
+    context 'banners are shown at the appropriate times' do
+      let(:current_banner_one) {
+        build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days,
+                       end_date: Time.zone.now.beginning_of_day + 2.days)
+      }
+      let(:current_banner_two) {
+        build(:banner, start_date: Time.zone.now.beginning_of_day - 10.days,
+                       end_date: Time.zone.now.beginning_of_day + 2.days)
+      }
+      let(:current_banner_three) {
+        build(:banner, start_date: Time.zone.now.beginning_of_day - 5.days)
+      }
+      let(:ended_banner) {
+        build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days, 
+                       end_date: Time.zone.now.beginning_of_day - 1.day)
+      }
+
+      before do 
+        current_banner_one.save
+        current_banner_two.save
+        current_banner_three.save
+        ended_banner.save
+      end
+
+      it 'only includes active banners' do
+        displayed_banners = subject.send(:get_banner_messages)
+        expect(displayed_banners.count).to eq(3)
+      end
+
+      it 'orders the banners by start_date' do
+        displayed_banners = subject.send(:get_banner_messages)
+        expect(displayed_banners.first).to eq(current_banner_two)
+        expect(displayed_banners.second).to eq(current_banner_three)
+        expect(displayed_banners.third).to eq(current_banner_one)
+      end
+
+    end
   end
 end
