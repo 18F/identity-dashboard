@@ -62,10 +62,17 @@ RSpec.describe ApplicationController do
       it 'only includes active banners' do
         displayed_banners = subject.send(:get_banner_messages)
         expect(displayed_banners.count).to eq(3)
+
+        expect(displayed_banners).to include(current_banner_one)
+        expect(displayed_banners).to include(current_banner_two)
+        expect(displayed_banners).to include(current_banner_three
+          )
+        expect(displayed_banners).to_not include(ended_banner)
       end
 
       it 'orders the banners by start_date' do
         displayed_banners = subject.send(:get_banner_messages)
+        
         expect(displayed_banners.first).to eq(current_banner_two)
         expect(displayed_banners.second).to eq(current_banner_three)
         expect(displayed_banners.third).to eq(current_banner_one)
