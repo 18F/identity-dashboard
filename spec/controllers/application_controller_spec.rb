@@ -65,7 +65,7 @@ RSpec.describe ApplicationController do
 
         expect(displayed_banners).to include(current_banner_one)
         expect(displayed_banners).to include(current_banner_two)
-        expect(displayed_banners).to include(current_banner_three
+        expect(displayed_banners).to include(current_banner_three,
           )
         expect(displayed_banners).to_not include(ended_banner)
       end
