@@ -27,7 +27,7 @@ class ServiceProvidersController < AuthenticatedController
     if help_text_options_enabled?
       service_provider.help_text = help_text_i18n(service_provider_params)
     end
-    puts "newserviceprovider", service_provider.help_text
+
     validate_and_save_service_provider(:new)
   end
 
@@ -197,7 +197,7 @@ class ServiceProvidersController < AuthenticatedController
   # include translations of help text in DB
   def help_text_i18n(service_provider_params)
     current_help_text = service_provider_params['help_text']
-    locales = ["en", "es", "fr", "zh"]
+    locales = ['en', 'es', 'fr', 'zh']
 
     ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
       key = current_help_text[mode]['en'].to_s
@@ -205,16 +205,20 @@ class ServiceProvidersController < AuthenticatedController
       if not key.empty? && !I18n.t("service_provider_form.help_text.#{mode}.#{key}".empty?)
         locales.each { |locale|
           if key == 'blank'
-            chosen_text = ""
+            chosen_text = ''
           else
-            chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}", locale: locale)
+            chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}",
+              locale: locale,
+              sp_name: service_provider.friendly_name,
+              agency: service_provider.agency.name,
+              )
           end
 
           current_help_text[mode][locale] = chosen_text
         }
       end
     }
-    puts "currenthelptext", current_help_text
+
     return current_help_text
   end
 
