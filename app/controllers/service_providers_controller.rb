@@ -5,6 +5,7 @@ class ServiceProvidersController < AuthenticatedController
     }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
+  include ServiceProviderHelper
 
   def index
     all_apps = current_user.scoped_service_providers
@@ -23,6 +24,10 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
+    if help_text_options_enabled?
+      service_provider.help_text = help_text_i18n(service_provider_params)
+    end
+    puts "newserviceprovider", service_provider.help_text
     validate_and_save_service_provider(:new)
   end
 
@@ -32,6 +37,9 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
+    if help_text_options_enabled?
+      service_provider.help_text = help_text_i18n(service_provider_params)
+    end
 
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
@@ -184,6 +192,30 @@ class ServiceProvidersController < AuthenticatedController
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
+  end
+
+  # include translations of help text in DB
+  def help_text_i18n(service_provider_params)
+    current_help_text = service_provider_params['help_text']
+    locales = ["en", "es", "fr", "zh"]
+
+    ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
+      key = current_help_text[mode]['en'].to_s
+      # don't overwrite custom help text
+      if not key.empty? && !I18n.t("service_provider_form.help_text.#{mode}.#{key}".empty?)
+        locales.each { |locale|
+          if key == 'blank'
+            chosen_text = ""
+          else
+            chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}", locale: locale)
+          end
+
+          current_help_text[mode][locale] = chosen_text
+        }
+      end
+    }
+    puts "currenthelptext", current_help_text
+    return current_help_text
   end
 
   def clear_formatting(service_provider)

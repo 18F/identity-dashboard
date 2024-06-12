@@ -3,8 +3,7 @@
   <%= h.fields_for :sign_in do |s| %>
     <fieldset class="usa-fieldset margin-top-4">
       <legend class="usa-label">Sign-in help text:</legend>
-        <%= s.collection_radio_buttons(help_text_i18n,
-                                      :en,
+        <%= s.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.sign_in', deep_interpolation: true, 
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
@@ -18,8 +17,7 @@
   <%= h.fields_for :sign_up do |s| %>
     <fieldset class="usa-fieldset margin-top-4">
       <legend class="usa-label">Sign-up help text:</legend>
-        <%= s.collection_radio_buttons(help_text_i18n,
-                                      :en,
+        <%= s.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.sign_up', deep_interpolation: true, 
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
@@ -33,8 +31,7 @@
   <%= h.fields_for :forgot_password do |f| %>
     <fieldset class="usa-fieldset margin-top-4">
       <legend class="usa-label">Forgot password help text:</legend>
-        <%= f.collection_radio_buttons(help_text_i18n,
-                                      :en,
+        <%= f.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.forgot_password'),
                                       :first, :last,
                                       { checked: service_provider.help_text['forgot_password']['en']}) do |r| %>

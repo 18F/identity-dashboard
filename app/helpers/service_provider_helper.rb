@@ -112,30 +112,6 @@ module ServiceProviderHelper
       all? {|text| text.values.all?(&:blank?)}
   end
 
-  # include translations of help text in DB
-  def help_text_i18n(service_provider = @service_provider)
-    puts "serviceprovider!!", service_provider
-    return true
-    current_help_text = service_provider_params['help_text']
-    locales = ["en", "es", "fr", "zh"]
-
-    ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
-      key = current_help_text[mode]['en'].to_s
-      if not key.empty?
-        locales.each { |locale|
-          if key == 'blank'
-            chosen_text = ""
-          else
-            chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}", locale: locale)
-          end
-          current_help_text[mode][locale] = chosen_text
-        }
-      end
-    }
-
-    return service_provider_params.merge!(help_text: current_help_text)
-  end
-
   private
 
   def config_hash(service_provider)
