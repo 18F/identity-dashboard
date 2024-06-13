@@ -7,11 +7,7 @@ describe ServiceProvidersController do
     end
 
     let(:user) { create(:user, :with_teams) }
-    let(:sp) { create(
-      :service_provider,
-      :with_users_team,
-      user: user,
-      ) }
+    let(:sp) { create(:service_provider, :with_users_team, user: user) }
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
     let(:init_help_params) do
       { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
