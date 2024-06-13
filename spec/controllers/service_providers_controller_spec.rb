@@ -7,8 +7,15 @@ describe ServiceProvidersController do
     end
 
     let(:user) { create(:user, :with_teams) }
-    let(:sp) { create(:service_provider, :with_users_team, user: user) }
+    let(:sp) { create(
+      :service_provider,
+      :with_users_team,
+      user: user,
+      ) }
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+    let(:init_help_params) do
+      { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
+    end
     let(:logo_file_params) do
       {
         io: File.open(fixture_path + '/logo.svg'),
@@ -33,6 +40,7 @@ describe ServiceProvidersController do
             failure_to_proof_url: '  https://failuretoproof.com  ',
             push_notification_url: ' https://pushnotifications.com  ',
             app_name: '   app name  ',
+            help_text: init_help_params,
           },
         }
         sp.reload
@@ -56,22 +64,22 @@ describe ServiceProvidersController do
       end
 
       it 'caches the logo filename on the sp' do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
         sp.reload
         expect(sp.logo).to eq('alternative_filename.svg')
       end
 
       it 'caches the logo key on the sp' do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
         sp.reload
         expect(sp.remote_logo_key).to be_present
       end
 
       context 'with paper trail versioning enabled', versioning: true do
         before do
-          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
           allow(subject).to receive(:logo_file_param).and_return(new_logo_file_params)
-          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
           sp.reload
         end
 
@@ -110,7 +118,7 @@ describe ServiceProvidersController do
         put :update,
             params: {
               id: sp.id,
-              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'] },
+              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'], help_text: init_help_params },
             }
 
         sp.reload
@@ -126,7 +134,7 @@ describe ServiceProvidersController do
                original_filename: 'my-cert.crt',
              )
 
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
 
       sp.reload
 
@@ -141,7 +149,7 @@ describe ServiceProvidersController do
              )
 
       expect do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
       end.to_not(change { sp.reload.certs&.size })
     end
 
@@ -151,14 +159,14 @@ describe ServiceProvidersController do
         original_filename: 'my-cert.crt',
       )
 
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file } }
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params } }
       expect(sp.reload.certs&.size).to equal(0)
     end
 
     it 'sends a serialized service provider to the IDP' do
       allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
       provider = ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(

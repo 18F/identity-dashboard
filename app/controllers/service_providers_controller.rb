@@ -196,13 +196,13 @@ class ServiceProvidersController < AuthenticatedController
 
   # include translations of help text in DB
   def help_text_i18n(service_provider_params)
-    current_help_text = service_provider_params['help_text']
+    current_help_text = service_provider_params.fetch('help_text')
     locales = ['en', 'es', 'fr', 'zh']
 
     ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
-      key = current_help_text[mode]['en'].to_s
+      key = current_help_text.fetch(mode).fetch('en').to_s
       # don't overwrite custom help text
-      if not key.empty? && !I18n.t("service_provider_form.help_text.#{mode}.#{key}".empty?)
+      if not key.empty? && !I18n.t("service_provider_form.help_text.#{mode}.#{key}").empty?
         locales.each { |locale|
           if key == 'blank'
             chosen_text = ''
