@@ -111,7 +111,7 @@
         <div class="usa-alert usa-alert--info margin-bottom-105">
           <div class="usa-alert__body">
             <p class="usa-alert__text">
-              <%= banner.message.html_safe %>
+              <%= Rails::HTML5::SafeListSanitizer.new.sanitize(banner.message).html_safe %>
             </p>
           </div>
         </div>
