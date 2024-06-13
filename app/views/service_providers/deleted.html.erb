@@ -1,9 +1,10 @@
 <h1 class="usa-display">Deleted Apps</h1>
-<h4>Apps deleted in the last 12 months</h4>
+<h2>Apps deleted in the last 12 months</h2>
 <% if @service_providers.blank? %>
-  <h2>No apps to show.</h2>
+  <h3>No apps to show.</h3>
 <% else %>
-  <table class="usa-table">
+  <table id="deleted-apps-table" class="usa-table">
+    <caption for="deleted-apps-table">Deleted Apps</caption>
     <%= render partial: 'deleted_service_provider_table_header' %>
     <tbody>
     <% @service_providers.each do |record| %>
