@@ -26,4 +26,14 @@ module BannerHelper
 
     return { upcoming: upcoming, past: past }
   end
+
+  def get_active_banners
+    all_banners = Banner.all
+    active_banners = all_banners.select { |banner| banner.active? == true }
+    active_banners.sort! { |a,b|
+      a_int = a.start_date.to_f + a.end_date.to_f/10000000000
+      b_int = b.start_date.to_f + b.end_date.to_f/10000000000
+      a_int <=> b_int
+    }
+  end
 end
