@@ -17,4 +17,10 @@ class Banner < ApplicationRecord
   def active?
     started? && !ended?
   end
+
+  def active_banners
+    all_banners = Banner.all
+    active_banners = all_banners.select { |banner| banner.active? == true }
+    active_banners.sort_by! { |banner| banner['start_date'] }
+  end
 end

@@ -38,8 +38,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get_banner_messages
-    all_banners = Banner.all
-    @active_banners = all_banners.select { |banner| banner.active? == true }
-    @active_banners.sort_by! { |banner| banner['start_date'] }
+    @active_banners = Banner.new.active_banners
   end
 end
