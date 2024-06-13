@@ -135,10 +135,13 @@ RSpec.describe BannerHelper do
     let(:current_banner_three) {
       build(:banner, start_date: Time.zone.now.beginning_of_day - 5.days)
     }
-
-    let(:nil_start_and_end_date_banner) {
+    let(:banner_no_dates) {
       build(:banner)
     }
+    let(:banner_no_end) { build(:banner,
+      start_date: Date.today - 1.day,
+      end_date: nil,
+    )}
     let(:ended_banner) {
       build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days, 
                      end_date: Time.zone.now.beginning_of_day - 1.day)
@@ -148,28 +151,31 @@ RSpec.describe BannerHelper do
       current_banner_one.save
       current_banner_two.save
       current_banner_three.save
-      nil_start_and_end_date_banner.save
+      banner_no_dates.save
+      banner_no_end.save
       ended_banner.save
     end
 
     it 'only includes active banners' do
       displayed_banners = get_active_banners
-      expect(displayed_banners.count).to eq(4)
+      expect(displayed_banners.count).to eq(5)
 
       expect(displayed_banners).to include(current_banner_one)
       expect(displayed_banners).to include(current_banner_two)
       expect(displayed_banners).to include(current_banner_three)
-      expect(displayed_banners).to include(nil_start_and_end_date_banner)
+      expect(displayed_banners).to include(banner_no_dates)
+      expect(displayed_banners).to include(banner_no_end)
       expect(displayed_banners).to_not include(ended_banner)
     end
 
     it 'orders the banners by start_date' do
       displayed_banners = get_active_banners
       
-      expect(displayed_banners.first).to eq(nil_start_and_end_date_banner)
+      expect(displayed_banners.first).to eq(banner_no_dates)
       expect(displayed_banners.second).to eq(current_banner_two)
       expect(displayed_banners.third).to eq(current_banner_three)
       expect(displayed_banners.fourth).to eq(current_banner_one)
+      expect(displayed_banners.fifth).to eq(banner_no_end)
     end
   end
 end
