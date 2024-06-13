@@ -38,6 +38,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get_banner_messages
-    helpers.get_active_banners
+    @active_banners = helpers.get_active_banners
   end
 end
