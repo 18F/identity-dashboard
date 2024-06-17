@@ -201,6 +201,7 @@ class ServiceProvidersController < AuthenticatedController
 
     ['sign_in', 'sign_up', 'forgot_password'].each { |mode|
       key = current_help_text.fetch(mode).fetch('en').to_s
+      # check that one of the default options is selected and
       # don't overwrite custom help text
       if !key.empty? &&
         !I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?

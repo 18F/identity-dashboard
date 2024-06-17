@@ -14,4 +14,4 @@ fr:
         same_email: "Créez un compte Login.gov à l’aide de la même adresse e-mail que celle que vous avez fournie dans votre demande."
       forgot_password:
         blank: Leave blank
-        troubleshoot_html: "Si vous rencontrez des difficultés pour accéder à votre compte Login.gov, <a href='https://login.gov/fr/help'>veuillez vous rendre sur le site du centre d’assistance de Login.gov</a> pour obtenir de l’aide."
+        troubleshoot_html: "Si vous rencontrez des difficultés pour accéder à votre compte Login.gov, <a href=\"https://login.gov/fr/help\">veuillez vous rendre sur le site du centre d’assistance de Login.gov</a> pour obtenir de l’aide."

@@ -14,4 +14,4 @@ zh:
         same_email: "使用您在申请中提供的同一电邮地址设立一个 Login.gov 帐户。"
       forgot_password:
         blank: Leave blank
-        troubleshoot_html: "如果您在访问 Login.gov 帐户时遇到问题，<a href='https://login.gov/zh/help'>请访问 Login.gov 帮助中心</a> 寻求支持。"
+        troubleshoot_html: "如果您在访问 Login.gov 帐户时遇到问题，<a href=\"https://login.gov/zh/help\">请访问 Login.gov 帮助中心</a> 寻求支持。"
