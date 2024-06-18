@@ -204,7 +204,7 @@ class ServiceProvidersController < AuthenticatedController
       # check that one of the default options is selected and
       # don't overwrite custom help text
       if !key.empty? &&
-        !I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
+         !I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
         locales.each { |locale|
           if key == 'blank'
             chosen_text = ''
