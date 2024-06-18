@@ -5,6 +5,10 @@ class ServiceProviderPolicy < BasePolicy
     admin?
   end
 
+  def deleted?
+    admin?
+  end
+
   def create?
     true
   end
