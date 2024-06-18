@@ -1,8 +1,8 @@
 <h1 class="usa-display">Deleted Apps</h1>
-<h2>Apps deleted in the last 12 months</h2>
 <% if @service_providers.blank? %>
-  <h3>No apps to show.</h3>
+  <h2>No apps deleted in the last 12 months</h2>
 <% else %>
+  <h2>Apps deleted in the last 12 months</h2>
   <table id="deleted-apps-table" class="usa-table">
     <caption for="deleted-apps-table">Deleted Apps</caption>
     <%= render partial: 'deleted_service_provider_table_header' %>
