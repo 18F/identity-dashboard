@@ -25,8 +25,13 @@ module ServiceProviderHelper
     SVG_MIME_TYPE => '.svg',
   }.freeze
 
-  SP_HELP_OPTS = ['sign_in', 'sign_up', 'forgot_password']
-  SP_HELP_LOCALES = ['en', 'es', 'fr', 'zh']
+  SP_HELP_OPTS = ['sign_in', 'sign_up', 'forgot_password'].freeze
+  SP_HELP_LOCALES = ['en', 'es', 'fr', 'zh'].freeze
+  SP_HELP_KEYS = {
+    'sign_in' => ['blank', 'first_time', 'agency_email', 'piv_cac'],
+    'sign_up' => ['blank', 'first_time', 'agency_email', 'same_email'],
+    'forgot_password' => ['blank', 'troubleshoot_html'],
+  }.freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'

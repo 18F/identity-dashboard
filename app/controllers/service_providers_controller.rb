@@ -200,11 +200,12 @@ class ServiceProvidersController < AuthenticatedController
       key = current_help_text.fetch(mode).fetch('en').to_s
       no_value = key.empty?
       custom_help = !no_value && I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
+      is_valid_key = ServiceProvider::SP_HELP_KEYS[mode].include?(key)
       # check that one of the default options is selected and
       # don't overwrite custom help text
       if !no_value
         ServiceProviderHelper::SP_HELP_LOCALES.each { |locale|
-          if key == 'blank' || custom_help
+          if key == 'blank' || custom_help || !is_valid_key
             # don't let people bypass the form
             chosen_text = ''
           else
