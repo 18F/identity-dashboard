@@ -6,6 +6,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
 
+
   def index
     all_apps = current_user.scoped_service_providers
 
@@ -71,7 +72,6 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def deleted
-    return unless current_user.admin?
     @service_providers = deleted_service_providers
   end
 
