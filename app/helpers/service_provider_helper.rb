@@ -25,6 +25,9 @@ module ServiceProviderHelper
     SVG_MIME_TYPE => '.svg',
   }.freeze
 
+  SP_HELP_OPTS = ['sign_in', 'sign_up', 'forgot_password']
+  SP_HELP_LOCALES = ['en', 'es', 'fr', 'zh']
+
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
     if file.downcase.end_with?('.svg')
