@@ -141,7 +141,7 @@ describe ServiceProvidersController do
           },
         })
       end
-      it('should fill selected default options: set 1') do
+      it('should fill selected default options: set 2') do
         sign_in_key = 'piv_cac'
         sign_up_key = 'agency_email'
         forgot_password_key = 'blank'
@@ -365,6 +365,88 @@ describe ServiceProvidersController do
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },
       )
+    end
+
+    context 'help_text config' do
+      it('should fill selected default options: set 1') do
+        sign_in_key = 'first_time'
+        sign_up_key = 'first_time'
+        forgot_password_key = 'troubleshoot_html'
+        help_params_1 = { sign_in: { en: sign_in_key },
+          sign_up: { en: sign_up_key },
+          forgot_password: { en: forgot_password_key } }
+        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: help_params_1 } }
+        sp.reload
+
+        expect(sp.help_text).to eq({
+          'sign_in' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'sign_up' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'forgot_password' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+        })
+      end
     end
   end
 
