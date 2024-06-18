@@ -198,12 +198,14 @@ class ServiceProvidersController < AuthenticatedController
     current_help_text = service_provider_params.fetch('help_text')
     ServiceProviderHelper::SP_HELP_OPTS.each { |mode|
       key = current_help_text.fetch(mode).fetch('en').to_s
+      no_value = key.empty?
+      custom_help = !no_value && I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
       # check that one of the default options is selected and
       # don't overwrite custom help text
-      if !key.empty? &&
-         !I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
+      if !no_value
         ServiceProviderHelper::SP_HELP_LOCALES.each { |locale|
-          if key == 'blank'
+          if key == 'blank' || custom_help
+            # don't let people bypass the form
             chosen_text = ''
           else
             chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}",
