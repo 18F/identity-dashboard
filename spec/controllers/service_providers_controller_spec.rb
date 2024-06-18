@@ -23,35 +23,37 @@ describe ServiceProvidersController do
     end
 
     context 'help_text config' do
-      locales = ['en', 'es', 'fr', 'zh']
-      xit('should fill selected default options: blank set') do
-        help_params_0 = { sign_in: {en: 'blank'}, sign_up: {en: 'blank'} , forgot_password: {en: 'blank'} }
-        put :create, params: { id: sp.id, service_provider: {
-          issuer: sp.issuer,
-          friendly_name: sp.friendly_name,
-          agency: sp.agency,
-          agency_id: sp.agency_id,
+      # group_id (team) is necessary to create a ServiceProvider.
+      it('should fill selected default options: blank set') do
+        help_params_0 = { sign_in: {en: 'blank'},
+          sign_up: {en: 'blank'},
+          forgot_password: {en: 'blank'} }
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
           help_text: help_params_0,
         } }
-        sp.reload
-        expect(sp.help_text).to eq({
-          sign_in: {
-            en: "",
-            es: "",
-            fr: "",
-            zh: ""
+        sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
+
+        expect(sp_help.help_text).to eq({
+          'sign_in' => {
+            'en' => "",
+            'es' => "",
+            'fr' => "",
+            'zh' => ""
           },
-          sign_up: {
-            en: "",
-            es: "",
-            fr: "",
-            zh: ""
+          'sign_up' => {
+            'en' => "",
+            'es' => "",
+            'fr' => "",
+            'zh' => ""
           },
-          forgot_password: {
-            en: "",
-            es: "",
-            fr: "",
-            zh: ""
+          'forgot_password' => {
+            'en' => "",
+            'es' => "",
+            'fr' => "",
+            'zh' => ""
           }
         })
       end
@@ -139,10 +141,78 @@ describe ServiceProvidersController do
           },
         })
       end
+      it('should fill selected default options: set 1') do
+        sign_in_key = 'piv_cac'
+        sign_up_key = 'agency_email'
+        forgot_password_key = 'blank'
+        help_params_2 = { sign_in: { en: sign_in_key },
+          sign_up: { en: sign_up_key },
+          forgot_password: { en: forgot_password_key } }
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
+          help_text: help_params_2,
+        } }
+        sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
+  
+        expect(sp_help.help_text).to eq({
+          'sign_in' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :zh,
+            ),
+          },
+          'sign_up' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :zh,
+            ),
+          },
+          'forgot_password' => {
+            'en' => "",
+            'es' => "",
+            'fr' => "",
+            'zh' => "",
+          },
+        })
+      end
     end
   end
 
-  xdescribe '#update' do
+  describe '#update' do
     before do
       sign_in(user)
     end
@@ -298,7 +368,7 @@ describe ServiceProvidersController do
     end
   end
 
-  xdescribe '#publish' do
+  describe '#publish' do
     context 'no user' do
       it 'requires authentication' do
         post :publish
