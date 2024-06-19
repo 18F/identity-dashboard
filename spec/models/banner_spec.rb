@@ -40,6 +40,22 @@ RSpec.describe Banner, type: :model do
     expect(new_banner.valid?).to be(true)
   end
 
+  it 'can be more than 256 characters' do
+    long_string = '12345678901234567890123456789012345678901234567890
+    12345678901234567890123456789012345678901234567890
+    12345678901234567890123456789012345678901234567890
+    12345678901234567890123456789012345678901234567890
+    12345678901234567890123456789012345678901234567890
+    12345678901234567890123456789012345678901234567890'
+    expect(new_banner.message).to_not eq(long_string)
+    new_banner.message = long_string
+    expect(long_string.length).to be > 256
+    expect(new_banner.valid?).to be(true)
+    new_banner.save!
+    new_banner.reload
+    expect(new_banner.message).to eq(long_string)
+  end
+
   describe '#active?' do
     let(:future_banner) { build(:banner, start_date: Time.now + 2.days) }
     let(:past_banner) { build(:banner, 
