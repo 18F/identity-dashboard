@@ -49,5 +49,6 @@ en:
       forgot_password:
         blank: Leave blank
         troubleshoot_html: If you are having trouble accessing your Login.gov account, <a href='https://login.gov/help'>visit the Login.gov help center</a> for support.
-        
+  banner_form:
+    message_hint: Please attempt to keep messages to under 150 characters if possible.      
 
