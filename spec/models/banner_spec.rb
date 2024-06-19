@@ -41,10 +41,10 @@ RSpec.describe Banner, type: :model do
   end
 
   describe '#active?' do
-    let(:future_banner) { build(:banner, start_date: Date.today + 2.days) }
+    let(:future_banner) { build(:banner, start_date: Time.now + 2.days) }
     let(:past_banner) { build(:banner, 
-      start_date: Date.today - 7.days, 
-      end_date: Date.today - 2.days,
+      start_date: Time.now - 7.days, 
+      end_date: Time.now - 2.days,
     )}
 
     it 'is true for blank dates' do
@@ -54,7 +54,7 @@ RSpec.describe Banner, type: :model do
     it 'is false if the start date is after today' do
       future_banner.end_date = nil
       expect(future_banner.active?).to be(false)
-      future_banner.end_date = Date.today + 7.days
+      future_banner.end_date = Time.now + 7.days
       expect(future_banner.active?).to be(false)
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Banner, type: :model do
     end
 
     it 'is true if the start date is before today and the end date is after' do
-      past_banner.end_date = Date.today + 1.day
+      past_banner.end_date = Time.now + 1.day
       expect(past_banner.active?).to be(true)
     end
 
