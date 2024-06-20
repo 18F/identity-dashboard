@@ -3,6 +3,11 @@ class BannerPolicy < BasePolicy
     admin?
   end
 
+  def edit?
+    return false if record.ended? 
+    admin?
+  end
+
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve

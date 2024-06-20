@@ -1,10 +1,11 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all]
+  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all, :deleted]
   before_action -> {
       authorize(service_provider, :member_or_admin?)
     }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
+
 
   def index
     all_apps = current_user.scoped_service_providers
@@ -68,6 +69,10 @@ class ServiceProvidersController < AuthenticatedController
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
     redirect_to service_providers_path
+  end
+
+  def deleted
+    @service_providers = deleted_service_providers
   end
 
 
@@ -231,6 +236,13 @@ class ServiceProvidersController < AuthenticatedController
         apps: sandbox_apps,
       },
     ]
+  end
+
+  def deleted_service_providers
+    PaperTrail::Version.where(:item_type => 'ServiceProvider').
+                       where(:event => 'destroy').
+                       where('created_at > ?', 12.months.ago).
+                       order(created_at: :desc)
   end
 
   helper_method :service_provider
