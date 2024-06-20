@@ -31,7 +31,9 @@ describe 'Users::ServiceProviders' do
     it 'allows admin to approve' do
       login_as(admin_user)
 
-      put service_provider_path(sp), params: { service_provider: { approved: 'true', help_text: help_text } }
+      put service_provider_path(sp), params: {
+        service_provider: { approved: 'true', help_text: help_text },
+      }
 
       expect(response.status).to eq(302) # redirect on success
       sp.reload

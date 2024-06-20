@@ -23,7 +23,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if helpers.help_text_options_enabled?
+    if helpers.help_text_options_enabled? && !current_user.admin
       service_provider.help_text = help_text_i18n(service_provider_params)
     end
 
@@ -36,7 +36,7 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
-    if helpers.help_text_options_enabled?
+    if helpers.help_text_options_enabled? && !current_user.admin
       service_provider.help_text = help_text_i18n(service_provider_params)
     end
 
@@ -199,8 +199,9 @@ class ServiceProvidersController < AuthenticatedController
     ServiceProviderHelper::SP_HELP_OPTS.each { |mode|
       key = current_help_text.fetch(mode).fetch('en').to_s
       no_value = key.empty?
-      custom_help = !no_value && I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
-      is_valid_key = ServiceProvider::SP_HELP_KEYS[mode].include?(key)
+      custom_help = !no_value &&
+                    I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
+      is_valid_key = ServiceProviderHelper::SP_HELP_KEYS[mode].include?(key)
       # check that one of the default options is selected and
       # don't overwrite custom help text
       if !no_value
