@@ -9,14 +9,14 @@ en:
   service_provider_form:
     app_name_html: "The name of your application <span class='text-bold'>as it appears in the signed Inter-Agency Agreement (IAA)</span> with Login.gov. Ex: DHS - CSP"
     friendly_name_html: "The name of your app that will be <span class='text-bold'>displayed to users</span> when logging in. Example: DHS Customer Service Portal"
-    description: "A description of the app (may be helpful for your colleagues)."
-    team: "Assign an agency team to this client."
-    protocol: "This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you."
-    ial_option_1: "Authentication only (no verified attributes)"
-    ial_option_2: "Identity verification permitted"
-    aal_option_default: "MFA required + remember device up to 30 days (AAL1)"
-    aal_option_2: "MFA required, remember device disallowed (AAL2)"
-    aal_option_3: "Phishing-resistant MFA (e.g. WebAuthn or PIV/CAC cards) required, remember device disallowed (AAL2)"
+    description: A description of the app (may be helpful for your colleagues).
+    team: Assign an agency team to this client.
+    protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
+    ial_option_1: Authentication only (no verified attributes)
+    ial_option_2: Identity verification permitted
+    aal_option_default: MFA required + remember device up to 30 days (AAL1)
+    aal_option_2: MFA required, remember device disallowed (AAL2)
+    aal_option_3: Phishing-resistant MFA (e.g. WebAuthn or PIV/CAC cards) required, remember device disallowed (AAL2)
     identity_assurance_level_html: "<p>Determines whether or not an application is permitted to request and receive verified attributes from users who have gone through Identity Verification.</p><p>Authentication only means your application will not be able to request or receive verified <a href='https://developers.login.gov/attributes/' target='_blank'>attributes</a>.</p><p>Note that Login.gov identity proofing services do not meet NIST IAL2 standards at this time. We continue to work toward achieving certification of compliance with the IAL2 standard from a third-party assessment organization.</p>"
     change_issuer: "The issuer cannot be changed, but you can create a new test app with a different issuer."
     issuer_html: "<p>This is a unique string to identify the app in the IdP, and is also used as the <code>client_id</code>. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.</p><p>For OpenID Connect: </p><p><code class=‘ml2’>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><p>For SAML: </p><p><code class=‘ml2’>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code></p>"
@@ -26,12 +26,28 @@ en:
     assertion_consumer_logout_service_url_html: "The <a href='https://developers.login.gov/saml/#logout-response' target='_blank'>endpoint</a> which receives logout requests and responses, for example: <code>https://app.agency.gov/auth/saml/logout</code>"
     sp_initiated_login_url_html: "The endpoint which initializes authentication with Login.gov. This is used to trigger a new authentication request and response at the SP for better usability. For example: <code>https://app.agency.gov/users/auth/saml/login</code>"
     saml_assertion_encryption: "Whether to encrypt SAML assertions sent to your SP. If set to AES, authentication assertions received at your ACS URL will be encrypted with the public key specified above. If set to none, assertions will be protected only by HTTPS. Production applications must have assertion encryption turned on."
-    signed_response_requested: "This feature controls whether or not the entire authentication response is signed, as opposed to just the attribute statement."
+    signed_response_requested: This feature controls whether or not the entire authentication response is signed, as opposed to just the attribute statement.
     return_to_app_url_html: "The application's URL which Login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>"
-    failure_to_proof_url: "The URL provided to users who are unable to complete identity proofing and returning to your application."
-    push_notification_url: "Your application's endpoint which receives push notifications."
+    failure_to_proof_url: The URL provided to users who are unable to complete identity proofing and returning to your application.
+    push_notification_url: Your application's endpoint which receives push notifications.
     oidc_redirects_html: "One or more URIs that Login.gov will redirect to after authentication. Login.gov will only redirect to URIs listed here. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#oidc-redirect-uri'>user experience guidance</a> for more details."
     saml_redirects_html: "One or more URIs that Login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#saml-return-to-sp-url'>user experience guidance</a> for more details."
     attribute_bundle_html: "The default attributes that Login.gov will return to your application during authentication. Refer to our <a href='https://developers.login.gov/attributes' target='_blank'>developer documentation</a> for the possible user attributes available at each IAL level that can be requested by your app."
-    help_text: "You can specify help text in these different areas to alert users of important information for logging into your app."
-    active: "Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications."
+    help_text: You can specify help text in these different areas to alert users of important information for logging into your app.
+    active: Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications.
+    help_text:
+      sign_in:
+        blank: Leave blank
+        first_time: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
+        agency_email: "Sign in to Login.gov with your %{agency} email."
+        piv_cac: "Sign in to Login.gov with your %{agency} PIV/CAC."
+      sign_up:
+        blank: Leave blank
+        first_time: "First time here from %{sp_name}? Your old %{sp_name} username and password won’t work. Create a Login.gov account with the same email used previously."
+        agency_email: "Create a Login.gov account using your %{agency} email."
+        same_email: Create a Login.gov account using the same email provided on your application.
+      forgot_password:
+        blank: Leave blank
+        troubleshoot_html: If you are having trouble accessing your Login.gov account, <a href='https://login.gov/help'>visit the Login.gov help center</a> for support.
+        
+

@@ -102,9 +102,20 @@
       <%= render 'layouts/nav'%>
     </header>
 
+
+
     <main class="usa-layout-docs usa-section" id="main-content">
       <div class="grid-container">
         <div class="usa-layout-docs-main_content">
+          <% @active_banners.each do |banner| %>
+            <div class="usa-alert usa-alert--info margin-bottom-105">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">
+                  <%= sanitize(banner.message).html_safe %>
+                </p>
+              </div>
+            </div>
+          <% end %>
           <%= render 'layouts/messages' %>
           <%= yield %>
         </div>

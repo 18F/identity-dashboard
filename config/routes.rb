@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   post '/tools/saml_request' => 'tools#saml_request'
 
   get '/service_providers/all' => 'service_providers#all'
+  get '/service_providers/deleted' => 'service_providers#deleted'
   post '/service_providers/publish' => 'service_providers#publish'
   resources :service_providers
 

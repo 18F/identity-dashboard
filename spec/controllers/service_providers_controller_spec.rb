@@ -207,5 +207,31 @@ describe ServiceProvidersController do
         end
       end
     end
+
+    describe '#deleted' do
+      context 'when user is not admin' do
+        before do
+          user = create(:user)
+          sign_in(user)
+        end
+
+        it 'blocks non-Login Admin users' do
+          get :deleted
+          expect(response.status).to eq(401)
+        end
+      end
+
+      context 'when user is admin' do
+        before do
+          admin = create(:admin)
+          sign_in(admin)
+        end
+
+        it 'allows Login Admin users' do
+          get :deleted
+          expect(response.status).to eq(200)
+        end
+      end
+    end
   end
 end

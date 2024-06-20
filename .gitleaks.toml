@@ -1,0 +1,17 @@
+title = "Gitleaks config with known false positives for identity dashboard"
+
+[extend]
+useDefault = true
+
+[allowlist]
+  description = "Commits with sample keys or auto-generated keys that have been commented out"
+  commits = [
+    "67314306441027718bd51ff03bb2beea3b47b2fa",
+    "cb276714e0e8379d25d7a6942068633a0fb9744b",
+    "2bd17a572dc0fb1b620e4f245a35d4f81625d83f",
+    "93fa0ee732f5478f0ec3089e37fff01858033431",
+    "73b8d4fd7745287844eb95f32b909acd405742b9",
+    "aa2626f9c031d6007cc1dd92cb79d912e47e40fb",
+    "2febcde39abf4b4917c8bc6ca8fc1797659a3657",
+    "2e833558f5470881c3467e6eee7ec1dcbad0b8bd"
+  ]
