@@ -1,0 +1,17 @@
+---
+fr:
+  service_provider_form:
+    help_text:
+      sign_in:
+        blank: Leave blank
+        first_time: "C’est la première fois que vous vous connectez à %{sp_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à %{sp_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement."
+        agency_email: "Connectez-vous à votre compte Login.gov avec votre adresse e-mail liée à %{agency}"
+        piv_cac: "Connectez-vous à Login.gov à l’aide de votre carte PIV/CAC de %{agency}"
+      sign_up:
+        blank: Leave blank
+        first_time: "C’est la première fois que vous vous connectez à %{sp_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à %{sp_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement."
+        agency_email: "Créez un compte Login.gov avec votre adresse e-mail liée à %{agency}."
+        same_email: "Créez un compte Login.gov à l’aide de la même adresse e-mail que celle que vous avez fournie dans votre demande."
+      forgot_password:
+        blank: Leave blank
+        troubleshoot_html: "Si vous rencontrez des difficultés pour accéder à votre compte Login.gov, <a href=\"https://login.gov/fr/help\">veuillez vous rendre sur le site du centre d’assistance de Login.gov</a> pour obtenir de l’aide."

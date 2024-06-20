@@ -1,20 +1,220 @@
 require 'rails_helper'
 
 describe ServiceProvidersController do
-  describe '#update' do
+  let(:user) { create(:user, :with_teams) }
+  let(:agency) { create(:agency, id: 123, name: 'GSA') }
+  let(:team) { create(:team, agency: agency) }
+  let(:init_help_params) do
+    { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
+  end
+  let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
+  let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+  let(:logo_file_params) do
+    {
+      io: File.open(fixture_path + '/logo.svg'),
+      filename: 'alternative_filename.svg',
+      content_type: 'image/svg+xml',
+    }
+  end
+
+  describe '#create' do
     before do
       sign_in(user)
     end
 
-    let(:user) { create(:user, :with_teams) }
-    let(:sp) { create(:service_provider, :with_users_team, user: user) }
-    let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
-    let(:logo_file_params) do
-      {
-        io: File.open(fixture_path + '/logo.svg'),
-        filename: 'alternative_filename.svg',
-        content_type: 'image/svg+xml',
-      }
+    context 'help_text config' do
+      # group_id (team) is necessary to create a ServiceProvider.
+      it('should fill selected default options: blank set') do
+        help_params_0 = { sign_in: {en: 'blank'},
+          sign_up: {en: 'blank'},
+          forgot_password: {en: 'blank'} }
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
+          help_text: help_params_0,
+        } }
+        sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
+
+        expect(sp_help.help_text).to eq({
+          'sign_in' => {
+            'en' => '',
+            'es' => '',
+            'fr' => '',
+            'zh' => '',
+          },
+          'sign_up' => {
+            'en' => '',
+            'es' => '',
+            'fr' => '',
+            'zh' => '',
+          },
+          'forgot_password' => {
+            'en' => '',
+            'es' => '',
+            'fr' => '',
+            'zh' => '',
+          },
+        })
+      end
+      it('should fill selected default options: set 1') do
+        sign_in_key = 'first_time'
+        sign_up_key = 'first_time'
+        forgot_password_key = 'troubleshoot_html'
+        help_params_1 = { sign_in: { en: sign_in_key },
+          sign_up: { en: sign_up_key },
+          forgot_password: { en: forgot_password_key } }
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
+          help_text: help_params_1,
+        } }
+        sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
+  
+        expect(sp_help.help_text).to eq({
+          'sign_in' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'sign_up' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'forgot_password' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp_help.friendly_name,
+              locale: :zh,
+            ),
+          },
+        })
+      end
+      it('should fill selected default options: set 2') do
+        sign_in_key = 'piv_cac'
+        sign_up_key = 'agency_email'
+        forgot_password_key = 'blank'
+        help_params_2 = { sign_in: { en: sign_in_key },
+          sign_up: { en: sign_up_key },
+          forgot_password: { en: forgot_password_key } }
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
+          help_text: help_params_2,
+        } }
+        sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
+  
+        expect(sp_help.help_text).to eq({
+          'sign_in' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              agency: sp_help.agency.name,
+              locale: :zh,
+            ),
+          },
+          'sign_up' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              agency: sp_help.agency.name,
+              locale: :zh,
+            ),
+          },
+          'forgot_password' => {
+            'en' => '',
+            'es' => '',
+            'fr' => '',
+            'zh' => '',
+          },
+        })
+      end
+    end
+  end
+
+  describe '#update' do
+    before do
+      sign_in(user)
     end
 
     context 'when a user enters data into text inputs with leading and trailing spaces' do
@@ -33,6 +233,7 @@ describe ServiceProvidersController do
             failure_to_proof_url: '  https://failuretoproof.com  ',
             push_notification_url: ' https://pushnotifications.com  ',
             app_name: '   app name  ',
+            help_text: init_help_params,
           },
         }
         sp.reload
@@ -56,22 +257,26 @@ describe ServiceProvidersController do
       end
 
       it 'caches the logo filename on the sp' do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+        put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
         sp.reload
         expect(sp.logo).to eq('alternative_filename.svg')
       end
 
       it 'caches the logo key on the sp' do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+        put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
         sp.reload
         expect(sp.remote_logo_key).to be_present
       end
 
       context 'with paper trail versioning enabled', versioning: true do
         before do
-          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+          put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
           allow(subject).to receive(:logo_file_param).and_return(new_logo_file_params)
-          put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+          put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
           sp.reload
         end
 
@@ -110,7 +315,8 @@ describe ServiceProvidersController do
         put :update,
             params: {
               id: sp.id,
-              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'] },
+              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'], 
+help_text: init_help_params },
             }
 
         sp.reload
@@ -126,7 +332,9 @@ describe ServiceProvidersController do
                original_filename: 'my-cert.crt',
              )
 
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+      put :update, 
+params: { id: sp.id, 
+service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
 
       sp.reload
 
@@ -141,7 +349,9 @@ describe ServiceProvidersController do
              )
 
       expect do
-        put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: file } }
+        put :update, 
+params: { id: sp.id, 
+service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
       end.to_not(change { sp.reload.certs&.size })
     end
 
@@ -151,19 +361,105 @@ describe ServiceProvidersController do
         original_filename: 'my-cert.crt',
       )
 
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer, cert: empty_file } }
+      put :update, 
+params: { id: sp.id, 
+service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params } }
       expect(sp.reload.certs&.size).to equal(0)
     end
 
     it 'sends a serialized service provider to the IDP' do
       allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
-      put :update, params: { id: sp.id, service_provider: { issuer: sp.issuer } }
+      put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
       provider = ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },
       )
+    end
+
+    context 'help_text config' do
+      it('should fill selected default options: set 1') do
+        sign_in_key = 'first_time'
+        sign_up_key = 'first_time'
+        forgot_password_key = 'troubleshoot_html'
+        help_params_1 = { sign_in: { en: sign_in_key },
+          sign_up: { en: sign_up_key },
+          forgot_password: { en: forgot_password_key } }
+        put :update, 
+params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: help_params_1 } }
+        sp.reload
+
+        expect(sp.help_text).to eq({
+          'sign_in' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_in.#{sign_in_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'sign_up' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.sign_up.#{sign_up_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+          'forgot_password' => {
+            'en' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :en,
+            ),
+            'es' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :es,
+            ),
+            'fr' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :fr,
+            ),
+            'zh' => I18n.t(
+              "service_provider_form.help_text.forgot_password.#{forgot_password_key}",
+              sp_name: sp.friendly_name,
+              locale: :zh,
+            ),
+          },
+        })
+      end
     end
   end
 

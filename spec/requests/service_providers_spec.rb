@@ -4,6 +4,12 @@ describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, admin: true) }
+  let(:help_text) do {
+      sign_in: { en: '' },
+      sign_up: { en: '' },
+      forgot_password: { en: '' },
+    }
+  end
   describe 'approve on update' do
     it 'disallows app owner from approving the app' do
       login_as(sp.user)
@@ -25,7 +31,9 @@ describe 'Users::ServiceProviders' do
     it 'allows admin to approve' do
       login_as(admin_user)
 
-      put service_provider_path(sp), params: { service_provider: { approved: 'true' } }
+      put service_provider_path(sp), params: {
+        service_provider: { approved: 'true', help_text: help_text },
+      }
 
       expect(response.status).to eq(302) # redirect on success
       sp.reload
