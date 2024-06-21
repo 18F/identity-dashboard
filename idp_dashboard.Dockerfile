@@ -149,7 +149,8 @@ RUN mkdir -p $RAILS_ROOT/keys
 RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
     -keyout $RAILS_ROOT/keys/localhost.key \
     -out $RAILS_ROOT/keys/localhost.crt \
-    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost" && \
+    chmod 644 $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/localhost.crt
 
 # Create PID folder in /tmp for server pid
 RUN mkdir -m 666 /tmp/pids
