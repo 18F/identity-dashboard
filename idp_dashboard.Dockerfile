@@ -63,7 +63,6 @@ RUN addgroup --gid 1000 app && \
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
@@ -140,7 +139,7 @@ RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development test'
 RUN apt-get install -y build-essential && \
-    bundle install && \
+    bundle install --jobs $(nproc) && \
     bundle binstubs --all && \
     yarn install --production=true --cache-folder .cache/yarn && \
     apt autoremove -y --purge build-essential
