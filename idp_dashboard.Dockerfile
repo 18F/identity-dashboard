@@ -51,11 +51,6 @@ RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
     echo 'path-exclude=/usr/share/lintian/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
     echo 'path-exclude=/usr/share/linda/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc
 
-# Download RDS Combined CA Bundle
-RUN mkdir -p /usr/local/share/aws \
-  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
-  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
-
 # Create a new user and set up the working directory
 RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
@@ -90,7 +85,10 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
-
+# Download RDS Combined CA Bundle
+RUN mkdir -p /usr/local/share/aws \
+  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
 
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
@@ -108,6 +106,7 @@ RUN curl -fsSLO --compressed "https://github.com/yarnpkg/yarn/releases/download/
 RUN mkdir -p /usr/local/share/aws \
     && cd /usr/local/share/aws \
     && curl -fsSLk https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem --output rds-combined-ca-bundle.pem
+
 WORKDIR $RAILS_ROOT
 
 # Set user
