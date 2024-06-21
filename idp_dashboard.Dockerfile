@@ -138,7 +138,7 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development test'
-RUN apt-get install -y build-essential && \
+RUN apt-get update && apt-get install -y build-essential && \
     bundle install --jobs $(nproc) && \
     bundle binstubs --all && \
     yarn install --production=true --cache-folder .cache/yarn && \
