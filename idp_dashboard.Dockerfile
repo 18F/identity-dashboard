@@ -109,11 +109,6 @@ RUN mkdir -p /usr/local/share/aws \
 
 WORKDIR $RAILS_ROOT
 
-# Set user
-USER app
-
-
-
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
 COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
@@ -169,6 +164,9 @@ RUN apt-get install -y make && \
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
     find $RAILS_ROOT -type d | xargs chmod 755
+
+# Set user
+USER app
 
 EXPOSE 3001
 
