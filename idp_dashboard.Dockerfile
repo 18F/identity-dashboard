@@ -61,6 +61,7 @@ RUN apt-get update && \
     git-core \
     curl \
     zlib1g-dev \
+    build-essential \
     libssl-dev \
     libreadline-dev \
     libyaml-dev \
@@ -72,7 +73,6 @@ RUN apt-get update && \
     software-properties-common \
     libffi-dev \
     libpq-dev \
-    xz-utils \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
@@ -122,19 +122,18 @@ COPY ./.browserslistrc ./.browserslistrc
 COPY ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 COPY ./config/newrelic.yml.docker $RAILS_ROOT/config/newrelic.yml
 COPY ./config/database.yml.docker $RAILS_ROOT/config/database.yml
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
 
 RUN bundle config unset deployment
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development test'
-RUN apt-get update && apt-get install -y build-essential && \
-    bundle install --jobs $(nproc) && \
-    bundle binstubs --all && \
-    yarn install --production=true --cache-folder .cache/yarn && \
-    apt autoremove -y --purge build-essential
+RUN bundle install 
+RUN bundle binstubs --all
+
+COPY package.json $RAILS_ROOT/package.json
+COPY yarn.lock $RAILS_ROOT/yarn.lock
+RUN yarn install --cache-folder .cache/yarn
 
 # Generate and place SSL certificates for puma
 RUN mkdir -p $RAILS_ROOT/keys
@@ -148,9 +147,10 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 RUN mkdir -m 666 /tmp/pids
 
 # Precompile assets
-RUN apt-get install -y make && \
-    bundle exec rake assets:precompile --trace && \
-    apt autoremove -y --purge make
+RUN bundle exec rake assets:precompile --trace
+
+# remove build-essential
+RUN apt autoremove -y --purge build-essential
 
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
