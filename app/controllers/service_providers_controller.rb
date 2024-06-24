@@ -57,7 +57,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def edit; end
 
-  def show; end
+  def show
+    @service_provider_versions = @service_provider.versions.reverse_order
+  end
 
   def all
     return unless current_user.admin?
