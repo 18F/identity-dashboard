@@ -22,12 +22,6 @@ ENV POSTGRES_PASSWORD password
 ENV POSTGRES_SSLCERT /usr/local/share/aws/rds-combined-ca-bundle.pem
 ENV NEW_RELIC_ENABLED false
 
-
-ENV SMPT_HOST changeme
-ENV SMPT_PASSWORD changeme
-ENV SMPT_PORT 2025
-ENV SMPT_USERNAME changeme
-
 ENV DASHBOARD_API_TOKEN changeme
 
 ENV IDP_SP_URL  http://localhost:3000
@@ -36,8 +30,6 @@ ENV IDP_URL http://localhost:3000
 ENV LOGO_UPLOAD_ENABLED false
 ENV POST_LOGOUT_URL http://localhost:3000
 ENV SAML_SP_ISSUER http://localhost:3001
-ENV SMPT_ADDRESS changeme
-ENV SMPT_DOMAIN   changeme
 ENV MAILER_DOMAIN https://dashboard.login.gov
 ENV LOGIN_DOMAIN identitysandbox.gov
 
@@ -56,13 +48,12 @@ RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
     mkdir -p $RAILS_ROOT && \
     mkdir -p $BUNDLE_PATH && \
-    chown -R app:app $RAILS_ROOT && \
-    chown -R app:app $BUNDLE_PATH
+    mkdir -p $RAILS_ROOT/tmp/pids && \
+    mkdir -p $RAILS_ROOT/log
 
 # Setup timezone data
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 
 # Install dependencies
 RUN apt-get update && \
@@ -85,7 +76,10 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
-
+# Download RDS Combined CA Bundle
+RUN mkdir -p /usr/local/share/aws \
+  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
 
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
@@ -99,39 +93,35 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 RUN curl -fsSLO --compressed "https://github.com/yarnpkg/yarn/releases/download/v$YARN_VERSION/yarn_1.22.19_all.deb" \
   && dpkg --install "yarn_1.22.19_all.deb" \
   && rm "yarn_1.22.19_all.deb" 
-  
+
 RUN mkdir -p /usr/local/share/aws \
     && cd /usr/local/share/aws \
     && curl -fsSLk https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem --output rds-combined-ca-bundle.pem
+
 WORKDIR $RAILS_ROOT
-
-# Set user
-USER app
-
-
 
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
 COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
 
-COPY --chown=app:app ./app ./app
-COPY --chown=app:app ./bin ./bin
-COPY --chown=app:app ./config ./config
-COPY --chown=app:app ./db ./db
-COPY --chown=app:app ./lib ./lib
-COPY --chown=app:app ./public ./public
-COPY --chown=app:app ./spec ./spec
-COPY --chown=app:app ./config.ru ./config.ru
-COPY --chown=app:app ./Rakefile ./Rakefile
-COPY --chown=app:app ./Rakefile ./Rakefile
-COPY --chown=app:app ./Procfile ./Procfile
-COPY --chown=app:app ./babel.config.js ./babel.config.js
-COPY --chown=app:app ./webpack.config.js ./webpack.config.js
-COPY --chown=app:app ./.browserslistrc ./.browserslistrc
- 
-COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
-COPY --chown=app:app ./config/newrelic.yml.docker $RAILS_ROOT/config/newrelic.yml
-COPY --chown=app:app ./config/database.yml.docker $RAILS_ROOT/config/database.yml
+COPY ./app ./app
+COPY ./bin ./bin
+COPY ./config ./config
+COPY ./db ./db
+COPY ./lib ./lib
+COPY ./public ./public
+COPY ./spec ./spec
+COPY ./config.ru ./config.ru
+COPY ./Rakefile ./Rakefile
+COPY ./Rakefile ./Rakefile
+COPY ./Procfile ./Procfile
+COPY ./babel.config.js ./babel.config.js
+COPY ./webpack.config.js ./webpack.config.js
+COPY ./.browserslistrc ./.browserslistrc
+
+COPY ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
+COPY ./config/newrelic.yml.docker $RAILS_ROOT/config/newrelic.yml
+COPY ./config/database.yml.docker $RAILS_ROOT/config/database.yml
 
 RUN bundle config unset deployment
 RUN bundle config build.nokogiri --use-system-libraries
@@ -145,20 +135,31 @@ COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
 RUN yarn install --cache-folder .cache/yarn
 
-
 # Generate and place SSL certificates for puma
 RUN mkdir -p $RAILS_ROOT/keys
 RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
     -keyout $RAILS_ROOT/keys/localhost.key \
     -out $RAILS_ROOT/keys/localhost.crt \
-    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost" && \
+    chmod 644 $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/localhost.crt
 
 # Create PID folder in /tmp for server pid
 RUN mkdir -m 666 /tmp/pids
 
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
-   
+
+# remove build-essential
+RUN apt autoremove -y --purge build-essential
+
+# make everything the proper perms after everything is initialized
+RUN chown -R app:app $RAILS_ROOT/tmp && \
+    chown -R app:app $RAILS_ROOT/log && \
+    find $RAILS_ROOT -type d | xargs chmod 755
+
+# Set user
+USER app
+
 EXPOSE 3001
 
 CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3001?key=/dashboard/keys/localhost.key&cert=/dashboard/keys/localhost.crt"]
