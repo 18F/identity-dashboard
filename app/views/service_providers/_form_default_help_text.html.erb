@@ -7,7 +7,7 @@
                                       t('service_provider_form.help_text.sign_in', deep_interpolation: true, 
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
-                                      :last, :last,
+                                      :first, :last,
                                       { checked: service_provider.help_text['sign_in']['en']}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
@@ -21,7 +21,7 @@
                                       t('service_provider_form.help_text.sign_up', deep_interpolation: true, 
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
-                                      :last, :last,
+                                      :first, :last,
                                       { checked: service_provider.help_text['sign_up']['en']}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
@@ -33,7 +33,7 @@
       <legend class="usa-label">Forgot password help text:</legend>
         <%= f.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.forgot_password'),
-                                      :last, :last,
+                                      :first, :last,
                                       { checked: service_provider.help_text['forgot_password']['en']}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
