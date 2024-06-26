@@ -69,6 +69,19 @@ describe TeamsController do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
       end
+
+      it 'can show audit events' do
+        test_event = TeamMembershipAuditEvent.new(
+          rand(1..1000),
+          "test#{rand(1..1000)}@gsa.gov",
+          'create',
+          Time.zone.now,
+          'admin@login.gsa.gov',
+        )
+        expect(TeamMembershipAuditEvent).to receive(:from_versions).and_return([test_event])
+        get :show, params: { id: org.id }
+        expect(assigns[:audit_events]).to eq([test_event])
+      end
     end
 
     context 'when not an admin but a team member' do
@@ -79,6 +92,16 @@ describe TeamsController do
       it 'shows the team template' do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
+      end
+
+      it 'will not show the paper trail' do
+        no_versions_sql = PaperTrail::Version.none.to_sql
+        expect(TeamMembershipAuditEvent).to receive(:versions_by_team_id).with(
+          org.id, 
+          scope: have_attributes(to_sql: no_versions_sql),
+        ).and_return([])
+        get :show, params: { id: org.id }
+        expect(assigns[:audit_events]).to eq([])
       end
     end
   end

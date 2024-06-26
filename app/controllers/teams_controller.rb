@@ -55,7 +55,14 @@ class TeamsController < AuthenticatedController
     render 'teams/all'
   end
 
-  def show; end
+  def show
+    @audit_events = TeamMembershipAuditEvent.from_versions(
+      TeamMembershipAuditEvent.versions_by_team_id(
+        team.id, 
+        scope: policy_scope(PaperTrail::Version),
+      ),
+    )
+  end
 
   private
 
