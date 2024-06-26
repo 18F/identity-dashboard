@@ -30,5 +30,38 @@
     <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
   <% end %>
 </ul>
-
 <%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+
+<% if current_user.admin? %>
+  <div class="usa-accordion">
+    <button class="usa-accordion__button margin-top-105" aria-expanded="false" aria-controls="auditEvents">
+      <h3 id="auditEventsToggle" class="usa-accordion__heading">Team Users History (<%= @audit_events.count %>) </h3>
+    </button>
+    <div id="auditEvents" class="usa-accordion__content">
+      <% if @audit_events.any? %>
+        <table class="usa-table width-full">
+          <thead>
+            <tr>
+              <th scope="col">Action</th>
+              <th scope="col">User ID</th>
+              <th scope="col">User email</th>
+              <th scope="col">Date</th>
+              <th scope="col">Who did it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @audit_events.reverse.each do |v| %>
+              <tr>
+                <td><%= v.action %></td>
+                <td><%= v.user_id %></td>
+                <td><%= v.user_email %></td>
+                <td><%= v.date %></td>
+                <td><%= v.whodunnit %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+<% end %>
