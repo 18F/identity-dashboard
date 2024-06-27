@@ -248,8 +248,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested',
-                  class: 'usa-label',
-                  hint: I18n.t('service_provider_form.signed_response_requested') %>
+                  class: 'usa-label' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
