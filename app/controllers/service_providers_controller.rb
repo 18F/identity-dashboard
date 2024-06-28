@@ -189,12 +189,6 @@ class ServiceProvidersController < AuthenticatedController
   def attach_logo_file
     return unless logo_file_param
 
-    svg_xml = Nokogiri::XML(File.read(logo_file_param.tempfile))
-
-    if service_provider.svg_is_valid(svg_xml)
-      puts "IT IS VALID"
-    end
-
     service_provider.logo_file.attach(logo_file_param)
     cache_logo_info
   end
@@ -202,7 +196,6 @@ class ServiceProvidersController < AuthenticatedController
 
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
-
     service_provider.remote_logo_key = service_provider.logo_file.key
   end
 

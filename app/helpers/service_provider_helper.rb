@@ -53,19 +53,7 @@ module ServiceProviderHelper
     'https://github.com/18F/identity-idp/blob/main/app/assets/images/sp-logos/' +
       file
   end
-
-  def svg_is_valid?(svg)
-    svg_has_width_height?(svg) || svg_has_viewbox?(svg)
-  end
-
-  def svg_has_width_height?(svg)
-    svg.css(':root[width]').present? && svg.css(':root[height]').present?
-  end
-
-  def svg_has_viewbox?(svg)
-    svg.css(':root[viewBox]').present?
-  end
-
+  
   def sp_valid_logo_mime_types
     SP_VALID_LOGO_MIME_TYPES
   end

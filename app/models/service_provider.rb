@@ -18,8 +18,8 @@ class ServiceProvider < ApplicationRecord
   validate :logo_is_less_than_mb
   validate :logo_file_mime_type
   validate :logo_file_ext_matches_type
+  validate :validate_svg
   validate :certs_are_pems
-  validate :svg_logo_has_size_attribute
   validate :validate_attribute_bundle
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
@@ -184,13 +184,34 @@ class ServiceProvider < ApplicationRecord
     logo_file = nil # rubocop:disable Lint/UselessAssignment
   end
 
-  def svg_logo_has_size_attribute
+  def validate_svg
     return unless logo_file.attached?
     return unless mime_type_svg?
-    
-    svg_xml = Nokogiri::XML(File.read(logo_file.tempfile))
 
-    svg_has_width_height?(svg_xml) || svg_has_viewbox?(svg_xml)
+    svg = svg_xml
+    svg_logo_has_size_attribute(svg)
+    svg_logo_has_script_tag(svg)
+  end
+
+  def svg_logo_has_size_attribute(svg)
+    return if svg_has_width_height?(svg) || svg_has_viewbox?(svg)
+    
+    errors.add(:logo_file, "The logo file you uploaded (#{logo_file.filename}) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload.")
+    logo_file.destroy
+    logo_file = nil # rubocop:disable Lint/UselessAssignment
+  end
+
+  def svg_logo_has_script_tag(svg)
+    return unless svg.css('script').present?
+
+    errors.add(:logo_file, "The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload")
+    logo_file.destroy
+    logo_file = nil # rubocop:disable Lint/UselessAssignment
+  end
+
+  def svg_xml
+    logo_file.save
+    Nokogiri::XML(File.read(ActiveStorage::Blob.service.path_for(logo_file.record.remote_logo_key)))
   end
 
   def svg_has_width_height?(svg)
