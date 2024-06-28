@@ -110,12 +110,10 @@ feature 'User teams CRUD' do
       find('.usa-button', text: 'Back').click
       
       expect(current_path).to eq(team_path(team))
-      first_event_cells = find('#auditEvents tbody>tr:first-child').find_all('td')
-      expect(first_event_cells[0].text).to eq('Removed')
-      expect(first_event_cells[1].text).to eq(user.id.to_s)
-      expect(first_event_cells[2].text).to eq(user.email)
-      expect(first_event_cells[3].text).to eq(user.updated_at.to_s)
-      expect(first_event_cells[4].text).to eq(admin.email)
+      first_event_text = find('#versions>:first-child').text
+      expect(first_event_text).to include("user_id #{user.id}")
+      expect(first_event_text).to include("By: #{admin.email}")
+      expect(first_event_text).to include('Action: Remove')
     end
 
     scenario 'regular user attempts to view a team' do
