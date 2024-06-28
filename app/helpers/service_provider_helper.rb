@@ -31,7 +31,7 @@ module ServiceProviderHelper
     'sign_in' => ['blank', 'first_time', 'agency_email', 'piv_cac'],
     'sign_up' => ['blank', 'first_time', 'agency_email', 'same_email'],
     'forgot_password' => ['blank', 'troubleshoot_html'],
-  }.freeze
+}.freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
@@ -52,6 +52,18 @@ module ServiceProviderHelper
     file = file_name || 'generic.svg'
     'https://github.com/18F/identity-idp/blob/main/app/assets/images/sp-logos/' +
       file
+  end
+
+  def svg_is_valid?(svg)
+    svg_has_width_height?(svg) || svg_has_viewbox?(svg)
+  end
+
+  def svg_has_width_height?(svg)
+    svg.css(':root[width]').present? && svg.css(':root[height]').present?
+  end
+
+  def svg_has_viewbox?(svg)
+    svg.css(':root[viewBox]').present?
   end
 
   def sp_valid_logo_mime_types

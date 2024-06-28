@@ -19,6 +19,7 @@ class ServiceProvider < ApplicationRecord
   validate :logo_file_mime_type
   validate :logo_file_ext_matches_type
   validate :certs_are_pems
+  validate :svg_logo_has_size_attribute
   validate :validate_attribute_bundle
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
@@ -181,6 +182,27 @@ class ServiceProvider < ApplicationRecord
     return if mime_type_valid?
     errors.add(:logo_file, "The file you uploaded (#{logo_file.filename}) is not a PNG or SVG")
     logo_file = nil # rubocop:disable Lint/UselessAssignment
+  end
+
+  def svg_logo_has_size_attribute
+    return unless logo_file.attached?
+    return unless mime_type_svg?
+    
+    svg_xml = Nokogiri::XML(File.read(logo_file.tempfile))
+
+    svg_has_width_height?(svg_xml) || svg_has_viewbox?(svg_xml)
+  end
+
+  def svg_has_width_height?(svg)
+    svg.css(':root[width]').present? && svg.css(':root[height]').present?
+  end
+
+  def svg_has_viewbox?(svg)
+    svg.css(':root[viewBox]').present?
+  end
+
+  def mime_type_svg?
+    logo_file.content_type.in?(ServiceProviderHelper::SVG_MIME_TYPE)
   end
 
   def mime_type_valid?
