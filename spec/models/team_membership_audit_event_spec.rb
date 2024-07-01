@@ -24,17 +24,8 @@ RSpec.describe TeamMembershipAuditEvent do
       expect(team.users.count).to be(1)
       expect(team.users[0]).to eq(added_user)
 
-      trail = TeamMembershipAuditEvent.from_versions(
-        TeamMembershipAuditEvent.versions_by_team_id(team.id),
-      )
-
-      empty_attributes = {
-        'id'=>nil,
-        'user_id'=>nil,
-        'group_id'=>nil,
-        'created_at'=>nil,
-        'updated_at'=>nil,
-      }
+      trail = TeamMembershipAuditEvent.versions_by_team_id(team.id).
+        map {|v| TeamMembershipAuditEvent.from_version(v) }
 
       expect(trail[0].event).to eq('add')
       expect(trail[0].user_email).to eq(added_user.email)

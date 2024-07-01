@@ -70,16 +70,22 @@ describe TeamsController do
         expect(response).to render_template(:show)
       end
 
-      it 'can show audit events' do
-        test_event = TeamMembershipAuditEvent.new(
-          'create',
-          Time.zone.now,
-          'admin@login.gsa.gov',
-          {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
+      it 'will show audit events' do
+        test_version = PaperTrail::Version.new(
+          object_changes: {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
+          created_at: Time.zone.now,
+          whodunnit: 'admin@login.gsa.gov',
+          event: 'create',
+          item_type: 'UserTeam',
         )
-        expect(TeamMembershipAuditEvent).to receive(:from_versions).and_return([test_event])
+        expect(TeamMembershipAuditEvent).to receive(:versions_by_team_id).with(
+          org.id, 
+          scope: have_attributes(to_sql: PaperTrail::Version.order(created_at: :desc).to_sql),
+        ).and_return([test_version])
+
         get :show, params: { id: org.id }
-        expect(assigns[:audit_events]).to eq([test_event])
+        expect(assigns[:audit_events][0].whodunnit).to eq(test_version.whodunnit)
+        expect(assigns[:audit_events][0].created_at).to eq(test_version.created_at)
       end
     end
 
