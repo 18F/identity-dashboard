@@ -1,10 +1,13 @@
 require 'rails_helper'
+require 'nokogiri'
 
 RSpec.describe ServiceProviderSerializer do
   subject(:serializer) { ServiceProviderSerializer.new(service_provider) }
   let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
   let(:logo_filename) { 'logo.svg' }
   let(:team_agency_id) { SecureRandom.random_number(10_000) }
+  let(:parsed_xml) {Nokogiri::XML(File.read(fixture_path + '/' + logo_filename))}
+
   let(:service_provider) do
     sp = create(:service_provider,
           redirect_uris: ['http://localhost:9292/result', 'x-example-app:/result'],
@@ -14,12 +17,14 @@ RSpec.describe ServiceProviderSerializer do
           default_aal: 3,
           certs: [build_pem],
           allow_prompt_login: true)
+    allow(sp).to receive(:svg_xml).and_return(parsed_xml)
     sp.logo_file.attach(io: File.open(fixture_path + "/#{logo_filename}"), filename: logo_filename)
     sp.update(logo: logo_filename)
     sp.reload
   end
 
   describe '#as_json' do
+    
     subject(:as_json) { serializer.as_json }
 
     it 'serializes attributes' do
