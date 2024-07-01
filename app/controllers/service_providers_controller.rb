@@ -193,7 +193,6 @@ class ServiceProvidersController < AuthenticatedController
     cache_logo_info
   end
 
-
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
