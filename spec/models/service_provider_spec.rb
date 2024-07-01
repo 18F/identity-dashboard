@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'nokogiri'
 
 describe ServiceProvider do
   describe 'Associations' do
@@ -15,8 +16,10 @@ describe ServiceProvider do
     end
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
     let(:filename) { 'logo.svg'}
+    let(:parsed_xml) {Nokogiri::XML(File.read(fixture_path + '/' + filename))}
 
     before do
+      allow(service_provider).to receive(:svg_xml).and_return(parsed_xml)
       service_provider.logo_file.attach(
         io: File.open(fixture_path + '/' + filename),
         filename:,
@@ -125,6 +128,30 @@ describe ServiceProvider do
           )
         end
       end
+
+      describe 'it has no size attributes' do
+        let(:filename) { 'logo_without_size.svg'}
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload',
+          )
+        end
+      end
+
+      describe 'it has a script in the xml' do
+        let(:filename) { 'logo_with_script.svg'}
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload',
+          )
+        end
+      end 
     end
 
     describe 'logo with a different file extension' do
