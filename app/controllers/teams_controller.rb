@@ -58,7 +58,11 @@ class TeamsController < AuthenticatedController
   def show
     version_scope = policy_scope(PaperTrail::Version).order(created_at: :desc)
     @audit_events = TeamMembershipAuditEvent.versions_by_team_id(team.id, scope: version_scope).
-      map {|v| TeamMembershipAuditEvent.from_version(v) }
+      or(version_scope.where(item_type: 'Team')).
+      where(created_at: 1.year.ago..Time.zone.now)
+    @audit_events = @audit_events.map do |v|
+      v.item_type == 'UserTeam' ? TeamMembershipAuditEvent.from_version(v) : v
+    end
   end
 
   private

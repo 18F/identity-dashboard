@@ -110,10 +110,14 @@ feature 'User teams CRUD' do
       find('.usa-button', text: 'Back').click
       
       expect(current_path).to eq(team_path(team))
-      first_event_text = find('#versions>:first-child').text
-      expect(first_event_text).to include("user_id #{user.id}")
-      expect(first_event_text).to include("By: #{admin.email}")
-      expect(first_event_text).to include('Action: Remove')
+      newest_event_text = find('#versions>:first-child').text
+      expect(newest_event_text).to include("user_id #{user.id}")
+      expect(newest_event_text).to include("By: #{admin.email}")
+      expect(newest_event_text).to include('Action: Remove')
+
+      oldest_event_text = find('#versions>:last-child').text
+      expect(oldest_event_text).to include('Action: Create')
+      expect(oldest_event_text).to include("At: #{team.created_at}")
     end
 
     scenario 'regular user attempts to view a team' do

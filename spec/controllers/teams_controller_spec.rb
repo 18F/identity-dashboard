@@ -73,17 +73,28 @@ describe TeamsController do
       it 'will show audit events' do
         test_version = PaperTrail::Version.new(
           object_changes: {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
-          created_at: Time.zone.now,
+          created_at: 1.minute.ago,
           whodunnit: 'admin@login.gsa.gov',
           event: 'create',
           item_type: 'UserTeam',
         )
-        expect(TeamMembershipAuditEvent).to receive(:versions_by_team_id).with(
-          org.id, 
-          scope: have_attributes(to_sql: PaperTrail::Version.order(created_at: :desc).to_sql),
-        ).and_return([test_version])
+        query = double(PaperTrail::Version)
 
-        get :show, params: { id: org.id }
+        Timecop.freeze do
+          expect(TeamMembershipAuditEvent).to receive(:versions_by_team_id).with(
+            org.id,
+            scope: have_attributes(to_sql: PaperTrail::Version.order(created_at: :desc).to_sql),
+          ).and_return(query)
+          expect(query).to receive(:or).
+            with(PaperTrail::Version.all.order(created_at: :desc).where(item_type: 'Team')).
+            and_return(query)
+          expect(query).to receive(:where).
+            with(created_at: 1.year.ago..Time.zone.now).
+            and_return([test_version])
+
+          get :show, params: { id: org.id }
+        end
+
         expect(assigns[:audit_events][0].whodunnit).to eq(test_version.whodunnit)
         expect(assigns[:audit_events][0].created_at).to eq(test_version.created_at)
       end
@@ -100,12 +111,13 @@ describe TeamsController do
       end
 
       it 'will not show the paper trail' do
-        no_versions_sql = PaperTrail::Version.none.to_sql
+        no_versions = PaperTrail::Version.none
+        no_versions_sql = no_versions.to_sql
 
         expect(TeamMembershipAuditEvent).to receive(:versions_by_team_id).with(
           org.id, 
           scope: have_attributes(to_sql: a_string_starting_with(no_versions_sql)),
-        ).and_return([])
+        ).and_return(no_versions)
         get :show, params: { id: org.id }
         expect(assigns[:audit_events]).to eq([])
       end
