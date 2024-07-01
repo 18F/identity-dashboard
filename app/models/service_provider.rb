@@ -204,7 +204,7 @@ class ServiceProvider < ApplicationRecord
     return if svg_has_width_height?(svg) || svg_has_viewbox?(svg)
     
     errors.add(:logo_file, "The logo file you uploaded (#{logo_file.filename}) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload")
-    logo_file.destroy
+    logo_file.destroy!
     logo_file = nil # rubocop:disable Lint/UselessAssignment
   end
 
@@ -212,7 +212,7 @@ class ServiceProvider < ApplicationRecord
     return unless svg.css('script').present?
 
     errors.add(:logo_file, "The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload")
-    logo_file.destroy
+    logo_file.destroy!
     logo_file = nil # rubocop:disable Lint/UselessAssignment
   end
 
