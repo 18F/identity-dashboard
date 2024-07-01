@@ -17,26 +17,23 @@ class TeamMembershipAuditEvent < Struct.new(:event, :created_at, :whodunnit, :ch
       )
   end
 
-  def self.from_versions(versions)
-    versions.map do |version|
-      if version.item_type != 'UserTeam'
-        raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
-      end
-
-      # The ID column for the UserTeam table doesn't matter much here
-      version.object_changes.delete('id')
-
-      # Currently only creates and deletes are possible here. Because of that,
-      # `PaperTrail::Version#object_changes` will have a hash where the values should always
-      # be an array of two items, one of which is `nil`
-      new(
-        EVENT_RENAMING.fetch(version.event, version.event),
-        version.created_at,
-        version.whodunnit,
-        version.object_changes,
-        version.id,
-      )
+  def self.from_version(version)
+    if version.item_type != 'UserTeam'
+      raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
     end
+
+    # The ID column for the UserTeam table doesn't matter much here
+    version.object_changes.delete('id')
+
+    # Currently only creates and deletes are possible here. Because of that,
+    # `PaperTrail::Version#object_changes` will have a hash where the values should always
+    # be an array of two items, one of which is `nil`
+    new(
+      EVENT_RENAMING.fetch(version.event, version.event),
+      version.created_at,
+      version.whodunnit,
+      version.object_changes,
+    )
   end
 
   def object_changes
