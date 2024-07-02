@@ -16,10 +16,8 @@ describe ServiceProvider do
     end
     let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
     let(:filename) { 'logo.svg'}
-    let(:parsed_xml) {Nokogiri::XML(File.read(fixture_path + '/' + filename))}
 
     before do
-      allow(service_provider).to receive(:svg_xml).and_return(parsed_xml)
       service_provider.logo_file.attach(
         io: File.open(fixture_path + '/' + filename),
         filename:,

@@ -103,8 +103,12 @@ class ServiceProvider < ApplicationRecord
   end
 
   def svg_xml
-    logo_file.save
-    Nokogiri::XML(File.read(ActiveStorage::Blob.service.path_for(logo_file.record.remote_logo_key)))
+    return if attachment_changes["logo_file"].blank?
+    if attachment_changes["logo_file"].attachable.respond_to?(:open)
+      Nokogiri::XML(File.read(attachment_changes["logo_file"].attachable.open))
+    else
+      Nokogiri::XML(File.read(attachment_changes["logo_file"].attachable[:io]))
+    end
   end
 
   # @return [Array<ServiceProviderCertificate>]
@@ -196,6 +200,9 @@ class ServiceProvider < ApplicationRecord
     return unless mime_type_svg?
 
     svg = svg_xml
+
+    return if svg.blank?
+
     svg_logo_has_size_attribute(svg)
     svg_logo_has_script_tag(svg)
   end
@@ -205,8 +212,7 @@ class ServiceProvider < ApplicationRecord
     
     errors.add(:logo_file, 
 "The logo file you uploaded (#{logo_file.filename}) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
-    logo_file.destroy!
-    logo_file = nil # rubocop:disable Lint/UselessAssignment
+    logo_file = nil
   end
 
   def svg_logo_has_script_tag(svg)
@@ -214,8 +220,7 @@ class ServiceProvider < ApplicationRecord
 
     errors.add(:logo_file, 
 "The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
-    logo_file.destroy!
-    logo_file = nil # rubocop:disable Lint/UselessAssignment
+    logo_file = nil
   end
 
   def svg_has_width_height?(svg)

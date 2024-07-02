@@ -26,6 +26,26 @@ feature 'Logo upload' do
       expect(sp.logo_file).to_not eq(nil)
     end
 
+    it 'renders an error if the logo has no size attribute' do
+      attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
+      click_on 'Create'
+
+      expect(page).to have_content(
+        'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+
+      expect(user.reload.service_providers.count).to eq(0)
+    end
+
+    it 'renders an error if the logo has a script' do
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      click_on 'Create'
+
+      expect(page).to have_content(
+        'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload') # rubocop:disable Layout/LineLength
+
+      expect(user.reload.service_providers.count).to eq(0)
+    end
+
     it 'renders an error if the logo has an invalid MIME type' do
       attach_file('Choose a file', 'spec/fixtures/invalid.txt')
       click_on 'Create'
@@ -52,6 +72,26 @@ feature 'Logo upload' do
       expect(service_provider.reload.logo_file).to_not eq(nil)
     end
 
+    it 'renders an error if the logo has no size attribute' do
+      attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
+      click_on 'Update'
+
+      expect(page).to have_content(
+        'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+
+      expect(service_provider.reload.logo_file.attachment).to eq(nil)
+    end
+
+    it 'renders an error if the logo has a script' do
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      click_on 'Update'
+
+      expect(page).to have_content(
+        'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload') # rubocop:disable Layout/LineLength
+
+      expect(service_provider.reload.logo_file.attachment).to eq(nil)
+    end
+
     it 'renders an error if the logo has an invalid MIME type' do
       attach_file('Choose a file', 'spec/fixtures/invalid.txt')
       click_on 'Update'
@@ -60,6 +100,23 @@ feature 'Logo upload' do
         'The file you uploaded (invalid.txt) is not a PNG or SVG',
       )
       expect(service_provider.reload.logo_file.attachment).to eq(nil)
+    end
+
+    it 'does not overwrite old logo with invalid logo' do
+      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      click_on 'Update'
+
+      visit edit_service_provider_path(service_provider)
+
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      click_on 'Update'
+      click_on 'Update'
+
+      expect(current_path).to eq(service_provider_path(service_provider))
+      
+      sp = user.service_providers.last
+      
+      expect(sp.logo).to eq('logo.svg')
     end
   end
 end
