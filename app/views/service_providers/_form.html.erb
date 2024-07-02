@@ -331,8 +331,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <legend class='usa-sr-only'>Accessible</legend>
     <%= form.label :admin,
                    label: 'Accessible',
-                   class: 'usa-label',
-                   hint: I18n.t('service_provider_form.active') %>
+                   class: 'usa-label' %>
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
