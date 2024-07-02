@@ -110,6 +110,10 @@ feature 'Logo upload' do
 
       attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
       click_on 'Update'
+
+      expect(page).to have_content(
+        'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload') # rubocop:disable Layout/LineLength
+      
       click_on 'Update'
 
       expect(current_path).to eq(service_provider_path(service_provider))
