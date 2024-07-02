@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ServiceProvidersController do
   let(:user) { create(:user, :with_teams) }
-  let(:agency) { create(:agency, id: 123, name: 'GSA') }
+  let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency: agency) }
   let(:init_help_params) do
     { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
