@@ -4,12 +4,14 @@
   </button>
   <div id="versions" class="usa-accordion__content">
   <% versions.each do |v| %>
-    <div class="event">
-      <h4 class="margin-0">Action: <%= v.event.capitalize %></h4>
-      <h5 class="margin-0">By: <%= v.whodunnit %></h5>
+    <div class="event" id="<%= "version-#{v.id}" %>">
+      <div id="<%= "version-#{v.id}-summary" %>">
+        <h4 class="margin-0">Action: <%= v.event.capitalize %></h4>
+        <h5 class="margin-0">By: <%= v.whodunnit %></h5>
+      </div>
       <h5 class="margin-0">At: <%= v.created_at %></h5>
       <% if v.event != 'create' %>
-        <table class="usa-table width-full">
+        <table class="usa-table width-full" aria-labelledby="<%= "version-#{v.id}-summary" %>">
           <thead>
             <tr>
               <th scope="col">Field</th>

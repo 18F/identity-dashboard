@@ -58,7 +58,10 @@ class TeamsController < AuthenticatedController
   def show
     version_scope = policy_scope(PaperTrail::Version).order(created_at: :desc)
     @audit_events = TeamMembershipAuditEvent.from_versions(
-      TeamMembershipAuditEvent.versions_by_team_id(team.id, scope: version_scope),
+      TeamMembershipAuditEvent.versions_by_team_id(
+        team.id,
+        scope: version_scope,
+      ),
     )
   end
 
