@@ -1,6 +1,6 @@
 # TeamMembershipAuditEvent allows us to turn PaperTrail::Version data about the join table 
 # into something more presentable 
-class TeamMembershipAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes)
+class TeamMembershipAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
   EVENT_RENAMING = {'create' => 'add', 'destroy' => 'remove'}.freeze
 
   # Accepts a team ID and optionally a PaperTrail::Version scope
@@ -34,6 +34,7 @@ class TeamMembershipAuditEvent < Struct.new(:event, :created_at, :whodunnit, :ch
         version.created_at,
         version.whodunnit,
         version.object_changes,
+        version.id,
       )
     end
   end
