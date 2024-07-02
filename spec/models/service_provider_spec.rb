@@ -127,14 +127,14 @@ describe ServiceProvider do
         end
       end
 
-      describe 'it has no size attributes' do
+      describe 'it has no viewBox attributes' do
         let(:filename) { 'logo_without_size.svg'}
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
           expect(service_provider.errors.first.message).to eq(
-            'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+            'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
         end
       end
 

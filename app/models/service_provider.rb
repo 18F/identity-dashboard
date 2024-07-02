@@ -208,10 +208,10 @@ class ServiceProvider < ApplicationRecord
   end
 
   def svg_logo_has_size_attribute(svg)
-    return if svg_has_width_height?(svg) || svg_has_viewbox?(svg)
+    return if svg_has_viewbox?(svg)
     
     errors.add(:logo_file, 
-"The logo file you uploaded (#{logo_file.filename}) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
+"The logo file you uploaded (#{logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
     logo_file = nil
   end
 
@@ -221,10 +221,6 @@ class ServiceProvider < ApplicationRecord
     errors.add(:logo_file, 
 "The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
     logo_file = nil
-  end
-
-  def svg_has_width_height?(svg)
-    svg.css(':root[width]').present? && svg.css(':root[height]').present?
   end
 
   def svg_has_viewbox?(svg)

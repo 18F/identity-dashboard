@@ -26,12 +26,12 @@ feature 'Logo upload' do
       expect(sp.logo_file).to_not eq(nil)
     end
 
-    it 'renders an error if the logo has no size attribute' do
+    it 'renders an error if the logo has no viewBox' do
       attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
       click_on 'Create'
 
       expect(page).to have_content(
-        'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+        'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
 
       expect(user.reload.service_providers.count).to eq(0)
     end
@@ -72,12 +72,12 @@ feature 'Logo upload' do
       expect(service_provider.reload.logo_file).to_not eq(nil)
     end
 
-    it 'renders an error if the logo has no size attribute' do
+    it 'renders an error if the logo has no viewBox' do
       attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
       click_on 'Update'
 
       expect(page).to have_content(
-        'The logo file you uploaded (logo_without_size.svg) does not have a defined size. Please either add a width and height attribute or a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+        'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
 
       expect(service_provider.reload.logo_file.attachment).to eq(nil)
     end
