@@ -1,3 +1,5 @@
+require 'rails'
+
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
@@ -18,6 +20,7 @@ class ServiceProvider < ApplicationRecord
   validate :logo_is_less_than_mb
   validate :logo_file_mime_type
   validate :logo_file_ext_matches_type
+  validate :validate_logo_svg
   validate :certs_are_pems
   validate :validate_attribute_bundle
 
@@ -97,6 +100,15 @@ class ServiceProvider < ApplicationRecord
 
   def redirect_uris=(uris)
     super uris.select(&:present?)
+  end
+
+  def svg_xml
+    return if attachment_changes['logo_file'].blank?
+    if attachment_changes['logo_file'].attachable.respond_to?(:open)
+      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable.open))
+    else
+      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable[:io]))
+    end
   end
 
   # @return [Array<ServiceProviderCertificate>]
@@ -181,6 +193,42 @@ class ServiceProvider < ApplicationRecord
     return if mime_type_valid?
     errors.add(:logo_file, "The file you uploaded (#{logo_file.filename}) is not a PNG or SVG")
     logo_file = nil # rubocop:disable Lint/UselessAssignment
+  end
+
+  def validate_logo_svg
+    return unless logo_file.attached?
+    return unless mime_type_svg?
+
+    svg = svg_xml
+
+    return if svg.blank?
+
+    svg_logo_has_size_attribute(svg)
+    svg_logo_has_script_tag(svg)
+  end
+
+  def svg_logo_has_size_attribute(svg)
+    return if svg_has_viewbox?(svg)
+    
+    errors.add(:logo_file, 
+"The logo file you uploaded (#{logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
+    logo_file = nil
+  end
+
+  def svg_logo_has_script_tag(svg)
+    return unless svg.css('script').present?
+
+    errors.add(:logo_file, 
+"The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
+    logo_file = nil
+  end
+
+  def svg_has_viewbox?(svg)
+    svg.css(':root[viewBox]').present?
+  end
+
+  def mime_type_svg?
+    logo_file.content_type.in?(ServiceProviderHelper::SVG_MIME_TYPE)
   end
 
   def mime_type_valid?
