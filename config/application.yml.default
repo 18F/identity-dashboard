@@ -20,7 +20,7 @@ development:
   dashboard_api_token: test_token
   idp_sp_url: 'http://localhost:3000/api/service_provider'
   idp_url: http://localhost:3000
-  logo_upload_enabled: 'false'
+  logo_upload_enabled: 'true'
   mailer_domain: 'https://dashboard.login.gov'
   post_logout_redirect_uri: http://localhost:3001
   saml_sp_issuer: 'http://localhost:3001'
