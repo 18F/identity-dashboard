@@ -392,14 +392,17 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can view SP with no team' do
+    scenario 'can view SP with no team', versioning: true do
       admin = create(:admin)
-      sp = create(:service_provider)
+      service_provider = create(:service_provider)
       login_as(admin)
 
-      visit service_provider_path(sp)
+      visit service_provider_path(service_provider)
 
-      expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_content(service_provider.friendly_name)
+      version_info = find('#versions')
+      expect(version_info).to have_content('Action: Create')
+      expect(version_info).to have_content(service_provider.created_at.to_s)
     end
 
     scenario 'can edit help text' do
