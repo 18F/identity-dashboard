@@ -57,12 +57,19 @@ class TeamsController < AuthenticatedController
 
   def show
     version_scope = policy_scope(PaperTrail::Version).order(created_at: :desc)
-    @audit_events = TeamMembershipAuditEvent.from_versions(
-      TeamMembershipAuditEvent.versions_by_team_id(
-        team.id,
-        scope: version_scope,
-      ),
+    team_membership_versions = TeamMembershipAuditEvent.versions_by_team_id(
+      team.id,
+      scope: version_scope,
     )
+    team_and_team_membership_versions = team_membership_versions.
+      or(version_scope.where(item_type: 'Team')).
+      where(created_at: 1.year.ago..Time.zone.now)
+
+    # The team membership changes need some decoration. The PaperTrail information on
+    # just the `UserTeam` join table itself isn't helpful to an end user.
+    @audit_events = team_and_team_membership_versions.map do |v|
+      v.item_type == 'UserTeam' ? TeamMembershipAuditEvent.from_version(v) : v
+    end
   end
 
   private
