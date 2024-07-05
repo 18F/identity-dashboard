@@ -1,6 +1,8 @@
 # TeamMembershipAuditEvent allows us to turn PaperTrail::Version data about the join table 
 # into something more presentable 
-class TeamMembershipAuditEvent < Struct.new(:user_id, :user_email, :action, :date, :whodunnit)
+class TeamMembershipAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
+  EVENT_RENAMING = {'create' => 'add', 'destroy' => 'remove'}.freeze
+
   # Accepts a team ID and optionally a PaperTrail::Version scope
   def self.versions_by_team_id(team_id, scope: PaperTrail::Version.all)
     scope.
@@ -15,27 +17,27 @@ class TeamMembershipAuditEvent < Struct.new(:user_id, :user_email, :action, :dat
       )
   end
 
-  EVENT_RENAMING = {'create' => 'Added', 'destroy' => 'Removed'}
-
-  def self.from_versions(versions)
-    versions.map do |version|
-      if version.item_type != 'UserTeam'
-        raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
-      end
-
-      # Currently only creates and deletes are possible here. Because of that,
-      # `PaperTrail::Version#object_changes` will have a hash where the values are always
-      # an array of two items, one of which is `nil`
-      version_data = version.object_changes.each_with_object(Hash.new) do |(key, value), result|
-        result[key] = [version.object_changes[key]].flatten.compact.first
-      end
-      new(
-        version_data['user_id'],
-        User.find_by(id: version_data['user_id'])&.email.to_s,
-        EVENT_RENAMING.fetch(version.event, version.event),
-        version.created_at,
-        version.whodunnit,
-      )
+  def self.from_version(version)
+    if version.item_type != 'UserTeam'
+      raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
     end
+
+    # The ID column for the UserTeam table doesn't matter much here
+    version.object_changes.delete('id')
+    new(
+      EVENT_RENAMING.fetch(version.event, version.event),
+      version.created_at,
+      version.whodunnit,
+      version.object_changes,
+    )
+  end
+
+  def object_changes
+    changes['user_email'] ||= changes['user_id'].map {|user_id| User.find_by(id: user_id)&.email }
+    changes
+  end
+
+  def user_email
+    object_changes['user_email'].compact.first
   end
 end

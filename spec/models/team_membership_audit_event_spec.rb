@@ -21,29 +21,33 @@ RSpec.describe TeamMembershipAuditEvent do
 
       wrong_team.users << wrong_user
 
-      trail = TeamMembershipAuditEvent.from_versions(
-        TeamMembershipAuditEvent.versions_by_team_id(team.id),
-      )
-
-      expect(trail[0].action).to eq('Added')
-      expect(trail[0].user_id).to eq(added_user.id)
-
-      expect(trail[1].action).to eq('Added')
-      expect(trail[1].user_id).to eq(added_and_removed_user.id)
-
-      expect(trail[2].action).to eq('Removed')
-      expect(trail[2].user_id).to eq(added_and_removed_user.id)
-
-      expect(trail[3].action).to eq('Added')
-      expect(trail[3].user_id).to eq(added_and_destroyed_user.id)
-
-      expect(trail[4].action).to eq('Removed')
-      expect(trail[4].user_id).to eq(added_and_destroyed_user.id)
-
-      expect(trail.count).to be(5)
-
       expect(team.users.count).to be(1)
       expect(team.users[0]).to eq(added_user)
+
+      trail = TeamMembershipAuditEvent.versions_by_team_id(team.id).
+        map {|v| TeamMembershipAuditEvent.from_version(v) }
+
+      expect(trail[0].event).to eq('add')
+      expect(trail[0].user_email).to eq(added_user.email)
+      expect(trail[0].object_changes['user_id']).to eq([nil, added_user.id])
+
+      expect(trail[1].event).to eq('add')
+      expect(trail[1].user_email).to eq(added_and_removed_user.email)
+      expect(trail[1].object_changes['user_id']).to eq([nil, added_and_removed_user.id])
+
+      expect(trail[2].event).to eq('remove')
+      expect(trail[2].user_email).to eq(added_and_removed_user.email)
+      expect(trail[2].object_changes['user_id']).to eq([added_and_removed_user.id, nil])
+
+      expect(trail[3].event).to eq('add')
+      expect(trail[3].user_email).to eq(nil) # Looking up emails of destroyed users may come later
+      expect(trail[3].object_changes['user_id']).to eq([nil, added_and_destroyed_user.id])
+
+      expect(trail[4].event).to eq('remove')
+      expect(trail[4].user_email).to eq(nil) # Looking up emails of destroyed users may come later
+      expect(trail[4].object_changes['user_id']).to eq([added_and_destroyed_user.id, nil])
+
+      expect(trail.count).to be(5)
     end
 
     it 'will block access with a supplied scope that might come from PaperTrail' do
