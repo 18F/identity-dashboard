@@ -6,7 +6,7 @@
                  label: 'Dashboard Configuration',
                  class: 'usa-label' %>
   <%= form.collection_radio_buttons(:prod_config,
-                                    { "Production" => true, "Sandbox" => false },
+                                    { "Ready for Production" => true, "Sandbox" => false },
                                     :last, :first,
                                     item_wrapper_tag: :ul,
                                     item_wrapper_class: "usa-input-list") do |b| %>
