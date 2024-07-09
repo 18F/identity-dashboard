@@ -4,7 +4,6 @@ class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
   include IdentityValidations::ServiceProviderValidation
-  include ActionView::Helpers::SanitizeHelper
 
   has_paper_trail on: %i[create update destroy]
 
@@ -52,18 +51,6 @@ class ServiceProvider < ApplicationRecord
     state
     zipcode
     phone
-  ].freeze
-
-  ALLOWED_HELP_TEXT_HTML_TAGS = %w[
-    p
-    br
-    ol
-    ul
-    li
-    a
-    strong
-    em
-    b
   ].freeze
 
   def ial_friendly
@@ -137,17 +124,14 @@ class ServiceProvider < ApplicationRecord
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
+  def decorated_help_text
+    HelpText.from_service_provider(self)
+  end
+
   private
 
   def sanitize_help_text_content
-    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']].compact
-    sections.each { |section| sanitize_section(section) }
-  end
-
-  def sanitize_section(section)
-    section.transform_values! do |translation|
-      sanitize translation, tags: ALLOWED_HELP_TEXT_HTML_TAGS, attributes: %w[href target]
-    end
+    self.help_text = HelpText.from_service_provider(self).sanitize_tags.to_json
   end
 
   # rubocop:disable Rails/TimeZone

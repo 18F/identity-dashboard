@@ -345,9 +345,9 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if show_minimal_help_text_element?(service_provider.help_text) %>
+  <% if show_minimal_help_text_element?(service_provider.decorated_help_text) %>
     <p class="usa-label">Help text</p>
-    <% if help_text_options_enabled? %>
+    <% if service_provider.decorated_help_text.options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
      <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
       of the developer documentation. You should understand the guidance when you request support.</p>                                 
@@ -361,7 +361,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <legend>Custom help text</legend>
       <% if current_user.admin? %>
         <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
-        <%= safe_join(ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
+        <%= safe_join(HelpText::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
         </p>
       <% else %>
         <p>You can view your existing help text here.</p>

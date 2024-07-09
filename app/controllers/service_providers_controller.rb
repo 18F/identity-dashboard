@@ -24,8 +24,9 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = help_text_i18n(service_provider_params)
+    help_text = HelpText.from_service_provider(service_provider)
+    if help_text.options_enabled? && !current_user.admin
+      service_provider.help_text = help_text.from_params(service_provider_params).to_json
     end
 
     validate_and_save_service_provider(:new)
@@ -37,8 +38,9 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
-    if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = help_text_i18n(service_provider_params)
+    help_text = HelpText.from_service_provider(service_provider)
+    if help_text.options_enabled? && !current_user.admin
+      service_provider.help_text = help_text.from_params(service_provider_params).to_json
     end
 
     service_provider.agency_id &&= service_provider.agency.id
@@ -198,38 +200,6 @@ class ServiceProvidersController < AuthenticatedController
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
-  end
-
-  # include translations of help text in DB
-  def help_text_i18n(service_provider_params)
-    current_help_text = service_provider_params.fetch('help_text')
-    ServiceProviderHelper::SP_HELP_OPTS.each { |mode|
-      key = current_help_text.fetch(mode).fetch('en').to_s
-      no_value = key.empty?
-      custom_help = !no_value &&
-                    I18n.t("service_provider_form.help_text.#{mode}.#{key}", :default => '').empty?
-      is_valid_key = ServiceProviderHelper::SP_HELP_KEYS[mode].include?(key)
-      # check that one of the default options is selected and
-      # don't overwrite custom help text
-      if !no_value
-        ServiceProviderHelper::SP_HELP_LOCALES.each { |locale|
-          if key == 'blank' || custom_help || !is_valid_key
-            # don't let people bypass the form
-            chosen_text = ''
-          else
-            chosen_text = I18n.t("service_provider_form.help_text.#{mode}.#{key}",
-              locale: locale,
-              sp_name: service_provider.friendly_name,
-              agency: service_provider.agency.name,
-              )
-          end
-
-          current_help_text[mode][locale] = chosen_text
-        }
-      end
-    }
-
-    return current_help_text
   end
 
   def clear_formatting(service_provider)
