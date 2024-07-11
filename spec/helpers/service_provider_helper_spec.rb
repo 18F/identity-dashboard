@@ -278,80 +278,40 @@ describe ServiceProviderHelper do
   describe '#show_minimal_help_text_element' do
     include Devise::Test::ControllerHelpers
     let(:user) { create(:user) }
-    before do
-      sign_in user
-    end
+    let(:admin) { create(:admin) }
+    let(:blank_help_text) {
+      double = double(HelpText.new)
+      expect(double).to receive(:blank?).and_return(true)
+      double
+    }
+    let(:filled_help_text) {
+      double = double(HelpText.new)
+      expect(double).to receive(:blank?).and_return(false)
+      double
+    }
 
-    describe 'non admin user' do
-      describe 'when help text exists' do
-        describe 'and is not blank' do
-          let(:help_text) do
-            HelpText.new(text: {
-              'sign_in'=> {'en'=>'<b>Some sign-in help text</b>'},
-              'sign_up'=> {'en'=>'<b>Some sign-up help text</b>'},
-              'forgot_password'=> {'en'=>'<b>Some forgot password help text</b>'},
-            })
-          end
+    context 'logged in as a non admin user' do
+      before do
+        sign_in user
+      end
 
-          it 'returns false' do
-            expect(
-              helper.show_minimal_help_text_element?(help_text)).to be false
-          end
-        end
+      it 'returns false when text is not blank' do
+        expect(helper.show_minimal_help_text_element?(filled_help_text)).to be false
+      end
 
-        describe 'it is just empty strings' do
-          let(:help_text) do
-            HelpText.new(text: {
-              'sign_in'=> {'en'=>''},
-              'sign_up'=> {'en'=>''},
-              'forgot_password'=> {'en'=>''},
-            })
-          end
-
-          it 'returns true' do
-            expect(
-              helper.show_minimal_help_text_element?(help_text)).to be true
-          end
-        end
-
-
-        describe 'it is just empty strings with whitespace' do
-          let(:help_text) do
-            HelpText.new(text: {
-              'sign_in'=> {'en'=>' '},
-              'sign_up'=> {'en'=>' '},
-              'forgot_password'=> {'en'=>'  '},
-            })
-          end
-
-          it 'returns true' do
-            expect(
-              helper.show_minimal_help_text_element?(help_text)).to be true
-          end
-        end
-
-        describe 'it is just some empty hashes' do
-          let(:help_text) do
-            HelpText.new(text: {
-              'sign_in'=> {},
-              'sign_up'=> {},
-              'forgot_password'=> {},
-            })
-          end
-
-          it 'returns true' do
-            expect(
-              helper.show_minimal_help_text_element?(help_text)).to be true
-          end
-        end
+      it 'returns true when text is blank' do
+        expect(helper.show_minimal_help_text_element?(blank_help_text)).to be true
       end
     end
 
-    describe 'an admin user' do
-      let(:user) { create(:admin) }
-      let(:help_text) {  HelpText.new(text: {}) }
-      it 'returns false' do
-        expect(helper.show_minimal_help_text_element?(help_text)).to be false
+    context 'as an admin user' do
+      before do
+        sign_in admin
+      end
+
+      it 'returns false regrdless of the help text' do
+        expect(helper.show_minimal_help_text_element?(filled_help_text)).to be false
+        expect(helper.show_minimal_help_text_element?(blank_help_text)).to be false
       end
     end
   end

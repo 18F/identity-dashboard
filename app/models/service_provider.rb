@@ -131,7 +131,7 @@ class ServiceProvider < ApplicationRecord
   private
 
   def sanitize_help_text_content
-    self.help_text = HelpText.from_service_provider(self).sanitize_tags.to_json
+    self.help_text = decorated_help_text.sanitize_tags.to_json
   end
 
   # rubocop:disable Rails/TimeZone
