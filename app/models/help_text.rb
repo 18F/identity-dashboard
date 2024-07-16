@@ -31,8 +31,8 @@ class HelpText
 
   def blank?
     CONTEXTS.any? do |context|
-      blank_preset_allowed = PRESETS[context].include? 'blank'
       next unless help_text[context]
+      blank_preset_allowed = PRESETS[context].include? 'blank'
       help_text[context].values.any? do |value|
         return false if !(value.blank? || blank_preset_allowed && value == 'blank')
       end
