@@ -96,18 +96,22 @@ module ServiceProviderHelper
     end.sort.join(', ')
   end
 
-  def readonly_help_text?
-    !Pundit.policy(current_user, @service_provider || ServiceProvider).edit_custom_help_text?
-  end
-
   def help_text_options_enabled?
     IdentityConfig.store.help_text_options_feature_enabled
   end
 
+  def service_provider_policy
+    Pundit.policy(current_user, @service_provider || ServiceProvider)
+  end
+
+  def readonly_help_text?
+    !service_provider_policy.edit_custom_help_text?
+  end
+
   def show_minimal_help_text_element?(service_provider)
+    return false if service_provider_policy.edit_custom_help_text?
     text_info = HelpText.lookup(service_provider: service_provider)
-    cannot_edit = !Pundit.policy(current_user, service_provider).edit_custom_help_text?
-    cannot_edit && (text_info.blank? || text_info.presets_only?)
+    text_info.blank? || text_info.presets_only?
   end
 
   private
