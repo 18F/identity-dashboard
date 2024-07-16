@@ -86,6 +86,14 @@ describe HelpText do
       expect(subject).to be_presets_only
     end
 
+    it 'is false when one value is not a preset key' do
+      one_value_off_help_text = all_presets_help_text.dup
+      one_value_off_help_text[HelpText::CONTEXTS.sample][HelpText::LOCALES.sample] =
+        'This is definitely not one of our presets'
+      service_provider.help_text = one_value_off_help_text
+      expect(subject).to_not be_presets_only
+    end
+
     it 'is true when some values are the full text of the preset values' do
       pending 'not yet implemented'
       HelpText::CONTEXTS.each do |context|
