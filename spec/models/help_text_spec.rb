@@ -43,12 +43,12 @@ describe HelpText do
 
   describe '.lookup' do
     it 'does not modify the help text by default' do
-      expect(subject.to_h.to_json).to eq(service_provider.help_text.to_json)
+      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
     end
 
     it 'does not modify more complicated help text' do
       service_provider.help_text = maybe_presets_help_text
-      expect(subject.to_h.to_json).to eq(service_provider.help_text.to_json)
+      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
     end
   end
 
@@ -95,7 +95,6 @@ describe HelpText do
     end
 
     it 'is true when some values are the full text of the preset values' do
-      pending 'not yet implemented'
       HelpText::CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           value = all_presets_help_text[context][locale]
@@ -113,10 +112,15 @@ describe HelpText do
   end
 
   describe '#to_h' do
+    it 'keeps everything the same with simple options' do
+      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+    end
+
     it 'writes out localized presets' do
       service_provider = build(:service_provider, agency: build(:agency))
       # 'sign_in' and 'sign_up' both have a service provider name substitution and 
-      # an agency name substitution in their localizations
+      # an agency name substitution in their localizations.
+      # We can use them to test both format substitution options
       all_presets_help_text['sign_in']['en'] = 'first_time'
       all_presets_help_text['sign_up']['en'] = 'agency_email'
       results = HelpText.lookup(
@@ -136,6 +140,8 @@ describe HelpText do
         sp_name: service_provider.friendly_name,
         agency: service_provider.agency.name,
       )
+
+      expect(subject.help_text.to_json).to_not eq(service_provider.help_text.to_json)
       expect(results['sign_in'][random_locale]).to eq(sign_in_first_time_text)
       expect(results['sign_up'][random_locale]).to eq(sign_up_agnecy_text)
     end

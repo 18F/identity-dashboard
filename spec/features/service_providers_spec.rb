@@ -255,16 +255,20 @@ feature 'Service Providers CRUD' do
       expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
     end
 
-    scenario 'sees radio buttons when help text is not custom' do
+    scenario 'uses radio buttons when help text is not custom' do
       user = create(:user, :with_teams)
       help_text_context = HelpText::CONTEXTS.sample
+      initial_help_text = { help_text_context => {
+        'en' => HelpText::PRESETS[help_text_context].sample,
+      }}
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
-        help_text: { help_text_context => {
-          HelpText::LOCALES.sample => HelpText::PRESETS[help_text_context].sample,
-        }},
+        help_text: initial_help_text,
       )
+
+      # The first option does not start out as an empty string
+      expect(service_provider.help_text.fetch(HelpText::CONTEXTS.first, {})['en']).to_not eq('')
 
       login_as(user)
 
@@ -275,14 +279,35 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('You can choose from the default help text options')
       help_text_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
       expect(help_text_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
+
+      # The first option is currently labeled "Leave blank", so this checks out that logic
+      help_text_radio_options.first.click
+      help_text_radio_options.last.click
+      click_on 'Update'
+      visit edit_service_provider_path(service_provider)
+
+      # The database did update
+      expect(service_provider.reload.help_text.to_json).to_not eq(initial_help_text.to_json)
+      # The first option is now an empty string
+      expect(service_provider.help_text.fetch(HelpText::CONTEXTS.first, {})['en']).to eq('')
+
+      # We did not switch to the custom text inputs
+      updated_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
+      expect(updated_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
+      # The options stayed checked
+      expect(updated_radio_options.first).
+        to eq(find_all('fieldset.custom-help-text input[checked]').first)
+      expect(updated_radio_options.last).
+        to eq(find_all('fieldset.custom-help-text input[checked]').last)
     end
 
     scenario 'sees read-only text boxes when help text is custom' do
       user = create(:user, :with_teams)
+      initial_help_text = { HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!'}}
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
-        help_text: { HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hello, world!' }},
+        help_text: initial_help_text,
       )
 
       login_as(user)

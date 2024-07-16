@@ -6,6 +6,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
 
+  helper_method :parsed_help_text
 
   def index
     all_apps = current_user.scoped_service_providers
@@ -25,9 +26,7 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = HelpText.lookup(
-        params: service_provider_params[:help_text], service_provider: service_provider,
-      ).revert_unless_presets_only.to_h
+      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_h
     end
 
     validate_and_save_service_provider(:new)
@@ -40,12 +39,9 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
     if helpers.help_text_options_enabled?
-      help_text = HelpText.lookup(
-        params: service_provider_params[:help_text], service_provider: service_provider,
-      )
+      help_text = parsed_help_text
       if !policy(@service_provider).edit_custom_help_text?
-        # Don't let people bypass the form
-        help_text = help_text.revert_unless_presets_only
+        help_text = parsed_help_text.revert_unless_presets_only
       end
       service_provider.help_text = help_text.to_h
     end
@@ -65,6 +61,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def edit; end
+
   def show
     @service_provider_versions = @service_provider.versions.reverse_order
   end
@@ -97,6 +94,14 @@ class ServiceProvidersController < AuthenticatedController
 
   def service_provider
     @service_provider ||= ServiceProvider.find(params[:id])
+  end
+
+  def parsed_help_text
+    text_params = params.has_key?(service_provider) ? service_provider_params[:help_text] : nil
+    @parsed_help_text ||= HelpText.lookup(
+      params: text_params,
+      service_provider: service_provider,
+    )
   end
 
   def authorize_approval

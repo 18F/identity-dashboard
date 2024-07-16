@@ -5,10 +5,13 @@
       <legend class="usa-label">Sign-in help text:</legend>
         <%= s.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.sign_in', deep_interpolation: true, 
-                                      sp_name: service_provider.friendly_name || '<Application Friendly Name>',
-                                      agency: service_provider.agency&.name || '<Agency>'),
-                                      :first, :last,
-                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
+                                        sp_name: service_provider.friendly_name || '<Application Friendly Name>',
+                                        agency: service_provider.agency&.name || '<Agency>'
+                                      ),
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('sign_in')}
+            ) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
         <% end %>
@@ -19,10 +22,13 @@
       <legend class="usa-label">Sign-up help text:</legend>
         <%= s.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.sign_up', deep_interpolation: true, 
-                                      sp_name: service_provider.friendly_name || '<Application Friendly Name>',
-                                      agency: service_provider.agency&.name || '<Agency>'),
-                                      :first, :last,
-                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
+                                        sp_name: service_provider.friendly_name || '<Application Friendly Name>',
+                                        agency: service_provider.agency&.name || '<Agency>'
+                                      ),
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('sign_up')}
+            ) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
         <% end %>
@@ -33,8 +39,9 @@
       <legend class="usa-label">Forgot password help text:</legend>
         <%= f.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.forgot_password'),
-                                      :first, :last,
-                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('forgot_password')}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
         <% end %>

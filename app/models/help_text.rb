@@ -19,7 +19,9 @@ class HelpText
     raise ArgumentError, '`HelpText.lookup`: nothing to look up' unless params || service_provider
     params ||= service_provider.attributes['help_text'] unless service_provider&.attributes.blank?
 
-    new(help_text: params, service_provider: service_provider)
+    result = new(help_text: params, service_provider: service_provider)
+    result.send(:revert_presets_to_short_name)
+    result
   end
 
   attr_reader :help_text, :service_provider
@@ -32,9 +34,8 @@ class HelpText
   def blank?
     CONTEXTS.any? do |context|
       next unless help_text[context]
-      blank_preset_allowed = PRESETS[context].include? 'blank'
       help_text[context].values.any? do |value|
-        return false if !(value.blank? || blank_preset_allowed && value == 'blank')
+        return false unless blank_text?(value)
       end
     end
     true
@@ -58,25 +59,62 @@ class HelpText
     HelpText.lookup(service_provider: service_provider)
   end
 
+  def fetch(context, lang = 'en')
+    help_text.fetch(context, {})[lang]
+  end
+
   def to_h
     result = {}
     CONTEXTS.each do |context|
       result[context] = Hash.new
-      value = help_text.fetch(context, nil)&.fetch('en', nil)
-      is_a_preset = PRESETS[context].include?(value)
+      english_setting = fetch(context)
+      is_a_preset = PRESETS[context].include?(english_setting)
       LOCALES.each do |locale|
         if is_a_preset
-          result[context][locale] = value == 'blank' ? '' : I18n.t(
-            "service_provider_form.help_text.#{context}.#{value}",
+          result[context][locale] = blank_text?(english_setting) ? '' : I18n.t(
+            "service_provider_form.help_text.#{context}.#{english_setting}",
             locale: locale,
-            sp_name: service_provider.friendly_name,
-            agency: service_provider.agency&.name,
+            sp_name: sp_name,
+            agency: agency_name,
           )
-        elsif value && help_text[context].fetch(locale, false)
+        elsif english_setting && fetch(context, locale)
           result[context][locale] = help_text[context][locale]
         end
       end
     end
     result
+  end
+
+  private
+
+  def sp_name
+    service_provider.friendly_name
+  end
+
+  def agency_name
+    service_provider.agency&.name
+  end
+
+  def revert_presets_to_short_name
+    CONTEXTS.each do |context|
+      next if help_text[context].blank?
+      PRESETS[context].each do |preset|
+        LOCALES.each do |locale|
+          help_text[context][locale] = 'blank' and next if blank_text?(help_text[context][locale])
+          if help_text[context][locale] == I18n.t(
+            "service_provider_form.help_text.#{context}.#{preset}",
+            locale: locale,
+            sp_name: sp_name,
+            agency: agency_name,
+          )
+            help_text[context][locale] = preset
+          end
+        end
+      end
+    end
+  end
+
+  def blank_text?(text)
+    text.blank? || text == 'blank' || text == 'Leave blank'
   end
 end
