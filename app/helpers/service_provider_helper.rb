@@ -25,14 +25,6 @@ module ServiceProviderHelper
     SVG_MIME_TYPE => '.svg',
   }.freeze
 
-  SP_HELP_OPTS = ['sign_in', 'sign_up', 'forgot_password'].freeze
-  SP_HELP_LOCALES = ['en', 'es', 'fr', 'zh'].freeze
-  SP_HELP_KEYS = {
-    'sign_in' => ['blank', 'first_time', 'agency_email', 'piv_cac'],
-    'sign_up' => ['blank', 'first_time', 'agency_email', 'same_email'],
-    'forgot_password' => ['blank', 'troubleshoot_html'],
-  }.freeze
-
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
     if file.downcase.end_with?('.svg')
@@ -105,19 +97,17 @@ module ServiceProviderHelper
   end
 
   def readonly_help_text?
-    !current_user.admin?
+    !Pundit.policy(current_user, @service_provider || ServiceProvider).edit_custom_help_text?
   end
 
   def help_text_options_enabled?
     IdentityConfig.store.help_text_options_feature_enabled
   end
 
-  def show_minimal_help_text_element?(help_text)
-    return false if current_user.admin?
-
-    help_text.
-      values.
-      all? {|text| text.values.all?(&:blank?)}
+  def show_minimal_help_text_element?(service_provider)
+    text_info = HelpText.lookup(service_provider: service_provider)
+    cannot_edit = !Pundit.policy(current_user, service_provider).edit_custom_help_text?
+    cannot_edit && (text_info.blank? || text_info.presets_only?)
   end
 
   private

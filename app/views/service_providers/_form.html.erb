@@ -345,7 +345,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if show_minimal_help_text_element?(service_provider.help_text) %>
+  <% if show_minimal_help_text_element?(service_provider) %>
     <p class="usa-label">Help text</p>
     <% if help_text_options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
@@ -359,7 +359,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <% else%>
     <fieldset class="usa-fieldset-inputs custom-help-text">
       <legend>Custom help text</legend>
-      <% if current_user.admin? %>
+      <% if policy(service_provider).edit_custom_help_text? %>
         <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
         <%= safe_join(ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
         </p>
