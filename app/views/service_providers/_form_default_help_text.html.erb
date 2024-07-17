@@ -8,7 +8,7 @@
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
                                       :first, :last,
-                                      { checked: service_provider.help_text['sign_in']['en']}) do |r| %>
+                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
         <% end %>
@@ -22,7 +22,7 @@
                                       sp_name: service_provider.friendly_name || '<Application Friendly Name>',
                                       agency: service_provider.agency&.name || '<Agency>'),
                                       :first, :last,
-                                      { checked: service_provider.help_text['sign_up']['en']}) do |r| %>
+                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
         <% end %>
@@ -34,7 +34,7 @@
         <%= f.collection_radio_buttons(:en,
                                       t('service_provider_form.help_text.forgot_password'),
                                       :first, :last,
-                                      { checked: service_provider.help_text['forgot_password']['en']}) do |r| %>
+                                      { checked: service_provider.help_text.fetch('sign_in', nil)&.fetch('en', nil)}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
         <% end %>
