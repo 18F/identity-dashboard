@@ -54,17 +54,24 @@ describe HelpText do
 
   describe '#blank?' do
     it 'is true for blank text' do
+      help_text_from_params = HelpText.lookup(
+        service_provider: service_provider,
+        params: { 'help_text' => blank_help_text},
+      )
+      expect(help_text_from_params).to be_blank
+
       service_provider.help_text = blank_help_text
       expect(subject).to be_blank
-      subject_from_params = HelpText.lookup(params: { 'help_text' => blank_help_text})
-      expect(subject_from_params).to be_blank
     end
 
     it 'is true for an empty hash' do
+      help_text_from_params = HelpText.lookup(
+        service_provider: service_provider,
+        params: { 'help_text' => {}},
+      )
+      expect(help_text_from_params).to be_blank
       service_provider.help_text = {}
       expect(subject).to be_blank
-      subject_from_params = HelpText.lookup(params: { 'help_text' => {}})
-      expect(subject_from_params).to be_blank
     end
 
     it 'is true for a new ServiceProvider' do
@@ -111,7 +118,7 @@ describe HelpText do
     end
   end
 
-  describe '#to_h' do
+  describe '#to_localized_h' do
     it 'keeps everything the same with simple options' do
       expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
     end
@@ -126,7 +133,7 @@ describe HelpText do
       results = HelpText.lookup(
         params: all_presets_help_text,
         service_provider: service_provider,
-      ).to_h
+      ).to_localized_h
       random_locale = HelpText::LOCALES.sample
       sign_in_first_time_text = I18n.t(
         'service_provider_form.help_text.sign_in.first_time',

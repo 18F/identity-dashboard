@@ -5,6 +5,9 @@
 class HelpText
   CONTEXTS = ['sign_in', 'sign_up', 'forgot_password'].freeze
   LOCALES = ['en', 'es', 'fr', 'zh'].freeze
+  # If a preset is set for one locale, it should be the same for all of them.
+  # On the off chance that something is unexpected in the database, pick one to be authoritative
+  LOCALE_FOR_PRESETS = 'en'.freeze
 
   # Hash<String,Array<String>> PRESETS A collection of valid preset help texts
   # Hash keys are valid CONTEXTS values. Arrays are a list of keys in the locale YAML files
@@ -14,14 +17,19 @@ class HelpText
     'forgot_password' => ['blank', 'troubleshoot_html'],
   }.freeze
 
-  # include translations of help text in DB
-  def self.lookup(params: nil, service_provider: nil)
+  # HelpText.lookup returns a HelpText instance that represents all the chosen help text
+  #
+  # If you provide `params` as well as `service_provider`, the vaules in `params` will be used with
+  # the `service_provider` only relevant for filling in friendly names in the help text or when
+  # using `#revert_unless_presets_only`.
+  #
+  # A service provider is required because, without a service provider reference,
+  # the localizations won't have enough context.
+  def self.lookup(service_provider:, params: nil)
     raise ArgumentError, '`HelpText.lookup`: nothing to look up' unless params || service_provider
     params ||= service_provider.attributes['help_text'] unless service_provider&.attributes.blank?
 
-    result = new(help_text: params, service_provider: service_provider)
-    result.send(:revert_presets_to_short_name)
-    result
+    new(help_text: params, service_provider: service_provider)
   end
 
   attr_reader :help_text, :service_provider
@@ -29,6 +37,7 @@ class HelpText
   def initialize(help_text: {}, service_provider: nil)
     @help_text = help_text
     @service_provider = service_provider || ServiceProvider.new
+    revert_presets_to_short_name
   end
 
   def blank?
@@ -59,25 +68,25 @@ class HelpText
     HelpText.lookup(service_provider: service_provider)
   end
 
-  def fetch(context, lang = 'en')
+  def fetch(context, lang)
     help_text.fetch(context, {})[lang]
   end
 
-  def to_h
+  def to_localized_h
     result = {}
     CONTEXTS.each do |context|
       result[context] = Hash.new
-      english_setting = fetch(context)
-      is_a_preset = PRESETS[context].include?(english_setting)
+      base_setting = fetch(context, LOCALE_FOR_PRESETS)
+      is_a_preset = PRESETS[context].include?(base_setting)
       LOCALES.each do |locale|
         if is_a_preset
-          result[context][locale] = blank_text?(english_setting) ? '' : I18n.t(
-            "service_provider_form.help_text.#{context}.#{english_setting}",
+          result[context][locale] = blank_text?(base_setting) ? '' : I18n.t(
+            "service_provider_form.help_text.#{context}.#{base_setting}",
             locale: locale,
             sp_name: sp_name,
             agency: agency_name,
           )
-        elsif english_setting && fetch(context, locale)
+        elsif base_setting && fetch(context, locale)
           result[context][locale] = help_text[context][locale]
         end
       end

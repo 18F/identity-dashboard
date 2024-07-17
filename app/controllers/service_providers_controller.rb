@@ -26,7 +26,7 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_h
+      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
     validate_and_save_service_provider(:new)
@@ -43,7 +43,7 @@ class ServiceProvidersController < AuthenticatedController
       if !policy(@service_provider).edit_custom_help_text?
         help_text = parsed_help_text.revert_unless_presets_only
       end
-      service_provider.help_text = help_text.to_h
+      service_provider.help_text = help_text.to_localized_h
     end
 
     service_provider.agency_id &&= service_provider.agency.id
