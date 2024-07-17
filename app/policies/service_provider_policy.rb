@@ -25,6 +25,10 @@ class ServiceProviderPolicy < BasePolicy
     true
   end
 
+  def edit_custom_help_text?
+    admin?
+  end
+
   private
 
   def owner?
