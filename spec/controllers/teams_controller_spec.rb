@@ -69,6 +69,25 @@ describe TeamsController do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
       end
+
+      it 'will show audit events' do
+        test_version = PaperTrail::Version.new(
+          object_changes: {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
+          created_at: 1.minute.ago,
+          whodunnit: 'admin@login.gsa.gov',
+          event: 'create',
+          item_type: 'UserTeam',
+        )
+
+        expect(TeamAuditEvent).to receive(:by_team).
+          with(org, scope: PaperTrail::Version.all).
+          and_return([test_version])
+
+        get :show, params: { id: org.id }
+
+        expect(assigns[:audit_events][0].whodunnit).to eq(test_version.whodunnit)
+        expect(assigns[:audit_events][0].created_at).to eq(test_version.created_at)
+      end
     end
 
     context 'when not an admin but a team member' do
@@ -79,6 +98,18 @@ describe TeamsController do
       it 'shows the team template' do
         get :show, params: { id: org.id }
         expect(response).to render_template(:show)
+      end
+
+      it 'will not show the paper trail' do
+        no_versions = PaperTrail::Version.none
+        no_versions_sql = no_versions.to_sql
+
+        expect(TeamAuditEvent).to receive(:by_team).with(
+          org,
+          scope: have_attributes(to_sql: a_string_starting_with(no_versions_sql)),
+        ).and_return(no_versions)
+        get :show, params: { id: org.id }
+        expect(assigns[:audit_events]).to eq([])
       end
     end
   end

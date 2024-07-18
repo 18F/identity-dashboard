@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'nokogiri'
 
 describe ServiceProvider do
   describe 'Associations' do
@@ -125,6 +126,28 @@ describe ServiceProvider do
           )
         end
       end
+
+      describe 'it has no viewBox attributes' do
+        let(:filename) { 'logo_without_size.svg'}
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+        end
+      end
+
+      describe 'it has a script in the xml' do
+        let(:filename) { 'logo_with_script.svg'}
+
+        it 'is not valid' do
+          expect(service_provider).to_not be_valid
+
+          expect(service_provider.errors.first.message).to eq(
+            'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload') # rubocop:disable Layout/LineLength
+        end
+      end 
     end
 
     describe 'logo with a different file extension' do

@@ -1,5 +1,5 @@
 <tr>
-  <th scope="row"><%= banner.message %></th>
+  <th scope="row"><%= sanitize(banner.message).html_safe %></th>
   <td><%= banner.start_date ? DateTime.parse(banner.start_date.to_s).strftime("%m/%d/%Y") : "" %></td>
   <td><%= banner.end_date ? DateTime.parse(banner.end_date.to_s).strftime("%m/%d/%Y") : "" %></td>
   <% if timing == 'upcoming' %>

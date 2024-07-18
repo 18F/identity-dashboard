@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_paper_trail on: %i[create update destroy]
 
   devise :trackable, :timeoutable
-  has_many :user_teams, dependent: :nullify
+  has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy

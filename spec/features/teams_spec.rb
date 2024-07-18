@@ -89,7 +89,7 @@ feature 'User teams CRUD' do
   end
 
   describe 'show' do
-    scenario 'admin views a team' do
+    scenario 'admin edits a team', versioning: true do
       admin = create(:admin)
       team = create(:team)
       user = create(:user, teams: [team])
@@ -103,6 +103,21 @@ feature 'User teams CRUD' do
       expect(page).to have_content(team.name)
       expect(page).to have_content(team.agency.name)
       expect(page).to have_content(user.email)
+
+      find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
+      find("a[href='#{team_user_path(team, user)}/remove_confirm']").click
+      click_on I18n.t('teams.users.remove.button')
+      find('.usa-button', text: 'Back').click
+      
+      expect(current_path).to eq(team_path(team))
+      newest_event_text = find('#versions>:first-child').text
+      expect(newest_event_text).to include("user_id #{user.id}")
+      expect(newest_event_text).to include("By: #{admin.email}")
+      expect(newest_event_text).to include('Action: Remove')
+
+      oldest_event_text = find('#versions>:last-child').text
+      expect(oldest_event_text).to include('Action: Create')
+      expect(oldest_event_text).to include("At: #{team.created_at}")
     end
 
     scenario 'regular user attempts to view a team' do
