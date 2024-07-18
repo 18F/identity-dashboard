@@ -255,6 +255,46 @@ feature 'Service Providers CRUD' do
       expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
     end
 
+    scenario 'sees radio buttons when help text is not custom' do
+      user = create(:user, :with_teams)
+      help_text_context = HelpText::CONTEXTS.sample
+      service_provider = create(:service_provider,
+        :with_users_team,
+        user: user,
+        help_text: { help_text_context => {
+          HelpText::LOCALES.sample => HelpText::PRESETS[help_text_context].sample,
+        }},
+      )
+
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to_not have_content('You can view your existing help text here')
+      expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
+      expect(page).to have_content('You can choose from the default help text options')
+      help_text_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
+      expect(help_text_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
+    end
+
+    scenario 'sees read-only text boxes when help text is custom' do
+      user = create(:user, :with_teams)
+      service_provider = create(:service_provider,
+        :with_users_team,
+        user: user,
+        help_text: { HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hello, world!' }},
+      )
+
+      login_as(user)
+
+      visit edit_service_provider_path(service_provider)
+
+      expect(page).to have_content('You can view your existing help text here')
+      expect(page).to have_css('#service_provider_help_text_sign_in_en[readonly="readonly"]')
+      expect(page).to_not have_content('You can choose from the default help text options')
+      expect(page).to_not have_content('fieldset.custom-help-text input[type=radio]')
+    end
+
     scenario 'cannot edit allow_prompt_login' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
@@ -392,14 +432,17 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can view SP with no team' do
+    scenario 'can view SP with no team', versioning: true do
       admin = create(:admin)
-      sp = create(:service_provider)
+      service_provider = create(:service_provider)
       login_as(admin)
 
-      visit service_provider_path(sp)
+      visit service_provider_path(service_provider)
 
-      expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_content(service_provider.friendly_name)
+      version_info = find('#versions')
+      expect(version_info).to have_content('Action: Create')
+      expect(version_info).to have_content(service_provider.created_at.to_s)
     end
 
     scenario 'can edit help text' do

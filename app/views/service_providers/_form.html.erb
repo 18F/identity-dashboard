@@ -6,7 +6,7 @@
                  label: 'Dashboard Configuration',
                  class: 'usa-label' %>
   <%= form.collection_radio_buttons(:prod_config,
-                                    { "Production" => true, "Sandbox" => false },
+                                    { "Ready for Production" => true, "Sandbox" => false },
                                     :last, :first,
                                     item_wrapper_tag: :ul,
                                     item_wrapper_class: "usa-input-list") do |b| %>
@@ -248,8 +248,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <legend class='usa-sr-only'>Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested',
-                  class: 'usa-label',
-                  hint: I18n.t('service_provider_form.signed_response_requested') %>
+                  class: 'usa-label' %>
     <%= form.collection_radio_buttons(:signed_response_message_requested,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -332,8 +331,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <legend class='usa-sr-only'>Accessible</legend>
     <%= form.label :admin,
                    label: 'Accessible',
-                   class: 'usa-label',
-                   hint: I18n.t('service_provider_form.active') %>
+                   class: 'usa-label' %>
     <%= form.collection_radio_buttons(:active,
                                       { "Yes" => true, "No" => false },
                                       :last, :first,
@@ -347,8 +345,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if show_minimal_help_text_element?(service_provider.help_text) %>
-    <p class="usa-label">Custom help text</p>
+  <% if show_minimal_help_text_element?(service_provider) %>
+    <p class="usa-label">Help text</p>
     <% if help_text_options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
      <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
@@ -361,7 +359,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
   <% else%>
     <fieldset class="usa-fieldset-inputs custom-help-text">
       <legend>Custom help text</legend>
-      <% if current_user.admin? %>
+      <% if policy(service_provider).edit_custom_help_text? %>
         <p>You can specify help text in these different areas to alert users of important information for logging into your app. Permitted HTML elements include the following:
         <%= safe_join(ServiceProvider::ALLOWED_HELP_TEXT_HTML_TAGS.map { |t| tag.code(t) }, ", ") %>.
         </p>

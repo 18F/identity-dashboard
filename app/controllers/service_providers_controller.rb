@@ -24,6 +24,12 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
+    if helpers.help_text_options_enabled? && !current_user.admin
+      service_provider.help_text = HelpText.lookup(
+        params: service_provider_params[:help_text], service_provider: service_provider,
+      ).revert_unless_presets_only.to_h
+    end
+
     validate_and_save_service_provider(:new)
   end
 
@@ -33,6 +39,16 @@ class ServiceProvidersController < AuthenticatedController
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
+    if helpers.help_text_options_enabled?
+      help_text = HelpText.lookup(
+        params: service_provider_params[:help_text], service_provider: service_provider,
+      )
+      if !policy(@service_provider).edit_custom_help_text?
+        # Don't let people bypass the form
+        help_text = help_text.revert_unless_presets_only
+      end
+      service_provider.help_text = help_text.to_h
+    end
 
     service_provider.agency_id &&= service_provider.agency.id
     validate_and_save_service_provider(:edit)
@@ -49,8 +65,9 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def edit; end
-
-  def show; end
+  def show
+    @service_provider_versions = @service_provider.versions.reverse_order
+  end
 
   def all
     return unless current_user.admin?
@@ -190,6 +207,7 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
   end
+
 
   def clear_formatting(service_provider)
     string_attributes = %w[
