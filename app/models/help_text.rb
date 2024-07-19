@@ -73,20 +73,22 @@ class HelpText
   end
 
   def to_localized_h
+    is_presets_only = presets_only?
     result = {}
     CONTEXTS.each do |context|
       result[context] = Hash.new
-      base_setting = fetch(context, LOCALE_FOR_PRESETS)
-      is_a_preset = PRESETS[context].include?(base_setting)
+      base_value = fetch(context, LOCALE_FOR_PRESETS)
       LOCALES.each do |locale|
+        value = is_presets_only ? base_value : fetch(context, locale)
+        is_a_preset = PRESETS[context].include?(value)
         if is_a_preset
-          result[context][locale] = blank_text?(base_setting) ? '' : I18n.t(
-            "service_provider_form.help_text.#{context}.#{base_setting}",
+          result[context][locale] = blank_text?(value) ? '' : I18n.t(
+            "service_provider_form.help_text.#{context}.#{value}",
             locale: locale,
             sp_name: sp_name,
             agency: agency_name,
           )
-        elsif base_setting && fetch(context, locale)
+        elsif base_value && fetch(context, locale)
           result[context][locale] = help_text[context][locale]
         end
       end

@@ -41,6 +41,12 @@ describe HelpText do
     end
   }
 
+  RSpec::Matchers.matcher :be_a_help_text_preset_for do |context|
+    match do |actual|
+      HelpText::PRESETS[context].include?(actual)
+    end
+  end
+
   describe '.lookup' do
     it 'does not modify the help text by default' do
       expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
@@ -49,6 +55,15 @@ describe HelpText do
     it 'does not modify more complicated help text' do
       service_provider.help_text = maybe_presets_help_text
       expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+    end
+
+    it 'keeps presets as presets' do
+      subject = HelpText.lookup(params: all_presets_help_text, service_provider:)
+      HelpText::CONTEXTS.each do |context|
+        HelpText::LOCALES.each do |locale|
+          expect(subject.fetch(context, locale)).to be_a_help_text_preset_for(context)
+        end
+      end
     end
   end
 
@@ -151,6 +166,18 @@ describe HelpText do
       expect(subject.help_text.to_json).to_not eq(service_provider.help_text.to_json)
       expect(results['sign_in'][random_locale]).to eq(sign_in_first_time_text)
       expect(results['sign_up'][random_locale]).to eq(sign_up_agnecy_text)
+    end
+  end
+
+  it 'writes out localized presets even if the presets were not evenly edited' do
+    test_context = HelpText::CONTEXTS.sample
+    all_but_one_preset = all_presets_help_text.dup
+    all_but_one_preset[test_context]['en'] = 'I accidentally only updated English'
+    expect(all_but_one_preset[test_context]['es']).to be_a_help_text_preset_for(test_context)
+    subject = HelpText.lookup(params: all_but_one_preset, service_provider:)
+    localized_vaules_for_context = subject.to_localized_h[test_context]
+    HelpText::LOCALES.each do |locale|
+      expect(localized_vaules_for_context[locale]).to_not be_a_help_text_preset_for(test_context)
     end
   end
 

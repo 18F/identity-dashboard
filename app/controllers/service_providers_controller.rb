@@ -6,7 +6,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
 
-  helper_method :parsed_help_text
+  helper_method :parsed_help_text, :localized_help_text
 
   def index
     all_apps = current_user.scoped_service_providers
@@ -102,6 +102,10 @@ class ServiceProvidersController < AuthenticatedController
       params: text_params,
       service_provider: service_provider,
     )
+  end
+
+  def localized_help_text
+    @localized_help_text ||= parsed_help_text.to_localized_h
   end
 
   def authorize_approval

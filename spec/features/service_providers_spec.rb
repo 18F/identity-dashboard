@@ -470,21 +470,41 @@ feature 'Service Providers CRUD' do
       expect(version_info).to have_content(service_provider.created_at.to_s)
     end
 
-    scenario 'can edit help text' do
-      help_text = '<p>Text with some basic <a href="www.hello.com">html tags</a></p>'
+    scenario 'editing some preset help text but not all' do
+      not_blank_sign_up_preset = ['agency_email', 'first_time'].sample
+      not_blank_sign_in_preset = ['agency_email', 'first_time'].sample
+      help_text_en = '<p>Text with some basic <a href="www.hello.com">html</a></p>'
+      help_text_es = '<p>Palabras con <a href="www.hello.com">html</a> simple</p>'
       admin = create(:admin)
-      service_provider = create(:service_provider)
+      # Let's create a service provider with some defaults and some not
+      service_provider = build(:service_provider, :with_team)
+      service_provider.help_text = {
+        'sign_up': { en: not_blank_sign_up_preset},
+        'sign_in': { en: not_blank_sign_in_preset, fr: not_blank_sign_in_preset },
+        'forgot_password': { en: HelpText::PRESETS['forgot_password'].sample },
+      }
+      service_provider.save!
+
       login_as(admin)
 
       visit edit_service_provider_path(service_provider)
 
       expect(page).to have_content('You can specify help text')
-      fill_in 'service_provider_help_text_sign_in_en', with: help_text
+      fill_in 'service_provider_help_text_sign_in_en', with: help_text_en
+      fill_in 'service_provider_help_text_forgot_password_es', with: help_text_es
       click_on 'Update'
+      expect(current_url).to eq(service_provider_url(service_provider))
+      click_on 'Edit'
 
-      service_provider.reload
-
-      expect(page).to have_content(help_text)
+      expected_fr_signin_text = I18n.t(
+        "service_provider_form.help_text.sign_in.#{not_blank_sign_in_preset}",
+        locale: 'fr',
+        sp_name: service_provider.friendly_name,
+        agency: service_provider.agency&.name,
+      )
+      expect(find('#service_provider_help_text_sign_in_en').value).to eq(help_text_en)
+      expect(find('#service_provider_help_text_sign_in_fr').value).to eq(expected_fr_signin_text)
+      expect(find('#service_provider_help_text_forgot_password_es').value).to eq(help_text_es)
     end
 
     scenario 'can see push_notification_url in YAML generator' do
