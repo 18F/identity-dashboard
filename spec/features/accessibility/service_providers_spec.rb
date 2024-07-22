@@ -2,10 +2,6 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Service provider pages', :js do
-  before do
-    allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(false)
-  end
-
   context 'for admins' do
     let(:admin) { create(:admin) }
     before { login_as(admin) }

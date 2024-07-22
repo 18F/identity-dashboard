@@ -17,7 +17,6 @@ production:
   dashboard_api_token: ['env', 'DASHBOARD_API_TOKEN']
   idp_sp_url:  ['env', 'IDP_SP_URL']
   idp_url:  ['env', 'IDP_URL']
-  logo_upload_enabled: false
   mailer_domain: ['env','MAILER_DOMAIN']
   post_logout_redirect_uri:  ['env', 'POST_LOGOUT_URL']
   saml_sp_issuer:   ['env', 'SAML_SP_ISSUER']
