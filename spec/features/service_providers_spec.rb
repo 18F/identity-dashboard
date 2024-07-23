@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 feature 'Service Providers CRUD' do
-  before do
-    allow(IdentityConfig.store).to receive(:logo_upload_enabled).and_return(false)
-  end
 
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
@@ -20,7 +17,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
-      fill_in 'service_provider_logo', with: 'test.png'
+      attach_file('Choose a file', 'spec/fixtures/logo.svg')
       select user.teams[0].name, from: 'service_provider_group_id'
       select I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service'
       select I18n.t('service_provider_form.aal_option_2'),
