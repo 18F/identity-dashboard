@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   resources :users
   resources :banners, except: :destroy
+  resources :integration_setup
 
   get '/teams/all' => 'teams#all'
   resources :teams
