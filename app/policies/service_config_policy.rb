@@ -1,4 +1,4 @@
-class IntegrationSetupPolicy < BasePolicy
+class ServiceConfigPolicy < BasePolicy
   def initialize(user, _placeholder)
     @user = user
   end
