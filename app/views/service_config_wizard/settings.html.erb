@@ -1,0 +1,28 @@
+
+<%= wizard_form do |form| %>
+  <%= form.association :team,
+                       as: :usa_collection_select,
+                       value_method: :id,
+                       collection: current_user.scoped_teams,
+                       label: 'Team',
+                       disabled: !can_edit_teams?(current_user),
+                       hint: I18n.t('service_provider_form.team') %>
+  <%= form.input :app_name,
+                  input_html: { class: 'usa-input' },
+                  label_html: { class: 'usa-input-required'},
+                  label: 'App name',
+                  hint: t('service_provider_form.app_name_html') %>
+
+  <%= form.input :friendly_name,
+                  input_html: { class: 'usa-input', aria: { invalid: false } },
+                  label_html: { class: 'usa-input-required'},
+                  label: 'Friendly name',
+                  hint: t('service_provider_form.friendly_name_html') %>
+  <%= form.input :description,
+                  as: :usa_textarea,
+                  label_html: { class: 'usa-input-optional' },
+                  label: 'Description',
+                  hint: I18n.t('service_provider_form.description') %>
+
+  <%= next_button(form) %>
+<% end %>

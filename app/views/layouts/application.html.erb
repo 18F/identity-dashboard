@@ -117,7 +117,7 @@
             </div>
           <% end %>
           <%= render 'layouts/messages' %>
-          <%= yield %>
+          <%= content_for?(:content) ? yield(:content) : yield %>
         </div>
       </div>
     </main>
