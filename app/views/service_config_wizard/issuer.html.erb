@@ -1,0 +1,13 @@
+<%= wizard_form do |form| %>
+  <%= form.input :issuer,
+                 disabled: form.object.persisted?,
+                 label: 'Issuer',
+                 label_html: { class: 'usa-input-required' },
+                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 hint: if form.object.persisted?
+                     I18n.t('service_provider_form.change_issuer')
+                   else
+                     t('service_provider_form.issuer_html')
+                   end %>
+ <%= next_button(form) %>
+<% end %>

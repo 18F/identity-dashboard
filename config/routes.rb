@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   resources :users
   resources :banners, except: :destroy
+  resources :service_config_wizard, only: %i[new show update]
 
   get '/teams/all' => 'teams#all'
   resources :teams
