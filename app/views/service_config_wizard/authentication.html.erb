@@ -1,0 +1,64 @@
+<%= wizard_form do |form| %>
+  <%# label the grouping of items using a fieldset and legend for screen readers,
+      and use UL for radio buttons %>
+  <fieldset class='usa-fieldset'>
+    <legend class='usa-sr-only'>Authentication protocol</legend>
+    <%= form.label :identity_protocol,
+                   label: 'Authentication protocol',
+                   class: 'usa-label' %>
+      <% ServiceProvider.identity_protocols.each_key do |protocol| %>
+        <div class="usa-radio">
+          <%= form.radio_button :identity_protocol,
+                                protocol,
+                                class: 'usa-radio__input' %>
+          <%= form.label ('identity_protocol_' + protocol).to_sym,
+                         titleize(protocol),
+                         class: 'usa-radio__label' %>
+        </div>
+     <% end %>
+    <%= form.hint I18n.t('service_provider_form.protocol') %>
+  </fieldset>
+
+  <%= form.input :ial,
+                 as: :select,
+                 collection: [[I18n.t('service_provider_form.ial_option_1'), 1],
+                              [I18n.t('service_provider_form.ial_option_2'), 2]],
+                 selected: form.object.ial,
+                 input_html: { class: 'usa-input usa-select'},
+                 label: 'Level of Service',
+                 hint: t('service_provider_form.identity_assurance_level_html') %>
+
+  <%= form.input :default_aal,
+                 as: :select,
+                 collection: [
+                   [I18n.t('service_provider_form.aal_option_default'), nil],
+                   [I18n.t('service_provider_form.aal_option_2'), 2],
+                   [I18n.t('service_provider_form.aal_option_3'), 3]],
+                 selected: form.object.default_aal,
+                 input_html: { class: 'usa-input usa-select'},
+                 label: 'Default Authentication Assurance Level (AAL)' %>
+
+  <%# label the grouping of items using a fieldset and legend for screen readers,
+      and use UL for checkboxes%>
+  <fieldset class='usa-fieldset-inputs usa-fieldset'>
+    <legend class='usa-sr-only'>Attribute bundle</legend>
+    <%= form.label :attribute_bundle,
+                   label: 'Attribute bundle',
+                   class: 'usa-label' %>
+    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
+
+    <span class="usa-error-message js-bundle-input-error-message">
+      <%= @service_provider.errors[:attribute_bundle].to_sentence.presence %>
+    </span>
+
+    <%= form.collection_check_boxes(:attribute_bundle,
+                                    ServiceProvider.possible_attributes,
+                                    :first, :last,
+                                    item_wrapper_tag: :div,
+                                    item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
+      <%= b.check_box class: "usa-checkbox__input" %>
+      <%= b.label class: "usa-checkbox__label" %>
+    <% end %>
+  </fieldset>
+  <%= next_button(form) %>
+<% end %>

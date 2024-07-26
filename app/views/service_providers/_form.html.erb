@@ -147,16 +147,7 @@
     </fieldset>
   <% end %>
 
-  <%# Temp hack to allow feature in dev but not int for testing %>
-  <% if IdentityConfig.store.logo_upload_enabled %>
-    <%= render 'logo_upload', form: form, service_provider: service_provider %>
-  <% else %>
-    <%= form.input :logo,
-                   placeholder: 'generic.svg',
-                   label: 'Logo',
-                   input_html: { class: 'usa-input' },
-                   hint: t('service_provider_form.logo_html') %>
-  <% end %>
+  <%= render 'logo_upload', form: form, service_provider: service_provider %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
     <div class="usa-label">Certificates</div>
