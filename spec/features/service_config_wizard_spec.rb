@@ -13,7 +13,7 @@ feature 'Service Config Wizard' do
       visit new_service_config_wizard_path
       all_but_last_step = ServiceConfigWizardController::STEPS[0...-1]
       all_but_last_step.each do |step|
-        expect(body).to match(step.to_s)
+        expect(body).to match(t("service_provider_form.wizard_steps.#{step}"))
         click_on 'Next'
       end
     end
