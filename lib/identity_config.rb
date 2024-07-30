@@ -3,8 +3,8 @@ class IdentityConfig
     attr_reader :store
   end
 
-  def self.build_store(app_root:, rails_env: )
-    Identity::Hostdata.load_config!(app_root:, rails_env: ) do |config|
+  def self.build_store(app_root:, rails_env:)
+    Identity::Hostdata.load_config!(app_root:, rails_env:) do |config|
       config.add(:admin_email, type: :string)
       config.add(:asset_host, type: :string)
       config.add(:assets_version, type: :string)
