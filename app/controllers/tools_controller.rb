@@ -5,7 +5,7 @@ class ToolsController < ApplicationController
     flash[:warning] = nil
     @validation_attempted = true
 
-    if params['validation'].blank?
+    if params['validation'].blank? || params['validation']['auth_url'].blank?
       @validation_attempted = false
       return
     end
