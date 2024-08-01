@@ -29,10 +29,6 @@ class ServiceConfigWizardController < ApplicationController
   end
 
   def redirect_unless_flagged_in
-    unless IdentityConfig.store.service_config_wizard_enabled
-      redirect_to service_providers_path
-      return
-    end
-    redirect_to service_providers_path unless current_user.admin?
+    redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
 end

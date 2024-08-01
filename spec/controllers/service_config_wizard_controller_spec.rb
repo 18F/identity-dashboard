@@ -8,6 +8,10 @@ RSpec.describe ServiceConfigWizardController do
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
   end
 
+  def flag_out
+    expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
+  end
+
   context 'as an admin' do
     before do
       sign_in admin
@@ -21,7 +25,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'will be redirected if the flag is not set' do
-      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(nil)
+      flag_out
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
@@ -41,7 +45,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'will be redirected if the flag is not set' do
-      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(nil)
+      flag_out
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
