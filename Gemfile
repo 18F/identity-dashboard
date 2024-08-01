@@ -49,6 +49,7 @@ gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.1-18f'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
+gem 'wicked', '~> 2.0'
 
 group :deploy do
   gem 'capistrano'

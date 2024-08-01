@@ -91,28 +91,15 @@
   <hr>
 <% end %>
 
-<%# Temp hack to allow feature in dev but not int for testing %>
-<% if IdentityConfig.store.logo_upload_enabled %>
-  <h2 class="margin-bottom-0"><label for="logo_file">Uploaded Logo:</label></h2>
-  <% if service_provider.logo_file.attached? %>
-    <p class="font-mono-xs margin-top-0 margin-left-5" name="logo_file">
-      <%= image_tag url_for(service_provider.logo_file), height: "120px" %>
-    </p>
-  <% else %>
-    <p class="font-mono-xs margin-top-0 margin-left-5" name="logo_file">
-      No file Uploaded
-    </p>
-  <% end %>
-<% else %>
-  <h2 class="margin-bottom-0"><label for="logo">Logo:</label></h2>
-  <p class="text-italic"><%= t('service_provider_form.logo_html') %></p>
-  <% if service_provider.logo %>
-  <p class="font-mono-xs margin-top-0 margin-left-5" name="logo">
-    <a href="https://github.com/18F/identity-idp/tree/main/app/assets/images/sp-logos/<%= service_provider.logo %>" class="usa-link">
-      <%= service_provider.logo %>
-    </a>
+<h2 class="margin-bottom-0"><label for="logo_file">Uploaded Logo:</label></h2>
+<% if service_provider.logo_file.attached? %>
+  <p class="font-mono-xs margin-top-0 margin-left-5" name="logo_file">
+    <%= image_tag url_for(service_provider.logo_file), height: "120px" %>
   </p>
-  <% end %>
+<% else %>
+  <p class="font-mono-xs margin-top-0 margin-left-5" name="logo_file">
+    No file Uploaded
+  </p>
 <% end %>
 <hr>
 

@@ -1,0 +1,59 @@
+<%= wizard_form do |form| %>
+  <p class="usa-label">Help text</p>
+  <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
+  <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section
+      of the developer documentation. You should understand the guidance when you request support.</p>
+  <%= form.fields_for :help_text do |h| %>
+    <fieldset class="usa-fieldset-inputs custom-help-text border-0 padding-0">
+    <%= h.fields_for :sign_in do |s| %>
+      <fieldset class="usa-fieldset margin-top-4">
+        <legend class="usa-label">Sign-in help text:</legend>
+        <%= s.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.sign_in', deep_interpolation: true,
+                                        sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
+                                        agency: @service_provider.agency&.name || '<Agency>'
+                                      ),
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS)}
+            ) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
+        <% end %>
+      </fieldset>
+    <% end %>
+    <%= h.fields_for :sign_up do |s| %>
+      <fieldset class="usa-fieldset margin-top-4">
+        <legend class="usa-label">Sign-up help text:</legend>
+        <%= s.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.sign_up', deep_interpolation: true,
+                                        sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
+                                        agency: @service_provider.agency&.name || '<Agency>'
+                                      ),
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS)}
+            ) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
+        <% end %>
+      </fieldset>
+    <% end %>
+    <%= h.fields_for :forgot_password do |f| %>
+      <fieldset class="usa-fieldset margin-top-4">
+        <legend class="usa-label">Forgot password help text:</legend>
+        <%= f.collection_radio_buttons(:en,
+                                      t('service_provider_form.help_text.forgot_password'),
+                                      :first,
+                                      :last,
+                                      { checked: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS)}) do |r| %>
+          <%= r.radio_button(class: 'usa-radio__input') %>
+          <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
+        <% end %>
+      </fieldset>
+    <% end %>
+    </fieldset>
+  <% end %>
+  </fieldset>
+  <%= next_button(form) %>
+<% end %>
