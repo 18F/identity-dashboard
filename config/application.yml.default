@@ -15,6 +15,7 @@ newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
+service_config_wizard_enabled: true
 
 development:
   dashboard_api_token: test_token
@@ -33,6 +34,7 @@ production:
   saml_sp_issuer: changeme
   saml_sp_private_key: changeme
   saml_sp_private_key_password: changeme
+  service_config_wizard_enabled: false
 test:
   dashboard_api_token: sekret
   idp_sp_url: 'http://idp.example.com/api/service_provider'
