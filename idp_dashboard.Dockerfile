@@ -27,7 +27,6 @@ ENV DASHBOARD_API_TOKEN changeme
 ENV IDP_SP_URL  http://localhost:3000
 ENV IDP_URL http://localhost:3000
 
-ENV LOGO_UPLOAD_ENABLED false
 ENV POST_LOGOUT_URL http://localhost:3000
 ENV SAML_SP_ISSUER http://localhost:3001
 ENV MAILER_DOMAIN https://dashboard.login.gov

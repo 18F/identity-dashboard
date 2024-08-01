@@ -71,7 +71,6 @@ class IdentityConfig
     config.add(:help_text_options_feature_enabled, type: :boolean)
     config.add(:idp_sp_url, type: :string)
     config.add(:idp_url, type: :string)
-    config.add(:logo_upload_enabled, type: :boolean)
     config.add(:mailer_domain, type: :string)
     config.add(:newrelic_license_key, type: :string)
     config.add(:post_logout_redirect_uri, type: :string)
