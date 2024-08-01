@@ -1,11 +1,13 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: e33cbdb3a9c8826f6fc2b1f857fb713a4a233750
-  tag: v3.4.2
+  revision: a80634b3723b6890e79676ab5c641bf55103d258
+  tag: v4.1.0
   specs:
-    identity-hostdata (3.4.1)
+    identity-hostdata (4.1.0)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
+      aws-sdk-secretsmanager (>= 1.91)
+      redacted_struct (>= 2.0)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
@@ -160,6 +162,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.165.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
+    aws-sdk-secretsmanager (1.98.0)
+      aws-sdk-core (~> 3, >= 3.197.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.8.2)
@@ -476,7 +481,7 @@ GEM
       ffi (~> 1.0)
     rdoc (6.6.3.1)
       psych (>= 4.0.0)
-    redacted_struct (1.1.0)
+    redacted_struct (2.0.0)
     regexp_parser (2.7.0)
     reline (0.4.3)
       io-console (~> 0.5)

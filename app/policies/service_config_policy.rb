@@ -4,7 +4,7 @@ class ServiceConfigPolicy < BasePolicy
   end
 
   def new?
-    admin?
+    true
   end
   alias index? new?
   alias create? new?
