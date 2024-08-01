@@ -23,12 +23,15 @@ feature 'Service Config Wizard' do
       login_as(user)
     end
 
-    it 'is not currently authorized' do
+    it 'is redirected to service_providers if not flagged in' do
+      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).
+        at_least(ServiceConfigWizardController::STEPS.count + 1).
+        and_return(nil)
       visit new_service_config_wizard_path
-      expect(status_code).to be(401)
+      expect(current_url).to eq(service_providers_url)
       ServiceConfigWizardController::STEPS.each do |step|
         visit new_service_config_wizard_path(step)
-        expect(status_code).to be(401)
+        expect(current_url).to eq(service_providers_url)
       end
     end
   end
