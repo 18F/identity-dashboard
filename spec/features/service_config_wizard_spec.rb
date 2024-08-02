@@ -11,10 +11,12 @@ feature 'Service Config Wizard' do
 
     it 'can step through all the pages' do
       visit new_service_config_wizard_path
-      all_but_last_step = ServiceConfigWizardController::STEPS[0...-1]
-      all_but_last_step.each do |step|
-        expect(body).to match(t("service_provider_form.wizard_steps.#{step}"))
-        click_on 'Next'
+      ServiceConfigWizardController::STEPS.each_with_index do |step, index|
+        current_step = find('.step-indicator__step--current')
+        expect(current_step.text).to match(t("service_provider_form.wizard_steps.#{step}"))
+        completed_steps = find_all('.step-indicator__step--complete')
+        expect(completed_steps.count).to be(index)
+        click_on 'Next' unless step == ServiceConfigWizardController::STEPS[-1]
       end
     end
   end
