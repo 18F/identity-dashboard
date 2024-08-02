@@ -1,4 +1,4 @@
 <div>
-<%= link_to 'Back', previous_wizard_path, class: 'usa-button' if previous_wizard_path != wizard_path %>
-<%= link_to 'Next', next_wizard_path, class: 'usa-button' if next_wizard_path != wizard_path(:wicked_finish)  %>
+<%= link_to 'Back', previous_wizard_path, class: 'usa-button' if not first_step? %>
+<%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>
 </div>
