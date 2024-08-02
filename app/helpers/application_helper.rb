@@ -4,7 +4,7 @@ module ApplicationHelper
   end
 
   def ga4_tag
-    return '' unless IdentityConfig.store&.google_analytics_state?
+    return '' unless IdentityConfig.store&.google_analytics_enabled
     <<~EOF.html_safe
     <script async
       type="text/javascript"
