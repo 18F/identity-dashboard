@@ -52,4 +52,13 @@ RSpec.describe ServiceConfigWizardController do
       expect(response.redirect_url).to eq(service_providers_url)
     end
   end
+
+  context 'when not logged in' do
+    it 'requires authentication without checking flag status' do
+      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).never
+      get :new
+      expect(response).to be_redirect
+      expect(response.redirect_url).to eq(root_url)
+    end
+  end
 end
