@@ -47,7 +47,33 @@ $step-indicator-line-height: 4px;
       right: 0;
     }
   }
-}
+
+  > .usa-step-indicator__header {
+    @include at-media('tablet') {
+      display: none;
+    }
+    @include at-media-max('tablet') {
+      & .usa-step-indicator__heading-counter {
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      & .usa-step-indicator__current-step {
+        width: 1.5rem;
+        height: 1.5rem;
+        line-height: 0;
+        padding-right: 0rem;
+        padding-left: 0rem;
+        background-color: color('success');
+      }
+      & .usa-step-indicator__total-steps {
+        color: color('success')
+      }
+      & .usa-step-indicator__heading-text {
+        font-size: 1rem;
+      }
+    }
+  }
+}    
 
 .step-indicator__scroller {
   display: flex;
@@ -161,5 +187,9 @@ $step-indicator-line-height: 4px;
   .step-indicator__step--current {
     background-color: color('white');
     border: 2px solid color('base');
+  }
+
+  .step-indicator__scroller::after {
+    display: none;
   }
 }
