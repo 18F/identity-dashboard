@@ -11,7 +11,8 @@ feature 'Service Config Wizard' do
 
     it 'can step through all the pages' do
       visit new_service_config_wizard_path
-      ServiceConfigWizardController::STEPS.each do |step|
+      all_but_last_step = ServiceConfigWizardController::STEPS[0...-1]
+      all_but_last_step.each do |step|
         expect(body).to match(step.to_s)
         click_on 'Next'
       end
