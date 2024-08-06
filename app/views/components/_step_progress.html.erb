@@ -3,25 +3,23 @@
   [Integer] current_step_index such that `steps[current_step_index]` is not null
   [String] localization_base so that `t("#{localization_base}.#{step}")` returns something valid from the i18n yml files
 %>
-<div class="lg-step-indicator">
-  <div class="shadow-1 padding-top-2">
-    <ol class="step-indicator__scroller">
-      <% steps.each_with_index do |step, index| %>
-        <% case index <=> current_step_index %>
-        <% when -1 %>
-          <li class="step-indicator__step step-indicator__step--complete">
-            <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">completed</span></span>
-          </li>
-        <% when 0 %>
-          <li class="step-indicator__step step-indicator__step--current" aria-current="true">
-            <span class="tep-indicator__step-title"><%= t("#{localization_base}.#{step}") %></span>
-          </li>
-        <% when 1 %>
-          <li class="step-indicator__step">
-            <span class="tep-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">not completed</span></span>
-          </li>
-        <% end %>
+<div class="lg-step-indicator shadow-1 padding-top-2">
+  <ol class="step-indicator__scroller">
+    <% steps.each_with_index do |step, index| %>
+      <% case index <=> current_step_index %>
+      <% when -1 %>
+        <li class="step-indicator__step step-indicator__step--complete">
+          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">completed</span></span>
+        </li>
+      <% when 0 %>
+        <li class="step-indicator__step step-indicator__step--current" aria-current="true">
+          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %></span>
+        </li>
+      <% when 1 %>
+        <li class="step-indicator__step">
+          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">not completed</span></span>
+        </li>
       <% end %>
-    </ol>
-  </div>
+    <% end %>
+  </ol>
 </div>
