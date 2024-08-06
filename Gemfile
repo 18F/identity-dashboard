@@ -19,7 +19,9 @@ gem 'enum_help'
 gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v4.1.0'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
-gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', tag: 'v0.7.4'
+gem 'identity_validations',
+  git: 'https://github.com/18f/identity-validations.git',
+  branch: 'gitlab-migration'
 gem 'jsbundling-rails', '>= 1.2.2'
 gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'

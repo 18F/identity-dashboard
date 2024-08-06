@@ -32,8 +32,8 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: fcaabc4ab596392209b927794a524578a2989f3c
-  tag: v0.7.4
+  revision: 3ad1614768e12956c0c1bec18a05ad3dce0a0a1a
+  branch: gitlab-migration
   specs:
     identity_validations (0.7.4)
 
