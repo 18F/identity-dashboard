@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'pry'
 
 RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }

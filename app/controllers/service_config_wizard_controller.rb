@@ -9,6 +9,8 @@ class ServiceConfigWizardController < ApplicationController
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
+  helper_method :first_step?, :last_step?
+
   def new
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
   end
@@ -20,6 +22,14 @@ class ServiceConfigWizardController < ApplicationController
   def update
     skip_step
     render_wizard
+  end
+
+  def first_step?
+    step.eql? wizard_steps.first
+  end
+
+  def last_step?
+    step.eql? wizard_steps.last
   end
 
   private
