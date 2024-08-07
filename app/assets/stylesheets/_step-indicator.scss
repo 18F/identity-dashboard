@@ -54,22 +54,19 @@ $step-indicator-line-height: 4px;
     }
     @include at-media-max('tablet') {
       & .usa-step-indicator__heading-counter {
-        font-size: 0.75rem;
-        line-height: 1rem;
+        display: inline-block
       }
       & .usa-step-indicator__current-step {
-        width: 1.5rem;
-        height: 1.5rem;
-        line-height: 0;
-        padding-right: 0rem;
-        padding-left: 0rem;
+        width: 2rem;
+        height: 2rem;
+        padding: 0.3rem 0 0 0.1rem;
         background-color: color('success');
       }
       & .usa-step-indicator__total-steps {
         color: color('success')
       }
       & .usa-step-indicator__heading-text {
-        font-size: 1rem;
+        display: inline-block;
       }
     }
   }
