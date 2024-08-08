@@ -22,10 +22,12 @@ SimpleForm.setup do |config|
     b.optional :readonly
     b.wrapper tag: :div, class: 'usa-label-group' do |c|
       c.use :label, class: 'usa-label'
-      c.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
-      c.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+      c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
-    b.use :input, class: 'block col-12' # usa-input'
+    b.wrapper tag: :div, class: 'usa-input-container' do |c|
+      c.use :input, class: 'block col-12' # usa-input'
+      c.use :error, wrap_with: { tag: 'p', class: 'usa-error-message' }
+    end
   end
 
   config.default_wrapper = :vertical_form

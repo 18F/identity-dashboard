@@ -1,7 +1,7 @@
 <%= wizard_form do |form| %>
   <div class='mb2 json optional service_provider_logo_file'>
   <%= form.label :logo_file,
-                  label: 'Upload your logo',
+                  label: 'Logo file',
                   class: 'usa-label' %>
   <%= form.file_field :logo_file,
                   class: 'input-file logo-input-file',
@@ -12,6 +12,7 @@
     </p>
   <% end %>
   <div class='input-file-wrapper'>
+    <p><%= I18n.t('service_provider_form.logo_input') %></p>
     <%= form.label :logo_file,
                     label: 'Choose a file',
                     class: 'usa-button file-input-button',
@@ -20,7 +21,7 @@
                     "No file selected",
                     class: 'input-preview' %>
   </div>
-  <%= form.hint 'Choose a file to upload as your logo. See <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
+  <%= form.hint t('service_provider_form.logo_html') %>
   <div class='usa-error-message' id='logo-upload-error'>
     <% if @service_provider.errors[:logo_file].present? %>
       ERROR:
@@ -31,10 +32,10 @@
 
 <%= javascript_include_tag 'validate_logo_size' %>
   <fieldset class="usa-fieldset" id="certificate-container">
-    <div class="usa-label">Certificates</div>
+    <div class="usa-label">Upload new public certificate</div>
 
     <p>
-      <% I18n.t('service_provider_form.certificate') =%>
+      <%= I18n.t('service_provider_form.certificate') %>
     </p>
 
 

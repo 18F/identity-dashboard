@@ -1,11 +1,16 @@
+<h1>Authentication</h1>
+<p>The <a class="usa-link" href="https://developers.login.gov/oidc/getting-started/">OpenID Connect page</a> and the <a class="usa-link" href="https://developers.login.gov/saml/getting-started/">SAML page</a> of the Developer docs have more information about the authentication requirements.</p>
 <%= wizard_form do |form| %>
   <%# label the grouping of items using a fieldset and legend for screen readers,
       and use UL for radio buttons %>
-  <fieldset class='usa-fieldset'>
-    <legend class='usa-sr-only'>Authentication protocol</legend>
-    <%= form.label :identity_protocol,
-                   label: 'Authentication protocol',
-                   class: 'usa-label' %>
+  <div class='mb2 radio service_provider_identity_protocol'>
+    <div class="usa-label-group">
+      <%= form.label :identity_protocol,
+                     label: 'Protocol',
+                     class: 'usa-label' %>
+      <%= form.hint I18n.t('service_provider_form.protocol') %>
+    </div>
+    <div class="usa-radio-group">
       <% ServiceProvider.identity_protocols.each_key do |protocol| %>
         <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
@@ -15,9 +20,9 @@
                          titleize(protocol),
                          class: 'usa-radio__label' %>
         </div>
-     <% end %>
-    <%= form.hint I18n.t('service_provider_form.protocol') %>
-  </fieldset>
+      <% end %>
+    </div>
+  </div>
 
   <%= form.input :ial,
                  as: :select,
@@ -38,26 +43,25 @@
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)' %>
 
-  <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for checkboxes%>
-  <fieldset class='usa-fieldset-inputs usa-fieldset'>
-    <legend class='usa-sr-only'>Attribute bundle</legend>
-    <%= form.label :attribute_bundle,
-                   label: 'Attribute bundle',
-                   class: 'usa-label' %>
-    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
-
-    <span class="usa-error-message js-bundle-input-error-message">
-      <%= @service_provider.errors[:attribute_bundle].to_sentence.presence %>
-    </span>
-
-    <%= form.collection_check_boxes(:attribute_bundle,
-                                    ServiceProvider.possible_attributes,
-                                    :first, :last,
-                                    item_wrapper_tag: :div,
-                                    item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
-      <%= b.check_box class: "usa-checkbox__input" %>
-      <%= b.label class: "usa-checkbox__label" %>
-    <% end %>
-  </fieldset>
+  <div class='mb2 checkbox service_provider_attribute_bundle'>
+    <div class='usa-label-group'>
+      <%= form.label :attribute_bundle,
+                     label: 'Attribute bundle',
+                     class: 'usa-label' %>
+      <%= form.hint t('service_provider_form.attribute_bundle_html') %>
+    </div>
+    <div class="usa-checkbox-group">
+      <%= form.collection_check_boxes(:attribute_bundle,
+                                      ServiceProvider.possible_attributes,
+                                      :first, :last,
+                                      item_wrapper_tag: :div,
+                                      item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
+        <%= b.check_box class: "usa-checkbox__input" %>
+        <%= b.label class: "usa-checkbox__label" %>
+      <% end %>
+      <p class="usa-error-message js-bundle-input-error-message">
+        <%= @service_provider.errors[:attribute_bundle].to_sentence.presence %>
+      </p>
+    </div>
+  </div>
 <% end %>
