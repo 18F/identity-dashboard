@@ -3,6 +3,7 @@
   $theme-image-path: '',
 );
 @use 'uswds-core' as *;
+@use 'service_config_wizard.css.scss';
 
 @mixin text-wrap-mixin {
   word-break: break-all;

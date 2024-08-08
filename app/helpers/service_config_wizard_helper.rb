@@ -2,7 +2,7 @@ module ServiceConfigWizardHelper
   def wizard_form(&block)
     simple_form_for(@service_provider, url: service_config_wizard_path, method: :put, html: {
       autocomplete: 'off',
-      class: 'service-provider-form usa-form usa-form--large',
+      class: 'service-provider-form',
     }) do |form|
       block.call(form)
     end
