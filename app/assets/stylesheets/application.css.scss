@@ -3,6 +3,7 @@
   $theme-image-path: '',
 );
 @use 'uswds-core' as *;
+@use 'service_config_wizard.css.scss';
 
 @forward 'step-indicator';
 

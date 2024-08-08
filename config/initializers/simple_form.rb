@@ -8,9 +8,9 @@ SimpleForm.setup do |config|
 
   config.wrappers :base do |b|
     b.use :html5
-    b.use :hint,  wrap_with: { tag: :span, class: 'usa-hint' }
     # change input class from field to usa-input
     b.use :input, class: 'usa-input'
+    b.use :hint,  wrap_with: { tag: :span, class: 'usa-hint' }
   end
 
   config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
@@ -20,11 +20,12 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label, class: 'usa-label'
-    # changed input class from field to usa-input
+    b.wrapper tag: :div, class: 'usa-label-group' do |c|
+      c.use :label, class: 'usa-label'
+      c.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+      c.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+    end
     b.use :input, class: 'block col-12' # usa-input'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
-    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
   config.default_wrapper = :vertical_form
