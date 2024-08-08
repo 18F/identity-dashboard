@@ -15,16 +15,14 @@
     display: flex;
     margin-top: 1.5rem;
 
-    .usa-label-group {
+    .usa-label-group,
+    .usa-input-container {
       flex: 0 0 50%;
     }
     .usa-label {
       margin-top: unset;
     }
     .usa-hint {
-    }
-    input, textarea, select {
-      flex: 0 0 50%;
     }
   }
 }
