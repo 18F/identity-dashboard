@@ -1,34 +1,5 @@
-<%= wizard_form do |form| %>
-  <h1>Redirect URIs</h1>
-  <div class="wizard_main">
-    <h2>OpenID Connect (OIDC) requirements</h2>
-    <div class='usa-hint oidc-fields'>
-      <%= form.label :redirect_uris,
-                     label: 'Redirect URIs',
-                     class: 'usa-label' %>
-      <% @service_provider.errors[:redirect_uris].each do |error| %>
-        <span class="usa-error-message js-bundle-input-error-message">
-          <%= error %>
-        </span>
-      <% end %>
-    </div>
-
-    <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
-      <% redirect_uri_list.each do |value| %>
-        <%= text_field_tag 'service_provider[redirect_uris][]',
-                           value,
-                           id: 'service_provider_redirect_uris',
-                           class: 'block col-12 json optional usa-input',
-                           multiple: 'multiple' %>
-      <% end %>
-    <% end %>
-
-    <div class='oidc-fields'>
-      <%= t('service_provider_form.oidc_redirects_html') %>
-    </div>
-
-    <div class='saml-fields margin-0'>
-      <%= form.hint t('service_provider_form.saml_redirects_html') %>
-    </div>
-  </div>
-<% end %>
+<h1>Redirect URIs</h1>
+<div class="wizard_main">
+  <%= render partial:'redirects_oidc' %>
+  <%= render partial:'redirects_saml' %>
+</div>
