@@ -1,16 +1,19 @@
 <h1>Authentication</h1>
 <p>The <a class="usa-link" href="https://developers.login.gov/oidc/getting-started/">OpenID Connect page</a> and the <a class="usa-link" href="https://developers.login.gov/saml/getting-started/">SAML page</a> of the Developer docs have more information about the authentication requirements.</p>
+<div class="wizard_main">
 <%= wizard_form do |form| %>
-  <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for radio buttons %>
-  <div class='mb2 radio service_provider_identity_protocol'>
+  <%# label the grouping of items using a fieldset and legend for screen readers %>
+  <fieldset class='mb2 radio service_provider_identity_protocol'>
+    <legend class="usa-sr-only">
+      <%= t('simple_form.labels.service_provider.identity_protocol') %>
+    </legend>
     <div class="usa-label-group">
-      <%= form.label :identity_protocol,
-                     label: 'Protocol',
-                     class: 'usa-label' %>
-      <%= form.hint I18n.t('service_provider_form.protocol') %>
+      <p class="usa-label radio required" aria-hidden="true">
+        <%= t('simple_form.labels.service_provider.identity_protocol') %>
+      </p>
+      <%= form.hint t('service_provider_form.protocol') %>
     </div>
-    <div class="usa-radio-group">
+    <div class="usa-input-container">
       <% ServiceProvider.identity_protocols.each_key do |protocol| %>
         <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
@@ -22,35 +25,38 @@
         </div>
       <% end %>
     </div>
-  </div>
+  </fieldset>
 
   <%= form.input :ial,
                  as: :select,
-                 collection: [[I18n.t('service_provider_form.ial_option_1'), 1],
-                              [I18n.t('service_provider_form.ial_option_2'), 2]],
+                 collection: [[t('service_provider_form.ial_option_1'), 1],
+                              [t('service_provider_form.ial_option_2'), 2]],
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
-                 label: 'Level of Service',
+                 label: t('simple_form.labels.service_provider.ial'),
                  hint: t('service_provider_form.identity_assurance_level_html') %>
 
   <%= form.input :default_aal,
                  as: :select,
                  collection: [
-                   [I18n.t('service_provider_form.aal_option_default'), nil],
-                   [I18n.t('service_provider_form.aal_option_2'), 2],
-                   [I18n.t('service_provider_form.aal_option_3'), 3]],
+                   [t('service_provider_form.aal_option_default'), nil],
+                   [t('service_provider_form.aal_option_2'), 2],
+                   [t('service_provider_form.aal_option_3'), 3]],
                  selected: form.object.default_aal,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)' %>
 
-  <div class='mb2 checkbox service_provider_attribute_bundle'>
-    <div class='usa-label-group'>
-      <%= form.label :attribute_bundle,
-                     label: 'Attribute bundle',
-                     class: 'usa-label' %>
+  <fieldset class='mb2 checkbox service_provider_attribute_bundle'>
+    <legend class='usa-sr-only'>
+      <%= t('simple_form.labels.service_provider.attribute_bundle') %>
+    </legend>
+    <div class="usa-label-group">
+      <p class="usa-label json">
+        <%= t('simple_form.labels.service_provider.attribute_bundle') %>
+      </p>
       <%= form.hint t('service_provider_form.attribute_bundle_html') %>
     </div>
-    <div class="usa-checkbox-group">
+    <div class="usa-input-container">
       <%= form.collection_check_boxes(:attribute_bundle,
                                       ServiceProvider.possible_attributes,
                                       :first, :last,
@@ -63,5 +69,6 @@
         <%= @service_provider.errors[:attribute_bundle].to_sentence.presence %>
       </p>
     </div>
-  </div>
+  </fieldset>
 <% end %>
+</div>

@@ -7,35 +7,43 @@
                    required: true,
                    hint: t('service_provider_form.assertion_consumer_service_url_html') %>
 
-    <%= form.input :assertion_consumer_logout_service_url,
-                   input_html: { class: 'usa-input' },
-                   label: t('simple_form.labels.service_provider.assertion_consumer_logout_service_url'),
-                   hint: t('service_provider_form.assertion_consumer_logout_service_url_html') %>
+  <%= form.input :assertion_consumer_logout_service_url,
+                 input_html: { class: 'usa-input' },
+                 label: t('simple_form.labels.service_provider.assertion_consumer_logout_service_url'),
+                 hint: t('service_provider_form.assertion_consumer_logout_service_url_html') %>
 
-    <%= form.input :sp_initiated_login_url,
-                   input_html: { class: 'usa-input' },
-                   label: t('simple_form.labels.service_provider.sp_initiated_login_url'),
-                   hint: t('service_provider_form.sp_initiated_login_url_html') %>
+  <%= form.input :sp_initiated_login_url,
+                 input_html: { class: 'usa-input' },
+                 label: t('simple_form.labels.service_provider.sp_initiated_login_url'),
+                 hint: t('service_provider_form.sp_initiated_login_url_html') %>
 
-    <%= form.input :block_encryption,
-                   input_html: { class: 'usa-select' },
-                   label: t('simple_form.labels.service_provider.block_encryption'),
-                   include_blank: false,
-                   hint: t('service_provider_form.saml_assertion_encryption') %>
+  <%= form.input :block_encryption,
+                 input_html: { class: 'usa-select' },
+                 label: t('simple_form.labels.service_provider.block_encryption'),
+                 include_blank: false,
+                 hint: t('service_provider_form.saml_assertion_encryption') %>
 
-    <legend class='usa-sr-only'>Signed Response Message Requested</legend>
-    <%= form.label :signed_response_message_requested,
-                  label: 'Signed Response Message Requested',
-                  class: 'usa-label' %>
-    <%= form.collection_radio_buttons(:signed_response_message_requested,
-                                      { "Yes" => true, "No" => false },
-                                      :last, :first,
-                                      item_wrapper_tag: :div,
-                                      item_wrapper_class: 'usa-radio') do |b| %>
-      <%=  b.radio_button(class: "usa-radio__input") %>
-      <%=  b.label(class: "usa-radio__label")%>
-    <% end %>
-  </div>
+  <fieldset class="mb2 radio service_provider_signed_response_message_requested">
+    <legend class='usa-sr-only'>
+      <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
+    </legend>
+    <div class="usa-label-group">
+      <label class="usa-label radio optional" aria-hidden="true">
+        <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
+      </label>
+    </div>
+    <div class="usa-input-container">
+      <%= form.collection_radio_buttons(:signed_response_message_requested,
+                                        { "Yes" => true, "No" => false },
+                                        :last, :first,
+                                        item_wrapper_tag: :div,
+                                        item_wrapper_class: 'usa-radio') do |b| %>
+        <%=  b.radio_button(class: "usa-radio__input") %>
+        <%=  b.label(class: "usa-radio__label")%>
+      <% end %>
+    </div>
+  </fieldset>
+  
 
   <%= form.input :return_to_sp_url,
                 input_html: { class: 'usa-input', aria: { invalid: false } },

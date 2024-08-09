@@ -17,7 +17,7 @@ en:
         block_encryption: SAML Assertion Encryption
         description: Description
         friendly_name: Friendly name
-        ial: Identity Assurance Level (IAL1 or IAL2)
+        ial: Level of Service
         issuer: Issuer
         logo: Logo
         redirect_uris_oidc: Redirect URIs
@@ -25,7 +25,7 @@ en:
         redirect_uris_oidc_label: One or more URIs that Login.gov will redirect to after authentication.
         return_to_sp_url: Return to App URL
         sp_initiated_login_url: SP Initiated Login URL
-        identity_protocol: Identity Protocol
+        identity_protocol: Protocol
         team: Team
         failure_to_proof_url: Failure to Proof URL
         push_notification_url: Push notification URL
