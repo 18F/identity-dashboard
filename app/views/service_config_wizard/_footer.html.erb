@@ -1,4 +1,4 @@
 <div class="wizard_footer">
-<%= link_to 'Back', previous_wizard_path, class: 'usa-button' if not first_step? %>
+<%= link_to 'Back', previous_wizard_path, class: 'usa-button usa-button--outline' if not first_step? %>
 <%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>
 </div>

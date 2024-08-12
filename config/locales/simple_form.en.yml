@@ -19,7 +19,7 @@ en:
         friendly_name: Friendly name
         ial: Identity Assurance Level (IAL1 or IAL2)
         issuer: Issuer
-        logo: Logo
+        logo_file: Logo file
         redirect_uris_oidc: Redirect URIs
         redirect_uris_saml: Additional Redirect URIs
         redirect_uris_oidc_label: One or more URIs that Login.gov will redirect to after authentication.
@@ -30,6 +30,7 @@ en:
         failure_to_proof_url: Failure to Proof URL
         push_notification_url: Push notification URL
         signed_response_message_requested: Signed Response Message Requested
+        upload_certificate: Upload new public certificate
       user:
         admin: Admin?
         email: Email

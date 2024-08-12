@@ -1,96 +1,88 @@
-<%= wizard_form do |form| %>
-  <div class='mb2 json optional service_provider_logo_file'>
-  <%= form.label :logo_file,
-                  label: 'Logo file',
-                  class: 'usa-label' %>
-  <%= form.file_field :logo_file,
-                  class: 'input-file logo-input-file',
-                  accept: sp_valid_logo_mime_types %>
-  <% if @service_provider.logo_file.attached?  && service_provider.logo_file.persisted? %>
-    <p class="font-mono-xs margin-top-0" name="logo_file">
-      <%= image_tag url_for(@service_provider.logo_file), height: '120px' %>
-    </p>
-  <% end %>
-  <div class='input-file-wrapper'>
-    <p><%= I18n.t('service_provider_form.logo_input') %></p>
-    <%= form.label :logo_file,
-                    label: 'Choose a file',
-                    class: 'usa-button file-input-button',
-                    id: 'logo-file-button' %>
-    <%= content_tag :div,
-                    "No file selected",
-                    class: 'input-preview' %>
-  </div>
-  <%= form.hint t('service_provider_form.logo_html') %>
-  <div class='usa-error-message' id='logo-upload-error'>
-    <% if @service_provider.errors[:logo_file].present? %>
-      ERROR:
-      <%= s@ervice_provider.errors[:logo_file].join('|') %>
-    <% end %>
-  </div>
-</div>
-
-<%= javascript_include_tag 'validate_logo_size' %>
-  <fieldset class="usa-fieldset" id="certificate-container">
-    <div class="usa-label">Upload new public certificate</div>
-
-    <p>
-      <%= I18n.t('service_provider_form.certificate') %>
-    </p>
-
-
-    <% @service_provider.certificates.each do |certificate| %>
-      <%= render 'certificate', certificate: certificate do %>
-        <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-          <div class="usa-alert__text">
-            <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
-                              certificate.serial,
-                              false,
-                              name: "service_provider[remove_certificates][]",
-                              class: 'usa-checkbox__input' %>
-            <%= content_tag :label,
-                            for: "service_provider_remove_certificates_#{certificate.serial}",
-                            class: 'usa-checkbox__label' do %>
-              Remove this certificate
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div class="lg-card margin-top-2">
-      <label class="usa-label margin-top-0" for="service_provider_cert">
-        Upload a new public cert
-      </label>
-
-      <div class="clearfix">
-        <span class="usa-error-message js-pem-input-error-message">
-          <%= @service_provider.errors[:certs].to_sentence.presence %>
-        </span>
-        <%= form.file_field :cert, class: 'input-file js-pem-input' %>
-        <label class="usa-button file-input-button" for="service_provider_cert">
-          Choose a cert file
-        </label>
-        <div class="margin-top-4 js-pem-file-name"></div>
+<h1 class="usa-display">Logo and Certificate</h1>
+<div class="wizard_main">
+  <%= wizard_form do |form| %>
+    <fieldset class='mb2 json optional service_provider_logo_file'>
+      <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.logo_file') %></legend>
+      <div class="usa-label-group">
+        <p class="usa-label"><%= t('simple_form.labels.service_provider.logo_file') %></p>
+        <%= form.hint t('service_provider_form.logo_html') %>
       </div>
+      <div class="usa-input-container">
+        <%= form.file_field :logo_file,
+                        class: 'input-file logo-input-file',
+                        accept: sp_valid_logo_mime_types %>
+        <% if @service_provider.logo_file.attached?  && service_provider.logo_file.persisted? %>
+          <p class="font-mono-xs margin-top-0" name="logo_file">
+            <%= image_tag url_for(@service_provider.logo_file), height: '120px' %>
+          </p>
+        <% end %>
+        <div class='input-file-wrapper'>
+          <p><%= I18n.t('service_provider_form.single_input') %></p>
+          <%= form.label :logo_file,
+                          label: 'Choose a file',
+                          class: 'usa-button file-input-button',
+                          id: 'logo-file-button' %>
+          <%= content_tag :div,
+                          "No file selected",
+                          class: 'input-preview' %>
+        </div>
+        <div class='usa-error-message' id='logo-upload-error'>
+          <% if @service_provider.errors[:logo_file].present? %>
+            ERROR:
+            <%= s@ervice_provider.errors[:logo_file].join('|') %>
+          <% end %>
+        </div>
+      </div>
+    </fieldset>
+  </div>
 
-      <div class="margin-top-2">
-        <p>
-          Take a look at our developer documentation for
-          <a href="https://developers.login.gov/testing/#creating-a-public-certificate">
-          how to generate a public-private key pair</a>.
-        </p>
-        <p>
-          Certificate must be
-          <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>,
-          like this example:
-        </p>
+  <%= javascript_include_tag 'validate_logo_size' %>
+    <fieldset class="mb2 file service_provider_logo_file" id="certificate-container">
+      <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.upload_certificate') %></legend>
+      <div class="usa-label-group">
+        <p class="usa-label"><%= t('simple_form.labels.service_provider.upload_certificate') %></p>
+        <%= form.hint t('service_provider_form.certificate_html') %>
         <pre><code>-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
 BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
 B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 -----END CERTIFICATE-----</code></pre>
       </div>
-    </div>
-  </fieldset>
-<% end %>
+      <div class="usa-input-container">
+        <% @service_provider.certificates.each do |certificate| %>
+          <%= render 'certificate', certificate: certificate do %>
+            <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
+              <div class="usa-alert__text">
+                <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
+                                  certificate.serial,
+                                  false,
+                                  name: "service_provider[remove_certificates][]",
+                                  class: 'usa-checkbox__input' %>
+                <%= content_tag :label,
+                                for: "service_provider_remove_certificates_#{certificate.serial}",
+                                class: 'usa-checkbox__label' do %>
+                  Remove this certificate
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="lg-card margin-top-2">
+          <label class="usa-label margin-top-0" for="service_provider_cert"><%= I18n.t('service_provider_form.single_input') %></label>
+
+          <div class="clearfix">
+            <span class="usa-error-message js-pem-input-error-message">
+              <%= @service_provider.errors[:certs].to_sentence.presence %>
+            </span>
+            <%= form.file_field :cert, class: 'input-file js-pem-input' %>
+            <label class="usa-button file-input-button" for="service_provider_cert">
+              Choose a cert file
+            </label>
+            <div class="margin-top-4 js-pem-file-name"></div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+</div>

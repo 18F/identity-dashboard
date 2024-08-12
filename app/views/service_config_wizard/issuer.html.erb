@@ -1,3 +1,6 @@
+<h1 class="usa-display">Issuer</h1>
+<p class="usa-intro">The <a class="usa-link" href="https://developers.login.gov/production/#production-configuration-process">Production configuration process section</a> of the Developer docs has more information about issuer strings.</p>
+<div class="wizard_main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
@@ -10,3 +13,4 @@
                      t('service_provider_form.issuer_html')
                    end %>
 <% end %>
+</div>

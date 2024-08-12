@@ -5,6 +5,10 @@
     margin-bottom: 0;
   }
 
+  .usa-intro {
+    max-width: 100%;
+  }
+
   .wizard_main {
     padding-bottom: 1.5rem;
     margin: 1.5rem 0;
@@ -28,6 +32,7 @@
       margin-top: unset;
     }
     .usa-hint {
+      margin: 0;
     }
   }
   fieldset.mb2 {
