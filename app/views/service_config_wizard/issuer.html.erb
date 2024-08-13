@@ -1,10 +1,10 @@
-<h1 class="usa-display">Issuer</h1>
-<p class="usa-intro">The <a class="usa-link" href="https://developers.login.gov/production/#production-configuration-process">Production configuration process section</a> of the Developer docs has more information about issuer strings.</p>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.issuer') %></h1>
+<p class="usa-intro"><%= t('simple_form.lead.issuer_html') %></p>
 <div class="wizard_main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
                  disabled: form.object.persisted?,
-                 label: 'Issuer',
+                 label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if form.object.persisted?

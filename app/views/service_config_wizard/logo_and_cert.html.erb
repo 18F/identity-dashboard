@@ -1,4 +1,4 @@
-<h1 class="usa-display">Logo and Certificate</h1>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.logo_and_cert') %></h1>
 <div class="wizard_main">
   <%= wizard_form do |form| %>
     <fieldset class='mb2 json optional service_provider_logo_file'>
@@ -26,12 +26,12 @@
                           "No file selected",
                           class: 'input-preview' %>
         </div>
-        <div class='usa-error-message' id='logo-upload-error'>
+        <p class='usa-error-message' id='logo-upload-error'>
           <% if @service_provider.errors[:logo_file].present? %>
-            ERROR:
+            <%= t('simple_form.labels.service_provider.error') %>
             <%= s@ervice_provider.errors[:logo_file].join('|') %>
           <% end %>
-        </div>
+        </p>
       </div>
     </fieldset>
   </div>
@@ -61,7 +61,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                 <%= content_tag :label,
                                 for: "service_provider_remove_certificates_#{certificate.serial}",
                                 class: 'usa-checkbox__label' do %>
-                  Remove this certificate
+                  <%= t('simple_form.labels.service_provider.remove_cert') %>
                 <% end %>
               </div>
             </div>
@@ -77,7 +77,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
             </span>
             <%= form.file_field :cert, class: 'input-file js-pem-input' %>
             <label class="usa-button file-input-button" for="service_provider_cert">
-              Choose a cert file
+              <%= t('simple_form.labels.service_provider.cert_file') %>
             </label>
             <div class="margin-top-4 js-pem-file-name"></div>
           </div>

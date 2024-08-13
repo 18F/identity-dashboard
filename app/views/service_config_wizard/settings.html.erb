@@ -1,22 +1,22 @@
-<h1 class="usa-display">App settings</h1>
-<p class="usa-intro">The <a class="usa-link" href="https://developers.login.gov/testing/">Testing page of our Developer docs</a> has additional information about setting up your app.</p>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.settings') %></h1>
+<p class="usa-intro"><%= t('simple_form.lead.settings_html') %></p>
 <div class="wizard_main">
   <%= wizard_form do |form| %>
     <%= form.association :team,
                          as: :usa_collection_select,
                          value_method: :id,
                          collection: current_user.scoped_teams,
-                         label: 'Team',
+                         label: t('simple_form.labels.service_provider.team'),
                          disabled: !can_edit_teams?(current_user),
                          hint: I18n.t('service_provider_form.team') %>
     <fieldset class='mb2 radio service_provider_identity_protocol'>
-      <legend class='usa-sr-only'>Dashboard Configuration</legend>
+      <legend class='usa-sr-only'><%= t('simple_form.labels.service_provider.dashboard_config') %></legend>
       <div class="usa-label-group">
-        <p class="usa-label radio required" aria-hidden="true">Dashboard Configuration</p>
+        <p class="usa-label radio required" aria-hidden="true"><%= t('simple_form.labels.service_provider.dashboard_config') %></p>
       </div>
       <div class="usa-input-container">
         <%= form.collection_radio_buttons(:prod_config,
-                                          { "Sandbox" => false, "Ready for Production" => true },
+                                          { t('simple_form.labels.service_provider.sandbox') => false, t('simple_form.labels.service_provider.production') => true },
                                           :last, :first,
                                           item_wrapper_tag: :ul,
                                           item_wrapper_class: "usa-input-list") do |b| %>
@@ -30,18 +30,18 @@
     <%= form.input :app_name,
                     input_html: { class: 'usa-input' },
                     label_html: { class: 'usa-input-required'},
-                    label: 'App name',
+                    label: t('simple_form.labels.service_provider.app_name'),
                     hint: t('service_provider_form.app_name_html') %>
 
     <%= form.input :friendly_name,
                     input_html: { class: 'usa-input', aria: { invalid: false } },
                     label_html: { class: 'usa-input-required'},
-                    label: 'Friendly name',
+                    label: t('simple_form.labels.service_provider.friendly_name'),
                     hint: t('service_provider_form.friendly_name_html') %>
     <%= form.input :description,
                     as: :usa_textarea,
                     label_html: { class: 'usa-input-optional' },
-                    label: 'Description',
+                    label: t('simple_form.labels.service_provider.description'),
                     hint: I18n.t('service_provider_form.description') %>
   <% end %>
 </div>
