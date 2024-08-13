@@ -59,7 +59,7 @@
   <label for="ial_friendly">Level of Service:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.ial_friendly %></span>
 </h2>
-<div class="text-italic"><%= t('service_provider_form.identity_assurance_level_html') %></div>
+<p class="text-italic"><%= t('service_provider_form.identity_assurance_level_html') %></p>
 <hr>
 
 <h2 class="margin-bottom-0">
@@ -73,7 +73,7 @@
   <span class="font-mono-xs margin-left-5"><%= service_provider.issuer %></span>
 </h2>
 <p class="text-italic"><%= I18n.t('service_provider_form.change_issuer') %></p>
-<div class="text-italic"><%= t('service_provider_form.issuer_html') %></div>
+<p class="text-italic"><%= t('service_provider_form.issuer_html') %></p>
 <hr>
 
 <% if current_user.admin? %>
