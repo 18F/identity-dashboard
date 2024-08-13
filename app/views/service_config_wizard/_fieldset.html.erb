@@ -1,7 +1,7 @@
 <%# expected locals:
   [Method] form such that form is a valid instance of wizard_form
   [String] fieldname such that simple_form and service_provider have valid translations
-  [String] input_type one of "radio|checkbox"
+  ["radio"|"checkbox"] input_type
   [Boolean] required whether this field is required
   [Input elements] inputs such that the input fields are rendered correctly
 %>
@@ -9,13 +9,13 @@
   <legend class="usa-sr-only">
     <%= t("simple_form.labels.service_provider.#{fieldname}") %>
   </legend>
-  <div class="usa-label-group">
+  <div class="usa-label__group">
     <p class=<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %> aria-hidden="true">
       <% t("simple_form.labels.service_provider.#{fieldname}") %>
     </p>
     <%= form.hint t("service_provider_form.#{fieldname}") %>
   </div>
-  <div class="usa-input-container">
+  <div class="usa-input__container">
     <%= inputs %>
   </div>
 </fieldset>

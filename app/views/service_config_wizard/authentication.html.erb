@@ -7,13 +7,13 @@
     <legend class="usa-sr-only">
       <%= t('simple_form.labels.service_provider.identity_protocol') %>
     </legend>
-    <div class="usa-label-group">
+    <div class="usa-label__group">
       <p class="usa-label radio required" aria-hidden="true">
         <%= t('simple_form.labels.service_provider.identity_protocol') %>
       </p>
       <%= form.hint t('service_provider_form.protocol') %>
     </div>
-    <div class="usa-input-container">
+    <div class="usa-input__container">
       <% ServiceProvider.identity_protocols.each_key do |protocol| %>
         <div class="usa-radio">
           <%= form.radio_button :identity_protocol,
@@ -50,13 +50,13 @@
     <legend class='usa-sr-only'>
       <%= t('simple_form.labels.service_provider.attribute_bundle') %>
     </legend>
-    <div class="usa-label-group">
+    <div class="usa-label__group">
       <p class="usa-label json">
         <%= t('simple_form.labels.service_provider.attribute_bundle') %>
       </p>
       <%= form.hint t('service_provider_form.attribute_bundle_html') %>
     </div>
-    <div class="usa-input-container">
+    <div class="usa-input__container">
       <%= form.collection_check_boxes(:attribute_bundle,
                                       ServiceProvider.possible_attributes,
                                       :first, :last,

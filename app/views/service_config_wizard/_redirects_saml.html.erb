@@ -27,12 +27,12 @@
     <legend class='usa-sr-only'>
       <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
     </legend>
-    <div class="usa-label-group">
+    <div class="usa-label__group">
       <label class="usa-label radio optional" aria-hidden="true">
         <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
       </label>
     </div>
-    <div class="usa-input-container">
+    <div class="usa-input__container">
       <%= form.collection_radio_buttons(:signed_response_message_requested,
                                         { "Yes" => true, "No" => false },
                                         :last, :first,

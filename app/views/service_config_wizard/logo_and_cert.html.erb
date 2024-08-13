@@ -3,11 +3,11 @@
   <%= wizard_form do |form| %>
     <fieldset class='mb2 json optional service_provider_logo_file'>
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.logo_file') %></legend>
-      <div class="usa-label-group">
+      <div class="usa-label__group">
         <p class="usa-label"><%= t('simple_form.labels.service_provider.logo_file') %></p>
         <%= form.hint t('service_provider_form.logo_html') %>
       </div>
-      <div class="usa-input-container">
+      <div class="usa-input__container">
         <%= form.file_field :logo_file,
                         class: 'input-file logo-input-file',
                         accept: sp_valid_logo_mime_types %>
@@ -39,7 +39,7 @@
   <%= javascript_include_tag 'validate_logo_size' %>
     <fieldset class="mb2 file service_provider_logo_file" id="certificate-container">
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.upload_certificate') %></legend>
-      <div class="usa-label-group">
+      <div class="usa-label__group">
         <p class="usa-label"><%= t('simple_form.labels.service_provider.upload_certificate') %></p>
         <%= form.hint t('service_provider_form.certificate_html') %>
         <pre><code>-----BEGIN CERTIFICATE-----
@@ -48,7 +48,7 @@ BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
 B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 -----END CERTIFICATE-----</code></pre>
       </div>
-      <div class="usa-input-container">
+      <div class="usa-input__container">
         <% @service_provider.certificates.each do |certificate| %>
           <%= render 'certificate', certificate: certificate do %>
             <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
