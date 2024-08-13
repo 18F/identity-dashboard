@@ -4,6 +4,8 @@
 );
 @use 'uswds-core' as *;
 
+@forward 'step-indicator';
+
 @mixin text-wrap-mixin {
   word-break: break-all;
 }

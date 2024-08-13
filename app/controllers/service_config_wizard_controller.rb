@@ -1,4 +1,4 @@
-class ServiceConfigWizardController < ApplicationController
+class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   STEPS = %i[intro settings authentication issuer logo_and_cert redirects help_text]
   steps(*STEPS)

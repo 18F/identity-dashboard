@@ -1,6 +1,12 @@
 <% content_for :content do %>
   <div>
-    Placeholder for breadcrumbs for <%= step %>
+    <%= render partial: 'components/step_progress',
+          locals: {
+            steps: ServiceConfigWizardController::STEPS,
+            current_step_index: ServiceConfigWizardController::STEPS.find_index(step),
+            localization_base: 'service_provider_form.wizard_steps'
+          }
+    %>
   </div>
   <div>
     <%= yield %>
