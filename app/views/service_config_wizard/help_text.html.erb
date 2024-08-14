@@ -1,6 +1,6 @@
 <h1 class="usa-display"><%= t('service_provider_form.wizard_steps.help_text') %></h1>
 <p class="usa-intro"><%= t('service_provider_form.wizard_steps.help_text') %></p>
-<div class="wizard_main">
+<div class="wizard-main">
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <%= h.fields_for :sign_in do |s| %>

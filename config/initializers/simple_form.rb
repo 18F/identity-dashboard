@@ -13,7 +13,7 @@ SimpleForm.setup do |config|
     b.use :hint,  wrap_with: { tag: :span, class: 'usa-hint' }
   end
 
-  config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
+  config.wrappers :vertical_form, tag: 'div', class: 'wizard-field', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength
