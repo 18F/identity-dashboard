@@ -3,7 +3,7 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
   <%# label the grouping of items using a fieldset and legend for screen readers %>
-  <fieldset class='mb2 radio service_provider_identity_protocol'>
+  <fieldset class='wizard-field radio service_provider_identity_protocol'>
     <legend class="usa-sr-only">
       <%= t('simple_form.labels.service_provider.identity_protocol') %>
     </legend>
@@ -46,7 +46,7 @@
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)' %>
 
-  <fieldset class='mb2 checkbox service_provider_attribute_bundle'>
+  <fieldset class='wizard-field checkbox service_provider_attribute_bundle'>
     <legend class='usa-sr-only'>
       <%= t('simple_form.labels.service_provider.attribute_bundle') %>
     </legend>
