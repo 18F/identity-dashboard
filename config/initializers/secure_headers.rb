@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
   config.x_frame_options = 'SAMEORIGIN'
@@ -27,7 +28,7 @@ SecureHeaders::Configuration.default do |config|
       '*.nr-data.net',
       'https://dap.digitalgov.gov',
       'https://www.google-analytics.com',
-      'https://www.googletagmanager.com'
+      'https://www.googletagmanager.com',
     ],
     style_src: ["'self'"],
     base_uri: ["'self'"],
