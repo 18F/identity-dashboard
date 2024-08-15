@@ -76,11 +76,6 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
-# Download RDS Combined CA Bundle
-RUN mkdir -p /usr/local/share/aws \
-  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
-  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
-
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
