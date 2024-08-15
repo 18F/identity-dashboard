@@ -1,49 +1,5 @@
-<%= wizard_form do |form| %>
-    <div class='usa-hint oidc-fields'>
-      <%= form.label :redirect_uris,
-                     label: 'Redirect URIs',
-                     class: 'usa-label' %>
-      <% @service_provider.errors[:redirect_uris].each do |error| %>
-        <span class="usa-error-message js-bundle-input-error-message">
-          <%= error %>
-        </span>
-      <% end %>
-    </div>
-
-    <div class='usa-hint saml-fields'>
-      <%= form.label :redirect_uris,
-                     label: 'Additional Redirect URIs',
-                     class: 'usa-label' %>
-      <% @service_provider.errors[:redirect_uris].each do |error| %>
-        <span class="usa-error-message js-bundle-input-error-message">
-          <%= error %>
-        </span>
-      <% end %>
-    </div>
-
-    <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
-      <% redirect_uri_list.each do |value| %>
-        <%= text_field_tag 'service_provider[redirect_uris][]',
-                           value,
-                           id: 'service_provider_redirect_uris',
-                           class: 'block col-12 json optional usa-input',
-                           multiple: 'multiple' %>
-      <% end %>
-    <% end %>
-
-    <div class='oidc-fields'>
-      <%= t('service_provider_form.oidc_redirects_html') %>
-    </div>
-
-    <div class='saml-fields margin-0'>
-      <%= form.hint t('service_provider_form.saml_redirects_html') %>
-    </div>
-
-    <%= form.button :button,
-                    'Add another URI',
-                    type: 'button',
-                    id: 'add-redirect-uri-field',
-                    class: 'usa-button margin-bottom-4' %>
-
-  <%= render partial:'footer' %>
-<% end %>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.redirects') %></h1>
+<div class="wizard-main">
+  <%= render partial:'redirects_oidc' %>
+  <%= render partial:'redirects_saml' %>
+</div>

@@ -4,6 +4,8 @@
 );
 @use 'uswds-core' as *;
 
+@forward 'service_config_wizard';
+
 @forward 'step-indicator';
 
 @mixin text-wrap-mixin {
