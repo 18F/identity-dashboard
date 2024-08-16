@@ -9,7 +9,7 @@
                          label: t('simple_form.labels.service_provider.team'),
                          disabled: !can_edit_teams?(current_user),
                          hint: I18n.t('service_provider_form.team') %>
-    <fieldset class='mb2 radio service_provider_identity_protocol'>
+    <fieldset class='wizard-field radio service_provider_identity_protocol'>
       <legend class='usa-sr-only'><%= t('simple_form.labels.service_provider.dashboard_config') %></legend>
       <div class="usa-label__group">
         <p class="usa-label radio required" aria-hidden="true"><%= t('simple_form.labels.service_provider.dashboard_config') %></p>

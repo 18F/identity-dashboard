@@ -20,11 +20,11 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.wrapper tag: :div, class: 'usa-label-group' do |c|
+    b.wrapper tag: :div, class: 'usa-label__group' do |c|
       c.use :label, class: 'usa-label'
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
-    b.wrapper tag: :div, class: 'usa-input-container' do |c|
+    b.wrapper tag: :div, class: 'usa-input__container' do |c|
       c.use :input, class: 'block col-12' # usa-input'
       c.use :error, wrap_with: { tag: 'p', class: 'usa-error-message' }
     end
