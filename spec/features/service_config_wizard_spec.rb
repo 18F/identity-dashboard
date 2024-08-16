@@ -16,6 +16,7 @@ feature 'Service Config Wizard' do
         expect(current_step.text).to match(t("service_provider_form.wizard_steps.#{step}"))
         completed_steps = find_all('.step-indicator__step--complete')
         expect(completed_steps.count).to be(index)
+        fill_in('Friendly name', with: 'Lorem Ipsum') if step == :settings
         click_on 'Next' unless step == ServiceConfigWizardController::STEPS[-1]
       end
     end

@@ -8,4 +8,6 @@
                  input_html: { class: 'usa-input' },
                  label: t('simple_form.labels.service_provider.redirect_uris_oidc'),
                  hint: t('service_provider_form.oidc_redirects_html') %>
+                 
+  <%= render partial:'footer', locals: {form: form} %>
 <% end %>

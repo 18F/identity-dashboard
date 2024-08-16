@@ -99,7 +99,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def redirect_uris=(uris)
-    super uris.select(&:present?)
+    super uris&.select(&:present?)
   end
 
   def svg_xml

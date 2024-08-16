@@ -101,3 +101,5 @@ group :production do
 end
 
 gem 'autoprefixer-rails', '~> 10.1'
+
+gem "activerecord-session_store", "~> 2.1"
