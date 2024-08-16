@@ -9,6 +9,7 @@
                          label: t('simple_form.labels.service_provider.team'),
                          disabled: !can_edit_teams?(current_user),
                          hint: I18n.t('service_provider_form.team') %>
+
     <%= render partial: 'fieldset', locals: {
         form: form,
         fieldname: 'dashboard_config',
@@ -22,17 +23,21 @@
           t('simple_form.labels.service_provider.production') => true,
         },
       } %>
+
     <%= form.input :app_name,
                     input_html: { class: 'usa-input' },
                     label_html: { class: 'usa-input-required'},
+                    required: true,
                     label: t('simple_form.labels.service_provider.app_name'),
                     hint: t('service_provider_form.app_name_html') %>
 
     <%= form.input :friendly_name,
                     input_html: { class: 'usa-input', aria: { invalid: false } },
                     label_html: { class: 'usa-input-required'},
+                    required: true,
                     label: t('simple_form.labels.service_provider.friendly_name'),
                     hint: t('service_provider_form.friendly_name_html') %>
+
     <%= form.input :description,
                     as: :usa_textarea,
                     label_html: { class: 'usa-input-optional' },

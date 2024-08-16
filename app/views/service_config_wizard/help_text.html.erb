@@ -25,6 +25,19 @@
             <% end %>
           </div>
         </fieldset>
+        <%= render partial: 'fieldset', locals: {
+            form: s,
+            fieldname: 'help_text.sign_in',
+            description: false,
+            html_desc: false,
+            input_type: 'radio',
+            required: false,
+            db_fieldname: :en,
+            inputs: {
+              "Yes" => true,
+              "No" => false,
+            },
+          } %>
       <% end %>
       <%= h.fields_for :sign_up do |s| %>
         <fieldset class="wizard-field radio service_provider_help_text_sign_up">

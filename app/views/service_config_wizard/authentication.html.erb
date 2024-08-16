@@ -14,24 +14,34 @@
         [titleize(k), k] }.to_h,
     } %>
 
-  <%= form.input :ial,
-                 as: :select,
-                 collection: [[t('service_provider_form.ial_option_1'), 1],
-                              [t('service_provider_form.ial_option_2'), 2]],
-                 selected: form.object.ial,
-                 input_html: { class: 'usa-input usa-select'},
-                 label: t('simple_form.labels.service_provider.ial'),
-                 hint: t('service_provider_form.identity_assurance_level_html') %>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'ial',
+      description: true,
+      html_desc: true,
+      db_fieldname: :ial,
+      input_type: 'radio',
+      required: true,
+      inputs: {
+        t('service_provider_form.ial_option_1') => 1,
+        t('service_provider_form.ial_option_2') => 2,
+      }
+    } %>
 
-  <%= form.input :default_aal,
-                 as: :select,
-                 collection: [
-                   [t('service_provider_form.aal_option_default'), nil],
-                   [t('service_provider_form.aal_option_2'), 2],
-                   [t('service_provider_form.aal_option_3'), 3]],
-                 selected: form.object.default_aal,
-                 input_html: { class: 'usa-input usa-select'},
-                 label: 'Default Authentication Assurance Level (AAL)' %>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'ial',
+      description: false,
+      html_desc: false,
+      db_fieldname: :default_aal,
+      input_type: 'radio',
+      required: true,
+      inputs: {
+        t('service_provider_form.aal_option_default') => nil,
+        t('service_provider_form.aal_option_2') => 2,
+        t('service_provider_form.aal_option_3') => 3,
+      }
+    } %>
 
   <%= render partial: 'fieldset', locals: {
       form: form,
