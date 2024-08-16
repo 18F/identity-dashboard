@@ -1,0 +1,13 @@
+<%# expected locals:
+  [Method] form such that form is a valid instance of wizard_form
+  [Symbol] db_fieldname such that the database has an associated column
+  [Hash] inputs hash where key is the label and value is the input value
+%>
+<%= form.collection_check_boxes(db_fieldname,
+                                inputs,
+                                :last, :first,
+                                item_wrapper_tag: :ul,
+                                item_wrapper_class: 'usa-checkbox') do |b| %>
+  <%= b.check_box class: "usa-checkbox__input" %>
+  <%= b.label class: "usa-checkbox__label" %>
+<% end %>
