@@ -20,6 +20,7 @@ en:
     description: A description of the app (may be helpful for your colleagues).
     team: Assign an agency team to this client.
     protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
+    identity_protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
     ial_option_1: Authentication only (no verified attributes)
     ial_option_2: Identity verification permitted
     aal_option_default: MFA required + remember device up to 30 days (AAL1)
@@ -48,7 +49,7 @@ en:
     push_notification_url: Your application's endpoint which receives push notifications.
     oidc_redirects_html: "One or more URIs that Login.gov will redirect to after authentication. Login.gov will only redirect to URIs listed here. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#oidc-redirect-uri'>Cancel URL</a> information in our Developer docs for more details."
     saml_redirects_html: "One or more URIs that Login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#saml-return-to-sp-url'>Cancel URL</a> information in our Developer docs for more details."
-    attribute_bundle_html: "The default attributes that Login.gov will return to your application during authentication."
+    attribute_bundle: "The default attributes that Login.gov will return to your application during authentication."
     help_text: You can specify help text in these different areas to alert users of important information for logging into your app.
     active: Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications.
     custom_help_text_html: "If your app requires custom help text, reach out to the <a href='https://logingov.zendesk.com'>Partner Support Help Desk</a>. Help text guidance is outlined in the <a class='usa-link' href='https://developers.login.gov/user-experience/help-text/'>User experience section</a> of the developer docs. Please review the guidance before requesting support."

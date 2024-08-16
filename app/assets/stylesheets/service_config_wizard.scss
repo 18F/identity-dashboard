@@ -40,9 +40,16 @@
     border: none;
   }
 
-  .usa-checkbox__label {
+  .usa-checkbox {
+    margin: unset;
+    padding-left: unset;
+  }
+
+  .usa-checkbox__label,
+  .usa-radio__label {
     margin-top: 0;
   }
+
   // this classname is programmatically generated
   .service_provider_return_to_sp_url {
     padding-bottom: 1.5rem;

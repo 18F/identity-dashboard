@@ -2,30 +2,17 @@
 <p class="usa-intro"><%= t('simple_form.lead.authentication_html') %></p>
 <div class="wizard-main">
 <%= wizard_form do |form| %>
-  <%# label the grouping of items using a fieldset and legend for screen readers %>
-  <fieldset class='wizard-field radio service_provider_identity_protocol'>
-    <legend class="usa-sr-only">
-      <%= t('simple_form.labels.service_provider.identity_protocol') %>
-    </legend>
-    <div class="usa-label__group">
-      <p class="usa-label radio required" aria-hidden="true">
-        <%= t('simple_form.labels.service_provider.identity_protocol') %>
-      </p>
-      <%= form.hint t('service_provider_form.protocol') %>
-    </div>
-    <div class="usa-input__container">
-      <% ServiceProvider.identity_protocols.each_key do |protocol| %>
-        <div class="usa-radio">
-          <%= form.radio_button :identity_protocol,
-                                protocol,
-                                class: 'usa-radio__input' %>
-          <%= form.label ('identity_protocol_' + protocol).to_sym,
-                         titleize(protocol),
-                         class: 'usa-radio__label' %>
-        </div>
-      <% end %>
-    </div>
-  </fieldset>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'identity_protocol',
+      description: true,
+      html_desc: false,
+      db_fieldname: :identity_protocol,
+      input_type: 'radio',
+      required: true,
+      inputs: ServiceProvider.identity_protocols.map { |k,v|
+        [titleize(k), k] }.to_h,
+    } %>
 
   <%= form.input :ial,
                  as: :select,
@@ -46,30 +33,16 @@
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Default Authentication Assurance Level (AAL)' %>
 
-  <fieldset class='wizard-field checkbox service_provider_attribute_bundle'>
-    <legend class='usa-sr-only'>
-      <%= t('simple_form.labels.service_provider.attribute_bundle') %>
-    </legend>
-    <div class="usa-label__group">
-      <p class="usa-label json">
-        <%= t('simple_form.labels.service_provider.attribute_bundle') %>
-      </p>
-      <%= form.hint t('service_provider_form.attribute_bundle_html') %>
-    </div>
-    <div class="usa-input__container">
-      <%= form.collection_check_boxes(:attribute_bundle,
-                                      ServiceProvider.possible_attributes,
-                                      :first, :last,
-                                      item_wrapper_tag: :div,
-                                      item_wrapper_class: 'usa-checkbox ial-attr-wrapper') do |b| %>
-        <%= b.check_box class: "usa-checkbox__input" %>
-        <%= b.label class: "usa-checkbox__label" %>
-      <% end %>
-      <p class="usa-error-message js-bundle-input-error-message">
-        <%= form.object.errors[:attribute_bundle].to_sentence.presence %>
-      </p>
-    </div>
-  </fieldset>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'attribute_bundle',
+      description: true,
+      html_desc: false,
+      db_fieldname: :attribute_bundle,
+      input_type: 'checkbox',
+      required: false,
+      inputs: ServiceProvider.possible_attributes
+    } %>
   <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
 <% end %>
 </div>
