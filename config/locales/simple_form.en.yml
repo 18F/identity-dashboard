@@ -24,6 +24,7 @@ en:
         block_encryption: SAML Assertion Encryption
         cert_file: Choose a cert file
         dashboard_config: Dashboard configuration
+        default_aal: Default Authentication Assurance Level (AAL)
         description: Description
         error: "ERROR:"
         failure_to_proof_url: Failure to Proof URL
