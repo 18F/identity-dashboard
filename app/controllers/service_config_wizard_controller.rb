@@ -1,14 +1,12 @@
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
-  STEPS = %i[intro settings authentication issuer logo_and_cert redirects help_text]
+  STEPS = WizardStep::STEPS
   steps(*STEPS)
 
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
-  before_action :get_service_provider
+  before_action :get_model_for_step, except: :new
   after_action :verify_authorized
-  after_action :verify_policy_scoped
-
   helper_method :first_step?, :last_step?
 
   def new
@@ -34,8 +32,8 @@ class ServiceConfigWizardController < AuthenticatedController
 
   private
 
-  def get_service_provider
-    @service_provider ||= policy_scope(ServiceProvider).new
+  def get_model_for_step
+    @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 
   def redirect_unless_flagged_in
