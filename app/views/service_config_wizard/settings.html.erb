@@ -7,6 +7,7 @@
                          value_method: :id,
                          collection: current_user.scoped_teams,
                          label: t('simple_form.labels.service_provider.team'),
+                         prompt: t('simple_form.labels.select'),
                          disabled: !can_edit_teams?(current_user),
                          hint: I18n.t('service_provider_form.team') %>
 
@@ -29,6 +30,7 @@
                     label_html: { class: 'usa-input-required'},
                     required: true,
                     label: t('simple_form.labels.service_provider.app_name'),
+                    placeholder: 'Ex: DHS-CSP',
                     hint: t('service_provider_form.app_name_html') %>
 
     <%= form.input :friendly_name,
@@ -36,6 +38,7 @@
                     label_html: { class: 'usa-input-required'},
                     required: true,
                     label: t('simple_form.labels.service_provider.friendly_name'),
+                    placeholder: 'Ex: DHS Customer Service Portal',
                     hint: t('service_provider_form.friendly_name_html') %>
 
     <%= form.input :description,

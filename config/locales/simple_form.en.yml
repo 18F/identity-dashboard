@@ -13,6 +13,7 @@ en:
       settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our Developer docs</a> has additional information about setting up your app."
     labels:
       required: required
+      select: "- Select -"
       service_provider:
         acs_url: Assertion Consumer Service URL
         active: Accessible
