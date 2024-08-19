@@ -76,5 +76,6 @@
         <%= form.hint t('service_provider_form.custom_help_text_html') %>
       </div>
     </div>
+  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
   <% end %>
 </div>

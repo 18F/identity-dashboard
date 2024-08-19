@@ -43,5 +43,6 @@
                     label_html: { class: 'usa-input-optional' },
                     label: t('simple_form.labels.service_provider.description'),
                     hint: I18n.t('service_provider_form.description') %>
+  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
   <% end %>
 </div>

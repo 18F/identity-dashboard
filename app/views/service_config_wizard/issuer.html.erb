@@ -12,5 +12,6 @@
                    else
                      t('service_provider_form.issuer_html')
                    end %>
+  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
 <% end %>
 </div>

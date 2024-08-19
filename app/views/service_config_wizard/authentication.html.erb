@@ -66,9 +66,10 @@
         <%= b.label class: "usa-checkbox__label" %>
       <% end %>
       <p class="usa-error-message js-bundle-input-error-message">
-        <%= @service_provider.errors[:attribute_bundle].to_sentence.presence %>
+        <%= form.object.errors[:attribute_bundle].to_sentence.presence %>
       </p>
     </div>
   </fieldset>
+  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
 <% end %>
 </div>
