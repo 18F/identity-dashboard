@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
   config.x_frame_options = 'SAMEORIGIN'
@@ -7,7 +8,7 @@ SecureHeaders::Configuration.default do |config|
   config.x_permitted_cross_domain_policies = 'none'
   form_action =  ["'self'", '*.identitysandbox.gov']
   form_action << %w[localhost:3000] if Rails.env.development?
-  connect_src = ["'self'"]
+  connect_src = ["'self'", 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
   config.csp = {
     default_src: ["'self'"],
@@ -21,7 +22,14 @@ SecureHeaders::Configuration.default do |config|
     img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
     media_src: ["'self'"],
     object_src: ["'none'"],
-    script_src: ["'self'", '*.newrelic.com', '*.nr-data.net'],
+    script_src: [
+      "'self'",
+      '*.newrelic.com',
+      '*.nr-data.net',
+      'https://dap.digitalgov.gov',
+      'https://www.google-analytics.com',
+      'https://www.googletagmanager.com',
+    ],
     style_src: ["'self'"],
     base_uri: ["'self'"],
   }

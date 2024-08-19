@@ -1,0 +1,52 @@
+@use 'uswds-core' as *;
+
+.wizard-container {
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .usa-intro {
+    max-width: 100%;
+  }
+
+  .wizard-main {
+    padding-bottom: 1.5rem;
+    margin: 1.5rem 0;
+    border-style: solid;
+    border: {
+      width: 1px 0;
+      color: $theme-color-primary-light;
+    }
+  }
+
+  .wizard-field {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+
+    .usa-label__group,
+    .usa-input__container {
+      flex: 0 0 46.25%;
+    }
+    .usa-label {
+      margin-top: unset;
+    }
+    .usa-hint {
+      margin: 0;
+    }
+  }
+  fieldset.wizard-field {
+    padding: 0;
+    border: none;
+  }
+
+  .usa-checkbox__label {
+    margin-top: 0;
+  }
+  // this classname is programmatically generated
+  .service_provider_return_to_sp_url {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $theme-color-primary-light;
+  }
+}

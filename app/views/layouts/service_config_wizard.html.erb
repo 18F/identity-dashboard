@@ -8,8 +8,9 @@
           }
     %>
   </div>
-  <div>
+  <section class="wizard-container">
     <%= yield %>
-  </div>
+  </section>
+  <%= render partial:'footer' %>
 <% end %>
 <%= render template: "layouts/application" %>

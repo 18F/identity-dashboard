@@ -1,17 +1,7 @@
-<h1>Introduction</h1>
-<hr />
-<p>
-This partner portal is where you will manage your Login.gov integrations for testing and production.
-Before you start creating an integration, review our Developer docs to understand any requirements.
-If you have any questions, reach out to our engineers through the Partners Slack Channel or submit a support ticket through the Partner support help desk.
-</p>
-<h2>Before you start</h2>
-<p>All new configurations or configuration changes must be promoted to production following the process outlined in the Login.gov Developer docs.
-Configurations must be reviewed and approved by the Login.gov Partnerships team. Changes to production apps are not automatic and can take up to two weeks.
-</p>
-<p>
-Please note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production.
-Visit the Login.gov Developer docs for more details or email partners@login.gov with any questions.
-</p>
-<hr />
-<%= render partial:'footer' %>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.intro') %></h1>
+<div class="wizard-main">
+  <p class="usa-intro"><%= t('service_provider_form.intro_html') %></p>
+  <h2><%= t('simple_form.labels.service_provider.before_start') %></h2>
+  <p class="usa-intro"><%= t('service_provider_form.before_start_1_html') %></p>
+  <p class="usa-intro"><%= t('service_provider_form.before_start_2_html') %></p>
+</div>

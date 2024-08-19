@@ -293,7 +293,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </div>
 
-    <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
+    <%= content_tag :div, class: 'json optional service_provider_redirect_uris' do -%>
       <% redirect_uri_list.each do |value| %>
         <%= text_field_tag 'service_provider[redirect_uris][]',
                            value,
