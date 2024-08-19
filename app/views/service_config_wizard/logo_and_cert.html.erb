@@ -8,31 +8,18 @@
         <%= form.hint t('service_provider_form.logo_html') %>
       </div>
       <div class="usa-input__container">
+        <label for="logo-input"><%= t('service_provider_form.single_input') %></label>
         <%= form.file_field :logo_file,
-                        class: 'input-file logo-input-file',
-                        accept: sp_valid_logo_mime_types %>
+                            id: 'logo-input',
+                            class: 'usa-file-input input-file__logo',
+                            accept: sp_valid_logo_mime_types.join(',') %>
+
         <%# TODO: uncomment and get file uploads working %>
         <%# if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
           <%# <p class="font-mono-xs margin-top-0" name="logo_file"> %>
             <%#= image_tag url_for(form.object.logo_file), height: '120px' %>
           <%# </p> %>
         <%# end %>
-        <div class='input-file-wrapper'>
-          <p><%= I18n.t('service_provider_form.single_input') %></p>
-          <%= form.label :logo_file,
-                          label: 'Choose a file',
-                          class: 'usa-button file-input-button',
-                          id: 'logo-file-button' %>
-          <%= content_tag :div,
-                          "No file selected",
-                          class: 'input-preview' %>
-        </div>
-        <p class='usa-error-message' id='logo-upload-error'>
-          <% if form.object.errors[:logo_file].present? %>
-            <%= t('simple_form.labels.service_provider.error') %>
-            <%= form.object.errors[:logo_file].join('|') %>
-          <% end %>
-        </p>
       </div>
     </fieldset>
     <%# TODO: uncomment and get file uploads working %>
@@ -69,20 +56,15 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
           <% end %>
         <% end %>
 
-        <div class="lg-card margin-top-2">
-          <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.single_input') %></label>
-
-          <div class="clearfix">
-            <span class="usa-error-message js-pem-input-error-message">
-              <%= form.object.errors[:certs].to_sentence.presence %>
-            </span>
-            <%= form.file_field :cert, class: 'input-file js-pem-input' %>
-            <label class="usa-button file-input-button" for="wizard_step_cert">
-              <%= t('simple_form.labels.service_provider.cert_file') %>
-            </label>
-            <div class="margin-top-4 js-pem-file-name"></div>
-          </div>
-        </div>
+        <div>
+          <label for="pem-input"><%= t('service_provider_form.single_input') %></label>
+          <span class="usa-error-message js-pem-input-error-message">
+            <%= form.object.errors[:certs].to_sentence.presence %>
+          </span>
+          <%= form.file_field :cert,
+                              id: 'pem-input',
+                              class: 'usa-file-input input-file__pem' %>
+        <div>
       </div>
     </fieldset>
     <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>

@@ -1,16 +1,12 @@
 @use 'uswds-core' as *;
 
 .wizard-container {
-  p:last-of-type {
-    // margin-bottom: 0;
-  }
 
   .usa-intro {
     max-width: 100%;
   }
 
   .wizard-main {
-    padding-bottom: 1.5rem;
     margin: 1.5rem 0;
     border-style: solid;
     border: {
@@ -23,6 +19,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 1.5rem;
+    padding: 0 0 1.5rem 0;
 
     .usa-label__group,
     .usa-input__container {
@@ -37,7 +34,6 @@
     }
   }
   fieldset.wizard-field {
-    padding: 0;
     border: none;
   }
 
