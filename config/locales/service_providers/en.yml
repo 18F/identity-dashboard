@@ -34,10 +34,10 @@ en:
     change_issuer: "The issuer cannot be changed, but you can create a new test app with a different issuer."
     issuer_html: "This is a unique string to identify the app in the IdP, and is also used as the <code>client_id</code>. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.</p><p>For OpenID Connect: </p><p><code class=‘ml2’>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><p>For SAML: </p><p><code class=‘ml2’>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>"
     logo_html: "Choose a file to upload as your logo. Your file should follow <a href='https://developers.login.gov/design-guidelines/#agency-logo-guidelines'>our guidelines</a>."
-    logo_input: "Input accepts a single file"
+    logo_input: "Logo file type must be SVG or PNG and < 1MB"
+    cert_input: "Upload your PEM encoded public certificate"
     save_new: Create app
     save_existing: Update app
-    single_input: "Input accepts a single file"
     certificate: "Your public certificate (or certificates), which contains your public key. Needed for OpenID Connect (when using private_key_jwt) and for SAML. Optional for OIDC PKCE."
     certificate_html: "Your public certificate will contain your public key and should match your corresponding private key.</p><p class='usa-hint'>Take a look at our developer documentation for <a class='usa-link' href='https://developers.login.gov/testing/#creating-a-public-certificate'>how to generate a public-private key pair.</a></p><p class='usa-hint'>Certificate must be <a class='usa-link' href='https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail'>PEM encoded</a> like this example:"
     assertion_consumer_service_url_html: "Your application's endpoint which receives <a href= 'https://developers.login.gov/saml/#auth-response' target='_blank'>authentication assertions</a>, for example: <code>https://app.agency.gov/auth/saml/sso</code>"

@@ -25,6 +25,12 @@
     .usa-input__container {
       flex: 0 0 46.25%;
     }
+    .usa-input__container textarea {
+      // don't shrink textarea
+      min-width: 100%;
+      min-height: 4.8ex;
+    }
+
     .usa-label {
       margin-top: unset;
     }
@@ -50,6 +56,10 @@
   .usa-input-list {
     margin-top: unset;
     margin-bottom: 0.5rem;
+  }
+
+  [title="required"] {
+    text-decoration: none;
   }
 
   // this classname is programmatically generated

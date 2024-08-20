@@ -9,6 +9,7 @@
                          label: t('simple_form.labels.service_provider.team'),
                          prompt: t('simple_form.labels.select'),
                          disabled: !can_edit_teams?(current_user),
+                         required: true,
                          hint: I18n.t('service_provider_form.team') %>
 
     <%= render partial: 'fieldset', locals: {

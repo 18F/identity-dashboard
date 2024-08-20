@@ -8,7 +8,7 @@
         <%= form.hint t('service_provider_form.logo_html') %>
       </div>
       <div class="usa-input__container">
-        <label for="logo-input"><%= t('service_provider_form.single_input') %></label>
+        <label for="logo-input"><%= t('service_provider_form.logo_input') %></label>
         <%= form.file_field :logo_file,
                             id: 'logo-input',
                             class: 'usa-file-input input-file__logo',
@@ -57,7 +57,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
         <% end %>
 
         <div>
-          <label for="pem-input"><%= t('service_provider_form.single_input') %></label>
+          <label for="pem-input"><%= t('service_provider_form.cert_input') %></label>
           <span class="usa-error-message js-pem-input-error-message">
             <%= form.object.errors[:certs].to_sentence.presence %>
           </span>

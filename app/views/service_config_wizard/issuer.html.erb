@@ -3,7 +3,8 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
-                 disabled: issuer_saved?,
+                 as: :text,
+                 disabled: form.object.persisted?,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },

@@ -15,6 +15,9 @@
   <div class="usa-label__group">
     <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">
       <%= t("simple_form.labels.service_provider.#{fieldname}") %>
+      <% if required %>
+        <%= t('simple_form.required.html') %>
+      <% end %>
     </p>
     <% if description %>
       <%= form.hint t("service_provider_form.#{fieldname}#{html_desc ? '_html' : ''}") %>
