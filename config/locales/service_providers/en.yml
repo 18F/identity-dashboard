@@ -34,7 +34,7 @@ en:
     change_issuer: "The issuer cannot be changed, but you can create a new test app with a different issuer."
     issuer_html: "This is a unique string to identify the app in the IdP, and is also used as the <code>client_id</code>. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.</p><p>For OpenID Connect: </p><p><code class=‘ml2’>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><p>For SAML: </p><p><code class=‘ml2’>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>"
     logo_html: "Choose a file to upload as your logo. Your file should follow <a href='https://developers.login.gov/design-guidelines/#agency-logo-guidelines'>our guidelines</a>."
-    logo_input: "Logo file type must be SVG or PNG and < 1MB"
+    logo_input: "Logo file type must be SVG"
     cert_input: "Upload your PEM encoded public certificate"
     save_new: Create app
     save_existing: Update app
