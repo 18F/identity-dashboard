@@ -9,10 +9,27 @@ module ServiceConfigWizardHelper
   end
 
   def parsed_help_text
-    text_params = params.has_key?(@model) ? service_provider_params[:help_text] : nil
+    text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
     @parsed_help_text ||= HelpText.lookup(
       params: text_params,
-      service_provider: @service_provider,
+      service_provider: @service_provider || draft_service_provider,
     )
+  end
+
+  def first_step?
+    step.eql? wizard_steps.first
+  end
+
+  def last_step?
+    step.eql? wizard_steps.last
+  end
+
+  def last_step_message
+    i18n_key = 'save_new'
+    t("service_provider_form.#{i18n_key}")
+  end
+
+  def show_cancel?
+    IdentityConfig.store.service_config_wizard_enabled && current_user.admin?
   end
 end

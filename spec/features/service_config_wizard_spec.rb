@@ -12,6 +12,7 @@ feature 'Service Config Wizard' do
     it 'can step through all the pages' do
       visit new_service_config_wizard_path
       ServiceConfigWizardController::STEPS.each_with_index do |step, index|
+        puts "Step is #{step}\n"
         current_step = find('.step-indicator__step--current')
         expect(current_step.text).to match(t("service_provider_form.wizard_steps.#{step}"))
         completed_steps = find_all('.step-indicator__step--complete')

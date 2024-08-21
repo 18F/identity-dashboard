@@ -2,8 +2,7 @@ class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   STEPS = WizardStep::STEPS
   steps(*STEPS)
-  CERT_STEP = 'logo_and_cert'
-  LOGO_STEP = 'logo_and_cert'
+  UPLOAD_STEPS = ['logo_and_cert']
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -11,7 +10,7 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action :get_model_for_step, except: :new
   after_action :verify_authorized
   # after_action :verify_policy_scoped
-  helper_method :first_step?, :last_step?
+  helper_method %i[issuer_saved? draft_service_provider]
 
   def new
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
@@ -22,27 +21,45 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def update
-    if step == CERT_STEP
+    return destroy if can_cancel?
+    if UPLOAD_STEPS.include?(step)
       attach_cert
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    @model.data = @model.data.merge(wizard_step_params)
+    unless skippable && params[:wizard_step].blank?
+      @model.data = @model.data.merge(wizard_step_params)
+    end
     skip_step if @model.save
     render_wizard
   end
 
-  def first_step?
-    step.eql? wizard_steps.first
+  def destroy
+    saved_steps = policy_scope(WizardStep).where(user: current_user)
+    authorize saved_steps.last, :destroy?
+    saved_steps.destroy_all
+    redirect_to service_providers_path
   end
 
-  def last_step?
-    step.eql? wizard_steps.last
+  def issuer_saved?
+    @model.persisted? && @model.issuer&.present?
+  end
+
+  def draft_service_provider
+    @service_provider ||= begin
+      all_data = policy_scope(WizardStep).
+        all.
+        reduce({}) {|memo, record| memo.merge(record.data)}
+      %w[identity_protocol certificates].each { |temp_deleted_key| all_data.delete(temp_deleted_key)}
+      all_data['redirect_uris'] = [all_data['redirect_uris']]
+      ServiceProvider.new(**all_data)
+    end
   end
 
   private
 
   def get_model_for_step
+    return if step == Wicked::FINISH_STEP
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 
@@ -76,8 +93,8 @@ class ServiceConfigWizardController < AuthenticatedController
       :logo_file,
       :app_name,
       :prod_config,
+      :redirect_uris,
       attribute_bundle: [],
-      redirect_uris: [],
       help_text: {},
     ]
     permit_params << :production_issuer if current_user.admin?
@@ -105,7 +122,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def logo_file_param
-    wizard_step_params[:logo_file]
+    params[:wizard_step]&.fetch(:logo_file, nil)
   end
 
   def attach_logo_file
@@ -113,5 +130,15 @@ class ServiceConfigWizardController < AuthenticatedController
 
     @model.logo_file.attach(logo_file_param)
     cache_logo_info
+  end
+
+  def skippable
+    return true if step == 'issuer' && issuer_saved?
+    # TODO: temporary
+    UPLOAD_STEPS.include?(step)
+  end
+
+  def can_cancel?
+    IdentityConfig.store.service_config_wizard_enabled && step == STEPS.last && current_user.admin?
   end
 end

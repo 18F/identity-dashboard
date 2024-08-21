@@ -10,6 +10,8 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
+
   def step_name=(new_name)
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
     super
@@ -45,10 +47,21 @@ class WizardStep < ApplicationRecord
       issuer: '',
     }),
     logo_and_cert: WizardStep::Definition.new({
-      certs: [],
+      certificates: [],
     }),
-    redirects: WizardStep::Definition.new,
-    help_text: WizardStep::Definition.new,
+    redirects: WizardStep::Definition.new({
+      push_notification_url: '',
+      redirect_uris: '',
+      acs_url: '',
+      assertion_consumer_logout_service_url: '',
+      sp_initiated_login_url: '',
+      block_encryption: DEFAULT_SAML_ENCRYPTION,
+      signed_response_message_requested: true,
+      return_to_sp_url: '',
+    }),
+    help_text: WizardStep::Definition.new({
+      help_text: { sign_in: ''},
+    }),
   }.with_indifferent_access.freeze
   STEPS = STEP_DATA.keys
 

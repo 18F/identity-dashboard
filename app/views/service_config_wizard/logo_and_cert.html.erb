@@ -8,29 +8,29 @@
         <%= form.hint t('service_provider_form.logo_html') %>
       </div>
       <div class="usa-input__container">
-        <%#= form.file_field :logo_file,
+        <%= form.file_field :logo_file,
                         class: 'input-file logo-input-file',
                         accept: sp_valid_logo_mime_types %>
-        <%# if form.object.logo_file.attached?  && form.object.logo_file.persisted? %>
-          <p class="font-mono-xs margin-top-0" name="logo_file">
+        <%# if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
+          <%# <p class="font-mono-xs margin-top-0" name="logo_file"> %>
             <%#= image_tag url_for(form.object.logo_file), height: '120px' %>
-          </p>
+          <%# </p> %>
         <%# end %>
         <div class='input-file-wrapper'>
-          <p><%#= I18n.t('service_provider_form.single_input') %></p>
-          <%#= form.label :logo_file,
+          <p><%= I18n.t('service_provider_form.single_input') %></p>
+          <%= form.label :logo_file,
                           label: 'Choose a file',
                           class: 'usa-button file-input-button',
                           id: 'logo-file-button' %>
-          <%#= content_tag :div,
+          <%= content_tag :div,
                           "No file selected",
                           class: 'input-preview' %>
         </div>
         <p class='usa-error-message' id='logo-upload-error'>
-          <%# if form.object.errors[:logo_file].present? %>
-            <%#= t('simple_form.labels.service_provider.error') %>
-            <%#= form.object.errors[:logo_file].join('|') %>
-          <%# end %>
+          <% if form.object.errors[:logo_file].present? %>
+            <%= t('simple_form.labels.service_provider.error') %>
+            <%= form.object.errors[:logo_file].join('|') %>
+          <% end %>
         </p>
       </div>
     </fieldset>
@@ -49,24 +49,24 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 -----END CERTIFICATE-----</code></pre>
       </div>
       <div class="usa-input__container">
-        <%# form.object.certificates.each do |certificate| %>
-          <%# render 'certificate', certificate: certificate do %>
+        <% form.object.certificates.each do |certificate| %>
+          <% render 'certificate', certificate: certificate do %>
             <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
               <div class="usa-alert__text">
-                <%# check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
+                <% check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
                                   certificate.serial,
                                   false,
                                   name: "wizard_step[remove_certificates][]",
                                   class: 'usa-checkbox__input' %>
-                <%# content_tag :label,
+                <% content_tag :label,
                                 for: "wizard_step_remove_certificates_#{certificate.serial}",
                                 class: 'usa-checkbox__label' do %>
-                  <%# t('simple_form.labels.service_provider.remove_cert') %>
-                <%# end %>
+                  <% t('simple_form.labels.service_provider.remove_cert') %>
+                <% end %>
               </div>
             </div>
-          <%# end %>
-        <%# end %>
+          <% end %>
+        <% end %>
 
         <div class="lg-card margin-top-2">
           <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.single_input') %></label>
