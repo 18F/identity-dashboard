@@ -1,6 +1,9 @@
 @use 'uswds-core' as *;
 
 .wizard-container {
+  pre {
+    overflow: scroll;
+  }
 
   .usa-intro {
     max-width: 100%;
