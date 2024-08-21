@@ -38,7 +38,7 @@ class WizardStep < ApplicationRecord
       description: '',
     }),
     authentication: WizardStep::Definition.new({
-      identity_protocol: ServiceProvider.identity_protocols.first,
+      identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: 1,
       default_aal: nil,
       attribute_bundle: [],
@@ -77,8 +77,8 @@ class WizardStep < ApplicationRecord
   end
 
   def valid?(*args)
-    if args.blank? && step.present?
-      super(step)
+    if args.blank? && step_name.present?
+      super(step_name)
     else
       super
     end

@@ -55,6 +55,7 @@ RSpec.describe ServiceConfigWizardController do
       expect do
         get :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
       end.to(change {WizardStep.count}.by(-1))
+      expect(response.redirect_url).to eq(service_providers_url)
     end
 
     it 'will be redirected if the flag is not set' do
