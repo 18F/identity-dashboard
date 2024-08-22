@@ -8,7 +8,7 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  DASHBOARD_CI_SHA: 'sha256:d57dc827173b1d8573b21bfd532551d86cb09292fc49439a8b9eefcced4bd369'
+  DASHBOARD_CI_SHA: 'sha256:b95a19d9b71d12604982572bad611cec59e87153c325cd54892ea82c13f70d8b'
   GITLAB_CI: 'true'
 
 default:
@@ -90,7 +90,7 @@ install:
 
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
-build-dashboard-image:
+build-review-image:
   stage: review
   needs: []
   interruptible: true
@@ -120,7 +120,7 @@ build-dashboard-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/idp_dashboard.Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/dashboard_review_app.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-dashboard/review:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-dashboard/review/cache"
@@ -129,6 +129,38 @@ build-dashboard-image:
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
+build-ci-image:
+  stage: build
+  interruptible: true
+  needs: []
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  rules:
+    # Build when there are changes to the Dockerfile
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+          - dockerfiles/dashboard_ci.Dockerfile
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/dashboard_ci.Dockerfile"
+      --destination "${ECR_REGISTRY}/dashboard/ci:latest"
+      --destination "${ECR_REGISTRY}/dashboard/ci:${CI_COMMIT_SHA}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 lint:
   stage: test
@@ -202,7 +234,7 @@ review-app:
   stage: review
   allow_failure: true
   needs:
-    - job: build-dashboard-image
+    - job: build-review-image
   resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
@@ -421,22 +453,41 @@ secret_detection:
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
-ecr-scan:
-  stage: scan
-  interruptible: true
-  allow_failure: true
+ecr-scan-review-app:
+  extends: .container_scan_template
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
+  needs:
+    - job: build-review-image
+  stage: scan
+  variables:
+    ecr_repo: identity-dashboard/review
+
+ecr-scan-ci:
+  extends: .container_scan_template
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+          - dockerfiles/dashboard_ci.Dockerfile
+  needs:
+    - job: build-ci-image
+  stage: scan
+  variables:
+    ecr_repo: dashboard/ci
+
+.container_scan_template:
+  interruptible: true
+  allow_failure: true
   tags:
     - build-pool
-  needs:
-    - job: build-dashboard-image
   image:
     name: amazon/aws-cli
-    entrypoint: [""] 
+    entrypoint: [""]
   before_script:
     - curl -LO https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
     - chmod +x jq-linux64
@@ -444,7 +495,7 @@ ecr-scan:
   script:
     - >
       while true; do
-        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-dashboard/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
+        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name ${ecr_repo} --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
         if echo "$SCAN_STATUS" | grep -q "ACTIVE"; then
           echo "Scan Complete"
           break
@@ -456,7 +507,7 @@ ecr-scan:
           sleep 15
         fi
       done
-    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-dashboard/review --image-id imageTag=$CI_COMMIT_SHA)
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name ${ecr_repo} --image-id imageTag=$CI_COMMIT_SHA)
     - echo $SCAN_FINDINGS
     - >
       echo $SCAN_FINDINGS |
@@ -555,7 +606,7 @@ ecr-scan:
       }
       end' > gl-container-scanning-report.json
   artifacts:
-    paths: 
+    paths:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
