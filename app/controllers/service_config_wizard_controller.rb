@@ -1,15 +1,17 @@
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
-  STEPS = %i[intro settings authentication issuer logo_and_cert redirects help_text]
+  STEPS = WizardStep::STEPS
   steps(*STEPS)
+  UPLOAD_STEP = 'logo_and_cert'
+  attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
-  before_action :get_service_provider
+  before_action :get_model_for_step, except: :new
   after_action :verify_authorized
-  after_action :verify_policy_scoped
-
-  helper_method :first_step?, :last_step?
+  # We get false positives from `verify_policy_scoped` if we never instantiate a model
+  after_action :verify_policy_scoped, unless: -> { when_skipping_models }
+  helper_method %i[issuer_saved? draft_service_provider show_saml_options? show_oidc_options?]
 
   def new
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
@@ -20,25 +22,152 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def update
-    skip_step
+    return destroy if can_cancel?
+    if step == UPLOAD_STEP
+      # TODO: clean up when implementing file uploads, this currently does nothing
+      # This was copied from ServiceProvidersController
+      attach_cert
+      remove_certificates
+      attach_logo_file if logo_file_param
+    end
+    unless skippable && params[:wizard_step].blank?
+      @model.data = @model.data.merge(wizard_step_params)
+    end
+    skip_step if @model.save
     render_wizard
   end
 
-  def first_step?
-    step.eql? wizard_steps.first
+  def destroy
+    saved_steps = policy_scope(WizardStep).where(user: current_user)
+    authorize saved_steps.last, :destroy?
+    saved_steps.destroy_all
+    redirect_to finish_wizard_path
   end
 
-  def last_step?
-    step.eql? wizard_steps.last
+  def issuer_saved?
+    @model.persisted? && @model.issuer&.present?
+  end
+
+  def draft_service_provider
+    @service_provider ||= begin
+      all_data = policy_scope(WizardStep).
+        all.
+        reduce({}) {|memo, record| memo.merge(record.data)}
+      # TODO: implement certificate file uploads
+      all_data.delete('certificates')
+      all_data['redirect_uris'] = [all_data['redirect_uris']]
+      ServiceProvider.new(**all_data)
+    end
+  end
+
+  def show_saml_options?
+    # TODO: fix this with SAML vs OIDC display logic
+    false
+  end
+
+  def show_oidc_options?
+    !show_saml_options?
   end
 
   private
 
-  def get_service_provider
-    @service_provider ||= policy_scope(ServiceProvider).new
+  def get_model_for_step
+    # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
+    return if step == Wicked::FINISH_STEP
+    @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 
   def redirect_unless_flagged_in
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
+  end
+
+  def finish_wizard_path
+    service_providers_path
+  end
+
+  def wizard_step_params
+    permit_params = [
+      :acs_url,
+      :active,
+      :agency_id,
+      :allow_prompt_login,
+      :approved,
+      :assertion_consumer_logout_service_url,
+      :block_encryption,
+      :description,
+      :friendly_name,
+      :group_id,
+      :ial,
+      :default_aal,
+      :identity_protocol,
+      :issuer,
+      :logo,
+      :metadata_url,
+      :return_to_sp_url,
+      :failure_to_proof_url,
+      :push_notification_url,
+      :signed_response_message_requested,
+      :sp_initiated_login_url,
+      :logo_file,
+      :app_name,
+      :prod_config,
+      :redirect_uris,
+      attribute_bundle: [],
+      help_text: {},
+    ]
+    permit_params << :production_issuer if current_user.admin?
+    # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
+    permit_params << :email_nameid_format_allowed if current_user.admin?
+    params.require(:wizard_step).permit(*permit_params)
+  end
+
+  # relies on ServiceProvider#certs_are_pems for validation
+  def attach_cert
+    return if params.dig(:wizard_step, :cert).blank?
+
+    @model.certs ||= []
+    crt = params[:wizard_step].delete(:cert).read
+    @model.certs << crt unless crt.blank?
+  end
+
+  def remove_certificates
+    return if params.dig(:wizard_step, :remove_certificates).blank?
+
+    to_remove_serials = params[:wizard_step].delete(:remove_certificates)
+
+    to_remove_serials.each do |serial|
+      @model.remove_certificate(serial)
+    end
+  end
+
+  def logo_file_param
+    params[:wizard_step]&.fetch(:logo_file, nil)
+  end
+
+  def attach_logo_file
+    return unless logo_file_param
+
+    @model.logo_file.attach(logo_file_param)
+    cache_logo_info
+  end
+
+  def skippable
+    return true if step == 'issuer' && issuer_saved?
+    # TODO: reenable uploads in a follow-up change
+    step == UPLOAD_STEP
+  end
+
+  def can_cancel?
+    params[:commit].present? &&
+      params[:commit].downcase == 'cancel' &&
+      IdentityConfig.store.service_config_wizard_enabled &&
+      step == STEPS.last &&
+      current_user.admin?
+  end
+
+  def when_skipping_models
+    action_name == 'new' ||
+      step == STEPS.first ||
+      step == Wicked::FINISH_STEP
   end
 end
