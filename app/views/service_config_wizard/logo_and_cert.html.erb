@@ -13,17 +13,8 @@
                             id: 'logo-input',
                             class: 'usa-file-input input-file__logo',
                             accept: sp_valid_logo_mime_types.join(',') %>
-
-        <%# TODO: uncomment and get file uploads working %>
-        <%# if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
-          <%# <p class="font-mono-xs margin-top-0" name="logo_file"> %>
-            <%#= image_tag url_for(form.object.logo_file), height: '120px' %>
-          <%# </p> %>
-        <%# end %>
       </div>
     </fieldset>
-    <%# TODO: uncomment and get file uploads working %>
-    <%#= javascript_include_tag 'validate_logo_size' %>
 
     <fieldset class="wizard-field file service_provider_logo_file" id="certificate-container">
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.upload_certificate') %></legend>
@@ -70,3 +61,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>
+
+<%= javascript_include_tag 'service_provider_form' %>
+<%= javascript_include_tag 'validate_logo_size' %>

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-document.getElementById("service_provider_logo_file").addEventListener("change", (e) => {
+(document.getElementById("service_provider_logo_file") || document.getElementById("wizard_step_logo_file")).addEventListener("change", (e) => {
   // Clear the error div
   const errorDiv = document.getElementById("logo-upload-error");
   errorDiv.textContent = "";

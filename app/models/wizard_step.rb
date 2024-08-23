@@ -48,16 +48,20 @@ class WizardStep < ApplicationRecord
     }),
     logo_and_cert: WizardStep::Definition.new({
       certificates: [],
+      certs: [],
+      logo_name: '',
+      remote_logo_key: '',
     }),
     redirects: WizardStep::Definition.new({
-      push_notification_url: '',
-      redirect_uris: '',
       acs_url: '',
       assertion_consumer_logout_service_url: '',
-      sp_initiated_login_url: '',
       block_encryption: DEFAULT_SAML_ENCRYPTION,
-      signed_response_message_requested: true,
+      failure_to_proof_url: '',
+      push_notification_url: '',
+      redirect_uris: '',
       return_to_sp_url: '',
+      signed_response_message_requested: true,
+      sp_initiated_login_url: '',
     }),
     help_text: WizardStep::Definition.new({
       help_text: { sign_in: ''},
@@ -67,13 +71,17 @@ class WizardStep < ApplicationRecord
 
   belongs_to :user
   enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
-  has_one_attached :draft_logo_file
+  has_one_attached :logo_file
 
   validates :step_name, presence: true
 
   # SimpleForm uses this
   def self.reflect_on_association(relation)
     ServiceProvider.reflect_on_association(relation)
+  end
+
+  def self.block_encryptions
+    ServiceProvider.block_encryptions
   end
 
   def valid?(*args)
