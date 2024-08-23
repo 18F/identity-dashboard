@@ -67,6 +67,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
         <div>
       </div>
     </fieldset>
-    <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
+    <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>

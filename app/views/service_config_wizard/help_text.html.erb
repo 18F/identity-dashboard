@@ -9,8 +9,8 @@
                     required: false,
                     label: t('simple_form.labels.service_provider.help_text.sign_in'),
                     collection: t('service_provider_form.help_text.sign_in', deep_interpolation: true,
-                        sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
-                        agency: @service_provider.agency&.name || '<Agency>'
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
                     selected: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
@@ -20,8 +20,8 @@
                     required: false,
                     label: t('simple_form.labels.service_provider.help_text.sign_up'),
                     collection: t('service_provider_form.help_text.sign_up', deep_interpolation: true,
-                        sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
-                        agency: @service_provider.agency&.name || '<Agency>'
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
                     selected: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
@@ -31,8 +31,8 @@
                     required: false,
                     label: t('simple_form.labels.service_provider.help_text.forgot_password'),
                     collection: t('service_provider_form.help_text.forgot_password', deep_interpolation: true,
-                        sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
-                        agency: @service_provider.agency&.name || '<Agency>'
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
                     selected: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
@@ -43,9 +43,6 @@
         <%= form.hint t('service_provider_form.custom_help_text_html') %>
       </div>
     </div>
-  <%= form.submit last_step_message, class: 'usa-button' %>
-  <% if show_cancel? %>
-    <%= form.submit 'Cancel', class: 'usa-button' %>
-  <% end %>
+    <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>

@@ -55,5 +55,5 @@
                  input_html: { class: 'usa-input' },
                  label: t('simple_form.labels.service_provider.redirect_uris_saml'),
                  hint: t('service_provider_form.saml_redirects_html') %>
-  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
+  <%= render partial:'footer', locals: { form: form } %>
 <% end %>

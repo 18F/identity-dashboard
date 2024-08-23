@@ -53,6 +53,6 @@
       required: false,
       inputs: ServiceProvider.possible_attributes
     } %>
-  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
+  <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>

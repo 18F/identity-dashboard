@@ -11,11 +11,7 @@
 
   .wizard-main {
     margin: 1.5rem 0;
-    border-style: solid;
-    border: {
-      width: 1px 0;
-      color: $theme-color-primary-light;
-    }
+    border-top: 1px solid $theme-color-primary-light;
   }
 
   .wizard-field {
@@ -34,6 +30,11 @@
       flex: 0 0 46.25%;
       min-width: 400px;
     }
+    .usa-input__container,
+    pre {
+      margin-bottom: 1.5rem;
+    }
+
     .usa-input__container textarea {
       // don't shrink textarea
       min-width: 100%;
@@ -50,6 +51,31 @@
   }
   fieldset.wizard-field {
     border: none;
+  }
+  // Much of this is to get the Cancel button to float right
+  .wizard-footer {
+    display: flex;
+    margin-top: -1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $theme-color-primary-light;
+
+    a, input {
+      flex: 0 0 auto;
+    }
+
+    &:before {
+      display: block;
+      content: '';
+      order: 2;
+      flex: 1 0 0;
+    }
+    .usa-button--unstyled {
+      order: 3;
+    }
+  }
+  // Don't add negative margin on the Intro page
+  .usa-intro ~ .wizard-footer {
+    margin-top: 0;
   }
 
   .usa-checkbox {
