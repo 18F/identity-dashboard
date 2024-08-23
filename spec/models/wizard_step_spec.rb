@@ -20,7 +20,7 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
-  describe 'dynamic form properites' do
+  describe 'dynamic form properties' do
     it 'populates all properties for all steps' do
       WizardStep::STEPS.each do |step_name|
         subject = WizardStep.new(step_name: step_name)
