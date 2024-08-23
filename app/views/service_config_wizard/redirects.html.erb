@@ -1,5 +1,9 @@
 <h1 class="usa-display"><%= t('service_provider_form.wizard_steps.redirects') %></h1>
 <div class="wizard-main">
-  <%= render partial:'redirects_oidc' %>
-  <%= render partial:'redirects_saml' %>
+  <% if show_saml_options? %>
+    <%= render partial:'redirects_saml' %>
+  <% end %>
+  <% if show_oidc_options? %>
+    <%= render partial:'redirects_oidc' %>
+  <% end %>
 </div>

@@ -5,3 +5,4 @@
   <p class="usa-intro"><%= t('service_provider_form.before_start_1_html') %></p>
   <p class="usa-intro"><%= t('service_provider_form.before_start_2_html') %></p>
 </div>
+<%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>

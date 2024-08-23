@@ -18,6 +18,25 @@ feature 'Service Config Wizard' do
         expect(completed_steps.count).to be(index)
         click_on 'Next' unless step == ServiceConfigWizardController::STEPS[-1]
       end
+      click_on t('service_provider_form.save_new')
+      # Return to the list of service providers on completing the wizard
+      expect(current_url).to eq(service_providers_url)
+    end
+
+    it 'can remember something filled in' do
+      test_name = "Test name #{rand(1..1000)}"
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.authentication'))
+        click_on 'Back'
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+      expect(find('#wizard_step_friendly_name').value).to eq(test_name)
     end
   end
 
