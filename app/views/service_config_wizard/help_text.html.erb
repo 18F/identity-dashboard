@@ -13,8 +13,8 @@
             <%= s.collection_radio_buttons(
               :en,
               t('service_provider_form.help_text.sign_in', deep_interpolation: true,
-                sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
-                agency: @service_provider.agency&.name || '<Agency>'
+                sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                agency: draft_service_provider['agency']&.name || '<Agency>'
               ),
               :first,
               :last,
@@ -36,8 +36,8 @@
             <%= s.collection_radio_buttons(
               :en,
                 t('service_provider_form.help_text.sign_up', deep_interpolation: true,
-                  sp_name: @service_provider.friendly_name || '<Application Friendly Name>',
-                  agency: @service_provider.agency&.name || '<Agency>'
+                  sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                  agency: draft_service_provider['agency']&.name || '<Agency>'
                 ),
                 :first,
                 :last,
@@ -76,5 +76,9 @@
         <%= form.hint t('service_provider_form.custom_help_text_html') %>
       </div>
     </div>
+    <%= form.submit last_step_message, class: 'usa-button' %>
+    <% if show_cancel? %>
+      <%= form.submit 'Cancel', class: 'usa-button' %>
+    <% end %>
   <% end %>
 </div>
