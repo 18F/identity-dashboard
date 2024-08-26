@@ -2,14 +2,19 @@
   [Method] form such that form is a valid instance of wizard_form
   [Symbol] db_fieldname such that the database has an associated column
   [Hash] inputs hash where key is the label and value is the input value
+  [Boolean] required whether this field is required
 %>
-<%= form.collection_radio_buttons(db_fieldname,
-                                  inputs,
-                                  :last, :first,
-                                  item_wrapper_tag: :ul,
-                                  item_wrapper_class: "usa-input-list") do |b| %>
-  <li>
-    <%= b.radio_button(class: "usa-radio__input") %>
-    <%= b.label(class: "usa-radio__label")%>
-  </li>
+<ul class="usa-input-list">
+  <%= form.collection_radio_buttons(db_fieldname,
+                                    inputs,
+                                    :last, :first,
+                                    item_wrapper_tag: :li) do |b| %>
+    <%= b.radio_button(class: "usa-radio__input", aria: { required: required }) %>
+    <%= b.label(class: "usa-radio__label") %>
+  <% end %>
+</ul>
+<% if form.object.errors[db_fieldname].length > 0 %>
+  <p class="usa-error-message" role="alert">
+    <%= form.object.errors[db_fieldname].to_sentence.presence %>
+  </p>
 <% end %>

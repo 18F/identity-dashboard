@@ -3,12 +3,12 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
-                 as: :text,
                  disabled: issuer_read_only?,
+                 required: true,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
-                 hint: if form.object.persisted?
+                 hint: if form.object.persisted? && !is_draft?
                      t('service_provider_form.change_issuer')
                    else
                      t('service_provider_form.issuer_html')

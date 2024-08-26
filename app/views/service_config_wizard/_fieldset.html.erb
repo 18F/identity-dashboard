@@ -29,12 +29,14 @@
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
+        required: required,
       } %>
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
+        required: required,
       } %>
     <% end %>
   </div>

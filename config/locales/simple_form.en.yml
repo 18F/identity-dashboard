@@ -35,7 +35,7 @@ en:
           sign_up: Sign-up
           forgot_password: Forgot password
           custom_help: Custom help text
-        ial: Identity Assurance Level (IAL1 or IAL2)
+        ial: Level of service
         identity_protocol: Identity Protocol
         issuer: Issuer
         logo_file: Logo file
