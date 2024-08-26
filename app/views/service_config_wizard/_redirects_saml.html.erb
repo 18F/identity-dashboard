@@ -23,26 +23,19 @@
                  include_blank: false,
                  hint: t('service_provider_form.saml_assertion_encryption') %>
 
-  <fieldset class="wizard-field radio service_provider_signed_response_message_requested">
-    <legend class='usa-sr-only'>
-      <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
-    </legend>
-    <div class="usa-label__group">
-      <label class="usa-label radio optional" aria-hidden="true">
-        <%= t('simple_form.labels.service_provider.signed_response_message_requested') %>
-      </label>
-    </div>
-    <div class="usa-input__container">
-      <%= form.collection_radio_buttons(:signed_response_message_requested,
-                                        { "Yes" => true, "No" => false },
-                                        :last, :first,
-                                        item_wrapper_tag: :div,
-                                        item_wrapper_class: 'usa-radio') do |b| %>
-        <%=  b.radio_button(class: "usa-radio__input") %>
-        <%=  b.label(class: "usa-radio__label")%>
-      <% end %>
-    </div>
-  </fieldset>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'signed_response_message_requested',
+      description: false,
+      html_desc: false,
+      input_type: 'radio',
+      required: false,
+      db_fieldname: :signed_response_message_requested,
+      inputs: {
+        "Yes" => true,
+        "No" => false,
+      },
+    } %>
   
 
   <%= form.input :return_to_sp_url,
@@ -53,6 +46,7 @@
                 hint: t('service_provider_form.return_to_app_url_html') %>
 
   <%= form.input :push_notification_url,
+                 as: :text,
                  input_html: { class: 'usa-input' },
                  label: t('simple_form.labels.service_provider.push_notification_url'),
                  hint: t('service_provider_form.push_notification_url') %>
@@ -61,5 +55,5 @@
                  input_html: { class: 'usa-input' },
                  label: t('simple_form.labels.service_provider.redirect_uris_saml'),
                  hint: t('service_provider_form.saml_redirects_html') %>
-  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
+  <%= render partial:'footer', locals: { form: form } %>
 <% end %>
