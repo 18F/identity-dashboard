@@ -32,4 +32,8 @@ module ServiceConfigWizardHelper
   def show_cancel?
     IdentityConfig.store.service_config_wizard_enabled && current_user.admin?
   end
+
+  def is_draft?
+    !@service_provider
+  end
 end
