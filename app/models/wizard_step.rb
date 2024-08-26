@@ -31,24 +31,24 @@ class WizardStep < ApplicationRecord
   STEP_DATA = {
     intro: WizardStep::Definition.new,
     settings: WizardStep::Definition.new({
+      app_name: '',
+      description: '',
+      friendly_name: '',
       group_id: 0,
       prod_config: false,
-      app_name: '',
-      friendly_name: '',
-      description: '',
     }),
     authentication: WizardStep::Definition.new({
+      attribute_bundle: [],
+      default_aal: nil,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: 1,
-      default_aal: nil,
-      attribute_bundle: [],
     }),
     issuer: WizardStep::Definition.new({
       issuer: '',
     }),
     logo_and_cert: WizardStep::Definition.new({
-      certificates: [],
       certs: [],
+      certificates: [],
       logo_name: '',
       remote_logo_key: '',
     }),
