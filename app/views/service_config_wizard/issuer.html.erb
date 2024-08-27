@@ -3,15 +3,16 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
-                 disabled: issuer_saved?,
+                 as: :text,
+                 disabled: form.object.persisted?,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if form.object.persisted?
-                     I18n.t('service_provider_form.change_issuer')
+                     t('service_provider_form.change_issuer')
                    else
                      t('service_provider_form.issuer_html')
                    end %>
-  <%= form.submit 'Next', class: 'usa-button' if not last_step?  %>
+  <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>

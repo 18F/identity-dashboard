@@ -1,73 +1,40 @@
 <h1 class="usa-display"><%= t('service_provider_form.wizard_steps.help_text') %></h1>
-<p class="usa-intro"><%= t('service_provider_form.wizard_steps.help_text') %></p>
+<p class="usa-intro"><%= t('simple_form.lead.help_text') %></p>
 <div class="wizard-main">
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <%= h.fields_for :sign_in do |s| %>
-        <fieldset class="wizard-field radio service_provider_help_text_sign_in">
-          <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.help_text.sign_in') %></legend>
-          <div class="usa-label__group">
-            <p class="usa-label radio optional"><%= t('simple_form.labels.service_provider.help_text.sign_in') %></p>
-          </div>
-          <div class="usa-input__container">
-            <%= s.collection_radio_buttons(
-              :en,
-              t('service_provider_form.help_text.sign_in', deep_interpolation: true,
-                sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
-                agency: draft_service_provider['agency']&.name || '<Agency>'
-              ),
-              :first,
-              :last,
-              { checked: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS)}
-                ) do |r| %>
-              <%= r.radio_button(class: 'usa-radio__input') %>
-              <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
-            <% end %>
-          </div>
-        </fieldset>
+        <%= s.input :sign_in,
+                    as: :usa_collection_select,
+                    required: false,
+                    label: t('simple_form.labels.service_provider.help_text.sign_in'),
+                    collection: t('service_provider_form.help_text.sign_in', deep_interpolation: true,
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
+                      ).to_a.map { |a| [a[1], a[0]] },
+                    selected: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :sign_up do |s| %>
-        <fieldset class="wizard-field radio service_provider_help_text_sign_up">
-          <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.help_text.sign_up') %></legend>
-          <div class="usa-label__group">
-            <p class="usa-label radio optional"><%= t('simple_form.labels.service_provider.help_text.sign_up') %></p>
-          </div>
-          <div class="usa-input__container">
-            <%= s.collection_radio_buttons(
-              :en,
-                t('service_provider_form.help_text.sign_up', deep_interpolation: true,
-                  sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
-                  agency: draft_service_provider['agency']&.name || '<Agency>'
-                ),
-                :first,
-                :last,
-                { checked: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS)}
-              ) do |r| %>
-              <%= r.radio_button(class: 'usa-radio__input') %>
-              <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
-            <% end %>
-          </div>
-        </fieldset>
+        <%= s.input :sign_up,
+                    as: :usa_collection_select,
+                    required: false,
+                    label: t('simple_form.labels.service_provider.help_text.sign_up'),
+                    collection: t('service_provider_form.help_text.sign_up', deep_interpolation: true,
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
+                      ).to_a.map { |a| [a[1], a[0]] },
+                    selected: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :forgot_password do |f| %>
-        <fieldset class="wizard-field radio service_provider_help_text_forgot_password">
-          <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.help_text.forgot_password') %></legend>
-          <div class="usa-label__group">
-            <p class="usa-label radio optional"><%= t('simple_form.labels.service_provider.help_text.forgot_password') %></p>
-          </div>
-          <div class="usa-input__container">
-            <%= f.collection_radio_buttons(
-              :en,
-              t('service_provider_form.help_text.forgot_password'),
-              :first,
-              :last,
-              { checked: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS)}
-            ) do |r| %>
-              <%= r.radio_button(class: 'usa-radio__input') %>
-              <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
-            <% end %>
-          </div>
-        </fieldset>
+        <%= f.input :forgot_password,
+                    as: :usa_collection_select,
+                    required: false,
+                    label: t('simple_form.labels.service_provider.help_text.forgot_password'),
+                    collection: t('service_provider_form.help_text.forgot_password', deep_interpolation: true,
+                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
+                        agency: draft_service_provider['agency']&.name || '<Agency>'
+                      ).to_a.map { |a| [a[1], a[0]] },
+                    selected: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
     <% end %>
     <div class="wizard-field">
@@ -76,9 +43,6 @@
         <%= form.hint t('service_provider_form.custom_help_text_html') %>
       </div>
     </div>
-    <%= form.submit last_step_message, class: 'usa-button' %>
-    <% if show_cancel? %>
-      <%= form.submit 'Cancel', class: 'usa-button' %>
-    <% end %>
+    <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>

@@ -5,7 +5,7 @@ en:
       service_provider:
        logo: 'generic.svg'
     required:
-      html: '<abbr class="text-secondary-dark">(*required)</abbr>'
+      html: '<abbr class="text-secondary-dark" title="required">*</abbr>'
     lead:
       authentication_html: "The <a class='usa-link' href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect page</a> and the <a class='usa-link' href='https://developers.login.gov/saml/getting-started/'>SAML page</a> of the Developer docs have more information about the authentication requirements."
       help_text: You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.
@@ -13,6 +13,7 @@ en:
       settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our Developer docs</a> has additional information about setting up your app."
     labels:
       required: required
+      select: "- Select -"
       service_provider:
         acs_url: Assertion Consumer Service URL
         active: Accessible
@@ -24,6 +25,7 @@ en:
         block_encryption: SAML Assertion Encryption
         cert_file: Choose a cert file
         dashboard_config: Dashboard configuration
+        default_aal: Default Authentication Assurance Level (AAL)
         description: Description
         error: "ERROR:"
         failure_to_proof_url: Failure to Proof URL

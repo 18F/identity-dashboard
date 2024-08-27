@@ -90,7 +90,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
+    <%= form.hint t('service_provider_form.attribute_bundle') %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>

@@ -33,7 +33,7 @@ SimpleForm.setup do |config|
   config.default_wrapper = :vertical_form
   config.label_text = lambda do |label, required, _explicit_label|
     # rubocop:disable Rails/OutputSafety
-    label + ' ' + required.html_safe
+    label + required.html_safe
     # rubocop:enable Rails/OutputSafety
   end
 end
