@@ -1,8 +1,10 @@
+require 'pry'
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
+  AUTH_STEP = 'authentication'
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -35,6 +37,8 @@ class ServiceConfigWizardController < AuthenticatedController
       attach_cert
       remove_certificates
       attach_logo_file if logo_file_param
+    elsif step == AUTH_STEP
+      aal_form_adjust
     end
     unless skippable && params[:wizard_step].blank?
       @model.data = @model.data.merge(wizard_step_params)
@@ -131,6 +135,12 @@ class ServiceConfigWizardController < AuthenticatedController
     # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
     permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:wizard_step).permit(*permit_params)
+  end
+
+  def aal_form_adjust
+    if params[:wizard_step][:default_aal] == '1'
+      params[:wizard_step][:default_aal] = nil
+    end
   end
 
   # relies on ServiceProvider#certs_are_pems for validation

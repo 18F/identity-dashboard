@@ -42,6 +42,8 @@ class WizardStep < ApplicationRecord
       default_aal: nil,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: 1,
+      default_aal: 1,
+      attribute_bundle: [],
     }),
     issuer: WizardStep::Definition.new({
       issuer: '',
