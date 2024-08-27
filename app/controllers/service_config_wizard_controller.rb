@@ -180,6 +180,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def skippable
+    return true if step == 'issuer' && issuer_read_only?
     step == UPLOAD_STEP
   end
 
