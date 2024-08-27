@@ -18,6 +18,9 @@ feature 'Service Config Wizard' do
         expect(completed_steps.count).to be(index)
         click_on 'Next' unless step == ServiceConfigWizardController::STEPS[-1]
       end
+      # We should now be on the last step
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.help_text'))
       click_on t('service_provider_form.save_new')
       # Return to the list of service providers on completing the wizard
       expect(current_url).to eq(service_providers_url)

@@ -84,6 +84,25 @@ RSpec.describe ServiceConfigWizardController do
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
     end
+
+    describe 'logo and cert' do
+      it 'adds new certs uploaded to the certs array' do
+        file = Rack::Test::UploadedFile.new(
+                 StringIO.new(build_pem(serial: 10)),
+                 original_filename: 'my-cert.crt',
+               )
+
+        put :update,
+          params: {
+            id: 'logo_and_cert',
+            wizard_step: { cert: file},
+          }
+        logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
+        binding.pry
+        has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
+        expect(has_serial).to eq(true)
+      end
+    end
   end
 
   context 'when not logged in' do

@@ -59,8 +59,6 @@ class ServiceConfigWizardController < AuthenticatedController
       all_data = policy_scope(WizardStep).
         all.
         reduce({}) {|memo, record| memo.merge(record.data)}
-      # TODO: implement certificate file uploads
-      all_data.delete('certificates')
       all_data['redirect_uris'] = [all_data['redirect_uris']]
       all_data['logo'] = all_data.delete('logo_name')
       ServiceProvider.new(**all_data)

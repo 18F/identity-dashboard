@@ -48,7 +48,6 @@ class WizardStep < ApplicationRecord
     }),
     logo_and_cert: WizardStep::Definition.new({
       certs: [],
-      certificates: [],
       logo_name: '',
       remote_logo_key: '',
     }),
@@ -92,9 +91,33 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  # @return [Array<ServiceProviderCertificate>]
+  # @throw [NameError] if this step doesn't have certs
+  def certificates
+    @certificates ||= Array(certs).map do |cert|
+      ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
+    rescue OpenSSL::X509::CertificateError
+      null_certificate
+    end
+  end
+
+  def remove_certificate(serial)
+    certs&.delete_if do |cert|
+      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
+    rescue OpenSSL::X509::CertificateError
+      nil
+    end
+
+    # clear memoization for #certificates
+    @certificates = nil
+
+    serial
+  end
+
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
-      data.with_indifferent_access[name] || STEP_DATA[step_name].fields[name]
+      data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
+      data[name.to_s]
     else
       super
     end
