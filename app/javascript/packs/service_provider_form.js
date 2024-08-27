@@ -142,7 +142,7 @@ function certificateUploadSetup() {
 function logoUploadSetup() {
   // Selectors
   const logoInput = document.querySelector('.logo-input-file');
-  const logoPreview = document.querySelector('.input-preview');
+  const logoPreview = document.querySelector('.input-preview') || document.querySelector('.logo-preview');
 
   if (!logoInput) {
     return;

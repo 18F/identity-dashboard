@@ -137,7 +137,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def attach_cert
     return if params.dig(:wizard_step, :cert).blank?
 
-    @model.certs ||= []
     crt = params[:wizard_step].delete(:cert).read
     @model.certs << crt unless crt.blank?
   end

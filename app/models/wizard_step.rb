@@ -122,4 +122,15 @@ class WizardStep < ApplicationRecord
       super
     end
   end
+
+  private
+
+  def null_certificate
+    time = Time.zone.at(0)
+    OpenStruct.new(
+      issuer: 'Null Certificate',
+      not_before: time,
+      not_after: time,
+    )
+  end
 end

@@ -23,7 +23,7 @@
           <p><%= I18n.t('service_provider_form.logo_input') %></p>
           <%= form.label :logo_file,
                           label: 'Choose a file',
-                          class: 'usa-button file-input-button',
+                          class: 'usa-button',
                           id: 'logo-file-button' %>
           <p class='usa-error-message' id='logo-upload-error'>
             <% if form.object.errors[:logo_file].present? %>
@@ -31,10 +31,10 @@
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
           </p>
-        </div>
           <%= content_tag :div,
                           "No new file selected",
-                          class: 'input-preview' %>
+                          class: 'logo-preview margin-top-4' %>
+        </div>
       </div>
     </fieldset>
 
@@ -79,8 +79,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
             <label class="usa-button file-input-button" for="wizard_step_cert">
               <%= t('simple_form.labels.service_provider.cert_file') %>
             </label>
-            <div class="margin-top-4 js-pem-file-name"></div>
           </div>
+          <div class="margin-top-4 js-pem-file-name"></div>
         </div>
       </div>
     </fieldset>
