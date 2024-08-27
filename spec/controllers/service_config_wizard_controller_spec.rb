@@ -98,7 +98,6 @@ RSpec.describe ServiceConfigWizardController do
             wizard_step: { cert: file},
           }
         logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
-        binding.pry
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
         expect(has_serial).to eq(true)
       end

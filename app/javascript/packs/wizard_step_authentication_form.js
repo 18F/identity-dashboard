@@ -33,8 +33,6 @@ function ialWizardOptionSetup() {
         toggleIAL1Options();
         break;
       case '2':
-        toggleIAL2Options();
-        break;
       default:
         toggleIAL2Options();
     }

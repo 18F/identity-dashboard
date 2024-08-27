@@ -105,7 +105,7 @@ function protocolOptionSetup() {
 function certificateUploadSetup() {
   // Selectors
   const pemInputMessage = document.querySelector('.js-pem-input-error-message');
-  const pemInput = document.querySelector('.js-pem-input') || document.querySelector('#pem-input');
+  const pemInput = document.querySelector('.js-pem-input') || document.getElementById('pem-input');
   const pemFilename = document.querySelector('.js-pem-file-name');
 
   if (!pemInput) { return; }
