@@ -164,7 +164,7 @@ class WizardStep < ApplicationRecord
     when STEP_NAMES[:ISSUER]
       required_params = [ issuer ]
     when STEP_NAMES[:REDIRECTS]
-      required_params = show_saml_options? ? [
+      required_params = :identity_protocol == 'saml' ? [
           acs_url,
           return_to_sp_url,
         ] : []

@@ -10,10 +10,10 @@
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if issuer_read_only?
-                     t('service_provider_form.change_issuer')
-                   else
-                     t('service_provider_form.issuer_html')
-                   end %>
+                    t('service_provider_form.change_issuer')
+                  else
+                    t('service_provider_form.issuer_html') + t('service_provider_form.issuer_saml_html')
+                  end %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>

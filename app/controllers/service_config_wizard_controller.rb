@@ -180,7 +180,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def skippable
-    return true if step == 'issuer' && issuer_saved?
+    return true if step == 'issuer' && issuer_read_only?
     # TODO: reenable uploads in a follow-up change
     step == UPLOAD_STEP
   end
