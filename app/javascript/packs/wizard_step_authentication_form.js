@@ -3,8 +3,9 @@ const hideElement = (element) => element.classList.add('display-none');
 
 function ialWizardOptionSetup() {
   // Selectors
-  const ialLevels =  document.querySelectorAll('input[name="wizard_step[ial]"]');
-  const ialLevelSelected = document.querySelector('input[name="wizard_step[ial]"][checked]')?.value || "1";
+  const ialLevels = document.querySelectorAll('input[name="wizard_step[ial]"]');
+  const ialLevelSelected = (document.querySelector('input[name="wizard_step[ial]"][checked]') &&
+    document.querySelector('input[name="wizard_step[ial]"][checked]').value) || "1";
   const ialAttributesCheckboxes = document.querySelectorAll('input[name="wizard_step[attribute_bundle][]"][type="checkbox"]');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
 
@@ -46,8 +47,8 @@ function ialWizardOptionSetup() {
   ialLevels.forEach((element) => {
     element.addEventListener("change", (event) => {
       toggleIALOptions(event.target.value);
-    })
-  })
+    });
+  });
 }
 
-window.addEventListener('DOMContentLoaded', ialWizardOptionSetup)
+window.addEventListener('DOMContentLoaded', ialWizardOptionSetup);

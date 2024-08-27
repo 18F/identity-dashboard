@@ -7,9 +7,9 @@ function ialOptionSetup() {
   const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
   const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
-  const failureToProofURLInput = failureToProofURL?.querySelector('input');
+  const failureToProofURLInput = failureToProofURL && failureToProofURL.querySelector('input');
 
-  if (!failureToProofURL) { return }
+  if (!failureToProofURL) { return; }
 
   // Functions
   const toggleIAL1Options = () => {
@@ -61,7 +61,7 @@ function protocolOptionSetup() {
   const spAcsUrl = document.getElementById('service_provider_acs_url');
   const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
 
-  if(idProtocols.length < 1) { return; }
+  if (idProtocols.length < 1) { return; }
 
   // Functions
   const toggleSAMLOptions = () => {
@@ -108,7 +108,7 @@ function certificateUploadSetup() {
   const pemInput = document.querySelector('.js-pem-input') || document.querySelector('#pem-input');
   const pemFilename = document.querySelector('.js-pem-file-name');
 
-  if(!pemInput) { return; }
+  if (!pemInput) { return; }
 
   // Functions
   const setPemError = (message) => {
@@ -164,7 +164,7 @@ function redirectURISetup() {
   const redirectURIContainer = document.querySelector('.service_provider_redirect_uris');
   const redirectURI = document.getElementById('add-redirect-uri-field');
 
-  if(!redirectURI) { return; }
+  if (!redirectURI) { return; }
 
   // Functions
   const handleRedirectURIClick = () => {
