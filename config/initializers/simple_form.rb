@@ -25,7 +25,9 @@ SimpleForm.setup do |config|
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
-      c.use :input, class: 'block col-12', aria: { required: :required }  # usa-input'
+      c.use :input,
+            class: 'block col-12', # usa-input'
+            aria: { required: :aria_required }
       c.use :error, wrap_with: { tag: 'p', class: 'usa-error-message' }
     end
   end

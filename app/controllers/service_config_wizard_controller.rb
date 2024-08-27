@@ -2,15 +2,9 @@ class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   STEPS = WizardStep::STEPS
   steps(*STEPS)
-  STEP_NAMES = {
-    INTRO: 'intro',
-    SETTINGS: 'settings',
-    AUTH: 'authentication',
-    ISSUER: 'issuer',
-    UPLOAD: 'logo_and_cert',
-    REDIRECTS: 'redirects',
-    HELP: 'help_text',
-  }
+  UPLOAD_STEP = 'logo_and_cert'
+  AUTH_STEP = 'authentication'
+
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -37,13 +31,13 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def update
     return destroy if can_cancel?
-    if step == STEP_NAMES.UPLOAD
+    if step == UPLOAD_STEP
       # TODO: clean up when implementing file uploads, this currently does nothing
       # This was copied from ServiceProvidersController
       attach_cert
       remove_certificates
       attach_logo_file if logo_file_param
-    elsif step == STEP_NAMES.AUTH
+    elsif step == AUTH_STEP
       aal_form_adjust
     end
     unless skippable && params[:wizard_step].blank?
@@ -143,40 +137,6 @@ class ServiceConfigWizardController < AuthenticatedController
     params.require(:wizard_step).permit(*permit_params)
   end
 
-  def validate_required_params
-    case current_step
-    when STEP_NAMES.SETTINGS
-      required_params = [
-        :group_id,
-        :prod_config,
-        :app_name,
-        :friendly_name,
-      ]
-    when STEP_NAMES.AUTH
-      required_params = [
-        :identity_protocol,
-        :ial,  
-      ]
-    when STEP_NAMES.ISSUER
-      required_params = [ :issuer ]
-    when STEP_NAMES.REDIRECTS 
-      required_params = show_saml_options?
-        ? [
-          :acs_url,
-          :return_to_sp_url,
-        ]
-        : []
-    else
-      required_params = []
-    end
-
-    required_params.each { |key|
-      if !params[:wizard_step][key] {
-        puts 'Error: This field is empty!'
-      }
-    }
-  end
-
   def aal_form_adjust
     if params[:wizard_step][:default_aal] == '1'
       params[:wizard_step][:default_aal] = nil
@@ -222,7 +182,7 @@ class ServiceConfigWizardController < AuthenticatedController
   def skippable
     return true if step == 'issuer' && issuer_saved?
     # TODO: reenable uploads in a follow-up change
-    step == STEP_NAMES.UPLOAD
+    step == UPLOAD_STEP
   end
 
   def can_cancel?

@@ -10,6 +10,8 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  validate :validate_required_params
+
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
 
   def step_name=(new_name)
@@ -69,6 +71,15 @@ class WizardStep < ApplicationRecord
     }),
   }.with_indifferent_access.freeze
   STEPS = STEP_DATA.keys
+  STEP_NAMES = {
+    INTRO: 'intro',
+    SETTINGS: 'settings',
+    AUTH: 'authentication',
+    ISSUER: 'issuer',
+    UPLOAD: 'logo_and_cert',
+    REDIRECTS: 'redirects',
+    HELP: 'help_text',
+  }
 
   belongs_to :user
   enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
@@ -134,5 +145,37 @@ class WizardStep < ApplicationRecord
       not_before: time,
       not_after: time,
     )
+  end
+
+  def validate_required_params
+    case step_name
+    when STEP_NAMES[:SETTINGS]
+      required_params = [
+        group_id,
+        prod_config,
+        app_name,
+        friendly_name,
+      ]
+    when STEP_NAMES[:AUTH]
+      required_params = [
+        identity_protocol,
+        ial,  
+      ]
+    when STEP_NAMES[:ISSUER]
+      required_params = [ issuer ]
+    when STEP_NAMES[:REDIRECTS]
+      required_params = show_saml_options? ? [
+          acs_url,
+          return_to_sp_url,
+        ] : []
+    else
+      required_params = []
+    end
+
+    required_params.each { |key|
+      if key == ''
+        errors.add(key.to_sym, 'This field must not be blank')
+      end
+    }
   end
 end

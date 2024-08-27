@@ -2,6 +2,7 @@
 <p class="usa-intro"><%= t('simple_form.lead.help_text') %></p>
 <div class="wizard-main">
   <%= wizard_form do |form| %>
+    <%= form.error_notification %>
     <%= form.fields_for :help_text do |h| %>
       <%= h.fields_for :sign_in do |s| %>
         <%= s.input :sign_in,
