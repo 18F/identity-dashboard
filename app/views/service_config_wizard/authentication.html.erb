@@ -2,6 +2,7 @@
 <p class="usa-intro"><%= t('simple_form.lead.authentication_html') %></p>
 <div class="wizard-main">
 <%= wizard_form do |form| %>
+  <%= form.error_notification %>
   <%= render partial: 'fieldset', locals: {
       form: form,
       fieldname: 'identity_protocol',
@@ -9,7 +10,7 @@
       html_desc: false,
       db_fieldname: :identity_protocol,
       input_type: 'radio',
-      required: true,
+      aria_required: true,
       inputs: ServiceProvider.identity_protocols.map { |k,v|
         [titleize(k), k] }.to_h,
     } %>
@@ -21,7 +22,7 @@
       html_desc: true,
       db_fieldname: :ial,
       input_type: 'radio',
-      required: true,
+      aria_required: true,
       inputs: {
         t('service_provider_form.ial_option_1') => 1,
         t('service_provider_form.ial_option_2') => 2,
@@ -35,7 +36,7 @@
       html_desc: false,
       db_fieldname: :default_aal,
       input_type: 'radio',
-      required: true,
+      aria_required: true,
       inputs: {
         t('service_provider_form.aal_option_default') => 1,
         t('service_provider_form.aal_option_2') => 2,
@@ -50,7 +51,7 @@
       html_desc: false,
       db_fieldname: :attribute_bundle,
       input_type: 'checkbox',
-      required: false,
+      aria_required: false,
       inputs: ServiceProvider.possible_attributes
     } %>
   <%= render partial:'footer', locals: { form: form } %>

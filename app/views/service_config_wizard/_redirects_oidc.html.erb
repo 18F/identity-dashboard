@@ -1,5 +1,6 @@
 <h2>OpenID Connect (OIDC) requirements</h2>
 <%= wizard_form do |form| %>
+  <%= form.error_notification %>
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: t('simple_form.labels.service_provider.push_notification_url'),

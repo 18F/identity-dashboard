@@ -2,9 +2,10 @@
 <p class="usa-intro"><%= t('simple_form.lead.issuer_html') %></p>
 <div class="wizard-main">
 <%= wizard_form do |form| %>
+  <%= form.error_notification %>
   <%= form.input :issuer,
                  disabled: issuer_read_only?,
-                 required: true,
+                 aria_required: true,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
