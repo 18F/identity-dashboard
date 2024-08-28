@@ -11,7 +11,13 @@ class ServiceConfigWizardController < AuthenticatedController
   after_action :verify_authorized
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
   after_action :verify_policy_scoped, unless: -> { when_skipping_models }
-  helper_method %i[issuer_saved? draft_service_provider show_saml_options? show_oidc_options?]
+  helper_method %i[
+    issuer_read_only?
+    draft_service_provider
+    show_saml_options?
+    show_oidc_options?
+    show_proof_failure_url?
+  ]
 
   def new
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
@@ -44,8 +50,8 @@ class ServiceConfigWizardController < AuthenticatedController
     redirect_to finish_wizard_path
   end
 
-  def issuer_saved?
-    @model.persisted? && @model.issuer&.present?
+  def issuer_read_only?
+    false # This will have to be updated when we add the ability to edit existing service providers
   end
 
   def draft_service_provider
@@ -53,20 +59,22 @@ class ServiceConfigWizardController < AuthenticatedController
       all_data = policy_scope(WizardStep).
         all.
         reduce({}) {|memo, record| memo.merge(record.data)}
-      # TODO: implement certificate file uploads
-      all_data.delete('certificates')
       all_data['redirect_uris'] = [all_data['redirect_uris']]
+      all_data['logo'] = all_data.delete('logo_name')
       ServiceProvider.new(**all_data)
     end
   end
 
   def show_saml_options?
-    # TODO: fix this with SAML vs OIDC display logic
-    false
+    auth_step && auth_step.identity_protocol == 'saml'
   end
 
   def show_oidc_options?
     !show_saml_options?
+  end
+
+  def show_proof_failure_url?
+    auth_step && auth_step.ial.to_i > 1
   end
 
   private
@@ -75,6 +83,10 @@ class ServiceConfigWizardController < AuthenticatedController
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
+  end
+
+  def auth_step
+    @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
   end
 
   def redirect_unless_flagged_in
@@ -125,7 +137,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def attach_cert
     return if params.dig(:wizard_step, :cert).blank?
 
-    @model.certs ||= []
     crt = params[:wizard_step].delete(:cert).read
     @model.certs << crt unless crt.blank?
   end
@@ -151,9 +162,14 @@ class ServiceConfigWizardController < AuthenticatedController
     cache_logo_info
   end
 
+  def cache_logo_info
+    @model.data = @model.data.merge({
+      logo_name: @model.logo_file.filename.to_s,
+      remote_logo_key: @model.logo_file.key,
+    })
+  end
+
   def skippable
-    return true if step == 'issuer' && issuer_saved?
-    # TODO: reenable uploads in a follow-up change
     step == UPLOAD_STEP
   end
 

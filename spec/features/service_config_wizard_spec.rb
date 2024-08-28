@@ -18,6 +18,9 @@ feature 'Service Config Wizard' do
         expect(completed_steps.count).to be(index)
         click_on 'Next' unless step == ServiceConfigWizardController::STEPS[-1]
       end
+      # We should now be on the last step
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.help_text'))
       click_on t('service_provider_form.save_new')
       # Return to the list of service providers on completing the wizard
       expect(current_url).to eq(service_providers_url)
@@ -37,6 +40,23 @@ feature 'Service Config Wizard' do
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+    end
+
+    it 'has the correct SAML block encryption option as default' do
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      fill_in('Friendly name', with: 'My App')
+      click_on 'Next'
+      choose 'SAML'
+      click_on 'Next'
+      fill_in('Issuer', with: 'test:saml:issuer')
+      click_on 'Next'
+      click_on 'Next' # Skip logo upload for now
+      encryption_field = find_field('SAML Assertion Encryption')
+      expected_text = ServiceProvider.block_encryptions.keys.join(' ')
+      expect(encryption_field.text).to eq(expected_text)
+      expected_key = ServiceProvider.block_encryptions.keys.last
+      expect(encryption_field.value.downcase).to eq(expected_key.downcase)
     end
   end
 
