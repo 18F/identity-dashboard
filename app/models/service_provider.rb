@@ -17,12 +17,9 @@ class ServiceProvider < ApplicationRecord
   has_one :agency, through: :team
 
   has_one_attached :logo_file
-  validate :logo_is_less_than_mb
-  validate :logo_file_mime_type
-  validate :logo_file_ext_matches_type
-  validate :validate_logo_svg
-  validate :certs_are_pems
-  validate :validate_attribute_bundle
+  validates_with LogoValidator
+  validates_with CertsArePemsValidator
+  validate :attribute_bundle, attribute_bundle: true
 
   enum block_encryption: { 'none' => 0, 'aes256-cbc' => 1 }, _suffix: 'encryption'
   enum identity_protocol: { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
@@ -32,27 +29,6 @@ class ServiceProvider < ApplicationRecord
   end
 
   before_save :sanitize_help_text_content
-
-  ALLOWED_IAL1_ATTRIBUTES = %w[
-    email
-    all_emails
-    verified_at
-    x509_subject
-    x509_presented
-  ].freeze
-
-  ALLOWED_IAL2_ATTRIBUTES = %w[
-    first_name
-    last_name
-    dob
-    ssn
-    address1
-    address2
-    city
-    state
-    zipcode
-    phone
-  ].freeze
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p
@@ -91,7 +67,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def self.possible_attributes
-    Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
+    AttributeBundleValidator.possible_attributes
   end
 
   def recently_approved?
@@ -100,15 +76,6 @@ class ServiceProvider < ApplicationRecord
 
   def redirect_uris=(uris)
     super uris.select(&:present?)
-  end
-
-  def svg_xml
-    return if attachment_changes['logo_file'].blank?
-    if attachment_changes['logo_file'].attachable.respond_to?(:open)
-      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable.open))
-    else
-      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable[:io]))
-    end
   end
 
   # @return [Array<ServiceProviderCertificate>]
@@ -160,115 +127,4 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
-
-  def logo_file_ext_matches_type
-    return unless logo_file.attached?
-
-    filename = logo_file.blob.filename.to_s
-
-    file_ext = Regexp.new(
-      /#{ServiceProviderHelper::SP_MIME_EXT_MAPPINGS[logo_file.content_type]}$/i,
-    )
-
-    return if filename.match(file_ext)
-
-    errors.add(
-      :logo_file,
-      "The extension of the logo file you uploaded (#{filename}) does not match the content.",
-    )
-  end
-
-
-  def logo_is_less_than_mb
-    return unless logo_file.attached?
-
-    if logo_file.blob.byte_size > 1.megabytes
-      errors.add(:logo_file, 'Logo must be less than 1MB')
-      logo_file = nil # rubocop:disable Lint/UselessAssignment
-    end
-  end
-
-  def logo_file_mime_type
-    return unless logo_file.attached?
-    return if mime_type_valid?
-    errors.add(:logo_file, "The file you uploaded (#{logo_file.filename}) is not a PNG or SVG")
-    logo_file = nil # rubocop:disable Lint/UselessAssignment
-  end
-
-  def validate_logo_svg
-    return unless logo_file.attached?
-    return unless mime_type_svg?
-
-    svg = svg_xml
-
-    return if svg.blank?
-
-    svg_logo_has_size_attribute(svg)
-    svg_logo_has_script_tag(svg)
-  end
-
-  def svg_logo_has_size_attribute(svg)
-    return if svg_has_viewbox?(svg)
-    
-    errors.add(:logo_file, 
-"The logo file you uploaded (#{logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
-    logo_file = nil
-  end
-
-  def svg_logo_has_script_tag(svg)
-    return unless svg.css('script').present?
-
-    errors.add(:logo_file, 
-"The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
-    logo_file = nil
-  end
-
-  def svg_has_viewbox?(svg)
-    svg.css(':root[viewBox]').present?
-  end
-
-  def mime_type_svg?
-    logo_file.content_type.in?(ServiceProviderHelper::SVG_MIME_TYPE)
-  end
-
-  def mime_type_valid?
-    logo_file.content_type.in?(ServiceProviderHelper::SP_VALID_LOGO_MIME_TYPES)
-  end
-
-  def certs_are_pems
-    Array(certs).each do |cert|
-      next if cert.blank?
-
-      if cert.include?('----BEGIN CERTIFICATE----')
-        OpenSSL::X509::Certificate.new(cert)
-      else
-        errors.add(:certs, 'Certificate is a not PEM-encoded')
-      end
-    rescue OpenSSL::X509::CertificateError => err
-      errors.add(:certs, err.message)
-    end
-  end
-
-  def validate_attribute_bundle
-    # attribute bundle should not be empty when saml and ial2 are selected
-    if !attribute_bundle.present? && ial == 2 && identity_protocol == 'saml'
-      errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
-      return false
-    end
-
-    if attribute_bundle.present? && contains_invalid_attribute?
-      errors.add(:attribute_bundle, 'Contains invalid attributes')
-      return false
-    end
-
-    if ial == 1 && (attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
-      errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
-    end
-    true
-  end
-
-  def contains_invalid_attribute?
-    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
-    attribute_bundle.any? { |att| !possible_attributes.include?(att) }
-  end
 end

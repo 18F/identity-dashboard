@@ -38,6 +38,23 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
+  context 'step "settings"' do
+    subject { build(:wizard_step, step_name: 'settings')}
+
+    describe '#valid?' do
+      it 'can validate every setting' do
+        expect(subject.valid?).to be_falsey
+        binding.pry
+      end
+    end
+
+    context 'step "logo_and_cert"' do
+      it 'checks if certs are pems' do
+        
+      end
+    end
+  end
+
   context 'step "logo_and_cert"' do
     describe '#certificates' do
       let(:certs) { nil }

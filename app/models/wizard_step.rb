@@ -66,6 +66,14 @@ class WizardStep < ApplicationRecord
       help_text: { sign_in: ''},
     }),
   }.with_indifferent_access.freeze
+
+  validates :app_name, presence: true, on: 'settings'
+  validates :friendly_name, presence: true, on: 'settings'
+  validates :description, presence: true, on: 'settings'
+  validates :attribute_bundle, attribute_bundle: true, on: 'authentication'
+  validates_with CertsArePemsValidator, on: 'logo_and_cert'
+  validates_with LogoValidator, on: 'logo_and_cert'
+
   STEPS = STEP_DATA.keys
 
   belongs_to :user
