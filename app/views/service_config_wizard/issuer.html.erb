@@ -11,8 +11,10 @@
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if issuer_read_only?
                     t('service_provider_form.change_issuer')
-                  else
+                  elsif show_saml_options?
                     t('service_provider_form.issuer_html') + t('service_provider_form.issuer_saml_html')
+                  else
+                    t('service_provider_form.issuer_html') + t('service_provider_form.issuer_oidc_html')
                   end %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
