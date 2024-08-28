@@ -31,33 +31,36 @@ class WizardStep < ApplicationRecord
   STEP_DATA = {
     intro: WizardStep::Definition.new,
     settings: WizardStep::Definition.new({
+      app_name: '',
+      description: '',
+      friendly_name: '',
       group_id: 0,
       prod_config: false,
-      app_name: '',
-      friendly_name: '',
-      description: '',
     }),
     authentication: WizardStep::Definition.new({
+      attribute_bundle: [],
+      default_aal: nil,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: 1,
-      default_aal: nil,
-      attribute_bundle: [],
     }),
     issuer: WizardStep::Definition.new({
       issuer: '',
     }),
     logo_and_cert: WizardStep::Definition.new({
-      certificates: [],
+      certs: [],
+      logo_name: '',
+      remote_logo_key: '',
     }),
     redirects: WizardStep::Definition.new({
-      push_notification_url: '',
-      redirect_uris: '',
       acs_url: '',
       assertion_consumer_logout_service_url: '',
-      sp_initiated_login_url: '',
       block_encryption: DEFAULT_SAML_ENCRYPTION,
-      signed_response_message_requested: true,
+      failure_to_proof_url: '',
+      push_notification_url: '',
+      redirect_uris: '',
       return_to_sp_url: '',
+      signed_response_message_requested: true,
+      sp_initiated_login_url: '',
     }),
     help_text: WizardStep::Definition.new({
       help_text: { sign_in: ''},
@@ -67,13 +70,17 @@ class WizardStep < ApplicationRecord
 
   belongs_to :user
   enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
-  has_one_attached :draft_logo_file
+  has_one_attached :logo_file
 
   validates :step_name, presence: true
 
   # SimpleForm uses this
   def self.reflect_on_association(relation)
     ServiceProvider.reflect_on_association(relation)
+  end
+
+  def self.block_encryptions
+    ServiceProvider.block_encryptions
   end
 
   def valid?(*args)
@@ -84,11 +91,46 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  # @return [Array<ServiceProviderCertificate>]
+  # @throw [NameError] if this step doesn't have certs
+  def certificates
+    @certificates ||= Array(certs).map do |cert|
+      ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
+    rescue OpenSSL::X509::CertificateError
+      null_certificate
+    end
+  end
+
+  def remove_certificate(serial)
+    certs&.delete_if do |cert|
+      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
+    rescue OpenSSL::X509::CertificateError
+      nil
+    end
+
+    # clear memoization for #certificates
+    @certificates = nil
+
+    serial
+  end
+
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
-      data.with_indifferent_access[name] || STEP_DATA[step_name].fields[name]
+      data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
+      data[name.to_s]
     else
       super
     end
+  end
+
+  private
+
+  def null_certificate
+    time = Time.zone.at(0)
+    OpenStruct.new(
+      issuer: 'Null Certificate',
+      not_before: time,
+      not_after: time,
+    )
   end
 end
