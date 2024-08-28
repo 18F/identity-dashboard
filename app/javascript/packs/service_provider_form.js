@@ -7,7 +7,9 @@ function ialOptionSetup() {
   const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
   const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
-  const failureToProofURLInput = failureToProofURL.querySelector('input');
+  const failureToProofURLInput = failureToProofURL && failureToProofURL.querySelector('input');
+
+  if (!failureToProofURL) { return; }
 
   // Functions
   const toggleIAL1Options = () => {
@@ -59,6 +61,8 @@ function protocolOptionSetup() {
   const spAcsUrl = document.getElementById('service_provider_acs_url');
   const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
 
+  if (idProtocols.length < 1) { return; }
+
   // Functions
   const toggleSAMLOptions = () => {
     samlFields.forEach(showElement);
@@ -101,8 +105,10 @@ function protocolOptionSetup() {
 function certificateUploadSetup() {
   // Selectors
   const pemInputMessage = document.querySelector('.js-pem-input-error-message');
-  const pemInput = document.querySelector('.js-pem-input');
+  const pemInput = document.querySelector('.js-pem-input') || document.getElementById('pem-input');
   const pemFilename = document.querySelector('.js-pem-file-name');
+
+  if (!pemInput) { return; }
 
   // Functions
   const setPemError = (message) => {
@@ -136,7 +142,7 @@ function certificateUploadSetup() {
 function logoUploadSetup() {
   // Selectors
   const logoInput = document.querySelector('.logo-input-file');
-  const logoPreview = document.querySelector('.input-preview');
+  const logoPreview = document.querySelector('.input-preview') || document.querySelector('.logo-preview');
 
   if (!logoInput) {
     return;
@@ -157,6 +163,8 @@ function redirectURISetup() {
   // Selectors
   const redirectURIContainer = document.querySelector('.service_provider_redirect_uris');
   const redirectURI = document.getElementById('add-redirect-uri-field');
+
+  if (!redirectURI) { return; }
 
   // Functions
   const handleRedirectURIClick = () => {

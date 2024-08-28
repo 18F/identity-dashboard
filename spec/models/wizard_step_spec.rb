@@ -37,4 +37,64 @@ RSpec.describe WizardStep, type: :model do
       expect(subject.friendly_name).to eq(expected_name)
     end
   end
+
+  context 'step "logo_and_cert"' do
+    describe '#certificates' do
+      let(:certs) { nil }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
+
+      context 'with nil' do
+        let(:certs) { nil }
+
+        it 'is an empty array' do
+          expect(subject.certificates).to eq([])
+        end
+      end
+
+      context 'with invalid PEM data' do
+        let(:certs) { ['i-am-not-a-pem'] }
+
+        it 'is a null certificate' do
+          expect(subject.certificates.first.issuer).to eq('Null Certificate')
+        end
+      end
+
+      context 'with multiple certs' do
+        let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+
+        it 'wraps them as ServiceProviderCertificates' do
+          wrapped = certs.map do |cert|
+            ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
+          end
+
+          expect(subject.certificates).to eq(wrapped)
+        end
+      end
+    end
+
+    describe '#remove_certificate' do
+    subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
+    let(:certs) { nil }
+
+      context 'when removing a serial that matches in the certs array' do
+        let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
+
+        it 'removes that cert' do
+          expect { subject.remove_certificate(200) }.
+            to(change { subject.certificates.size }.from(3).to(2))
+
+          has_serial = subject.certificates.any? { |c| c.serial.to_s == '200' }
+          expect(has_serial).to eq(false)
+        end
+      end
+
+      context 'when removing a serial that does not exist' do
+        let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+
+        it 'does not remove anything' do
+          expect { subject.remove_certificate(100) }.to_not(change { subject.certificates.size })
+        end
+      end
+    end
+  end
 end
