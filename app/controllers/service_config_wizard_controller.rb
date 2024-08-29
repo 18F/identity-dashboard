@@ -43,7 +43,7 @@ class ServiceConfigWizardController < AuthenticatedController
     unless skippable && params[:wizard_step].blank?
       @model.data = @model.data.merge(wizard_step_params)
     end
-    skip_step if @model.save
+    skip_step if @model.valid? && @model.save
     render_wizard
   end
 

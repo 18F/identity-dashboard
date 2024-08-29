@@ -30,7 +30,7 @@
       description: false,
       html_desc: false,
       input_type: 'radio',
-      required: false,
+      aria_required: false,
       db_fieldname: :signed_response_message_requested,
       inputs: {
         "Yes" => true,
@@ -56,7 +56,7 @@
                    label_html: { class: 'usa-input-required'},
                    label: 'Failure to Proof URL',
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
-                   required: true %>
+                   aria_required: true %>
   <% end %>
   <%= form.input :redirect_uris,
                  input_html: { class: 'usa-input' },

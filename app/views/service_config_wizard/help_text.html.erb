@@ -7,7 +7,7 @@
       <%= h.fields_for :sign_in do |s| %>
         <%= s.input :sign_in,
                     as: :usa_collection_select,
-                    required: false,
+                    aria_required: false,
                     label: t('simple_form.labels.service_provider.help_text.sign_in'),
                     collection: t('service_provider_form.help_text.sign_in', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
@@ -18,7 +18,7 @@
       <%= h.fields_for :sign_up do |s| %>
         <%= s.input :sign_up,
                     as: :usa_collection_select,
-                    required: false,
+                    aria_required: false,
                     label: t('simple_form.labels.service_provider.help_text.sign_up'),
                     collection: t('service_provider_form.help_text.sign_up', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
@@ -29,7 +29,7 @@
       <%= h.fields_for :forgot_password do |f| %>
         <%= f.input :forgot_password,
                     as: :usa_collection_select,
-                    required: false,
+                    aria_required: false,
                     label: t('simple_form.labels.service_provider.help_text.forgot_password'),
                     collection: t('service_provider_form.help_text.forgot_password', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',

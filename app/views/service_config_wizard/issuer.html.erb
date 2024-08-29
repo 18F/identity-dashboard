@@ -5,10 +5,13 @@
   <%= form.error_notification %>
   <%= form.input :issuer,
                  disabled: issuer_read_only?,
-                 aria_required: true,
+                 # aria_required: true,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
+                 error_messages: {
+                  valueMissing: 'Issuer string is required and cannot be blank.'
+                 },
                  hint: if issuer_read_only?
                     t('service_provider_form.change_issuer')
                   elsif show_saml_options?

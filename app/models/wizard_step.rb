@@ -10,25 +10,7 @@ class WizardStep < ApplicationRecord
     end
   end
 
-  validate :validate_required_params
-
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
-
-  def step_name=(new_name)
-    raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
-    super
-    self.data = enforce_valid_data(self.data)
-  end
-
-  def data=(new_data)
-    super(enforce_valid_data(new_data))
-  end
-
-  def enforce_valid_data(new_data)
-    return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
-    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
-    STEP_DATA[step_name].fields.merge(new_data)
-  end
 
   STEP_DATA = {
     intro: WizardStep::Definition.new,
@@ -71,21 +53,37 @@ class WizardStep < ApplicationRecord
     }),
   }.with_indifferent_access.freeze
   STEPS = STEP_DATA.keys
-  STEP_NAMES = {
-    INTRO: 'intro',
-    SETTINGS: 'settings',
-    AUTH: 'authentication',
-    ISSUER: 'issuer',
-    UPLOAD: 'logo_and_cert',
-    REDIRECTS: 'redirects',
-    HELP: 'help_text',
-  }
 
   belongs_to :user
   enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
   has_one_attached :logo_file
 
   validates :step_name, presence: true
+  validates :group_id, presence: true, on: 'settings'
+  validates :prod_config, presence: true, on: 'settings'
+  validates :app_name, presence: true, on: 'settings'
+  validates :friendly_name, presence: true, on: 'settings'
+  validates :identity_protocol, presence: true, on: 'authorization'
+  validates :ial, presence: true, on: 'authorization'
+  validates :issuer, presence: true, on: 'issuer'
+  validates :acs_url, presence: true, on: 'redirects', if: :identity_protocol == 'saml'
+  validates :return_to_sp_url, presence: true, on: 'redirects', if: :identity_protocol == 'saml'
+
+  def step_name=(new_name)
+    raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
+    super
+    self.data = enforce_valid_data(self.data)
+  end
+
+  def data=(new_data)
+    super(enforce_valid_data(new_data))
+  end
+
+  def enforce_valid_data(new_data)
+    return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
+    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
+    STEP_DATA[step_name].fields.merge(new_data)
+  end
 
   # SimpleForm uses this
   def self.reflect_on_association(relation)
@@ -145,37 +143,5 @@ class WizardStep < ApplicationRecord
       not_before: time,
       not_after: time,
     )
-  end
-
-  def validate_required_params
-    case step_name
-    when STEP_NAMES[:SETTINGS]
-      required_params = [
-        group_id,
-        prod_config,
-        app_name,
-        friendly_name,
-      ]
-    when STEP_NAMES[:AUTH]
-      required_params = [
-        identity_protocol,
-        ial,  
-      ]
-    when STEP_NAMES[:ISSUER]
-      required_params = [ issuer ]
-    when STEP_NAMES[:REDIRECTS]
-      required_params = :identity_protocol == 'saml' ? [
-          acs_url,
-          return_to_sp_url,
-        ] : []
-    else
-      required_params = []
-    end
-
-    required_params.each { |key|
-      if key == ''
-        errors.add(key.to_sym, 'This field must not be blank')
-      end
-    }
   end
 end

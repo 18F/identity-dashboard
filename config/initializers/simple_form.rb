@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+SimpleForm.browser_validations = false
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
