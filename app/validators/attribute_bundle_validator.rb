@@ -2,7 +2,7 @@
 # It requires that the record being validated has these as method or properties:
 # * `ial`, of type Integer
 # * `identity_protocol`, of type String
-class AttributeBundleValidator < ActiveModel::EachValidator
+class AttributeBundleValidator < ActiveModel::Validator
   ALLOWED_IAL1_ATTRIBUTES = %w[
     email
     all_emails
@@ -28,9 +28,9 @@ class AttributeBundleValidator < ActiveModel::EachValidator
     Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
   end
 
-  def validate_each(record, attribute, attribute_bundle)
+  def validates(record)
     # attribute bundle should not be empty when saml and ial2 are selected
-    if attribute_bundle.blank? && record.ial == 2 && record.identity_protocol == 'saml'
+    if record.attribute_bundle.blank? && record.ial == 2 && record.identity_protocol == 'saml'
       record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end

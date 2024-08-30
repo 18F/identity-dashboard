@@ -68,11 +68,41 @@ class WizardStep < ApplicationRecord
   }.with_indifferent_access.freeze
 
   validates :app_name, presence: true, on: 'settings'
-  validates :friendly_name, presence: true, on: 'settings'
-  validates :description, presence: true, on: 'settings'
-  validates :attribute_bundle, attribute_bundle: true, on: 'authentication'
+  validates :group_id, presence: true, on: 'settings'
+  validates :description, presence: true
+
+  validates_with AttributeBundleValidator, on: 'authentication'
   validates_with CertsArePemsValidator, on: 'logo_and_cert'
   validates_with LogoValidator, on: 'logo_and_cert'
+
+  ### These should be identical to IdentityValidations::ServiceProviderValidation
+  # except for the step contexts
+  validates :friendly_name, presence: true, on: 'settings'
+  validates :issuer, presence: true, uniqueness: true, on: 'issuer'
+  validates :issuer,
+    format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
+    on: 'issuer'
+  validates :ial, inclusion: { in: [1, 2] }, allow_nil: true
+
+  validates_with AllowedRedirectsValidator, on: 'redirects'
+  validates_with IdentityValidations::UriValidator,
+    attribute: :failure_to_proof_url,
+    on: 'redirects'
+  validates_with IdentityValidations::UriValidator,
+    attribute: :push_notification_url,
+    on: 'redirects'
+  validates_with IdentityValidations::UriValidator,
+    attribute: :acs_url,
+    on: 'redirects'
+  validates_with UriValidator,
+    attribute: :assertion_consumer_logout_service_url,
+    on: 'redirects'
+
+  validates_with CertsAreX509Validator, on: 'logo_and_cert'
+  #
+  ### end of validations copied from IdentityValidations::ServiceProviderValidation
+
+  validate :issuer_service_provider_uniqueness, on: 'issuer'
 
   STEPS = STEP_DATA.keys
 
@@ -140,5 +170,9 @@ class WizardStep < ApplicationRecord
       not_before: time,
       not_after: time,
     )
+  end
+
+  def issuer_service_provider_uniqueness
+    errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
   end
 end

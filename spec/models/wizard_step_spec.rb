@@ -43,18 +43,26 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#valid?' do
       it 'can validate every setting' do
-        expect(subject.valid?).to be_falsey
-        binding.pry
-      end
-    end
+        bad_settings = build(:wizard_step, step_name: 'settings', data {
 
-    context 'step "logo_and_cert"' do
-      it 'checks if certs are pems' do
-        
+        })
+        expect(subject.valid?).to be_falsey
       end
     end
   end
 
+  context 'step "authentication"' do
+    describe '#valid?' do
+      it 'does okay with reasonable data' do
+        authentication_step = build(:wizard_step, data: {
+          identity_protocol: 'openid_connect_private_key_jwt',
+          ial: '1',
+          default_aal: 'on',
+        })
+        expect(authentication_step.valid?).to be(true)
+      end
+    end
+  end
   context 'step "logo_and_cert"' do
     describe '#certificates' do
       let(:certs) { nil }
@@ -90,8 +98,8 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#remove_certificate' do
-    subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
-    let(:certs) { nil }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
+      let(:certs) { nil }
 
       context 'when removing a serial that matches in the certs array' do
         let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
