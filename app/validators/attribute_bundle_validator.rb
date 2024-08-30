@@ -2,6 +2,7 @@
 # It requires that the record being validated has these as method or properties:
 # * `ial`, of type Integer
 # * `identity_protocol`, of type String
+# * `attribute_bundle`, of type Array<String>
 class AttributeBundleValidator < ActiveModel::Validator
   ALLOWED_IAL1_ATTRIBUTES = %w[
     email
@@ -24,23 +25,25 @@ class AttributeBundleValidator < ActiveModel::Validator
     phone
   ].freeze
 
-  def self.possible_attributes
-    Hash[*(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).collect { |v| [v, v] }.flatten]
-  end
+  ALL_ATTRIBUTES = Hash[
+    *(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).
+      collect { |v| [v, v] }.
+      flatten
+  ].freeze
 
-  def validates(record)
+  def validate(record)
     # attribute bundle should not be empty when saml and ial2 are selected
     if record.attribute_bundle.blank? && record.ial == 2 && record.identity_protocol == 'saml'
       record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
 
-    if attribute_bundle.present? && contains_invalid_attribute?(attribute_bundle)
+    if record.attribute_bundle.present? && contains_invalid_attribute?(record.attribute_bundle)
       record.errors.add(:attribute_bundle, 'Contains invalid attributes')
       return false
     end
 
-    if ial == 1 && (attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
+    if record.ial == 1 && (record.attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
       record.errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
     end
     true
@@ -49,7 +52,6 @@ class AttributeBundleValidator < ActiveModel::Validator
   private
 
   def contains_invalid_attribute?(attribute_bundle)
-    possible_attributes = ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES
-    attribute_bundle.any? { |att| !possible_attributes.include?(att) }
+    attribute_bundle.any? { |att| !ALL_ATTRIBUTES.keys.include?(att) }
   end
 end

@@ -4,6 +4,7 @@ require 'pry'
 RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
   let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
+  let(:random_salt) { rand(1..1000) }
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -11,6 +12,10 @@ RSpec.describe ServiceConfigWizardController do
 
   def flag_out
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
+  end
+
+  def step_index(step_name)
+    ServiceConfigWizardController::STEPS.index(step_name)
   end
 
   context 'as an admin' do
@@ -33,27 +38,10 @@ RSpec.describe ServiceConfigWizardController do
       end
     end
 
-    it 'can post all steps' do
-      ServiceConfigWizardController::STEPS.each_with_index do |wizard_step, index|
-        get :update, params: {id: wizard_step, wizard_step: {active: false}}
-        expect(response).to be_redirect
-        next_step = ServiceConfigWizardController::STEPS[index + 1]
-        expect(response.redirect_url).to eq(service_config_wizard_url(next_step)) if next_step
-      end
-    end
-
-    it 'allows blank info for the logo_and_cert step for now' do
-      get :update, params: {id: 'logo_and_cert'}
-      expect(response).to be_redirect
-      next_index = ServiceConfigWizardController::STEPS.index('logo_and_cert') + 1
-      next_step = ServiceConfigWizardController::STEPS[next_index]
-      expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
-    end
-
     it 'will wipe all step data if the user cancels on the last step' do
       create(:wizard_step, user: admin, data: { help_text: {'sign_in' => 'blank'}})
       expect do
-        get :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
+        put :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
       end.to(change {WizardStep.count}.by(-1))
       expect(response.redirect_url).to eq(service_providers_url)
     end
@@ -63,6 +51,137 @@ RSpec.describe ServiceConfigWizardController do
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
+    end
+
+    describe 'step "settings"' do
+      it 'can post' do
+        expect do
+          put :update, params: {id: 'settings', wizard_step: {
+            app_name: "App name #{random_salt}",
+            friendly_name: "Friendly name name #{random_salt}",
+          }}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('settings') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step)) if next_step
+      end
+    end
+ 
+    describe 'step "authentication"' do
+      it 'can post' do
+        expect do
+          put :update, params: {id: 'authentication', wizard_step: {identity_protocol: 'saml'}}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+    end
+
+    describe 'step "issuer"' do
+      it 'can post' do
+        expect do
+          put :update, params: {id: 'issuer', wizard_step: {issuer: "test:sso:#{random_salt}"}}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('issuer') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+    end
+
+    describe 'step "logo_and_cert"' do
+      it 'allows blank info' do
+        expect do
+          put :update, params: {id: 'logo_and_cert'}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_index = ServiceConfigWizardController::STEPS.index('logo_and_cert') + 1
+        next_step = ServiceConfigWizardController::STEPS[next_index]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+
+      it 'can post new data' do
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
+            cert: fixture_file_upload('testcert.pem'),
+          }}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+
+      it 'can overwrite existing data' do
+        first_upload_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: first_upload_logo,
+          cert: fixture_file_upload('testcert.pem', 'text/plain'),
+        }}
+        original_settings = WizardStep.last
+        original_certs = original_settings.certs
+        original_serial = OpenSSL::X509::Certificate.new(original_certs.first).serial
+        original_saved_logo = original_settings.logo_file
+        expect(original_saved_logo.blob.checksum).
+          to eq(OpenSSL::Digest.base64digest('MD5', first_upload_logo.read))
+        
+
+        # Deliberately picking a serial that's shorter than fixed value of the original serial
+        new_serial = rand(1..100_000)
+        new_cert = Rack::Test::UploadedFile.new(
+          StringIO.new(build_pem(serial: new_serial)),
+          original_filename: 'new_cert.pem',
+        )
+        new_logo_upload = fixture_file_upload("#{Rails.root}/spec/fixtures/logo.png", 'image/png')
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            logo_file: new_logo_upload,
+            remove_certificates: [original_serial],
+            cert: new_cert,
+          }}
+        end.to_not(change {WizardStep.count})
+        new_settings = WizardStep.last
+        expect(new_settings.certs.count).to be(original_certs.count)
+        expect(new_settings.certs.count).to be(1)
+        new_cert = OpenSSL::X509::Certificate.new(new_settings.certs.first)
+        expect(new_cert.serial).to eq(new_serial)
+        expect(new_cert.serial).to_not eq(original_serial)
+
+        expect(new_settings.logo_file.blob.checksum).to_not eq(original_saved_logo.blob.checksum)
+        expect(new_settings.logo_file.blob.checksum).
+          to eq(OpenSSL::Digest.base64digest('MD5', new_logo_upload.read))
+      end
+    end
+
+    describe 'step "redirects"' do
+      it 'can post' do
+        expect do
+          put :update, params: {id: 'redirects', wizard_step: {active: false}}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('redirects') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+    end
+
+    describe 'step "help_text"' do
+      it 'can post' do
+        expect do
+          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          expect(response).to be_redirect,
+            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+        end.to(change {WizardStep.count}.by(1))
+        next_step = ServiceConfigWizardController::STEPS[step_index('help_text') + 1]
+        if next_step
+          expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+        end        
+      end
     end
   end
 

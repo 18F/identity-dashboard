@@ -43,7 +43,8 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#valid?' do
       it 'can validate every setting' do
-        bad_settings = build(:wizard_step, step_name: 'settings', data {
+        pending
+        bad_settings = build(:wizard_step, step_name: 'settings', data: {
 
         })
         expect(subject.valid?).to be_falsey
@@ -54,12 +55,12 @@ RSpec.describe WizardStep, type: :model do
   context 'step "authentication"' do
     describe '#valid?' do
       it 'does okay with reasonable data' do
-        authentication_step = build(:wizard_step, data: {
+        authentication_step = build(:wizard_step, step_name: 'authentication', data: {
           identity_protocol: 'openid_connect_private_key_jwt',
           ial: '1',
           default_aal: 'on',
         })
-        expect(authentication_step.valid?).to be(true)
+        expect(authentication_step.valid?).to be(true), authentication_step.errors.messages
       end
     end
   end

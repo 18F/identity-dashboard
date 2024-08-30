@@ -67,7 +67,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def self.possible_attributes
-    AttributeBundleValidator.possible_attributes
+    AttributeBundleValidator::ALL_ATTRIBUTES
   end
 
   def recently_approved?

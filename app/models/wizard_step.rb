@@ -41,7 +41,7 @@ class WizardStep < ApplicationRecord
       attribute_bundle: [],
       default_aal: nil,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
-      ial: 1,
+      ial: '1',
     }),
     issuer: WizardStep::Definition.new({
       issuer: '',
@@ -69,22 +69,25 @@ class WizardStep < ApplicationRecord
 
   validates :app_name, presence: true, on: 'settings'
   validates :group_id, presence: true, on: 'settings'
-  validates :description, presence: true
-
+ 
   validates_with AttributeBundleValidator, on: 'authentication'
   validates_with CertsArePemsValidator, on: 'logo_and_cert'
   validates_with LogoValidator, on: 'logo_and_cert'
 
-  ### These should be identical to IdentityValidations::ServiceProviderValidation
+  ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
   # except for the step contexts
   validates :friendly_name, presence: true, on: 'settings'
-  validates :issuer, presence: true, uniqueness: true, on: 'issuer'
+
+  # We can't test uniqueness here with a built-in Rails vaildator
+  # because it has to search through the ServiceProviders table for conflicts
+  validates :issuer, presence: true, on: 'issuer'
+
   validates :issuer,
     format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
     on: 'issuer'
-  validates :ial, inclusion: { in: [1, 2] }, allow_nil: true
+  validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
-  validates_with AllowedRedirectsValidator, on: 'redirects'
+  validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with IdentityValidations::UriValidator,
     attribute: :failure_to_proof_url,
     on: 'redirects'
@@ -94,11 +97,11 @@ class WizardStep < ApplicationRecord
   validates_with IdentityValidations::UriValidator,
     attribute: :acs_url,
     on: 'redirects'
-  validates_with UriValidator,
+  validates_with IdentityValidations::UriValidator,
     attribute: :assertion_consumer_logout_service_url,
     on: 'redirects'
 
-  validates_with CertsAreX509Validator, on: 'logo_and_cert'
+  validates_with IdentityValidations::CertsAreX509Validator, on: 'logo_and_cert'
   #
   ### end of validations copied from IdentityValidations::ServiceProviderValidation
 
@@ -163,6 +166,18 @@ class WizardStep < ApplicationRecord
 
   def respond_to_missing?(method_name, include_private = false)
     STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
+  end
+
+  def auth_step
+    return self if step_name == 'authentication'
+    WizardStepPolicy::Scope.new(self.user, self.class).
+      resolve.
+      find_or_initialize_by(user: self.user, step_name: 'authentication')
+  end
+
+  def ial
+    return data['ial'] if step_name == 'authentication'
+    auth_step.ial
   end
 
   private

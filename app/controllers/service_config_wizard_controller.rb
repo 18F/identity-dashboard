@@ -30,8 +30,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def update
     return destroy if can_cancel?
     if step == UPLOAD_STEP
-      # TODO: clean up when implementing file uploads, this currently does nothing
-      # This was copied from ServiceProvidersController
       attach_cert
       remove_certificates
       attach_logo_file if logo_file_param
@@ -60,7 +58,14 @@ class ServiceConfigWizardController < AuthenticatedController
         all.
         reduce({}) {|memo, record| memo.merge(record.data)}
       all_data['redirect_uris'] = [all_data['redirect_uris']]
+      # This won't be enough to actually transfer the file to the new record
+      # TODO: we'll have to add some code to do that file attach transfer
       all_data['logo'] = all_data.delete('logo_name')
+      (all_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
+        # Clear out extra data from the wizard steps in case we put data
+        # temporarily in the wizard steps that the service provider doesn't have attributes for
+        all_data.delete[extra_data]
+      end
       ServiceProvider.new(**all_data)
     end
   end
@@ -86,6 +91,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def auth_step
+    # Should this be `@model.auth_step` ?
     @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
   end
 

@@ -12,7 +12,7 @@ describe ServiceProvidersController do
   let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
   let(:logo_file_params) do
     {
-      io: File.open(fixture_path + '/logo.svg'),
+      io: File.open(fixture_path + 'files/logo.svg'),
       filename: 'alternative_filename.svg',
       content_type: 'image/svg+xml',
     }
