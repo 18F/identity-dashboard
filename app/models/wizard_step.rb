@@ -161,6 +161,10 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  def respond_to_missing?(method_name, include_private = false)
+    STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
+  end
+
   private
 
   def null_certificate
