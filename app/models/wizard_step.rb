@@ -1,3 +1,4 @@
+require 'pry'
 class WizardStep < ApplicationRecord
   class Definition
     attr_reader :fields
@@ -53,6 +54,9 @@ class WizardStep < ApplicationRecord
     }),
   }.with_indifferent_access.freeze
   STEPS = STEP_DATA.keys
+  blank_msg = lambda { |object, data|
+    "#{object.name} can't be blank"
+  }
 
   belongs_to :user
   enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
@@ -65,9 +69,10 @@ class WizardStep < ApplicationRecord
   validates :friendly_name, presence: true, on: 'settings'
   validates :identity_protocol, presence: true, on: 'authorization'
   validates :ial, presence: true, on: 'authorization'
-  validates :issuer, presence: true, on: 'issuer'
-  validates :acs_url, presence: true, on: 'redirects', if: :identity_protocol == 'saml'
-  validates :return_to_sp_url, presence: true, on: 'redirects', if: :identity_protocol == 'saml'
+  validates :issuer, presence: true, message: blank_msg, on: 'issuer'
+  validates :acs_url, presence: true, on: 'redirects', allow_nil: true
+  validates :return_to_sp_url, presence: true, on: 'redirects', allow_nil: true
+  validates :failure_to_proof_url, presence: true, on: 'redirects', allow_nil: true
 
   def step_name=(new_name)
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)

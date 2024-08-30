@@ -33,6 +33,11 @@ SecureHeaders::Configuration.default do |config|
     style_src: ["'self'"],
     base_uri: ["'self'"],
   }
+  if Rails.env.development?
+    config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
+    config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
+    config.csp.img_src.push('*.ssa.gov')
+  end
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,

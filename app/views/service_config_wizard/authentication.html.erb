@@ -10,7 +10,7 @@
       html_desc: false,
       db_fieldname: :identity_protocol,
       input_type: 'radio',
-      aria_required: true,
+      required: true,
       inputs: ServiceProvider.identity_protocols.map { |k,v|
         [titleize(k), k] }.to_h,
     } %>
@@ -22,7 +22,7 @@
       html_desc: true,
       db_fieldname: :ial,
       input_type: 'radio',
-      aria_required: true,
+      required: true,
       inputs: {
         t('service_provider_form.ial_option_1') => 1,
         t('service_provider_form.ial_option_2') => 2,
@@ -36,7 +36,7 @@
       html_desc: false,
       db_fieldname: :default_aal,
       input_type: 'radio',
-      aria_required: true,
+      required: true,
       inputs: {
         t('service_provider_form.aal_option_default') => 1,
         t('service_provider_form.aal_option_2') => 2,
@@ -51,7 +51,7 @@
       html_desc: false,
       db_fieldname: :attribute_bundle,
       input_type: 'checkbox',
-      aria_required: false,
+      required: false,
       inputs: ServiceProvider.possible_attributes
     } %>
   <%= render partial:'footer', locals: { form: form } %>

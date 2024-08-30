@@ -5,7 +5,7 @@
   <%= form.error_notification %>
   <%= form.input :issuer,
                  disabled: issuer_read_only?,
-                 # aria_required: true,
+                 # required: true,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },

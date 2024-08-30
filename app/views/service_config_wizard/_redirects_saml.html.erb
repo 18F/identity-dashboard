@@ -2,11 +2,11 @@
 <%= wizard_form do |form| %>
   <%= form.error_notification %>
   <%= form.input :acs_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
-                   label_html: { class: 'usa-input-required'},
-                   label: t('simple_form.labels.service_provider.acs_url'),
-                   aria_required: true,
-                   hint: t('service_provider_form.assertion_consumer_service_url_html') %>
+                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 label_html: { class: 'usa-input-required'},
+                 label: t('simple_form.labels.service_provider.acs_url'),
+                 required: true,
+                 hint: t('service_provider_form.assertion_consumer_service_url_html') %>
 
   <%= form.input :assertion_consumer_logout_service_url,
                  input_html: { class: 'usa-input' },
@@ -30,7 +30,7 @@
       description: false,
       html_desc: false,
       input_type: 'radio',
-      aria_required: false,
+      required: false,
       db_fieldname: :signed_response_message_requested,
       inputs: {
         "Yes" => true,
@@ -43,7 +43,7 @@
                 input_html: { class: 'usa-input', aria: { invalid: false } },
                 label_html: { class: 'usa-input-required'},
                 label: t('simple_form.labels.service_provider.return_to_sp_url'),
-                aria_required: true,
+                required: true,
                 hint: t('service_provider_form.return_to_app_url_html') %>
 
   <%= form.input :push_notification_url,
@@ -56,7 +56,7 @@
                    label_html: { class: 'usa-input-required'},
                    label: 'Failure to Proof URL',
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
-                   aria_required: true %>
+                   required: true %>
   <% end %>
   <%= form.input :redirect_uris,
                  input_html: { class: 'usa-input' },

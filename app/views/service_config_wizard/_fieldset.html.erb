@@ -4,7 +4,7 @@
   [Boolean] description whether a description exists in the translations
   [Boolean] html_desc whether a description includes HTML tags
   ["radio"|"checkbox"] input_type
-  [Boolean] aria_required whether this field is required
+  [Boolean] required whether this field is required
   [Symbol] db_fieldname such that the database has an associated column (often fieldname.to_sym)
   [Input elements] inputs such that the input fields are rendered correctly
 %>
@@ -13,9 +13,9 @@
     <%= t("simple_form.labels.service_provider.#{fieldname}") %>
   </legend>
   <div class="usa-label__group">
-    <p class="<%= "usa-label #{input_type} #{aria_required ? 'required' : 'optional'}" %>" aria-hidden="true">
+    <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">
       <%= t("simple_form.labels.service_provider.#{fieldname}") %>
-      <% if aria_required %>
+      <% if required %>
         <%= t('simple_form.required.html') %>
       <% end %>
     </p>
@@ -29,14 +29,14 @@
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
-        aria_required: aria_required,
+        required: required,
       } %>
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
-        aria_required: aria_required,
+        required: required,
       } %>
     <% end %>
   </div>
