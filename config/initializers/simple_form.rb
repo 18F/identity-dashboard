@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+SimpleForm.browser_validations = false
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
@@ -21,7 +22,10 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.wrapper tag: :div, class: 'usa-label__group' do |c|
-      c.use :label, class: 'usa-label'
+      c.wrapper tag: :label, class: 'usa-label' html: { role: 'alert' } do |d|
+        d.use :label, class: 'usa-label'
+        d.use :error, wrap_with: { tag: 'p', class: 'usa-sr-only' }
+      end
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
