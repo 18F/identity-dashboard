@@ -11,23 +11,6 @@ class WizardStep < ApplicationRecord
   end
 
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
-
-  def step_name=(new_name)
-    raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
-    super
-    self.data = enforce_valid_data(self.data)
-  end
-
-  def data=(new_data)
-    super(enforce_valid_data(new_data))
-  end
-
-  def enforce_valid_data(new_data)
-    return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
-    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
-    STEP_DATA[step_name].fields.merge(new_data)
-  end
-
   STEP_DATA = {
     intro: WizardStep::Definition.new,
     settings: WizardStep::Definition.new({
@@ -67,6 +50,13 @@ class WizardStep < ApplicationRecord
     }),
   }.with_indifferent_access.freeze
 
+  STEPS = STEP_DATA.keys
+
+  belongs_to :user
+  enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
+  has_one_attached :logo_file
+
+  validates :step_name, presence: true
   validates :app_name, presence: true, on: 'settings'
   validates :group_id, presence: true, on: 'settings'
  
@@ -78,8 +68,8 @@ class WizardStep < ApplicationRecord
   # except for the step contexts
   validates :friendly_name, presence: true, on: 'settings'
 
-  # We can't test uniqueness here with a built-in Rails vaildator
-  # because it has to search through the ServiceProviders table for conflicts
+  # We can't test uniqueness here with a built-in Rails vaildator because here
+  # we have to search through the ServiceProviders table to find conflicts
   validates :issuer, presence: true, on: 'issuer'
 
   validates :issuer,
@@ -107,14 +97,6 @@ class WizardStep < ApplicationRecord
 
   validate :issuer_service_provider_uniqueness, on: 'issuer'
 
-  STEPS = STEP_DATA.keys
-
-  belongs_to :user
-  enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
-  has_one_attached :logo_file
-
-  validates :step_name, presence: true
-
   # SimpleForm uses this
   def self.reflect_on_association(relation)
     ServiceProvider.reflect_on_association(relation)
@@ -122,6 +104,16 @@ class WizardStep < ApplicationRecord
 
   def self.block_encryptions
     ServiceProvider.block_encryptions
+  end
+
+  def step_name=(new_name)
+    raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
+    super
+    self.data = enforce_valid_data(self.data)
+  end
+
+  def data=(new_data)
+    super(enforce_valid_data(new_data))
   end
 
   def valid?(*args)
@@ -181,6 +173,12 @@ class WizardStep < ApplicationRecord
   end
 
   private
+
+  def enforce_valid_data(new_data)
+    return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
+    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
+    STEP_DATA[step_name].fields.merge(new_data)
+  end
 
   def null_certificate
     time = Time.zone.at(0)
