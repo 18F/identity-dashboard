@@ -162,17 +162,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def attach_logo_file
-    return unless logo_file_param
-
-    @model.logo_file.attach(logo_file_param)
-    cache_logo_info
-  end
-
-  def cache_logo_info
-    @model.data = @model.data.merge({
-      logo_name: @model.logo_file.filename.to_s,
-      remote_logo_key: @model.logo_file.key,
-    })
+    @model.attach_logo(logo_file_param)
   end
 
   def skippable

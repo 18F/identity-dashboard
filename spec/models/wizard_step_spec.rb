@@ -42,28 +42,62 @@ RSpec.describe WizardStep, type: :model do
     subject { build(:wizard_step, step_name: 'settings')}
 
     describe '#valid?' do
-      it 'can validate every setting' do
-        pending
-        bad_settings = build(:wizard_step, step_name: 'settings', data: {
+      it 'validates good data' do
+        subject.data = {
+          app_name: 'something goes here',
+          friendly_name: 'something friendly goes here',
+          group_id: create(:team).id,
+        }
+        expect(subject.valid?).to be_truthy
+        expect(subject.errors).to be_blank
+      end
 
-        })
+      it 'sets errors for all bad settings' do
         expect(subject.valid?).to be_falsey
+        expect(subject.errors[:app_name]).to eq(["can't be blank"])
+        expect(subject.errors[:friendly_name]).to eq(["can't be blank"])
+        expect(subject.errors[:group_id]).to eq(["can't be blank", 'is invalid'])
       end
     end
   end
 
   context 'step "authentication"' do
+    let(:authentication_step) { 
+      build(:wizard_step, step_name: 'authentication', data: {
+        identity_protocol: 'openid_connect_private_key_jwt',
+        ial: '1',
+        default_aal: 'on',
+      })
+    }
     describe '#valid?' do
-      it 'does okay with reasonable data' do
-        authentication_step = build(:wizard_step, step_name: 'authentication', data: {
-          identity_protocol: 'openid_connect_private_key_jwt',
-          ial: '1',
-          default_aal: 'on',
-        })
+      it 'validates good data' do
         expect(authentication_step.valid?).to be(true), authentication_step.errors.messages
+      end
+
+      it 'fails with bad data' do
+        authentication_step.data['ial'] = 2
+        authentication_step.data['identity_protocol'] = 'saml'
+        expect(authentication_step.valid?).to be_falsey
+        bundle_errors = authentication_step.errors[:attribute_bundle]
+        expect(bundle_errors).to eq(['Attribute bundle cannot be empty'])
       end
     end
   end
+
+  context 'step "issuer"' do
+    describe '#valid?' do
+      subject { build(:wizard_step, step_name: 'issuer')}
+      it 'is not valid by default' do
+        expect(subject).to_not be_valid
+        expect(subject.errors[:issuer]).to include("can't be blank")
+      end
+
+      it 'is valid with an issuer set' do
+        expect(subject).to allow_value({'issuer' => "test:sso:#{rand(1..1000)}" }).for(:data)
+      end
+    end
+  end
+
   context 'step "logo_and_cert"' do
     describe '#certificates' do
       let(:certs) { nil }
@@ -120,6 +154,38 @@ RSpec.describe WizardStep, type: :model do
         it 'does not remove anything' do
           expect { subject.remove_certificate(100) }.to_not(change { subject.certificates.size })
         end
+      end
+    end
+
+    describe '#valid?' do
+      subject { build(:wizard_step, step_name: 'logo_and_cert')}
+
+      it 'is valid with blank data' do
+        expect(subject.data['certs']).to be_empty
+        expect(subject.data['logo_name']).to be_empty
+        expect(subject.data['remote_logo_key']).to be_empty
+        expect(subject).to be_valid
+      end
+
+      it 'is valid with good certs and uploads' do
+        subject.attach_logo(fixture_file_upload('logo.svg', 'image/svg+xml'))
+        subject.certs << build_pem
+        expect(subject.data['certs']).to_not be_empty
+        expect(subject.data['logo_name']).to_not be_empty
+        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject).to be_valid
+      end
+
+      it 'has errors with bad certs and bad uploads' do
+        subject.certs << 'invalid cert'
+        subject.attach_logo(fixture_file_upload('testcert.pem', 'image/svg+xml'))
+        expect(subject.data['certs']).to_not be_empty
+        expect(subject.data['logo_name']).to_not be_empty
+        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject).to_not be_valid
+        expect(subject.errors[:certs]).to_not be_blank
+        expect(subject.errors[:logo_file]).
+          to eq(['The file you uploaded (testcert.pem) is not a PNG or SVG'])
       end
     end
   end

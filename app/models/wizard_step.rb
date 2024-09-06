@@ -17,7 +17,7 @@ class WizardStep < ApplicationRecord
       app_name: '',
       description: '',
       friendly_name: '',
-      group_id: 0,
+      group_id: nil,
       prod_config: false,
     }),
     authentication: WizardStep::Definition.new({
@@ -59,7 +59,14 @@ class WizardStep < ApplicationRecord
   validates :step_name, presence: true
   validates :app_name, presence: true, on: 'settings'
   validates :group_id, presence: true, on: 'settings'
+  validate :group_is_valid, on: 'settings'
  
+  # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
+  # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
+  before_validation(on: 'authentication') do
+    self.data['attribute_bundle'] = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
+  end
+
   validates_with AttributeBundleValidator, on: 'authentication'
   validates_with CertsArePemsValidator, on: 'logo_and_cert'
   validates_with LogoValidator, on: 'logo_and_cert'
@@ -147,6 +154,15 @@ class WizardStep < ApplicationRecord
     serial
   end
 
+  def attach_logo(logo_data)
+    return unless step_name == 'logo_and_cert'
+    logo_file.attach(logo_data)
+    self.data = data.merge({
+      logo_name: logo_file.filename.to_s,
+      remote_logo_key: logo_file.key,
+    })
+  end
+
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
       data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
@@ -191,5 +207,9 @@ class WizardStep < ApplicationRecord
 
   def issuer_service_provider_uniqueness
     errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
+  end
+
+  def group_is_valid
+    errors.add(:group_id, :invalid) if Team.where(id: group_id).blank?
   end
 end

@@ -33,8 +33,11 @@ class AttributeBundleValidator < ActiveModel::Validator
 
   def validate(record)
     # attribute bundle should not be empty when saml and ial2 are selected
-    if record.attribute_bundle.blank? && record.ial == 2 && record.identity_protocol == 'saml'
-      record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
+    if record.attribute_bundle.blank? &&
+       [2, '2'].include?(record.ial) &&
+       record.identity_protocol == 'saml'
+
+       record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
 
@@ -43,7 +46,7 @@ class AttributeBundleValidator < ActiveModel::Validator
       return false
     end
 
-    if record.ial == 1 && (record.attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
+    if [1, '1'].include?(record.ial) && (record.attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
       record.errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
     end
     true

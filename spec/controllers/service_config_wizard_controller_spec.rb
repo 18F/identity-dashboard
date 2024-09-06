@@ -4,7 +4,6 @@ require 'pry'
 RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
   let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
-  let(:random_salt) { rand(1..1000) }
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -57,8 +56,9 @@ RSpec.describe ServiceConfigWizardController do
       it 'can post' do
         expect do
           put :update, params: {id: 'settings', wizard_step: {
-            app_name: "App name #{random_salt}",
-            friendly_name: "Friendly name name #{random_salt}",
+            app_name: "App name #{rand(1..1000)}",
+            friendly_name: "Friendly name name #{rand(1..1000)}",
+            group_id: create(:team).id,
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
@@ -71,7 +71,12 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "authentication"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'authentication', wizard_step: {identity_protocol: 'saml'}}
+          put :update, params: {id: 'authentication', wizard_step: {
+            identity_protocol: 'openid_connect_private_key_jwt',
+            ial: '1',
+            # Rails forms regularly put an initial, hidden, and blank entry for various inputs
+            attribute_bundle: ['', 'email'],
+          }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))
@@ -83,7 +88,7 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "issuer"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'issuer', wizard_step: {issuer: "test:sso:#{random_salt}"}}
+          put :update, params: {id: 'issuer', wizard_step: {issuer: "test:sso:#{rand(1..1000)}"}}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))

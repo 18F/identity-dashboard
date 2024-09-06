@@ -9,10 +9,10 @@ describe ServiceProvidersController do
     { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
   end
   let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
-  let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
+  let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     {
-      io: File.open(fixture_path + 'files/logo.svg'),
+      io: File.open(fixture_path + '/logo.svg'),
       filename: 'alternative_filename.svg',
       content_type: 'image/svg+xml',
     }

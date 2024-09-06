@@ -18,6 +18,8 @@ class LogoValidator < ActiveModel::Validator
     @record = record
     logo_is_less_than_max_size
     logo_file_mime_type
+    logo_file_ext_matches_type
+    validate_logo_svg
   end
 
   def logo_is_less_than_max_size
@@ -25,7 +27,6 @@ class LogoValidator < ActiveModel::Validator
 
     if record.logo_file.blob.byte_size > MAX_LOGO_SIZE
       record.errors.add(:logo_file, 'Logo must be less than 1MB')
-      record.logo_file = nil
     end
   end
 
@@ -36,7 +37,6 @@ class LogoValidator < ActiveModel::Validator
       :logo_file,
       "The file you uploaded (#{record.logo_file.filename}) is not a PNG or SVG",
     )
-    record.logo_file = nil # rubocop:disable Lint/UselessAssignment
   end
 
   def mime_type_svg?
@@ -52,11 +52,11 @@ class LogoValidator < ActiveModel::Validator
 
     filename = record.logo_file.blob.filename.to_s
 
-    file_ext = Regexp.new(/#{SP_MIME_EXT_MAPPINGS[logo_file.content_type]}$/i)
+    file_ext = Regexp.new(/#{SP_MIME_EXT_MAPPINGS[record.logo_file.content_type]}$/i)
 
     return if filename.match(file_ext)
 
-    errors.add(
+    record.errors.add(
       :logo_file,
       "The extension of the logo file you uploaded (#{filename}) does not match the content.",
     )
@@ -78,16 +78,14 @@ class LogoValidator < ActiveModel::Validator
     return if svg_has_viewbox?(svg)
     
     record.errors.add(:logo_file, 
-"The logo file you uploaded (#{logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
-    record.logo_file = nil
+"The logo file you uploaded (#{record.logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
   end
 
   def svg_logo_has_script_tag(svg)
     return unless svg.css('script').present?
 
     record.errors.add(:logo_file, 
-"The logo file you uploaded (#{logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
-    record.logo_file = nil
+"The logo file you uploaded (#{record.logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
   end
 
   def svg_has_viewbox?(svg)
