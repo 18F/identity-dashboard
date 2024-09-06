@@ -1,4 +1,4 @@
-class ToolsController < ApplicationController
+class ToolsController < AuthenticatedController
   require 'saml_idp'
 
   def saml_request
