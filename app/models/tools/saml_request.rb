@@ -37,12 +37,8 @@ module Tools
      @valid_signature = check_signature_validity
     end
 
-    def cert_errors
-      auth_request.cert_errors
-    end
-
     def issuer
-      auth_request.issuer
+      auth_request&.issuer
     end
 
     private
