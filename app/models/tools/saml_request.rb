@@ -10,7 +10,6 @@ module Tools
     end
 
     def run_validations
-      valid
       valid_signature if valid
     end
 
@@ -27,37 +26,47 @@ module Tools
     end
 
     def valid
-      @valid = auth_request.valid? if @valid.nil?
-      @valid
+      return @valid if defined? @valid
+
+      @valid = auth_request.valid?
     end
 
     def valid_signature
-     @valid_signature = check_signature_validity if @valid_signature.nil?
-     @valid_signature
+     return @valid_signature if defined? @valid_signature
+
+     @valid_signature = check_signature_validity
+    end
+
+    def cert_errors
+      auth_request.cert_errors
+    end
+
+    def issuer
+      auth_request.issuer
     end
 
     private
 
     def certs
-      cert_body.blank? ? sp&.certs : [cert_body]
+      cert_body.blank? ? auth_service_provider&.certs : [cert_body]
     end
 
     def check_signature_validity
       @valid_signature ||= begin
 
-        if certs.nil?
+        if auth_service_provider.nil?
           @errors.push(<<~EOS.squish)
-            Could not find any certificates to use. Please add a
-            certificate to your application configuration or paste one below.
+            No matching Service Provider founded in this request.
+            Please check issuer attribute.
           EOS
 
           return false
         end
 
-        if auth_service_provider.nil?
+        if certs.nil?
           @errors.push(<<~EOS.squish)
-            No matching Service Provider founded in this request.
-            Please check issuer attribute.
+            Could not find any certificates to use. Please add a
+            certificate to your application configuration or paste one below.
           EOS
 
           return false
@@ -97,10 +106,6 @@ module Tools
         s_params = url_params(auth_url)
         s_params.present? ? s_params : { SAMLRequest: auth_url }
       end
-    end
-
-    def sp
-      ServiceProvider.find_by(issuer: auth_request.issuer)
     end
 
     def url_params(url)

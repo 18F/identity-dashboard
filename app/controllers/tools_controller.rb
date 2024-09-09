@@ -15,8 +15,14 @@ class ToolsController < AuthenticatedController
                         'Authentication requests only. Please try this ' +
                         '<a href="https://www.samltool.com/validate_logout_req.php" ' +
                         'target="_blank">tool</a> to validate logout requests.'
+
+
+      @validation_attempted = false
+      render 'saml_request'
       return
     end
+
+    @sp = ServiceProvider.find_by(issuer: @request.issuer)
 
     @request.run_validations
 
