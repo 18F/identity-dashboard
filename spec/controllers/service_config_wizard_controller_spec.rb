@@ -142,7 +142,7 @@ RSpec.describe ServiceConfigWizardController do
           StringIO.new(build_pem(serial: new_serial)),
           original_filename: 'new_cert.pem',
         )
-        new_logo_upload = fixture_file_upload("#{Rails.root}/spec/fixtures/logo.png", 'image/png')
+        new_logo_upload = fixture_file_upload('logo.png', 'image/png')
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
             logo_file: new_logo_upload,

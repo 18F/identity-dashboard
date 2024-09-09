@@ -19,6 +19,7 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
+      select(Team.find(admin.group_id).name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.authentication'))
@@ -43,6 +44,7 @@ feature 'Service Config Wizard' do
       fill_in('App name', with: 'my-app')
       fill_in('Friendly name', with: 'My App')
       team_field = find_field('Team')
+      select(Team.find(admin.group_id).name, from: 'Team')
       expect(team_field.value).to eq(admin.group_id.to_s)
       click_on 'Next'
       choose 'SAML'
