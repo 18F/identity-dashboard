@@ -23,7 +23,7 @@ module Tools
     end
 
     def xml
-      REXML::Document.new(auth_request.raw_xml)
+      Nokogiri.XML(auth_request.raw_xml).to_xml
     end
 
     def valid
