@@ -55,7 +55,7 @@ feature 'Banners' do
       visit root_path
     end
 
-    it 'displays the banner' do
+    it 'does not display the banner' do
       expect(page).to_not have_css('.usa-alert')
     end
   end
@@ -78,7 +78,7 @@ feature 'Banners' do
       visit root_path
     end
 
-    it 'displays the banner' do
+    it 'does not display the banner' do
       expect(page).to_not have_css('.usa-alert')
     end
   end
