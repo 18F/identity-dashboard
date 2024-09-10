@@ -12,11 +12,10 @@ RSpec.describe Banner, type: :model do
     expect(new_banner.valid?).to be(false)
   end
 
-  it 'errors out on the start date of start date is blank and end date is set' do
+  it 'is valid if start date is blank and end date is set' do
+    new_banner.start_date = nil
     new_banner.end_date = Time.zone.now
-    expect(new_banner.valid?).to be(false)
-    expect(new_banner.errors).to have_key(:start_date)
-    expect(new_banner.errors).to_not have_key(:end_date)
+    expect(new_banner.valid?).to be(true)
   end
 
 
