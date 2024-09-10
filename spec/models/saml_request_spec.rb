@@ -64,6 +64,7 @@ describe 'SamlRequest' do
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
       allow(decoded_request).to receive(:issuer) { issuer }
+      allow(decoded_request).to receive(:service_provider) { sp }
     end
 
     describe 'if there are no certs' do

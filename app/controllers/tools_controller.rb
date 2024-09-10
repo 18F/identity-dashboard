@@ -26,7 +26,6 @@ class ToolsController < AuthenticatedController
 
     @request.run_validations
 
-    @request.xml.write(@xml = '', 2) if @request.valid
     render 'saml_request'
   end
 

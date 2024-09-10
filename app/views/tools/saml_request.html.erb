@@ -58,9 +58,6 @@
       </div>
     </div>
   </div>
-
-
-  <% unless @request.xml.nil? %>
   <% else %>
      <div class="usa-alert usa-alert--error"%>
       <div class="usa-alert__body">
@@ -81,7 +78,7 @@
       </div>
     </div>
   <% end %>
-  <% unless @xml.nil? %>
+  <% unless @request.xml.nil? %>
     <p>
       <b>SAML</b>
       <pre><code><%= pp @request.xml %></code></pre>

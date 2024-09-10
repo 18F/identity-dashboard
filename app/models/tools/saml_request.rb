@@ -48,37 +48,34 @@ module Tools
     end
 
     def check_signature_validity
-      @valid_signature ||= begin
+      if auth_service_provider.nil?
+        @errors.push(<<~EOS.squish)
+          No matching Service Provider founded in this request.
+          Please check issuer attribute.
+        EOS
 
-        if auth_service_provider.nil?
-          @errors.push(<<~EOS.squish)
-            No matching Service Provider founded in this request.
-            Please check issuer attribute.
-          EOS
-
-          return false
-        end
-
-        if certs.nil?
-          @errors.push(<<~EOS.squish)
-            Could not find any certificates to use. Please add a
-            certificate to your application configuration or paste one below.
-          EOS
-
-          return false
-        end
-
-        begin
-          auth_service_provider.certs = valid_certs
-        rescue OpenSSL::X509::CertificateError
-          @errors.push('Something is wrong with the certificate you submitted.')
-          return false
-        end
-
-        auth_service_provider.valid_signature?(
-          Saml::XML::Document.parse(auth_request.raw_xml), true, auth_request.options
-        )
+        return false
       end
+
+      if certs.nil?
+        @errors.push(<<~EOS.squish)
+          Could not find any certificates to use. Please add a
+          certificate to your application configuration or paste one below.
+        EOS
+
+        return false
+      end
+
+      begin
+        auth_service_provider.certs = valid_certs
+      rescue OpenSSL::X509::CertificateError
+        @errors.push('Something is wrong with the certificate you submitted.')
+        return false
+      end
+
+      auth_service_provider.valid_signature?(
+        Saml::XML::Document.parse(auth_request.raw_xml), true, auth_request.options
+      )
     end
 
     def valid_certs
@@ -107,6 +104,5 @@ module Tools
     def url_params(url)
       CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [ k.to_sym, v[0] ] }
     end
-
   end
 end
