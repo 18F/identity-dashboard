@@ -37,4 +37,49 @@ feature 'Banners' do
 
     expect(page).to have_selector("th > a[href='banner_test_link']")
   end
+
+  context 'it displays at the approptiate start time' do
+    before do 
+      allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day - 2.days + 1.second)
+      visit root_path
+    end
+
+    it 'displays the banner' do
+      expect(page).to have_css('.usa-alert')
+    end
+  end
+
+  context 'it does not display at the before the start time' do
+    before do 
+      allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day - 3.days)
+      visit root_path
+    end
+
+    it 'displays the banner' do
+      expect(page).to_not have_css('.usa-alert')
+    end
+  end
+
+
+  context 'it displays at the approptiate end time' do
+    before do 
+      allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day + 2.days - 1.second)
+      visit root_path
+    end
+
+    it 'displays the banner' do
+      expect(page).to have_css('.usa-alert')
+    end
+  end
+
+  context 'it does not display at the before the start time' do
+    before do 
+      allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day + 3.days)
+      visit root_path
+    end
+
+    it 'displays the banner' do
+      expect(page).to_not have_css('.usa-alert')
+    end
+  end
 end
