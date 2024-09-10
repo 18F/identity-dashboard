@@ -54,19 +54,8 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def draft_service_provider
     @service_provider ||= begin
-      all_data = policy_scope(WizardStep).
-        all.
-        reduce({}) {|memo, record| memo.merge(record.data)}
-      all_data['redirect_uris'] = [all_data['redirect_uris']]
-      # This won't be enough to actually transfer the file to the new record
-      # TODO: we'll have to add some code to do that file attach transfer
-      all_data['logo'] = all_data.delete('logo_name')
-      (all_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
-        # Clear out extra data from the wizard steps in case we put data
-        # temporarily in the wizard steps that the service provider doesn't have attributes for
-        all_data.delete[extra_data]
-      end
-      ServiceProvider.new(**all_data)
+      all_wizard_data = WizardStep.current_step_data_for_user(current_user)
+      ServiceProvider.new(**transform_to_service_provider_attributes(all_wizard_data))
     end
   end
 
@@ -181,5 +170,25 @@ class ServiceConfigWizardController < AuthenticatedController
     action_name == 'new' ||
       step == STEPS.first ||
       step == Wicked::FINISH_STEP
+  end
+
+  def transform_to_service_provider_attributes(wizard_step_data)
+    if wizard_step_data.has_key?('redirect_uris')
+      wizard_step_data['redirect_uris'] = Array(wizard_step_data['redirect_uris'])
+    end
+
+    # This won't be enough to actually transfer the file to the new record
+    # TODO: we'll have to add some code to do that file attach transfer
+    if wizard_step_data.has_key?('logo_name')
+      wizard_step_data['logo'] = wizard_step_data.delete('logo_name')
+    end
+
+    # Clear out extra data from the wizard steps in case we put data
+    # temporarily in the wizard steps that the service provider doesn't have attributes for
+    (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
+      wizard_step_data.delete[extra_data]
+    end
+
+    wizard_step_data
   end
 end

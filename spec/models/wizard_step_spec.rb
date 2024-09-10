@@ -189,4 +189,39 @@ RSpec.describe WizardStep, type: :model do
       end
     end
   end
+
+  describe '.current_step_data_for_user' do
+    let(:subject_user) { create(:user) }
+
+    it 'concatenates all the latest steps for a user' do
+      created_steps = WizardStep::STEPS.map do |step|
+        create(:wizard_step, step_name: step, user: subject_user)
+      end
+      ignored_user = create(:user)
+      extra_step = create(:wizard_step, step_name: 'issuer', user: ignored_user, data: {
+        issuer: 'issuer string that should not appear',
+      })
+
+      all_step_data = created_steps.map(&:data).reduce(&:merge)
+      expect(WizardStep.current_step_data_for_user(subject_user)).to eq(all_step_data)
+      expect(WizardStep.current_step_data_for_user(subject_user).values).
+        to_not include(extra_step.issuer)
+
+      all_field_names = WizardStep::STEP_DATA.map {|_k, v| v.fields}.reduce(&:merge).keys
+      expect(WizardStep.current_step_data_for_user(subject_user).keys).to eq(all_field_names)
+    end
+
+    it 'will stop returning data that have been deleted' do
+      test_issuer = "test:issuer:#{rand(1..100)}"
+      create(:wizard_step, step_name: 'issuer', user: subject_user, data: {issuer: test_issuer})
+      expect(WizardStep.current_step_data_for_user(subject_user)).to eq({'issuer' => test_issuer})
+      WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
+      expect(WizardStep.current_step_data_for_user(subject_user).keys).
+        to_not include('issuer')
+    end
+
+    it 'returns an empty hash when no data has been saved' do
+      expect(WizardStep.current_step_data_for_user(subject_user)).to eq({})
+    end
+  end
 end

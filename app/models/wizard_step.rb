@@ -57,6 +57,7 @@ class WizardStep < ApplicationRecord
   has_one_attached :logo_file
 
   validates :step_name, presence: true
+
   validates :app_name, presence: true, on: 'settings'
   validates :group_id, presence: true, on: 'settings'
   validate :group_is_valid, on: 'settings'
@@ -111,6 +112,12 @@ class WizardStep < ApplicationRecord
 
   def self.block_encryptions
     ServiceProvider.block_encryptions
+  end
+
+  def self.current_step_data_for_user(user)
+    WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
+      memo.merge(step.data)
+    end
   end
 
   def step_name=(new_name)
