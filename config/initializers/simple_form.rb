@@ -22,10 +22,7 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.wrapper tag: :div, class: 'usa-label__group' do |c|
-      c.wrapper tag: :label, class: 'usa-label' html: { role: 'alert' } do |d|
-        d.use :label, class: 'usa-label'
-        d.use :error, wrap_with: { tag: 'p', class: 'usa-sr-only' }
-      end
+      c.use :label, class: 'usa-label', role: 'alert', child: c.use(:error)
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
