@@ -59,10 +59,10 @@
   </div>
 
 
-  <% unless @xml.nil? %>
+  <% unless @request.xml.nil? %>
     <p>
       <b>SAML</b>
-      <pre><code><%= @xml %></code></pre>
+      <pre><code><%= pp @request.xml %></code></pre>
     </p>
   <% end %>
 <% end %>
