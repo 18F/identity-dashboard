@@ -378,7 +378,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     omniauth (2.1.1)
@@ -656,7 +656,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.16.2)
+  nokogiri (~> 1.16.5)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
   paper_trail (~> 15.0, >= 15.0.0)
@@ -675,7 +675,6 @@ DEPENDENCIES
   redacted_struct
   responders (~> 3.1, >= 3.1.1)
   rest-client (~> 2.1)
-  rexml (~> 3.2)
   rspec-rails (~> 6.0, >= 6.0.0)
   rspec_junit_formatter
   rubocop (~> 1.62.0)

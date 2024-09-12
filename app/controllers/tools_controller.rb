@@ -22,8 +22,6 @@ class ToolsController < ApplicationController
     end
 
     @request.run_validations
-
-    @request.xml.write(@xml = '', 2) if @request.valid
   end
 
   private
