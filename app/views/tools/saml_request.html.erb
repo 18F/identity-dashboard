@@ -79,10 +79,10 @@
     </div>
   <% end %>
   <% unless @request.xml.nil? %>
-    <p>
-      <b>SAML</b>
-      <pre><code><%= pp @request.xml %></code></pre>
-    </p>
+    <div>
+      <h3>SAML</h3>
+      <pre class="text-pre-wrap overflow-y-hidden"><code><%= pp @request.xml %></code></pre>
+    </div>
   <% end %>
 <% end %>
 
