@@ -2,9 +2,11 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Tools views', :js do
+  let(:user) { create(:user, :with_teams) }
+
+  before  { login_as(user) }
 
   context 'saml_request views' do
-    # there is currently no restrictions for viewing the saml authentication request tool
     context 'without input' do
       scenario 'is accessible' do
         visit tools_saml_request_path

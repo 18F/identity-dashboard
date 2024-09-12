@@ -1,14 +1,12 @@
-class ToolsController < ApplicationController
+class ToolsController < AuthenticatedController
   require 'saml_idp'
 
   def saml_request
+  end
+
+  def validate_saml_request
     flash[:warning] = nil
     @validation_attempted = true
-
-    if params['validation'].blank? || params['validation']['auth_url'].blank?
-      @validation_attempted = false
-      return
-    end
 
     @request = Tools::SamlRequest.new(validation_params)
 
@@ -17,11 +15,15 @@ class ToolsController < ApplicationController
                         'Authentication requests only. Please try this ' +
                         '<a href="https://www.samltool.com/validate_logout_req.php" ' +
                         'target="_blank">tool</a> to validate logout requests.'
+
+
       @validation_attempted = false
-      return
+      render 'saml_request' and return
     end
 
     @request.run_validations
+
+    render 'saml_request'
   end
 
   private
