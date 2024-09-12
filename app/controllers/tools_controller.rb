@@ -18,11 +18,8 @@ class ToolsController < AuthenticatedController
 
 
       @validation_attempted = false
-      render 'saml_request'
-      return
+      render 'saml_request' and return
     end
-
-    @sp = ServiceProvider.find_by(issuer: @request.issuer)
 
     @request.run_validations
 

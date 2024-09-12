@@ -37,14 +37,14 @@ module Tools
      @valid_signature = check_signature_validity
     end
 
-    def issuer
-      auth_request&.issuer
+    def sp
+      @sp ||= ServiceProvider.find_by(issuer: auth_request&.issuer)
     end
 
     private
 
     def certs
-      cert_body.blank? ? auth_service_provider&.certs : [cert_body]
+      cert_body.blank? ? sp&.certs : [cert_body]
     end
 
     def check_signature_validity
