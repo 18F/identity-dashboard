@@ -28,7 +28,7 @@ gem 'nokogiri', '~> 1.16.5'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
-gem 'paper_trail', '~> 15.0', '>= 15.0.0'
+gem 'paper_trail', '~> 15.2'
 gem 'puma', '>= 6.4.2'
 gem 'pg'
 gem 'propshaft'
@@ -66,7 +66,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bullet', '>= 7.0.5'
+  gem 'bullet', '~> 7.2.0'
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'

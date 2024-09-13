@@ -657,7 +657,7 @@ DEPENDENCIES
   axe-core-rspec (~> 4.2)
   better_errors
   binding_of_caller
-  bullet (>= 7.0.5)
+  bullet (~> 7.2.0)
   bummr
   bundler
   capistrano
@@ -688,7 +688,7 @@ DEPENDENCIES
   nokogiri (~> 1.16.5)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
-  paper_trail (~> 15.0, >= 15.0.0)
+  paper_trail (~> 15.2)
   pg
   propshaft
   pry-byebug

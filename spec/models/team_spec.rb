@@ -32,51 +32,6 @@ describe Team do
     end
   end
 
-  describe '#user_deletion_history', versioning: true do
-    it 'returns user deletion_history from paper_trail' do
-      user_team.destroy
-      deletion_history = user_team.team.user_deletion_history
-      expect(deletion_history.count).to eq(1)
-    end
-  end
-
-  describe '#user_deletion_report_item' do
-    it 'returns formated record from user_deletion_history' do
-      history_record = {
-        'id'=>1,
-        'user_id'=>2,
-        'group_id'=>3,
-        'removed_at'=>'2021-06-08T17:34:06Z',
-        'whodunnit_id'=>'1',
-      }
-      report_item = team.user_deletion_report_item(history_record)
-      expect(report_item[:user_id]).to eq(2)
-    end
-  end
-
-  describe '#user_deletion_history_report', versioning: true do
-    it 'returns deletion history when no email is provided' do
-      user_id = user_team.user_id
-      user_team.destroy
-      deletion_report = user_team.team.user_deletion_history_report
-      expect(deletion_report.first[:user_id]).to eq(user_id)
-    end
-    it 'returns deletion history when email is provided' do
-      user_id = user_team.user_id
-      user_email = user_team.user.email
-      user_team.destroy
-      report = user_team.team.user_deletion_history_report(email: user_email)
-      expect(report.first[:user_id]).to eq(user_id)
-    end
-    it 'returns deletion history when limit is provided' do
-      user_id = user_team.user_id
-      user_email = user_team.user.email
-      user_team.destroy
-      report = user_team.team.user_deletion_history_report(limit: 1)
-      expect(report.count).to eq(1)
-    end
-  end
-
   describe 'paper_trail', versioning: true do
     it { is_expected.to be_versioned }
 

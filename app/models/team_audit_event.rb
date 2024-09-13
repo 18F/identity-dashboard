@@ -28,6 +28,7 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   def self.decorate(scope)
     # The team membership changes need some decoration. The PaperTrail information on
     # just the `UserTeam` join table itself isn't helpful to an end user.
+    puts "!scope? #{scope.method('map')}"
     scope.map do |v|
       v.item_type == 'UserTeam' ? TeamAuditEvent.from_membership_version(v) : v
     end
