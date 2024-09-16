@@ -24,18 +24,27 @@
     <% end %>
   </div>
   <div class="usa-input__container">
-    <% if input_type == 'radio' %>
+    <% case input_type %>
+    <% when 'radio' %>
       <%= render partial: 'radio_collection', locals: {
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
       } %>
-    <% elsif input_type == 'checkbox' %>
+    <% when 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
       } %>
+    <% else %>
+      <%= capture { inputs.call(
+            class: "block col-12 usa-input #{'usa-input--error' if form.object.errors[fieldname].present?}",
+            aria: { invalid: false },
+            required: required,
+            as: input_type ? input_type : nil
+          )} %>
+      <%= form.full_error fieldname, error_tag: 'p', class: 'usa-error-message' %>
     <% end %>
   </div>
 </fieldset>

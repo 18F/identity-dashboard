@@ -26,27 +26,39 @@
         },
       } %>
 
-    <%= form.input :app_name,
-                    input_html: { class: 'usa-input' },
-                    label_html: { class: 'usa-input-required'},
-                    required: true,
-                    label: t('simple_form.labels.service_provider.app_name'),
-                    placeholder: 'Ex: DHS-CSP',
-                    hint: t('service_provider_form.app_name_html') %>
+    <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'app_name',
+      required: true,
+      description: true,
+      html_desc: true,
+      input_type: false,
+      inputs: ->(opts) { form.input_field :app_name, **{placeholder: 'Ex: DHS-CSP'}.merge(opts) }
+    } %>
 
-    <%= form.input :friendly_name,
-                    input_html: { class: 'usa-input', aria: { invalid: false } },
-                    label_html: { class: 'usa-input-required'},
-                    required: true,
-                    label: t('simple_form.labels.service_provider.friendly_name'),
-                    placeholder: 'Ex: DHS Customer Service Portal',
-                    hint: t('service_provider_form.friendly_name_html') %>
+    <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'friendly_name',
+      required: true,
+      description: true,
+      html_desc: true,
+      input_type: false,
+      inputs: ->(opts) { form.input_field :app_name, **{
+        placeholder: 'Ex: DHS Customer Service Portal',
+        aria: { invalid: false }
+      }.merge(opts) }
+    } %>
 
-    <%= form.input :description,
-                    as: :usa_textarea,
-                    label_html: { class: 'usa-input-optional' },
-                    label: t('simple_form.labels.service_provider.description'),
-                    hint: I18n.t('service_provider_form.description') %>
+    <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'description',
+      required: false,
+      description: true,
+      html_desc: false,
+      input_type: :usa_textarea,
+      inputs: ->(opts) { form.input_field :app_name, **opts }
+    } %>
+
     <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>
