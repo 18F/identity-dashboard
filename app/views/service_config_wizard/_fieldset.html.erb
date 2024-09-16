@@ -11,6 +11,12 @@
 <fieldset class="<%= "wizard-field #{input_type} service_provider_#{fieldname}" %>" >
   <legend class="usa-sr-only">
     <%= t("simple_form.labels.service_provider.#{fieldname}") %>
+    <% if form.object.errors.present? && form.object.errors.messages[fieldname.to_sym].present? %>
+        <%# If you need a for attribute, you can make one here. For example %>
+        <%# "#{form.object.class.to_s.camelize}_#{fieldname}" %>
+        <%# should work, though it feels like a bit of a hack.   %>
+        <%= form.full_error fieldname, error_tag: 'span', class: 'usa-sr-only' %>
+    <% end %>
   </legend>
   <div class="usa-label__group">
     <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">
@@ -39,6 +45,7 @@
       } %>
     <% else %>
       <%= capture { inputs.call(
+            # id for `for` attribute above can then go here as `id: "#{form.object.class.to_s.camelize}_#{fieldname}",`
             class: "block col-12 usa-input #{'usa-input--error' if form.object.errors[fieldname].present?}",
             aria: { invalid: false },
             required: required,
