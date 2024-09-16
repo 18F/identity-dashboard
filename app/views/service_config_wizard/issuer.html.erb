@@ -3,7 +3,6 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
-                 as: :text,
                  disabled: issuer_read_only?,
                  label: t('simple_form.labels.service_provider.issuer'),
                  label_html: { class: 'usa-input-required' },
