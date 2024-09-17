@@ -83,6 +83,20 @@ RSpec.describe ServiceConfigWizardController do
         next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
+
+      it 'sets attribute bundle errors' do
+        expect do
+          put :update, params: {id: 'authentication', wizard_step: {
+            identity_protocol: 'saml',
+            ial: '2',
+            attribute_bundle: [],
+          }}
+        end.to_not(change {WizardStep.count})
+        expect(response).to_not be_redirect
+        expect(assigns[:model].errors.messages.keys).to eq([:attribute_bundle])
+        actual_error = assigns[:model].errors[:attribute_bundle].to_sentence
+        expect(actual_error).to eq('Attribute bundle cannot be empty')
+      end
     end
 
     describe 'step "issuer"' do
