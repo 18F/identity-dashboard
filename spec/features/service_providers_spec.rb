@@ -17,7 +17,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
-      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       select user.teams[0].name, from: 'service_provider_group_id'
       select I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service'
       select I18n.t('service_provider_form.aal_option_2'),

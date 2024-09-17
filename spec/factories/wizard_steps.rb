@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :wizard_step do
-    user { nil }
+    association :user, factory: :user
     step_name { WizardStep::STEPS[1..-1].sample }
     data { '{}' }
   end

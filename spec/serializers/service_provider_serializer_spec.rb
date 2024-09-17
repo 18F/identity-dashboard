@@ -3,7 +3,6 @@ require 'nokogiri'
 
 RSpec.describe ServiceProviderSerializer do
   subject(:serializer) { ServiceProviderSerializer.new(service_provider) }
-  let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
   let(:logo_filename) { 'logo.svg' }
   let(:team_agency_id) { SecureRandom.random_number(10_000) }
 
@@ -16,7 +15,7 @@ RSpec.describe ServiceProviderSerializer do
           default_aal: 3,
           certs: [build_pem],
           allow_prompt_login: true)
-    sp.logo_file.attach(io: File.open(fixture_path + "/#{logo_filename}"), filename: logo_filename)
+    sp.logo_file.attach(fixture_file_upload(logo_filename))
     sp.update(logo: logo_filename)
     sp.reload
   end
