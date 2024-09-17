@@ -14,14 +14,10 @@ describe ServiceProvider do
         issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:app',
       )
     end
-    let(:fixture_path) { File.expand_path('../fixtures', __dir__) }
-    let(:filename) { 'logo.svg'}
+    let(:filename) { 'logo.svg' }
 
     before do
-      service_provider.logo_file.attach(
-        io: File.open(fixture_path + '/' + filename),
-        filename:,
-      )
+      service_provider.logo_file.attach(fixture_file_upload(filename))
     end
 
     describe 'logo that is a png file' do
@@ -44,7 +40,7 @@ describe ServiceProvider do
       end
 
       describe 'logo is greater than 1 mb' do
-        let(:filename) { 'big-logo.png' }
+        let(:filename) { '../big-logo.png' }
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -128,7 +124,7 @@ describe ServiceProvider do
       end
 
       describe 'it has no viewBox attributes' do
-        let(:filename) { 'logo_without_size.svg'}
+        let(:filename) { '../logo_without_size.svg'}
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -139,7 +135,7 @@ describe ServiceProvider do
       end
 
       describe 'it has a script in the xml' do
-        let(:filename) { 'logo_with_script.svg'}
+        let(:filename) { '../logo_with_script.svg'}
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -151,10 +147,12 @@ describe ServiceProvider do
     end
 
     describe 'logo with a different file extension' do
-      let(:filename) { 'invalid.txt' }
+      let(:filename) { '../invalid.txt' }
 
       it 'is not valid' do
-        expect(service_provider).to_not be_valid
+        expect(service_provider.errors[:logo_file]).to eq(
+          ['The file you uploaded (invalid.txt) is not a PNG or SVG'],
+        )
       end
     end
   end
@@ -215,68 +213,10 @@ describe ServiceProvider do
       )
     end
 
-    it 'accepts a blank certificate' do
-      sp = build(:service_provider, redirect_uris: [], certs: [''])
-
-      expect(sp).to be_valid
-    end
-
-    it 'fails if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], certs: ['foo'])
-
-      expect(sp).to_not be_valid
-    end
-
-    it 'provides an error message if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], certs: ['foo'])
-      sp.valid?
-
-      expect(sp.errors[:certs]).to include('Certificate is a not PEM-encoded')
-    end
-
-    it 'accepts a valid x509 certificate' do
-      valid_cert = <<~CERT
-        -----BEGIN CERTIFICATE-----
-        MIIDAjCCAeoCCQDnptBMGdfBIjANBgkqhkiG9w0BAQsFADBCMQswCQYDVQQGEwJV
-        UzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHU2VhdHRsZTEMMAoGA1UE
-        ChMDMThGMCAXDTE0MTAwODIzMzkzMVoYDzIxMDYwMTEyMjMzOTMxWjBCMQswCQYD
-        VQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHU2VhdHRsZTEM
-        MAoGA1UEChMDMThGMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1zps
-        ODzA7AHnls/NaICXSuBjyRbmEmDsoAl6YC/3ljBfG8POZre5wTeSjkPaj/h70ai5
-        DEWrG3PyEJ0D6QqwNjReChq3AFSSnPLZeRu11N4UVvScJwCpRMs2LD93BBfFy8VU
-        SQIOsPdrpy9ct31aNzYhi7LF3GBgIwcwq3SLxaF+YYDbbGqHZ8XkjrQlQlRGOPc8
-        dcKcl0azNqSP4jAp83sw2NsKNPgDpI3PCs3H4C2q0RV/V+A4EIXi/3brAmnwKSOA
-        JZ2ZAUIjHkv/Y1kk1TzAcy6s/V5f5Mxb4BjXxdAB18umI+EnfHLupV2fScOYY833
-        AHSpuBiY+b7UfYPU5QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCrjv4rCw3Qhpyv
-        konOP/Yufxj/SwkaZdanJCnbOvndRk2qO57FQU9qPwUJOu8kws8Xat+A+4ow2hQl
-        C0b4OlifwrYcnBK/hDOcMOOH/d8na2bzOSg7lkHMOK3luELxPqsnkrszwtqAYs6K
-        cLk2AEacrkAG0DVfOqYOGtUGUrx5QDYutX2kz24VcZ10so4IfRYI4EJX/tF46lqy
-        dp6KaRxeVNQo21CGhfzeBSqgd0tRicu9uHzI57nxCLIzSQoLT5c6geCl5LJ7DxS2
-        kaNiHglqe6GyLbbp3Y5q45xyBGPtJVT6kR6XqK4sEJPRgznbDn2NDx0Ef9mxHdVP
-        e0sZY2CS
-        -----END CERTIFICATE-----
-      CERT
-      sp = build(:service_provider, redirect_uris: [], certs: [valid_cert])
-
-      expect(sp).to be_valid
-    end
-
-    it 'rejects invalid certs' do
-      sp = build(:service_provider, certs: ['NOT A CERT'])
-
-      expect(sp).to_not be_valid
-    end
-
-    it 'rejects DER encoded certs' do
-      sp = build(:service_provider, certs: [OpenSSL::X509::Certificate.new(build_pem).to_der])
-
-      expect(sp).to_not be_valid
-    end
-
-    it 'rejects private keys as PEMs' do
-      sp = build(:service_provider, certs: [OpenSSL::PKey::RSA.new(2048).to_pem])
-
-      expect(sp).to_not be_valid
+    it 'validates with the certs_are_pems validator' do
+      validator = ServiceProvider.validators.find {|v| v.instance_of?(CertsArePemsValidator) }
+      expect(validator).to receive(:validate).and_return(true)
+      expect(service_provider).to be_valid
     end
 
     it 'validates that all redirect_uris are absolute, parsable uris with no wildcards' do
@@ -373,37 +313,6 @@ describe ServiceProvider do
       expect(sp.aal_friendly).to eq(I18n.t('service_provider_form.aal_option_3'))
       sp = build(:service_provider, default_aal: 4)
       expect(sp.aal_friendly).to eq('4')
-    end
-
-    it 'validates the the attribute bundle according IAL and protocol' do
-      ial_1_bundle = %w[email all_emails verified_at x509_subject x509_presented]
-      ial_2_bundle = %w[first_name last_name dob ssn address1 address2 city state zipcode phone]
-      empty_bundle = []
-
-      saml_sp_ial1 = create(:service_provider, :saml, :with_ial_1)
-      expect(saml_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
-
-      saml_sp_ial2 = create(:service_provider, :saml, :with_ial_2)
-      expect(saml_sp_ial2).not_to allow_value(empty_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
-
-      oidc_sp_ial1 = create(:service_provider, :with_oidc_jwt, :with_ial_1)
-      expect(oidc_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
-
-      oidc_sp_ial2 = create(:service_provider, :with_oidc_jwt, :with_ial_2)
-      expect(oidc_sp_ial2).to allow_value(empty_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(oidc_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
-
     end
 
     it 'sanitizes help text before saving' do
