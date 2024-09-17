@@ -22,11 +22,11 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.wrapper tag: :div, class: 'usa-label__group' do |c|
-      c.use :label, class: 'usa-label', role: 'alert', label_text: ->(label, required, explicit_label) { "#{label} hello"}
+      c.use :label, class: 'usa-label'
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
-      c.use :input, as: :label_errors, class: 'block col-12', error_class: 'usa-input--error'
+      c.use :input, class: 'block col-12', error_class: 'usa-input--error'
       c.use :full_error, wrap_with: { tag: 'p', class: 'usa-error-message' }
     end
   end
