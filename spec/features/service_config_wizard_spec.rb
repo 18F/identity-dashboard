@@ -108,6 +108,17 @@ feature 'Service Config Wizard' do
       expect(saved_setup_data['certs']).
         to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
     end
+
+    it 'shows uploaded logo file errors' do
+      visit service_config_wizard_path('logo_and_cert')
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      expect { click_on 'Next' }.to_not(change { WizardStep.count })
+      actual_error_message = find('#logo-upload-error').text
+      expected_error_message =
+        'The logo file you uploaded (logo_with_script.svg) contains ' +
+        'one or more script tags. Please remove all script tags and re-upload'
+      expect(actual_error_message).to eq(expected_error_message)
+    end
   end
 
   context 'as a non-admin' do

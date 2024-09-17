@@ -150,6 +150,11 @@ RSpec.describe ServiceConfigWizardController do
             cert: new_cert,
           }}
         end.to_not(change {WizardStep.count})
+
+        expect(response).to be_redirect
+        next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+
         new_settings = WizardStep.last
         expect(new_settings.certs.count).to be(original_certs.count)
         expect(new_settings.certs.count).to be(1)
@@ -160,6 +165,20 @@ RSpec.describe ServiceConfigWizardController do
         expect(new_settings.logo_file.blob.checksum).to_not eq(original_saved_logo.blob.checksum)
         expect(new_settings.logo_file.blob.checksum).
           to eq(OpenSSL::Digest.base64digest('MD5', new_logo_upload.read))
+      end
+
+      it 'sets errors for bad SVGs' do
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            logo_file: fixture_file_upload('../logo_with_script.svg'),
+          }}
+        end.to_not(change {WizardStep.count})
+        expect(response).to_not be_redirect
+        actual_error = assigns[:model].errors[:logo_file].to_sentence
+        expected_error =
+          'The logo file you uploaded (logo_with_script.svg) contains ' +
+          'one or more script tags. Please remove all script tags and re-upload'
+        expect(actual_error).to eq(expected_error)
       end
     end
 
