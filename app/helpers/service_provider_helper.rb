@@ -10,7 +10,6 @@ module ServiceProviderHelper
     active
     group_id
     identity_protocol
-    production_issuer
   ].freeze
 
   def sp_logo(file_name)

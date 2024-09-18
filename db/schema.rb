@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_16_205618) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_18_113849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,7 +115,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_16_205618) do
     t.string "logo"
     t.integer "identity_protocol", default: 0
     t.json "redirect_uris"
-    t.string "production_issuer"
     t.integer "ial"
     t.string "failure_to_proof_url"
     t.string "push_notification_url"
