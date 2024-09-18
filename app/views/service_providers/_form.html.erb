@@ -118,10 +118,6 @@
                    end %>
 
   <% if current_user.admin? %>
-    <%= form.input :production_issuer,
-                   label: 'Production Issuer',
-                   input_html: { class: 'usa-input' } %>
-
     <%# allow_prompt_login checkbox %>
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>

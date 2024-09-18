@@ -127,7 +127,6 @@ class ServiceConfigWizardController < AuthenticatedController
       attribute_bundle: [],
       help_text: {},
     ]
-    permit_params << :production_issuer if current_user.admin?
     # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
     permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:wizard_step).permit(*permit_params)

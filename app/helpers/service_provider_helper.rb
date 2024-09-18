@@ -10,7 +10,6 @@ module ServiceProviderHelper
     active
     group_id
     identity_protocol
-    production_issuer
   ].freeze
 
   PNG_MIME_TYPE = 'image/png'.freeze
