@@ -14,7 +14,7 @@ module Tools
     end
 
     def matching_cert_sn
-      auth_service_provider.matching_cert.serial
+      auth_request.matching_cert.serial
     end
 
     def logout_request?
