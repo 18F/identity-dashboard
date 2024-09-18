@@ -77,11 +77,6 @@
 <hr>
 
 <% if current_user.admin? %>
-  <h2 class="margin-bottom-0">
-  <label for="production_issuer">Production Issuer:</label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.production_issuer %></span>
-  </h2>
-  <hr>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
   <hr>
   <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
