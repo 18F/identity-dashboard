@@ -133,11 +133,9 @@ class ServiceProvidersController < AuthenticatedController
     is_valid = true
     # we need to check both of these in order to produce errors,
     # and they need to be in this order
-    if !formatted_sp.valid?
-      is_valid = false
-    end
+    is_valid = false if !formatted_sp.valid?
     if @service_provider['identity_protocol'] == 'saml' &&
-      !validate_saml_required(@service_provider)
+       !validate_saml_required(@service_provider)
       is_valid = false
     end
     return save_service_provider(formatted_sp) if is_valid
