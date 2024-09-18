@@ -130,7 +130,17 @@ class ServiceProvidersController < AuthenticatedController
 
   def validate_and_save_service_provider(initial_action)
     formatted_sp = clear_formatting(@service_provider)
-    return save_service_provider(formatted_sp) if formatted_sp.valid?
+    is_valid = true
+    # we need to check both of these in order to produce errors,
+    # and they need to be in this order
+    if !formatted_sp.valid?
+      is_valid = false
+    end
+    if @service_provider['identity_protocol'] == 'saml' &&
+      !validate_saml_required(@service_provider)
+      is_valid = false
+    end
+    return save_service_provider(formatted_sp) if is_valid
 
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
@@ -250,6 +260,24 @@ class ServiceProvidersController < AuthenticatedController
       end
     end
     service_provider
+  end
+
+  def validate_saml_required(service_provider)
+    required_attributes = %w[
+      acs_url
+      return_to_sp_url
+    ]
+    is_valid = true
+
+    required_attributes.each do |attr|
+      if service_provider[attr].blank?
+        service_provider.errors.add(attr.to_sym, ' can\'t be blank')
+      elsif !service_provider[attr].match(/\Ahttps:\/\/(\S+\.?){2,}/)
+        service_provider.errors.add(attr.to_sym, ' is invalid')
+        is_valid = false
+      end
+    end
+    is_valid
   end
 
   def body_attributes
