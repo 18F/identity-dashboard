@@ -272,6 +272,7 @@ class ServiceProvidersController < AuthenticatedController
     required_attributes.each do |attr|
       if service_provider[attr].blank?
         service_provider.errors.add(attr.to_sym, ' can\'t be blank')
+        is_valid = false
       elsif !service_provider[attr].match(/\Ahttps:\/\/(\S+\.?){2,}/)
         service_provider.errors.add(attr.to_sym, ' is invalid')
         is_valid = false

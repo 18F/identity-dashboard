@@ -168,6 +168,7 @@ feature 'Service Providers CRUD' do
       acs_input.set('')
 
       submit_btn.click
+      acs_input = find_field('service_provider_acs_url')
       message = acs_input.native.attribute('validationMessage')
       expect(message).to eq 'Please fill out this field.'
 
@@ -175,7 +176,8 @@ feature 'Service Providers CRUD' do
       acs_input.set('lorem ipsum')
 
       submit_btn.click
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('is invalid')
+      acs_input = find_field('service_provider_acs_url')
+      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('Acs url is invalid')
 
       # ensure that valid URL now submits properly
       acs_input.set('https://fake.gov/test/saml/sp_login')
@@ -609,6 +611,8 @@ feature 'Service Providers CRUD' do
       select I18n.t('service_provider_form.aal_option_3'),
              from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
+      fill_in 'Assertion Consumer Service URL', with: 'https://app.agency.gov/auth/saml/sso'
+      fill_in 'Return to App URL', with: 'https://app.agency.gov'
       click_on 'Update'
 
       expect(page).to have_content('Success')
