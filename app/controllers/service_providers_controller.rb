@@ -129,16 +129,14 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    formatted_sp = clear_formatting(@service_provider)
-    is_valid = true
+    clear_formatting(@service_provider)
     # we need to check both of these in order to produce errors,
     # and they need to be in this order
-    is_valid = false if !formatted_sp.valid?
-    if @service_provider['identity_protocol'] == 'saml' &&
-       !validate_saml_required(@service_provider)
-      is_valid = false
-    end
-    return save_service_provider(formatted_sp) if is_valid
+    @service_provider.valid?
+    @service_provider['identity_protocol'] == 'saml' &&
+      !validate_saml_required(@service_provider)
+
+    return save_service_provider(@service_provider) if @service_provider.errors.none?
 
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
