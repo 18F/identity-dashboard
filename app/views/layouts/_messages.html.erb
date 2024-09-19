@@ -3,6 +3,7 @@
     <% flash.each do |name, msg| %>
       <% if msg.is_a?(String) %>
         <% alert_name = name == 'notice' ? 'info' : name %>
+        <%# TODO: remove `measure-3` when Wizard is live %>
         <div class="usa-alert measure-3 usa-alert--<%= alert_name %>" >
           <div class="usa-alert__body">
             <p class="usa-alert__text"><%= sanitize(msg) %></p>

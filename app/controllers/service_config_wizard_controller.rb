@@ -37,7 +37,11 @@ class ServiceConfigWizardController < AuthenticatedController
     unless skippable && params[:wizard_step].blank?
       @model.data = @model.data.merge(wizard_step_params)
     end
-    skip_step if @model.valid? && @model.save
+    if @model.valid? && @model.save
+      skip_step
+    else
+      flash[:error] = 'Please check the error(s) in the form below and re-submit.'
+    end
     render_wizard
   end
 

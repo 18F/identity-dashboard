@@ -15,8 +15,6 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'AAL'
   inflect.acronym 'ACS'
   inflect.acronym 'IAL'
-  inflect.acronym 'OIDC'
-  inflect.acronym 'SAML'
   inflect.acronym 'SP'
   inflect.acronym 'URI'
   inflect.acronym 'URL'
