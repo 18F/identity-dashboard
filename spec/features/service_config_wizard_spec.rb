@@ -101,7 +101,7 @@ feature 'Service Config Wizard' do
       click_on 'Create app'
       expect(current_url).to eq(service_providers_url)
 
-      saved_setup_data = WizardStep.current_step_data_for_user(admin)
+      saved_setup_data = WizardStep.all_step_data_for_user(admin)
       expected_data.keys.each do |key|
         expect(saved_setup_data[key].to_s).to eq(expected_data[key].to_s)
       end

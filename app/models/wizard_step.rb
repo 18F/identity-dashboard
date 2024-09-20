@@ -117,7 +117,7 @@ class WizardStep < ApplicationRecord
     ServiceProvider.block_encryptions
   end
 
-  def self.current_step_data_for_user(user)
+  def self.all_step_data_for_user(user)
     WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
       memo.merge(step.data)
     end
