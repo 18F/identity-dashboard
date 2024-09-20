@@ -64,6 +64,7 @@ describe 'SamlRequest' do
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
       allow(decoded_request).to receive(:issuer) { issuer }
+      allow(decoded_request).to receive(:service_provider) { sp }
     end
 
     describe 'if there are no certs' do
@@ -166,14 +167,14 @@ describe 'SamlRequest' do
     describe '#xml' do
       let(:decoded_request) { double SamlIdp::Request }
       let(:raw_xml) { '<XMLtag />' }
-      let(:xml) { REXML::Document.new(raw_xml) }
+      let(:xml) { Nokogiri::XML(raw_xml).to_xml }
 
       before do
         expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
         expect(decoded_request).to receive(:raw_xml) { raw_xml}
       end
 
-      it 'returns a REXML::Document object' do
+      it 'transforms the XML with Nokogiri correctly' do
         expect(subject.xml.inspect).to eq xml.inspect
       end
     end

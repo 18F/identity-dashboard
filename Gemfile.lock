@@ -11,10 +11,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 512ad9b1609884781034773f6c4ccd53e7036a82
-  tag: 0.21.6-18f
+  revision: 9b9e118e3811df70e4586a4b6585dbc69f928625
+  tag: 0.22.0-18f
   specs:
-    saml_idp (0.21.6.pre.18f)
+    saml_idp (0.22.0.pre.18f)
       activesupport
       builder
       faraday
@@ -32,10 +32,11 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: fcaabc4ab596392209b927794a524578a2989f3c
-  tag: v0.7.4
+  revision: a728dc4c3e59c818c4404d70332e57b2eea6ef9b
+  branch: hmm/more-composable-validations
   specs:
-    identity_validations (0.7.4)
+    identity_validations (0.8.0)
+      activemodel (~> 7.1)
 
 GIT
   remote: https://github.com/18f/omniauth_login_dot_gov.git
@@ -378,7 +379,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     omniauth (2.1.1)
@@ -496,6 +497,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.2.5)
+    rouge (4.3.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -656,7 +658,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.16.2)
+  nokogiri (~> 1.16.5)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
   paper_trail (~> 15.0, >= 15.0.0)
@@ -675,7 +677,7 @@ DEPENDENCIES
   redacted_struct
   responders (~> 3.1, >= 3.1.1)
   rest-client (~> 2.1)
-  rexml (~> 3.2)
+  rouge
   rspec-rails (~> 6.0, >= 6.0.0)
   rspec_junit_formatter
   rubocop (~> 1.62.0)

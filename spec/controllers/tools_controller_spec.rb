@@ -2,32 +2,52 @@ require 'rails_helper'
 
 describe ToolsController do
   include Devise::Test::ControllerHelpers
+  let(:user) { create(:user) }
 
   describe '#saml_request' do
-
     describe 'get' do
       before { get :saml_request }
 
-      it 'validation_attempted is set as false' do
-        expect(assigns(:validation_attempted)).to be false
+      context 'a not logged in user' do
+        it { is_expected.to redirect_to :root }
       end
 
-      it 'request is set to nil' do
-        expect(assigns(:request)).to be nil
+      context 'a logged in user' do
+        before do
+          sign_in(user)
+          get :saml_request
+        end
+
+        it { is_expected.to render_template :saml_request }
       end
     end
+  end
 
-    describe 'post' do
-      let(:saml_request) { double Tools::SamlRequest }
-      let(:params) {{ validation: { auth_url: 'url' } }}
-      let(:logout_request) { false }
+  describe '#validate_saml_request' do
+    let(:saml_request) { double Tools::SamlRequest }
+    let(:params) {{ validation: { auth_url: 'url' } }}
+    let(:logout_request) { false }
+
+    context 'a not logged in user' do
+      before do
+        post :validate_saml_request, params:
+      end
+
+      it { is_expected.to redirect_to :root }
+    end
+
+    context 'a logged in user' do
+      before do
+        sign_in(user)
+      end
 
       before do
         allow(Tools::SamlRequest).to receive(:new) { saml_request }
         allow(saml_request).to receive(:logout_request?) { logout_request }
         allow(saml_request).to receive(:run_validations)
         allow(saml_request).to receive(:valid)
-        post :saml_request, params:
+        allow(saml_request).to receive(:issuer)
+        post :validate_saml_request, params:
       end
 
       it 'passes the validation params through' do
@@ -44,7 +64,7 @@ describe ToolsController do
       describe 'if the request is a logout request' do
         let(:logout_request) { true }
 
-        before { post :saml_request, params: }
+        before { post :validate_saml_request, params: }
 
         it 'creates a flash warning' do
           msg = <<~EOS.squish

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   end
 
   get '/tools/saml_request' => 'tools#saml_request'
-  post '/tools/saml_request' => 'tools#saml_request'
+  post '/tools/saml_request' => 'tools#validate_saml_request'
 
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'

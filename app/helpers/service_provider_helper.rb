@@ -10,20 +10,7 @@ module ServiceProviderHelper
     active
     group_id
     identity_protocol
-    production_issuer
   ].freeze
-
-  PNG_MIME_TYPE = 'image/png'.freeze
-  SVG_MIME_TYPE = 'image/svg+xml'.freeze
-  SP_VALID_LOGO_MIME_TYPES = [
-    PNG_MIME_TYPE,
-    SVG_MIME_TYPE,
-  ].freeze
-
-  SP_MIME_EXT_MAPPINGS = {
-    PNG_MIME_TYPE => '.png',
-    SVG_MIME_TYPE => '.svg',
-  }.freeze
 
   def sp_logo(file_name)
     file = file_name || 'generic.svg'
@@ -47,7 +34,7 @@ module ServiceProviderHelper
   end
 
   def sp_valid_logo_mime_types
-    SP_VALID_LOGO_MIME_TYPES
+    LogoValidator::SP_VALID_LOGO_MIME_TYPES
   end
 
   def titleize(protocol)

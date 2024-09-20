@@ -2,68 +2,87 @@
 <p class="usa-intro">You can use this tool to check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
 <% if @validation_attempted %>
   <hr/>
-
-  <div class="usa-alert <%= @request.valid ? "usa-alert--success" : "usa-alert--error"%>">
-    <div class="usa-alert__body">
-      <h2 class="usa-alert__heading">
-        Request: <%= @request.valid ? "Valid" : "Invalid" %>
-      </h2>
-      <% if !@request.valid %>
-        <p>
-          We could not decode your SAML request. Make sure it is encoded correctly, as described in
-          <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.<br />
-          Also note that all other URL parameters need to be properly URL-encoded.
-          Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
-        </p>
-      <% end %>
+  <% if can_view_request_details?(@sp) %>
+    <div class="usa-alert <%= @request.valid ? "usa-alert--success" : "usa-alert--error"%>">
+      <div class="usa-alert__body">
+        <h2 class="usa-alert__heading">
+          Request: <%= @request.valid ? "Valid" : "Invalid" %>
+        </h2>
+        <% if !@request.valid %>
+          <p>
+            We could not decode your SAML request. Make sure it is encoded correctly, as described in
+            <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.<br />
+            Also note that all other URL parameters need to be properly URL-encoded.
+            Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
+          </p>
+        <% end %>
+      </div>
     </div>
-  </div>
 
-  <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
-    <div class="usa-alert__body">
-      <h2 class="usa-alert__heading">
-        Signature: <%= @request.valid_signature ? "Valid" : "Invalid" %>
-      </h2>
-      <% if @request.valid_signature %>
-        Public Certificate Serial Number:
-        <div>
-          <code><%= @request.matching_cert_sn.to_s %></code> (int)
-        </div>
-        <div>
-          <code><%= @request.matching_cert_sn.to_s(16) %></code> (hex)
-        </div>
-      <% else %>
-        <h3>Specific problems found:</h3>
-        <ul class="usa-list">
-          </li>
-          <% @request.errors.each do |error| %>
-            <li> <%= error %> </li>
-          <% end %>
-        </ul>
-        <h3>Other issues to look into:</h3>
+    <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
+      <div class="usa-alert__body">
+        <h2 class="usa-alert__heading">
+          Signature: <%= @request.valid_signature ? "Valid" : "Invalid" %>
+        </h2>
+        <% if @request.valid_signature %>
+          Public Certificate Serial Number:
+          <div>
+            <code><%= @request.matching_cert_sn.to_s %></code> (int)
+          </div>
+          <div>
+            <code><%= @request.matching_cert_sn.to_s(16) %></code> (hex)
+          </div>
+        <% else %>
+          <h3>Specific problems found:</h3>
           <ul class="usa-list">
-            <li>
-              <span class="text-heavy">No signature:</span> Is the request signed? If not, you should check your application's SAML config settings and enable it.
             </li>
-            <li>
-              <span class="text-heavy">Wrong hashing algorithm:</span> Login.gov only supports SHA256
-            </li>
-            <li>
-              <span class="text-heavy">Wrong certificate:</span>
-                If you've pasted a certificate, the certificate may not match the private key used by your application.<br />
-                Otherwise, you need to add the public certificate to your Login.gov application configuration that belongs to the private key used by your application.
-            </li>
+            <% @request.errors.each do |error| %>
+              <li> <%= error %> </li>
+            <% end %>
           </ul>
-      <% end %>
+          <h3>Other issues to look into:</h3>
+            <ul class="usa-list">
+              <li>
+                <span class="text-heavy">No signature:</span> Is the request signed? If not, you should check your application's SAML config settings and enable it.
+              </li>
+              <li>
+                <span class="text-heavy">Wrong hashing algorithm:</span> Login.gov only supports SHA256
+              </li>
+              <li>
+                <span class="text-heavy">Wrong certificate:</span>
+                  If you've pasted a certificate, the certificate may not match the private key used by your application.<br />
+                  Otherwise, you need to add the public certificate to your Login.gov application configuration that belongs to the private key used by your application.
+              </li>
+            </ul>
+        <% end %>
+      </div>
     </div>
   </div>
-
-
-  <% unless @xml.nil? %>
-    <p>
-      <b>SAML</b>
-      <pre><code><%= @xml %></code></pre>
-    </p>
+  <% else %>
+     <div class="usa-alert usa-alert--error"%>
+      <div class="usa-alert__body">
+        <h2 class="usa-alert__heading">
+          You can only view request certificate details if you are a member of the team.
+        </h2>
+        <% if @request.sp.present? %>
+          <p>
+            We were able to find a Service Provider that matches your request, but your user is not associated with that
+            Service Provider. Please make sure you are signed in as a member of that Service Provider's team and try again.
+          </p>
+        <% else %>
+          <p>
+            We were unable to find a Service Provider that matches the issuer passed in via this request. Please double
+            check the request and make sure a corresponding Service Provider is configured in the dashboard.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <% unless @request.xml.nil? %>
+    <div>
+      <h3>SAML</h3>
+      <pre class="highlight"><code><%= syntax_highlight(@request.xml) %></code></pre>
+    </div>
   <% end %>
 <% end %>
 

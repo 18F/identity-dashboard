@@ -186,7 +186,6 @@ class ServiceProvidersController < AuthenticatedController
       redirect_uris: [],
       help_text: {},
     ]
-    permit_params << :production_issuer if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
   end
 
@@ -236,7 +235,6 @@ class ServiceProvidersController < AuthenticatedController
       assertion_consumer_logout_service_url
       sp_initiated_login_url
       return_to_sp_url
-      production_issuer
       failure_to_proof_url
       push_notification_url
       app_name

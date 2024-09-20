@@ -30,8 +30,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def update
     return destroy if can_cancel?
     if step == UPLOAD_STEP
-      # TODO: clean up when implementing file uploads, this currently does nothing
-      # This was copied from ServiceProvidersController
       attach_cert
       remove_certificates
       attach_logo_file if logo_file_param
@@ -39,7 +37,7 @@ class ServiceConfigWizardController < AuthenticatedController
     unless skippable && params[:wizard_step].blank?
       @model.data = @model.data.merge(wizard_step_params)
     end
-    skip_step if @model.save
+    skip_step if @model.valid? && @model.save
     render_wizard
   end
 
@@ -56,12 +54,8 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def draft_service_provider
     @service_provider ||= begin
-      all_data = policy_scope(WizardStep).
-        all.
-        reduce({}) {|memo, record| memo.merge(record.data)}
-      all_data['redirect_uris'] = [all_data['redirect_uris']]
-      all_data['logo'] = all_data.delete('logo_name')
-      ServiceProvider.new(**all_data)
+      all_wizard_data = WizardStep.current_step_data_for_user(current_user)
+      ServiceProvider.new(**transform_to_service_provider_attributes(all_wizard_data))
     end
   end
 
@@ -86,6 +80,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def auth_step
+    # Should this be `@model.auth_step` ?
     @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
   end
 
@@ -127,7 +122,6 @@ class ServiceConfigWizardController < AuthenticatedController
       attribute_bundle: [],
       help_text: {},
     ]
-    permit_params << :production_issuer if current_user.admin?
     # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
     permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:wizard_step).permit(*permit_params)
@@ -156,17 +150,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def attach_logo_file
-    return unless logo_file_param
-
-    @model.logo_file.attach(logo_file_param)
-    cache_logo_info
-  end
-
-  def cache_logo_info
-    @model.data = @model.data.merge({
-      logo_name: @model.logo_file.filename.to_s,
-      remote_logo_key: @model.logo_file.key,
-    })
+    @model.attach_logo(logo_file_param)
   end
 
   def skippable
@@ -185,5 +169,25 @@ class ServiceConfigWizardController < AuthenticatedController
     action_name == 'new' ||
       step == STEPS.first ||
       step == Wicked::FINISH_STEP
+  end
+
+  def transform_to_service_provider_attributes(wizard_step_data)
+    if wizard_step_data.has_key?('redirect_uris')
+      wizard_step_data['redirect_uris'] = Array(wizard_step_data['redirect_uris'])
+    end
+
+    # This won't be enough to actually transfer the file to the new record
+    # TODO: we'll have to add some code to do that file attach transfer
+    if wizard_step_data.has_key?('logo_name')
+      wizard_step_data['logo'] = wizard_step_data.delete('logo_name')
+    end
+
+    # Clear out extra data from the wizard steps in case we put data
+    # temporarily in the wizard steps that the service provider doesn't have attributes for
+    (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
+      wizard_step_data.delete[extra_data]
+    end
+
+    wizard_step_data
   end
 end
