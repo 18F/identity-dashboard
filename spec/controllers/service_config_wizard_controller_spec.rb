@@ -194,6 +194,30 @@ RSpec.describe ServiceConfigWizardController do
           'one or more script tags. Please remove all script tags and re-upload'
         expect(actual_error).to eq(expected_error)
       end
+
+      it 'keeps an existing logo if a new logo is bad' do
+        good_logo_upload = fixture_file_upload('logo.svg')
+        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo_upload.read)
+        bad_logo_upload = fixture_file_upload('../logo_without_size.svg')
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: good_logo_upload,
+        }}
+        saved_step = WizardStep.last
+        expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
+
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: bad_logo_upload,
+        }}
+        expect(response).to_not be_redirect
+        actual_error = assigns[:model].errors[:logo_file].to_sentence
+        expected_error =
+          'The logo file you uploaded (logo_without_size.svg) is missing ' +
+          'a viewBox. Please add a viewBox attribute to your SVG and re-upload'
+        expect(actual_error).to eq(expected_error)
+        saved_step.reload
+        saved_step.logo_file.reload
+        expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
+      end
     end
 
     describe 'step "redirects"' do
