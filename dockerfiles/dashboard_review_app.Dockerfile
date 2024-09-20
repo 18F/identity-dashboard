@@ -1,4 +1,4 @@
-FROM ruby:3.2.2-slim
+FROM ruby:3.3.4-slim
 
 # Set environment variables
 ENV RAILS_ROOT /dashboard
