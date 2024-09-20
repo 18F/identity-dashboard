@@ -239,6 +239,33 @@ RSpec.describe WizardStep, type: :model do
           expect(step_with_logo.logo_name).to eq('logo.svg')
         end
       end
+
+      context 'with an existing logo' do
+        let(:good_logo) { fixture_file_upload('logo.svg')}
+        let(:good_logo_checksum) do
+          OpenSSL::Digest::MD5.base64digest(fixture_file_upload('logo.svg').read)
+        end
+        let(:unsized_logo) { fixture_file_upload('../logo_without_size.svg')}
+        let(:unsized_logo_checksum) do
+          OpenSSL::Digest::MD5.base64digest(fixture_file_upload('../logo_without_size.svg').read)
+        end
+
+        let(:step_with_logo) do
+          this_step = create(:wizard_step, step_name: 'logo_and_cert')
+          this_step.attach_logo(good_logo)
+          this_step.save!
+          this_step
+        end
+
+        it 'will not replace a good logo with a bad logo' do
+          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
+          step_with_logo.attach_logo(unsized_logo)
+          expect(step_with_logo).to_not be_valid
+          step_with_logo.reload
+          step_with_logo.logo_file.reload
+          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
+        end
+      end
     end
 
     describe '#remove_certificate' do
