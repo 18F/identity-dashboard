@@ -33,7 +33,7 @@ gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_go
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 15.0', '>= 15.0.0'
-gem 'puma', '>= 6.4.2'
+gem 'puma', '>= 6.4.3'
 gem 'pg'
 gem 'propshaft'
 gem 'pry-rails'

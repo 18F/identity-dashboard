@@ -380,7 +380,7 @@ GEM
     net-ssh (7.0.1)
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
-    nio4r (2.7.0)
+    nio4r (2.7.3)
     nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -417,7 +417,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (5.0.1)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
@@ -671,7 +671,7 @@ DEPENDENCIES
   propshaft
   pry-byebug
   pry-rails
-  puma (>= 6.4.2)
+  puma (>= 6.4.3)
   pundit (>= 2.3.1)
   rack-canonical-host (>= 1.2.0)
   rack-timeout
@@ -705,7 +705,7 @@ DEPENDENCIES
   wicked (~> 2.0)
 
 RUBY VERSION
-   ruby 3.3.4p94
+   ruby 2.7.8p225
 
 BUNDLED WITH
    2.5.6
