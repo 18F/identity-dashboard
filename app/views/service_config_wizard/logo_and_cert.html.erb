@@ -22,7 +22,7 @@
                             accept: sp_valid_logo_mime_types.join(',') %>
           <p><%= I18n.t('service_provider_form.logo_input') %></p>
           <%= form.label :logo_file,
-                          label: errorful_label(form, 'Choose a file', :logo_file),
+                          label: accessible_label(form, 'Choose a file', :logo_file),
                           class: 'usa-button',
                           id: 'logo-file-button' %>
           <p class='usa-error-message' id='logo-upload-error'>

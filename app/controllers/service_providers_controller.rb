@@ -130,11 +130,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def validate_and_save_service_provider(initial_action)
     clear_formatting(@service_provider)
-    # we need to check both of these in order to produce errors,
-    # and they need to be in this order
+
     @service_provider.valid?
-    @service_provider['identity_protocol'] == 'saml' &&
-      !validate_saml_required(@service_provider)
+    @service_provider.valid_saml_settings?
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
@@ -256,25 +254,6 @@ class ServiceProvidersController < AuthenticatedController
       end
     end
     service_provider
-  end
-
-  def validate_saml_required(service_provider)
-    required_attributes = %w[
-      acs_url
-      return_to_sp_url
-    ]
-    is_valid = true
-
-    required_attributes.each do |attr|
-      if service_provider[attr].blank?
-        service_provider.errors.add(attr.to_sym, ' can\'t be blank')
-        is_valid = false
-      elsif !service_provider[attr].match(/\Ahttps:\/\/(\S+\.?){2,}/)
-        service_provider.errors.add(attr.to_sym, ' is invalid')
-        is_valid = false
-      end
-    end
-    is_valid
   end
 
   def body_attributes

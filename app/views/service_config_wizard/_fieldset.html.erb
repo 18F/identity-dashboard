@@ -10,7 +10,7 @@
 %>
 <fieldset class="<%= "wizard-field #{input_type} service_provider_#{fieldname}" %>" >
   <legend class="usa-sr-only" id="<%= "legend-#{db_fieldname}" %>">
-    <%= errorful_label(form, t("simple_form.labels.service_provider.#{fieldname}"), db_fieldname) %>
+    <%= accessible_label(form, t("simple_form.labels.service_provider.#{fieldname}"), db_fieldname) %>
   </legend>
   <div class="usa-label__group">
     <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">

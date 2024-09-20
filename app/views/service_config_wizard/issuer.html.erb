@@ -4,7 +4,7 @@
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
                  disabled: issuer_read_only?,
-                 label: errorful_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if form.object.persisted?

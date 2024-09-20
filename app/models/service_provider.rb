@@ -104,6 +104,28 @@ class ServiceProvider < ApplicationRecord
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
+  def saml?
+    self.identity_protocol == 'saml'
+  end
+
+  def valid_saml_settings?
+    saml_settings = %w[
+      acs_url
+      return_to_sp_url
+    ]
+
+    saml_settings.each do |attr|
+      if !saml?
+        self[attr] = ''
+      elsif self[attr].blank?
+        self.errors.add(attr.to_sym, ' can\'t be blank')
+      elsif !self[attr].match(/\A\S+:(\S+\.?){2,}/) # the loosest URL matching I could think of
+        self.errors.add(attr.to_sym, ' is not a valid URL')
+      end
+    end
+    self.errors.empty?
+  end
+
   private
 
   def sanitize_help_text_content
