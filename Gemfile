@@ -13,6 +13,7 @@ gem 'aws-sdk-s3', require: false
 gem 'bundler'
 gem 'colorize'
 gem 'cssbundling-rails'
+gem 'csv'
 gem 'devise', '~> 4.9.3'
 gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
 gem 'enum_help'

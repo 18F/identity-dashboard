@@ -243,6 +243,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
+    csv (3.3.0)
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.1.0)
@@ -337,6 +338,7 @@ GEM
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.6.1)
     lograge (0.12.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -394,7 +396,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.24.0)
-    parser (3.3.1.0)
+    parser (3.3.5.0)
       ast (~> 2.4.1)
       racc
     pg (1.4.5)
@@ -419,7 +421,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
-    racc (1.8.0)
+    racc (1.8.1)
     rack (3.0.11)
     rack-canonical-host (1.2.0)
       addressable (> 0, < 3)
@@ -496,7 +498,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.2.5)
+    rexml (3.3.7)
     rouge (4.3.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
@@ -544,7 +546,9 @@ GEM
     rubyzip (2.3.2)
     secure_headers (3.9.0)
       useragent
-    selenium-webdriver (4.8.6)
+    selenium-webdriver (4.25.0)
+      base64 (~> 0.2)
+      logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -606,7 +610,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
-    websocket (1.2.9)
+    websocket (1.2.11)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -641,6 +645,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   colorize
   cssbundling-rails
+  csv
   database_cleaner (>= 2.0.2)
   devise (~> 4.9.3)
   dotenv-rails (~> 2.8, >= 2.8.1)
@@ -700,7 +705,7 @@ DEPENDENCIES
   wicked (~> 2.0)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.4p94
 
 BUNDLED WITH
    2.5.6
