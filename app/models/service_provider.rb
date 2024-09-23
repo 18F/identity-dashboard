@@ -105,7 +105,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def saml?
-    self.identity_protocol == 'saml'
+    attributes['identity_protocol'] == 'saml'
   end
 
   def valid_saml_settings?
@@ -116,14 +116,12 @@ class ServiceProvider < ApplicationRecord
 
     saml_settings.each do |attr|
       if !saml?
-        self[attr] = ''
-      elsif self[attr].blank?
-        self.errors.add(attr.to_sym, ' can\'t be blank')
-      elsif !self[attr].match(/\A\S+:(\S+\.?){2,}/) # the loosest URL matching I could think of
-        self.errors.add(attr.to_sym, ' is not a valid URL')
+        attributes[attr] = ''
+      elsif attributes[attr].blank?
+        errors.add(attr.to_sym, ' can\'t be blank')
       end
     end
-    self.errors.empty?
+    errors.empty?
   end
 
   private
