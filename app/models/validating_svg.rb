@@ -6,7 +6,7 @@ class ValidatingSvg
   end
 
   def has_size_attribute?
-    svg_has_viewbox?
+    has_viewbox?
   end
 
   def has_script_tag?

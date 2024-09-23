@@ -21,9 +21,6 @@ class LogoValidator < ActiveModel::Validator
     logo_file_mime_type
     logo_file_ext_matches_type
     validate_logo_svg
-    if record.errors[:logo_file].any?
-      record.logo_file = nil unless record.pending_logo_upload?
-    end
   end
 
   def logo_is_less_than_max_size
@@ -65,8 +62,6 @@ class LogoValidator < ActiveModel::Validator
     return unless mime_type_svg?
 
     svg = ValidatingSvg.new(record.pending_or_current_logo_data)
-
-    return if svg.blank?
 
     record.errors.add(:logo_file, I18n.t(
       'service_provider_form.errors.logo_file.no_viewbox',

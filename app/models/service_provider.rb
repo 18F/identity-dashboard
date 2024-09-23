@@ -124,12 +124,8 @@ class ServiceProvider < ApplicationRecord
     errors.empty?
   end
 
-  def pending_logo_upload?
-    attachment_changes['logo_file'].present?
-  end
-
   def pending_or_current_logo_data
-    return attachment_changes_string_buffer if pending_logo_upload?
+    return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
     return logo_file.blob.download if logo_file.blob
   end
 

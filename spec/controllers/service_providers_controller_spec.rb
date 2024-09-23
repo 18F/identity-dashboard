@@ -340,6 +340,32 @@ describe ServiceProvidersController do
           expect(sp.versions.last[:object_changes]['remote_logo_key']).to be_present
         end
       end
+
+      it 'will not allow a bad logo to overwrite a good logo' do
+        expect(sp.logo_file).to be_blank
+        put :update, params: {
+          id: sp.id,
+          service_provider: sp_logo_params,
+        }
+
+        sp.reload
+        expected_checksum = OpenSSL::Digest.base64digest('MD5', logo_file_params.read)
+        initial_key = sp.remote_logo_key
+        expect(sp.logo_file.checksum).to eq(expected_checksum)
+        bad_logo = fixture_file_upload('../logo_without_size.svg')
+        bad_logo_checksum = OpenSSL::Digest.base64digest('MD5', bad_logo.read)
+
+        put :update, params: {
+          id: sp.id,
+          service_provider: sp_logo_params.merge(logo_file: bad_logo),
+        }
+
+        sp.reload
+        expect(sp.remote_logo_key).to eq(initial_key)
+        expect(sp.logo).to eq('alternative_filename.svg')
+        expect(sp.logo_file.checksum).to_not eq(bad_logo_checksum)
+        expect(sp.logo_file.checksum).to eq(expected_checksum)
+      end
     end
 
     context 'when deleting certs' do
