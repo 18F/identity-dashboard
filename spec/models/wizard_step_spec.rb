@@ -238,7 +238,7 @@ RSpec.describe WizardStep, type: :model do
         to_not include(extra_step.issuer)
 
       all_field_names = WizardStep::STEP_DATA.map {|_k, v| v.fields}.reduce(&:merge).keys
-      expect(WizardStep.all_step_data_for_user(subject_user).keys).to eq(all_field_names)
+      expect(WizardStep.all_step_data_for_user(subject_user).keys.sort).to eq(all_field_names.sort)
     end
 
     it 'will stop returning data that have been deleted' do
