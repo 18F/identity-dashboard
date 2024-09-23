@@ -5,7 +5,7 @@ feature 'Service Providers CRUD' do
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end
-
+  # Tests with :js require JavaScript to ensure protocol fields are properly toggled
   context 'Regular user' do
     scenario 'can create service provider' do
       user = create(:user, :with_teams)
@@ -90,7 +90,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects_html')))
     end
 
-    scenario 'can update service provider team', :js do
+    scenario 'can update service provider team' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
       login_as(user)
