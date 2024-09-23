@@ -10,13 +10,14 @@ describe ServiceProvidersController do
   end
   let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
-  let(:logo_file_params) do
-    {
-      io: File.open(fixture_path + '/logo.svg'),
-      filename: 'alternative_filename.svg',
-      content_type: 'image/svg+xml',
-    }
-  end
+  let(:logo_file_params) {
+    Rack::Test::UploadedFile.new(
+      File.open(fixture_path + '/logo.svg'),
+      'image/svg+xml',
+      true,
+      original_filename: 'alternative_filename.svg',
+    )
+  }
 
   describe '#create' do
     before do
@@ -242,7 +243,7 @@ describe ServiceProvidersController do
 
   describe '#update' do
     before do
-      sign_in(user)
+      sign_in(admin)
     end
 
     context 'when a user enters data into text inputs with leading and trailing spaces' do
@@ -280,45 +281,54 @@ describe ServiceProvidersController do
     end
 
     context 'when uploading a logo' do
-      before do
-        allow(subject).to receive(:authorize_approval).and_return(true)
-        allow(subject).to receive(:logo_file_param).and_return(logo_file_params)
-      end
-
+      let(:sp_logo_params) {{
+        issuer: sp.issuer,
+        help_text: init_help_params,
+        logo_file: logo_file_params,
+        approved: true, 
+      }}
       it 'caches the logo filename on the sp' do
-        put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
+        put :update, params: {
+          id: sp.id,
+          service_provider: sp_logo_params,
+        }
         sp.reload
         expect(sp.logo).to eq('alternative_filename.svg')
       end
 
       it 'caches the logo key on the sp' do
-        put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
+        put :update, params: {
+          id: sp.id,
+          service_provider: sp_logo_params,
+        }
         sp.reload
         expect(sp.remote_logo_key).to be_present
       end
 
       context 'with paper trail versioning enabled', versioning: true do
         before do
-          put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
-          allow(subject).to receive(:logo_file_param).and_return(new_logo_file_params)
-          put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
+          put :update, params: {
+            id: sp.id,
+            service_provider: sp_logo_params,
+          }
+          put :update, params: {
+            id: sp.id,
+            service_provider: sp_logo_params.merge(logo_file: new_logo_file_params),
+          }
           sp.reload
         end
 
         let(:new_logo_file_params) do
-          {
-            io: File.open(fixture_path + '/logo.png'),
-            filename: 'new_logo.png',
-            content_type: 'image/png',
-          }
+          Rack::Test::UploadedFile.new(
+            File.open(fixture_path + '/logo.png'),
+            'image/png',
+            true,
+            original_filename: 'new_logo.png',
+          )
         end
 
         it 'records the user who made the last change to the sp upon update' do
-          expect(sp.versions.last.whodunnit).to eq(user.email)
+          expect(sp.versions.last.whodunnit).to eq(admin.email)
         end
 
         it 'records the previous and current logo filename upon update' do
@@ -344,8 +354,11 @@ params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help
         put :update,
             params: {
               id: sp.id,
-              service_provider: { issuer: sp.issuer, remove_certificates: ['100', '200'], 
-help_text: init_help_params },
+              service_provider: {
+                issuer: sp.issuer,
+                remove_certificates: ['100', '200'],
+                help_text: init_help_params,
+              },
             }
 
         sp.reload
@@ -361,9 +374,10 @@ help_text: init_help_params },
                original_filename: 'my-cert.crt',
              )
 
-      put :update, 
-params: { id: sp.id, 
-service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params },
+      }
 
       sp.reload
 
@@ -378,9 +392,10 @@ service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params }
              )
 
       expect do
-        put :update, 
-params: { id: sp.id, 
-service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params } }
+        put :update, params: {
+          id: sp.id,
+          service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params },
+        }
       end.to_not(change { sp.reload.certs&.size })
     end
 
@@ -390,17 +405,20 @@ service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params }
         original_filename: 'my-cert.crt',
       )
 
-      put :update, 
-params: { id: sp.id, 
-service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params } }
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params },
+      }
       expect(sp.reload.certs&.size).to equal(0)
     end
 
     it 'sends a serialized service provider to the IDP' do
       allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
-      put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help_params } }
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, help_text: init_help_params },
+      }
       provider = ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
@@ -416,8 +434,10 @@ params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: init_help
         help_params_1 = { sign_in: { en: sign_in_key },
           sign_up: { en: sign_up_key },
           forgot_password: { en: forgot_password_key } }
-        put :update, 
-params: { id: sp.id, service_provider: { issuer: sp.issuer, help_text: help_params_1 } }
+        put :update, params: {
+          id: sp.id,
+          service_provider: { issuer: sp.issuer, help_text: help_params_1 },
+        }
         sp.reload
 
         expect(sp.help_text).to eq({
