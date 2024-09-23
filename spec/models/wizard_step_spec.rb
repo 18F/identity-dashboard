@@ -134,11 +134,12 @@ RSpec.describe WizardStep, type: :model do
       context 'with an existing logo' do
         let(:good_logo) { fixture_file_upload('logo.svg')}
         let(:good_logo_checksum) do
-          OpenSSL::Digest::MD5.base64digest(fixture_file_upload('logo.svg').read)
+          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('logo.svg').read)
         end
+        let(:empty_string_checksum) { OpenSSL::Digest.base64digest('MD5', '')}
         let(:unsized_logo) { fixture_file_upload('../logo_without_size.svg')}
         let(:unsized_logo_checksum) do
-          OpenSSL::Digest::MD5.base64digest(fixture_file_upload('../logo_without_size.svg').read)
+          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('../logo_without_size.svg').read)
         end
 
         let(:step_with_logo) do
@@ -154,7 +155,9 @@ RSpec.describe WizardStep, type: :model do
           expect(step_with_logo).to_not be_valid
           step_with_logo.reload
           step_with_logo.logo_file.reload
+          expect(step_with_logo.logo_file.checksum).to_not eq(empty_string_checksum)
           expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
+          expect(step_with_logo.logo_name).to eq('logo.svg')
         end
       end
     end

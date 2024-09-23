@@ -189,9 +189,10 @@ RSpec.describe ServiceConfigWizardController do
         end.to_not(change {WizardStep.count})
         expect(response).to_not be_redirect
         actual_error = assigns[:model].errors[:logo_file].to_sentence
-        expected_error =
-          'The logo file you uploaded (logo_with_script.svg) contains ' +
-          'one or more script tags. Please remove all script tags and re-upload'
+        expected_error = I18n.t(
+          'service_provider_form.errors.logo_file.has_script_tag',
+          filename: 'logo_with_script.svg',
+        )
         expect(actual_error).to eq(expected_error)
       end
 
@@ -210,9 +211,10 @@ RSpec.describe ServiceConfigWizardController do
         }}
         expect(response).to_not be_redirect
         actual_error = assigns[:model].errors[:logo_file].to_sentence
-        expected_error =
-          'The logo file you uploaded (logo_without_size.svg) is missing ' +
-          'a viewBox. Please add a viewBox attribute to your SVG and re-upload'
+        expected_error = I18n.t(
+          'service_provider_form.errors.logo_file.no_viewbox',
+          filename: 'logo_without_size.svg',
+        )
         expect(actual_error).to eq(expected_error)
         saved_step.reload
         saved_step.logo_file.reload
