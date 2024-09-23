@@ -74,7 +74,8 @@ module Tools
       end
 
       auth_service_provider.valid_signature?(
-        Saml::XML::Document.parse(auth_request.raw_xml), true, auth_request.options
+        auth_request.matching_cert,
+        true,
       )
     end
 
