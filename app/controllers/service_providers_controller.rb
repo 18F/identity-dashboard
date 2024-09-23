@@ -129,8 +129,12 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    formatted_sp = clear_formatting(@service_provider)
-    return save_service_provider(formatted_sp) if formatted_sp.valid?
+    clear_formatting(@service_provider)
+
+    @service_provider.valid?
+    @service_provider.valid_saml_settings?
+
+    return save_service_provider(@service_provider) if @service_provider.errors.none?
 
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action

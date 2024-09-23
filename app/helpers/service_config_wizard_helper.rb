@@ -8,6 +8,18 @@ module ServiceConfigWizardHelper
     end
   end
 
+  def accessible_label(form, label, db_form_field)
+    message = form.object.errors.messages_for(db_form_field)[0]
+    if message
+      ("#{label}<p class='usa-sr-only'>, Error: 
+        #{
+        form.object.errors.messages_for(db_form_field)[0] || ''
+        }</p>").html_safe
+    else
+      label
+    end
+  end
+
   def parsed_help_text
     text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
     @parsed_help_text ||= HelpText.lookup(

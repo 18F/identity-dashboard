@@ -251,6 +251,7 @@ describe ServiceProvidersController do
           id: sp.id,
           service_provider: {
             issuer: '  urn:gov:gsa:openidconnect:profiles:sp:sso:agency:name     ',
+            identity_protocol: 'saml',
             friendly_name: '   friendly name    ',
             description: '    This is a description.   ',
             metadata_url: ' https://metadataurl.biz   ',

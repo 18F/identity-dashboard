@@ -9,6 +9,7 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: :new
   after_action :verify_authorized
+  after_action -> { flash.discard }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
   after_action :verify_policy_scoped, unless: -> { when_skipping_models }
   helper_method %i[
@@ -37,7 +38,11 @@ class ServiceConfigWizardController < AuthenticatedController
     unless skippable && params[:wizard_step].blank?
       @model.data = @model.data.merge(wizard_step_params)
     end
-    skip_step if @model.valid? && @model.save
+    if is_valid? && @model.save
+      skip_step
+    else
+      flash[:error] = 'Please check the error(s) in the form below and re-submit.'
+    end
     render_wizard
   end
 
@@ -46,6 +51,13 @@ class ServiceConfigWizardController < AuthenticatedController
     authorize saved_steps.last, :destroy?
     saved_steps.destroy_all
     redirect_to finish_wizard_path
+  end
+
+  def is_valid?
+    @model.valid?
+    @model.saml_settings_present? if is_step('redirects')
+
+    @model.errors.empty?
   end
 
   def issuer_read_only?
@@ -77,6 +89,10 @@ class ServiceConfigWizardController < AuthenticatedController
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
+  end
+
+  def is_step(step_name)
+    step == step_name
   end
 
   def auth_step
