@@ -203,9 +203,10 @@ feature 'Service Config Wizard' do
       attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
       expect { click_on 'Next' }.to_not(change { WizardStep.count })
       actual_error_message = find('#logo-upload-error').text
-      expected_error_message =
-        'The logo file you uploaded (logo_with_script.svg) contains ' +
-        'one or more script tags. Please remove all script tags and re-upload'
+      expected_error_message = I18n.t(
+        'service_provider_form.errors.logo_file.has_script_tag',
+        filename: 'logo_with_script.svg',
+      )
       expect(actual_error_message).to eq(expected_error_message)
     end
   end
