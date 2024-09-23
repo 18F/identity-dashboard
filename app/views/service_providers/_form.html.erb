@@ -39,6 +39,8 @@
                        as: :usa_collection_select,
                        value_method: :id,
                        collection: current_user.scoped_teams,
+                       required: true,
+                       label_html: { class: 'usa-input-required'},
                        label: 'Team',
                        disabled: !can_edit_teams?(current_user),
                        hint: I18n.t('service_provider_form.team') %>

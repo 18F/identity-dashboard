@@ -96,6 +96,9 @@ class WizardStep < ApplicationRecord
     attribute: :acs_url,
     on: 'redirects'
   validates_with IdentityValidations::UriValidator,
+    attribute: :return_to_sp_url,
+    on: 'redirects'
+  validates_with IdentityValidations::UriValidator,
     attribute: :assertion_consumer_logout_service_url,
     on: 'redirects'
 
@@ -193,6 +196,19 @@ class WizardStep < ApplicationRecord
   def ial
     return data['ial'] if step_name == 'authentication'
     auth_step.ial
+  end
+
+  def saml?
+    auth_step && auth_step.identity_protocol == 'saml'
+  end
+
+  def saml_settings_present?
+    ['acs_url', 'return_to_sp_url'].each do |attr|
+      return true if !saml?
+
+      errors.add(attr.to_sym, ' can\'t be blank') if data[attr].blank?
+    end
+    self.errors.empty?
   end
 
   private

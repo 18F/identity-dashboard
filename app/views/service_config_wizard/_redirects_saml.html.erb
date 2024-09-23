@@ -3,23 +3,23 @@
   <%= form.input :acs_url,
                    input_html: { class: 'usa-input', aria: { invalid: false } },
                    label_html: { class: 'usa-input-required'},
-                   label: t('simple_form.labels.service_provider.acs_url'),
+                   label: accessible_label(form, t('simple_form.labels.service_provider.acs_url'), :acs_url),
                    required: true,
                    hint: t('service_provider_form.assertion_consumer_service_url_html') %>
 
   <%= form.input :assertion_consumer_logout_service_url,
                  input_html: { class: 'usa-input' },
-                 label: t('simple_form.labels.service_provider.assertion_consumer_logout_service_url'),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.assertion_consumer_logout_service_url'), :assertion_consumer_logout_service_url),
                  hint: t('service_provider_form.assertion_consumer_logout_service_url_html') %>
 
   <%= form.input :sp_initiated_login_url,
                  input_html: { class: 'usa-input' },
-                 label: t('simple_form.labels.service_provider.sp_initiated_login_url'),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.sp_initiated_login_url'), :sp_initiated_login_url),
                  hint: t('service_provider_form.sp_initiated_login_url_html') %>
   <%= form.input :block_encryption,
                  collection: ServiceProvider.block_encryptions.keys,
                  input_html: { class: 'usa-select' },
-                 label: t('simple_form.labels.service_provider.block_encryption'),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.block_encryption'), :block_encryption),
                  include_blank: false,
                  hint: t('service_provider_form.saml_assertion_encryption') %>
 
@@ -41,26 +41,25 @@
   <%= form.input :return_to_sp_url,
                 input_html: { class: 'usa-input', aria: { invalid: false } },
                 label_html: { class: 'usa-input-required'},
-                label: t('simple_form.labels.service_provider.return_to_sp_url'),
+                label: accessible_label(form, t('simple_form.labels.service_provider.return_to_sp_url'), :return_to_sp_url),
                 required: true,
                 hint: t('service_provider_form.return_to_app_url_html') %>
 
   <%= form.input :push_notification_url,
-                 as: :text,
                  input_html: { class: 'usa-input' },
-                 label: t('simple_form.labels.service_provider.push_notification_url'),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.push_notification_url'), :push_notification_url),
                  hint: t('service_provider_form.push_notification_url') %>
   <% if show_proof_failure_url? %>
     <%= form.input :failure_to_proof_url,
                    input_html: { class: 'usa-input', aria: { invalid: false } },
                    label_html: { class: 'usa-input-required'},
-                   label: 'Failure to Proof URL',
+                   label: accessible_label(form, 'Failure to Proof URL', :failure_to_proof_url),
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
   <% end %>
   <%= form.input :redirect_uris,
                  input_html: { class: 'usa-input' },
-                 label: t('simple_form.labels.service_provider.redirect_uris_saml'),
+                 label: accessible_label(form, t('simple_form.labels.service_provider.redirect_uris_saml'), :redirect_uris),
                  hint: t('service_provider_form.saml_redirects_html') %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>

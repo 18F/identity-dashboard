@@ -7,7 +7,7 @@
         <%= s.input :sign_in,
                     as: :usa_collection_select,
                     required: false,
-                    label: t('simple_form.labels.service_provider.help_text.sign_in'),
+                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_in'), :sign_in),
                     collection: t('service_provider_form.help_text.sign_in', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
@@ -18,7 +18,7 @@
         <%= s.input :sign_up,
                     as: :usa_collection_select,
                     required: false,
-                    label: t('simple_form.labels.service_provider.help_text.sign_up'),
+                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_up'), :sign_up),
                     collection: t('service_provider_form.help_text.sign_up', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
@@ -29,7 +29,7 @@
         <%= f.input :forgot_password,
                     as: :usa_collection_select,
                     required: false,
-                    label: t('simple_form.labels.service_provider.help_text.forgot_password'),
+                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.forgot_password'), :forgot_password),
                     collection: t('service_provider_form.help_text.forgot_password', deep_interpolation: true,
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
