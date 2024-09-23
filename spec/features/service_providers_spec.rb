@@ -90,7 +90,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects_html')))
     end
 
-    scenario 'can update service provider team', :js do
+    scenario 'can update service provider team' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
       login_as(user)
@@ -105,7 +105,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.agency).not_to eq(user.teams[0].agency)
     end
 
-    scenario 'can update oidc service provider with multiple redirect uris', :js do
+    scenario 'can update oidc service provider with multiple redirect uris' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :with_users_team, user: user)
       login_as(user)
@@ -132,7 +132,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
-    scenario 'can view all saml fields when editing a saml app', :js do
+    scenario 'can view all saml fields when editing a saml app' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
@@ -184,7 +184,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_no_selector('.usa-error-message')
     end
 
-    scenario 'switching protocols when editing a saml sp should persist saml info', :js do
+    scenario 'switching protocols when editing a saml sp should persist saml info' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
 
@@ -213,7 +213,7 @@ feature 'Service Providers CRUD' do
       )
     end
 
-    scenario 'can update saml service provider with multiple redirect uris', :js do
+    scenario 'can update saml service provider with multiple redirect uris' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, :saml, :with_users_team, user: user)
       login_as(user)
@@ -418,7 +418,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    scenario 'IAL2 attributes shown when IAL2 is selected', :js do
+    scenario 'IAL2 attributes shown when IAL2 is selected' do
       user = create(:user)
       login_as(user)
 
