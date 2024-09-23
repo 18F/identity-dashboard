@@ -21,6 +21,9 @@ class LogoValidator < ActiveModel::Validator
     logo_file_mime_type
     logo_file_ext_matches_type
     validate_logo_svg
+    if record.errors[:logo_file].any?
+      record.logo_file = nil unless record.pending_logo_upload?
+    end
   end
 
   def logo_is_less_than_max_size
