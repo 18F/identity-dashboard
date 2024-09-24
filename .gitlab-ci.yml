@@ -61,6 +61,7 @@ stages:
   - test
   - review
   - scan
+  - deploy_eks
 
 workflow:
   rules:
@@ -610,3 +611,15 @@ ecr-scan-ci:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+
+# EKS deployment
+deploy_eks:
+  trigger:
+    project: lg-public/identity-eks-control
+    branch: main
+  stage: deploy_eks
+  variables:
+    APP: dashboard
+    IMAGE_TAG: $CI_COMMIT_SHA
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
