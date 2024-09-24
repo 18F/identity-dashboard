@@ -66,7 +66,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def draft_service_provider
     @service_provider ||= begin
-      all_wizard_data = WizardStep.current_step_data_for_user(current_user)
+      all_wizard_data = WizardStep.all_step_data_for_user(current_user)
       ServiceProvider.new(**transform_to_service_provider_attributes(all_wizard_data))
     end
   end

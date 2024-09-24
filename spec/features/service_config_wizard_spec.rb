@@ -101,12 +101,24 @@ feature 'Service Config Wizard' do
       click_on 'Create app'
       expect(current_url).to eq(service_providers_url)
 
-      saved_setup_data = WizardStep.current_step_data_for_user(admin)
+      saved_setup_data = WizardStep.all_step_data_for_user(admin)
       expected_data.keys.each do |key|
         expect(saved_setup_data[key].to_s).to eq(expected_data[key].to_s)
       end
       expect(saved_setup_data['certs']).
         to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
+    end
+
+    it 'shows uploaded logo file errors' do
+      visit service_config_wizard_path('logo_and_cert')
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      expect { click_on 'Next' }.to_not(change { WizardStep.count })
+      actual_error_message = find('#logo-upload-error').text
+      expected_error_message = I18n.t(
+        'service_provider_form.errors.logo_file.has_script_tag',
+        filename: 'logo_with_script.svg',
+      )
+      expect(actual_error_message).to eq(expected_error_message)
     end
   end
 

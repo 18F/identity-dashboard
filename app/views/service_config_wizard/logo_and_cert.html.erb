@@ -8,9 +8,6 @@
         <%= form.hint t('service_provider_form.logo_html') %>
       </div>
       <div class="usa-input__container">
-        <span class="usa-error-message js-pem-input-error-message" id="logo-upload-error">
-            <%= form.object.errors[:certs].to_sentence.presence %>
-        </span>
         <% if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
           <p class="font-mono-xs margin-top-0" name="logo_file">
             <%= image_tag url_for(form.object.logo_file), height: '120px' %>
@@ -27,7 +24,6 @@
                           id: 'logo-file-button' %>
           <p class='usa-error-message' id='logo-upload-error'>
             <% if form.object.errors[:logo_file].present? %>
-              <%= t('simple_form.labels.service_provider.error') %>
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
           </p>
