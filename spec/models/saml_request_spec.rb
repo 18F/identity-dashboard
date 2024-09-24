@@ -121,9 +121,7 @@ describe 'SamlRequest' do
     describe 'it is valid' do
       before do
         expect(decoded_request).to receive(:service_provider) { sp }
-        expect(decoded_request).to receive(:raw_xml)
-        expect(decoded_request).to receive(:options)
-        expect(sp).to receive(:valid_signature?) { true }
+        expect(decoded_request).to receive(:matching_cert).and_return(cert)
       end
 
       it 'returns true' do

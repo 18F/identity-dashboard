@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/ruby:3.2.2-bullseye
+FROM public.ecr.aws/docker/library/ruby:3.3.4-bullseye
 
 
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -

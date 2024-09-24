@@ -104,6 +104,26 @@ class ServiceProvider < ApplicationRecord
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
 
+  def saml?
+    attributes['identity_protocol'] == 'saml'
+  end
+
+  def valid_saml_settings?
+    saml_settings = %w[
+      acs_url
+      return_to_sp_url
+    ]
+
+    saml_settings.each do |attr|
+      if !saml?
+        attributes[attr] = ''
+      elsif attributes[attr].blank?
+        errors.add(attr.to_sym, ' can\'t be blank')
+      end
+    end
+    errors.empty?
+  end
+
   private
 
   def sanitize_help_text_content

@@ -14,7 +14,7 @@ describe 'users' do
     team.save!
   end
 
-  feature 'add team user page access', :js do
+  feature 'add team user page access' do
 
     scenario 'access permitted to team member', versioning: true do
       login_as team_member
@@ -35,7 +35,7 @@ describe 'users' do
     end
   end
 
-  feature 'add team users', :js do
+  feature 'add team users' do
 
     before do
       login_as team_member
@@ -67,7 +67,7 @@ describe 'users' do
 
   end
 
-  feature 'remove team user page access', :js do
+  feature 'remove team user page access' do
 
     scenario 'access denied to self', versioning: true do
       login_as team_member
@@ -96,7 +96,7 @@ describe 'users' do
     end
   end
 
-  feature 'remove team users', :js do
+  feature 'remove team users' do
 
     before do
       login_as team_member
@@ -121,7 +121,7 @@ describe 'users' do
     end
   end
 
-  feature 'manage users page', :js do
+  feature 'manage users page' do
   
     scenario 'access denied to non-team member', versioning: true do
       login_as user

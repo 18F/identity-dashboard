@@ -3,13 +3,13 @@
   [Symbol] db_fieldname such that the database has an associated column
   [Hash] inputs hash where key is the label and value is the input value
 %>
-<%= form.collection_radio_buttons(db_fieldname,
-                                  inputs,
-                                  :last, :first,
-                                  item_wrapper_tag: :ul,
-                                  item_wrapper_class: "usa-input-list") do |b| %>
-  <li>
-    <%= b.radio_button(class: "usa-radio__input") %>
-    <%= b.label(class: "usa-radio__label")%>
-  </li>
-<% end %>
+<ul class="usa-input-list" aria-describedby="<%= "legend-#{db_fieldname}" %>">
+  <%= form.collection_radio_buttons(db_fieldname,
+                                    inputs,
+                                    :last, :first) do |b| %>
+    <li>
+      <%= b.radio_button(class: "usa-radio__input") %>
+      <%= b.label(class: "usa-radio__label")%>
+    </li>
+  <% end %>
+</ul>

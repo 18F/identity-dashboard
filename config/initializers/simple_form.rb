@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+SimpleForm.browser_validations = false
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
@@ -25,8 +26,8 @@ SimpleForm.setup do |config|
       c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
-      c.use :input, class: 'block col-12' # usa-input'
-      c.use :error, wrap_with: { tag: 'p', class: 'usa-error-message' }
+      c.use :input, class: 'block col-12', error_class: 'usa-input--error'
+      c.use :full_error, wrap_with: { tag: 'p', class: 'usa-error-message' }
     end
   end
 
