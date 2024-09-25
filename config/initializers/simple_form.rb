@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+SimpleForm.browser_validations = false
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
@@ -8,29 +9,32 @@ SimpleForm.setup do |config|
 
   config.wrappers :base do |b|
     b.use :html5
-    b.use :hint,  wrap_with: { tag: :span, class: 'usa-hint' }
     # change input class from field to usa-input
     b.use :input, class: 'usa-input'
+    b.use :hint,  wrap_with: { tag: :span, class: 'usa-hint' }
   end
 
-  config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
+  config.wrappers :vertical_form, tag: 'div', class: 'wizard-field', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label, class: 'usa-label'
-    # changed input class from field to usa-input
-    b.use :input, class: 'block col-12' # usa-input'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
-    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+    b.wrapper tag: :div, class: 'usa-label__group' do |c|
+      c.use :label, class: 'usa-label'
+      c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
+    end
+    b.wrapper tag: :div, class: 'usa-input__container' do |c|
+      c.use :input, class: 'block col-12', error_class: 'usa-input--error'
+      c.use :full_error, wrap_with: { tag: 'p', class: 'usa-error-message' }
+    end
   end
 
   config.default_wrapper = :vertical_form
   config.label_text = lambda do |label, required, _explicit_label|
     # rubocop:disable Rails/OutputSafety
-    label + ' ' + required.html_safe
+    label + required.html_safe
     # rubocop:enable Rails/OutputSafety
   end
 end

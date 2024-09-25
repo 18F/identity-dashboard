@@ -5,6 +5,9 @@ class ServiceProvidersController < AuthenticatedController
     }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
+  before_action :authorize_email_nameid_format_allowed, only: %i[create update]
+
+  helper_method :parsed_help_text, :localized_help_text
 
   helper_method :parsed_help_text, :localized_help_text
 
@@ -120,9 +123,20 @@ class ServiceProvidersController < AuthenticatedController
     raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
   end
 
+  def authorize_email_nameid_format_allowed
+    return unless params.require(:service_provider).key?(:email_nameid_format_allowed) &&
+                  !current_user.admin?
+
+    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
+  end
+
   def validate_and_save_service_provider(initial_action)
-    formatted_sp = clear_formatting(@service_provider)
-    return save_service_provider(formatted_sp) if formatted_sp.valid?
+    clear_formatting(@service_provider)
+
+    @service_provider.valid?
+    @service_provider.valid_saml_settings?
+
+    return save_service_provider(@service_provider) if @service_provider.errors.none?
 
     flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     render initial_action
@@ -173,12 +187,11 @@ class ServiceProvidersController < AuthenticatedController
       :logo_file,
       :app_name,
       :prod_config,
+      :email_nameid_format_allowed,
       attribute_bundle: [],
       redirect_uris: [],
       help_text: {},
     ]
-    permit_params << :production_issuer if current_user.admin?
-    permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:service_provider).permit(*permit_params)
   end
 
@@ -228,7 +241,6 @@ class ServiceProvidersController < AuthenticatedController
       assertion_consumer_logout_service_url
       sp_initiated_login_url
       return_to_sp_url
-      production_issuer
       failure_to_proof_url
       push_notification_url
       app_name

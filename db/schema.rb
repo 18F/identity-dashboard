@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_21_154232) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_18_113849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,7 +115,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_154232) do
     t.string "logo"
     t.integer "identity_protocol", default: 0
     t.json "redirect_uris"
-    t.string "production_issuer"
     t.integer "ial"
     t.string "failure_to_proof_url"
     t.string "push_notification_url"
@@ -172,8 +171,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_21_154232) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  create_table "wizard_steps", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "step_name", null: false
+    t.json "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "step_name"], name: "index_wizard_steps_on_user_id_and_step_name", unique: true
+    t.index ["user_id"], name: "index_wizard_steps_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "service_providers", "agencies"
   add_foreign_key "service_providers", "groups"
+  add_foreign_key "wizard_steps", "users"
 end

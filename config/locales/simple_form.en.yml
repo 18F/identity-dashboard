@@ -5,31 +5,52 @@ en:
       service_provider:
        logo: 'generic.svg'
     required:
-      html: '<abbr class="text-secondary-dark">(*required)</abbr>'
+      html: '<abbr class="text-secondary-dark" title="required">*</abbr>'
+    lead:
+      authentication_html: "The <a class='usa-link' href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect page</a> and the <a class='usa-link' href='https://developers.login.gov/saml/getting-started/'>SAML page</a> of the Developer docs have more information about the authentication requirements."
+      help_text: You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.
+      issuer_html: "The <a class='usa-link' href='https://developers.login.gov/production/#production-configuration-process'>Production configuration process section</a> of the Developer docs has more information about issuer strings."
+      settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our Developer docs</a> has additional information about setting up your app."
     labels:
       required: required
+      select: "- Select -"
       service_provider:
         acs_url: Assertion Consumer Service URL
         active: Accessible
         agency: Agency
+        app_name: App name
         assertion_consumer_logout_service_url: Assertion Consumer Logout Service URL
         attribute_bundle: Attribute bundle
+        before_start: Before you start
         block_encryption: SAML Assertion Encryption
+        cert_file: Choose a cert file
+        dashboard_config: Dashboard configuration
+        default_aal: Default Authentication Assurance Level (AAL)
         description: Description
+        error: "ERROR:"
+        failure_to_proof_url: Failure to Proof URL
         friendly_name: Friendly name
+        help_text:
+          sign_in: Sign-in
+          sign_up: Sign-up
+          forgot_password: Forgot password
+          custom_help: Custom help text
         ial: Identity Assurance Level (IAL1 or IAL2)
+        identity_protocol: Identity Protocol
         issuer: Issuer
-        logo: Logo
+        logo_file: Logo file
+        push_notification_url: Push notification URL
+        production: Ready for Production
         redirect_uris_oidc: Redirect URIs
         redirect_uris_saml: Additional Redirect URIs
         redirect_uris_oidc_label: One or more URIs that Login.gov will redirect to after authentication.
+        remove_cert: Remove this certificate
         return_to_sp_url: Return to App URL
+        sandbox: Sandbox
         sp_initiated_login_url: SP Initiated Login URL
-        identity_protocol: Identity Protocol
-        team: Team
-        failure_to_proof_url: Failure to Proof URL
-        push_notification_url: Push notification URL
         signed_response_message_requested: Signed Response Message Requested
+        team: Team
+        upload_certificate: Upload new public certificate
       user:
         admin: Admin?
         email: Email

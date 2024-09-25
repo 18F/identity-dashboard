@@ -59,7 +59,7 @@
   <label for="ial_friendly">Level of Service:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.ial_friendly %></span>
 </h2>
-<div class="text-italic"><%= t('service_provider_form.identity_assurance_level_html') %></div>
+<p class="text-italic"><%= t('service_provider_form.identity_assurance_level_html') %></p>
 <hr>
 
 <h2 class="margin-bottom-0">
@@ -73,15 +73,10 @@
   <span class="font-mono-xs margin-left-5"><%= service_provider.issuer %></span>
 </h2>
 <p class="text-italic"><%= I18n.t('service_provider_form.change_issuer') %></p>
-<div class="text-italic"><%= t('service_provider_form.issuer_html') %></div>
+<p class="text-italic"><%= t('service_provider_form.issuer_html') %></p>
 <hr>
 
 <% if current_user.admin? %>
-  <h2 class="margin-bottom-0">
-  <label for="production_issuer">Production Issuer:</label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.production_issuer %></span>
-  </h2>
-  <hr>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
   <hr>
   <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
@@ -186,7 +181,7 @@
   <label for="attribute_bundle">Attribute bundle:</label>
   <span class="font-mono-xs margin-left-5"><%= sp_attribute_bundle(service_provider) %></span>
 </h2>
-<p class="text-italic"><%= t('service_provider_form.attribute_bundle_html') %></p>
+<p class="text-italic"><%= t('service_provider_form.attribute_bundle') %></p>
 <hr>
 
 <h2 class="margin-bottom-0">

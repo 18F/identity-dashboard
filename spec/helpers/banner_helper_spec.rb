@@ -11,6 +11,10 @@ RSpec.describe BannerHelper do
       start_date: Date.today - 1.day,
       end_date: nil,
     )}
+    let(:banner_today) { build(:banner,
+      start_date: Date.today,
+      end_date: Date.today,
+    )}
     let(:banner_recent) { build(:banner,
       start_date: Date.today - 7.day,
       end_date: Date.today + 7.days,
@@ -118,6 +122,16 @@ RSpec.describe BannerHelper do
 
       expect(banner_hash).to eq({
         upcoming: [banner_no_end, banner_recent_short, banner_recent_long],
+        past: [],
+      })
+    end
+
+    it 'puts banners ending today in upcoming' do
+      banners = [banner_today]
+      banner_hash = sort_banners_by_timing(banners)
+
+      expect(banner_hash).to eq({
+        upcoming: [banner_today],
         past: [],
       })
     end

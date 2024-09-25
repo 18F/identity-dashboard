@@ -4,6 +4,10 @@
 );
 @use 'uswds-core' as *;
 
+@forward 'service_config_wizard';
+
+@forward 'step-indicator';
+
 @mixin text-wrap-mixin {
   word-break: break-all;
 }
@@ -20,7 +24,7 @@
   width: .1px;
   z-index: -1;
 }
-
+// TODO: remove these floats when Wizard goes live
 .file-input-button {
   float: left;
 }

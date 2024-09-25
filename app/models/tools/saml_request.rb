@@ -10,12 +10,11 @@ module Tools
     end
 
     def run_validations
-      valid
       valid_signature if valid
     end
 
     def matching_cert_sn
-      auth_service_provider.matching_cert.serial
+      auth_request.matching_cert.serial
     end
 
     def logout_request?
@@ -23,17 +22,23 @@ module Tools
     end
 
     def xml
-      REXML::Document.new(auth_request.raw_xml)
+      Nokogiri.XML(auth_request.raw_xml).to_xml
     end
 
     def valid
-      @valid = auth_request.valid? if @valid.nil?
-      @valid
+      return @valid if defined? @valid
+
+      @valid = auth_request.valid?
     end
 
     def valid_signature
-     @valid_signature = check_signature_validity if @valid_signature.nil?
-     @valid_signature
+     return @valid_signature if defined? @valid_signature
+
+     @valid_signature = check_signature_validity
+    end
+
+    def sp
+      @sp ||= ServiceProvider.find_by(issuer: auth_request&.issuer)
     end
 
     private
@@ -43,37 +48,35 @@ module Tools
     end
 
     def check_signature_validity
-      @valid_signature ||= begin
+      if auth_service_provider.nil?
+        @errors.push(<<~EOS.squish)
+          No matching Service Provider founded in this request.
+          Please check issuer attribute.
+        EOS
 
-        if certs.nil?
-          @errors.push(<<~EOS.squish)
-            Could not find any certificates to use. Please add a
-            certificate to your application configuration or paste one below.
-          EOS
-
-          return false
-        end
-
-        if auth_service_provider.nil?
-          @errors.push(<<~EOS.squish)
-            No matching Service Provider founded in this request.
-            Please check issuer attribute.
-          EOS
-
-          return false
-        end
-
-        begin
-          auth_service_provider.certs = valid_certs
-        rescue OpenSSL::X509::CertificateError
-          @errors.push('Something is wrong with the certificate you submitted.')
-          return false
-        end
-
-        auth_service_provider.valid_signature?(
-          Saml::XML::Document.parse(auth_request.raw_xml), true, auth_request.options
-        )
+        return false
       end
+
+      if certs.nil?
+        @errors.push(<<~EOS.squish)
+          Could not find any certificates to use. Please add a
+          certificate to your application configuration or paste one below.
+        EOS
+
+        return false
+      end
+
+      begin
+        auth_service_provider.certs = valid_certs
+      rescue OpenSSL::X509::CertificateError
+        @errors.push('Something is wrong with the certificate you submitted.')
+        return false
+      end
+
+      auth_service_provider.valid_signature?(
+        auth_request.matching_cert,
+        true,
+      )
     end
 
     def valid_certs
@@ -99,13 +102,8 @@ module Tools
       end
     end
 
-    def sp
-      ServiceProvider.find_by(issuer: auth_request.issuer)
-    end
-
     def url_params(url)
       CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [ k.to_sym, v[0] ] }
     end
-
   end
 end

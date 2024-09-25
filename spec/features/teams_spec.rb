@@ -31,7 +31,7 @@ feature 'User teams CRUD' do
       expect(page).to have_content(user.email)
     end
 
-    scenario 'User can be added to another team', :js do
+    scenario 'User can be added to another team' do
       admin = create(:admin)
       user = create(:user)
       team1 = create(:team, users: [user])

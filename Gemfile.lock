@@ -1,18 +1,20 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: e33cbdb3a9c8826f6fc2b1f857fb713a4a233750
-  tag: v3.4.2
+  revision: a80634b3723b6890e79676ab5c641bf55103d258
+  tag: v4.1.0
   specs:
-    identity-hostdata (3.4.1)
+    identity-hostdata (4.1.0)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
+      aws-sdk-secretsmanager (>= 1.91)
+      redacted_struct (>= 2.0)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 85c9a24bd4edab43320d0454e2c0e2fac31ffb90
-  tag: 0.21.1-18f
+  revision: 23b69117593e9b9217910af1dd627febd8d18cf4
+  tag: 0.23.0-18f
   specs:
-    saml_idp (0.21.1.pre.18f)
+    saml_idp (0.23.0.pre.18f)
       activesupport
       builder
       faraday
@@ -30,10 +32,11 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: fcaabc4ab596392209b927794a524578a2989f3c
-  tag: v0.7.4
+  revision: a728dc4c3e59c818c4404d70332e57b2eea6ef9b
+  branch: hmm/more-composable-validations
   specs:
-    identity_validations (0.7.4)
+    identity_validations (0.8.0)
+      activemodel (~> 7.1)
 
 GIT
   remote: https://github.com/18f/omniauth_login_dot_gov.git
@@ -160,6 +163,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.165.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
+    aws-sdk-secretsmanager (1.98.0)
+      aws-sdk-core (~> 3, >= 3.197.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.8.2)
@@ -237,6 +243,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
+    csv (3.3.0)
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.1.0)
@@ -331,6 +338,7 @@ GEM
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.6.1)
     lograge (0.12.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -373,7 +381,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.14.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     omniauth (2.1.1)
@@ -388,7 +396,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.24.0)
-    parser (3.3.1.0)
+    parser (3.3.5.0)
       ast (~> 2.4.1)
       racc
     pg (1.4.5)
@@ -413,7 +421,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
-    racc (1.8.0)
+    racc (1.8.1)
     rack (3.0.11)
     rack-canonical-host (1.2.0)
       addressable (> 0, < 3)
@@ -476,7 +484,7 @@ GEM
       ffi (~> 1.0)
     rdoc (6.6.3.1)
       psych (>= 4.0.0)
-    redacted_struct (1.1.0)
+    redacted_struct (2.0.0)
     regexp_parser (2.7.0)
     reline (0.4.3)
       io-console (~> 0.5)
@@ -490,7 +498,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.2.5)
+    rexml (3.3.7)
+    rouge (4.3.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -537,7 +546,9 @@ GEM
     rubyzip (2.3.2)
     secure_headers (3.9.0)
       useragent
-    selenium-webdriver (4.8.6)
+    selenium-webdriver (4.25.0)
+      base64 (~> 0.2)
+      logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -599,7 +610,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
-    websocket (1.2.9)
+    websocket (1.2.11)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -634,6 +645,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   colorize
   cssbundling-rails
+  csv
   database_cleaner (>= 2.0.2)
   devise (~> 4.9.3)
   dotenv-rails (~> 2.8, >= 2.8.1)
@@ -651,7 +663,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.16.2)
+  nokogiri (~> 1.16.5)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
   paper_trail (~> 15.0, >= 15.0.0)
@@ -670,7 +682,7 @@ DEPENDENCIES
   redacted_struct
   responders (~> 3.1, >= 3.1.1)
   rest-client (~> 2.1)
-  rexml (~> 3.2)
+  rouge
   rspec-rails (~> 6.0, >= 6.0.0)
   rspec_junit_formatter
   rubocop (~> 1.62.0)
@@ -693,7 +705,7 @@ DEPENDENCIES
   wicked (~> 2.0)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.4p94
 
 BUNDLED WITH
    2.5.6

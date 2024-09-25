@@ -1,13 +1,17 @@
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.issuer') %></h1>
+<p class="usa-intro"><%= t('simple_form.lead.issuer_html') %></p>
+<div class="wizard-main">
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
-                 disabled: form.object.persisted?,
-                 label: 'Issuer',
+                 disabled: issuer_read_only?,
+                 label: accessible_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  hint: if form.object.persisted?
-                     I18n.t('service_provider_form.change_issuer')
+                     t('service_provider_form.change_issuer')
                    else
                      t('service_provider_form.issuer_html')
                    end %>
- <%= next_button(form) %>
+  <%= render partial:'footer', locals: { form: form } %>
 <% end %>
+</div>

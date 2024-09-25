@@ -1,0 +1,110 @@
+@use 'uswds-core' as *;
+
+.wizard-container {
+  pre {
+    overflow: scroll;
+  }
+
+  .usa-intro {
+    max-width: 100%;
+  }
+
+  .wizard-main {
+    margin: 1.5rem 0;
+    border-top: 1px solid $theme-color-primary-light;
+  }
+
+  .wizard-field {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding: 0 0 1.5rem 0;
+
+    .usa-label__group {
+      margin-right: 0.5rem;
+    }
+
+    .usa-label__group,
+    .usa-input__container {
+      flex: 0 0 46.25%;
+      min-width: 400px;
+    }
+    .usa-input__container,
+    pre {
+      margin-bottom: 1.5rem;
+    }
+
+    .usa-input__container textarea {
+      // don't shrink textarea
+      min-width: 100%;
+      min-height: 4.8ex;
+    }
+
+    .usa-label {
+      margin-top: unset;
+    }
+
+    code {
+      word-break: break-word;
+    }
+  }
+  fieldset.wizard-field {
+    border: none;
+  }
+  // Much of this is to get the Cancel button to float right
+  .wizard-footer {
+    display: flex;
+    margin-top: -1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $theme-color-primary-light;
+
+    a, input {
+      flex: 0 0 auto;
+    }
+
+    &:before {
+      display: block;
+      content: '';
+      order: 2;
+      flex: 1 0 0;
+    }
+    .usa-button--unstyled {
+      order: 3;
+    }
+  }
+  // Don't add negative margin on the Intro page
+  .usa-intro ~ .wizard-footer {
+    margin-top: 0;
+  }
+
+  .usa-checkbox {
+    margin: unset;
+    padding-left: unset;
+  }
+
+  .usa-checkbox__label,
+  .usa-radio__label {
+    margin-top: 0;
+  }
+
+  .usa-input-list {
+    margin-top: unset;
+    margin-bottom: 0.5rem;
+  }
+
+  [title="required"] {
+    text-decoration: none;
+  }
+
+  // this classname is programmatically generated
+  .service_provider_return_to_sp_url {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid $theme-color-primary-light;
+  }
+
+  .usa-error-message {
+    line-height: 1.5;
+  }
+}

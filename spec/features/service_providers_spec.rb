@@ -5,7 +5,7 @@ feature 'Service Providers CRUD' do
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end
-
+  # Tests with :js require JavaScript to ensure protocol fields are properly toggled
   context 'Regular user' do
     scenario 'can create service provider' do
       user = create(:user, :with_teams)
@@ -17,7 +17,7 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
-      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       select user.teams[0].name, from: 'service_provider_group_id'
       select I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service'
       select I18n.t('service_provider_form.aal_option_2'),
@@ -90,7 +90,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(strip_tags(t('service_provider_form.oidc_redirects_html')))
     end
 
-    scenario 'can update service provider team', :js do
+    scenario 'can update service provider team' do
       user = create(:user, :with_teams)
       service_provider = create(:service_provider, user: user)
       login_as(user)
@@ -168,6 +168,7 @@ feature 'Service Providers CRUD' do
       acs_input.set('')
 
       submit_btn.click
+      acs_input = find_field('service_provider_acs_url')
       message = acs_input.native.attribute('validationMessage')
       expect(message).to eq 'Please fill out this field.'
 
@@ -175,7 +176,8 @@ feature 'Service Providers CRUD' do
       acs_input.set('lorem ipsum')
 
       submit_btn.click
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('is invalid')
+      acs_input = find_field('service_provider_acs_url')
+      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('ACS URL is invalid')
 
       # ensure that valid URL now submits properly
       acs_input.set('https://fake.gov/test/saml/sp_login')
@@ -609,6 +611,8 @@ feature 'Service Providers CRUD' do
       select I18n.t('service_provider_form.aal_option_3'),
              from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
+      fill_in 'Assertion Consumer Service URL', with: 'https://app.agency.gov/auth/saml/sso'
+      fill_in 'Return to App URL', with: 'https://app.agency.gov'
       click_on 'Update'
 
       expect(page).to have_content('Success')

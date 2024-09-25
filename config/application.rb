@@ -21,10 +21,7 @@ Bundler.require(*Rails.groups)
 
 module IdentityDashboard
   class Application < Rails::Application
-    configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
-      Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
-    )
-    IdentityConfig.build_store(configuration)
+    IdentityConfig.build_store(app_root: Rails.root, rails_env: Rails.env)
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1

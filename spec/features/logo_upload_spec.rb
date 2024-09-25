@@ -15,7 +15,7 @@ feature 'Logo upload' do
     end
 
     it 'saves the logo' do
-      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       click_on 'Create'
 
       sp = user.service_providers.last
@@ -63,7 +63,7 @@ feature 'Logo upload' do
     end
 
     it 'saves the logo' do
-      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       click_on 'Update'
 
       expect(service_provider.reload.logo_file).to_not eq(nil)
@@ -100,7 +100,7 @@ feature 'Logo upload' do
     end
 
     it 'does not overwrite old logo with invalid logo' do
-      attach_file('Choose a file', 'spec/fixtures/logo.svg')
+      attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       click_on 'Update'
 
       visit edit_service_provider_path(service_provider)

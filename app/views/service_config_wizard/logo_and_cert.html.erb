@@ -1,97 +1,92 @@
-<%= wizard_form do |form| %>
-  <div class='mb2 json optional service_provider_logo_file'>
-  <%= form.label :logo_file,
-                  label: 'Upload your logo',
-                  class: 'usa-label' %>
-  <%= form.file_field :logo_file,
-                  class: 'input-file logo-input-file',
-                  accept: sp_valid_logo_mime_types %>
-  <% if @service_provider.logo_file.attached?  && service_provider.logo_file.persisted? %>
-    <p class="font-mono-xs margin-top-0" name="logo_file">
-      <%= image_tag url_for(@service_provider.logo_file), height: '120px' %>
-    </p>
-  <% end %>
-  <div class='input-file-wrapper'>
-    <%= form.label :logo_file,
-                    label: 'Choose a file',
-                    class: 'usa-button file-input-button',
-                    id: 'logo-file-button' %>
-    <%= content_tag :div,
-                    "No file selected",
-                    class: 'input-preview' %>
-  </div>
-  <%= form.hint 'Choose a file to upload as your logo. See <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
-  <div class='usa-error-message' id='logo-upload-error'>
-    <% if @service_provider.errors[:logo_file].present? %>
-      ERROR:
-      <%= s@ervice_provider.errors[:logo_file].join('|') %>
-    <% end %>
-  </div>
-</div>
-
-<%= javascript_include_tag 'validate_logo_size' %>
-  <fieldset class="usa-fieldset" id="certificate-container">
-    <div class="usa-label">Certificates</div>
-
-    <p>
-      <% I18n.t('service_provider_form.certificate') =%>
-    </p>
-
-
-    <% @service_provider.certificates.each do |certificate| %>
-      <%= render 'certificate', certificate: certificate do %>
-        <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-          <div class="usa-alert__text">
-            <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
-                              certificate.serial,
-                              false,
-                              name: "service_provider[remove_certificates][]",
-                              class: 'usa-checkbox__input' %>
-            <%= content_tag :label,
-                            for: "service_provider_remove_certificates_#{certificate.serial}",
-                            class: 'usa-checkbox__label' do %>
-              Remove this certificate
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div class="lg-card margin-top-2">
-      <label class="usa-label margin-top-0" for="service_provider_cert">
-        Upload a new public cert
-      </label>
-
-      <div class="clearfix">
-        <span class="usa-error-message js-pem-input-error-message">
-          <%= @service_provider.errors[:certs].to_sentence.presence %>
-        </span>
-        <%= form.file_field :cert, class: 'input-file js-pem-input' %>
-        <label class="usa-button file-input-button" for="service_provider_cert">
-          Choose a cert file
-        </label>
-        <div class="margin-top-4 js-pem-file-name"></div>
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.logo_and_cert') %></h1>
+<div class="wizard-main">
+  <%= wizard_form do |form| %>
+    <fieldset class='wizard-field json optional service_provider_logo_file'>
+      <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.logo_file') %></legend>
+      <div class="usa-label__group">
+        <p class="usa-label"><%= t('simple_form.labels.service_provider.logo_file') %></p>
+        <%= form.hint t('service_provider_form.logo_html') %>
       </div>
+      <div class="usa-input__container">
+        <span class="usa-error-message js-pem-input-error-message" id="logo-upload-error">
+            <%= form.object.errors[:certs].to_sentence.presence %>
+        </span>
+        <% if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
+          <p class="font-mono-xs margin-top-0" name="logo_file">
+            <%= image_tag url_for(form.object.logo_file), height: '120px' %>
+          </p>
+        <% end %>
+        <div class="lg-card margin-top-2">
+          <%= form.file_field :logo_file,
+                            class: 'input-file logo-input-file',
+                            accept: sp_valid_logo_mime_types.join(',') %>
+          <p><%= I18n.t('service_provider_form.logo_input') %></p>
+          <%= form.label :logo_file,
+                          label: accessible_label(form, 'Choose a file', :logo_file),
+                          class: 'usa-button',
+                          id: 'logo-file-button' %>
+          <p class='usa-error-message' id='logo-upload-error'>
+            <% if form.object.errors[:logo_file].present? %>
+              <%= t('simple_form.labels.service_provider.error') %>
+              <%= form.object.errors[:logo_file].join('|') %>
+            <% end %>
+          </p>
+          <%= content_tag :div,
+                          "No new file selected",
+                          class: 'logo-preview margin-top-4' %>
+        </div>
+      </div>
+    </fieldset>
 
-      <div class="margin-top-2">
-        <p>
-          Take a look at our developer documentation for
-          <a href="https://developers.login.gov/testing/#creating-a-public-certificate">
-          how to generate a public-private key pair</a>.
-        </p>
-        <p>
-          Certificate must be
-          <a href="https://en.wikipedia.org/wiki/Privacy-enhanced_Electronic_Mail" target="_blank">PEM encoded</a>,
-          like this example:
-        </p>
+    <fieldset class="wizard-field file service_provider_logo_file" id="certificate-container">
+      <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.upload_certificate') %></legend>
+      <div class="usa-label__group">
+        <p class="usa-label"><%= t('simple_form.labels.service_provider.upload_certificate') %></p>
+        <%= form.hint t('service_provider_form.certificate_html') %>
         <pre><code>-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
 BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
 B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 -----END CERTIFICATE-----</code></pre>
       </div>
-    </div>
-  </fieldset>
+      <div class="usa-input__container">
+        <% form.object.certificates.each do |certificate| %>
+          <%= render 'service_providers/certificate', certificate: certificate do %>
+            <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
+              <div class="usa-alert__text">
+                <%= check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
+                                  certificate.serial,
+                                  false,
+                                  name: "wizard_step[remove_certificates][]",
+                                  class: 'usa-checkbox__input' %>
+                <%= content_tag :label,
+                                for: "wizard_step_remove_certificates_#{certificate.serial}",
+                                class: 'usa-checkbox__label' do %>
+                  <%= t('simple_form.labels.service_provider.remove_cert') %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <div class="lg-card margin-top-2">
+          <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.cert_input') %></label>
 
-  <%= next_button(form) %>
-<% end %>
+          <div class="clearfix">
+            <span class="usa-error-message js-pem-input-error-message">
+              <%= form.object.errors[:certs].to_sentence.presence %>
+            </span>
+            <%= form.file_field :cert, class: 'input-file js-pem-input' %>
+            <label class="usa-button file-input-button" for="wizard_step_cert">
+              <%= t('simple_form.labels.service_provider.cert_file') %>
+            </label>
+          </div>
+          <div class="margin-top-4 js-pem-file-name"></div>
+        </div>
+      </div>
+    </fieldset>
+    <%= render partial:'footer', locals: { form: form } %>
+  <% end %>
+</div>
+
+<%= javascript_include_tag 'service_provider_form' %>
+<%= javascript_include_tag 'validate_logo_size' %>

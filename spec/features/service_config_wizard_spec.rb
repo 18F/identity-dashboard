@@ -1,20 +1,112 @@
 require 'rails_helper'
 
 feature 'Service Config Wizard' do
+  let(:team) { create(:team) }
   let(:user) { create(:user, admin: false) }
-  let(:admin) { create(:user, admin: true) }
+  let(:admin) { create(:user, admin: true, group_id: team.id) }
 
   context 'as admin' do
     before do
       login_as(admin)
     end
 
-    it 'can step through all the pages' do
+    it 'can remember something filled in' do
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
       visit new_service_config_wizard_path
-      ServiceConfigWizardController::STEPS.each do |step|
-        expect(body).to match(step.to_s)
-        click_on 'Next'
+      click_on 'Next' # Skip the intro page
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      select(Team.find(admin.group_id).name, from: 'Team')
+      click_on 'Next'
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.authentication'))
+        click_on 'Back'
+      current_step = find('.step-indicator__step--current')
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+      expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+    end
+
+    it 'displays and saves the correct default options while walking through the steps' do
+      # These are expected values, listed in the order the currently appear in the step forms
+      # These are all required values that we'll fill in, or expected default values
+      expected_data = {
+        # settings
+        'group_id' => admin.group_id, # required
+        'prod_config' => 'false',
+        'app_name' => 'my-app', # required
+        'friendly_name' => 'My App', # required
+        'description' => '',
+        # auth
+        'identity_protocol' => 'saml', # not default, but we're using SAML to test other defaults
+        'ial' => '1',
+        'default_aal' => 'on',
+        'attribute_bundle' => [],
+        # issuer
+        'issuer' => 'test:saml:issuer', # required
+        # logo_and_cert
+        # # TODO: add data, skipped for now
+        # redirect uris
+        'acs_url' => 'http://localhost/acs', # required for SAML
+        'assertion_consumer_logout_service_url'=>'',
+        'sp_initiated_login_url'=>'',
+        'block_encryption'=>'aes256-cbc',
+        'signed_response_message_requested' => 'true',
+        'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
+        'push_notification_url'=>'',
+        'redirect_uris'=>'',
+        # help text
+        'help_text'=> {
+            'sign_in'=>{'sign_in'=>'blank'},
+            'sign_up'=>{'sign_up'=>'blank'},
+            'forgot_password'=>{'forgot_password'=>'blank'},
+        },
+      }
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      team_field = find_field('Team')
+      team_field_options = team_field.find_all('option')
+      current_value = team_field.value
+      team_options_with_current_value = team_field_options.select do |opt|
+        opt.value == current_value
       end
+      expect(team_field_options.count).to_not eq(1)
+      expect(team_options_with_current_value.count).to eq(1)
+      expect(team_options_with_current_value[0].text).to eq('- Select -')
+      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Friendly name', with: expected_data['friendly_name'])
+      team_field = find_field('Team')
+      select(Team.find(admin.group_id).name, from: 'Team')
+      expect(team_field.value).to eq(admin.group_id.to_s)
+      click_on 'Next'
+      choose 'SAML' # not default, but we're using SAML to test other defaults
+      click_on 'Next'
+      fill_in('Issuer', with: expected_data['issuer'])
+      click_on 'Next'
+      attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
+      click_on 'Next' # Skip logo upload for now
+      encryption_field = find_field('SAML Assertion Encryption')
+      expected_text = ServiceProvider.block_encryptions.keys.join(' ')
+      expect(encryption_field.text).to eq(expected_text)
+      expected_key = ServiceProvider.block_encryptions.keys.last
+      expect(encryption_field.value.downcase).to eq(expected_key.downcase)
+      fill_in('Assertion Consumer Service URL', with: expected_data['acs_url'])
+      fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
+      click_on 'Next'
+      expect(find_field('Sign-in').value).to eq('blank')
+      expect(find_field('Sign-up').value).to eq('blank')
+      expect(find_field('Forgot password').value).to eq('blank')
+      click_on 'Create app'
+      expect(current_url).to eq(service_providers_url)
+
+      saved_setup_data = WizardStep.current_step_data_for_user(admin)
+      expected_data.keys.each do |key|
+        expect(saved_setup_data[key].to_s).to eq(expected_data[key].to_s)
+      end
+      expect(saved_setup_data['certs']).
+        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
     end
   end
 
@@ -23,12 +115,15 @@ feature 'Service Config Wizard' do
       login_as(user)
     end
 
-    it 'is not currently authorized' do
+    it 'is redirected to service_providers if not flagged in' do
+      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).
+        at_least(ServiceConfigWizardController::STEPS.count + 1).
+        and_return(nil)
       visit new_service_config_wizard_path
-      expect(status_code).to be(401)
+      expect(current_url).to eq(service_providers_url)
       ServiceConfigWizardController::STEPS.each do |step|
         visit new_service_config_wizard_path(step)
-        expect(status_code).to be(401)
+        expect(current_url).to eq(service_providers_url)
       end
     end
   end

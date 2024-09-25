@@ -39,6 +39,8 @@
                        as: :usa_collection_select,
                        value_method: :id,
                        collection: current_user.scoped_teams,
+                       required: true,
+                       label_html: { class: 'usa-input-required'},
                        label: 'Team',
                        disabled: !can_edit_teams?(current_user),
                        hint: I18n.t('service_provider_form.team') %>
@@ -90,7 +92,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
+    <%= form.hint t('service_provider_form.attribute_bundle') %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -118,10 +120,6 @@
                    end %>
 
   <% if current_user.admin? %>
-    <%= form.input :production_issuer,
-                   label: 'Production Issuer',
-                   input_html: { class: 'usa-input' } %>
-
     <%# allow_prompt_login checkbox %>
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>
@@ -293,7 +291,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </div>
 
-    <%= content_tag :div, class: 'mb2 json optional service_provider_redirect_uris' do -%>
+    <%= content_tag :div, class: 'json optional service_provider_redirect_uris' do -%>
       <% redirect_uri_list.each do |value| %>
         <%= text_field_tag 'service_provider[redirect_uris][]',
                            value,

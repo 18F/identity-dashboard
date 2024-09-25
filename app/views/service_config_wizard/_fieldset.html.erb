@@ -1,0 +1,41 @@
+<%# expected locals:
+  [Method] form such that form is a valid instance of wizard_form
+  [String] fieldname such that simple_form and service_provider have valid translations
+  [Boolean] description whether a description exists in the translations
+  [Boolean] html_desc whether a description includes HTML tags
+  ["radio"|"checkbox"] input_type
+  [Boolean] required whether this field is required
+  [Symbol] db_fieldname such that the database has an associated column (often fieldname.to_sym)
+  [Input elements] inputs such that the input fields are rendered correctly
+%>
+<fieldset class="<%= "wizard-field #{input_type} service_provider_#{fieldname}" %>" >
+  <legend class="usa-sr-only" id="<%= "legend-#{db_fieldname}" %>">
+    <%= accessible_label(form, t("simple_form.labels.service_provider.#{fieldname}"), db_fieldname) %>
+  </legend>
+  <div class="usa-label__group">
+    <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">
+      <%= t("simple_form.labels.service_provider.#{fieldname}") %>
+      <% if required %>
+        <%= t('simple_form.required.html') %>
+      <% end %>
+    </p>
+    <% if description %>
+      <%= form.hint t("service_provider_form.#{fieldname}#{html_desc ? '_html' : ''}") %>
+    <% end %>
+  </div>
+  <div class="usa-input__container">
+    <% if input_type == 'radio' %>
+      <%= render partial: 'radio_collection', locals: {
+        form: form,
+        db_fieldname: db_fieldname,
+        inputs: inputs,
+      } %>
+    <% elsif input_type == 'checkbox' %>
+      <%= render partial: 'checkbox_collection', locals: {
+        form: form,
+        db_fieldname: db_fieldname,
+        inputs: inputs,
+      } %>
+    <% end %>
+  </div>
+</fieldset>

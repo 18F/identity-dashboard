@@ -5,7 +5,7 @@ module BannerHelper
     now = DateTime.now
     # Put each banner into a Past or Upcoming bucket
     banners.each do |banner|
-      if banner.end_date && DateTime.parse(banner.end_date.to_s) < now
+      if banner.end_date && DateTime.parse(banner.end_date.at_end_of_day.to_s) < now
         past.push(banner)
       else
         upcoming.push(banner)
