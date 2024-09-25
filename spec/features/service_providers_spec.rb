@@ -177,7 +177,7 @@ feature 'Service Providers CRUD' do
 
       submit_btn.click
       acs_input = find_field('service_provider_acs_url')
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('ACS URL is invalid')
+      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('Acs url is invalid')
 
       # ensure that valid URL now submits properly
       acs_input.set('https://fake.gov/test/saml/sp_login')
