@@ -9,6 +9,8 @@ class ServiceProvidersController < AuthenticatedController
 
   helper_method :parsed_help_text, :localized_help_text
 
+  helper_method :parsed_help_text, :localized_help_text
+
   def index
     all_apps = current_user.scoped_service_providers
 
