@@ -51,7 +51,7 @@ class ServiceConfigWizardController < AuthenticatedController
     saved_steps = policy_scope(WizardStep).where(user: current_user)
     authorize saved_steps.last, :destroy?
     saved_steps.destroy_all
-    redirect_to finish_wizard_path
+    redirect_to finish_wizard_path if can_cancel?
   end
 
   def is_valid?
@@ -85,6 +85,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     validate_and_save_service_provider
     destroy
+    redirect_to service_provider_path(service_provider)
   end
 
   def show_saml_options?
