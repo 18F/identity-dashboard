@@ -39,7 +39,7 @@ class ServiceConfigWizardController < AuthenticatedController
       @model.data = @model.data.merge(wizard_step_params)
     end
     if is_valid? && @model.save
-      convert_draft_to_full_sp if step == wizard_steps.last
+      return convert_draft_to_full_sp if step == wizard_steps.last
       skip_step
     else
       flash[:error] = 'Please check the error(s) in the form below and re-submit.'
@@ -84,6 +84,7 @@ class ServiceConfigWizardController < AuthenticatedController
     end
 
     validate_and_save_service_provider
+    destroy
   end
 
   def show_saml_options?
@@ -237,7 +238,6 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
-    redirect_to service_provider_path(service_provider)
   end
 
   def publish_service_provider
