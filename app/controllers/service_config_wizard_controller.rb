@@ -9,7 +9,7 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: :new
   after_action :verify_authorized
-  after_action -> { flash.discard }
+  after_action -> { flash.discard }, unless: -> { when_saving_config }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
   after_action :verify_policy_scoped, unless: -> { when_skipping_models }
   helper_method %i[
@@ -201,6 +201,12 @@ class ServiceConfigWizardController < AuthenticatedController
   def when_skipping_models
     action_name == 'new' ||
       step == STEPS.first ||
+      step == Wicked::FINISH_STEP
+  end
+
+  def when_saving_config
+    action_name == 'update' &&
+      step == STEPS.last ||
       step == Wicked::FINISH_STEP
   end
 
