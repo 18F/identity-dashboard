@@ -1,9 +1,19 @@
 require 'rails_helper'
-require 'pry'
 
 RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
-  let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
+  let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
+  let(:agency) { create(:agency, name: 'GSA') }
+  let(:team) { create(:team, agency: agency) }
+  let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
+  let(:logo_file_params) {
+    Rack::Test::UploadedFile.new(
+      File.open(fixture_path + '/logo.svg'),
+      'image/svg+xml',
+      true,
+      original_filename: 'alternative_filename.svg',
+    )
+  }
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -245,6 +255,76 @@ RSpec.describe ServiceConfigWizardController do
         if next_step
           expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
         end        
+      end
+    end
+
+    describe '#update' do 
+      help_text = {
+        'sign_in' => {'en' => 'blank'},
+        'sign_up' => {'en' => 'blank'},
+        'forgot_password' => {'en' => 'blank'}
+      }
+
+      it 'saves to the service_provider database' do
+        put :update, params: {id: 'settings', wizard_step: {
+          app_name: 'App name',
+          friendly_name: 'Friendly name',
+          group_id: team.id,
+        }}
+        put :update, params: {id: 'authentication', wizard_step: {
+          identity_protocol: 'openid_connect_private_key_jwt',
+          ial: '1',
+          # Rails forms regularly put an initial, hidden, and blank entry for various inputs
+          attribute_bundle: ['', 'email'],
+        }}
+        put :update, params: {id: 'issuer', wizard_step: {issuer: 'my.issuer.string'}}
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
+          cert: fixture_file_upload('testcert.pem'),
+        }}
+        put :update, params: {id: 'redirects', wizard_step: {return_to_sp_url: 'https://test.gov'}}
+        put :update, params: {id: 'help_text', wizard_step: {help_text: help_text}}
+
+        sp = ServiceProvider.find_by(issuer: 'my.issuer.string')
+        { 'app_name' => 'App name',
+          'friendly_name' => 'Friendly name',
+          'group_id' => team.id,
+          'identity_protocol' => 'openid_connect_private_key_jwt',
+          'ial' => 1,
+          'attribute_bundle' => ['email'],
+          'issuer' => 'my.issuer.string',
+          'logo' => 'logo.svg',
+          'certs' => ['-----BEGIN CERTIFICATE-----
+MIIEOTCCAqGgAwIBAgIUcssBgpiiuoUjHOBELC4+bKOY4xYwDQYJKoZIhvcNAQEL
+BQAwRTELMAkGA1UEBhMCVVMxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yNDA4MjcxNTEyMDZaFw0yNzA1
+MjUxNTEyMDZaMEUxCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggGiMA0GCSqGSIb3DQEB
+AQUAA4IBjwAwggGKAoIBgQCrAOyaPCI+HgFu6GOihuEwiR6zcgX6Kbf1AP5+MzMJ
+6LKv5WAjqIacZIxdQrYtKACXudErMdSMFPG8RIGYuRsAV7sHw/gZI9ODRzuau6GR
+j7VBuI9XcBZ3ShC9To6m/mLwuXtoUj8nK9IhjFQoHiiLCZKLTU3SEHZD0eECKdIa
+6xmGh4d55U+3rGu3G7q1Y20rsUvfxAJdOPhIzFUI9UI/dyUxsv9oFi6Fnj0JB7kB
+IEdve2OJhjGPRNWr1UGrVdSK4cM8f7syJToo6hcImTv028RoYAFfcsF4tKMAWF1q
+jHeWx4mtjjzdCj4KEMsmVkMp/SIzVdNiNO9pda6W4VFxmdqG6jg4ZnUKt+g5nEEp
+H1ATZ0Hs++wOhMFsH8yE/9kPnx85nASCKFAaQDO9IDdi5r8bm549vyQwKQvyd2ku
+MTSHUtqRrraNRDnNGI4HxKRfCtpq6vYW5QOnjE++pZNAoeyxEabyoiDECNCHifjn
+orKJH2+MUlw1N6O76Y/3AssCAwEAAaMhMB8wHQYDVR0OBBYEFJ/SJ6VBQ2BktWMO
+vVbm6frUEZyTMA0GCSqGSIb3DQEBCwUAA4IBgQCSu+z2dkXsKXrvnAcbZDv70VsQ
+xFONQok376h/qtNlV6FRUV6S4iU7TbqzY9T+yYMCrpZIP3ZYVMITKr9HaU/oIGDY
+35i4GLA2Cv7BWAuUayc5d2cRcbRe9uTFrTx60Kl3I9XttQvJF0khNO9X6iMCV7GY
+5UlDUFNLie5jcPuMj3TGh1YUtaF393S+rZdsz3DmPpfya1Rwj0OX3jFED3Jq/tYC
+sRKQ8g5X5GbBTtMoA4+HH7doGCgCf4bTFZSiQl/tcLtEnS14D3z4PtglNoQl5HGX
+WZYLOcDP28Gzy31sxl9FS0SLV+3c84f9U/ZPrJ4+YHCCJNLN5mmEZc/iZaIo91Hr
+G1G4HI0j6RXdP2yfOizn5JhAA8PqCYF1MEweVKUwPJ5RB56zrYofz41LXoLG1guS
+r/mRka0yJMXMYxDfAEWgwdJpDM2xH0OEpaH7GeVfCGSIIi5+34Nzg12/JyIDK8it
+R6LqhoFt/JaXguop/FLpZwX1U7xfufEBYq2D3/Q=
+-----END CERTIFICATE-----
+'],
+          'return_to_sp_url' => 'https://test.gov',
+          'help_text' => help_text
+        }.each_pair do |key, val|
+          expect(sp.attributes[key]).to eq(val)
+        end
       end
     end
   end
