@@ -262,39 +262,43 @@ RSpec.describe ServiceConfigWizardController do
       help_text = {
         'sign_in' => {'en' => 'blank'},
         'sign_up' => {'en' => 'blank'},
-        'forgot_password' => {'en' => 'blank'}
+        'forgot_password' => {'en' => 'blank'},
       }
+      issuer = 'saves.to.service.provider.database'
 
-      it 'saves to the service_provider database' do
-        put :update, params: {id: 'settings', wizard_step: {
-          app_name: 'App name',
-          friendly_name: 'Friendly name',
-          group_id: team.id,
-        }}
-        put :update, params: {id: 'authentication', wizard_step: {
-          identity_protocol: 'openid_connect_private_key_jwt',
-          ial: '1',
-          # Rails forms regularly put an initial, hidden, and blank entry for various inputs
-          attribute_bundle: ['', 'email'],
-        }}
-        put :update, params: {id: 'issuer', wizard_step: {issuer: 'my.issuer.string'}}
-        put :update, params: {id: 'logo_and_cert', wizard_step: {
-          logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
-          cert: fixture_file_upload('testcert.pem'),
-        }}
-        put :update, params: {id: 'redirects', wizard_step: {return_to_sp_url: 'https://test.gov'}}
-        put :update, params: {id: 'help_text', wizard_step: {help_text: help_text}}
+      describe 'saves to the service_provider database' do
+        before do
+          put :update, params: {id: 'settings', wizard_step: {
+            app_name: 'App name',
+            friendly_name: 'Friendly name',
+            group_id: team.id,
+          }}
+          put :update, params: {id: 'authentication', wizard_step: {
+            identity_protocol: 'openid_connect_private_key_jwt',
+            ial: '1',
+            # Rails forms regularly put an initial, hidden, and blank entry for various inputs
+            attribute_bundle: ['', 'email'],
+          }}
+          put :update, params: {id: 'issuer', wizard_step: {issuer: issuer}}
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
+            cert: fixture_file_upload('testcert.pem'),
+          }}
+          put :update, params: {id: 'redirects', wizard_step: {return_to_sp_url: 'https://test.gov'}}
+          put :update, params: {id: 'help_text', wizard_step: {help_text: help_text}}
+        end
 
-        sp = ServiceProvider.find_by(issuer: 'my.issuer.string')
-        { 'app_name' => 'App name',
-          'friendly_name' => 'Friendly name',
-          'group_id' => team.id,
-          'identity_protocol' => 'openid_connect_private_key_jwt',
-          'ial' => 1,
-          'attribute_bundle' => ['email'],
-          'issuer' => 'my.issuer.string',
-          'logo' => 'logo.svg',
-          'certs' => ['-----BEGIN CERTIFICATE-----
+        it 'saves fields as expected' do
+          sp = ServiceProvider.find_by(issuer: issuer)
+          { 'app_name' => 'App name',
+            'friendly_name' => 'Friendly name',
+            'group_id' => team.id,
+            'identity_protocol' => 'openid_connect_private_key_jwt',
+            'ial' => 1,
+            'attribute_bundle' => ['email'],
+            'issuer' => 'saves.to.service.provider.database',
+            'logo' => 'logo.svg',
+            'certs' => ['-----BEGIN CERTIFICATE-----
 MIIEOTCCAqGgAwIBAgIUcssBgpiiuoUjHOBELC4+bKOY4xYwDQYJKoZIhvcNAQEL
 BQAwRTELMAkGA1UEBhMCVVMxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
 GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yNDA4MjcxNTEyMDZaFw0yNzA1
@@ -320,10 +324,28 @@ r/mRka0yJMXMYxDfAEWgwdJpDM2xH0OEpaH7GeVfCGSIIi5+34Nzg12/JyIDK8it
 R6LqhoFt/JaXguop/FLpZwX1U7xfufEBYq2D3/Q=
 -----END CERTIFICATE-----
 '],
-          'return_to_sp_url' => 'https://test.gov',
-          'help_text' => help_text
-        }.each_pair do |key, val|
-          expect(sp.attributes[key]).to eq(val)
+            'return_to_sp_url' => 'https://test.gov',
+            'help_text' => help_text,
+          }.each_pair do |key, val|
+            expect(sp.attributes[key]).to eq(val)
+          end
+        end
+
+        it 'redirects to the service provider details page' do
+          expect(response.status).to eq(302)
+          expect(response.redirect_url).to match(/#{service_providers_url}\/\d+\Z/)
+        end
+
+        it 'shows a success banner' do
+          expect(flash.keys).to include('success')
+        end
+
+        it 'does not show a failure banner' do
+          expect(flash.keys).to_not include('error')
+        end
+
+        it 'deletes the draft config' do
+          expect(WizardStep.all_step_data_for_user(admin)).to eq({})
         end
       end
     end
