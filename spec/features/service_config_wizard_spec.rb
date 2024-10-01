@@ -101,13 +101,22 @@ feature 'Service Config Wizard' do
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
-      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}")
+      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
+        'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
         expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
           "#{key} expected: #{expected_data[key].to_s}, received: #{saved_config_data[key]}"
       end
       expect(saved_config_data['certs']).
-        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
+        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
+        'cert failed to save as expected'
+      expect(page).to have_content(t(
+        'notices.service_provider_saved',
+        issuer: expected_data['issuer'],
+      ))
+      expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
+      expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
+      'error: draft data not deleted'
     end
 
     it 'shows uploaded logo file errors' do
