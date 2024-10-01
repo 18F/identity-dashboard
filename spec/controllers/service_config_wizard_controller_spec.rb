@@ -327,7 +327,7 @@ R6LqhoFt/JaXguop/FLpZwX1U7xfufEBYq2D3/Q=
             'return_to_sp_url' => 'https://test.gov',
             'help_text' => help_text,
           }.each_pair do |key, val|
-            expect(sp.attributes[key]).to eq(val)
+            expect(sp.attributes[key]).to eq(val), "#{key} does not match"
           end
         end
 
