@@ -334,7 +334,9 @@ R6LqhoFt/JaXguop/FLpZwX1U7xfufEBYq2D3/Q=
 
         it 'redirects to the service provider details page' do
           expect(response.status).to eq(302)
-          expect(response.redirect_url).to match("#{service_providers_url}/#{ServiceProvider.last.id}")
+          expect(response.redirect_url).to match(
+            "#{service_providers_url}/#{ServiceProvider.last.id}",
+          )
         end
 
         it 'shows a success banner' do
