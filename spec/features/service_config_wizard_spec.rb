@@ -97,11 +97,11 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       expect(find_field('Sign-in').value).to eq('blank')
       expect(find_field('Sign-up').value).to eq('blank')
-      expect(find_field('Forgot password').value).to eq('blank')      
+      expect(find_field('Forgot password').value).to eq('blank')
       click_on 'Create app'
-      expect(current_url).to match(/#{service_providers_url}\/\d+\Z/)
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
+      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}")
       expected_data.keys.each do |key|
         expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
           "#{key} expected: #{expected_data[key].to_s}, received: #{saved_config_data[key]}"

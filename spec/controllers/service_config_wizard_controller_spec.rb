@@ -297,7 +297,7 @@ RSpec.describe ServiceConfigWizardController do
             'identity_protocol' => 'openid_connect_private_key_jwt',
             'ial' => 1,
             'attribute_bundle' => ['email'],
-            'issuer' => 'saves.to.service.provider.database',
+            'issuer' => issuer,
             'logo' => 'logo.svg',
             'certs' => ['-----BEGIN CERTIFICATE-----
 MIIEOTCCAqGgAwIBAgIUcssBgpiiuoUjHOBELC4+bKOY4xYwDQYJKoZIhvcNAQEL
@@ -334,7 +334,7 @@ R6LqhoFt/JaXguop/FLpZwX1U7xfufEBYq2D3/Q=
 
         it 'redirects to the service provider details page' do
           expect(response.status).to eq(302)
-          expect(response.redirect_url).to match(/#{service_providers_url}\/\d+\Z/)
+          expect(response.redirect_url).to match("#{service_providers_url}/#{ServiceProvider.last.id}")
         end
 
         it 'shows a success banner' do
