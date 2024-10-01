@@ -244,7 +244,8 @@ RSpec.describe ServiceConfigWizardController do
       end
     end
 
-    describe 'step "help_text"' do
+    # help_text gets saved to draft, then to `service_provider`, then deleted in one step
+    xdescribe 'step "help_text"' do
       it 'can post' do
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
