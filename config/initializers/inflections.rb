@@ -11,11 +11,11 @@
 # end
 
 # These inflection rules are supported but not enabled by default:
-ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.acronym 'AAL'
-  inflect.acronym 'ACS'
-  inflect.acronym 'IAL'
-  inflect.acronym 'SP'
-  inflect.acronym 'URI'
-  inflect.acronym 'URL'
-end
+# ActiveSupport::Inflector.inflections(:en) do |inflect|
+#   inflect.acronym 'AAL'
+#   inflect.acronym 'ACS'
+#   inflect.acronym 'IAL'
+#   inflect.acronym 'SP'
+#   inflect.acronym 'URI'
+#   inflect.acronym 'URL'
+# end

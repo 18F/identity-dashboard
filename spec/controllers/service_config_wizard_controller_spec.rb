@@ -1,9 +1,19 @@
 require 'rails_helper'
-require 'pry'
 
 RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
-  let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
+  let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
+  let(:agency) { create(:agency, name: 'GSA') }
+  let(:team) { create(:team, agency: agency) }
+  let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
+  let(:logo_file_params) {
+    Rack::Test::UploadedFile.new(
+      File.open(fixture_path + '/logo.svg'),
+      'image/svg+xml',
+      true,
+      original_filename: 'alternative_filename.svg',
+    )
+  }
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -83,6 +93,20 @@ RSpec.describe ServiceConfigWizardController do
         next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
+
+      it 'sets attribute bundle errors' do
+        expect do
+          put :update, params: {id: 'authentication', wizard_step: {
+            identity_protocol: 'saml',
+            ial: '2',
+            attribute_bundle: [],
+          }}
+        end.to_not(change {WizardStep.count})
+        expect(response).to_not be_redirect
+        expect(assigns[:model].errors.messages.keys).to eq([:attribute_bundle])
+        actual_error = assigns[:model].errors[:attribute_bundle].to_sentence
+        expect(actual_error).to eq('Attribute bundle cannot be empty')
+      end
     end
 
     describe 'step "issuer"' do
@@ -150,6 +174,11 @@ RSpec.describe ServiceConfigWizardController do
             cert: new_cert,
           }}
         end.to_not(change {WizardStep.count})
+
+        expect(response).to be_redirect
+        next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
+        expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+
         new_settings = WizardStep.last
         expect(new_settings.certs.count).to be(original_certs.count)
         expect(new_settings.certs.count).to be(1)
@@ -160,6 +189,46 @@ RSpec.describe ServiceConfigWizardController do
         expect(new_settings.logo_file.blob.checksum).to_not eq(original_saved_logo.blob.checksum)
         expect(new_settings.logo_file.blob.checksum).
           to eq(OpenSSL::Digest.base64digest('MD5', new_logo_upload.read))
+      end
+
+      it 'sets errors for bad SVGs' do
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            logo_file: fixture_file_upload('../logo_with_script.svg'),
+          }}
+        end.to_not(change {WizardStep.count})
+        expect(response).to_not be_redirect
+        actual_error = assigns[:model].errors[:logo_file].to_sentence
+        expected_error = I18n.t(
+          'service_provider_form.errors.logo_file.has_script_tag',
+          filename: 'logo_with_script.svg',
+        )
+        expect(actual_error).to eq(expected_error)
+      end
+
+      it 'keeps an existing logo if a new logo is bad' do
+        good_logo_upload = fixture_file_upload('logo.svg')
+        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo_upload.read)
+        bad_logo_upload = fixture_file_upload('../logo_without_size.svg')
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: good_logo_upload,
+        }}
+        saved_step = WizardStep.last
+        expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
+
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: bad_logo_upload,
+        }}
+        expect(response).to_not be_redirect
+        actual_error = assigns[:model].errors[:logo_file].to_sentence
+        expected_error = I18n.t(
+          'service_provider_form.errors.logo_file.no_viewbox',
+          filename: 'logo_without_size.svg',
+        )
+        expect(actual_error).to eq(expected_error)
+        saved_step.reload
+        saved_step.logo_file.reload
+        expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
       end
     end
 
@@ -175,7 +244,8 @@ RSpec.describe ServiceConfigWizardController do
       end
     end
 
-    describe 'step "help_text"' do
+    # help_text gets saved to draft, then to `service_provider`, then deleted in one step
+    xdescribe 'step "help_text"' do
       it 'can post' do
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}

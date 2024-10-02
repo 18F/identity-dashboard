@@ -130,6 +130,36 @@ RSpec.describe WizardStep, type: :model do
           expect(subject.certificates).to eq(wrapped)
         end
       end
+
+      context 'with an existing logo' do
+        let(:good_logo) { fixture_file_upload('logo.svg')}
+        let(:good_logo_checksum) do
+          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('logo.svg').read)
+        end
+        let(:empty_string_checksum) { OpenSSL::Digest.base64digest('MD5', '')}
+        let(:unsized_logo) { fixture_file_upload('../logo_without_size.svg')}
+        let(:unsized_logo_checksum) do
+          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('../logo_without_size.svg').read)
+        end
+
+        let(:step_with_logo) do
+          this_step = create(:wizard_step, step_name: 'logo_and_cert')
+          this_step.attach_logo(good_logo)
+          this_step.save!
+          this_step
+        end
+
+        it 'will not replace a good logo with a bad logo' do
+          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
+          step_with_logo.attach_logo(unsized_logo)
+          expect(step_with_logo).to_not be_valid
+          step_with_logo.reload
+          step_with_logo.logo_file.reload
+          expect(step_with_logo.logo_file.checksum).to_not eq(empty_string_checksum)
+          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
+          expect(step_with_logo.logo_name).to eq('logo.svg')
+        end
+      end
     end
 
     describe '#remove_certificate' do
@@ -190,7 +220,7 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
-  describe '.current_step_data_for_user' do
+  describe '.all_step_data_for_user' do
     let(:subject_user) { create(:user) }
 
     it 'concatenates all the latest steps for a user' do
@@ -203,25 +233,25 @@ RSpec.describe WizardStep, type: :model do
       })
 
       all_step_data = created_steps.map(&:data).reduce(&:merge)
-      expect(WizardStep.current_step_data_for_user(subject_user)).to eq(all_step_data)
-      expect(WizardStep.current_step_data_for_user(subject_user).values).
+      expect(WizardStep.all_step_data_for_user(subject_user)).to eq(all_step_data)
+      expect(WizardStep.all_step_data_for_user(subject_user).values).
         to_not include(extra_step.issuer)
 
       all_field_names = WizardStep::STEP_DATA.map {|_k, v| v.fields}.reduce(&:merge).keys
-      expect(WizardStep.current_step_data_for_user(subject_user).keys).to eq(all_field_names)
+      expect(WizardStep.all_step_data_for_user(subject_user).keys.sort).to eq(all_field_names.sort)
     end
 
     it 'will stop returning data that have been deleted' do
       test_issuer = "test:issuer:#{rand(1..100)}"
       create(:wizard_step, step_name: 'issuer', user: subject_user, data: {issuer: test_issuer})
-      expect(WizardStep.current_step_data_for_user(subject_user)).to eq({'issuer' => test_issuer})
+      expect(WizardStep.all_step_data_for_user(subject_user)).to eq({'issuer' => test_issuer})
       WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
-      expect(WizardStep.current_step_data_for_user(subject_user).keys).
+      expect(WizardStep.all_step_data_for_user(subject_user).keys).
         to_not include('issuer')
     end
 
     it 'returns an empty hash when no data has been saved' do
-      expect(WizardStep.current_step_data_for_user(subject_user)).to eq({})
+      expect(WizardStep.all_step_data_for_user(subject_user)).to eq({})
     end
   end
 end

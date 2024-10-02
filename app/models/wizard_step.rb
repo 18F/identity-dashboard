@@ -117,7 +117,7 @@ class WizardStep < ApplicationRecord
     ServiceProvider.block_encryptions
   end
 
-  def self.current_step_data_for_user(user)
+  def self.all_step_data_for_user(user)
     WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
       memo.merge(step.data)
     end
@@ -166,7 +166,7 @@ class WizardStep < ApplicationRecord
 
   def attach_logo(logo_data)
     return unless step_name == 'logo_and_cert'
-    logo_file.attach(logo_data)
+    self.logo_file = logo_data
     self.data = data.merge({
       logo_name: logo_file.filename.to_s,
       remote_logo_key: logo_file.key,
@@ -211,6 +211,12 @@ class WizardStep < ApplicationRecord
     self.errors.empty?
   end
 
+  def pending_or_current_logo_data
+    return false unless step_name == 'logo_and_cert'
+    return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
+    return logo_file.blob.download if logo_file.blob
+  end
+
   private
 
   def enforce_valid_data(new_data)
@@ -234,5 +240,13 @@ class WizardStep < ApplicationRecord
 
   def group_is_valid
     errors.add(:group_id, :invalid) if Team.where(id: group_id).blank?
+  end
+
+  def attachment_changes_string_buffer
+    if attachment_changes['logo_file'].attachable.respond_to?(:open)
+      return File.read(attachment_changes['logo_file'].attachable.open)
+    else
+      return File.read(attachment_changes['logo_file'].attachable[:io])
+    end
   end
 end

@@ -15,6 +15,10 @@ en:
       logo_and_cert: Logo and certificate
       redirects: Redirect URIs
       help_text: Help Text
+    errors:
+      logo_file:
+        no_viewbox: "The logo file you uploaded (%{filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload"
+        has_script_tag: "The logo file you uploaded (%{filename}) contains one or more script tags. Please remove all script tags and re-upload"
     app_name_html: "As it appears in the signed <a href='https://developers.login.gov/production/#confirm-interagency-agreement-iaa'>Inter-Agency Agreement (IAA)</a> with Login.gov."
     friendly_name_html: "The name of your app that will be displayed to users when logging in."
     description: A description of the app (may be helpful for your colleagues).

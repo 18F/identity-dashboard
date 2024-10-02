@@ -33,7 +33,7 @@ GIT
 GIT
   remote: https://github.com/18f/identity-validations.git
   revision: a728dc4c3e59c818c4404d70332e57b2eea6ef9b
-  branch: hmm/more-composable-validations
+  tag: v0.8.0
   specs:
     identity_validations (0.8.0)
       activemodel (~> 7.1)
