@@ -38,6 +38,14 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
+  it 'throws an error with an invalid step name' do
+    bad_name = "random #{rand(1..10000)}"
+    invalidating_step = WizardStep.new
+    expect do
+      invalidating_step.step_name = bad_name
+    end.to raise_error(ArgumentError, "Invalid WizardStep '#{bad_name}'.")
+  end
+
   context 'step "settings"' do
     subject { build(:wizard_step, step_name: 'settings')}
 
@@ -85,6 +93,7 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "issuer"' do
+    let(:test_issuer) { "test:sso:#{rand(1..1000)}" }
     describe '#valid?' do
       subject { build(:wizard_step, step_name: 'issuer')}
       it 'is not valid by default' do
@@ -93,7 +102,16 @@ RSpec.describe WizardStep, type: :model do
       end
 
       it 'is valid with an issuer set' do
-        expect(subject).to allow_value({'issuer' => "test:sso:#{rand(1..1000)}" }).for(:data)
+        expect(subject).to allow_value({'issuer' => test_issuer }).for(:data)
+      end
+
+      it 'is invalid if issuer already exists' do
+        expect(ServiceProvider).to receive(:where).with(issuer: test_issuer).and_return(
+          [ServiceProvider.new(issuer: test_issuer)],
+        )
+        subject.data['issuer'] = test_issuer
+        expect(subject).to_not be_valid
+        expect(subject.errors[:issuer]).to include('already in use')
       end
     end
   end
@@ -128,6 +146,16 @@ RSpec.describe WizardStep, type: :model do
           end
 
           expect(subject.certificates).to eq(wrapped)
+        end
+
+        it 'can remove one and retain the other' do
+          serial_to_remove = [200, 300].sample
+          removed_serial = subject.remove_certificate(serial_to_remove)
+          expect(removed_serial).to be(serial_to_remove)
+          expect(subject.certs.count).to be(1)
+          remaining_serial = OpenSSL::X509::Certificate.new(subject.certs.first).serial
+          expected_remaining_serial = ([200, 300] - [serial_to_remove]).first
+          expect(remaining_serial.to_i).to be(expected_remaining_serial)
         end
       end
 
@@ -237,7 +265,9 @@ RSpec.describe WizardStep, type: :model do
       expect(WizardStep.all_step_data_for_user(subject_user).values).
         to_not include(extra_step.issuer)
 
-      all_field_names = WizardStep::STEP_DATA.map {|_k, v| v.fields}.reduce(&:merge).keys
+      all_field_names = WizardStep::STEPS.map do |step_name|
+        WizardStep::STEP_DATA[step_name].fields
+      end.reduce(&:merge).keys
       expect(WizardStep.all_step_data_for_user(subject_user).keys.sort).to eq(all_field_names.sort)
     end
 
@@ -252,6 +282,42 @@ RSpec.describe WizardStep, type: :model do
 
     it 'returns an empty hash when no data has been saved' do
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq({})
+    end
+  end
+
+  describe '.steps_from_service_provider' do
+    let(:valid_data_to_hide) {{
+      active: true,
+      allow_prompt_login: true,
+      approved: true,
+      email_nameid_format_allowed: true,
+      metadata_url: 'https://localhost/metadata',
+    }}
+
+    let(:original_user) { create(:user) }
+    let(:ui_user) { create(:user) }
+
+    let(:all_attributes_service_provider) { create(
+      :service_provider,
+      **valid_data_to_hide,
+      user: original_user,
+    )}
+
+    it 'puts all attributes into a step' do
+      wizard_steps = WizardStep.steps_from_service_provider(
+        all_attributes_service_provider,
+        ui_user,
+      )
+      hidden_step = wizard_steps.find {|s| s.step_name == 'hidden'}
+
+      valid_data_to_hide.each do |(k, v)|
+        expect(hidden_step.public_send(k)).to eq(v)
+      end
+      expect(hidden_step.service_provider_user_id).to eq(original_user.id)
+
+      wizard_steps.each do |built_step|
+        expect(built_step.user).to eq(ui_user)
+      end
     end
   end
 end

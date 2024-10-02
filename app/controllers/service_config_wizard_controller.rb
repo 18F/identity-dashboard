@@ -49,8 +49,10 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def destroy
     saved_steps = policy_scope(WizardStep).where(user: current_user)
-    authorize saved_steps.last, :destroy?
-    saved_steps.destroy_all
+    if saved_steps.any?
+      authorize saved_steps.last, :destroy?
+      saved_steps.destroy_all
+    end
     redirect_to finish_wizard_path if can_cancel?
   end
 
@@ -75,8 +77,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def convert_draft_to_full_sp
     service_provider = draft_service_provider
 
-    attach_cert
-    attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     if helpers.help_text_options_enabled? && !current_user.admin
@@ -155,8 +155,6 @@ class ServiceConfigWizardController < AuthenticatedController
       attribute_bundle: [],
       help_text: {},
     ]
-    # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
-    permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:wizard_step).permit(*permit_params)
   end
 
@@ -226,7 +224,7 @@ class ServiceConfigWizardController < AuthenticatedController
     # Clear out extra data from the wizard steps in case we put data
     # temporarily in the wizard steps that the service provider doesn't have attributes for
     (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
-      wizard_step_data.delete[extra_data]
+      wizard_step_data.delete(extra_data)
     end
 
     wizard_step_data

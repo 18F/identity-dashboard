@@ -152,7 +152,7 @@ class WizardStep < ApplicationRecord
   end
 
   def remove_certificate(serial)
-    certs&.delete_if do |cert|
+    certs.delete_if do |cert|
       OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
     rescue OpenSSL::X509::CertificateError
       nil

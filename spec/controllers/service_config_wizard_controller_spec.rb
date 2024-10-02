@@ -134,16 +134,34 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can post new data' do
+        test_cert = fixture_file_upload('testcert.pem')
+        test_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
-            logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
-            cert: fixture_file_upload('testcert.pem'),
+            logo_file: test_logo,
+            cert: test_cert,
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+        expect(WizardStep.last.certs).to eq([test_cert.read])
+        expect(WizardStep.last.logo_file.download).to eq(test_logo.read)
+      end
+
+      it 'will skip an empty cert' do
+        empty_upload = Rack::Test::UploadedFile.new(
+          StringIO.new(''),
+          original_filename: 'empty.pem',
+        )
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            cert: empty_upload,
+          }}
+        end.to(change {WizardStep.count}.by(1))
+        expect(response).to be_redirect
+        expect(WizardStep.last.certs).to eq([])
       end
 
       it 'can overwrite existing data' do
@@ -257,6 +275,12 @@ RSpec.describe ServiceConfigWizardController do
           expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
         end        
       end
+    end
+
+    it 'returns to list of apps if nothing is saved' do
+      put :update, params: {id: 'help_text', commit: 'cancel'}
+      expect(response).to be_redirect
+      expect(response.redirect_url).to eq(service_providers_url)
     end
   end
 
