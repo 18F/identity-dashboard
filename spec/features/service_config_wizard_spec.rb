@@ -42,7 +42,7 @@ feature 'Service Config Wizard' do
         # auth
         'identity_protocol' => 'saml', # not default, but we're using SAML to test other defaults
         'ial' => '1',
-        'default_aal' => 'on',
+        'default_aal' => '0',
         'attribute_bundle' => [],
         # issuer
         'issuer' => 'test:saml:issuer', # required
@@ -56,7 +56,7 @@ feature 'Service Config Wizard' do
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
         'push_notification_url'=>'',
-        'redirect_uris'=>'',
+        'redirect_uris'=>[],
         # help text
         'help_text'=> {
             'sign_in'=>{'sign_in'=>'blank'},
@@ -99,14 +99,24 @@ feature 'Service Config Wizard' do
       expect(find_field('Sign-up').value).to eq('blank')
       expect(find_field('Forgot password').value).to eq('blank')
       click_on 'Create app'
-      expect(current_url).to eq(service_providers_url)
 
-      saved_setup_data = WizardStep.all_step_data_for_user(admin)
+      saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
+      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
+        'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
-        expect(saved_setup_data[key].to_s).to eq(expected_data[key].to_s)
+        expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
+          "#{key} expected: #{expected_data[key].to_s}, received: #{saved_config_data[key]}"
       end
-      expect(saved_setup_data['certs']).
-        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
+      expect(saved_config_data['certs']).
+        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
+        'cert failed to save as expected'
+      expect(page).to have_content(t(
+        'notices.service_provider_saved',
+        issuer: expected_data['issuer'],
+      ))
+      expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
+      expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
+      'error: draft data not deleted'
     end
 
     it 'shows uploaded logo file errors' do
