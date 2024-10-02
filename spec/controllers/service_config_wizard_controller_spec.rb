@@ -378,6 +378,12 @@ RSpec.describe ServiceConfigWizardController do
         expect(existing_service_provider.logo_file.checksum).to eq(good_upload_checksum)
       end
     end
+
+    it 'returns to list of apps if nothing is saved' do
+      put :update, params: {id: 'help_text', commit: 'cancel'}
+      expect(response).to be_redirect
+      expect(response.redirect_url).to eq(service_providers_url)
+    end
   end
 
   context 'as a non-admin user' do
