@@ -131,8 +131,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def convert_draft_to_full_sp
     service_provider = draft_service_provider
 
-    attach_cert
-    attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     if helpers.help_text_options_enabled? && !current_user.admin
