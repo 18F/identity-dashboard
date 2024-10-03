@@ -6,12 +6,11 @@ module ApplicationHelper
   def ga4_tag
     return '' unless IdentityConfig.store&.google_analytics_enabled
     <<~EOF.html_safe
-      <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
-      <script async
-        type="text/javascript"
-        src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS"
-        id="_fed_an_ua_tag">
-      </script>
+    <script async
+      type="text/javascript"
+      agency="GSA"
+      id="_fed_an_ua_tag"
+      src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?dapdev=true"></script>
     EOF
   end
 end
