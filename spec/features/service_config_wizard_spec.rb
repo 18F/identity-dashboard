@@ -209,6 +209,32 @@ feature 'Service Config Wizard' do
       )
       expect(actual_error_message).to eq(expected_error_message)
     end
+
+    it 'can edit an existing config' do
+      existing_config = create(:service_provider,
+        :with_team,
+        :with_ial_2,
+        default_aal: 2,
+        app_name: 'A friendly name',
+      )
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      expect(find_field('App name').value).to eq(existing_config.app_name)
+      click_on 'Next'
+      # Skip making changes to auth options
+      click_on 'Next'
+      expect(find_field('Issuer').value).to eq(existing_config.issuer)
+      click_on 'Next'
+      attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
+      click_on 'Next'
+      expected_push_url = "https://localhost/#{rand(1..1000)}"
+      fill_in('Push notification URL', with: expected_push_url)
+      click_on 'Next'
+      # Skip making changes to help text
+      click_on 'Update app'
+      existing_config.reload
+      expect(existing_config.push_notification_url).to eq(expected_push_url)
+    end
   end
 
   context 'as a non-admin' do
