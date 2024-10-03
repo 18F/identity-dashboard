@@ -113,6 +113,21 @@ RSpec.describe WizardStep, type: :model do
         expect(subject).to_not be_valid
         expect(subject.errors[:issuer]).to include('already in use')
       end
+
+      it 'is valid if the issuer is for the service_provider you are editing' do
+        service_provider = create(:service_provider, issuer: test_issuer)
+        in_use_issuer = "#{test_issuer}:#{rand(1..1000)}"
+        _other_service_provder = create(:service_provider, issuer: in_use_issuer)
+        hidden_step = create(:wizard_step, step_name: 'hidden', data: {
+          service_provider_id: service_provider.id,
+        })
+        issuer_step = build(:wizard_step, step_name: 'issuer', user: hidden_step.user)
+        issuer_step.data = {issuer: test_issuer}
+        expect(issuer_step).to be_valid
+
+        issuer_step.data = {issuer: in_use_issuer}
+        expect(issuer_step).to_not be_valid
+      end
     end
   end
 
@@ -313,6 +328,7 @@ RSpec.describe WizardStep, type: :model do
       valid_data_to_hide.each do |(k, v)|
         expect(hidden_step.public_send(k)).to eq(v)
       end
+      expect(hidden_step.service_provider_id).to eq(all_attributes_service_provider.id)
       expect(hidden_step.service_provider_user_id).to eq(original_user.id)
 
       wizard_steps.each do |built_step|

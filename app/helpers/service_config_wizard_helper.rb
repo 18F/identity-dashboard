@@ -37,7 +37,7 @@ module ServiceConfigWizardHelper
   end
 
   def last_step_message
-    i18n_key = 'save_new'
+    i18n_key = @model.editing_existing? ? 'save_existing' : 'save_new'
     t("service_provider_form.#{i18n_key}")
   end
 

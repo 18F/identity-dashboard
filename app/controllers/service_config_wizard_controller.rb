@@ -7,7 +7,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
-  before_action :get_model_for_step, except: :new
+  before_action :get_model_for_step, except: %i[new create]
   after_action :verify_authorized
   after_action -> { flash.discard }, unless: -> { when_saving_config }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
@@ -26,6 +26,21 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def show
     render_wizard
+  end
+
+  def create
+    service_provider_id = params.require(:service_provider)
+
+    # No existing config specified, so fall back on default behavior
+    return new unless service_provider_id
+
+    service_provider = policy_scope(ServiceProvider).find(service_provider_id)
+    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
+    # TODO: what if the service provider is somehow invalid?
+    steps.each(&:save)
+
+    # Skip the intro when editing an existing config
+    redirect_to service_config_wizard_path(STEPS[1])
   end
 
   def update
@@ -70,7 +85,15 @@ class ServiceConfigWizardController < AuthenticatedController
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
-      ServiceProvider.new(**transform_to_service_provider_attributes(all_wizard_data))
+      service_provider = if @model.editing_existing?
+        ServiceProvider.find(all_wizard_data['service_provider_id'])
+      else
+        ServiceProvider.new
+      end
+      service_provider.attributes = service_provider.attributes.merge(
+        transform_to_service_provider_attributes(all_wizard_data),
+      )
+      service_provider
     end
   end
 
