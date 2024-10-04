@@ -24,6 +24,17 @@ FactoryBot.define do
       active { false }
     end
 
+    trait :ready_to_activate do
+      sequence(:app_name) { |n| "App Name #{n}" }
+      with_team
+      ial = [1, 2].sample
+      send("with_ial_#{ial}")
+      with_ial_2_bundle if ial == 2
+      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      default_aal { [1, 2, 3].sample }
+      active { false }
+    end
+
     trait :saml do
       identity_protocol { :saml }
       acs_url {'https://fake.gov/test/saml/acs'}

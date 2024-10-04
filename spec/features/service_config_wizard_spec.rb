@@ -211,12 +211,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'can edit an existing config' do
-      existing_config = create(:service_provider,
-        :with_team,
-        :with_ial_2,
-        default_aal: 2,
-        app_name: 'A friendly name',
-      )
+      existing_config = create(:service_provider, :ready_to_activate)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       expect(find_field('App name').value).to eq(existing_config.app_name)
