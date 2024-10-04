@@ -72,8 +72,8 @@ class WizardStep < ApplicationRecord
 
   STEPS = (STEP_DATA.keys - ['hidden']).freeze
 
-  # A reverse lookup, answers the question: 
-  #     Given an attribute, which step does it belong to?  
+  # A reverse lookup, answers the question:
+  #     Given an attribute, which step does it belong to?
   ATTRIBUTE_STEP_LOOKUP = STEP_DATA.
     each_with_object({}) do |(step_name, definition), hash|
       definition.fields.keys.each do |field_name|
@@ -86,7 +86,7 @@ class WizardStep < ApplicationRecord
 
   # We want the hidden step to be a valid step name to save in the database
   # so we can track attributes even if they should not show up in the UI
-  enum(step_name: STEP_DATA.keys.each_with_object(Hash.new) do |step, enum| 
+  enum(step_name: STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
     enum[step] = step
   end.freeze)
 

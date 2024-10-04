@@ -32,13 +32,6 @@ RSpec.describe ServiceConfigWizardController do
       sign_in admin
     end
 
-    it 'can start the first step' do
-      flag_in
-      get :new
-      expect(response).to be_redirect
-      expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
-    end
-
     it 'can get all steps' do
       ServiceConfigWizardController::STEPS.each do |wizard_step|
         get :show, params: {id: wizard_step}
@@ -55,11 +48,21 @@ RSpec.describe ServiceConfigWizardController do
       expect(response.redirect_url).to eq(service_providers_url)
     end
 
-    it 'will be redirected if the flag is not set' do
-      flag_out
-      get :new
-      expect(response).to be_redirect
-      expect(response.redirect_url).to eq(service_providers_url)
+    describe '#new' do
+      it 'can start the first step' do
+        flag_in
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
+      end
+
+      it 'will be redirected if the flag is not set' do
+        flag_out
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(service_providers_url)
+      end
+    end
     end
 
     describe 'step "settings"' do
