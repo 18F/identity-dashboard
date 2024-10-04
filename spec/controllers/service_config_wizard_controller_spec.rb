@@ -63,6 +63,39 @@ RSpec.describe ServiceConfigWizardController do
         expect(response.redirect_url).to eq(service_providers_url)
       end
     end
+
+    it 'will persist SAML options when editing an OIDC config' do
+      saml_app_config = create(:service_provider, :ready_to_activate, :saml)
+      initial_attributes = saml_app_config.attributes
+
+      put :create, params: { service_provider: saml_app_config.id }
+      put :update, params: {id: 'authentication', wizard_step: {
+        identity_protocol: 'openid_connect_pkce',
+        ial: saml_app_config.ial,
+        default_aal: saml_app_config.default_aal,
+        attribute_bundle: saml_app_config.attribute_bundle,
+      }}
+      last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
+      put :update, params: {id: last_step.step_name, wizard_step: last_step.data }
+
+      new_attributes = saml_app_config.reload.attributes
+      expect(new_attributes['updated_at']).to be >= initial_attributes['updated_at']
+      # Now that we've asserted them, discard them and keep testing
+      new_attributes.delete 'updated_at'
+      initial_attributes.delete 'updated_at'
+
+      # I think we don't distinguish between nil or empty list for this attribute
+      if [nil, []].include? initial_attributes['redirect_uris']
+        expect(new_attributes['redirect_uris']).to be_in([nil, []])
+        new_attributes.delete 'redirect_uris'
+        initial_attributes.delete 'redirect_uris'
+      end
+
+      expect(new_attributes).to_not eq(initial_attributes)
+      initial_attributes.delete('identity_protocol')
+      new_attributes.delete('identity_protocol')
+
+      expect(new_attributes).to eq(initial_attributes)
     end
 
     describe 'step "settings"' do
@@ -266,8 +299,9 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
-    xdescribe 'step "help_text"' do
+    describe 'step "help_text"' do
       it 'can post' do
+        pending
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
           expect(response).to be_redirect,
