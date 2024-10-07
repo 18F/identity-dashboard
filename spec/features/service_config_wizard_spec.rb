@@ -218,8 +218,15 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       # Skip making changes to auth options
       click_on 'Next'
-      expect(find_field('Issuer').value).to eq(existing_config.issuer)
+      issuer_field = find('#wizard_step_issuer')
+      expect(issuer_field.value).to eq(existing_config.issuer)
+      expect(issuer_field).to be_disabled
+
+      # If we can't edit the issuer, 'Next' shouldn't be a form submission
+      expect(has_no_button? 'Next').to be_truthy
+      expect(has_link? 'Next').to be_truthy
       click_on 'Next'
+
       attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
       click_on 'Next'
       expected_push_url = "https://localhost/#{rand(1..1000)}"
