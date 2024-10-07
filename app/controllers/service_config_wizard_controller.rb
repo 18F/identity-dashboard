@@ -36,7 +36,7 @@ class ServiceConfigWizardController < AuthenticatedController
       attach_logo_file if logo_file_param
     end
     unless skippable && params[:wizard_step].blank?
-      @model.data = @model.data.merge(wizard_step_params)
+      @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
     if is_valid? && @model.save
       return convert_draft_to_full_sp if step == wizard_steps.last
@@ -80,7 +80,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
     if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
+      service_provider.help_text = helpers.parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
     validate_and_save_service_provider
@@ -224,7 +224,7 @@ class ServiceConfigWizardController < AuthenticatedController
     # Clear out extra data from the wizard steps in case we put data
     # temporarily in the wizard steps that the service provider doesn't have attributes for
     (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
-      wizard_step_data.delete[extra_data]
+      wizard_step_data.delete(extra_data)
     end
 
     wizard_step_data
