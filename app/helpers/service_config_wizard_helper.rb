@@ -28,8 +28,12 @@ module ServiceConfigWizardHelper
     )
   end
 
+  def first_step?
+    step.eql?(wizard_steps.first)
+  end
+
   def no_data?
-    step.eql?(wizard_steps.first) || (
+    first_step? || (
       step.eql?('issuer') && @model.existing_service_provider?
     )
   end
