@@ -66,7 +66,11 @@ RSpec.describe ServiceConfigWizardController do
 
     it 'will persist SAML options when editing an OIDC config' do
       saml_app_config = create(:service_provider, :ready_to_activate, :saml)
-      initial_attributes = saml_app_config.attributes
+      # The `#reload` is here because I _think_ our CI env database has slightly less
+      # timestamp precision our dev envs and Ruby itself. By making sure we're always pulling
+      # time attributes from the database before comparing them, we avoid rounding errors that would
+      # otherwise make this a flaky test.
+      initial_attributes = saml_app_config.reload.attributes
 
       put :create, params: { service_provider: saml_app_config.id }
       put :update, params: {id: 'authentication', wizard_step: {

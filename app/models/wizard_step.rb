@@ -160,25 +160,34 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  def self.service_provider_to_wizard_attribute_map
+    @@service_provider_to_wizard_attribute_map ||= ServiceProvider.
+      attribute_names.
+      each_with_object({}) do |attribute_name, hash|
+        next if ['created_at', 'updated_at'].include? attribute_name
+        hash[attribute_name] = case attribute_name
+          when 'logo'
+            'logo_name'
+          when 'user_id'
+            'service_provider_user_id'
+          when 'id'
+            'service_provider_id'
+          else
+            attribute_name
+          end
+      end
+  end
+
   def self.steps_from_service_provider(service_provider, user)
     steps = STEP_DATA.keys.each_with_object(Hash.new) do |step_name, hash|
       hash[step_name] = find_or_initialize_by(step_name:, user:)
     end
 
-    service_provider.attribute_names.each do |model_attr|
-      next if ['created_at', 'updated_at'].include? model_attr
-      step_attr = case model_attr
-      when 'logo'
-        'logo_name'
-      when 'user_id'
-        'service_provider_user_id'
-      when 'id'
-        'service_provider_id'
-      else
-        model_attr
-      end
-      step_name = ATTRIBUTE_STEP_LOOKUP[step_attr]
-      steps[step_name].data[step_attr] = service_provider.attributes[model_attr]
+    service_provider.attribute_names.each do |source_attr_name|
+      next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
+      wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
+      step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
+      steps[step_name].data[wizard_attribute_name] = service_provider.attributes[source_attr_name]
     end
     steps.values
   end
@@ -277,7 +286,7 @@ class WizardStep < ApplicationRecord
     return logo_file.blob.download if logo_file.blob
   end
 
-  def editing_existing?
+  def existing_service_provider?
     !!original_service_provider
   end
 
@@ -299,7 +308,7 @@ class WizardStep < ApplicationRecord
   end
 
   def issuer_service_provider_uniqueness
-    return if editing_existing? && original_service_provider.issuer == issuer
+    return if existing_service_provider? && original_service_provider.issuer == issuer
     errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
   end
 

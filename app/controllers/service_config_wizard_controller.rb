@@ -79,13 +79,13 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def issuer_read_only?
-    false # This will have to be updated when we add the ability to edit existing service providers
+    @model.existing_service_provider?
   end
 
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
-      service_provider = if @model.editing_existing?
+      service_provider = if @model.existing_service_provider?
         ServiceProvider.find(all_wizard_data['service_provider_id'])
       else
         ServiceProvider.new

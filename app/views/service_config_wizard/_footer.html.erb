@@ -2,7 +2,7 @@
   [Method] form such that form is a valid instance of wizard_form
 %>
 <div class="wizard-footer">
-  <% if first_step? %>
+  <% if no_data? %>
     <%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>
   <% else %>
     <%= link_to 'Back', previous_wizard_path, class: 'usa-button usa-button--outline'%>
