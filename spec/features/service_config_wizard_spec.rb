@@ -104,9 +104,13 @@ feature 'Service Config Wizard' do
       expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
         'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
+        next if key == 'default_aal'
         expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
           "#{key} expected: #{expected_data[key].to_s}, received: #{saved_config_data[key]}"
       end
+
+      expect(saved_config_data['default_aal']).to be_nil
+
       expect(saved_config_data['certs']).
         to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
         'cert failed to save as expected'
