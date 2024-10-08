@@ -8,7 +8,7 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: :new
-  after_action :verify_authorized
+  after_action :verify_authorized, except: :destroy
   after_action -> { flash.discard }, unless: -> { when_saving_config }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
   after_action :verify_policy_scoped, unless: -> { when_skipping_models }
