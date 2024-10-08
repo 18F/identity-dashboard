@@ -46,6 +46,40 @@ RSpec.describe WizardStep, type: :model do
     end.to raise_error(ArgumentError, "Invalid WizardStep '#{bad_name}'.")
   end
 
+  describe '#get_step' do
+    let(:step_name_to_find) { WizardStep::STEP_DATA.keys.sample }
+    let(:user) { create(:user) }
+
+    it 'returns the subject if the subject is the matching step' do
+      subject = create(:wizard_step, step_name: step_name_to_find)
+      result = subject.get_step(step_name_to_find)
+      expect(result).to be(subject)
+    end
+
+    it 'pulls the relevant step out of the database' do
+      subject = create(:wizard_step,
+        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+        user: user,
+      )
+      expected_result = create(:wizard_step, step_name: step_name_to_find, user: user)
+      expect(subject.get_step(step_name_to_find)).to eq(expected_result)
+    end
+
+    it 'builds a new step if no matching step exists' do
+      subject = create(:wizard_step,
+        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+        user: user,
+      )
+      a_different_user = create(:user)
+      absent_result = create(:wizard_step, step_name: step_name_to_find, user: a_different_user)
+      expected_result = WizardStep.find_or_initialize_by(step_name: step_name_to_find, user: user)
+      actual = subject.get_step(step_name_to_find)
+      expect(actual).to_not eq(absent_result)
+      expect(actual.attributes).to eq(expected_result.attributes)
+      expect(actual).to_not be_persisted
+    end
+  end
+
   context 'step "settings"' do
     subject { build(:wizard_step, step_name: 'settings')}
 

@@ -255,20 +255,20 @@ class WizardStep < ApplicationRecord
     STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
   end
 
-  def auth_step
-    return self if step_name == 'authentication'
+  def get_step(step_to_find)
+    return self if step_name == step_to_find
     WizardStepPolicy::Scope.new(self.user, self.class).
       resolve.
-      find_or_initialize_by(user: self.user, step_name: 'authentication')
+      find_or_initialize_by(user: self.user, step_name: step_to_find)
   end
 
   def ial
     return data['ial'] if step_name == 'authentication'
-    auth_step.ial
+    get_step('authentication').ial
   end
 
   def saml?
-    auth_step && auth_step.identity_protocol == 'saml'
+    get_step('authentication').identity_protocol == 'saml'
   end
 
   def saml_settings_present?
@@ -322,10 +322,10 @@ class WizardStep < ApplicationRecord
   end
 
   def attachment_changes_string_buffer
-    if attachment_changes['logo_file'].attachable.respond_to?(:open)
-      return File.read(attachment_changes['logo_file'].attachable.open)
+    if attachment_changes['logo_file'].attachable.respond_to?(:download)
+      return attachment_changes['logo_file'].attachable.download
     else
-      return File.read(attachment_changes['logo_file'].attachable[:io])
+      return File.read(attachment_changes['logo_file'].attachable.open)
     end
   end
 end

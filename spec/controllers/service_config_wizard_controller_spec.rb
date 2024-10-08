@@ -323,6 +323,25 @@ RSpec.describe ServiceConfigWizardController do
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
     end
+
+    describe 'handling service provider logos' do
+      let(:existing_service_provider) { create(:service_provider, :with_team) }
+      let(:good_upload) { fixture_file_upload('logo.svg') }
+      let(:good_upload_checksum) { OpenSSL::Digest.base64digest('MD5', good_upload.read) }
+
+      scenario 'adding a logo to a config' do
+        put :create, params: {service_provider: existing_service_provider}
+        expect(existing_service_provider.logo_file).to_not be_attached
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: good_upload,
+        }}
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').data
+        put :update, params: {id: 'help_text', wizard_step: default_help_text_data}
+        existing_service_provider.reload
+        expect(existing_service_provider.logo_file).to be_attached
+        expect(existing_service_provider.logo_file.checksum).to eq(good_upload_checksum)
+      end
+    end
   end
 
   context 'as a non-admin user' do
