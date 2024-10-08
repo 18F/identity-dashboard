@@ -5,10 +5,6 @@ class ValidatingSvg
     @svg = Nokogiri::XML(string_buffer)
   end
 
-  def has_size_attribute?
-    has_viewbox?
-  end
-
   def has_script_tag?
     svg.css('script').present?
   end

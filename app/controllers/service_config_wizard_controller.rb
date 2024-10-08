@@ -7,7 +7,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
-  before_action :get_model_for_step, except: :new
+  before_action :get_model_for_step, except: %i[new create]
   after_action :verify_authorized
   after_action -> { flash.discard }, unless: -> { when_saving_config }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
@@ -26,6 +26,21 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def show
     render_wizard
+  end
+
+  def create
+    service_provider_id = params.require(:service_provider)
+
+    # No existing config specified, so fall back on default behavior
+    return new unless service_provider_id
+
+    service_provider = policy_scope(ServiceProvider).find(service_provider_id)
+    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
+    # TODO: what if the service provider is somehow invalid?
+    steps.each(&:save)
+
+    # Skip the intro when editing an existing config
+    redirect_to service_config_wizard_path(STEPS[1])
   end
 
   def update
@@ -49,8 +64,10 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def destroy
     saved_steps = policy_scope(WizardStep).where(user: current_user)
-    authorize saved_steps.last, :destroy?
-    saved_steps.destroy_all
+    if saved_steps.any?
+      authorize saved_steps.last, :destroy?
+      saved_steps.destroy_all
+    end
     redirect_to finish_wizard_path if can_cancel?
   end
 
@@ -62,23 +79,29 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def issuer_read_only?
-    false # This will have to be updated when we add the ability to edit existing service providers
+    @model.existing_service_provider?
   end
 
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
-      ServiceProvider.new(**transform_to_service_provider_attributes(all_wizard_data))
+      service_provider = if @model.existing_service_provider?
+        ServiceProvider.find(all_wizard_data['service_provider_id'])
+      else
+        ServiceProvider.new
+      end
+      service_provider.attributes = service_provider.attributes.merge(
+        transform_to_service_provider_attributes(all_wizard_data),
+      )
+      service_provider
     end
   end
 
   def convert_draft_to_full_sp
     service_provider = draft_service_provider
 
-    attach_cert
-    attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
-    service_provider.user = current_user
+    service_provider.user ||= current_user
     if helpers.help_text_options_enabled? && !current_user.admin
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
@@ -155,8 +178,6 @@ class ServiceConfigWizardController < AuthenticatedController
       attribute_bundle: [],
       help_text: {},
     ]
-    # TODO: resync this with changes in https://gitlab.login.gov/lg/identity-dashboard/-/merge_requests/69
-    permit_params << :email_nameid_format_allowed if current_user.admin?
     params.require(:wizard_step).permit(*permit_params)
   end
 
@@ -226,7 +247,7 @@ class ServiceConfigWizardController < AuthenticatedController
     # Clear out extra data from the wizard steps in case we put data
     # temporarily in the wizard steps that the service provider doesn't have attributes for
     (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
-      wizard_step_data.delete[extra_data]
+      wizard_step_data.delete(extra_data)
     end
 
     wizard_step_data

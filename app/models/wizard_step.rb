@@ -11,6 +11,15 @@ class WizardStep < ApplicationRecord
   end
 
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
+
+  # A list of steps and their attributes
+  # 
+  # Generally, you won't want to access this list directly outside of the WizardStep class itself.
+  # This list contains fields that should get preserved when editing an existing config
+  # but we do not want to show up in the UI. This constant is an implementation detail.
+  # 
+  # Instead, use `STEP` constant to get a list of the non-hidden steps or 
+  # use a method in this class that encapsulates the implementation.
   STEP_DATA = {
     intro: WizardStep::Definition.new,
     settings: WizardStep::Definition.new({
@@ -48,12 +57,39 @@ class WizardStep < ApplicationRecord
     help_text: WizardStep::Definition.new({
       help_text: { sign_in: ''},
     }),
+    # Unless we are editing an existing config, this extra step should not get created.
+    hidden: WizardStep::Definition.new({
+      active: false,
+      agency_id: nil,
+      allow_prompt_login: false,
+      approved: false,
+      email_nameid_format_allowed: nil,
+      metadata_url: nil,
+      service_provider_id: nil,
+      service_provider_user_id: nil,
+  }),
   }.with_indifferent_access.freeze
 
-  STEPS = STEP_DATA.keys
+  STEPS = (STEP_DATA.keys - ['hidden']).freeze
+
+  # A reverse lookup, answers the question:
+  #     Given an attribute, which step does it belong to?
+  ATTRIBUTE_STEP_LOOKUP = STEP_DATA.
+    each_with_object({}) do |(step_name, definition), hash|
+      definition.fields.keys.each do |field_name|
+        hash[field_name] = step_name
+      end
+    end.
+  freeze
 
   belongs_to :user
-  enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
+
+  # We want the hidden step to be a valid step name to save in the database
+  # so we can track attributes even if they should not show up in the UI
+  enum(step_name: STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
+    enum[step] = step
+  end.freeze)
+
   has_one_attached :logo_file
 
   validates :step_name, presence: true
@@ -118,9 +154,42 @@ class WizardStep < ApplicationRecord
   end
 
   def self.all_step_data_for_user(user)
+    # This intentionally should get all steps including the "hidden" step if it exists
     WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
       memo.merge(step.data)
     end
+  end
+
+  def self.service_provider_to_wizard_attribute_map
+    @@service_provider_to_wizard_attribute_map ||= ServiceProvider.
+      attribute_names.
+      each_with_object({}) do |attribute_name, hash|
+        next if ['created_at', 'updated_at'].include? attribute_name
+        hash[attribute_name] = case attribute_name
+          when 'logo'
+            'logo_name'
+          when 'user_id'
+            'service_provider_user_id'
+          when 'id'
+            'service_provider_id'
+          else
+            attribute_name
+          end
+      end
+  end
+
+  def self.steps_from_service_provider(service_provider, user)
+    steps = STEP_DATA.keys.each_with_object(Hash.new) do |step_name, hash|
+      hash[step_name] = find_or_initialize_by(step_name:, user:)
+    end
+
+    service_provider.attribute_names.each do |source_attr_name|
+      next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
+      wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
+      step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
+      steps[step_name].data[wizard_attribute_name] = service_provider.attributes[source_attr_name]
+    end
+    steps.values
   end
 
   def step_name=(new_name)
@@ -152,7 +221,7 @@ class WizardStep < ApplicationRecord
   end
 
   def remove_certificate(serial)
-    certs&.delete_if do |cert|
+    certs.delete_if do |cert|
       OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
     rescue OpenSSL::X509::CertificateError
       nil
@@ -217,6 +286,10 @@ class WizardStep < ApplicationRecord
     return logo_file.blob.download if logo_file.blob
   end
 
+  def existing_service_provider?
+    !!original_service_provider
+  end
+
   private
 
   def enforce_valid_data(new_data)
@@ -235,7 +308,13 @@ class WizardStep < ApplicationRecord
   end
 
   def issuer_service_provider_uniqueness
+    return if existing_service_provider? && original_service_provider.issuer == issuer
     errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
+  end
+
+  def original_service_provider
+    id = WizardStep.find_by(step_name: 'hidden', user:)&.service_provider_id
+    id && ServiceProvider.find(id)
   end
 
   def group_is_valid

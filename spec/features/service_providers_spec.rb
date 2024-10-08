@@ -484,8 +484,9 @@ feature 'Service Providers CRUD' do
       }
       service_provider.save!
 
-      login_as(admin)
+      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
 
+      login_as(admin)
       visit edit_service_provider_path(service_provider)
 
       expect(page).to have_content('You can specify help text')

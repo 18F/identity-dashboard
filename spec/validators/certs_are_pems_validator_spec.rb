@@ -49,8 +49,14 @@ RSpec.describe CertsArePemsValidator, type: 'model' do
     expect(subject).to allow_value([valid_cert]).for(:certs)
   end
 
-  it 'rejects invalid certs' do
+  it 'rejects data that are not base64 encoded' do
     expect(subject).to_not allow_value(['', 'NOT A CERT']).for(:certs)
+  end
+
+  it 'rejects data that are base64 but still not a cert' do
+    expect(subject).to_not allow_value(
+      ["----BEGIN CERTIFICATE----\nCg==\n----END CERTIFICATE----"],
+    ).for(:certs)
   end
 
   it 'rejects DER encoded certs' do

@@ -32,13 +32,6 @@ RSpec.describe ServiceConfigWizardController do
       sign_in admin
     end
 
-    it 'can start the first step' do
-      flag_in
-      get :new
-      expect(response).to be_redirect
-      expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
-    end
-
     it 'can get all steps' do
       ServiceConfigWizardController::STEPS.each do |wizard_step|
         get :show, params: {id: wizard_step}
@@ -55,11 +48,58 @@ RSpec.describe ServiceConfigWizardController do
       expect(response.redirect_url).to eq(service_providers_url)
     end
 
-    it 'will be redirected if the flag is not set' do
-      flag_out
-      get :new
-      expect(response).to be_redirect
-      expect(response.redirect_url).to eq(service_providers_url)
+    describe '#new' do
+      it 'can start the first step' do
+        flag_in
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
+      end
+
+      it 'will be redirected if the flag is not set' do
+        flag_out
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(service_providers_url)
+      end
+    end
+
+    it 'will persist SAML options when editing an OIDC config' do
+      saml_app_config = create(:service_provider, :ready_to_activate, :saml)
+      # The `#reload` is here because I _think_ our CI env database has slightly less
+      # timestamp precision our dev envs and Ruby itself. By making sure we're always pulling
+      # time attributes from the database before comparing them, we avoid rounding errors that would
+      # otherwise make this a flaky test.
+      initial_attributes = saml_app_config.reload.attributes
+
+      put :create, params: { service_provider: saml_app_config.id }
+      put :update, params: {id: 'authentication', wizard_step: {
+        identity_protocol: 'openid_connect_pkce',
+        ial: saml_app_config.ial,
+        default_aal: saml_app_config.default_aal,
+        attribute_bundle: saml_app_config.attribute_bundle,
+      }}
+      last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
+      put :update, params: {id: last_step.step_name, wizard_step: last_step.data }
+
+      new_attributes = saml_app_config.reload.attributes
+      expect(new_attributes['updated_at']).to be >= initial_attributes['updated_at']
+      # Now that we've asserted them, discard them and keep testing
+      new_attributes.delete 'updated_at'
+      initial_attributes.delete 'updated_at'
+
+      # I think we don't distinguish between nil or empty list for this attribute
+      if [nil, []].include? initial_attributes['redirect_uris']
+        expect(new_attributes['redirect_uris']).to be_in([nil, []])
+        new_attributes.delete 'redirect_uris'
+        initial_attributes.delete 'redirect_uris'
+      end
+
+      expect(new_attributes).to_not eq(initial_attributes)
+      initial_attributes.delete('identity_protocol')
+      new_attributes.delete('identity_protocol')
+
+      expect(new_attributes).to eq(initial_attributes)
     end
 
     describe 'step "settings"' do
@@ -134,16 +174,34 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can post new data' do
+        test_cert = fixture_file_upload('testcert.pem')
+        test_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
-            logo_file: fixture_file_upload('logo.svg', 'image/svg+xml'),
-            cert: fixture_file_upload('testcert.pem'),
+            logo_file: test_logo,
+            cert: test_cert,
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+        expect(WizardStep.last.certs).to eq([test_cert.read])
+        expect(WizardStep.last.logo_file.download).to eq(test_logo.read)
+      end
+
+      it 'will skip an empty cert' do
+        empty_upload = Rack::Test::UploadedFile.new(
+          StringIO.new(''),
+          original_filename: 'empty.pem',
+        )
+        expect do
+          put :update, params: {id: 'logo_and_cert', wizard_step: {
+            cert: empty_upload,
+          }}
+        end.to(change {WizardStep.count}.by(1))
+        expect(response).to be_redirect
+        expect(WizardStep.last.certs).to eq([])
       end
 
       it 'can overwrite existing data' do
@@ -245,8 +303,9 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
-    xdescribe 'step "help_text"' do
+    describe 'step "help_text"' do
       it 'can post' do
+        pending
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
           expect(response).to be_redirect,
@@ -257,6 +316,12 @@ RSpec.describe ServiceConfigWizardController do
           expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
         end        
       end
+    end
+
+    it 'returns to list of apps if nothing is saved' do
+      put :update, params: {id: 'help_text', commit: 'cancel'}
+      expect(response).to be_redirect
+      expect(response.redirect_url).to eq(service_providers_url)
     end
   end
 
