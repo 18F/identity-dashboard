@@ -221,6 +221,8 @@ class ServiceConfigWizardController < AuthenticatedController
       wizard_step_data['logo'] = wizard_step_data.delete('logo_name')
     end
 
+    wizard_step_data['default_aal'] = nil if wizard_step_data['default_aal'].to_i == 0
+
     # Clear out extra data from the wizard steps in case we put data
     # temporarily in the wizard steps that the service provider doesn't have attributes for
     (wizard_step_data.keys - ServiceProvider.new.attributes.keys).each do |extra_data|
