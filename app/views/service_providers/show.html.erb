@@ -196,11 +196,17 @@
   <%= render 'service_provider_yaml' %>
 <% end %>
 
-<%= button_to t('forms.buttons.edit_service_provider'),
+<% if IdentityConfig.store.service_config_wizard_enabled %>
+  <%= button_to t('forms.buttons.edit_service_provider'),
+    service_config_wizard_index_path(service_provider:),
+    class: 'usa-button float-left',
+    method: :post %>
+ <% else %>
+  <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
     class: 'usa-button float-left',
     method: :get %>
-
+<% end %>
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),
   class: 'usa-button usa-button--outline float-left',

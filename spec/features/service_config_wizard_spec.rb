@@ -95,6 +95,7 @@ feature 'Service Config Wizard' do
       fill_in('Assertion Consumer Service URL', with: expected_data['acs_url'])
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
+
       expect(find_field('Sign-in').value).to eq('blank')
       expect(find_field('Sign-up').value).to eq('blank')
       expect(find_field('Forgot password').value).to eq('blank')
@@ -133,6 +134,34 @@ feature 'Service Config Wizard' do
         filename: 'logo_with_script.svg',
       )
       expect(actual_error_message).to eq(expected_error_message)
+    end
+
+    it 'can edit an existing config' do
+      existing_config = create(:service_provider, :ready_to_activate)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      expect(find_field('App name').value).to eq(existing_config.app_name)
+      click_on 'Next'
+      # Skip making changes to auth options
+      click_on 'Next'
+      issuer_field = find('#wizard_step_issuer')
+      expect(issuer_field.value).to eq(existing_config.issuer)
+      expect(issuer_field).to be_disabled
+
+      # If we can't edit the issuer, 'Next' shouldn't be a form submission
+      expect(has_no_button? 'Next').to be_truthy
+      expect(has_link? 'Next').to be_truthy
+      click_on 'Next'
+
+      attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
+      click_on 'Next'
+      expected_push_url = "https://localhost/#{rand(1..1000)}"
+      fill_in('Push notification URL', with: expected_push_url)
+      click_on 'Next'
+      # Skip making changes to help text
+      click_on 'Update app'
+      existing_config.reload
+      expect(existing_config.push_notification_url).to eq(expected_push_url)
     end
   end
 

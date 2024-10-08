@@ -29,7 +29,13 @@ module ServiceConfigWizardHelper
   end
 
   def first_step?
-    step.eql? wizard_steps.first
+    step.eql?(wizard_steps.first)
+  end
+
+  def no_data?
+    first_step? || (
+      step.eql?('issuer') && @model.existing_service_provider?
+    )
   end
 
   def last_step?
@@ -37,7 +43,7 @@ module ServiceConfigWizardHelper
   end
 
   def last_step_message
-    i18n_key = 'save_new'
+    i18n_key = @model.existing_service_provider? ? 'save_existing' : 'save_new'
     t("service_provider_form.#{i18n_key}")
   end
 
