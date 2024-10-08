@@ -22,7 +22,7 @@ class WizardStep < ApplicationRecord
     }),
     authentication: WizardStep::Definition.new({
       attribute_bundle: [],
-      default_aal: nil,
+      default_aal: 0,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: '1',
     }),
