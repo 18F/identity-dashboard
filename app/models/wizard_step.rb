@@ -101,7 +101,9 @@ class WizardStep < ApplicationRecord
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
-    self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
+    if attribute_bundle.present?
+      self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
+    end
   end
 
   validates_with AttributeBundleValidator, on: 'authentication'
