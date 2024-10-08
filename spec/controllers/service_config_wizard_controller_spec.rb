@@ -55,7 +55,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'will wipe all step data if the user cancels on the last step' do
-      create(:wizard_step, user: admin, data: { help_text: {'sign_in' => 'blank'}})
+      create(:wizard_step, user: admin, wizard_form_data: { help_text: {'sign_in' => 'blank'}})
       expect do
         put :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
       end.to(change {WizardStep.count}.by(-1))
@@ -190,7 +190,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
 
-      it 'can post new data' do
+      it 'can post new wizard_form_data' do
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
             logo_file: good_logo,
@@ -219,7 +219,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.last.certs).to eq([])
       end
 
-      it 'can overwrite existing data' do
+      it 'can overwrite existing wizard_form_data' do
         put :update, params: {id: 'logo_and_cert', wizard_step: {
           logo_file: good_logo,
           cert: good_cert,
