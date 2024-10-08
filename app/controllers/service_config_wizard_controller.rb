@@ -137,6 +137,9 @@ class ServiceConfigWizardController < AuthenticatedController
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
+    logo_file = @model.get_step('logo_and_cert').logo_file
+    service_provider.logo_file.attach(logo_file.blob) if logo_file.blob
+
     validate_and_save_service_provider
     destroy
     redirect_to service_provider_path(service_provider)
