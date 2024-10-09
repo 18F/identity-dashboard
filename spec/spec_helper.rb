@@ -5,6 +5,7 @@ if ENV['COVERAGE']
     SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
   end
   SimpleCov.start 'rails' do
+    enable_coverage :branch
     add_filter '/config/'
     add_filter %r{/vendor/ruby/}
     add_filter '/vendor/bundle/'

@@ -172,6 +172,9 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     describe 'step "logo_and_cert"' do
+      let(:good_logo) { fixture_file_upload('logo.svg', 'image/svg+xml') }
+      let(:good_cert) { fixture_file_upload('testcert.pem') }
+
       it 'allows blank info' do
         expect do
           put :update, params: {id: 'logo_and_cert'}
@@ -184,20 +187,18 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can post new data' do
-        test_cert = fixture_file_upload('testcert.pem')
-        test_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
-            logo_file: test_logo,
-            cert: test_cert,
+            logo_file: good_logo,
+            cert: good_cert,
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
-        expect(WizardStep.last.certs).to eq([test_cert.read])
-        expect(WizardStep.last.logo_file.download).to eq(test_logo.read)
+        expect(WizardStep.last.certs).to eq([good_cert.read])
+        expect(WizardStep.last.logo_file.download).to eq(good_logo.read)
       end
 
       it 'will skip an empty cert' do
@@ -215,17 +216,16 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can overwrite existing data' do
-        first_upload_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         put :update, params: {id: 'logo_and_cert', wizard_step: {
-          logo_file: first_upload_logo,
-          cert: fixture_file_upload('testcert.pem', 'text/plain'),
+          logo_file: good_logo,
+          cert: good_cert,
         }}
         original_settings = WizardStep.last
         original_certs = original_settings.certs
         original_serial = OpenSSL::X509::Certificate.new(original_certs.first).serial
         original_saved_logo = original_settings.logo_file
         expect(original_saved_logo.blob.checksum).
-          to eq(OpenSSL::Digest.base64digest('MD5', first_upload_logo.read))
+          to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
         
 
         # Deliberately picking a serial that's shorter than fixed value of the original serial
@@ -275,11 +275,10 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'keeps an existing logo if a new logo is bad' do
-        good_logo_upload = fixture_file_upload('logo.svg')
-        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo_upload.read)
+        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo.read)
         bad_logo_upload = fixture_file_upload('../logo_without_size.svg')
         put :update, params: {id: 'logo_and_cert', wizard_step: {
-          logo_file: good_logo_upload,
+          logo_file: good_logo,
         }}
         saved_step = WizardStep.last
         expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
@@ -297,6 +296,17 @@ RSpec.describe ServiceConfigWizardController do
         saved_step.reload
         saved_step.logo_file.reload
         expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
+      end
+
+      it 'transfers a good logo to the final service provider' do
+        wizard_steps_ready_to_go.each(&:save!)
+        logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert'}
+        expect(logo_step.logo_file).to be_blank
+        put :update, params: {id: 'logo_and_cert', wizard_step: { logo_file: good_logo }}
+        expect do
+          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(ServiceProvider.last.logo_file.download).to eq(good_logo.read)
       end
     end
 
@@ -338,8 +348,11 @@ RSpec.describe ServiceConfigWizardController do
         )
         expect(error_messages).to eq({
           friendly_name: ["can't be blank"],
-          issuer: ["can't be blank", "is not formatted correctly. The issuer must be a unique string with no spaces."],
-          team: ["must exist"]
+          issuer: [
+            "can't be blank",
+            'is not formatted correctly. The issuer must be a unique string with no spaces.',
+          ],
+          team: ['must exist'],
         })
       end
     end
