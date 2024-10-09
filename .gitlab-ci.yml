@@ -269,6 +269,7 @@ review-app:
     - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
     - echo "${CI_COMMIT_REF_NAME}"
     - echo "${SANITIZED_BRANCH_NAME}"
+    - echo "${CI_ENVIRONMENT_SLUG}"
     # Dynamically populate review environment settings
     - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
     - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
