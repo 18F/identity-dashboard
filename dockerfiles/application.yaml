@@ -5,7 +5,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
   annotations:
-    link.argocd.argoproj.io/external-link: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}
+    link.argocd.argoproj.io/external-link: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}/-/{{CI_MERGE_REQUEST_IID}}
   labels:
     project-name: {{CI_PROJECT_NAME}}
 spec:
@@ -569,4 +569,4 @@ spec:
     - CreateNamespace=true
   info:
     - name: Merge Request
-      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}
+      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}}/-/{{CI_MERGE_REQUEST_IID}}
