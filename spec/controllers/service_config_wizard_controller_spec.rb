@@ -28,6 +28,16 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'as an admin' do
+    let(:wizard_steps_ready_to_go) {
+      # The team needs to be persisted and with an ID or WizardStep validation will fail.
+      # But the service provider is passed here with `build` so that we can make sure creating
+      # a new one works. The service_provider factory is used here because it has good defaults
+      WizardStep.steps_from_service_provider(
+        build(:service_provider, :ready_to_activate, team: create(:team)),
+        admin,
+      )
+    }
+
     before do
       sign_in admin
     end
@@ -305,16 +315,32 @@ RSpec.describe ServiceConfigWizardController do
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
     describe 'step "help_text"' do
       it 'can post' do
-        pending
+        wizard_steps_ready_to_go.each(&:save!)
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          error_messages = assigns['model'].errors.messages.merge(
+            assigns['service_provider'].errors.messages,
+          )
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
-        next_step = ServiceConfigWizardController::STEPS[step_index('help_text') + 1]
-        if next_step
-          expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
-        end        
+            "Not redirected to next step. Errors found: #{error_messages}"
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
+        expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        expect(WizardStep.where(user: admin)).to be_empty
+      end
+
+      it 'will stay on this step when the service provider would be invalid' do
+        expect do
+          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+        end.to(change {ServiceProvider.count}.by(0))
+        error_messages = assigns['model'].errors.messages.merge(
+          assigns['service_provider'].errors.messages,
+        )
+        expect(error_messages).to eq({
+          friendly_name: ["can't be blank"],
+          issuer: ["can't be blank", "is not formatted correctly. The issuer must be a unique string with no spaces."],
+          team: ["must exist"]
+        })
       end
     end
 
@@ -345,6 +371,14 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'as a non-admin user' do
+    let(:wizard_steps_ready_to_go) {
+      # The team needs to be persisted and with an ID or WizardStep validation will fail
+      WizardStep.steps_from_service_provider(
+        build(:service_provider, :ready_to_activate, team: create(:team)),
+        user,
+      )
+    }
+
     before do
       sign_in user
     end
@@ -378,6 +412,25 @@ RSpec.describe ServiceConfigWizardController do
         logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
         expect(has_serial).to eq(true)
+      end
+    end
+
+    describe 'help_text' do
+      it 'can create a new app' do
+        wizard_steps_ready_to_go.each(&:save!)
+        expect do
+          put :update, params: {
+            id: 'help_text',
+            wizard_step: { help_text: {'sign_in' => 'blank'}},
+          }
+          error_messages = assigns['model'].errors.messages.merge(
+            assigns['service_provider'].errors.messages,
+          )
+          expect(response).to be_redirect, "Not redirected. Errors found: #{error_messages}"
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
+        expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        expect(WizardStep.where(user:)).to be_empty
       end
     end
   end
