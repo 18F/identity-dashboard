@@ -10,6 +10,7 @@ variables:
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_CI_SHA: 'sha256:31e2cf6b87e2a03de215e7552d1b8c77286ec4984659556affcf46c17483f49d'
   GITLAB_CI: 'true'
+  APPLICATION_MANIFEST: 'dockerfiles/application.yaml'
 
 default:
   image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
