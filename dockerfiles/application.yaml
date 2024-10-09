@@ -4,8 +4,6 @@ metadata:
   name: {{ENVIRONMENT}}
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  annotations:
-    link.argocd.argoproj.io/external-link: "{{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}/-/{{CI_MERGE_REQUEST_IID}}"
   labels:
     project-name: {{CI_PROJECT_NAME}}
 spec:
