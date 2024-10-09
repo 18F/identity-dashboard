@@ -174,7 +174,8 @@ class ServiceConfigWizardController < AuthenticatedController
     ## `{'sign_in' => 'blank'}`
     ## and the `HelpText.lookup` method is expecting it to be more like
     ## `{'sign_in' => { 'en' => 'blank'}}``
-    ## (Not every language needs to be specified — `HelpText.lookup will` fill in the other languages if a preset option is chosen.)
+    ## (Not every language needs to be specified — `HelpText.lookup` will fill in
+    ## the other languages if a preset option is chosen.)
     # text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
     # @parsed_help_text ||= HelpText.lookup(
     #   params: text_params,
