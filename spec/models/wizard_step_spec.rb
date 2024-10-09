@@ -326,6 +326,17 @@ RSpec.describe WizardStep, type: :model do
         expect(subject).to be_valid
       end
 
+      it 'is valid with a good upload that has been persisted' do
+        subject.attach_logo(good_logo)
+        subject.certs << build_pem
+        subject.save!
+        subject.valid?
+        expect(subject.data['certs']).to_not be_empty
+        expect(subject.data['logo_name']).to_not be_empty
+        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject).to be_valid
+      end
+
       it 'has errors with bad certs and bad uploads' do
         subject.certs << 'invalid cert'
         subject.attach_logo(fixture_file_upload('testcert.pem', 'image/svg+xml'))
