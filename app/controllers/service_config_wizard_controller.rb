@@ -103,11 +103,8 @@ class ServiceConfigWizardController < AuthenticatedController
 
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user ||= current_user
-    if helpers.help_text_options_enabled? && !current_user.admin
-      ## TODO: This is to be fixed as part of https://cm-jira.usa.gov/browse/LG-14649
-      # service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
-      ##
-      service_provider.help_text = {}
+    if helpers.help_text_options_enabled? #&& !current_user.admin
+      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
     logo_file = @model.get_step('logo_and_cert').logo_file
@@ -118,6 +115,14 @@ class ServiceConfigWizardController < AuthenticatedController
 
     destroy
     redirect_to service_provider_path(service_provider)
+  end
+
+  def parsed_help_text
+    text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
+    @parsed_help_text ||= HelpText.lookup(
+      params: text_params,
+      service_provider: @service_provider || draft_service_provider,
+    )
   end
 
   def show_saml_options?

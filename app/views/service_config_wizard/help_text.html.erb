@@ -4,7 +4,7 @@
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <%= h.fields_for :sign_in do |s| %>
-        <%= s.input :sign_in,
+        <%= s.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_in'), :sign_in),
@@ -15,7 +15,7 @@
                     selected: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :sign_up do |s| %>
-        <%= s.input :sign_up,
+        <%= s.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_up'), :sign_up),
@@ -26,7 +26,7 @@
                     selected: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :forgot_password do |f| %>
-        <%= f.input :forgot_password,
+        <%= f.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.forgot_password'), :forgot_password),
