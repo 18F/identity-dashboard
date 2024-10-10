@@ -567,4 +567,4 @@ spec:
     - CreateNamespace=true
   info:
     - name: Merge Request
-      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}/-/{{CI_MERGE_REQUEST_IID}}
+      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}/-/merge_requests/{{CI_MERGE_REQUEST_IID}}
