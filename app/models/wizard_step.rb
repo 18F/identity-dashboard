@@ -189,7 +189,7 @@ class WizardStep < ApplicationRecord
       next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
       wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
       step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
-      steps[step_name].data[wizard_attribute_name] = service_provider.attributes[source_attr_name]
+      steps[step_name].wizard_form_data[wizard_attribute_name] = service_provider.attributes[source_attr_name]
     end
     steps.values
   end
@@ -200,7 +200,7 @@ class WizardStep < ApplicationRecord
     self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
   end
 
-  def data=(new_data)
+  def wizard_step_data=(new_data)
     super(enforce_valid_data(new_data))
   end
 
