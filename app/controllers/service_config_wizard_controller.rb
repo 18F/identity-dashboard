@@ -18,7 +18,6 @@ class ServiceConfigWizardController < AuthenticatedController
     show_saml_options?
     show_oidc_options?
     show_proof_failure_url?
-    parsed_help_text
   ]
 
   def new
@@ -151,6 +150,14 @@ class ServiceConfigWizardController < AuthenticatedController
     redirect_to service_provider_path(service_provider)
   end
 
+  def parsed_help_text
+    text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
+    @parsed_help_text ||= HelpText.lookup(
+      params: text_params,
+      service_provider: @service_provider || draft_service_provider,
+    )
+  end
+
   def show_saml_options?
     @model.saml?
   end
@@ -161,27 +168,6 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def show_proof_failure_url?
     @model.ial.to_i > 1
-  end
-
-  def parsed_help_text
-    ## TODO: This is to be fixed as part of https://cm-jira.usa.gov/browse/LG-14649
-    
-    # This is wrong
-    HelpText.new(help_text: {})
-
-    ## This is more correct but broken.
-    ## I think the problem is that the form currently returns data like
-    ## `{'sign_in' => 'blank'}`
-    ## and the `HelpText.lookup` method is expecting it to be more like
-    ## `{'sign_in' => { 'en' => 'blank'}}``
-    ## (Not every language needs to be specified — `HelpText.lookup` will fill in
-    ## the other languages if a preset option is chosen.)
-    # text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
-    # @parsed_help_text ||= HelpText.lookup(
-    #   params: text_params,
-    #   service_provider: @service_provider || draft_service_provider,
-    # )
-    ##
   end
 
   private
