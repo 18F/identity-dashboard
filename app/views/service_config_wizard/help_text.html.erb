@@ -4,7 +4,7 @@
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <%= h.fields_for :sign_in do |s| %>
-        <%= s.input :sign_in,
+        <%= s.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_in'), :sign_in),
@@ -12,10 +12,10 @@
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
-                    selected: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
+                    selected: view_parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :sign_up do |s| %>
-        <%= s.input :sign_up,
+        <%= s.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_up'), :sign_up),
@@ -23,10 +23,10 @@
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
-                    selected: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
+                    selected: view_parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
       <%= h.fields_for :forgot_password do |f| %>
-        <%= f.input :forgot_password,
+        <%= f.input :en,
                     as: :usa_collection_select,
                     required: false,
                     label: accessible_label(form, t('simple_form.labels.service_provider.help_text.forgot_password'), :forgot_password),
@@ -34,7 +34,7 @@
                         sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
                         agency: draft_service_provider['agency']&.name || '<Agency>'
                       ).to_a.map { |a| [a[1], a[0]] },
-                    selected: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS) %>
+                    selected: view_parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS) %>
       <% end %>
     <% end %>
     <div class="wizard-field">
