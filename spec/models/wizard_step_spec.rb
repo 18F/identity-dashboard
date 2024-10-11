@@ -46,6 +46,40 @@ RSpec.describe WizardStep, type: :model do
     end.to raise_error(ArgumentError, "Invalid WizardStep '#{bad_name}'.")
   end
 
+  describe '#get_step' do
+    let(:step_name_to_find) { WizardStep::STEP_DATA.keys.sample }
+    let(:user) { create(:user) }
+
+    it 'returns the subject if the subject is the matching step' do
+      subject = create(:wizard_step, step_name: step_name_to_find)
+      result = subject.get_step(step_name_to_find)
+      expect(result).to be(subject)
+    end
+
+    it 'pulls the relevant step out of the database' do
+      subject = create(:wizard_step,
+        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+        user: user,
+      )
+      expected_result = create(:wizard_step, step_name: step_name_to_find, user: user)
+      expect(subject.get_step(step_name_to_find)).to eq(expected_result)
+    end
+
+    it 'builds a new step if no matching step exists' do
+      subject = create(:wizard_step,
+        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+        user: user,
+      )
+      a_different_user = create(:user)
+      absent_result = create(:wizard_step, step_name: step_name_to_find, user: a_different_user)
+      expected_result = WizardStep.find_or_initialize_by(step_name: step_name_to_find, user: user)
+      actual = subject.get_step(step_name_to_find)
+      expect(actual).to_not eq(absent_result)
+      expect(actual.attributes).to eq(expected_result.attributes)
+      expect(actual).to_not be_persisted
+    end
+  end
+
   context 'step "settings"' do
     subject { build(:wizard_step, step_name: 'settings')}
 
@@ -132,6 +166,8 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "logo_and_cert"' do
+    let(:good_logo) { fixture_file_upload('logo.svg', 'image/svg+xml') }
+
     describe '#certificates' do
       let(:certs) { nil }
       subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
@@ -241,8 +277,19 @@ RSpec.describe WizardStep, type: :model do
       end
 
       it 'is valid with good certs and uploads' do
-        subject.attach_logo(fixture_file_upload('logo.svg', 'image/svg+xml'))
+        subject.attach_logo(good_logo)
         subject.certs << build_pem
+        expect(subject.data['certs']).to_not be_empty
+        expect(subject.data['logo_name']).to_not be_empty
+        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject).to be_valid
+      end
+
+      it 'is valid with a good upload that has been persisted' do
+        subject.attach_logo(good_logo)
+        subject.certs << build_pem
+        subject.save!
+        subject.valid?
         expect(subject.data['certs']).to_not be_empty
         expect(subject.data['logo_name']).to_not be_empty
         expect(subject.data['remote_logo_key']).to_not be_empty
@@ -259,6 +306,34 @@ RSpec.describe WizardStep, type: :model do
         expect(subject.errors[:certs]).to_not be_blank
         expect(subject.errors[:logo_file]).
           to eq(['The file you uploaded (testcert.pem) is not a PNG or SVG'])
+      end
+    end
+
+    describe '#pending_or_current_logo_data' do
+      it 'returns false if the step is not "logo_and_cert"' do
+        not_logo_step = (WizardStep::STEP_DATA.keys - ['logo_and_cert']).sample
+        subject = build(:wizard_step, step_name: not_logo_step)
+        expect(subject.pending_or_current_logo_data).to be_falsey
+        expect {subject.logo_name}.to raise_error(NoMethodError)
+        expect {subject.remote_logo_key}.to raise_error(NoMethodError)
+      end
+
+      it 'returns the data if the logo has been attached' do
+        logo_step = build(:wizard_step, step_name: 'logo_and_cert')
+        logo_step.attach_logo(good_logo)
+        expect(logo_step.pending_or_current_logo_data).to eq(good_logo.read)
+      end
+    end
+
+    describe '#attach_logo' do
+      # Other behavior of `#attach_logo` is covered in the `#valid?` tests
+      it 'does nothing if the step is not "logo_and_cert"' do
+        not_logo_step = (WizardStep::STEP_DATA.keys - ['logo_and_cert']).sample
+        subject = build(:wizard_step, step_name: not_logo_step)
+        subject.attach_logo(good_logo)
+        expect(subject.logo_file.blob).to be_nil
+        expect {subject.logo_name}.to raise_error(NoMethodError)
+        expect {subject.remote_logo_key}.to raise_error(NoMethodError)
       end
     end
   end

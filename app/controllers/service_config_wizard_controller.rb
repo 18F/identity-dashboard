@@ -18,6 +18,7 @@ class ServiceConfigWizardController < AuthenticatedController
     show_saml_options?
     show_oidc_options?
     show_proof_failure_url?
+    parsed_help_text
   ]
 
   def new
@@ -54,7 +55,7 @@ class ServiceConfigWizardController < AuthenticatedController
       @model.data = @model.data.merge(wizard_step_params)
     end
     if is_valid? && @model.save
-      return convert_draft_to_full_sp if step == wizard_steps.last
+      return save_to_service_provider if step == wizard_steps.last
       skip_step
     else
       flash[:error] = 'Please check the error(s) in the form below and re-submit.'
@@ -97,22 +98,30 @@ class ServiceConfigWizardController < AuthenticatedController
     end
   end
 
-  def convert_draft_to_full_sp
+  def save_to_service_provider
     service_provider = draft_service_provider
 
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user ||= current_user
     if helpers.help_text_options_enabled? && !current_user.admin
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
+      ## TODO: This is to be fixed as part of https://cm-jira.usa.gov/browse/LG-14649
+      # service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
+      ##
+      service_provider.help_text = {}
     end
 
+    logo_file = @model.get_step('logo_and_cert').logo_file
+    service_provider.logo_file.attach(logo_file.blob) if logo_file.blob
+
     validate_and_save_service_provider
+    return render_wizard if flash[:error].present?
+
     destroy
     redirect_to service_provider_path(service_provider)
   end
 
   def show_saml_options?
-    auth_step && auth_step.identity_protocol == 'saml'
+    @model.saml?
   end
 
   def show_oidc_options?
@@ -120,7 +129,28 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def show_proof_failure_url?
-    auth_step && auth_step.ial.to_i > 1
+    @model.ial.to_i > 1
+  end
+
+  def parsed_help_text
+    ## TODO: This is to be fixed as part of https://cm-jira.usa.gov/browse/LG-14649
+    
+    # This is wrong
+    HelpText.new(help_text: {})
+
+    ## This is more correct but broken.
+    ## I think the problem is that the form currently returns data like
+    ## `{'sign_in' => 'blank'}`
+    ## and the `HelpText.lookup` method is expecting it to be more like
+    ## `{'sign_in' => { 'en' => 'blank'}}``
+    ## (Not every language needs to be specified — `HelpText.lookup` will fill in
+    ## the other languages if a preset option is chosen.)
+    # text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
+    # @parsed_help_text ||= HelpText.lookup(
+    #   params: text_params,
+    #   service_provider: @service_provider || draft_service_provider,
+    # )
+    ##
   end
 
   private
@@ -133,11 +163,6 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def is_step(step_name)
     step == step_name
-  end
-
-  def auth_step
-    # Should this be `@model.auth_step` ?
-    @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
   end
 
   def redirect_unless_flagged_in
