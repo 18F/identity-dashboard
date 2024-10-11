@@ -28,6 +28,20 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'as an admin' do
+    let(:wizard_steps_ready_to_go) {
+      # The team needs to be persisted and with an ID or WizardStep validation will fail,
+      # so it's factory is called here with `create`.
+      # 
+      # The service provider factory used is here because it has good defaults — it should
+      # be the authoritative factory for what we need in a service provider. By calling that factory
+      # with `build``, we get its defaults without saving it to the database. Done this way, we can
+      # test that the controller can create a reasonable service_provider that isn't already saved.
+      WizardStep.steps_from_service_provider(
+        build(:service_provider, :ready_to_activate, team: create(:team)),
+        admin,
+      )
+    }
+
     before do
       sign_in admin
     end
@@ -162,6 +176,9 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     describe 'step "logo_and_cert"' do
+      let(:good_logo) { fixture_file_upload('logo.svg', 'image/svg+xml') }
+      let(:good_cert) { fixture_file_upload('testcert.pem') }
+
       it 'allows blank info' do
         expect do
           put :update, params: {id: 'logo_and_cert'}
@@ -174,20 +191,18 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can post new data' do
-        test_cert = fixture_file_upload('testcert.pem')
-        test_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
-            logo_file: test_logo,
-            cert: test_cert,
+            logo_file: good_logo,
+            cert: good_cert,
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change {WizardStep.count}.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
-        expect(WizardStep.last.certs).to eq([test_cert.read])
-        expect(WizardStep.last.logo_file.download).to eq(test_logo.read)
+        expect(WizardStep.last.certs).to eq([good_cert.read])
+        expect(WizardStep.last.logo_file.download).to eq(good_logo.read)
       end
 
       it 'will skip an empty cert' do
@@ -205,17 +220,16 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'can overwrite existing data' do
-        first_upload_logo = fixture_file_upload('logo.svg', 'image/svg+xml')
         put :update, params: {id: 'logo_and_cert', wizard_step: {
-          logo_file: first_upload_logo,
-          cert: fixture_file_upload('testcert.pem', 'text/plain'),
+          logo_file: good_logo,
+          cert: good_cert,
         }}
         original_settings = WizardStep.last
         original_certs = original_settings.certs
         original_serial = OpenSSL::X509::Certificate.new(original_certs.first).serial
         original_saved_logo = original_settings.logo_file
         expect(original_saved_logo.blob.checksum).
-          to eq(OpenSSL::Digest.base64digest('MD5', first_upload_logo.read))
+          to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
         
 
         # Deliberately picking a serial that's shorter than fixed value of the original serial
@@ -265,11 +279,10 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'keeps an existing logo if a new logo is bad' do
-        good_logo_upload = fixture_file_upload('logo.svg')
-        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo_upload.read)
+        good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo.read)
         bad_logo_upload = fixture_file_upload('../logo_without_size.svg')
         put :update, params: {id: 'logo_and_cert', wizard_step: {
-          logo_file: good_logo_upload,
+          logo_file: good_logo,
         }}
         saved_step = WizardStep.last
         expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
@@ -288,6 +301,17 @@ RSpec.describe ServiceConfigWizardController do
         saved_step.logo_file.reload
         expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
       end
+
+      it 'can move a valid logo from the wizard step to a service provider' do
+        wizard_steps_ready_to_go.each(&:save!)
+        logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert'}
+        expect(logo_step.logo_file).to be_blank
+        put :update, params: {id: 'logo_and_cert', wizard_step: { logo_file: good_logo }}
+        expect do
+          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(ServiceProvider.last.logo_file.download).to eq(good_logo.read)
+      end
     end
 
     describe 'step "redirects"' do
@@ -304,17 +328,29 @@ RSpec.describe ServiceConfigWizardController do
 
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
     describe 'step "help_text"' do
-      it 'can post' do
-        pending
+      it 'can save valid service provider settings' do
+        wizard_steps_ready_to_go.each(&:save!)
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          error_messages = assigns['model'].errors.messages.merge(
+            assigns['service_provider'].errors.messages,
+          )
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
-        next_step = ServiceConfigWizardController::STEPS[step_index('help_text') + 1]
-        if next_step
-          expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
-        end        
+            "Not redirected to next step. Errors found: #{error_messages}"
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
+        expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        expect(WizardStep.where(user: admin)).to be_empty
+      end
+
+      it 'does not save invalid service provider settings' do
+        expect do
+          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+        end.to(change {ServiceProvider.count}.by(0))
+        error_messages = assigns['model'].errors.messages.merge(
+          assigns['service_provider'].errors.messages,
+        )
+        expect(error_messages.count).to be >= 1
       end
     end
 
@@ -323,9 +359,36 @@ RSpec.describe ServiceConfigWizardController do
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
     end
+
+    describe 'handling service provider logos' do
+      let(:existing_service_provider) { create(:service_provider, :with_team) }
+      let(:good_upload) { fixture_file_upload('logo.svg') }
+      let(:good_upload_checksum) { OpenSSL::Digest.base64digest('MD5', good_upload.read) }
+
+      scenario 'adding a logo to a config' do
+        put :create, params: {service_provider: existing_service_provider}
+        expect(existing_service_provider.logo_file).to_not be_attached
+        put :update, params: {id: 'logo_and_cert', wizard_step: {
+          logo_file: good_upload,
+        }}
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').data
+        put :update, params: {id: 'help_text', wizard_step: default_help_text_data}
+        existing_service_provider.reload
+        expect(existing_service_provider.logo_file).to be_attached
+        expect(existing_service_provider.logo_file.checksum).to eq(good_upload_checksum)
+      end
+    end
   end
 
   context 'as a non-admin user' do
+    let(:wizard_steps_ready_to_go) {
+      # The team needs to be persisted and with an ID or WizardStep validation will fail
+      WizardStep.steps_from_service_provider(
+        build(:service_provider, :ready_to_activate, team: create(:team)),
+        user,
+      )
+    }
+
     before do
       sign_in user
     end
@@ -359,6 +422,25 @@ RSpec.describe ServiceConfigWizardController do
         logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
         expect(has_serial).to eq(true)
+      end
+    end
+
+    describe 'help_text' do
+      it 'can create a new app' do
+        wizard_steps_ready_to_go.each(&:save!)
+        expect do
+          put :update, params: {
+            id: 'help_text',
+            wizard_step: { help_text: {'sign_in' => 'blank'}},
+          }
+          error_messages = assigns['model'].errors.messages.merge(
+            assigns['service_provider'].errors.messages,
+          )
+          expect(response).to be_redirect, "Not redirected. Errors found: #{error_messages}"
+        end.to(change {ServiceProvider.count}.by(1))
+        expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
+        expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        expect(WizardStep.where(user:)).to be_empty
       end
     end
   end

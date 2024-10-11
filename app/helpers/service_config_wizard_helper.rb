@@ -20,14 +20,6 @@ module ServiceConfigWizardHelper
     end
   end
 
-  def parsed_help_text
-    text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
-    @parsed_help_text ||= HelpText.lookup(
-      params: text_params,
-      service_provider: @service_provider || draft_service_provider,
-    )
-  end
-
   def first_step?
     step.eql?(wizard_steps.first)
   end
