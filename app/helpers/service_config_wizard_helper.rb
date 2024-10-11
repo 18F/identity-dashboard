@@ -19,8 +19,8 @@ module ServiceConfigWizardHelper
       label
     end
   end
-  # This is different from the controller's method, and is used by the view
-  def parsed_help_text
+
+  def view_parsed_help_text
     text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
     @parsed_help_text ||= HelpText.lookup(
       params: text_params,
