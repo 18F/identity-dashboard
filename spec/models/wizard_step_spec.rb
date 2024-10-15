@@ -331,9 +331,9 @@ RSpec.describe WizardStep, type: :model do
         subject.certs << build_pem
         subject.save!
         subject.valid?
-        expect(subject.data['certs']).to_not be_empty
-        expect(subject.data['logo_name']).to_not be_empty
-        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject.wizard_form_data['certs']).to_not be_empty
+        expect(subject.wizard_form_data['logo_name']).to_not be_empty
+        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
         expect(subject).to be_valid
       end
 
