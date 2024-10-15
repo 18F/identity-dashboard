@@ -200,7 +200,7 @@ class WizardStep < ApplicationRecord
     self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
   end
 
-  def wizard_step_data=(new_data)
+  def wizard_form_data=(new_data)
     super(enforce_valid_data(new_data))
   end
 
