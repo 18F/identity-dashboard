@@ -342,8 +342,8 @@ RSpec.describe WizardStep, type: :model do
     let(:subject_user) { create(:user) }
 
     it 'concatenates all the latest steps for a user' do
-      created_steps = WizardStep::STEPS.map do |step|
-        create(:wizard_step, step_name: step, user: subject_user)
+      created_steps = WizardStep::STEPS.map do |step_name|
+        create(:wizard_step, step_name: step_name, user: subject_user )
       end
       ignored_user = create(:user)
       extra_step = create(:wizard_step, step_name: 'issuer', user: ignored_user, wizard_form_data: {

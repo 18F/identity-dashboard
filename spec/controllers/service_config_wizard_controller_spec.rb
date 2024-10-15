@@ -94,7 +94,7 @@ RSpec.describe ServiceConfigWizardController do
         attribute_bundle: saml_app_config.attribute_bundle,
       }}
       last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
-      put :update, params: {id: last_step.step_name, wizard_step: last_step.data }
+      put :update, params: {id: last_step.step_name, wizard_step: last_step.wizard_form_data }
 
       new_attributes = saml_app_config.reload.attributes
       expect(new_attributes['updated_at']).to be >= initial_attributes['updated_at']
@@ -371,7 +371,7 @@ RSpec.describe ServiceConfigWizardController do
         put :update, params: {id: 'logo_and_cert', wizard_step: {
           logo_file: good_upload,
         }}
-        default_help_text_data = build(:wizard_step, step_name: 'help_text').data
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
         put :update, params: {id: 'help_text', wizard_step: default_help_text_data}
         existing_service_provider.reload
         expect(existing_service_provider.logo_file).to be_attached
