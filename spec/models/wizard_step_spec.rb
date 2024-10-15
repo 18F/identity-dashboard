@@ -13,9 +13,9 @@ RSpec.describe WizardStep, type: :model do
 
   describe '#find_or_intialize' do
     context 'with nothing relevant in the database' do
-      it 'populates data defaults' do
+      it 'populates wizard_form_data defaults' do
         scoped_model = policy_scope(first_user).find_or_initialize_by(step_name: random_form_step)
-        expect(scoped_model.data).to eq(WizardStep::STEP_DATA[random_form_step].fields)
+        expect(scoped_model.wizard_form_data).to eq(WizardStep::STEP_DATA[random_form_step].fields)
       end
     end
   end
@@ -30,10 +30,10 @@ RSpec.describe WizardStep, type: :model do
       end
     end
 
-    it 'pulls data back out' do
+    it 'pulls wizard_form_data back out' do
       expected_name = "Test name #{rand(1..10000)}"
       subject = WizardStep.new(step_name: 'settings')
-      subject.data = {friendly_name: expected_name}
+      subject.wizard_form_data = {friendly_name: expected_name}
       expect(subject.friendly_name).to eq(expected_name)
     end
   end
@@ -84,8 +84,8 @@ RSpec.describe WizardStep, type: :model do
     subject { build(:wizard_step, step_name: 'settings')}
 
     describe '#valid?' do
-      it 'validates good data' do
-        subject.data = {
+      it 'validates good wizard_form_data' do
+        subject.wizard_form_data = {
           app_name: 'something goes here',
           friendly_name: 'something friendly goes here',
           group_id: create(:team).id,
@@ -105,20 +105,20 @@ RSpec.describe WizardStep, type: :model do
 
   context 'step "authentication"' do
     let(:authentication_step) { 
-      build(:wizard_step, step_name: 'authentication', data: {
+      build(:wizard_step, step_name: 'authentication', wizard_form_data: {
         identity_protocol: 'openid_connect_private_key_jwt',
         ial: '1',
         default_aal: 'on',
       })
     }
     describe '#valid?' do
-      it 'validates good data' do
+      it 'validates good wizard_form_data' do
         expect(authentication_step.valid?).to be(true), authentication_step.errors.messages
       end
 
-      it 'fails with bad data' do
-        authentication_step.data['ial'] = 2
-        authentication_step.data['identity_protocol'] = 'saml'
+      it 'fails with bad wizard_form_data' do
+        authentication_step.wizard_form_data['ial'] = 2
+        authentication_step.wizard_form_data['identity_protocol'] = 'saml'
         expect(authentication_step.valid?).to be_falsey
         bundle_errors = authentication_step.errors[:attribute_bundle]
         expect(bundle_errors).to eq(['Attribute bundle cannot be empty'])
@@ -136,14 +136,14 @@ RSpec.describe WizardStep, type: :model do
       end
 
       it 'is valid with an issuer set' do
-        expect(subject).to allow_value({'issuer' => test_issuer }).for(:data)
+        expect(subject).to allow_value({'issuer' => test_issuer }).for(:wizard_form_data)
       end
 
       it 'is invalid if issuer already exists' do
         expect(ServiceProvider).to receive(:where).with(issuer: test_issuer).and_return(
           [ServiceProvider.new(issuer: test_issuer)],
         )
-        subject.data['issuer'] = test_issuer
+        subject.wizard_form_data['issuer'] = test_issuer
         expect(subject).to_not be_valid
         expect(subject.errors[:issuer]).to include('already in use')
       end
@@ -152,14 +152,14 @@ RSpec.describe WizardStep, type: :model do
         service_provider = create(:service_provider, issuer: test_issuer)
         in_use_issuer = "#{test_issuer}:#{rand(1..1000)}"
         _other_service_provder = create(:service_provider, issuer: in_use_issuer)
-        hidden_step = create(:wizard_step, step_name: 'hidden', data: {
+        hidden_step = create(:wizard_step, step_name: 'hidden', wizard_form_data: {
           service_provider_id: service_provider.id,
         })
         issuer_step = build(:wizard_step, step_name: 'issuer', user: hidden_step.user)
-        issuer_step.data = {issuer: test_issuer}
+        issuer_step.wizard_form_data = {issuer: test_issuer}
         expect(issuer_step).to be_valid
 
-        issuer_step.data = {issuer: in_use_issuer}
+        issuer_step.wizard_form_data = {issuer: in_use_issuer}
         expect(issuer_step).to_not be_valid
       end
     end
@@ -170,7 +170,7 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#certificates' do
       let(:certs) { nil }
-      subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs: certs}) }
 
       context 'with nil' do
         let(:certs) { nil }
@@ -242,7 +242,7 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#remove_certificate' do
-      subject { build(:wizard_step, step_name: 'logo_and_cert', data: {certs: certs}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs: certs}) }
       let(:certs) { nil }
 
       context 'when removing a serial that matches in the certs array' do
@@ -269,19 +269,19 @@ RSpec.describe WizardStep, type: :model do
     describe '#valid?' do
       subject { build(:wizard_step, step_name: 'logo_and_cert')}
 
-      it 'is valid with blank data' do
-        expect(subject.data['certs']).to be_empty
-        expect(subject.data['logo_name']).to be_empty
-        expect(subject.data['remote_logo_key']).to be_empty
+      it 'is valid with blank wizard_form_data' do
+        expect(subject.wizard_form_data['certs']).to be_empty
+        expect(subject.wizard_form_data['logo_name']).to be_empty
+        expect(subject.wizard_form_data['remote_logo_key']).to be_empty
         expect(subject).to be_valid
       end
 
       it 'is valid with good certs and uploads' do
         subject.attach_logo(good_logo)
         subject.certs << build_pem
-        expect(subject.data['certs']).to_not be_empty
-        expect(subject.data['logo_name']).to_not be_empty
-        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject.wizard_form_data['certs']).to_not be_empty
+        expect(subject.wizard_form_data['logo_name']).to_not be_empty
+        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
         expect(subject).to be_valid
       end
 
@@ -290,18 +290,18 @@ RSpec.describe WizardStep, type: :model do
         subject.certs << build_pem
         subject.save!
         subject.valid?
-        expect(subject.data['certs']).to_not be_empty
-        expect(subject.data['logo_name']).to_not be_empty
-        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject.wizard_form_data['certs']).to_not be_empty
+        expect(subject.wizard_form_data['logo_name']).to_not be_empty
+        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
         expect(subject).to be_valid
       end
 
       it 'has errors with bad certs and bad uploads' do
         subject.certs << 'invalid cert'
         subject.attach_logo(fixture_file_upload('testcert.pem', 'image/svg+xml'))
-        expect(subject.data['certs']).to_not be_empty
-        expect(subject.data['logo_name']).to_not be_empty
-        expect(subject.data['remote_logo_key']).to_not be_empty
+        expect(subject.wizard_form_data['certs']).to_not be_empty
+        expect(subject.wizard_form_data['logo_name']).to_not be_empty
+        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
         expect(subject).to_not be_valid
         expect(subject.errors[:certs]).to_not be_blank
         expect(subject.errors[:logo_file]).
@@ -342,15 +342,15 @@ RSpec.describe WizardStep, type: :model do
     let(:subject_user) { create(:user) }
 
     it 'concatenates all the latest steps for a user' do
-      created_steps = WizardStep::STEPS.map do |step|
-        create(:wizard_step, step_name: step, user: subject_user)
+      created_steps = WizardStep::STEPS.map do |step_name|
+        create(:wizard_step, step_name: step_name, user: subject_user )
       end
       ignored_user = create(:user)
-      extra_step = create(:wizard_step, step_name: 'issuer', user: ignored_user, data: {
+      extra_step = create(:wizard_step, step_name: 'issuer', user: ignored_user, wizard_form_data: {
         issuer: 'issuer string that should not appear',
       })
 
-      all_step_data = created_steps.map(&:data).reduce(&:merge)
+      all_step_data = created_steps.map(&:wizard_form_data).reduce(&:merge)
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq(all_step_data)
       expect(WizardStep.all_step_data_for_user(subject_user).values).
         to_not include(extra_step.issuer)
@@ -361,9 +361,11 @@ RSpec.describe WizardStep, type: :model do
       expect(WizardStep.all_step_data_for_user(subject_user).keys.sort).to eq(all_field_names.sort)
     end
 
-    it 'will stop returning data that have been deleted' do
+    it 'will stop returning wizard_form_data that have been deleted' do
       test_issuer = "test:issuer:#{rand(1..100)}"
-      create(:wizard_step, step_name: 'issuer', user: subject_user, data: {issuer: test_issuer})
+      create(:wizard_step, step_name: 'issuer',
+        user: subject_user,
+        wizard_form_data: {issuer: test_issuer})
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq({'issuer' => test_issuer})
       WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
       expect(WizardStep.all_step_data_for_user(subject_user).keys).

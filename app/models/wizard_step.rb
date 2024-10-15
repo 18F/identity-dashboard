@@ -101,7 +101,9 @@ class WizardStep < ApplicationRecord
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
-    self.data['attribute_bundle'] = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
+    if attribute_bundle.present?
+      self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
+    end
   end
 
   validates_with AttributeBundleValidator, on: 'authentication'
@@ -156,7 +158,7 @@ class WizardStep < ApplicationRecord
   def self.all_step_data_for_user(user)
     # This intentionally should get all steps including the "hidden" step if it exists
     WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
-      memo.merge(step.data)
+      memo.merge(step.wizard_form_data)
     end
   end
 
@@ -187,7 +189,8 @@ class WizardStep < ApplicationRecord
       next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
       wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
       step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
-      steps[step_name].data[wizard_attribute_name] = service_provider.attributes[source_attr_name]
+      steps[step_name].wizard_form_data[wizard_attribute_name] =
+        service_provider.attributes[source_attr_name]
     end
     steps.values
   end
@@ -195,10 +198,10 @@ class WizardStep < ApplicationRecord
   def step_name=(new_name)
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
     super
-    self.data = enforce_valid_data(self.data)
+    self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
   end
 
-  def data=(new_data)
+  def wizard_form_data=(new_data)
     super(enforce_valid_data(new_data))
   end
 
@@ -236,7 +239,7 @@ class WizardStep < ApplicationRecord
   def attach_logo(logo_data)
     return unless step_name == 'logo_and_cert'
     self.logo_file = logo_data
-    self.data = data.merge({
+    self.wizard_form_data = wizard_form_data.merge({
       logo_name: logo_file.filename.to_s,
       remote_logo_key: logo_file.key,
     })
@@ -244,8 +247,8 @@ class WizardStep < ApplicationRecord
 
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
-      data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
-      data[name.to_s]
+      wizard_form_data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
+      wizard_form_data[name.to_s]
     else
       super
     end
@@ -263,7 +266,7 @@ class WizardStep < ApplicationRecord
   end
 
   def ial
-    return data['ial'] if step_name == 'authentication'
+    return wizard_form_data['ial'] if step_name == 'authentication'
     get_step('authentication').ial
   end
 
@@ -275,7 +278,7 @@ class WizardStep < ApplicationRecord
     ['acs_url', 'return_to_sp_url'].each do |attr|
       return true if !saml?
 
-      errors.add(attr.to_sym, ' can\'t be blank') if data[attr].blank?
+      errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
     end
     self.errors.empty?
   end
