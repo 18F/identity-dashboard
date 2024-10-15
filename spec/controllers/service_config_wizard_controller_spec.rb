@@ -343,7 +343,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.where(user: admin)).to be_empty
       end
 
-      it 'does not save invalid service provider settings' do
+      it 'will stay on this step when the service provider would be invalid' do
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
         end.to(change {ServiceProvider.count}.by(0))
@@ -426,6 +426,13 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     describe 'help_text' do
+      # Slicing the PRESETS to skip the first entry (index 0)
+      # because the first entry is the 'blank' entry that has no translation
+      # and is easier to test separately
+      let(:non_blank_sign_in_preset) { HelpText::PRESETS['sign_in'][1..-1].sample }
+      let(:non_blank_sign_up_preset) { HelpText::PRESETS['sign_up'][1..-1].sample }
+      let(:non_blank_forgot_password_preset) { HelpText::PRESETS['forgot_password'][1..-1].sample }
+
       it 'can create a new app' do
         wizard_steps_ready_to_go.each(&:save!)
         expect do
@@ -445,6 +452,62 @@ RSpec.describe ServiceConfigWizardController do
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
         expect(WizardStep.where(user:)).to be_empty
+      end
+
+      it 'allows picking help text presets' do
+        wizard_steps_ready_to_go.each(&:save!)
+        settings_step = wizard_steps_ready_to_go.first.get_step('settings')
+
+        expect do
+          put :update, params: { id: 'help_text', wizard_step: { help_text: {
+            'sign_in' => { 'en' => non_blank_sign_in_preset },
+            'sign_up' => { 'en' => non_blank_sign_up_preset },
+            'forgot_password'=> { 'en' => non_blank_forgot_password_preset},
+          }}}
+        end.to(change {ServiceProvider.count}.by(1))
+        actual_help_text = ServiceProvider.last.help_text
+        expect(actual_help_text['sign_in']['en']).to eq(I18n.t(
+          "service_provider_form.help_text.sign_in.#{non_blank_sign_in_preset}",
+          agency: Team.find(settings_step.group_id).agency.name,
+          sp_name: settings_step.friendly_name,
+          locale: :en,
+        ))
+        expect(actual_help_text['sign_up']['en']).to eq(I18n.t(
+          "service_provider_form.help_text.sign_up.#{non_blank_sign_up_preset}",
+          agency: Team.find(settings_step.group_id).agency.name,
+          sp_name: settings_step.friendly_name,
+          locale: :en,
+        ))
+        expect(actual_help_text['forgot_password']['en']).to eq(I18n.t(
+          "service_provider_form.help_text.forgot_password.#{non_blank_forgot_password_preset}",
+          agency: Team.find(settings_step.group_id).agency.name,
+          sp_name: settings_step.friendly_name,
+          locale: :en,
+        ))
+      end
+
+      it 'can set a preset help_text to blank' do
+        wizard_steps_ready_to_go.each(&:save!)
+        initial_help_text = {
+          'sign_in' => { 'en' => non_blank_sign_in_preset },
+          'sign_up' => { 'en' => non_blank_sign_up_preset },
+          'forgot_password' => { 'en' => non_blank_forgot_password_preset },
+        }
+        put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text}}
+        new_service_provider = ServiceProvider.last
+        put :create, params: { service_provider: new_service_provider}
+        context_to_be_blank = ['sign_in', 'sign_up', 'forgot_password'].sample
+        updated_help_text = initial_help_text.merge(context_to_be_blank => {'en' => 'blank'})
+        put :update, params: { id: 'help_text', wizard_step: { help_text: updated_help_text }}
+        new_service_provider.reload
+        ['sign_in', 'sign_up', 'forgot_password'].each do |context|
+          saved_help_text_for_context = new_service_provider.help_text[context]['en']
+          if context == context_to_be_blank
+            expect(saved_help_text_for_context).to eq('')
+          else
+            expect(saved_help_text_for_context).to_not be_blank
+          end
+        end
       end
     end
   end
