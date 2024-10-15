@@ -343,7 +343,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.where(user: admin)).to be_empty
       end
 
-      it 'does not save invalid service provider settings' do
+      it 'will stay on this step when the service provider would be invalid' do
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
         end.to(change {ServiceProvider.count}.by(0))
