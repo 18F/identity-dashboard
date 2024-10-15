@@ -51,7 +51,7 @@ class ServiceConfigWizardController < AuthenticatedController
       attach_logo_file if logo_file_param
     end
     unless skippable && params[:wizard_step].blank?
-      @model.data = @model.data.merge(wizard_step_params)
+      @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
     if is_valid? && @model.save
       return save_to_service_provider if step == wizard_steps.last

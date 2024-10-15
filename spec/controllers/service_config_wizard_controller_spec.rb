@@ -55,7 +55,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'will wipe all step data if the user cancels on the last step' do
-      create(:wizard_step, user: admin, data: { help_text: {'sign_in' => 'blank'}})
+      create(:wizard_step, user: admin, wizard_form_data: { help_text: {'sign_in' => 'blank'}})
       expect do
         put :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
       end.to(change {WizardStep.count}.by(-1))
@@ -94,7 +94,7 @@ RSpec.describe ServiceConfigWizardController do
         attribute_bundle: saml_app_config.attribute_bundle,
       }}
       last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
-      put :update, params: {id: last_step.step_name, wizard_step: last_step.data }
+      put :update, params: {id: last_step.step_name, wizard_step: last_step.wizard_form_data }
 
       new_attributes = saml_app_config.reload.attributes
       expect(new_attributes['updated_at']).to be >= initial_attributes['updated_at']
@@ -190,7 +190,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
 
-      it 'can post new data' do
+      it 'can post new wizard_form_data' do
         expect do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
             logo_file: good_logo,
@@ -219,7 +219,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.last.certs).to eq([])
       end
 
-      it 'can overwrite existing data' do
+      it 'can overwrite existing wizard_form_data' do
         put :update, params: {id: 'logo_and_cert', wizard_step: {
           logo_file: good_logo,
           cert: good_cert,
@@ -371,7 +371,7 @@ RSpec.describe ServiceConfigWizardController do
         put :update, params: {id: 'logo_and_cert', wizard_step: {
           logo_file: good_upload,
         }}
-        default_help_text_data = build(:wizard_step, step_name: 'help_text').data
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
         put :update, params: {id: 'help_text', wizard_step: default_help_text_data}
         existing_service_provider.reload
         expect(existing_service_provider.logo_file).to be_attached

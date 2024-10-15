@@ -191,8 +191,8 @@ feature 'Service Config Wizard' do
         and_return(nil)
       visit new_service_config_wizard_path
       expect(current_url).to eq(service_providers_url)
-      ServiceConfigWizardController::STEPS.each do |step|
-        visit new_service_config_wizard_path(step)
+      ServiceConfigWizardController::STEPS.each do |step_name|
+        visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
       end
     end
