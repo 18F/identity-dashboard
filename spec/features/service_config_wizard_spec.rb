@@ -58,10 +58,25 @@ feature 'Service Config Wizard' do
         'push_notification_url'=>'',
         'redirect_uris'=>[],
         # help text
-        'help_text'=> {
-            'sign_in'=>{'sign_in'=>'blank'},
-            'sign_up'=>{'sign_up'=>'blank'},
-            'forgot_password'=>{'forgot_password'=>'blank'},
+        'help_text'=>{
+          'sign_in'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
+          'sign_up'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
+          'forgot_password'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
         },
       }
       visit new_service_config_wizard_path
@@ -107,7 +122,7 @@ feature 'Service Config Wizard' do
       expected_data.keys.each do |key|
         next if key == 'default_aal'
         expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
-          "#{key} expected: #{expected_data[key].to_s}, received: #{saved_config_data[key]}"
+          "#{key} expected: #{expected_data[key].to_s}\n#{key} received: #{saved_config_data[key]}"
       end
 
       expect(saved_config_data['default_aal']).to be_nil
