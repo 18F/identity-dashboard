@@ -50,10 +50,10 @@ RSpec.describe 'security_events/table.html.erb' do
   context 'on the first page' do
     let(:next_page) { '?page=2' }
 
-    it 'has a disabled previous link and an active next link' do
+    it 'has no previous link and an active next link' do
       render_partial
 
-      expect(rendered).to have_selector('span[class=text-base-light]', text: 'Previous')
+      expect(rendered).to_not have_selector("a[href='#{prev_page}']", text: 'Previous')
       expect(rendered).to have_selector("a[href='#{next_page}']", text: 'Next')
     end
   end
@@ -73,11 +73,11 @@ RSpec.describe 'security_events/table.html.erb' do
   context 'on the last page' do
     let(:prev_page) { '?page=2' }
 
-    it 'has active a disabled next link and an active previous link' do
+    it 'has no next link and an active previous link' do
       render_partial
 
       expect(rendered).to have_selector("a[href='#{prev_page}']", text: 'Previous')
-      expect(rendered).to have_selector('span[class=text-base-light]', text: 'Next')
+      expect(rendered).to_not have_selector("a[href='#{next_page}']", text: 'Next')
     end
   end
 end
