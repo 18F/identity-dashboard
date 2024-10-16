@@ -6,10 +6,9 @@
 <ul class="usa-input-list" aria-describedby="<%= "legend-#{db_fieldname}" %>">
   <%= form.collection_radio_buttons(db_fieldname,
                                     inputs,
-                                    :last, :first) do |b| %>
-    <li>
-      <%= b.radio_button(class: "usa-radio__input") %>
-      <%= b.label(class: "usa-radio__label")%>
-    </li>
+                                    :last, :first,
+                                    item_wrapper_tag: :li) do |b| %>
+    <%= b.radio_button(class: "usa-radio__input") %>
+    <%= b.label(class: "usa-radio__label")%>
   <% end %>
 </ul>
