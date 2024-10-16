@@ -46,8 +46,7 @@
     }
 
     .input-file:focus ~ .usa-button {
-      outline-offset: 1px;
-      outline: 2px solid $theme-color-primary;
+      @extend input;
     }
 
     code {
