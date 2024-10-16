@@ -51,7 +51,7 @@ class ServiceConfigWizardController < AuthenticatedController
       attach_logo_file if logo_file_param
     end
     unless skippable && params[:wizard_step].blank?
-      @model.data = @model.data.merge(wizard_step_params)
+      @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
     if is_valid? && @model.save
       return save_to_service_provider if step == wizard_steps.last
@@ -118,10 +118,14 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def parsed_help_text
     text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
-    @parsed_help_text ||= HelpText.lookup(
-      params: text_params,
-      service_provider: @service_provider || draft_service_provider,
-    )
+    @parsed_help_text ||= if text_params.present?
+      HelpText.lookup(
+        params: text_params,
+        service_provider: @service_provider || draft_service_provider,
+      )
+    else
+      HelpText.new(service_provider: @service_provider || draft_service_provider)
+    end
   end
 
   def show_saml_options?
@@ -244,8 +248,8 @@ class ServiceConfigWizardController < AuthenticatedController
       wizard_step_data['redirect_uris'] = Array(wizard_step_data['redirect_uris'])
     end
 
-    # This won't be enough to actually transfer the file to the new record
-    # TODO: we'll have to add some code to do that file attach transfer
+    # This isn't enough to transfer the file contents to the new record.
+    # That transfer is done elsewhere since it is not a simple attribute.
     if wizard_step_data.has_key?('logo_name')
       wizard_step_data['logo'] = wizard_step_data.delete('logo_name')
     end
