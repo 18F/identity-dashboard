@@ -16,7 +16,7 @@
               sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
               agency: draft_service_provider.agency&.name || '<Agency>'
               ).to_a.map { |a| [a[1], a[0]] },
-            default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS)
+            default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
           } %>
         <% end %>
       <% end %>

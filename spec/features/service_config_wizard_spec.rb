@@ -110,10 +110,10 @@ feature 'Service Config Wizard' do
       fill_in('Assertion Consumer Service URL', with: expected_data['acs_url'])
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
-
-      expect(find_field('Sign-in').value).to eq('blank')
-      expect(find_field('Sign-up').value).to eq('blank')
-      expect(find_field('Forgot password').value).to eq('blank')
+      # Help text
+      find_all('.usa-radio__input[checked]').each { |x|
+        expect(x.value).to eq('blank')
+      }
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])

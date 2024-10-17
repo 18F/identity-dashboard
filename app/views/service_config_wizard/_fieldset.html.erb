@@ -30,7 +30,8 @@
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
-        default: default,
+        # specified, saved, or first listed option
+        default: defined?(default) ? default : "#{draft_service_provider[db_fieldname] || inputs.values[0]}"
       } %>
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
