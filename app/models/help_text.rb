@@ -72,6 +72,17 @@ class HelpText
     help_text.fetch(context, {})[lang]
   end
 
+  # Methods so this can be easily used in a form
+  def model_name
+    self.class
+  end
+  def self.param_key; 'help_text'; end
+  def errors; end
+  def sign_in; fetch('sign_in', 'en'); end
+  def sign_up; fetch('sign_up', 'en'); end
+  def forgot_password; fetch('forgot_password', 'en'); end
+  # End of methods so this can be used in a form
+
   def to_localized_h
     is_presets_only = presets_only?
     result = {}

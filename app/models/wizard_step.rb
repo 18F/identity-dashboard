@@ -245,6 +245,27 @@ class WizardStep < ApplicationRecord
     })
   end
 
+  def help_text
+    step_name == 'help_text' && HelpText.new(
+      help_text: wizard_form_data['help_text'],
+      service_provider: self,
+    )
+  end
+
+  def agency
+    @hidden_step ||= get_step('hidden')
+    return unless @hidden_step
+    return @agency ||= Agency.find(@hidden_step.agency_id) if @hidden_step.agency_id
+    if @hidden_step.service_provider_id
+      @agency ||= ServiceProvider.find(@hidden_step.service_provider_id).agency
+    end
+  end
+
+  def friendly_name
+    return wizard_form_data['friendly_name'] if step_name == 'settings'
+    @friendly_name ||= get_step('settings')&.friendly_name
+  end
+
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
       wizard_form_data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup

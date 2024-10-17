@@ -9,7 +9,8 @@ module ServiceConfigWizardHelper
   end
 
   def accessible_label(form, label, db_form_field)
-    message = form.object.errors.messages_for(db_form_field)[0]
+    messages = form.object.errors&.messages_for(db_form_field)
+    message = messages && messages[0]
     if message
       ("#{label}<p class='usa-sr-only'>, Error: 
         #{

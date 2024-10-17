@@ -119,8 +119,11 @@ class ServiceConfigWizardController < AuthenticatedController
   def parsed_help_text
     text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
     @parsed_help_text ||= if text_params.present?
+      text_options = HelpText::CONTEXTS.each_with_object({}) do |context, result|
+        result[context] = {'en' => text_params[context]} if text_params[context]
+      end
       HelpText.lookup(
-        params: text_params,
+        params: text_options,
         service_provider: @service_provider || draft_service_provider,
       )
     else
