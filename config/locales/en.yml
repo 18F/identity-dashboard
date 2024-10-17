@@ -1,5 +1,9 @@
 ---
 en:
+  activerecord:
+    attributes:
+      wizard_step:
+        group_id: "Team"
   errors:
     not_authorized: You are not authorized to perform this action.
   forms:
