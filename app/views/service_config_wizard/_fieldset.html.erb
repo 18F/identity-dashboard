@@ -7,6 +7,7 @@
   [Boolean] required whether this field is required
   [Symbol] db_fieldname such that the database has an associated column (often fieldname.to_sym)
   [Input elements] inputs such that the input fields are rendered correctly
+  [String] default to pre-select an option
 %>
 <fieldset class="<%= "wizard-field #{input_type} service_provider_#{fieldname}" %>" >
   <legend class="usa-sr-only" id="<%= "legend-#{db_fieldname}" %>">
@@ -29,6 +30,7 @@
         form: form,
         db_fieldname: db_fieldname,
         inputs: inputs,
+        default: default,
       } %>
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
