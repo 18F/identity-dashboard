@@ -139,6 +139,25 @@ feature 'Service Config Wizard' do
       'error: draft data not deleted'
     end
 
+    it 'correctly labels team in error when team is blank' do
+      # These are expected values, listed in the order the currently appear in the step forms
+      # These are all required values that we'll fill in, or expected default values
+      expected_data = {
+        # settings
+        'group_id' => '', # required
+        'prod_config' => 'false',
+        'app_name' => 'my-app', # required
+        'friendly_name' => 'My App', # required
+        'description' => '',
+      }
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Friendly name', with: expected_data['friendly_name'])
+      click_on 'Next'
+      expect(page).to have_content('Team can\'t be blank')
+    end
+
     it 'shows uploaded logo file errors' do
       visit service_config_wizard_path('logo_and_cert')
       attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
