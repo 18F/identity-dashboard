@@ -8,6 +8,12 @@ class HelpText
   # If a preset is set for one locale, it should be the same for all of them.
   # On the off chance that something is unexpected in the database, pick one to be authoritative
   LOCALE_FOR_PRESETS = 'en'.freeze
+  LOCALE_MAP = {
+    'en' => 'English',
+    'es' => 'Spanish',
+    'fr' => 'French',
+    'zh' => 'Chinese',
+  }
 
   # Hash<String,Array<String>> PRESETS A collection of valid preset help texts
   # Hash keys are valid CONTEXTS values. Arrays are a list of keys in the locale YAML files
