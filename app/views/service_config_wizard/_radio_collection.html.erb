@@ -1,16 +1,17 @@
 <%# expected locals:
   [Method] form such that form is a valid instance of wizard_form
+  [String] fieldname such that simple_form and service_provider have valid translations
   [Symbol] db_fieldname such that the database has an associated column
   [Hash] inputs hash where key is the label and value is the input value
   [String] default to pre-select radio option
 %>
-<ul class="usa-input-list" aria-describedby="<%= "legend-#{db_fieldname}" %>">
+<ul class="usa-input-list" aria-describedby="<%= fieldname.gsub('.','_') %>">
   <%= form.collection_radio_buttons(db_fieldname,
                                     inputs,
                                     :last, :first,
                                     item_wrapper_tag: :li,
                                     checked: default) do |b| %>
     <%= b.radio_button(class: "usa-radio__input") %>
-    <%= b.label(class: "usa-radio__label")%>
+    <%= b.label(class: "usa-radio__label") %>
   <% end %>
 </ul>
