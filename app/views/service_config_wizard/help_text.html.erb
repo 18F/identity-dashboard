@@ -15,7 +15,7 @@
             inputs: t("service_provider_form.help_text.#{context}", deep_interpolation: true,
               sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
               agency: draft_service_provider.agency&.name || '<Agency>'
-              ).to_a.map { |a| [a[1], a[0]] },
+              ).to_a.map { |a| [a[1].html_safe, a[0]] },
             default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
           } %>
         <% end %>
