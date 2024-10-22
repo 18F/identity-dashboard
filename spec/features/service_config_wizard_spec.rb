@@ -110,10 +110,10 @@ feature 'Service Config Wizard' do
       fill_in('Assertion Consumer Service URL', with: expected_data['acs_url'])
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
-
-      expect(find_field('Sign-in').value).to eq('blank')
-      expect(find_field('Sign-up').value).to eq('blank')
-      expect(find_field('Forgot password').value).to eq('blank')
+      # Help text
+      find_all('.usa-radio__input[checked]').each { |x|
+        expect(x.value).to eq('blank')
+      }
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
@@ -137,6 +137,25 @@ feature 'Service Config Wizard' do
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
       'error: draft data not deleted'
+    end
+
+    it 'correctly labels team in error when team is blank' do
+      # These are expected values, listed in the order the currently appear in the step forms
+      # These are all required values that we'll fill in, or expected default values
+      expected_data = {
+        # settings
+        'group_id' => '', # required
+        'prod_config' => 'false',
+        'app_name' => 'my-app', # required
+        'friendly_name' => 'My App', # required
+        'description' => '',
+      }
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Friendly name', with: expected_data['friendly_name'])
+      click_on 'Next'
+      expect(page).to have_content('Team can\'t be blank')
     end
 
     it 'shows uploaded logo file errors' do

@@ -45,6 +45,10 @@
       margin-top: unset;
     }
 
+    .input-file:focus ~ .usa-button {
+      @extend input;
+    }
+
     code {
       word-break: break-word;
     }

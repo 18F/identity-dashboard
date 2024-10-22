@@ -3,38 +3,22 @@
 <div class="wizard-main">
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
-      <%= h.fields_for :sign_in do |s| %>
-        <%= s.input :en,
-                    as: :usa_collection_select,
-                    required: false,
-                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_in'), :sign_in),
-                    collection: t('service_provider_form.help_text.sign_in', deep_interpolation: true,
-                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
-                        agency: draft_service_provider['agency']&.name || '<Agency>'
-                      ).to_a.map { |a| [a[1], a[0]] },
-                    selected: view_parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS) %>
-      <% end %>
-      <%= h.fields_for :sign_up do |s| %>
-        <%= s.input :en,
-                    as: :usa_collection_select,
-                    required: false,
-                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.sign_up'), :sign_up),
-                    collection: t('service_provider_form.help_text.sign_up', deep_interpolation: true,
-                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
-                        agency: draft_service_provider['agency']&.name || '<Agency>'
-                      ).to_a.map { |a| [a[1], a[0]] },
-                    selected: view_parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS) %>
-      <% end %>
-      <%= h.fields_for :forgot_password do |f| %>
-        <%= f.input :en,
-                    as: :usa_collection_select,
-                    required: false,
-                    label: accessible_label(form, t('simple_form.labels.service_provider.help_text.forgot_password'), :forgot_password),
-                    collection: t('service_provider_form.help_text.forgot_password', deep_interpolation: true,
-                        sp_name: draft_service_provider['friendly_name'] || '<Application Friendly Name>',
-                        agency: draft_service_provider['agency']&.name || '<Agency>'
-                      ).to_a.map { |a| [a[1], a[0]] },
-                    selected: view_parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS) %>
+      <% HelpText::CONTEXTS.each do |context| %>
+        <%= h.fields_for context.to_s do |s| %>
+          <%= render partial: 'fieldset', locals: {
+            form: s,
+            fieldname: "help_text.#{context}",
+            description: false,
+            input_type: 'radio',
+            required: false,
+            db_fieldname: :en,
+            inputs: t("service_provider_form.help_text.#{context}", deep_interpolation: true,
+              sp_name: draft_service_provider['friendly_name'] || '{Application Friendly Name}',
+              agency: draft_service_provider.agency&.name || '{Agency}'
+              ).to_a.map { |a| [a[1].html_safe, a[0]] },
+            default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
+          } %>
+        <% end %>
       <% end %>
     <% end %>
     <div class="wizard-field">

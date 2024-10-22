@@ -44,30 +44,16 @@
 <div class="grid-container padding-0">
   <div class="grid-row">
     <div class="grid-col-auto">
-      <% if local_assigns[:prev_page] %>
-        <%= link_to prev_page do %>
-          &larr; Previous
-        <% end %>
-      <% else %>
-        <span class="text-base-light">
-          &larr; Previous
-        </span>
+      <%= link_to_if(local_assigns[:prev_page],'&larr; Previous'.html_safe, prev_page) do %>
+        &nbsp;
       <% end %>
     </div>
-
     <div class="grid-col-fill">
       &nbsp;
     </div>
-
     <div class="grid-col-auto">
-      <% if local_assigns[:next_page] %>
-        <%= link_to next_page do %>
-          Next &rarr;
-        <% end %>
-      <% else %>
-        <span class="text-base-light">
-          Next &rarr;
-        </span>
+      <%= link_to_if(local_assigns[:next_page],'Next &rarr;'.html_safe, next_page) do %>
+        &nbsp;
       <% end %>
     </div>
   </div>

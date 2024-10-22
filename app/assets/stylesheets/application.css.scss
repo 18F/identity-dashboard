@@ -12,6 +12,11 @@
   word-break: break-all;
 }
 
+.usa-logo a {
+  display: inline-block;
+  vertical-align: bottom;
+}
+
 .text-wrap {
   @include text-wrap-mixin;
 }
