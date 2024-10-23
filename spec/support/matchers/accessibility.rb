@@ -301,8 +301,13 @@ end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_axe_clean.according_to(
-    :section508, :"best-practice",
-    :wcag21aa
+    :wcag2a,
+    :wcag2aa,
+    :wcag21a,
+    :wcag21aa,
+    :wcag22a,
+    :wcag22aa,
+    :"best-practice",
   )
 
   expect(page).to have_valid_idrefs

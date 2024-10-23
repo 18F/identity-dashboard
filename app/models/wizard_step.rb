@@ -11,6 +11,15 @@ class WizardStep < ApplicationRecord
   end
 
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
+
+  # A list of steps and their attributes
+  # 
+  # Generally, you won't want to access this list directly outside of the WizardStep class itself.
+  # This list contains fields that should get preserved when editing an existing config
+  # but we do not want to show up in the UI. This constant is an implementation detail.
+  # 
+  # Instead, use `STEP` constant to get a list of the non-hidden steps or 
+  # use a method in this class that encapsulates the implementation.
   STEP_DATA = {
     intro: WizardStep::Definition.new,
     settings: WizardStep::Definition.new({
@@ -22,7 +31,7 @@ class WizardStep < ApplicationRecord
     }),
     authentication: WizardStep::Definition.new({
       attribute_bundle: [],
-      default_aal: nil,
+      default_aal: 0,
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: '1',
     }),
@@ -48,12 +57,39 @@ class WizardStep < ApplicationRecord
     help_text: WizardStep::Definition.new({
       help_text: { sign_in: ''},
     }),
+    # Unless we are editing an existing config, this extra step should not get created.
+    hidden: WizardStep::Definition.new({
+      active: false,
+      agency_id: nil,
+      allow_prompt_login: false,
+      approved: false,
+      email_nameid_format_allowed: nil,
+      metadata_url: nil,
+      service_provider_id: nil,
+      service_provider_user_id: nil,
+  }),
   }.with_indifferent_access.freeze
 
-  STEPS = STEP_DATA.keys
+  STEPS = (STEP_DATA.keys - ['hidden']).freeze
+
+  # A reverse lookup, answers the question:
+  #     Given an attribute, which step does it belong to?
+  ATTRIBUTE_STEP_LOOKUP = STEP_DATA.
+    each_with_object({}) do |(step_name, definition), hash|
+      definition.fields.keys.each do |field_name|
+        hash[field_name] = step_name
+      end
+    end.
+  freeze
 
   belongs_to :user
-  enum step_name: STEPS.each_with_object(Hash.new) {|step, enum| enum[step] = step}.freeze
+
+  # We want the hidden step to be a valid step name to save in the database
+  # so we can track attributes even if they should not show up in the UI
+  enum(step_name: STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
+    enum[step] = step
+  end.freeze)
+
   has_one_attached :logo_file
 
   validates :step_name, presence: true
@@ -65,7 +101,9 @@ class WizardStep < ApplicationRecord
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
-    self.data['attribute_bundle'] = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
+    if attribute_bundle.present?
+      self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
+    end
   end
 
   validates_with AttributeBundleValidator, on: 'authentication'
@@ -117,19 +155,53 @@ class WizardStep < ApplicationRecord
     ServiceProvider.block_encryptions
   end
 
-  def self.current_step_data_for_user(user)
+  def self.all_step_data_for_user(user)
+    # This intentionally should get all steps including the "hidden" step if it exists
     WizardStepPolicy::Scope.new(user, self).resolve.reduce({}) do |memo, step|
-      memo.merge(step.data)
+      memo.merge(step.wizard_form_data)
     end
+  end
+
+  def self.service_provider_to_wizard_attribute_map
+    @@service_provider_to_wizard_attribute_map ||= ServiceProvider.
+      attribute_names.
+      each_with_object({}) do |attribute_name, hash|
+        next if ['created_at', 'updated_at'].include? attribute_name
+        hash[attribute_name] = case attribute_name
+          when 'logo'
+            'logo_name'
+          when 'user_id'
+            'service_provider_user_id'
+          when 'id'
+            'service_provider_id'
+          else
+            attribute_name
+          end
+      end
+  end
+
+  def self.steps_from_service_provider(service_provider, user)
+    steps = STEP_DATA.keys.each_with_object(Hash.new) do |step_name, hash|
+      hash[step_name] = find_or_initialize_by(step_name:, user:)
+    end
+
+    service_provider.attribute_names.each do |source_attr_name|
+      next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
+      wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
+      step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
+      steps[step_name].wizard_form_data[wizard_attribute_name] =
+        service_provider.attributes[source_attr_name]
+    end
+    steps.values
   end
 
   def step_name=(new_name)
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
     super
-    self.data = enforce_valid_data(self.data)
+    self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
   end
 
-  def data=(new_data)
+  def wizard_form_data=(new_data)
     super(enforce_valid_data(new_data))
   end
 
@@ -152,7 +224,7 @@ class WizardStep < ApplicationRecord
   end
 
   def remove_certificate(serial)
-    certs&.delete_if do |cert|
+    certs.delete_if do |cert|
       OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
     rescue OpenSSL::X509::CertificateError
       nil
@@ -166,8 +238,8 @@ class WizardStep < ApplicationRecord
 
   def attach_logo(logo_data)
     return unless step_name == 'logo_and_cert'
-    logo_file.attach(logo_data)
-    self.data = data.merge({
+    self.logo_file = logo_data
+    self.wizard_form_data = wizard_form_data.merge({
       logo_name: logo_file.filename.to_s,
       remote_logo_key: logo_file.key,
     })
@@ -175,8 +247,8 @@ class WizardStep < ApplicationRecord
 
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
-      data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
-      data[name.to_s]
+      wizard_form_data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
+      wizard_form_data[name.to_s]
     else
       super
     end
@@ -186,29 +258,39 @@ class WizardStep < ApplicationRecord
     STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
   end
 
-  def auth_step
-    return self if step_name == 'authentication'
+  def get_step(step_to_find)
+    return self if step_name == step_to_find
     WizardStepPolicy::Scope.new(self.user, self.class).
       resolve.
-      find_or_initialize_by(user: self.user, step_name: 'authentication')
+      find_or_initialize_by(user: self.user, step_name: step_to_find)
   end
 
   def ial
-    return data['ial'] if step_name == 'authentication'
-    auth_step.ial
+    return wizard_form_data['ial'] if step_name == 'authentication'
+    get_step('authentication').ial
   end
 
   def saml?
-    auth_step && auth_step.identity_protocol == 'saml'
+    get_step('authentication').identity_protocol == 'saml'
   end
 
   def saml_settings_present?
     ['acs_url', 'return_to_sp_url'].each do |attr|
       return true if !saml?
 
-      errors.add(attr.to_sym, ' can\'t be blank') if data[attr].blank?
+      errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
     end
     self.errors.empty?
+  end
+
+  def pending_or_current_logo_data
+    return false unless step_name == 'logo_and_cert'
+    return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
+    return logo_file.blob.download if logo_file.blob
+  end
+
+  def existing_service_provider?
+    !!original_service_provider
   end
 
   private
@@ -229,10 +311,24 @@ class WizardStep < ApplicationRecord
   end
 
   def issuer_service_provider_uniqueness
+    return if existing_service_provider? && original_service_provider.issuer == issuer
     errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
+  end
+
+  def original_service_provider
+    id = WizardStep.find_by(step_name: 'hidden', user:)&.service_provider_id
+    id && ServiceProvider.find(id)
   end
 
   def group_is_valid
     errors.add(:group_id, :invalid) if Team.where(id: group_id).blank?
+  end
+
+  def attachment_changes_string_buffer
+    if attachment_changes['logo_file'].attachable.respond_to?(:download)
+      return attachment_changes['logo_file'].attachable.download
+    else
+      return File.read(attachment_changes['logo_file'].attachable.open)
+    end
   end
 end

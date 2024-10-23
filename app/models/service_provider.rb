@@ -75,7 +75,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def redirect_uris=(uris)
-    super uris.select(&:present?)
+    super uris&.select(&:present?)
   end
 
   def svg_xml
@@ -133,11 +133,24 @@ class ServiceProvider < ApplicationRecord
     errors.empty?
   end
 
+  def pending_or_current_logo_data
+    return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
+    return logo_file.blob.download if logo_file.blob
+  end
+
   private
 
+  def attachment_changes_string_buffer
+    if attachment_changes['logo_file'].attachable.respond_to?(:download)
+      return attachment_changes['logo_file'].attachable.download
+    else
+      return File.read(attachment_changes['logo_file'].attachable.open)
+    end
+  end
+
   def sanitize_help_text_content
-    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']].compact
-    sections.each { |section| sanitize_section(section) }
+    sections = [help_text['sign_in'], help_text['sign_up'], help_text['forgot_password']]
+    sections.select(&:present?).each { |section| sanitize_section(section) }
   end
 
   def sanitize_section(section)

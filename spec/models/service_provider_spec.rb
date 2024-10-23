@@ -129,8 +129,10 @@ describe ServiceProvider do
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
-          expect(service_provider.errors.first.message).to eq(
-            'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload') # rubocop:disable Layout/LineLength
+          expect(service_provider.errors.first.message).to eq(I18n.t(
+            'service_provider_form.errors.logo_file.no_viewbox',
+            filename: 'logo_without_size.svg',
+          ))
         end
       end
 
@@ -140,8 +142,10 @@ describe ServiceProvider do
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
-          expect(service_provider.errors.first.message).to eq(
-            'The logo file you uploaded (logo_with_script.svg) contains one or more script tags. Please remove all script tags and re-upload') # rubocop:disable Layout/LineLength
+          expect(service_provider.errors.first.message).to eq(I18n.t(
+            'service_provider_form.errors.logo_file.has_script_tag',
+            filename: 'logo_with_script.svg',
+          ))
         end
       end 
     end

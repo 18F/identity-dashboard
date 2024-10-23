@@ -16,6 +16,7 @@ class LogoValidator < ActiveModel::Validator
 
   def validate(record)
     @record = record
+    return unless record.pending_or_current_logo_data
     logo_is_less_than_max_size
     logo_file_mime_type
     logo_file_ext_matches_type
@@ -23,15 +24,12 @@ class LogoValidator < ActiveModel::Validator
   end
 
   def logo_is_less_than_max_size
-    return unless record.logo_file.attached?
-
     if record.logo_file.blob.byte_size > MAX_LOGO_SIZE
       record.errors.add(:logo_file, 'Logo must be less than 1MB')
     end
   end
 
   def logo_file_mime_type
-    return unless record.logo_file.attached?
     return if mime_type_valid?
     record.errors.add(
       :logo_file,
@@ -48,8 +46,6 @@ class LogoValidator < ActiveModel::Validator
   end
 
   def logo_file_ext_matches_type
-    return unless record.logo_file.attached?
-
     filename = record.logo_file.blob.filename.to_s
 
     file_ext = Regexp.new(/#{SP_MIME_EXT_MAPPINGS[record.logo_file.content_type]}$/i)
@@ -63,42 +59,18 @@ class LogoValidator < ActiveModel::Validator
   end
 
   def validate_logo_svg
-    return unless record.logo_file.attached?
     return unless mime_type_svg?
 
-    svg = svg_xml
+    svg = ValidatingSvg.new(record.pending_or_current_logo_data)
 
-    return if svg.blank?
+    record.errors.add(:logo_file, I18n.t(
+      'service_provider_form.errors.logo_file.no_viewbox',
+      filename: record.logo_file.filename,
+    )) unless svg.has_viewbox?
 
-    svg_logo_has_size_attribute(svg)
-    svg_logo_has_script_tag(svg)
-  end
-
-  def svg_logo_has_size_attribute(svg)
-    return if svg_has_viewbox?(svg)
-    
-    record.errors.add(:logo_file, 
-"The logo file you uploaded (#{record.logo_file.filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload") # rubocop:disable Layout/LineLength
-  end
-
-  def svg_logo_has_script_tag(svg)
-    return unless svg.css('script').present?
-
-    record.errors.add(:logo_file, 
-"The logo file you uploaded (#{record.logo_file.filename}) contains one or more script tags. Please remove all script tags and re-upload") # rubocop:disable Layout/LineLength
-  end
-
-  def svg_has_viewbox?(svg)
-    svg.css(':root[viewBox]').present?
-  end
-
-
-  def svg_xml
-    return if record.attachment_changes['logo_file'].blank?
-    if record.attachment_changes['logo_file'].attachable.respond_to?(:open)
-      Nokogiri::XML(File.read(record.attachment_changes['logo_file'].attachable.open))
-    else
-      Nokogiri::XML(File.read(record.attachment_changes['logo_file'].attachable[:io]))
-    end
+    record.errors.add(:logo_file, I18n.t(
+      'service_provider_form.errors.logo_file.has_script_tag',
+      filename: record.logo_file.filename,
+    )) if svg.has_script_tag?
   end
 end
