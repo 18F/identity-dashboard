@@ -28,20 +28,6 @@ deploys:
     env: 'staging'
     host: 'https://checking-deploy.pivcac.staging.login.gov'
 
-  # Data Migration
-  - app: 'identity-idp'
-    env: 'dm'
-    host: 'https://idp.dm.login.gov'
-  - app: 'identity-oidc-sinatra'
-    env: 'dm'
-    host: 'https://dm-identity-oidc-sinatra.app.cloud.gov/'
-  - app: 'identity-saml-sinatra'
-    env: 'dm'
-    host: 'https://dm-identity-saml-sinatra.app.cloud.gov/'
-  - app: 'identity-pki'
-    env: 'dm'
-    host: 'https://checking-deploy.pivcac.dm.login.gov'
-
   # Agency integration
   - app: 'identity-idp'
     env: 'int'

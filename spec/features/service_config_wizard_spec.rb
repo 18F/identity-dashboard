@@ -42,7 +42,7 @@ feature 'Service Config Wizard' do
         # auth
         'identity_protocol' => 'saml', # not default, but we're using SAML to test other defaults
         'ial' => '1',
-        'default_aal' => 'on',
+        'default_aal' => '0',
         'attribute_bundle' => [],
         # issuer
         'issuer' => 'test:saml:issuer', # required
@@ -56,12 +56,27 @@ feature 'Service Config Wizard' do
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
         'push_notification_url'=>'',
-        'redirect_uris'=>'',
+        'redirect_uris'=>[],
         # help text
-        'help_text'=> {
-            'sign_in'=>{'sign_in'=>'blank'},
-            'sign_up'=>{'sign_up'=>'blank'},
-            'forgot_password'=>{'forgot_password'=>'blank'},
+        'help_text'=>{
+          'sign_in'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
+          'sign_up'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
+          'forgot_password'=>{
+            'en'=>'',
+            'es'=>'',
+            'fr'=>'',
+            'zh'=>'',
+          },
         },
       }
       visit new_service_config_wizard_path
@@ -95,18 +110,92 @@ feature 'Service Config Wizard' do
       fill_in('Assertion Consumer Service URL', with: expected_data['acs_url'])
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
-      expect(find_field('Sign-in').value).to eq('blank')
-      expect(find_field('Sign-up').value).to eq('blank')
-      expect(find_field('Forgot password').value).to eq('blank')
+      # Help text
+      find_all('.usa-radio__input[checked]').each { |x|
+        expect(x.value).to eq('blank')
+      }
       click_on 'Create app'
-      expect(current_url).to eq(service_providers_url)
 
-      saved_setup_data = WizardStep.current_step_data_for_user(admin)
+      saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
+      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
+        'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
-        expect(saved_setup_data[key].to_s).to eq(expected_data[key].to_s)
+        next if key == 'default_aal'
+        expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
+          "#{key} expected: #{expected_data[key].to_s}\n#{key} received: #{saved_config_data[key]}"
       end
-      expect(saved_setup_data['certs']).
-        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read])
+
+      expect(saved_config_data['default_aal']).to be_nil
+
+      expect(saved_config_data['certs']).
+        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
+        'cert failed to save as expected'
+      expect(page).to have_content(t(
+        'notices.service_provider_saved',
+        issuer: expected_data['issuer'],
+      ))
+      expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
+      expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
+      'error: draft data not deleted'
+    end
+
+    it 'correctly labels team in error when team is blank' do
+      # These are expected values, listed in the order the currently appear in the step forms
+      # These are all required values that we'll fill in, or expected default values
+      expected_data = {
+        # settings
+        'group_id' => '', # required
+        'prod_config' => 'false',
+        'app_name' => 'my-app', # required
+        'friendly_name' => 'My App', # required
+        'description' => '',
+      }
+      visit new_service_config_wizard_path
+      click_on 'Next' # Skip the intro page
+      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Friendly name', with: expected_data['friendly_name'])
+      click_on 'Next'
+      expect(page).to have_content('Team can\'t be blank')
+    end
+
+    it 'shows uploaded logo file errors' do
+      visit service_config_wizard_path('logo_and_cert')
+      attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
+      expect { click_on 'Next' }.to_not(change { WizardStep.count })
+      actual_error_message = find('#logo-upload-error').text
+      expected_error_message = I18n.t(
+        'service_provider_form.errors.logo_file.has_script_tag',
+        filename: 'logo_with_script.svg',
+      )
+      expect(actual_error_message).to eq(expected_error_message)
+    end
+
+    it 'can edit an existing config' do
+      existing_config = create(:service_provider, :ready_to_activate)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      expect(find_field('App name').value).to eq(existing_config.app_name)
+      click_on 'Next'
+      # Skip making changes to auth options
+      click_on 'Next'
+      issuer_field = find('#wizard_step_issuer')
+      expect(issuer_field.value).to eq(existing_config.issuer)
+      expect(issuer_field).to be_disabled
+
+      # If we can't edit the issuer, 'Next' shouldn't be a form submission
+      expect(has_no_button? 'Next').to be_truthy
+      expect(has_link? 'Next').to be_truthy
+      click_on 'Next'
+
+      attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
+      click_on 'Next'
+      expected_push_url = "https://localhost/#{rand(1..1000)}"
+      fill_in('Push notification URL', with: expected_push_url)
+      click_on 'Next'
+      # Skip making changes to help text
+      click_on 'Update app'
+      existing_config.reload
+      expect(existing_config.push_notification_url).to eq(expected_push_url)
     end
   end
 
@@ -121,8 +210,8 @@ feature 'Service Config Wizard' do
         and_return(nil)
       visit new_service_config_wizard_path
       expect(current_url).to eq(service_providers_url)
-      ServiceConfigWizardController::STEPS.each do |step|
-        visit new_service_config_wizard_path(step)
+      ServiceConfigWizardController::STEPS.each do |step_name|
+        visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
       end
     end

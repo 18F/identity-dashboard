@@ -10,7 +10,7 @@
                                       ),
                                       :first,
                                       :last,
-                                      { checked: parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS)}
+                                      { checked: view_parsed_help_text.fetch('sign_in', HelpText::LOCALE_FOR_PRESETS)}
             ) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0') %>
@@ -27,7 +27,7 @@
                                       ),
                                       :first,
                                       :last,
-                                      { checked: parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS)}
+                                      { checked: view_parsed_help_text.fetch('sign_up', HelpText::LOCALE_FOR_PRESETS)}
             ) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0')%>
@@ -41,7 +41,7 @@
                                       t('service_provider_form.help_text.forgot_password'),
                                       :first,
                                       :last,
-                                      { checked: parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS)}) do |r| %>
+                                      { checked: view_parsed_help_text.fetch('forgot_password', HelpText::LOCALE_FOR_PRESETS)}) do |r| %>
           <%= r.radio_button(class: 'usa-radio__input') %>
           <%= r.label(class: 'usa-radio__label margin-bottom-0'){ raw r.text} %>
         <% end %>
