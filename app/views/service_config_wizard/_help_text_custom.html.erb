@@ -7,14 +7,15 @@
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <% HelpText::CONTEXTS.each do |context| %>
-        <%= h.fields_for context.to_s do |s| %>
+        <%= h.fields_for context do |s| %>
           <h2><%= t("simple_form.labels.service_provider.help_text.#{context}") %> translations</h2>
           <% HelpText::LOCALES.each do |locale| %>
-            <%= s.input locale.to_s,
+            <%= s.input locale,
                   as: :usa_textarea,
                   required: false,
+                  input_html: { value: view_custom_help_text.fetch(context, locale).sub(/\Ablank\z/, '') },
                   label_html: { class: 'usa-input-optional' },
-                  label: HelpText::LOCALE_MAP[locale] %>
+                  label: t("locale_map.#{locale}") %>
           <% end %>
         <% end %>
       <% end %>

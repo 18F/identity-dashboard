@@ -102,7 +102,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user ||= current_user
-    if helpers.help_text_options_enabled? #&& !current_user.admin
+    if helpers.help_text_options_enabled? && !current_user.admin
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 

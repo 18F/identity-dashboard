@@ -72,6 +72,11 @@ en:
     sign_out: Sign out
     teams: Manage user teams
     users: Manage users
+  locale_map:
+    en: English
+    es: Spanish
+    fr: French
+    zh: Chinese
   mailer:
     welcome:
       subject: Welcome to dashboard.login.gov
