@@ -227,12 +227,14 @@ feature 'Service Config Wizard' do
       find_all('.usa-radio__input[checked]').each { |input|
         expect(input.value).to eq('blank')
       }
+      # rubocop:disable Layout/LineLength
       choose 'Sign in to Login.gov with your {Agency} email.'
       choose 'Create a Login.gov account using the same email provided on your application.'
       choose 'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.'
       expect(page).to have_checked_field('wizard_step_help_text_sign_in_en_agency_email')
       expect(page).to have_checked_field('wizard_step_help_text_sign_up_en_same_email')
       expect(page).to have_checked_field('wizard_step_help_text_forgot_password_en_troubleshoot_html')
+      # rubocop:enable  Layout/LineLength
     end
   end
 end

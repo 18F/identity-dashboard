@@ -13,7 +13,7 @@
             <%= s.input locale,
                   as: :usa_textarea,
                   required: false,
-                  input_html: { value: view_custom_help_text.fetch(context, locale).sub(/\Ablank\z/, '') },
+                  input_html: { value: view_custom_help_text.fetch(context, locale)&.sub(/\Ablank\z/, '') },
                   label_html: { class: 'usa-input-optional' },
                   label: t("locale_map.#{locale}") %>
           <% end %>
