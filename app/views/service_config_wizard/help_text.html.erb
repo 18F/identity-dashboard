@@ -1,32 +1,6 @@
 <h1 class="usa-display"><%= t('service_provider_form.wizard_steps.help_text') %></h1>
-<p class="usa-intro"><%= t('simple_form.lead.help_text') %></p>
-<div class="wizard-main">
-  <%= wizard_form do |form| %>
-    <%= form.fields_for :help_text do |h| %>
-      <% HelpText::CONTEXTS.each do |context| %>
-        <%= h.fields_for context.to_s do |s| %>
-          <%= render partial: 'fieldset', locals: {
-            form: s,
-            fieldname: "help_text.#{context}",
-            description: false,
-            input_type: 'radio',
-            required: false,
-            db_fieldname: :en,
-            inputs: t("service_provider_form.help_text.#{context}", deep_interpolation: true,
-              sp_name: draft_service_provider['friendly_name'] || '{Application Friendly Name}',
-              agency: draft_service_provider.agency&.name || '{Agency}'
-              ).to_a.map { |a| [a[1].html_safe, a[0]] },
-            default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
-          } %>
-        <% end %>
-      <% end %>
-    <% end %>
-    <div class="wizard-field">
-      <div class="usa-label__group">
-        <p class="usa-label"><%= t('simple_form.labels.service_provider.help_text.custom_help') %></p>
-        <%= form.hint t('service_provider_form.custom_help_text_html') %>
-      </div>
-    </div>
-    <%= render partial:'footer', locals: { form: form } %>
-  <% end %>
-</div>
+<% if current_user.admin? %>
+  <%= render partial:'help_text_custom' %>
+<% else %>
+  <%= render partial:'help_text_standard' %>
+<% end %>
