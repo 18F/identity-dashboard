@@ -62,11 +62,11 @@ module ServiceConfigWizardHelper
   end
 
   def help_text_options_available?
-    enabled = IdentityConfig.store.help_text_options_feature_enabled &&
-      !current_user.admin
+    feature_enabled = IdentityConfig.store.help_text_options_feature_enabled
+    options_enabled = feature_enabled && !current_user.admin
     text_info = view_parsed_help_text
     has_no_custom = text_info.blank? || text_info.presets_only?
 
-    enabled && has_no_custom
+    options_enabled && has_no_custom
   end
 end
