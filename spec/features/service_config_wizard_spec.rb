@@ -13,6 +13,12 @@ feature 'Service Config Wizard' do
     it 'can remember something filled in' do
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
+      issuer_name = "test:config:#{rand(1...1000)}"
+      help_text = {
+        'sign_in'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'sign_up'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'forgot_password'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+      }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
       current_step = find('.step-indicator__step--current')
@@ -27,6 +33,29 @@ feature 'Service Config Wizard' do
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+      click_on 'Next' # /authentication
+      click_on 'Next' # /issuer
+      fill_in('Issuer', with: issuer_name)
+      click_on 'Next' # /logo_and_cert
+      click_on 'Next' # /redirects
+      click_on 'Next' # /help_text
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          fill_in(
+            "wizard_step_help_text_#{context}_#{locale}",
+            with: help_text[context][locale])
+        }
+      }
+      click_on 'Create app' # details page
+      click_on 'Edit'
+      visit service_config_wizard_path('help_text')
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          expect(find(
+            "#wizard_step_help_text_#{context}_#{locale}",
+          ).value).to eq(help_text[context][locale])
+        }
+      }
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
@@ -60,22 +89,22 @@ feature 'Service Config Wizard' do
         # help text
         'help_text'=>{
           'sign_in'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
           'sign_up'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
           'forgot_password'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
         },
       }
@@ -111,8 +140,12 @@ feature 'Service Config Wizard' do
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
       # Help text
-      find_all('.usa-radio__input[checked]').each { |x|
-        expect(x.value).to eq('blank')
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          fill_in(
+            "wizard_step_help_text_#{context}_#{locale}",
+            with: expected_data['help_text'][context][locale])
+        }
       }
       click_on 'Create app'
 
@@ -214,6 +247,23 @@ feature 'Service Config Wizard' do
         visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
       end
+    end
+
+    it 'renders Help text as expected' do
+      IdentityConfig.store[:service_config_wizard_enabled] = true
+      visit service_config_wizard_path('help_text')
+
+      find_all('.usa-radio__input[checked]').each { |input|
+        expect(input.value).to eq('blank')
+      }
+      # rubocop:disable Layout/LineLength
+      choose 'Sign in to Login.gov with your {Agency} email.'
+      choose 'Create a Login.gov account using the same email provided on your application.'
+      choose 'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.'
+      expect(page).to have_checked_field('wizard_step_help_text_sign_in_en_agency_email')
+      expect(page).to have_checked_field('wizard_step_help_text_sign_up_en_same_email')
+      expect(page).to have_checked_field('wizard_step_help_text_forgot_password_en_troubleshoot_html')
+      # rubocop:enable  Layout/LineLength
     end
   end
 end

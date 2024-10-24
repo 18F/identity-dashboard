@@ -28,6 +28,12 @@ module ServiceConfigWizardHelper
     )
   end
 
+  def view_custom_help_text
+    @custom_help_text ||= HelpText.lookup(
+      service_provider: @service_provider || draft_service_provider,
+    )
+  end
+
   def first_step?
     step.eql?(wizard_steps.first)
   end
