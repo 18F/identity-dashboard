@@ -56,4 +56,17 @@ module ServiceConfigWizardHelper
   def show_cancel?
     IdentityConfig.store.service_config_wizard_enabled && current_user.admin?
   end
+
+  def readonly_help_text?
+    !service_provider_policy.edit_custom_help_text?
+  end
+
+  def help_text_options_available?
+    enabled = IdentityConfig.store.help_text_options_feature_enabled &&
+      !current_user.admin
+    text_info = view_parsed_help_text
+    has_no_custom = text_info.blank? || text_info.presets_only?
+
+    enabled && has_no_custom
+  end
 end
