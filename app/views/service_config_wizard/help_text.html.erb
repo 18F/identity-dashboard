@@ -1,6 +1,6 @@
 <h1 class="usa-display"><%= t('service_provider_form.wizard_steps.help_text') %></h1>
-<% if current_user.admin? %>
-  <%= render partial:'help_text_custom' %>
-<% else %>
+<% if help_text_options_available? %>
   <%= render partial:'help_text_standard' %>
+<% else %>
+  <%= render partial:'help_text_custom' %>
 <% end %>
