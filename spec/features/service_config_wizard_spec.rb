@@ -4,6 +4,16 @@ feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
+  let(:custom_help_text) {{
+    'sign_in'=>{'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
+    'sign_up'=>{'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
+    'forgot_password'=>{'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
+  }}
+  let(:standard_help_text) {{
+    'sign_in'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
+    'sign_up'=>{'en'=>'first_time','es'=>'first_time','fr'=>'first_time','zh'=>'first_time'},
+    'forgot_password'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
+  }}
 
   context 'as admin' do
     before do
@@ -304,6 +314,22 @@ feature 'Service Config Wizard' do
       expect(page).to have_checked_field('wizard_step_help_text_sign_up_en_same_email')
       expect(page).to have_checked_field('wizard_step_help_text_forgot_password_en_troubleshoot_html')
       # rubocop:enable  Layout/LineLength
+    end
+
+    it 'renders read-only with custom Help text' do
+      existing_config = create(:service_provider,
+            :ready_to_activate,
+            help_text: custom_help_text,
+            user: user)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      visit service_config_wizard_path('help_text')
+
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          expect(page).to have_content(custom_help_text[context][locale])
+        }
+      }
     end
   end
 end

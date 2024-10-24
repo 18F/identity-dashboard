@@ -15,7 +15,8 @@
                   required: false,
                   input_html: { value: view_custom_help_text.fetch(context, locale)&.sub(/\Ablank\z/, '') },
                   label_html: { class: 'usa-input-optional' },
-                  label: t("locale_map.#{locale}") %>
+                  label: t("locale_map.#{locale}"),
+                  readonly: readonly_help_text? %>
           <% end %>
         <% end %>
       <% end %>
