@@ -28,6 +28,12 @@ module ServiceConfigWizardHelper
     )
   end
 
+  def view_custom_help_text
+    @custom_help_text ||= HelpText.lookup(
+      service_provider: @service_provider || draft_service_provider,
+    )
+  end
+
   def first_step?
     step.eql?(wizard_steps.first)
   end
@@ -49,5 +55,18 @@ module ServiceConfigWizardHelper
 
   def show_cancel?
     IdentityConfig.store.service_config_wizard_enabled && current_user.admin?
+  end
+
+  def readonly_help_text?
+    !service_provider_policy.edit_custom_help_text?
+  end
+
+  def help_text_options_available?
+    feature_enabled = IdentityConfig.store.help_text_options_feature_enabled
+    options_enabled = feature_enabled && !current_user.admin
+    text_info = view_parsed_help_text
+    has_no_custom = text_info.blank? || text_info.presets_only?
+
+    options_enabled && has_no_custom
   end
 end

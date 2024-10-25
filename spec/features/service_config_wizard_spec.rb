@@ -4,6 +4,16 @@ feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
+  let(:custom_help_text) {{
+    'sign_in'=>{'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
+    'sign_up'=>{'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
+    'forgot_password'=>{'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
+  }}
+  let(:standard_help_text) {{
+    'sign_in'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
+    'sign_up'=>{'en'=>'first_time','es'=>'first_time','fr'=>'first_time','zh'=>'first_time'},
+    'forgot_password'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
+  }}
 
   context 'as admin' do
     before do
@@ -13,6 +23,12 @@ feature 'Service Config Wizard' do
     it 'can remember something filled in' do
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
+      issuer_name = "test:config:#{rand(1...1000)}"
+      help_text = {
+        'sign_in'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'sign_up'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'forgot_password'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+      }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
       current_step = find('.step-indicator__step--current')
@@ -27,6 +43,29 @@ feature 'Service Config Wizard' do
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+      click_on 'Next' # /authentication
+      click_on 'Next' # /issuer
+      fill_in('Issuer', with: issuer_name)
+      click_on 'Next' # /logo_and_cert
+      click_on 'Next' # /redirects
+      click_on 'Next' # /help_text
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          fill_in(
+            "wizard_step_help_text_#{context}_#{locale}",
+            with: help_text[context][locale])
+        }
+      }
+      click_on 'Create app' # details page
+      click_on 'Edit'
+      visit service_config_wizard_path('help_text')
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          expect(find(
+            "#wizard_step_help_text_#{context}_#{locale}",
+          ).value).to eq(help_text[context][locale])
+        }
+      }
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
@@ -60,22 +99,22 @@ feature 'Service Config Wizard' do
         # help text
         'help_text'=>{
           'sign_in'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
           'sign_up'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
           'forgot_password'=>{
-            'en'=>'',
-            'es'=>'',
-            'fr'=>'',
-            'zh'=>'',
+            'en'=>'hello',
+            'es'=>'hola',
+            'fr'=>'bonjour',
+            'zh'=>'你好',
           },
         },
       }
@@ -111,8 +150,12 @@ feature 'Service Config Wizard' do
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
       # Help text
-      find_all('.usa-radio__input[checked]').each { |x|
-        expect(x.value).to eq('blank')
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          fill_in(
+            "wizard_step_help_text_#{context}_#{locale}",
+            with: expected_data['help_text'][context][locale])
+        }
       }
       click_on 'Create app'
 
@@ -197,6 +240,21 @@ feature 'Service Config Wizard' do
       existing_config.reload
       expect(existing_config.push_notification_url).to eq(expected_push_url)
     end
+
+    it 'saves standard Help text on edit' do
+      existing_config = create(:service_provider,
+                              :ready_to_activate,
+                              help_text: standard_help_text,
+                              user: user)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      visit service_config_wizard_path('help_text')
+      click_on 'Update app'
+      # rubocop:disable Layout/LineLength
+      content = "help_text: sign_in: en: '' es: '' fr: '' zh: '' sign_up: en: First time here from #{existing_config.friendly_name}? Your old #{existing_config.friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously. es: ¿Es la primera vez que visita #{existing_config.friendly_name}? Su antiguo nombre de usuario y contraseña de #{existing_config.friendly_name} ya no funcionan. Cree una cuenta en Login.gov con el mismo correo electrónico que usó anteriormente. fr: C’est la première fois que vous vous connectez à #{existing_config.friendly_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à #{existing_config.friendly_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement. zh: 第一次从 #{existing_config.friendly_name} 来到这里？您的旧 #{existing_config.friendly_name} 用户名和密码将不起作用。用之前使用的同一电子邮件地址 来设立一个 Login.gov帐户。 forgot_password: en: '' es: '' fr: '' zh: ''"
+      # rubocop:enable Layout/LineLength
+      expect(page).to have_content(content)
+    end
   end
 
   context 'as a non-admin' do
@@ -214,6 +272,39 @@ feature 'Service Config Wizard' do
         visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
       end
+    end
+
+    it 'renders Help text as expected' do
+      IdentityConfig.store[:service_config_wizard_enabled] = true
+      visit service_config_wizard_path('help_text')
+
+      find_all('.usa-radio__input[checked]').each { |input|
+        expect(input.value).to eq('blank')
+      }
+      # rubocop:disable Layout/LineLength
+      choose 'Sign in to Login.gov with your {Agency} email.'
+      choose 'Create a Login.gov account using the same email provided on your application.'
+      choose 'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.'
+      expect(page).to have_checked_field('wizard_step_help_text_sign_in_en_agency_email')
+      expect(page).to have_checked_field('wizard_step_help_text_sign_up_en_same_email')
+      expect(page).to have_checked_field('wizard_step_help_text_forgot_password_en_troubleshoot_html')
+      # rubocop:enable  Layout/LineLength
+    end
+
+    it 'renders read-only with custom Help text' do
+      existing_config = create(:service_provider,
+            :ready_to_activate,
+            help_text: custom_help_text,
+            user: user)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      visit service_config_wizard_path('help_text')
+
+      HelpText::CONTEXTS.each { |context|
+        HelpText::LOCALES.each { |locale|
+          expect(page).to have_content(custom_help_text[context][locale])
+        }
+      }
     end
   end
 end
