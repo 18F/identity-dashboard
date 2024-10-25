@@ -277,8 +277,10 @@ feature 'Service Config Wizard' do
         visit service_providers_path
         click_on 'Create a new app'
         click_on 'Next'
-        fill_in('App name', with: "Initial Name #{rand(1..1000)}")
-        fill_in('Friendly name', with: "Initial Friendly Name #{rand(1..1000)}")
+        new_name = "Initial Name #{rand(1..1000)}"
+        new_friendly_name = "Initial Friendly Name #{rand(1..1000)}"
+        fill_in('App name', with: new_name)
+        fill_in('Friendly name', with: new_friendly_name)
         select(team.name, from: 'Team')
         click_on 'Next'
         saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
@@ -286,11 +288,75 @@ feature 'Service Config Wizard' do
 
         visit service_providers_path
         click_on 'Create a new app'
+        click_on 'Continue application'
+        expect(current_path).to eq(service_config_wizard_path('settings'))
+        expect(find('#wizard_step_app_name').value).to eq(new_name)
+        expect(find('#wizard_step_friendly_name').value).to eq(new_friendly_name)
+        saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+        expect(saved_steps).to be(1)
+
+        visit service_providers_path
+        click_on 'Create a new app'
+        click_on 'Start a new application'
+        click_on 'Go back'
+        expect(current_path).to eq(service_providers_path)
+        saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+        expect(saved_steps).to be(1)
+
+        click_on 'Create a new app'
         click_on 'Start a new application'
         click_on 'Create a new application'
         expect(current_path).to eq(service_config_wizard_path(first_step))
+        click_on 'Next'
+        expect(find('#wizard_step_app_name').value).to be_blank
+        expect(find('#wizard_step_friendly_name').value).to be_blank
         saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
         expect(saved_steps).to be(0)
+      end
+    end
+
+    describe 'editing an existing config' do
+      let(:team) do
+        team = create(:team)
+        user.teams << team
+        team
+      end
+      let(:existing_app) { create(:service_provider, :ready_to_activate, team: team) }
+
+      it 'will not show a modal if starting from scratch' do
+        visit service_provider_path(existing_app)
+        click_on 'Edit'
+        expect(current_path).to eq(service_config_wizard_path('settings'))
+        expect(find('#wizard_step_friendly_name').value).to eq(existing_app.friendly_name)
+      end
+
+      it 'will show a modal that wipes existing steps if the setup was previously started' do
+        visit service_provider_path(existing_app)
+        click_on 'Edit'
+        expect(current_path).to eq(service_config_wizard_path('settings'))
+        new_friendly_name = "#{existing_app.friendly_name} and #{rand(1..10000)}"
+        fill_in 'Friendly name', with: new_friendly_name
+        click_on 'Next'
+        expect(WizardStep.where(step_name: 'settings').last.friendly_name).to eq(new_friendly_name)
+
+        visit service_provider_path(existing_app)
+        click_on 'Start a new application'
+        click_on 'Go back'
+        expect(current_path).to eq(service_provider_path(existing_app))
+
+        click_on 'Edit'
+        expect(current_path).to_not eq(service_config_wizard_path('settings'))
+        click_on 'Continue application'
+        expect(current_path).to eq(service_config_wizard_path('settings'))
+        expect(find('#wizard_step_friendly_name').value).to eq(new_friendly_name)
+
+        visit service_provider_path(existing_app)
+        click_on 'Edit'
+        expect(current_path).to_not eq(service_config_wizard_path('settings'))
+        click_on 'Start a new application'
+        click_on 'Create a new application'
+        expect(current_path).to eq(service_config_wizard_path('settings'))
+        expect(find('#wizard_step_friendly_name').value).to eq(existing_app.friendly_name)
       end
     end
 

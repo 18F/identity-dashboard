@@ -197,11 +197,21 @@
 <% end %>
 
 <% if IdentityConfig.store.service_config_wizard_enabled %>
-  <%= button_to t('forms.buttons.edit_service_provider'),
-    service_config_wizard_index_path(service_provider:),
-    class: 'usa-button float-left',
-    method: :post %>
- <% else %>
+  <% if wizard_draft_exists? %>
+    <%= link_to(
+      t('forms.buttons.edit_service_provider'),
+      '#wizard-modal',
+      class: "usa-button float-left",
+      data: { open_modal: ''},
+      aria: { controls: 'wizard-modal' }
+    ) %>
+  <% else %>
+    <%= button_to t('forms.buttons.edit_service_provider'),
+      service_config_wizard_index_path(service_provider:),
+      class: 'usa-button float-left',
+      method: :post %>
+  <% end %>
+<% else %>
   <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
     class: 'usa-button float-left',
@@ -215,4 +225,8 @@
 
 <% if current_user.admin? %>
   <%= render 'components/version_history', versions: @service_provider_versions %>
+<% end %>
+
+<% if IdentityConfig.store.service_config_wizard_enabled && wizard_draft_exists? %>
+  <%= render partial: 'wizard_in_progress_modals', locals: {destination_url: service_config_wizard_index_path(service_provider:)} %>
 <% end %>

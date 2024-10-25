@@ -484,7 +484,10 @@ feature 'Service Providers CRUD' do
       }
       service_provider.save!
 
-      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
+      expect(IdentityConfig.store).
+        to receive(:service_config_wizard_enabled).
+        at_least(:once).
+        and_return(false)
 
       login_as(admin)
       visit edit_service_provider_path(service_provider)
