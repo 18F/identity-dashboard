@@ -262,6 +262,38 @@ feature 'Service Config Wizard' do
       login_as(user)
     end
 
+    describe 'starting at the service provider index' do
+      let(:first_step) { ServiceConfigWizardController::STEPS[0] }
+
+      it 'will go to the first wizard step if nothing is saved' do
+        visit service_providers_path
+        click_on 'Create a new app'
+        expect(current_path).to eq(service_config_wizard_path(first_step))
+      end
+
+      it 'will show a modal that wipes existing steps if setup wizard was already started' do
+        team = create(:team)
+        user.teams << team
+        visit service_providers_path
+        click_on 'Create a new app'
+        click_on 'Next'
+        fill_in('App name', with: "Initial Name #{rand(1..1000)}")
+        fill_in('Friendly name', with: "Initial Friendly Name #{rand(1..1000)}")
+        select(team.name, from: 'Team')
+        click_on 'Next'
+        saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+        expect(saved_steps).to be(1)
+
+        visit service_providers_path
+        click_on 'Create a new app'
+        click_on 'Start a new application'
+        click_on 'Create a new application'
+        expect(current_path).to eq(service_config_wizard_path(first_step))
+        saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+        expect(saved_steps).to be(0)
+      end
+    end
+
     it 'is redirected to service_providers if not flagged in' do
       expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).
         at_least(ServiceConfigWizardController::STEPS.count + 1).
