@@ -28,6 +28,7 @@ class IdentityConfig
       config.add(:secret_key_base, type: :string)
       config.add(:serve_static_files, type: :boolean)
       config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
+      config.add(:access_controls_enabled, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
   end
