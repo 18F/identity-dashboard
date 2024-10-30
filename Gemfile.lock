@@ -681,7 +681,7 @@ DEPENDENCIES
   propshaft
   pry-byebug
   pry-rails
-  puma (>= 6.4.2)
+  puma (>= 6.4.3)
   pundit (>= 2.3.1)
   rack-canonical-host (>= 1.2.0)
   rack-timeout
