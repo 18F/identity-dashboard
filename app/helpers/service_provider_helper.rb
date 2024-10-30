@@ -187,4 +187,8 @@ module ServiceProviderHelper
       config_hash.merge({'pkce' => false, 'protocol' => 'oidc'})
     end
   end
+
+  def wizard_draft_exists?
+    policy_scope(WizardStep).where(user: current_user).any?
+  end
 end
