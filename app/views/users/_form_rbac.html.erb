@@ -1,0 +1,21 @@
+
+<%= form.input :email,
+     input_html: { class: 'usa-input', aria: { invalid: false } },
+     required: true %>
+<fieldset class="usa-fieldset margin-top-3">
+  <legend class="usa-label"><%= t('headings.users.rbac') %></legend>
+  <p><%= t('users.rbac_description_html') %></p>
+  <ul class="usa-input-list margin-bottom-3" >                 
+    <%= form.collection_radio_buttons(:admin,
+                                    {"Login.gov Admin" => true,
+                                      "Partner Admin" => false,
+                                      "Partner Developer" => false,
+                                      "Partner Readonly" => false},
+                                    :last, :first,
+                                    item_wrapper_tag: :li,
+                                    item_wrapper_class: 'usa-radio') do |b| %>
+        <%=  b.radio_button(class: "usa-radio__input") %>
+        <%=  b.label(class: "usa-radio__label")%>
+    <% end %>
+  </ul>
+</fieldset>

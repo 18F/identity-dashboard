@@ -3,7 +3,11 @@
 
 <%= simple_form_for(@user, html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
-  <%= render 'form', form: form %>
+  <% if IdentityConfig.store.access_controls_enabled %>
+    <%= render 'form_rbac', form: form %>
+  <% else %>
+    <%= render 'form', form: form %>
+  <% end %>
   <%= link_to(
           'Delete',
           user_path(@user),
