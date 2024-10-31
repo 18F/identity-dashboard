@@ -91,8 +91,8 @@
     padding-left: unset;
   }
 
-  .usa-checkbox__label,
-  .usa-radio__label {
+  .checkbox__container:first-of-type .usa-checkbox__label,
+  .usa-input__container li:first-of-type .usa-radio__label {
     margin-top: 0;
   }
 
