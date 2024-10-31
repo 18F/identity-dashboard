@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
-    targetRevision: lrappaport/separate-db-reviewapp
+    targetRevision: main
     path: cluster-reviewapp/envs/reviewapps
     kustomize:
       namePrefix: "{{ENVIRONMENT}}-"
@@ -606,7 +606,7 @@ spec:
   project: default
   source:
     repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
-    targetRevision: lrappaport/separate-db-reviewapp
+    targetRevision: main
     path: cluster-reviewapp/envs/reviewapps-db
     kustomize:
       namePrefix: "{{ENVIRONMENT}}-"
