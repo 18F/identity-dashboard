@@ -78,10 +78,20 @@ feature 'admin manages users' do
   scenario 'rbac flag shows edit user permissions' do
     flag_in
     admin = create(:admin)
+    roles = ['Login.gov Admin',
+            'Partner Admin',
+            'Partner Developer',
+            'Partner Readonly']
 
     login_as(admin)
     visit edit_user_path(admin.id)
 
     expect(page).to have_content('Permissions')
+    radio_labels = find_all('.usa-radio__label').map { |label|
+      label.text
+    }
+    roles.each do |role|
+      expect(radio_labels).to include(role)
+    end
   end
 end
