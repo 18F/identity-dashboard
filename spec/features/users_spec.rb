@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+def flag_in
+  IdentityConfig.store.access_controls_enabled = true
+end
+
 feature 'admin manages users' do
   scenario 'manage user page accessible from nav bar link' do
     admin = create(:admin)
@@ -19,6 +23,24 @@ feature 'admin manages users' do
     visit users_path
 
     users.each do |user|
+      expect(page).to have_content(user.email)
+    end
+  end
+
+  scenario 'rbac flag index page shows user table' do
+    flag_in
+    admin = create(:admin)
+    users = create_list(:user, 3)
+    everyone = [admin, users].flatten
+    headings = ['Email','Signed in','Role','Actions']
+
+    login_as(admin)
+    visit users_path
+
+    headings.each do |heading|
+      expect(page).to have_content(heading)
+    end
+    everyone.each do |user|
       expect(page).to have_content(user.email)
     end
   end
@@ -51,5 +73,25 @@ feature 'admin manages users' do
 
     expect(current_path).to eq(users_path)
     expect(find('tr', text: user.email)).to have_content('true')
+  end
+
+  scenario 'rbac flag shows edit user permissions' do
+    flag_in
+    admin = create(:admin)
+    roles = ['Login.gov Admin',
+            'Partner Admin',
+            'Partner Developer',
+            'Partner Readonly']
+
+    login_as(admin)
+    visit edit_user_path(admin.id)
+
+    expect(page).to have_content('Permissions')
+    radio_labels = find_all('.usa-radio__label').map { |label|
+      label.text
+    }
+    roles.each do |role|
+      expect(radio_labels).to include(role)
+    end
   end
 end
