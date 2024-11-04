@@ -11,7 +11,8 @@
   <%= form.collection_check_boxes(db_fieldname,
                                   inputs,
                                   :last, :first,
-                                  item_wrapper_tag: :div) do |b| %>
+                                  item_wrapper_tag: :div,
+                                  item_wrapper_class: 'checkbox__container') do |b| %>
     <%= b.check_box class: "usa-checkbox__input" %>
     <%= b.label class: "usa-checkbox__label" %>
   <% end %>
