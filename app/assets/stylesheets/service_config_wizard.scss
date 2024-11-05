@@ -3,6 +3,7 @@
 .wizard-container {
   pre {
     overflow: scroll;
+    max-width: calc(100vw - 2.8rem);
   }
 
   .usa-intro {
@@ -19,9 +20,6 @@
   }
 
   .wizard-field {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     margin-top: 1.5rem;
     padding: 0 0 1.5rem 0;
 
@@ -31,9 +29,21 @@
 
     .usa-label__group,
     .usa-input__container {
-      flex: 0 0 46.25%;
-      min-width: 400px;
+      width: 100%;
     }
+
+    @include at-media('desktop') {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .usa-label__group,
+      .usa-input__container {
+        flex: 0 0 46.25%;
+        min-width: 400px;
+      }
+    }
+
     .usa-input__container,
     pre {
       margin-bottom: 1.5rem;
@@ -63,12 +73,12 @@
   // Much of this is to get the Cancel button to float right
   .wizard-footer {
     display: flex;
-    margin-top: -1.5rem;
-    padding-top: 1.5rem;
+    flex-wrap: wrap;
     border-top: 1px solid $theme-color-primary-light;
 
     a, input {
       flex: 0 0 auto;
+      margin-top: 1.5rem;
     }
 
     &:before {
