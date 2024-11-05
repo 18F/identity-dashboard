@@ -354,23 +354,16 @@ secret_detection:
   before_script:
     - apk add --no-cache jq
     - git fetch origin --quiet
-  script:
+  after_script:
     - |
-      if [ -n "$SECRET_DETECTION_SHOULD_RUN" ]; then
-        /analyzer run
-        if [ -f "$SECRET_DETECTION_REPORT_FILE" ]; then
-          # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
-          if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
-            echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
-            echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
-            exit 80
-          fi
-        else
-          echo "Artifact $SECRET_DETECTION_REPORT_FILE does not exist. The 'secret-detection' job likely didn't create one. Hence, no evaluation can be performed."
+      if [ -f "$SECRET_DETECTION_REPORT_FILE" ]; then
+        # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
+        if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
+          echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
+          echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
         fi
       else
-        echo "Skipping because this is not a PR or is not targeting main"
-        exit 0
+        echo "Artifact $SECRET_DETECTION_REPORT_FILE does not exist. The 'secret-detection' job likely didn't create one. Hence, no evaluation can be performed."
       fi
 
 # Export the automated ECR scan results into a format Gitlab can use
