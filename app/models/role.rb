@@ -17,5 +17,4 @@ class Role < ApplicationRecord
   def legacy_admin?
     name == 'Login.gov Admin'
   end
-
 end
