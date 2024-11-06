@@ -337,9 +337,8 @@ secret_detection:
   artifacts:
     paths:
       - gl-secret-detection-report.json
-  reports:
-    secret_detection: gl-secret-detection-report.json
-    
+    reports:
+      secret_detection: gl-secret-detection-report.json
   variables:
 #     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
