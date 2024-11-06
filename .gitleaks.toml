@@ -6,6 +6,7 @@ useDefault = true
 [allowlist]
   description = "Commits with sample keys or auto-generated keys that have been commented out"
   commits = [
+    "5c7649fbe93218eb9f65f52bfcdb6a8aee8c27d3",
     "67314306441027718bd51ff03bb2beea3b47b2fa",
     "cb276714e0e8379d25d7a6942068633a0fb9744b",
     "2bd17a572dc0fb1b620e4f245a35d4f81625d83f",
