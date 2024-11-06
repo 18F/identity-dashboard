@@ -328,15 +328,12 @@ stop-review-app:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   stage: scan
   allow_failure: false
   needs: []
-  variables:
-    SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
-    SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
