@@ -332,7 +332,7 @@ include:
 
 secret_detection:
   stage: scan
-  allow_failure: true
+  allow_failure: false
   needs: []
   artifacts:
     paths:
@@ -342,7 +342,7 @@ secret_detection:
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
-    GIT_DEPTH: "50"
+    GIT_DEPTH: "100"
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
@@ -352,12 +352,11 @@ secret_detection:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
       variables:
         SECRET_DETECTION_SHOULD_RUN: "true"
+        SECRET_DETECTION_LOG_OPTIONS: origin/${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA}
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "main" && $CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME == "main"
       variables:
         SECRET_DETECTION_SHOULD_RUN: "true"
-    - if: $CI_COMMIT_BRANCH
-      variables:
-        SECRET_DETECTION_SHOULD_RUN: "true"
+        SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
   before_script:
     - apk add --no-cache jq
     - git fetch origin --quiet
