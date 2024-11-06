@@ -334,6 +334,12 @@ secret_detection:
   stage: scan
   allow_failure: false
   needs: []
+  artifacts:
+    paths:
+      - gl-secret-detection-report.json
+  reports:
+    secret_detection: gl-secret-detection-report.json
+    
   variables:
 #     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
@@ -356,22 +362,8 @@ secret_detection:
     - git fetch origin --quiet
   script:
     - |
-      if [ -n "$SECRET_DETECTION_SHOULD_RUN" ]; then
+        echo "running analyzer"
         /analyzer run
-        if [ -f "$SECRET_DETECTION_REPORT_FILE" ]; then
-          # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
-          if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
-            echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
-            echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
-            exit 80
-          fi
-        else
-          echo "Artifact $SECRET_DETECTION_REPORT_FILE does not exist. The 'secret-detection' job likely didn't create one. Hence, no evaluation can be performed."
-        fi
-      else
-        echo "Skipping because this is not a PR or is not targeting main"
-        exit 0
-      fi
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
