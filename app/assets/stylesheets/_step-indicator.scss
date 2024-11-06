@@ -59,7 +59,7 @@ $step-indicator-line-height: 4px;
       & .usa-step-indicator__current-step {
         width: 2rem;
         height: 2rem;
-        padding: 0.3rem 0 0 0.1rem;
+        padding: 0.6ex 0 0 0;
         background-color: color('success');
       }
       & .usa-step-indicator__total-steps {
