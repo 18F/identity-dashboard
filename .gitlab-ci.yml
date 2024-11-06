@@ -338,6 +338,7 @@ secret_detection:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
     GIT_DEPTH: "100"
+    SECURE_LOG_LEVEL: "trace"
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
