@@ -1,9 +1,15 @@
 @use 'uswds-core' as *;
 
 .wizard-container {
-  pre {
+  fieldset {
+    position: relative;
+    max-width: 100%;
+  }
+
+  pre,
+  dl {
     overflow: scroll;
-    max-width: calc(100vw - 2.8rem);
+    max-width: 100%;
   }
 
   .usa-intro {
@@ -29,7 +35,9 @@
 
     .usa-label__group,
     .usa-input__container {
+      position: relative;
       width: 100%;
+      max-width: calc(100vw - 2.1rem);
     }
 
     @include at-media('desktop') {
