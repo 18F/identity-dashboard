@@ -342,8 +342,6 @@ secret_detection:
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
-    SECURE_LOG_LEVEL: "debug"
-    GIT_DEPTH: "100"
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
@@ -368,8 +366,6 @@ secret_detection:
         else
           echo "Artifact $SECRET_DETECTION_REPORT_FILE does not exist. The 'secret-detection' job likely didn't create one. Hence, no evaluation can be performed."
         fi
-
-    
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
