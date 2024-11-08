@@ -36,21 +36,20 @@ class ApplicationController < ActionController::Base
     return @analytics if @analytics
     @analytics =
       Analytics.new(
-        user: analytics.user,
+        user: analytics_user,
         request: request,
         session: session,
-        ahoy: ahoy,
       )
   end
 
   def analytics_user
-    current_user || AnonymousUser.new
+    current_user || { uuid: 'anonymous-uuid' }
   end
 
-  def sign_out(*args)
-    request.cookie_jar.delete('ahoy_visit')
-    super
-  end
+  # def sign_out(*args)
+  #   request.cookie_jar.delete('ahoy_visit')
+  #   super
+  # end
 
   private
 

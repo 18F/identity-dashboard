@@ -3,17 +3,17 @@
 class Analytics
   include AnalyticsEvents
 
-  attr_reader :user, :request, :session
+  attr_reader :user, :request, :session, :lg_logger
 
   # @param [User] user
   # @param [ActionDispatch::Request,nil] request
   # @param [Hash] session
-  # @param [Ahoy::Tracker,nil] ahoy
-  def initialize(user:, request:, session:, ahoy: nil)
+  # @param [LGLogger,nil] lg_logger
+  def initialize(user:, request:, session:, lg_logger: nil)
     @user = user
     @request = request
     @session = session
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
+    @lg_logger = lg_logger || LGLogger.new(request: request, user: user)
   end
 
   def track_event(event, attributes = {})
@@ -28,9 +28,8 @@ class Analytics
     }
 
     analytics_hash.merge!(request_attributes) if request
-    analytics_hash.merge!(ab_test_attributes(event))
 
-    ahoy.track(event, analytics_hash)
+    lg_logger.track(event, analytics_hash)
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
@@ -50,13 +49,6 @@ class Analytics
       pid: Process.pid,
       trace_id: request.headers['X-Amzn-Trace-Id'],
     }
-
-    attributes[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      attributes[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      attributes[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
 
     attributes.merge!(browser_attributes)
   end

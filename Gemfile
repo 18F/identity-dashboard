@@ -10,6 +10,7 @@ gem 'acts_as_paranoid'
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
 gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-s3', require: false
+gem 'browser'
 gem 'bundler'
 gem 'colorize'
 gem 'cssbundling-rails'
@@ -25,6 +26,7 @@ gem 'jsbundling-rails', '>= 1.2.2'
 gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'
 gem 'kaminari'
+gem 'lru_redux'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.16.5'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',

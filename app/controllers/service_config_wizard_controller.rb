@@ -21,6 +21,7 @@ class ServiceConfigWizardController < AuthenticatedController
   ]
 
   def new
+    analytics.guided_flow_started
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
   end
 
