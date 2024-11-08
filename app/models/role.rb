@@ -30,14 +30,6 @@ class Role
     ALL_ROLES.find {|r| r.name == name}
   end
 
-  # We should soon be able to remove this in favor of using Rails built-in methods
-  # such as `accepts_nested_attributes_for`
-  def self.radio_collection
-    ALL_ROLES.each_with_object({}) do |role, collection|
-      collection[role.name] = role.legacy_admin?
-    end
-  end
-
   def legacy_admin?
     name == 'Login.gov Admin'
   end

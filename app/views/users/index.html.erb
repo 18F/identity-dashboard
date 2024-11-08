@@ -36,7 +36,7 @@
                           role: 'img' %></td>
         <td>
           <% if IdentityConfig.store.access_controls_enabled %>
-            <%= user.admin? ? 'Login.gov Admin' : 'Partner Admin' %>
+            <%= user.primary_role %>
           <% else %>
             <%= image_tag 'security-key.svg',
                             height: '27', width: '27',
