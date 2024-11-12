@@ -8,23 +8,20 @@ class Analytics
   # @param [User] user
   # @param [ActionDispatch::Request,nil] request
   # @param [Hash] session
-  # @param [LGLogger,nil] lg_logger
-  def initialize(user:, request:, session:, lg_logger: nil)
+  # @param [LGLogger,nil] logger
+  def initialize(user:, request:, session:, logger: nil)
+    puts 'Analytics initialized'
     @user = user
     @request = request
     @session = session
-    @lg_logger = lg_logger || LGLogger.new(request: request, user: user)
+    @lg_logger = logger || create_lg_logger
   end
 
   def track_event(event, attributes = {})
     attributes.delete(:pii_like_keypaths)
-    update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
       event_properties: attributes.except(:user_id).compact,
-      new_event: first_event_this_session?,
       path: request&.path,
-      session_duration: session_duration,
-      user_id: attributes[:user_id] || user.uuid,
     }
 
     analytics_hash.merge!(request_attributes) if request
@@ -32,22 +29,10 @@ class Analytics
     lg_logger.track(event, analytics_hash)
   end
 
-  def update_session_events_and_paths_visited_for_analytics(event)
-    session[:events] ||= {}
-    session[:first_event] = !@session[:events].key?(event)
-    session[:events][event] = true
-  end
-
-  def first_event_this_session?
-    session[:first_event]
-  end
-
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
-      hostname: request.host,
-      pid: Process.pid,
-      trace_id: request.headers['X-Amzn-Trace-Id'],
+      hostname: request.host
     }
 
     attributes.merge!(browser_attributes)
@@ -70,13 +55,13 @@ class Analytics
     }
   end
 
-  def session_duration
-    session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
-  end
+  private
 
-  def session_started_at
-    value = session[:session_started_at]
-    return value unless value.is_a?(String)
-    Time.zone.parse(value)
+  def create_lg_logger
+    @lg_logger || LGLogger.new(
+      request: request,
+      user: user,
+      session: session,
+    )
   end
 end

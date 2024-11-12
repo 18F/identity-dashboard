@@ -33,8 +33,7 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    return @analytics if @analytics
-    @analytics =
+    @analytics ||=
       Analytics.new(
         user: analytics_user,
         request: request,
@@ -45,11 +44,6 @@ class ApplicationController < ActionController::Base
   def analytics_user
     current_user || { uuid: 'anonymous-uuid' }
   end
-
-  # def sign_out(*args)
-  #   request.cookie_jar.delete('ahoy_visit')
-  #   super
-  # end
 
   private
 

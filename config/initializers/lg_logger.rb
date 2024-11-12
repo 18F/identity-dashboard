@@ -5,13 +5,14 @@ require 'securerandom'
 EVENT_LOG_FILENAME = 'events.log'
 
 class LGLogger
-  attr_reader :request, :controller, :user, :options
+  attr_reader :request, :controller, :user, :options, :session
 
   def initialize(**options)
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
     @visit_token = options[:visit_token]
     @user = options[:user]
+    @session = options[:session]
     @options = options
   end
 
@@ -22,11 +23,9 @@ class LGLogger
   end
 
   def track(name, properties = {}, options = {})
-    properties.delete(:pid)
-    properties.delete(:trace_id)
     data = {
       visit_token: visit_token,
-      user_id: user.try(:id),
+      user_id: user.try(:uuid),
       name: name.to_s,
       properties: properties,
       time: trusted_time(options[:time]),
@@ -37,9 +36,7 @@ class LGLogger
   end
 
   def track_event(data)
-    data.delete(:user_id)
     data[:id] = data.delete(:event_id)
-    data[:visitor_id] = visitor_token
     data[:visit_id] = data.delete(:visit_token)
     data[:log_filename] = EVENT_LOG_FILENAME
 
@@ -47,11 +44,7 @@ class LGLogger
   end
 
   def visit_token
-    @visit_token ||= ensure_token(generate_uuid)
-  end
-
-  def visitor_token
-    @visitor_token ||= ensure_token(generate_uuid)
+    session[:visit_token] ||= ensure_token(generate_uuid)
   end
 
   protected
