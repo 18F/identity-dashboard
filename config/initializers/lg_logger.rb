@@ -18,7 +18,7 @@ class LGLogger
 
   def lg_logger
     @lg_logger ||= ActiveSupport::Logger.new(
-      Rails.root.join('log', EVENT_LOG_FILENAME)
+      Rails.root.join('log', EVENT_LOG_FILENAME),
     )
   end
 
@@ -29,7 +29,7 @@ class LGLogger
       name: name.to_s,
       properties: properties,
       time: trusted_time(options[:time]),
-      event_id: options[:id] || generate_uuid
+      event_id: options[:id] || generate_uuid,
     }.select { |_, v| v }
 
     track_event(data)
@@ -62,6 +62,6 @@ class LGLogger
 
   def ensure_token(token)
     token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
-    token.to_s.gsub(/[^a-z0-9\-]/i, "").first(64) if token
+    token.to_s.gsub(/[^a-z0-9\-]/i, '').first(64) if token
   end
 end

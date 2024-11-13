@@ -18,7 +18,6 @@ class Analytics
   end
 
   def track_event(event, attributes = {})
-    attributes.delete(:pii_like_keypaths)
     analytics_hash = {
       event_properties: attributes.except(:user_id).compact,
       path: request&.path,
@@ -32,7 +31,7 @@ class Analytics
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
-      hostname: request.host
+      hostname: request.host,
     }
 
     attributes.merge!(browser_attributes)
