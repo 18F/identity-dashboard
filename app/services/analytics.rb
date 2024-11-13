@@ -3,7 +3,7 @@
 class Analytics
   include AnalyticsEvents
 
-  attr_reader :user, :request, :session, :lg_logger
+  attr_reader :user, :request, :session
 
   # @param [User] user
   # @param [ActionDispatch::Request,nil] request
