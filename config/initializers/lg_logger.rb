@@ -36,7 +36,6 @@ class LGLogger
   end
 
   def track_event(data)
-    data[:id] = data.delete(:event_id)
     data[:visit_id] = data.delete(:visit_token)
     data[:log_filename] = EVENT_LOG_FILENAME
 
