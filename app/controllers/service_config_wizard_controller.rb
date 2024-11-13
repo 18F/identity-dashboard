@@ -21,7 +21,6 @@ class ServiceConfigWizardController < AuthenticatedController
   ]
 
   def new
-    analytics.sp_config_created({arbitrary: 'data'})
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
   end
 
