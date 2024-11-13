@@ -4,7 +4,7 @@ require 'securerandom'
 
 EVENT_LOG_FILENAME = 'events.log'
 
-class LGLogger
+class LoginLogger
   attr_reader :request, :controller, :user, :options, :session
 
   def initialize(**options)
@@ -16,8 +16,8 @@ class LGLogger
     @options = options
   end
 
-  def lg_logger
-    @lg_logger ||= ActiveSupport::Logger.new(
+  def login_logger
+    @login_logger ||= ActiveSupport::Logger.new(
       Rails.root.join('log', EVENT_LOG_FILENAME),
     )
   end
@@ -49,7 +49,7 @@ class LGLogger
   protected
 
   def log_event(data)
-    lg_logger.info(data.to_json)
+    login_logger.info(data.to_json)
   end
 
   def generate_uuid
