@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_06_220055) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_13_135909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,13 +79,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_220055) do
     t.text "description", default: ""
     t.integer "agency_id"
     t.index ["name"], name: "index_groups_on_name", unique: true
-  end
-
-  create_table "roles", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
   create_table "security_events", force: :cascade do |t|
@@ -193,6 +186,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_06_220055) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "service_providers", "agencies"
   add_foreign_key "service_providers", "groups"
-  add_foreign_key "user_groups", "roles", column: "role_name", primary_key: "name"
   add_foreign_key "wizard_steps", "users"
 end
