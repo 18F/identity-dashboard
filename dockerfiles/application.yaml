@@ -496,6 +496,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
+            - op: replace
+              path: /spec/template/spec/containers/1/imagePullPolicy
+              value: Always
         # Patch Worker Image
         - target:
             kind: Deployment
