@@ -27,6 +27,8 @@
     <!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<%= asset_path 'favicons/favicon-144.png' %>">
 
+    <link rel="canonical" href="<%= request.base_url.gsub('portal', 'dashboard') %>" />
+    
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>
     <%= javascript_include_tag 'init.js' %>
