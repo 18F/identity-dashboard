@@ -145,6 +145,7 @@ class WizardStep < ApplicationRecord
   ### end of validations copied from IdentityValidations::ServiceProviderValidation
 
   validate :issuer_service_provider_uniqueness, on: 'issuer'
+  validate :failure_to_proof_url_for_idv, on: 'redirects'
 
   # SimpleForm uses this
   def self.reflect_on_association(relation)
@@ -313,6 +314,12 @@ class WizardStep < ApplicationRecord
   def issuer_service_provider_uniqueness
     return if existing_service_provider? && original_service_provider.issuer == issuer
     errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
+  end
+
+  def failure_to_proof_url_for_idv
+    using_idv = ial == '2'
+    return if !using_idv
+    errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end
 
   def original_service_provider
