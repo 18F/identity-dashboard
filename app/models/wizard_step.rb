@@ -317,7 +317,7 @@ class WizardStep < ApplicationRecord
   end
 
   def failure_to_proof_url_for_idv
-    using_idv = ial == '2'
+    using_idv = ial.to_i > 1
     return if !using_idv
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end
