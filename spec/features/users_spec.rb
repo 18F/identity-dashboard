@@ -77,7 +77,6 @@ feature 'admin manages users' do
 
   scenario 'rbac flag shows edit user permissions' do
     flag_in
-    Role.seed
     admin = create(:admin)
     roles = ['Login.gov Admin',
             'Partner Admin',
