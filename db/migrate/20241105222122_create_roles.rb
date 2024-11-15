@@ -7,11 +7,5 @@ class CreateRoles < ActiveRecord::Migration[7.1]
 
       t.index ['name'], name: 'index_roles_on_name', unique: true
     end
-
-    reversible do |direction|
-      direction.up do
-        Role.seed
-      end
-    end
   end
 end

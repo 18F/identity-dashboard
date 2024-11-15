@@ -31,4 +31,10 @@ RSpec.describe UserTeam, type: :model do
       expect { user_team.destroy }.to change { PaperTrail::Version.count }.by(1)
     end
   end
+
+  describe '#valid?' do
+    it { should allow_value(nil).for(:role_name) }
+    it { should allow_value('Login.gov Admin').for(:role_name) }
+    it { should_not allow_value('Some Random Admin').for(:role_name) }
+  end
 end

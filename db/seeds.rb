@@ -14,5 +14,4 @@ if Rails.env.development? || Rails.env.test?
     user.last_name = 'Ministrator'
     user.admin = true
   end
-  Role.seed
 end

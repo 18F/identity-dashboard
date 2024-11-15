@@ -8,4 +8,14 @@ class UserTeam < ApplicationRecord
 
   validates_uniqueness_of :user_id, scope: :group_id, on: :create,
                           :message=> 'This user is already a member of the team.'
+  validate :role_exists_if_present
+
+  def role_exists_if_present
+    return unless role_name
+    unless Role.find role_name
+      errors.add(:role_name, :invalid)
+      return false
+    end
+    true
+  end
 end
