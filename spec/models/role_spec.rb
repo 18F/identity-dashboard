@@ -2,23 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Role, type: :model do
   describe '.seed' do
-    it 'creates a missing role' do
-      expect do
-        Role.seed
-      end.to(change {Role.count}.by(4))
-      admin_roles = Role.where(name: 'Login.gov Admin')
-      expect(admin_roles.count).to be(1)
-    end
-
-    it 'does not create a role that already exists' do
-      existing_role = create(:role, name: 'Login.gov Admin')
-      existing_attributes = existing_role.attributes
-      expect do
-        Role.seed
-      end.to(change {Role.count}.by(3))
-      admin_roles = Role.where(name: 'Login.gov Admin')
-      expect(admin_roles.count).to be(1)
-      expect(admin_roles.first.attributes).to eq(existing_attributes)
+    it 'knows which roles are legacy admin' do
+      site_admin = Role.find 'Login.gov Admin'
+      expect(site_admin.legacy_admin?).to be_truthy
+      other_roles = Role::ALL_ROLES - [site_admin]
+      other_roles.each do |other_role|
+        expect(other_role.legacy_admin?).to be_falsey
+      end
     end
   end
 end
