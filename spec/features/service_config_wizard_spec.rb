@@ -343,7 +343,9 @@ feature 'Service Config Wizard' do
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
 
-        expect(page).to_not have_content(t('simple_form.labels.service_provider.failure_to_proof_url'))
+        expect(page).to_not have_content(
+          t('simple_form.labels.service_provider.failure_to_proof_url'),
+        )
       end
 
       it 'validates Failure to proof URL input' do
@@ -356,15 +358,23 @@ feature 'Service Config Wizard' do
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: '')
         click_on 'Next'
-        expect(page).to have_content("#{t('simple_form.labels.service_provider.failure_to_proof_url').capitalize} can't be empty")
+        expect(page).to have_content(
+          "#{t('simple_form.labels.service_provider.failure_to_proof_url').
+          capitalize} can't be empty",
+        )
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'hello')
         click_on 'Next'
-        expect(page).to have_content("#{t('simple_form.labels.service_provider.failure_to_proof_url').capitalize} is invalid")
+        expect(page).to have_content(
+          "#{t('simple_form.labels.service_provider.failure_to_proof_url').capitalize} is invalid",
+        )
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'https://test.gov')
         click_on 'Next'
-        expect(page).to_not have_content(t('simple_form.labels.service_provider.failure_to_proof_url').capitalize)
+        expect(page).to_not have_content(
+          t('simple_form.labels.service_provider.failure_to_proof_url').
+          capitalize,
+        )
       end
     end
 
