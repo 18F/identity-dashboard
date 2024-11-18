@@ -214,7 +214,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'can edit an existing config' do
-      existing_config = create(:service_provider, :ready_to_activate)
+      existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       expect(find_field('App name').value).to eq(existing_config.app_name)
@@ -320,6 +320,61 @@ feature 'Service Config Wizard' do
       ServiceConfigWizardController::STEPS.each do |step_name|
         visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
+      end
+    end
+
+    context 'on Redirects page' do
+      it 'renders Failure to proof URL input if IAL2 is selected' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate_ial_2,
+                                 user: user)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('redirects')
+
+        expect(page).to have_content(t('simple_form.labels.service_provider.failure_to_proof_url'))
+      end
+
+      it 'does not render Failure to proof URL input if IAL1 is selected' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate_ial_1,
+                                 user: user)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('redirects')
+
+        expect(page).to_not have_content(
+          t('simple_form.labels.service_provider.failure_to_proof_url'),
+        )
+      end
+
+      it 'validates Failure to proof URL input' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate_ial_2,
+                                 user: user)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('redirects')
+
+        fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: '')
+        click_on 'Next'
+        expect(page).to have_content(
+          "#{t('simple_form.labels.service_provider.failure_to_proof_url').
+          capitalize} can't be empty",
+        )
+
+        fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'hello')
+        click_on 'Next'
+        expect(page).to have_content(
+          "#{t('simple_form.labels.service_provider.failure_to_proof_url').capitalize} is invalid",
+        )
+
+        fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'https://test.gov')
+        click_on 'Next'
+        expect(page).to_not have_content(
+          t('simple_form.labels.service_provider.failure_to_proof_url').
+          capitalize,
+        )
       end
     end
 
