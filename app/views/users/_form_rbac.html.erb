@@ -7,7 +7,7 @@
   <ul class="usa-input-list margin-bottom-3" >
     <%= form.fields_for @user_team do |ut_form| %>
       <%= ut_form.collection_radio_buttons(:role_name,
-                                    Role::ALL_ROLES,
+                                    Role::ACTIVE_ROLES,
                                     :friendly_name, :name,
                                     item_wrapper_tag: :li,
                                     item_wrapper_class: 'usa-radio') do |b| %>

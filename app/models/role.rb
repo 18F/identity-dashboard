@@ -19,15 +19,17 @@ class Role
     @friendly_name = friendly_name || name
   end
 
-  ALL_ROLES = [
-    new(name: 'Login.gov Admin'),
+  SITE_ADMIN = new(name: 'Login.gov Admin')
+
+  ACTIVE_ROLES = [
+    SITE_ADMIN,
     new(name: 'Partner Admin'),
     new(name: 'Partner Developer'),
     new(name: 'Partner Readonly'),
   ].freeze
 
   def self.find(name)
-    ALL_ROLES.find {|r| r.name == name}
+    ACTIVE_ROLES.find {|r| r.name == name}
   end
 
   def legacy_admin?

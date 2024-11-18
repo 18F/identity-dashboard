@@ -54,8 +54,26 @@ describe UsersController do
       end
 
       it 'has a success response' do
-        get :edit, params: { id: 1 }
+        get :edit, params: { id: user.id }
         expect(response.status).to eq(200)
+      end
+
+      context 'editing a user without a team' do
+        let(:editing_user) { build(:user) }
+
+        it 'defaults to the site admin role for admins' do
+          editing_user.admin = true
+          editing_user.save!
+          get :edit, params: { id: editing_user.id }
+          expect(assigns['user_team'].role_name).to eq(Role::SITE_ADMIN.name)
+        end
+
+        it 'defaults to the admin role for admins' do
+          editing_user.admin = false
+          editing_user.save!
+          get :edit, params: { id: editing_user.id }
+          expect(assigns['user_team'].role_name).to eq('Partner Admin')
+        end
       end
     end
     context 'when the user is not an admin' do

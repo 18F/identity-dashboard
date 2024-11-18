@@ -18,4 +18,8 @@ class UserTeam < ApplicationRecord
     end
     true
   end
+
+  def role=(role)
+    self.role_name = role.name
+  end
 end
