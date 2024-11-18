@@ -8,11 +8,8 @@
                  label: accessible_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },
-                 hint: if form.object.persisted?
-                     t('service_provider_form.change_issuer')
-                   else
-                     t('service_provider_form.issuer_html')
-                   end %>
+                 hint: t('service_provider_form.issuer_html')
+  %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>
