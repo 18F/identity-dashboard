@@ -13,6 +13,8 @@ en:
       settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our developer docs</a> has additional information about setting up your app."
       protocol: The protocol you choose will determine how you structure the requests made to Login.gov. Note that we recommend using OIDC because SAML is significantly more difficult to set up.
       protocol_html: The <a href='https://developers.login.gov/oidc/getting-started/' class='usa-link'>OpenID Connect page</a> and the <a href='https://developers.login.gov/saml/getting-started/' class='usa-link'>SAML page</a> of the developer docs have more information about the authentication requirements.
+      issuer_html: "The <a class='usa-link' href='https://developers.login.gov/production/#production-configuration-process'>Production configuration process section</a> of the developer docs has more information about issuer strings."
+      settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our developer docs</a> has additional information about setting up your app."
     labels:
       required: required
       select: "- Select -"
