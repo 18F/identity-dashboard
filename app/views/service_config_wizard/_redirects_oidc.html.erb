@@ -6,7 +6,7 @@
                  hint: t('service_provider_form.push_notification_url') %>
   <% if show_proof_failure_url? %>
     <%= form.input :failure_to_proof_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
+                   input_html: { class: 'usa-input' },
                    label_html: { class: 'usa-input-required'},
                    label: accessible_label(form, 'Failure to Proof URL', :failure_to_proof_url),
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),

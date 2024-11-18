@@ -6,7 +6,7 @@
                  disabled: issuer_read_only?,
                  label: accessible_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
                  label_html: { class: 'usa-input-required' },
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  hint: if form.object.persisted?
                      t('service_provider_form.change_issuer')
                    else

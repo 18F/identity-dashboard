@@ -27,7 +27,7 @@
       } %>
 
     <%= form.input :app_name,
-                    input_html: { class: 'usa-input', aria: { invalid: false } },
+                    input_html: { class: 'usa-input' },
                     label_html: { class: 'usa-input-required'},
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.app_name'), :app_name),
@@ -35,7 +35,7 @@
                     hint: t('service_provider_form.app_name_html') %>
 
     <%= form.input :friendly_name,
-                    input_html: { class: 'usa-input', aria: { invalid: false } },
+                    input_html: { class: 'usa-input' },
                     label_html: { class: 'usa-input-required'},
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.friendly_name'), :friendly_name),

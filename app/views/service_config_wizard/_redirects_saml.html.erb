@@ -1,7 +1,7 @@
 <h2>SAML requirements</h2>
 <%= wizard_form do |form| %>
   <%= form.input :acs_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
+                   input_html: { class: 'usa-input' },
                    label_html: { class: 'usa-input-required'},
                    label: accessible_label(form, t('simple_form.labels.service_provider.acs_url'), :acs_url),
                    required: true,
@@ -39,7 +39,7 @@
   
 
   <%= form.input :return_to_sp_url,
-                input_html: { class: 'usa-input', aria: { invalid: false } },
+                input_html: { class: 'usa-input' },
                 label_html: { class: 'usa-input-required'},
                 label: accessible_label(form, t('simple_form.labels.service_provider.return_to_sp_url'), :return_to_sp_url),
                 required: true,
@@ -51,7 +51,7 @@
                  hint: t('service_provider_form.push_notification_url') %>
   <% if show_proof_failure_url? %>
     <%= form.input :failure_to_proof_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
+                   input_html: { class: 'usa-input' },
                    label_html: { class: 'usa-input-required'},
                    label: accessible_label(form, 'Failure to Proof URL', :failure_to_proof_url),
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),

@@ -23,7 +23,7 @@
                  hint: t('service_provider_form.app_name_html') %>
 
   <%= form.input :friendly_name,
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
                  hint: t('service_provider_form.friendly_name_html') %>
@@ -112,7 +112,7 @@
                  disabled: form.object.persisted?,
                  label: 'Issuer',
                  label_html: { class: 'usa-input-required' },
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  hint: if form.object.persisted?
                      I18n.t('service_provider_form.change_issuer')
                    else
@@ -212,7 +212,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <div class='saml-fields'>
     <%= form.input :acs_url,
-                   input_html: { class: 'usa-input', aria: { invalid: false } },
+                   input_html: { class: 'usa-input' },
                    label_html: { class: 'usa-input-required'},
                    label: 'Assertion Consumer Service URL',
                    required: true,
@@ -250,14 +250,14 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
 
   <div class='saml-fields'>
     <%= form.input :return_to_sp_url,
-                  input_html: { class: 'usa-input', aria: { invalid: false } },
+                  input_html: { class: 'usa-input' },
                   label_html: { class: 'usa-input-required'},
                   label: 'Return to App URL',
                   required: true,
                   hint: t('service_provider_form.return_to_app_url_html') %>
   </div>
   <%= form.input :failure_to_proof_url,
-                 input_html: { class: 'usa-input', aria: { invalid: false } },
+                 input_html: { class: 'usa-input' },
                  label_html: { class: 'usa-input-required'},
                  label: 'Failure to Proof URL',
                  hint: I18n.t('service_provider_form.failure_to_proof_url'),

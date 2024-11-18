@@ -2,11 +2,11 @@
   <%= form.input :name,
     label: "Name",
     label_html: { class: 'usa-label usa-input-required' },
-    input_html: { class: 'usa-input', aria: { invalid: false } }
+    input_html: { class: 'usa-input' }
   %>
 
   <%= form.input :agency_id,
-                   input_html: { class: 'usa-select', aria: { invalid: false } },
+                   input_html: { class: 'usa-select' },
                    collection: @agencies,
                    label: 'Agency'.html_safe,
                    label_html: { class: 'usa-input-required'},
