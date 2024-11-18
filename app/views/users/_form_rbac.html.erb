@@ -2,18 +2,17 @@
      input_html: { class: 'usa-input', aria: { invalid: false } },
      required: true %>
 <fieldset class="usa-fieldset margin-top-3">
-  <legend class="usa-label"><%= t('headings.users.rbac') %></legend>
+  <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
   <p><%= t('users.rbac_description_html') %></p>
   <ul class="usa-input-list margin-bottom-3" >
     <%= form.fields_for @user_team do |ut_form| %>
-      <%= ut_form.collection_radio_buttons(:role_name,
-                                    Role::ACTIVE_ROLES,
-                                    :friendly_name, :name,
-                                    item_wrapper_tag: :li,
-                                    item_wrapper_class: 'usa-radio') do |b| %>
-        <%=  b.radio_button(class: "usa-radio__input") %>
-        <%=  b.label(class: "usa-radio__label")%>
-      <% end %>
+      <%= render partial: 'components/radio_collection', locals: {
+        form: ut_form,
+        db_fieldname: :role_name,
+        fieldname: 'rbac_description',
+        inputs: Role::ACTIVE_ROLES.map {|r| [r.name, r.friendly_name]},
+        default: @user_team.role_name
+      } %>
     <% end %>
   </ul>
 </fieldset>
