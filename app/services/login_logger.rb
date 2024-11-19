@@ -26,6 +26,7 @@ class LoginLogger
     data = {
       visit_token: visit_token,
       user_id: user.try(:uuid),
+      user_role: user_role,
       name: name.to_s,
       properties: properties,
       time: trusted_time(options[:time]),
@@ -63,5 +64,10 @@ class LoginLogger
   def ensure_token(token)
     token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
     token.to_s.gsub(/[^a-z0-9\-]/i, '').first(64) if token
+  end
+
+  def user_role
+    user_id = user.try(:id)
+    UserTeam.find_by(user_id: user_id)&.role_name
   end
 end
