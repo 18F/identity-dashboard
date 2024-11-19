@@ -19,23 +19,17 @@ class Role
     @friendly_name = friendly_name || name
   end
 
-  ALL_ROLES = [
-    new(name: 'Login.gov Admin'),
+  SITE_ADMIN = new(name: 'Login.gov Admin')
+
+  ACTIVE_ROLES = [
+    SITE_ADMIN,
     new(name: 'Partner Admin'),
     new(name: 'Partner Developer'),
     new(name: 'Partner Readonly'),
   ].freeze
 
   def self.find(name)
-    ALL_ROLES.find {|r| r.name == name}
-  end
-
-  # We should soon be able to remove this in favor of using Rails built-in methods
-  # such as `accepts_nested_attributes_for`
-  def self.radio_collection
-    ALL_ROLES.each_with_object({}) do |role, collection|
-      collection[role.name] = role.legacy_admin?
-    end
+    ACTIVE_ROLES.find {|r| r.name == name}
   end
 
   def legacy_admin?
