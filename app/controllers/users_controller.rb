@@ -23,11 +23,20 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find_by(id: params[:id])
+    @user_team = @user && (@user.user_teams.first || build_user_team )
   end
 
   def update
     user = User.find_by(id: params[:id])
-    user.update!(user_params)
+    role = Role.find user_params.delete(:user_team)&.dig(:role_name)
+    user_params[:admin] = role.legacy_admin? if role
+    user.transaction do
+      user.update!(user_params)
+      user.user_teams.each do |team|
+        team.role_name = role.name
+        team.save!
+      end
+    end
     redirect_to users_url
   end
 
@@ -43,6 +52,12 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :admin)
+    @user_params ||= params.require(:user).permit(:email, :admin, user_team: :role_name)
+  end
+
+  def build_user_team
+    user_team = @user.user_teams.build
+    user_team.role = @user.admin? ? Role::SITE_ADMIN : Role.find('Partner Admin')
+    user_team
   end
 end
