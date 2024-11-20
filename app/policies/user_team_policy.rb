@@ -4,6 +4,10 @@ class UserTeamPolicy < BasePolicy
     admin? || in_team?
   end
 
+  def create?
+    
+  end
+
   private
 
   def in_team?
