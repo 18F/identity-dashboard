@@ -2,23 +2,23 @@
 require 'utf8_cleaner'
 require 'securerandom'
 
-EVENT_LOG_FILENAME = 'events.log'
-
-class LoginLogger
-  attr_reader :request, :controller, :user, :options, :session
+# `Logger` is a class in the standard library, so we need a custom name
+class AnalyticsLogger
+  attr_reader :request, :controller, :user, :user_role, :options, :session
 
   def initialize(**options)
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
     @visit_token = options[:visit_token]
     @user = options[:user]
+    @user_role = options[:user_role]
     @session = options[:session]
     @options = options
   end
 
-  def login_logger
-    @login_logger ||= ActiveSupport::Logger.new(
-      Rails.root.join('log', EVENT_LOG_FILENAME),
+  def analytics_logger
+    @analytics_logger ||= ActiveSupport::Logger.new(
+      Rails.root.join('log', IdentityConfig.store.event_log_filename),
     )
   end
 
@@ -31,26 +31,26 @@ class LoginLogger
       properties: properties,
       time: trusted_time(options[:time]),
       event_id: options[:id] || generate_uuid,
-    }.select { |_, v| v }
+    }.compact
 
     track_event(data)
   end
 
   def track_event(data)
     data[:visit_id] = data.delete(:visit_token)
-    data[:log_filename] = EVENT_LOG_FILENAME
+    data[:log_filename] = IdentityConfig.store.event_log_filename
 
     log_event(data)
   end
 
   def visit_token
-    session[:visit_token] ||= ensure_token(generate_uuid)
+    session[:visit_token] ||= generate_uuid
   end
 
   protected
 
   def log_event(data)
-    login_logger.info(data.to_json)
+    analytics_logger.info(data.to_json)
   end
 
   def generate_uuid
@@ -59,15 +59,5 @@ class LoginLogger
 
   def trusted_time(time = nil)
     time || Time.current
-  end
-
-  def ensure_token(token)
-    token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
-    token.to_s.gsub(/[^a-z0-9\-]/i, '').first(64) if token
-  end
-
-  def user_role
-    user_id = user.try(:id)
-    UserTeam.find_by(user_id: user_id)&.role_name
   end
 end

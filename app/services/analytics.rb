@@ -3,29 +3,31 @@
 class Analytics
   include AnalyticsEvents
 
-  attr_reader :user, :request, :session, :login_logger
+  attr_reader :user, :user_role, :request, :session, :analytics_logger
 
   # @param [User] user
+  # @param [Role] user_role
   # @param [ActionDispatch::Request,nil] request
   # @param [Hash] session
-  # @param [LoginLogger,nil] logger
-  def initialize(user:, request:, session:, logger: nil)
+  # @param [AnalyticsLogger,nil] logger
+  def initialize(user:, user_role:, request:, session:, logger: nil)
     puts 'Analytics initialized'
     @user = user
+    @user_role = user_role
     @request = request
     @session = session
-    @login_logger = logger || create_login_logger
+    @analytics_logger = logger || create_logger
   end
 
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id).compact,
       path: request&.path,
-    }
+    }.compact
 
     analytics_hash.merge!(request_attributes) if request
 
-    login_logger.track(event, analytics_hash)
+    analytics_logger.track(event, analytics_hash)
   end
 
   def request_attributes
@@ -56,10 +58,11 @@ class Analytics
 
   private
 
-  def create_login_logger
-    @login_logger || LoginLogger.new(
+  def create_logger
+    @analytics_logger || AnalyticsLogger.new(
       request: request,
       user: user,
+      user_role: user_role,
       session: session,
     )
   end
