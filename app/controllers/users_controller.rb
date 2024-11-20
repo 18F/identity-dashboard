@@ -23,7 +23,8 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find_by(id: params[:id])
-    @user_team = @user && (@user.user_teams.first || build_user_team )
+    @user_team = @user && @user.user_teams.first
+    build_team_role
   end
 
   def update
@@ -55,9 +56,9 @@ class UsersController < ApplicationController
     @user_params ||= params.require(:user).permit(:email, :admin, user_team: :role_name)
   end
 
-  def build_user_team
-    user_team = @user.user_teams.build
-    user_team.role = @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
-    user_team
+  def build_team_role
+    @user_team ||= @user.user_teams.build
+    @user_team.role ||= @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
+    @user_team
   end
 end
