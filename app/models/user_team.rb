@@ -22,4 +22,8 @@ class UserTeam < ApplicationRecord
   def role=(role)
     self.role_name = role.name
   end
+
+  def role
+    Role.find_by(role_name)
+  end
 end

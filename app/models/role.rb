@@ -35,4 +35,6 @@ class Role
   def legacy_admin?
     name == 'Login.gov Admin'
   end
+
+  def to_s; friendly_name; end
 end
