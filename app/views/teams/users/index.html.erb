@@ -16,15 +16,17 @@
     </tr>
   </thead>
   <tbody>
-    <% @team.users.each do |user| %>
+    <% @team.user_teams.each do |access| %>
       <tr>
-        <td><%= user.email %></td>
-        <td><%= user.last_sign_in_at || "Never" %></td>
+        <td><%= access.user.email %></td>
+        <td><%= access.user.last_sign_in_at || "Never" %></td>
         <td>
-          <%= link_to 'Delete', team_remove_confirm_path(@team.id,user.id),
-                      form_class: 'display-inline',
-                      method: :get,
-                      class: 'usa-button--unstyled usa-link margin-right-1' if user.id != current_user.id %>
+          <% if show_delete_for access %>
+            <%= link_to 'Delete', "#{team_user_path(@team.id, access.user.id)}/remove_confirm",
+                        form_class: 'display-inline',
+                        method: :get,
+                        class: 'usa-button--unstyled usa-link margin-right-1' %>
+          <% end %>
         </td>
       </tr>
     <% end %>

@@ -1,12 +1,29 @@
 class Teams::UsersController < AuthenticatedController
-  before_action -> { authorize(team, :manage_team_users?, policy_class: UserTeamPolicy) }
+  before_action -> do
+    unless IdentityConfig.store.access_controls_enabled
+      authorize(current_user_team, :manage_team_users?, policy_class: UserTeamPolicy)
+    end
+  end
+
+  helper_method :show_delete_for
 
   def new
+    authorize current_user_team if IdentityConfig.store.access_controls_enabled
     @user = User.new
   end
 
+  def index
+    authorize current_user_team if IdentityConfig.store.access_controls_enabled
+  end
+
   def create
-    new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
+    if IdentityConfig.store.access_controls_enabled
+      new_access = UserTeam.build(team:, user: new_member, role: new_member.primary_role)
+      authorize new_access
+      new_access.save!
+    else
+      new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
+    end
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path and return
   rescue ActiveRecord::RecordInvalid => e
@@ -15,20 +32,43 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def remove_confirm
-    if user_present_not_current_user(user)
-      render :remove_confirm
+    if IdentityConfig.store.access_controls_enabled
+      access_to_delete = UserTeam.find_by(user:, team:)
+      authorize access_to_delete
     else
-      render_401
+      if user_present_not_current_user(user)
+        render :remove_confirm
+      else
+        render_401
+      end
     end
   end
 
   def destroy
-    if user_present_not_current_user(user)
+    if IdentityConfig.store.access_controls_enabled
+      access_to_delete = UserTeam.find_by(user:, team:)
+      # If unauthorized, the option to delete should not show up in the UI
+      # so it is acceptable to return a 401 instead of a redirect here
+      authorize access_to_delete
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
     else
-      render_401
+      if user_present_not_current_user(user)
+        team.users.delete(user)
+        flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
+        redirect_to team_users_path
+      else
+        render_401
+      end
+    end
+  end
+
+  def show_delete_for(access)
+    if IdentityConfig.store.access_controls_enabled
+      policy(access).remove_confirm?
+    else
+      access.user.id != current_user.id
     end
   end
 
@@ -56,5 +96,9 @@ class Teams::UsersController < AuthenticatedController
 
   def team
     @team ||= Team.includes(:users).find(params[:team_id])
+  end
+
+  def current_user_team
+    team.user_teams.find_by(user: current_user) || UserTeam.new
   end
 end

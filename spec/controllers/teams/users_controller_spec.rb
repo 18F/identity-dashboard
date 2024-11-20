@@ -2,256 +2,212 @@ require 'rails_helper'
 
 describe Teams::UsersController do
   include Devise::Test::ControllerHelpers
+  let(:user) { user_team.user }
+  let(:team) { user_team.team }
+  let(:user_to_delete) { create(:user_team, team: team).user }
+  let(:valid_email) { 'user1@gsa.gov' }
+  let(:invalid_email) { 'invalid' }
 
-  let(:user) { create(:user) }
-  let(:team) { create(:team) }
-  let(:user_to_delete) { create(:user) }
+  shared_examples_for 'can create valid users' do
+    it 'saves valid info' do
+      post :create, params: { team_id: team.id, user: { email: valid_email } }
 
-  before do
-    allow(controller).to receive(:current_user).and_return(user)
-    sign_in user
-  end
-
-  describe '#index' do
-    context 'when user is not part of the team' do
-      it 'renders an error' do
-        get :index, params: { team_id: team.id }
-        expect(response.status).to eq(401)
-      end
+      expect(response).to redirect_to(new_team_user_path(team))
+      saved_user_emails = team.reload.users.map(&:email)
+      expect(saved_user_emails).to include(valid_email)
     end
 
-    context 'when the user is part of the team' do
-      it 'renders the manage users page' do
-        team.users << user
-        get :index, params: { team_id: team.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:index)
-      end
-    end
+    it 'does not save invalid info' do
+      post :create, params: { team_id: team.id, user: { email: invalid_email } }
 
-    context 'when the user is an admin' do
-      it 'renders the add new user page' do
-        user.admin = true
-        get :index, params: { team_id: team.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:index)
-      end
+      saved_user_emails = team.reload.users.map(&:email)
+      expect(saved_user_emails).to_not include(invalid_email)
     end
   end
 
-  describe '#new' do
-    context 'when user is not part of the team' do
-      it 'renders an error' do
-        get :new, params: { team_id: team.id }
-        expect(response.status).to eq(401)
-      end
-    end
-
-    context 'when the user is part of the team' do
-      it 'renders the add new user form' do
-        team.users << user
-        get :new, params: { team_id: team.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:new)
-      end
-    end
-
-    context 'when the user is an admin' do
-      it 'renders the add new user form' do
-        user.admin = true
-        get :new, params: { team_id: team.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:new)
-      end
+  shared_examples_for 'destroys user' do
+    it 'removes the user' do
+      expect(team.users).to include(user_to_delete)
+      expect do
+        post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+      end.to change { UserTeam.count }.by(-1)
+      expect(team.users).to_not include(user_to_delete)
     end
   end
 
-  describe '#create' do
-    let(:user_email) { 'user1@gsa.gov' }
-    let(:invalid_email) { 'invalid' }
-
-    context 'when the user is not part of the team' do
-      it 'renders an error' do
-        post :create, params: { team_id: team.id, user: { email: user_email } }
-        expect(response.status).to eq(401)
-      end
-    end
-
-    context 'when the user is part of the team' do
-      before do
-        team.users << user
-      end
-
-      it 'saves valid info' do
-        post :create, params: { team_id: team.id, user: { email: user_email } }
-
-        expect(response).to redirect_to(new_team_user_path(team))
-
-        saved_user_emails = team.reload.users.map(&:email)
-
-        expect(saved_user_emails).to include(user_email)
-      end
-
-      it 'does not save invalid info' do
-        post :create, params: { team_id: team.id, user: { email: invalid_email } }
-
-        saved_user_emails = team.reload.users.map(&:email)
-
-        expect(saved_user_emails).to_not include(invalid_email)
-      end
-    end
-
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
-
-      it 'saves valid info' do
-        post :create, params: { team_id: team.id, user: { email: user_email } }
-
-        expect(response).to redirect_to(new_team_user_path(team))
-
-        saved_user_emails = team.reload.users.map(&:email)
-
-        expect(saved_user_emails).to include(user_email)
-      end
-
-      it 'does not save invalid info' do
-        post :create, params: { team_id: team.id, user: { email: invalid_email } }
-
-        saved_user_emails = team.reload.users.map(&:email)
-
-        expect(saved_user_emails).to_not include(invalid_email)
-      end
+  shared_examples_for 'cannot destroy user' do
+    it 'is not allowed' do
+      expect(team.users).to include(user_to_delete)
+      expect do
+        post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+      end.to_not change { UserTeam.count }
+      expect(team.users.reload).to include(user_to_delete)
+      expect(response).to be_unauthorized
     end
   end
 
-  describe '#remove_confirm' do
-
-    context 'when user is not part of the team or an admin' do
-      it 'renders an error' do
-        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
-        expect(response.status).to eq(401)
-      end
+  context 'logged in' do
+    before do
+      sign_in user
     end
 
-    context 'when the user and user to delete is part of the team' do
-      it 'renders the delete confirmation page' do
-        team.users << user
-        team.users << user_to_delete
-        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:remove_confirm)
-      end
-    end
+    context 'with Partner Admin role' do
+      let(:user_team) { create(:user_team, :partner_admin) }
 
-    context 'when the user is part of the team but not the user to delete' do
-        it 'renders an error' do
-          team.users << user
+      describe '#index' do
+        it 'returns OK with the expected template' do
+          get :index, params: { team_id: team.id }
+          expect(response).to be_ok
+          expect(response).to render_template(:index)
+        end
+      end
+
+      describe '#new' do
+        it 'returns OK with the expected template' do
+          get :new, params: { team_id: team.id }
+          expect(response).to be_ok
+          expect(response).to render_template(:new)
+        end
+      end
+
+      describe '#create' do
+        it_behaves_like 'can create valid users'
+      end
+
+      describe '#remove_confirm' do
+        it 'is allowed for others' do
           get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
-          expect(response.status).to eq(401)
+          expect(response).to be_ok
+          expect(response).to render_template(:remove_confirm)
         end
-      end
 
-    context 'when the user belongs to team but tries to remove themselves from the team' do
-        it 'renders an error' do
-          team.users << user
+        it 'is not allowed for self' do
           get :remove_confirm, params: { team_id: team.id, id: user.id }
-          expect(response.status).to eq(401)
+          # If unauthorized, the option to delete should not show up in the UI
+          # so it is acceptable to show "unauthorized" instead of a redirect
+          expect(response).to be_unauthorized
+          expect(response).to_not render_template(:remove_confirm)
         end
-    end
+      end
 
-    context 'when the user is an admin and user to delete is part of the team' do
-      it 'renders the delete confirmation page' do
-        user.admin = true
-        team.users << user_to_delete
-        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:remove_confirm)
+      describe '#destroy' do
+        it_behaves_like 'destroys user'
+
+        context 'for self' do
+          let(:user_to_delete) { user }
+
+          it_behaves_like 'cannot destroy user'
+        end
       end
     end
 
-    context 'when the user is not signed in' do
+    context 'with Partner Developer role' do
+      let(:user_team) { create(:user_team, :partner_developer) }
+
+      describe '#index' do
+        it 'returns OK with the expected template' do
+          get :index, params: { team_id: team.id }
+          expect(response).to be_ok
+          expect(response).to render_template(:index)
+        end
+      end
+
+      describe '#new' do
+        it 'is not allowed' do
+          get :new, params: { team_id: team.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#create' do
+        it 'is not allowed' do
+          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#remove_confirm' do
+        it 'is not allowed' do
+          get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#destroy' do
+        it_behaves_like 'cannot destroy user'
+      end
+    end
+
+    context 'with Partner Readonly role' do
+      let(:user_team) { create(:user_team, :partner_readonly) }
+
+      describe '#index' do
+        it 'is not allowed' do
+          get :index, params: { team_id: team.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#new' do
+        it 'is not allowed' do
+          get :new, params: { team_id: team.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#create' do
+        it 'is not allowed' do
+          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#remove_confirm' do
+        it 'is not allowed' do
+          get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#destroy' do
+        it_behaves_like 'cannot destroy user'
+      end
+    end
+
+    context 'as site admin' do
+      let(:user_team) { create(:user_team) }
+
       before do
-        allow(controller).to receive(:current_user).and_return(nil)
-        sign_out user
+        user.make_site_admin!
       end
 
-      it 'has a redirect response' do
-        get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
-        expect(response.status).to eq(302)
+      describe '#remove_confirm' do
+        it 'is allowed for others' do
+          get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
+          expect(response).to be_ok
+          expect(response).to render_template(:remove_confirm)
+        end
+
+        # Membership in this team does not determin site admin rights
+        # so a site admin is safe to remove themself from this team.
+        it 'is allowed for self' do
+          get :remove_confirm, params: { team_id: team.id, id: user.id }
+          expect(response).to be_ok
+          expect(response).to render_template(:remove_confirm)
+        end
+      end
+
+      describe '#destroy' do
+        it_behaves_like 'destroys user'
+
+        context 'for self' do
+          let(:user_to_delete) { user }
+
+          # Membership in this team does not determin site admin rights
+          # so a site admin is safe to remove themself from this team.
+          it_behaves_like 'destroys user'
+        end
       end
     end
   end
-
-  describe '#destroy' do
-
-    context 'when the user is an admin but not a team member and user to delete is team member' do
-      before do
-        user.admin = true
-        team.users << user_to_delete
-        delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end
-
-      it 'has a redirect response' do
-        expect(response.status).to eq(302)
-      end
-    end
-
-    context 'when user is a team member and user to delete is team member' do
-        before do
-            team.users << user_to_delete
-            team.users << user
-            delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-        end
-
-        it 'has a redirect response' do
-            expect(response.status).to eq(302)
-        end
-
-        it 'user no longer in team' do
-          deleted_user = team.users.find_by(id: user_to_delete.id)
-          expect(deleted_user).to be_nil
-      end
-    end
-
-    context 'when the user tries to remove themselves from the team' do
-        it 'renders an error' do
-          team.users << user
-          get :remove_confirm, params: { team_id: team.id, id: user.id }
-          expect(response.status).to eq(401)
-        end
-    end
-
-    context 'when user not an admin but is a team member and user to delete is not team member' do
-        before do
-            team.users << user
-            delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-        end
-
-        it 'has an error response' do
-            expect(response.status).to eq(401)
-        end
-    end
-
-    context 'when the user is not an admin or a team member' do
-        it 'has an error response' do
-            delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-            expect(response.status).to eq(401)
-        end
-    end
-
-    context 'when the user is not signed in' do
-      before do
-        allow(controller).to receive(:current_user).and_return(nil)
-        sign_out user
-      end
-
-      it 'has a redirect response' do
-        delete :destroy, params: { team_id: team.id, id: user_to_delete.id }
-        expect(response.status).to eq(302)
-      end
-    end
- end
 end
-
