@@ -11,7 +11,6 @@ class Analytics
   # @param [Hash] session
   # @param [AnalyticsLogger,nil] logger
   def initialize(user:, user_role:, request:, session:, logger: nil)
-    puts 'Analytics initialized'
     @user = user
     @user_role = user_role
     @request = request

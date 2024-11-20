@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'utf8_cleaner'
 require 'securerandom'
 
 # `Logger` is a class in the standard library, so we need a custom name
@@ -29,7 +28,7 @@ class AnalyticsLogger
       user_role: user_role,
       name: name.to_s,
       properties: properties,
-      time: trusted_time(options[:time]),
+      time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
     }.compact
 
@@ -55,9 +54,5 @@ class AnalyticsLogger
 
   def generate_uuid
     SecureRandom.uuid
-  end
-
-  def trusted_time(time = nil)
-    time || Time.current
   end
 end
