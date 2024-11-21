@@ -36,18 +36,12 @@ class ApplicationController < ActionController::Base
     @analytics ||=
       Analytics.new(
         user: current_user,
-        user_role: user_role,
         request: request,
         session: session,
       )
   end
 
   private
-
-  def user_role
-    user_id = current_user.try(:id)
-    @user_role ||= UserTeam.find_by(user_id: user_id)&.role_name
-  end
 
   def set_requested_url
     return if session[:requested_url]

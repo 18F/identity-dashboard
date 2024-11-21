@@ -3,14 +3,13 @@ require 'securerandom'
 
 # `Logger` is a class in the standard library, so we need a custom name
 class AnalyticsLogger
-  attr_reader :request, :controller, :user, :user_role, :options, :session
+  attr_reader :request, :controller, :user, :options, :session
 
   def initialize(**options)
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
     @visit_token = options[:visit_token]
     @user = options[:user]
-    @user_role = options[:user_role]
     @session = options[:session]
     @options = options
   end
@@ -25,7 +24,7 @@ class AnalyticsLogger
     data = {
       visit_token: visit_token,
       user_id: user.try(:uuid),
-      user_role: user_role,
+      user_role: user.try(:primary_role),
       name: name.to_s,
       properties: properties,
       time: options[:time] || Time.current,

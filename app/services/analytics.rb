@@ -3,16 +3,14 @@
 class Analytics
   include AnalyticsEvents
 
-  attr_reader :user, :user_role, :request, :session, :analytics_logger
+  attr_reader :user, :request, :session, :analytics_logger
 
   # @param [User] user
-  # @param [Role] user_role
   # @param [ActionDispatch::Request,nil] request
   # @param [Hash] session
   # @param [AnalyticsLogger,nil] logger
-  def initialize(user:, user_role:, request:, session:, logger: nil)
+  def initialize(user:, request:, session:, logger: nil)
     @user = user
-    @user_role = user_role
     @request = request
     @session = session
     @analytics_logger = logger || create_logger
@@ -61,7 +59,6 @@ class Analytics
     @analytics_logger || AnalyticsLogger.new(
       request: request,
       user: user,
-      user_role: user_role,
       session: session,
     )
   end

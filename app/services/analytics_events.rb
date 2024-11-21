@@ -5,6 +5,6 @@
 module AnalyticsEvents
   # When a user clicks "Create an app"
   def sp_config_created
-    track_event('SP config created')
+    track_event('sp_config_created')
   end
 end
