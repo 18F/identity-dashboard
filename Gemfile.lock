@@ -196,6 +196,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
+    browser (6.0.0)
     builder (3.3.0)
     bullet (7.2.0)
       activesupport (>= 3.0.0)
@@ -354,6 +355,7 @@ GEM
     loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    lru_redux (1.1.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -643,6 +645,7 @@ DEPENDENCIES
   axe-core-rspec (~> 4.2)
   better_errors
   binding_of_caller
+  browser
   bullet (>= 7.0.5)
   bummr
   bundler
@@ -671,6 +674,7 @@ DEPENDENCIES
   jwt
   kaminari
   listen (~> 3.3)
+  lru_redux
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.16.5)
   omniauth-rails_csrf_protection
