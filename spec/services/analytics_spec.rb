@@ -4,7 +4,6 @@ RSpec.describe Analytics do
   let(:path) { 'fake_path' }
   let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
   let(:current_user) { create(:user, uuid: uuid) }
-  let(:user_role) { 'Fake Role'}
   let(:session) { {} }
   let(:logger) { instance_double(FakeLogger) }
   let(:analytics_attributes) do
@@ -32,7 +31,6 @@ RSpec.describe Analytics do
   subject(:analytics) do
     Analytics.new(
       user: current_user,
-      user_role: user_role,
       request: request,
       session: session,
       logger: logger,
