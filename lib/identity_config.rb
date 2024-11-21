@@ -15,6 +15,7 @@ class IdentityConfig
       config.add(:dp_reaping_frequency, type: :integer)
       config.add(:certificate_expiration_warning_period, type: :integer)
       config.add(:dashboard_api_token, type: :string)
+      config.add(:event_log_filename, type: :string)
       config.add(:help_text_options_feature_enabled, type: :boolean)
       config.add(:idp_sp_url, type: :string)
       config.add(:idp_url, type: :string)
