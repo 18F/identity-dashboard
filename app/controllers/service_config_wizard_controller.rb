@@ -289,9 +289,11 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def save_service_provider(service_provider)
+    is_new = service_provider[:id].nil?
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
+    analytics.sp_config_created if is_new
   end
 
   def publish_service_provider

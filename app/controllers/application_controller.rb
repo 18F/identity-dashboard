@@ -30,6 +30,17 @@ class ApplicationController < ActionController::Base
     payload[:trace_id] = request.headers['X-Amzn-Trace-Id']
   end
 
+  attr_writer :analytics
+
+  def analytics
+    @analytics ||=
+      Analytics.new(
+        user: current_user,
+        request: request,
+        session: session,
+      )
+  end
+
   private
 
   def set_requested_url
