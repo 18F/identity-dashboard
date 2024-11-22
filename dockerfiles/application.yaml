@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -47,7 +48,7 @@ spec:
               value: "prefer"
             - op: add
               path: /data/LOGIN_ENV
-              value: "{{ENVIRONMENT}}"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_HOST_ROLE
               value: "idp"
@@ -89,7 +90,7 @@ spec:
               value: "true"
             - op: add
               path: /data/LOGIN_ENV
-              value: "review-app"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_DOMAIN
               value: "identitysandbox.gov"
@@ -120,7 +121,7 @@ spec:
               value: "prefer"
             - op: add
               path: /data/LOGIN_ENV
-              value: "{{ENVIRONMENT}}"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_HOST_ROLE
               value: "idp"
@@ -162,7 +163,7 @@ spec:
               value: "true"
             - op: add
               path: /data/LOGIN_ENV
-              value: "review-app"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_DOMAIN
               value: "identitysandbox.gov"
@@ -188,7 +189,7 @@ spec:
               value: "{{ENVIRONMENT}}-idp-pg.review-apps"
             - op: add
               path: /data/LOGIN_ENV
-              value: "{{ENVIRONMENT}}"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_HOST_ROLE
               value: "worker"
@@ -225,7 +226,7 @@ spec:
               value: "{{ENVIRONMENT}}-idp-pg.review-apps"
             - op: add
               path: /data/LOGIN_ENV
-              value: "{{ENVIRONMENT}}"
+              value: "reviewapps"
             - op: add
               path: /data/LOGIN_HOST_ROLE
               value: "worker"
@@ -395,7 +396,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -405,7 +406,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -415,7 +416,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -488,9 +489,15 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-idp/nginx:{{IDP_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/containers/1/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
+            - op: replace
+              path: /spec/template/spec/containers/1/imagePullPolicy
               value: Always
         # Patch Worker Image
         - target:
@@ -499,7 +506,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-idp/review:{{IDP_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -579,7 +586,39 @@ spec:
             - op: replace
               path: /spec/rules/0/host
               value: {{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov
-            
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: review-apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+  info:
+    - name: Merge Request
+      value: {{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}/-/merge_requests/{{CI_MERGE_REQUEST_IID}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ENVIRONMENT}}-db
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    project-name: {{CI_PROJECT_NAME}}
+spec:
+  project: default
+  source:
+    repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
+    targetRevision: main
+    path: cluster-reviewapp/envs/reviewapps-db
+    kustomize:
+      namePrefix: "{{ENVIRONMENT}}-"
+      commonLabels:
+        env: {{ENVIRONMENT}}
+        branch: {{SANITIZED_BRANCH_NAME}}
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: review-apps
