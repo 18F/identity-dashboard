@@ -54,8 +54,26 @@ describe UsersController do
       end
 
       it 'has a success response' do
-        get :edit, params: { id: 1 }
+        get :edit, params: { id: user.id }
         expect(response.status).to eq(200)
+      end
+
+      context 'editing a user without a team' do
+        let(:editing_user) { build(:user) }
+
+        it 'defaults to the site admin role for admins' do
+          editing_user.admin = true
+          editing_user.save!
+          get :edit, params: { id: editing_user.id }
+          expect(assigns['user_team'].role_name).to eq(Role::SITE_ADMIN.name)
+        end
+
+        it 'defaults to the admin role for admins' do
+          editing_user.admin = false
+          editing_user.save!
+          get :edit, params: { id: editing_user.id }
+          expect(assigns['user_team'].role_name).to eq('Partner Admin')
+        end
       end
     end
     context 'when the user is not an admin' do
@@ -75,6 +93,20 @@ describe UsersController do
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response.status).to eq(302)
+      end
+
+      it 'will assign a new role to all teams' do
+        user_to_edit = create(:user, :with_teams)
+        user_to_edit.user_teams.each do |ut|
+          expect(ut.role_name).to be_nil
+        end
+        patch :update, params: { id: user_to_edit, user: {
+          user_team: {role_name: 'Partner Admin' },
+        }}
+        user_to_edit.reload
+        user_to_edit.user_teams.each do |ut|
+          expect(ut.role_name).to eq('Partner Admin')
+        end
       end
     end
     context 'when the user is not an admin' do

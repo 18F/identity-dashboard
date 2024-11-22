@@ -1,8 +1,15 @@
 @use 'uswds-core' as *;
 
 .wizard-container {
-  pre {
+  fieldset {
+    position: relative;
+    max-width: 100%;
+  }
+
+  pre,
+  dl {
     overflow: scroll;
+    max-width: 100%;
   }
 
   .usa-intro {
@@ -12,12 +19,13 @@
   .wizard-main {
     margin: 1.5rem 0;
     border-top: 1px solid $theme-color-primary-light;
+
+    > .usa-alert {
+      margin: 1.25rem 0;
+    }
   }
 
   .wizard-field {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     margin-top: 1.5rem;
     padding: 0 0 1.5rem 0;
 
@@ -27,9 +35,23 @@
 
     .usa-label__group,
     .usa-input__container {
-      flex: 0 0 46.25%;
-      min-width: 400px;
+      position: relative;
+      width: 100%;
+      max-width: calc(100vw - 2.1rem);
     }
+
+    @include at-media('desktop') {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .usa-label__group,
+      .usa-input__container {
+        flex: 0 0 46.25%;
+        min-width: 400px;
+      }
+    }
+
     .usa-input__container,
     pre {
       margin-bottom: 1.5rem;
@@ -59,12 +81,12 @@
   // Much of this is to get the Cancel button to float right
   .wizard-footer {
     display: flex;
-    margin-top: -1.5rem;
-    padding-top: 1.5rem;
+    flex-wrap: wrap;
     border-top: 1px solid $theme-color-primary-light;
 
     a, input {
       flex: 0 0 auto;
+      margin-top: 1.5rem;
     }
 
     &:before {
@@ -87,8 +109,8 @@
     padding-left: unset;
   }
 
-  .usa-checkbox__label,
-  .usa-radio__label {
+  .checkbox__container:first-of-type .usa-checkbox__label,
+  .usa-input__container li:first-of-type .usa-radio__label {
     margin-top: 0;
   }
 
