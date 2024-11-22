@@ -1,9 +1,9 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
-  <legend class='usa-sr-only'>Dashboard Configuration</legend>
+  <legend class='usa-sr-only'>Portal Configuration</legend>
   <%= form.label :prod_config,
-                 label: 'Dashboard Configuration',
+                 label: 'Portal Configuration',
                  class: 'usa-label' %>
   <%= form.collection_radio_buttons(:prod_config,
                                     { "Ready for Production" => true, "Sandbox" => false },
@@ -73,7 +73,7 @@
                  selected: form.object.ial,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
-                 hint: t('service_provider_form.identity_assurance_level_html') %>
+                 hint: t('service_provider_form.ial_html') %>
 
   <%= form.input :default_aal,
                  as: :select,

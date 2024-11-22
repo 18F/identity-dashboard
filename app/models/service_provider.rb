@@ -78,15 +78,6 @@ class ServiceProvider < ApplicationRecord
     super uris&.select(&:present?)
   end
 
-  def svg_xml
-    return if attachment_changes['logo_file'].blank?
-    if attachment_changes['logo_file'].attachable.respond_to?(:open)
-      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable.open))
-    else
-      Nokogiri::XML(File.read(attachment_changes['logo_file'].attachable[:io]))
-    end
-  end
-
   # @return [Array<ServiceProviderCertificate>]
   def certificates
     @certificates ||= Array(certs).map do |cert|

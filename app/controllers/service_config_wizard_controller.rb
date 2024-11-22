@@ -28,19 +28,25 @@ class ServiceConfigWizardController < AuthenticatedController
     render_wizard
   end
 
+  # Initializes data for the wizard.
+  # Tries to find a ServiceProvider as the template for the data.
+  # Will overwrite existing steps if a ServiceProvider is found.
+  # Will delete any existing steps if a ServiceProvider is not found.
   def create
-    service_provider_id = params.require(:service_provider)
+    service_provider_id = params[:service_provider]
 
-    # No existing config specified, so fall back on default behavior
-    return new unless service_provider_id
+    if service_provider_id.present?
+      service_provider = policy_scope(ServiceProvider).find(service_provider_id)
+      steps = WizardStep.steps_from_service_provider(service_provider, current_user)
+      # TODO: what if the service provider is somehow invalid?
+      steps.each(&:save)
 
-    service_provider = policy_scope(ServiceProvider).find(service_provider_id)
-    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
-    # TODO: what if the service provider is somehow invalid?
-    steps.each(&:save)
-
-    # Skip the intro when editing an existing config
-    redirect_to service_config_wizard_path(STEPS[1])
+      # Skip the intro when editing an existing config
+      redirect_to service_config_wizard_path(STEPS[1])
+    else
+      destroy
+      new
+    end
   end
 
   def update
@@ -62,6 +68,10 @@ class ServiceConfigWizardController < AuthenticatedController
     render_wizard
   end
 
+  # Destroy this user's existing wizard steps if any exist.
+  # If we got here by pressing a "Cancel" button, redirect to the default wizard completion page
+  # currently the service_providers_path index page. Otherwise
+  # this returns no content.
   def destroy
     saved_steps = policy_scope(WizardStep).where(user: current_user)
     if saved_steps.any?
@@ -102,8 +112,10 @@ class ServiceConfigWizardController < AuthenticatedController
 
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user ||= current_user
-    if helpers.help_text_options_enabled? #&& !current_user.admin
+    if helpers.help_text_options_enabled? && !current_user.admin
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
+    elsif parsed_help_text.presets_only?
+      service_provider.help_text = parsed_help_text.to_localized_h
     end
 
     logo_file = @model.get_step('logo_and_cert').logo_file
