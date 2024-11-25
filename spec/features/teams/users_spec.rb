@@ -28,7 +28,7 @@ describe 'users' do
     scenario 'access permitted to Partner Admin team member' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
-      visit team_users_path(team)+'/new'
+      visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
@@ -41,7 +41,7 @@ describe 'users' do
 
     scenario 'access permitted to admin' do
       login_as admin_user
-      visit team_users_path(team)+'/new'
+      visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
@@ -90,7 +90,7 @@ describe 'users' do
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
-      visit team_users_path(Team.find(team_member.teams.first.id))+'/new'
+      visit new_team_user_path(Team.find(team_member.teams.first.id))
     end
 
     scenario 'team member adds new user' do
@@ -166,7 +166,7 @@ describe 'users' do
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
-      visit team_user_path(team, other_team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, other_team_member)
     end
 
     scenario 'team member clicks cancel' do
@@ -182,7 +182,7 @@ describe 'users' do
                                           email:other_team_member.email, team:team))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
-      expect(page).to have_content(I18n.t('teams.users.remove.success', 
+      expect(page).to have_content(I18n.t('teams.users.remove.success',
                                           email:other_team_member.email))
     end
   end
@@ -248,7 +248,7 @@ describe 'users' do
       # two users: `team_member` and `other_team_member`
       expect(find_all('a', text:'Delete').count).to eq(2)
       find_all('a', text:'Delete').first.click
-      expect(current_path).to eq("#{team_user_path(team.id, team_member.id)}/remove_confirm")
+      expect(current_path).to eq(team_remove_confirm_path(team.id, team_member.id))
     end
 
     scenario 'add user button goes to add user page' do
