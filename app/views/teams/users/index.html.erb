@@ -22,7 +22,7 @@
         <td><%= access.user.last_sign_in_at || "Never" %></td>
         <td>
           <% if show_delete_for access %>
-            <%= link_to 'Delete', "#{team_user_path(@team.id, access.user.id)}/remove_confirm",
+            <%= link_to 'Delete', team_remove_confirm_path(@team.id, access.user.id),
                         form_class: 'display-inline',
                         method: :get,
                         class: 'usa-button--unstyled usa-link margin-right-1' %>
