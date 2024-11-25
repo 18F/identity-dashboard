@@ -17,6 +17,7 @@ class UserTeamPolicy < BasePolicy
   end
 
   def destroy?
+    return true if admin?
     record.user != user && create?
   end
 

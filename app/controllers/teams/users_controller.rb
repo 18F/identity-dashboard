@@ -5,7 +5,7 @@ class Teams::UsersController < AuthenticatedController
     end
   end
 
-  helper_method :show_delete_for
+  helper_method :show_delete_for, :show_manage?
 
   def new
     authorize current_user_team if IdentityConfig.store.access_controls_enabled
@@ -70,6 +70,10 @@ class Teams::UsersController < AuthenticatedController
     else
       access.user.id != current_user.id
     end
+  end
+
+  def show_manage?
+    !IdentityConfig.store.access_controls_enabled || policy(current_user_team).create?
   end
 
   private
