@@ -1,18 +1,20 @@
 require 'rails_helper'
 
 describe 'users' do
-  let(:user_team_member) { create(:user_team) }
-  let(:team_member) { user_team_member.user }
-  let(:other_user_team_member) { create(:user_team) }
-  let(:other_team_member) { other_user_team_member.user }
+  let(:team_member_access) { create(:user_team) }
+  let(:team_member) { team_member_access.user }
+  let(:other_team_member_access) { create(:user_team) }
+  let(:other_team_member) { other_team_member_access.user }
   let(:team) { create(:team) }
-  let(:partner_admin_access) { create(:user_team, team:, role: Role.find('Partner Admin'))}
+  let(:partner_admin_access) { create(:user_team, :partner_admin, team:)}
   let(:partner_admin_team_member) { partner_admin_access.user }
+  let(:readonly_access) { create(:user_team, :partner_readonly, team:)}
+  let(:readonly_team_member) { readonly_access.user }
   let(:admin_user) { create(:admin) }
   let(:user) { create(:user) }
 
   before do
-    team.user_teams = [user_team_member, other_user_team_member]
+    team.user_teams = [team_member_access, other_team_member_access]
     team.save!
   end
 
@@ -43,6 +45,12 @@ describe 'users' do
       login_as admin_user
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
+    end
+
+    scenario 'access denied to partner read-only' do
+      login_as readonly_team_member
+      visit new_team_user_path(team)
+      expect(page).to have_content('Unauthorized')
     end
 
     scenario 'access denied to non-team member' do

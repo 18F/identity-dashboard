@@ -1,12 +1,18 @@
-<h1>Manage users for <%= @team.name %></h1>
+<% if show_manage? %>
+  <h1>Manage users for <%= @team.name %></h1>
+<% else %>
+  <h1>Users for <%= @team.name %></h1>
+<% end %>
 
-<div>
-  <%= button_to "Add user",
-    new_team_user_path(@team.id),
-    method: :get,
-    class: 'usa-button usa-button--outline'
-  %>
-</div>
+<% if show_manage? %>
+  <div>
+    <%= button_to "Add user",
+      new_team_user_path(@team.id),
+      method: :get,
+      class: 'usa-button usa-button--outline'
+    %>
+  </div>
+<% end %>
 <table class="usa-table">
   <thead>
     <tr>
