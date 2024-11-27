@@ -35,12 +35,13 @@ class Teams::UsersController < AuthenticatedController
     if IdentityConfig.store.access_controls_enabled
       membership_to_delete = UserTeam.find_by(user:, team:)
       authorize membership_to_delete
+      return
+    end
+
+    if user_present_not_current_user(user)
+      render :remove_confirm
     else
-      if user_present_not_current_user(user)
-        render :remove_confirm
-      else
-        render_401
-      end
+      render_401
     end
   end
 
