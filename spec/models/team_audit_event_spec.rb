@@ -59,7 +59,7 @@ RSpec.describe TeamAuditEvent do
     it 'can handle role changes as well as other changes' do
       user_access = create(:user_team, :partner_admin)
       team = user_access.team
-      user_access.role = Role.find('Partner Developer')
+      user_access.role = Role.find_by(name: 'Partner Developer')
       user_access.save!
       audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(team))
       object_changes = audit_events.map(&:object_changes)

@@ -13,7 +13,7 @@ class Role
   attr_reader :name, :friendly_name
 
   # Don't use `Role.new` from outside the class itself.
-  # Generally, you'll want to use `Role.find` instead
+  # Generally, you'll want to use `Role.find_by` instead
   def initialize(name:, friendly_name: nil)
     @name = name
     @friendly_name = friendly_name || name
@@ -28,7 +28,7 @@ class Role
     new(name: 'Partner Readonly'),
   ].freeze
 
-  def self.find(name)
+  def self.find_by(name:)
     ACTIVE_ROLES.find {|r| r.name == name}
   end
 
