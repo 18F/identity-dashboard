@@ -72,7 +72,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def show_saml_options?
-    auth_step && auth_step.identity_protocol == 'saml'
+    protocol_step && protocol_step.identity_protocol == 'saml'
   end
 
   def show_oidc_options?
@@ -98,6 +98,11 @@ class ServiceConfigWizardController < AuthenticatedController
   def auth_step
     # Should this be `@model.auth_step` ?
     @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
+  end
+
+  def protocol_step
+    # Should this be `@model.protocol_step` ?
+    @protocol_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'protocol')
   end
 
   def redirect_unless_flagged_in

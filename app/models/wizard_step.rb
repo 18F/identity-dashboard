@@ -20,10 +20,12 @@ class WizardStep < ApplicationRecord
       group_id: nil,
       prod_config: false,
     }),
+    protocol: WizardStep::Definition.new({
+      identity_protocol: ServiceProvider.identity_protocols.keys.first,
+    }),
     authentication: WizardStep::Definition.new({
       attribute_bundle: [],
       default_aal: nil,
-      identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: '1',
     }),
     issuer: WizardStep::Definition.new({
