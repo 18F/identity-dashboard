@@ -195,13 +195,25 @@ class WizardStep < ApplicationRecord
       find_or_initialize_by(user: self.user, step_name: 'authentication')
   end
 
+  def protocol_step
+    return self if step_name == 'protocol'
+    WizardStepPolicy::Scope.new(self.user, self.class).
+      resolve.
+      find_or_initialize_by(user: self.user, step_name: 'protocol')
+  end
+
   def ial
     return data['ial'] if step_name == 'authentication'
     auth_step.ial
   end
 
+  def identity_protocol
+    return data['identity_protocol'] if step_name == 'protocol'
+    protocol_step.identity_protocol
+  end
+
   def saml?
-    auth_step && auth_step.identity_protocol == 'saml'
+    auth_step && protocol_step.identity_protocol == 'saml'
   end
 
   def saml_settings_present?
