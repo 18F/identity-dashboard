@@ -4,7 +4,7 @@ describe Teams::UsersController do
   include Devise::Test::ControllerHelpers
   let(:user) { user_team.user }
   let(:team) { user_team.team }
-  let(:user_to_delete) { create(:user_team, team: team).user }
+  let(:user_to_delete) { create(:user_team, team:).user }
   let(:valid_email) { 'user1@gsa.gov' }
   let(:invalid_email) { 'invalid' }
 

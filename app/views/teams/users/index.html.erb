@@ -1,17 +1,15 @@
-<% if show_manage? %>
+<% if policy(@current_user_team_membership).manage_team_users? %>
   <h1>Manage users for <%= @team.name %></h1>
 <% else %>
   <h1>Users for <%= @team.name %></h1>
 <% end %>
 
-<% if show_manage? %>
-  <div>
-    <%= button_to "Add user",
-      new_team_user_path(@team.id),
-      method: :get,
-      class: 'usa-button usa-button--outline'
-    %>
-  </div>
+<% if policy(@current_user_team_membership).manage_team_users? %>
+  <%= button_to "Add user",
+    new_team_user_path(@team.id),
+    method: :get,
+    class: 'usa-button usa-button--outline'
+  %>
 <% end %>
 <table class="usa-table">
   <thead>
@@ -27,7 +25,7 @@
         <td><%= membership.user.email %></td>
         <td><%= membership.user.last_sign_in_at || "Never" %></td>
         <td>
-          <% if show_delete_for membership %>
+          <% if policy(membership).remove_confirm? %>
             <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
                         form_class: 'display-inline',
                         method: :get,

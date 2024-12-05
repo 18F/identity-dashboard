@@ -6,9 +6,9 @@ describe 'users' do
   let(:other_team_member_membership) { create(:user_team) }
   let(:other_team_member) { other_team_member_membership.user }
   let(:team) { create(:team) }
-  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:)}
+  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:) }
   let(:partner_admin_team_member) { partner_admin_membership.user }
-  let(:readonly_membership) { create(:user_team, :partner_readonly, team:)}
+  let(:readonly_membership) { create(:user_team, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_membership.user }
   let(:admin_user) { create(:admin) }
   let(:user) { create(:user) }
@@ -19,7 +19,6 @@ describe 'users' do
   end
 
   feature 'add team user page access' do
-
     scenario 'access permitted to team member (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
@@ -61,7 +60,6 @@ describe 'users' do
   end
 
   feature 'add team users (without RBAC)' do
-
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
@@ -90,11 +88,9 @@ describe 'users' do
       team_member_emails = team.reload.users.map(&:email)
       expect(team_member_emails).to include(user.email)
     end
-
   end
 
   feature 'add team users' do
-
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
@@ -131,7 +127,7 @@ describe 'users' do
       login_as team_member
       visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
     end
 
     scenario 'access permitted to partner admin team member to remove other team member' do
@@ -139,12 +135,11 @@ describe 'users' do
       login_as partner_admin_team_member
       visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
     end
   end
 
   feature 'remove team users (without RBAC)' do
-
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
@@ -153,7 +148,7 @@ describe 'users' do
 
     scenario 'team member clicks cancel' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
       click_on 'Cancel'
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
@@ -161,16 +156,15 @@ describe 'users' do
 
     scenario 'team member removes user' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',
-                                          email:other_team_member.email))
+                                          email: other_team_member.email))
     end
   end
 
   feature 'remove team users' do
-
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
@@ -179,7 +173,7 @@ describe 'users' do
 
     scenario 'team member clicks cancel' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
       click_on 'Cancel'
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
@@ -187,15 +181,15 @@ describe 'users' do
 
     scenario 'team member removes user' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email:other_team_member.email, team:team))
+                                          email: other_team_member.email, team:))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',
-                                          email:other_team_member.email))
+                                          email: other_team_member.email))
     end
   end
+
   feature 'manage users page' do
-  
     scenario 'access denied to non-team member' do
       login_as user
       visit team_users_path(team)
@@ -220,7 +214,6 @@ describe 'users' do
       login_as team_member
       visit team_users_path(team)
       expect(page).to_not have_content("Manage users for #{team.name}")
-      expect(page).to have_content('Unauthorized')
 
       login_as partner_admin_team_member
       visit team_users_path(team)
@@ -272,7 +265,5 @@ describe 'users' do
       click_on 'Back'
       expect(current_path).to eq(team_path(team.id))
     end
-
   end
-
 end

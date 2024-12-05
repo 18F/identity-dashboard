@@ -33,7 +33,7 @@ feature 'Team pages', :js do
   end
 
   context 'as a user' do
-    let(:user_team_membership) { create(:user_team)}
+    let(:user_team_membership) { create(:user_team) }
     let(:user) { user_team_membership.user }
     let(:team) { user_team_membership.team }
 
@@ -189,11 +189,13 @@ feature 'Team pages', :js do
       end
 
       context 'as a Partner Readonly user' do
-        let(:user_team_membership) { create(:user_team, :partner_readonly)}
+        let(:user_team_membership) { create(:user_team, :partner_readonly) }
+
         context 'the team page' do
           before do
             visit team_path(user_team_membership.team)
           end
+
           it { expect_page_to_have_no_accessibility_violations(page) }
         end
 

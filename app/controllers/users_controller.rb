@@ -44,6 +44,7 @@ class UsersController < ApplicationController
   def destroy
     user = User.find_by(id: params[:id])
     return unless user.destroy
+
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
     redirect_to users_path
   end
