@@ -22,13 +22,13 @@
     </tr>
   </thead>
   <tbody>
-    <% @team.user_teams.each do |access| %>
+    <% @team.user_teams.each do |membership| %>
       <tr>
-        <td><%= access.user.email %></td>
-        <td><%= access.user.last_sign_in_at || "Never" %></td>
+        <td><%= membership.user.email %></td>
+        <td><%= membership.user.last_sign_in_at || "Never" %></td>
         <td>
-          <% if show_delete_for access %>
-            <%= link_to 'Delete', team_remove_confirm_path(@team.id, access.user.id),
+          <% if show_delete_for membership %>
+            <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
                         form_class: 'display-inline',
                         method: :get,
                         class: 'usa-button--unstyled usa-link margin-right-1' %>

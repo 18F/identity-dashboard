@@ -1,20 +1,20 @@
 require 'rails_helper'
 
 describe 'users' do
-  let(:team_member_access) { create(:user_team) }
-  let(:team_member) { team_member_access.user }
-  let(:other_team_member_access) { create(:user_team) }
-  let(:other_team_member) { other_team_member_access.user }
+  let(:team_member_membership) { create(:user_team) }
+  let(:team_member) { team_member_membership.user }
+  let(:other_team_member_membership) { create(:user_team) }
+  let(:other_team_member) { other_team_member_membership.user }
   let(:team) { create(:team) }
-  let(:partner_admin_access) { create(:user_team, :partner_admin, team:)}
-  let(:partner_admin_team_member) { partner_admin_access.user }
-  let(:readonly_access) { create(:user_team, :partner_readonly, team:)}
-  let(:readonly_team_member) { readonly_access.user }
+  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:)}
+  let(:partner_admin_team_member) { partner_admin_membership.user }
+  let(:readonly_membership) { create(:user_team, :partner_readonly, team:)}
+  let(:readonly_team_member) { readonly_membership.user }
   let(:admin_user) { create(:admin) }
   let(:user) { create(:user) }
 
   before do
-    team.user_teams = [team_member_access, other_team_member_access]
+    team.user_teams = [team_member_membership, other_team_member_membership]
     team.save!
   end
 

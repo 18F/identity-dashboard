@@ -18,9 +18,9 @@ class Teams::UsersController < AuthenticatedController
 
   def create
     if IdentityConfig.store.access_controls_enabled
-      new_access = UserTeam.build(team:, user: new_member, role: new_member.primary_role)
-      authorize new_access
-      new_access.save!
+      new_membership = UserTeam.build(team:, user: new_member, role: new_member.primary_role)
+      authorize new_membership
+      new_membership.save!
     else
       new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     end
@@ -33,8 +33,8 @@ class Teams::UsersController < AuthenticatedController
 
   def remove_confirm
     if IdentityConfig.store.access_controls_enabled
-      access_to_delete = UserTeam.find_by(user:, team:)
-      authorize access_to_delete
+      membership_to_delete = UserTeam.find_by(user:, team:)
+      authorize membership_to_delete
     else
       if user_present_not_current_user(user)
         render :remove_confirm
@@ -46,10 +46,10 @@ class Teams::UsersController < AuthenticatedController
 
   def destroy
     if IdentityConfig.store.access_controls_enabled
-      access_to_delete = UserTeam.find_by(user:, team:)
+      membership_to_delete = UserTeam.find_by(user:, team:)
       # If unauthorized, the option to delete should not show up in the UI
       # so it is acceptable to return a 401 instead of a redirect here
-      authorize access_to_delete
+      authorize membership_to_delete
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
@@ -64,11 +64,11 @@ class Teams::UsersController < AuthenticatedController
     end
   end
 
-  def show_delete_for(access)
+  def show_delete_for(membership)
     if IdentityConfig.store.access_controls_enabled
-      policy(access).remove_confirm?
+      policy(membership).remove_confirm?
     else
-      access.user.id != current_user.id
+      membership.user.id != current_user.id
     end
   end
 
