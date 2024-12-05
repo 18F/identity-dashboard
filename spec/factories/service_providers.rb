@@ -7,9 +7,40 @@ FactoryBot.define do
     association :user, factory: :user
     association :agency, factory: :agency
     help_text do
-      { 'sign_in': { en: '<b>Some sign-in help text</b>' },
-        'sign_up': { en: '<b>Some sign-up help text</b>' },
-        'forgot_password': { en: '<b>Some forgot password help text</b>' } }
+      { 'sign_in':{en:'<b>Some sign-in help text</b>',es:'',fr:'',zh:''},
+        'sign_up':{en:'<b>Some sign-in help text</b>',es:'',fr:'',zh:''},
+        'forgot_password':{en:'<b>Some sign-in help text</b>',es:'',fr:'',zh:''},
+      }
+    end
+
+    trait :ready_to_activate do
+      sequence(:app_name) { |n| "App Name #{n}" }
+      with_team
+      ial = [1, 2].sample
+      send("with_ial_#{ial}")
+      with_ial_2_bundle if ial == 2
+      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      default_aal { [1, 2, 3].sample }
+      active { false }
+    end
+
+    trait :ready_to_activate_ial_1 do
+      sequence(:app_name) { |n| "App Name #{n}" }
+      with_team
+      with_ial_1
+      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      default_aal { [1, 2, 3].sample }
+      active { false }
+    end
+
+    trait :ready_to_activate_ial_2 do
+      sequence(:app_name) { |n| "App Name #{n}" }
+      with_team
+      with_ial_2
+      with_ial_2_bundle
+      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      default_aal { [1, 2, 3].sample }
+      active { false }
     end
 
     trait :saml do

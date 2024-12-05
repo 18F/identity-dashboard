@@ -8,8 +8,9 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  DASHBOARD_CI_SHA: 'sha256:31e2cf6b87e2a03de215e7552d1b8c77286ec4984659556affcf46c17483f49d'
+  DASHBOARD_CI_SHA: 'sha256:60cd46939b9fca7aefd5c5803f44d86a0ac463e138991b3fa7b26a571f970d24'
   GITLAB_CI: 'true'
+  APPLICATION_MANIFEST: 'dockerfiles/application.yaml'
 
 default:
   image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
@@ -185,7 +186,70 @@ lint:
     reports:
       junit: rubocop.xml
 
-specs:
+migrate:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity-dashboard_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: public.ecr.aws/docker/library/postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - bundle exec rake db:create db:migrate --trace
+    - git diff db/
+    - make lint_database_schema_files
+
+accessibility-specs:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    AWS_ACCESS_KEY_ID: test
+    AWS_DEFAULT_REGION: us-west-2
+    AWS_REGION: us-west-2
+    AWS_SECRET_ACCESS_KEY: test
+    CAPYBARA_WAIT_TIME_SECONDS: 5
+    # COVERAGE: 'true'
+    COBERTURA_FORMATTER_ENABLED: 'true'
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity-dashboard_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: public.ecr.aws/docker/library/postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - *yarn_install
+    - cp config/application.yml.default config/application.yml
+    - bundle exec rake db:setup
+    - bundle exec rspec --pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
+  artifacts:
+    when: always
+    reports:
+      junit: rspec.xml
+    expire_in: 31d
+    paths:
+      - rspec.xml
+
+other-specs:
   stage: test
   needs:
     - job: install
@@ -208,7 +272,7 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
@@ -217,7 +281,7 @@ specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec --format documentation --format RspecJunitFormatter --out rspec.xml
+    - bundle exec rspec --exclude-pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
   coverage: '/\(\d+.\d+\%\) covered/'
   artifacts:
     when: always
@@ -236,149 +300,43 @@ review-app:
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - |-
-      export IDP_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "idp",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export WORKER_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "postgresWorker": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-        },
-        "railsOffline": "true",
-        "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
-          "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
-          "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-        },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "loginDatacenter": "true",
-        "loginDomain": "identitysandbox.gov",
-        "loginEnv": "$CI_ENVIRONMENT_SLUG",
-        "loginHostRole": "worker",
-        "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
-      }
-      EOF
-      )
-    - |-
-      export PIVCAC_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "idp",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"
-        },
-        "idpHost": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov"
-      }
-      EOF
-      )
-    - |-
-      export DASHBOARD_CONFIG=$(cat <<EOF
-      {
-        "kubernetesReviewApp": "true",
-        "postgres": {
-          "sslmode": "prefer",
-          "name": "dashboard",
-          "host": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"
-        },
-        "newrelic": {
-          "enabled": "false"
-        },
-        "samlSpIssuer": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov",
-        "idpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "idpSpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "postLogoutUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
-      }
-      EOF
-      )
-    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - >-
-      helm upgrade --install --namespace review-apps
-      --debug
-      --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
-      --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set idp.image.tag="${IDP_IMAGE_TAG}"
-      --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
-      --set worker.image.tag="${IDP_IMAGE_TAG}"
-      --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
-      --set pivcac.image.tag="${PKI_IMAGE_TAG}"
-      --set pivcac.image.pullPolicy="Always"
-      --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
-      --set dashboard.image.tag="${CI_COMMIT_SHA}"
-      --set dashboard.image.pullPolicy="Always"
-      --set-json dashboard.config="$DASHBOARD_CONFIG"
-      --set-json dashboard.enabled=true
-      --set-json idp.config="$IDP_CONFIG"
-      --set-json worker.config="$WORKER_CONFIG"
-      --set-json pivcac.config="$PIVCAC_CONFIG"
-      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
+    - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
+    - echo "${CI_COMMIT_REF_NAME}"
+    - echo "${SANITIZED_BRANCH_NAME}"
+    - echo "${CI_ENVIRONMENT_SLUG}"
+    # Dynamically populate review environment settings
+    - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{IDP_CONTAINER_TAG}}|${IDP_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{DASHBOARD_CONTAINER_TAG}}|${CI_COMMIT_SHA}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{PIVCAC_CONTAINER_TAG}}|${PKI_IMAGE_TAG}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{ECR_REGISTRY}}|${ECR_REGISTRY}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{CI_MERGE_REQUEST_SOURCE_PROJECT_URL}}|${CI_MERGE_REQUEST_SOURCE_PROJECT_URL}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{CI_PROJECT_NAME}}|${CI_PROJECT_NAME}|g" ${APPLICATION_MANIFEST}
+    - sed -i "s|{{CI_MERGE_REQUEST_IID}}|${CI_MERGE_REQUEST_IID}|g" ${APPLICATION_MANIFEST}
+    - cat ${APPLICATION_MANIFEST}
+    # Apply our ArgoCD Application
+    - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
+    - echo "View your applications deployment progress at https://argocd.reviewapp.identitysandbox.gov/applications/argocd/${CI_ENVIRONMENT_SLUG}?view=tree&resource="
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
-    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
+    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-idp -n review-apps -- /app/bin/rails console"
     - echo "Address of IDP review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
     - echo "Address of Dashboard review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
@@ -387,11 +345,12 @@ review-app:
       when: never
 
 stop-review-app:
-  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
-    - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG" -n argocd
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
   stage: review
   image:
     name: dtzar/helm-kubectl:latest
@@ -414,43 +373,39 @@ include:
 secret_detection:
   stage: scan
   allow_failure: false
+  needs: []
+  artifacts:
+    paths:
+      - gl-secret-detection-report.json
+    reports:
+      secret_detection: gl-secret-detection-report.json
   variables:
     SECRET_DETECTION_EXCLUDED_PATHS: 'keys.example,config/artifacts.example,public/acuant/*/opencv.min.js,tmp/0.0.0.0-3000.key'
     SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       variables:
-        SECRET_DETECTION_SHOULD_RUN: "true"
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
-      variables:
-        SECRET_DETECTION_SHOULD_RUN: "true"
-        SECRET_DETECTION_LOG_OPTIONS: origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}..HEAD
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "main" && $CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME == "main"
-      variables:
-        SECRET_DETECTION_SHOULD_RUN: "true"
-        SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
+        SECRET_DETECTION_LOG_OPTIONS: ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA}
   before_script:
     - apk add --no-cache jq
-    - git fetch origin --quiet
   script:
     - |
-      if [ -n "$SECRET_DETECTION_SHOULD_RUN" ]; then
+        echo "running analyzer"
         /analyzer run
         if [ -f "$SECRET_DETECTION_REPORT_FILE" ]; then
           # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
           if [ "$(jq ".vulnerabilities | length" $SECRET_DETECTION_REPORT_FILE)" -gt 0 ]; then
             echo "Vulnerabilities detected. Please analyze the artifact $SECRET_DETECTION_REPORT_FILE produced by the 'secret-detection' job."
-            exit 80
+            echo "Check the \"Security\" tab on the overall pipeline run to download the report for more information."
+            exit 1
           fi
         else
           echo "Artifact $SECRET_DETECTION_REPORT_FILE does not exist. The 'secret-detection' job likely didn't create one. Hence, no evaluation can be performed."
         fi
-      else
-        echo "Skipping because this is not a PR or is not targeting main"
-        exit 0
-      fi
 
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json

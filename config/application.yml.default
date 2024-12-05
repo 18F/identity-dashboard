@@ -10,12 +10,14 @@ aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
 db_pool: '5'
 dp_reaping_frequency: '10'
+event_log_filename: 'events.log'
 help_text_options_feature_enabled: true
 newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
 service_config_wizard_enabled: true
+access_controls_enabled: true
 
 development:
   dashboard_api_token: test_token
@@ -35,6 +37,7 @@ production:
   saml_sp_private_key: changeme
   saml_sp_private_key_password: changeme
   service_config_wizard_enabled: false
+  access_controls_enabled: false
 test:
   dashboard_api_token: sekret
   idp_sp_url: 'http://idp.example.com/api/service_provider'

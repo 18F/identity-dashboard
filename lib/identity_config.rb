@@ -15,7 +15,7 @@ class IdentityConfig
       config.add(:dp_reaping_frequency, type: :integer)
       config.add(:certificate_expiration_warning_period, type: :integer)
       config.add(:dashboard_api_token, type: :string)
-      config.add(:google_analytics_enabled, type: :boolean, allow_nil: true)
+      config.add(:event_log_filename, type: :string)
       config.add(:help_text_options_feature_enabled, type: :boolean)
       config.add(:idp_sp_url, type: :string)
       config.add(:idp_url, type: :string)
@@ -29,6 +29,7 @@ class IdentityConfig
       config.add(:secret_key_base, type: :string)
       config.add(:serve_static_files, type: :boolean)
       config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
+      config.add(:access_controls_enabled, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
   end

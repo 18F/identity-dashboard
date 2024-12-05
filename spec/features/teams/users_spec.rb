@@ -18,19 +18,19 @@ describe 'users' do
 
     scenario 'access permitted to team member', versioning: true do
       login_as team_member
-      visit team_users_path(team)+'/new'
+      visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
     scenario 'access permitted to admin', versioning: true do
       login_as admin_user
-      visit team_users_path(team)+'/new'
+      visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
     scenario 'access denied to non-team member', versioning: true do
       login_as user
-      visit team_users_path(team)+'/new'
+      visit new_team_user_path(team)
       expect(page).to have_content('Unauthorized')
     end
   end
@@ -39,7 +39,7 @@ describe 'users' do
 
     before do
       login_as team_member
-      visit team_users_path(Team.find(team_member.teams.first.id))+'/new'
+      visit new_team_user_path(Team.find(team_member.teams.first.id))
     end
 
     scenario 'team member adds new user', versioning: true do
@@ -71,26 +71,26 @@ describe 'users' do
 
     scenario 'access denied to self', versioning: true do
       login_as team_member
-      visit team_user_path(team, team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, team_member)
       expect(page).to have_content('Unauthorized')
     end
 
     scenario 'access denied to non-team member', versioning: true do
       login_as user
-      visit team_user_path(team, team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, team_member)
       expect(page).to have_content('Unauthorized')
     end
 
     scenario 'access permitted to admin', versioning: true do
       login_as admin_user
-      visit team_user_path(team, team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email:team_member.email, team:team))
     end
 
     scenario 'access permitted to team member to remove other team member', versioning: true do
       login_as team_member
-      visit team_user_path(team, other_team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email:other_team_member.email, team:team))
     end
@@ -100,7 +100,7 @@ describe 'users' do
 
     before do
       login_as team_member
-      visit team_user_path(team, other_team_member)+'/remove_confirm'
+      visit team_remove_confirm_path(team, other_team_member)
     end
 
     scenario 'team member clicks cancel', versioning: true do
@@ -116,7 +116,7 @@ describe 'users' do
                                           email:other_team_member.email, team:team))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
-      expect(page).to have_content(I18n.t('teams.users.remove.success', 
+      expect(page).to have_content(I18n.t('teams.users.remove.success',
                                           email:other_team_member.email))
     end
   end
@@ -154,7 +154,7 @@ describe 'users' do
       visit team_users_path(team)
       expect(page.all('a', text:'Delete').length).to eq(1)
       click_on 'Delete'
-      expect(current_path).to eq("#{team_user_path(team.id,other_team_member.id)}/remove_confirm")
+      expect(current_path).to eq(team_remove_confirm_path(team.id,other_team_member.id))
     end
 
     scenario 'add user button goes to add user page', versioning: true do

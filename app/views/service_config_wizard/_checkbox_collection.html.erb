@@ -1,17 +1,19 @@
 <%# expected locals:
   [Method] form such that form is a valid instance of wizard_form
+  [String] fieldname such that simple_form and service_provider have valid translations
   [Symbol] db_fieldname such that the database has an associated column
   [Hash] inputs hash where key is the label and value is the input value
 %>
-<div class="usa-checkbox" aria-describedby="<%= "legend-#{db_fieldname}" %>">
+<div class="usa-checkbox" aria-describedby="<%= fieldname.gsub('.','_') %>">
   <p class="usa-error-message js-bundle-input-error-message">
     <%= form.object.errors[db_fieldname].to_sentence.presence %>
   </p>
   <%= form.collection_check_boxes(db_fieldname,
                                   inputs,
                                   :last, :first,
-                                  item_wrapper_tag: :div) do |b| %>
+                                  item_wrapper_tag: :div,
+                                  item_wrapper_class: 'checkbox__container') do |b| %>
     <%= b.check_box class: "usa-checkbox__input" %>
     <%= b.label class: "usa-checkbox__label" %>
   <% end %>
-</ul>
+</div>

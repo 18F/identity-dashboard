@@ -10,6 +10,7 @@ gem 'acts_as_paranoid'
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
 gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-s3', require: false
+gem 'browser'
 gem 'bundler'
 gem 'colorize'
 gem 'cssbundling-rails'
@@ -25,13 +26,14 @@ gem 'jsbundling-rails', '>= 1.2.2'
 gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'
 gem 'kaminari'
+gem 'lru_redux'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.16.5'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 15.0', '>= 15.0.0'
-gem 'puma', '>= 6.4.2'
+gem 'puma', '>= 6.4.3'
 gem 'pg'
 gem 'propshaft'
 gem 'pry-rails'
@@ -40,7 +42,7 @@ gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
-gem 'rails', '~> 7.1.3'
+gem 'rails', '~> 7.1.4'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
@@ -73,7 +75,7 @@ group :development, :test do
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
-  gem 'rubocop', '~> 1.62.0', require: false
+  gem 'rubocop', '~> 1.66.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
   gem 'rspec_junit_formatter'

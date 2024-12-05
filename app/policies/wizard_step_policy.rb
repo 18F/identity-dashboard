@@ -1,6 +1,6 @@
 class WizardStepPolicy < BasePolicy
   def destroy?
-    IdentityConfig.store.service_config_wizard_enabled && user.admin? && record.user == user
+    IdentityConfig.store.service_config_wizard_enabled && (user.admin? || record.user == user)
   end
 
   class Scope < BasePolicy::Scope

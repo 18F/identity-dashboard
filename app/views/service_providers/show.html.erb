@@ -7,7 +7,7 @@
 <% end %>
 
 <h2 class="margin-bottom-0">
-  <label for="identity_protocol">Dashboard Configuration:</label>
+  <label for="identity_protocol">Portal Configuration:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Production' : 'Sandbox' %></span>
 </h2>
 <hr>
@@ -196,11 +196,17 @@
   <%= render 'service_provider_yaml' %>
 <% end %>
 
-<%= button_to t('forms.buttons.edit_service_provider'),
+<% if IdentityConfig.store.service_config_wizard_enabled %>
+  <%= button_to t('forms.buttons.edit_service_provider'),
+    service_config_wizard_index_path(service_provider:),
+    class: 'usa-button float-left',
+    method: :post %>
+ <% else %>
+  <%= button_to t('forms.buttons.edit_service_provider'),
     edit_service_provider_path(service_provider),
     class: 'usa-button float-left',
     method: :get %>
-
+<% end %>
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),
   class: 'usa-button usa-button--outline float-left',

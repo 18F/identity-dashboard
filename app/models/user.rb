@@ -67,6 +67,11 @@ class User < ApplicationRecord
     last_sign_in_at.nil? && created_at < 14.days.ago
   end
 
+  def primary_role
+    return 'Login.gov Admin' if admin?
+    user_teams.first&.role_name || 'Partner Admin'
+  end
+
   private
 
   def member_service_providers
