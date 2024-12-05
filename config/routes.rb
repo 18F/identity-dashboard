@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   scope module: 'teams' do
     resources :teams do
-      get '/users/:id/remove_confirm' => 'users#remove_confirm'
+      get '/users/:id/remove_confirm', to: 'users#remove_confirm', as: :remove_confirm
       resources :users
     end
   end

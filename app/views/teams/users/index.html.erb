@@ -21,7 +21,7 @@
         <td><%= user.email %></td>
         <td><%= user.last_sign_in_at || "Never" %></td>
         <td>
-          <%= link_to 'Delete', "#{team_user_path(@team.id,user.id)}/remove_confirm",
+          <%= link_to 'Delete', team_remove_confirm_path(@team.id,user.id),
                       form_class: 'display-inline',
                       method: :get,
                       class: 'usa-button--unstyled usa-link margin-right-1' if user.id != current_user.id %>

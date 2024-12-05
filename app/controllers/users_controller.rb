@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
   def update
     user = User.find_by(id: params[:id])
-    role = Role.find user_params.delete(:user_team)&.dig(:role_name)
+    role = Role.find_by(name: user_params.delete(:user_team)&.dig(:role_name))
     user_params[:admin] = role.legacy_admin? if role
     user.transaction do
       user.update!(user_params)
@@ -57,7 +57,7 @@ class UsersController < ApplicationController
 
   def build_user_team
     user_team = @user.user_teams.build
-    user_team.role = @user.admin? ? Role::SITE_ADMIN : Role.find('Partner Admin')
+    user_team.role = @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
     user_team
   end
 end
