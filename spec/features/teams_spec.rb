@@ -105,7 +105,7 @@ feature 'User teams CRUD' do
       expect(page).to have_content(user.email)
 
       find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
-      find("a[href='#{team_user_path(team, user)}/remove_confirm']").click
+      find("a[href='#{team_remove_confirm_path(team, user)}']").click
       click_on I18n.t('teams.users.remove.button')
       find('.usa-button', text: 'Back').click
       

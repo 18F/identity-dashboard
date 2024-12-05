@@ -1,5 +1,7 @@
-# TeamAuditEvent allows us to turn PaperTrail::Version data about the join table
-# into something more presentable
+# TeamAuditEvent allows us to pull both teams edits and team_users edits at once.
+#
+# It also can decorate the team_users edits so they we can pull consistent data out
+# of both types of edits.
 class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
   EVENT_RENAMING = {'create' => 'add', 'destroy' => 'remove'}.freeze
 
@@ -11,8 +13,11 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   # `scope` should be a pundit policy scope whenever one is applicable
   #
   # This code probably knows too much about how PaperTrail::Version works.
-  # This really rubs up against the ways ActiveRecord can be frustrationg. 
+  # This rubs up against the ways ActiveRecord can be frustrating.
   # Thankfully, PaperTrail has been very stable.
+  #
+  # This returns an Active::Record collection and does not do the decorating so that it could
+  # be tested separately.
   def self.by_team(team, scope: PaperTrail::Version.all)
     # PaperTrail has a default order, so we have to be consistently explicit about reordering
     newest_first_scope = scope.reorder(created_at: :desc)
@@ -25,6 +30,10 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
     membership_versions.or(team_versions).where(created_at: 1.year.ago..Time.zone.now)
   end
 
+  # TeamAuditEvent.decorate(scope)
+  #
+  # `scope` is usually an ActiveRecord::Collection returned by `TeamAuditEvent.by_team`
+  # though it should work with any ActiveRecord::Model collection from PaperTrail::Version
   def self.decorate(scope)
     # The team membership changes need some decoration. The PaperTrail information on
     # just the `UserTeam` join table itself isn't helpful to an end user.
@@ -57,13 +66,23 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
       raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
     end
 
+    object_changes = version.object_changes
+
     # The ID column for the UserTeam table doesn't matter much here
-    version.object_changes.delete('id')
+    object_changes.delete('id')
+
+    # Use the user ID as an identifier
+    user_id = version.object['user_id'] if version.object
+    # We could put the user_id as both "previous" and "updated" value but
+    # I feel like that makes it harder to read
+    object_changes['user_id'] ||= [user_id, nil]
+
     new(
       EVENT_RENAMING.fetch(version.event, version.event),
       version.created_at,
       version.whodunnit,
       version.object_changes,
+      object_changes['user_id'].compact.first,
     )
   end
 

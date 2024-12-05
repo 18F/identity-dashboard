@@ -160,7 +160,7 @@ feature 'Service Config Wizard' do
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
-      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
+      expect(current_url).to match(service_providers_url(saved_config_data.id)),
         'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
         next if key == 'default_aal'
