@@ -1,7 +1,7 @@
 class LogoValidator < ActiveModel::Validator
   attr_reader :record
 
-  MAX_LOGO_SIZE = 1.megabytes
+  MAX_LOGO_SIZE = 50.kilobytes
 
   PNG_MIME_TYPE = 'image/png'.freeze
   SVG_MIME_TYPE = 'image/svg+xml'.freeze
@@ -25,7 +25,7 @@ class LogoValidator < ActiveModel::Validator
 
   def logo_is_less_than_max_size
     if record.logo_file.blob.byte_size > MAX_LOGO_SIZE
-      record.errors.add(:logo_file, 'Logo must be less than 1MB')
+      record.errors.add(:logo_file, 'Logo must be less than 50kb')
     end
   end
 
