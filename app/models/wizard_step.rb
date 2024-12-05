@@ -281,12 +281,12 @@ class WizardStep < ApplicationRecord
   end
 
   def identity_protocol
-    return data['identity_protocol'] if step_name == 'protocol'
+    return wizard_form_data['identity_protocol'] if step_name == 'protocol'
     protocol_step.identity_protocol
   end
 
   def saml?
-    auth_step && protocol_step.identity_protocol == 'saml'
+    protocol_step.identity_protocol == 'saml'
   end
 
   def saml_settings_present?
