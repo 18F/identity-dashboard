@@ -1,15 +1,18 @@
 class UserTeamPolicy < BasePolicy
-
+  # TODO: remove `manage_team_users?` after turning on IdentityConfig.store.access_controls_enabled
+  # and removing the flag
   def manage_team_users?
-    admin? || user_team_role
+    return admin? || team_membership unless IdentityConfig.store.access_controls_enabled
+
+    create?
   end
 
   def index?
-    admin? || user_team_role && user_team_role.name != 'Partner Readonly'
+    admin? || team_membership && role_name != 'Partner Readonly'
   end
 
   def create?
-    admin? || user_team_role && user_team_role.name == 'Partner Admin'
+    admin? || role_name == 'Partner Admin'
   end
 
   def new?
@@ -18,21 +21,25 @@ class UserTeamPolicy < BasePolicy
 
   def destroy?
     return true if admin?
+
     record.user != user && create?
   end
 
   def remove_confirm?
-    destroy?
+    if IdentityConfig.store.access_controls_enabled
+      destroy?
+    else
+      manage_team_users? && record.user != user
+    end
   end
 
   private
 
-  def user_team_role
-    @user_user_team ||= record.team && record.team.user_teams.find_by(user: user)
-    if IdentityConfig.store.access_controls_enabled
-      @user_user_team&.role
-    else
-      @user_user_team
-    end
+  def team_membership
+    @team_membership ||= record.team&.user_teams&.find_by(user:)
+  end
+
+  def role_name
+    team_membership&.role&.name
   end
 end

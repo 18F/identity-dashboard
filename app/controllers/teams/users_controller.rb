@@ -1,19 +1,14 @@
 class Teams::UsersController < AuthenticatedController
-  before_action -> do
-    unless IdentityConfig.store.access_controls_enabled
-      authorize(current_user_team, :manage_team_users?, policy_class: UserTeamPolicy)
-    end
-  end
-
-  helper_method :show_delete_for, :show_manage?
+  before_action :authorize_manage_team_users,
+                unless: -> { IdentityConfig.store.access_controls_enabled }
 
   def new
-    authorize current_user_team if IdentityConfig.store.access_controls_enabled
+    authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
     @user = User.new
   end
 
   def index
-    authorize current_user_team if IdentityConfig.store.access_controls_enabled
+    authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
   end
 
   def create
@@ -47,10 +42,9 @@ class Teams::UsersController < AuthenticatedController
 
   def destroy
     if IdentityConfig.store.access_controls_enabled
-      membership_to_delete = UserTeam.find_by(user:, team:)
       # If unauthorized, the option to delete should not show up in the UI
       # so it is acceptable to return a 401 instead of a redirect here
-      authorize membership_to_delete
+      authorize UserTeam.find_by(user:, team:)
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
@@ -63,18 +57,6 @@ class Teams::UsersController < AuthenticatedController
         render_401
       end
     end
-  end
-
-  def show_delete_for(membership)
-    if IdentityConfig.store.access_controls_enabled
-      policy(membership).remove_confirm?
-    else
-      membership.user.id != current_user.id
-    end
-  end
-
-  def show_manage?
-    !IdentityConfig.store.access_controls_enabled || policy(current_user_team).create?
   end
 
   private
@@ -103,7 +85,15 @@ class Teams::UsersController < AuthenticatedController
     @team ||= Team.includes(:users).find(params[:team_id])
   end
 
-  def current_user_team
-    team.user_teams.find_by(user: current_user) || UserTeam.new
+  def current_user_team_membership
+    @current_user_team_membership ||= team.user_teams.find_by(user: current_user) || UserTeam.new
+  end
+
+  def authorize_manage_team_users
+    authorize(
+      current_user_team_membership,
+      :manage_team_users?,
+      policy_class: UserTeamPolicy,
+    )
   end
 end

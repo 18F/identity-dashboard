@@ -6,12 +6,13 @@ class UserTeam < ApplicationRecord
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :user_teams
 
-  validates_uniqueness_of :user_id, scope: :group_id, on: :create,
-                          :message=> 'This user is already a member of the team.'
+  validates :user_id, uniqueness: { scope: :group_id, on: :create,
+                                    message: 'This user is already a member of the team.' }
   validate :role_exists_if_present
 
   def role_exists_if_present
     return unless role_name
+
     unless Role.find_by(name: role_name)
       errors.add(:role_name, :invalid)
       return false
@@ -19,11 +20,11 @@ class UserTeam < ApplicationRecord
     true
   end
 
-  def role=(role)
-    self.role_name = role.name
+  def role=(new_role)
+    self.role_name = new_role.name
   end
 
   def role
-    Role.find_by(name:role_name)
+    Role.find_by(name: role_name)
   end
 end

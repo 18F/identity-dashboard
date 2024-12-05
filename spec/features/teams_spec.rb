@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'User teams CRUD' do
   [true, false].each do |with_rbac|
-    describe (with_rbac ? 'with RBAC' : 'without RBAC') do
+    describe(with_rbac ? 'with RBAC' : 'without RBAC') do
       before do
         if with_rbac
           allow(IdentityConfig.store).
@@ -87,7 +87,7 @@ feature 'User teams CRUD' do
         org1 = create(:team)
         org2 = create(:team)
         team = create(:team)
-        sp = create(:service_provider, team: team)
+        sp = create(:service_provider, team:)
 
         login_as(admin)
         visit teams_all_path
@@ -106,7 +106,7 @@ feature 'User teams CRUD' do
           admin = create(:admin)
           team = create(:team)
           user = create(:user, teams: [team])
-          create(:service_provider, team: team)
+          create(:service_provider, team:)
 
           login_as(admin)
           visit teams_all_path
@@ -136,7 +136,7 @@ feature 'User teams CRUD' do
         scenario 'regular user attempts to view a team' do
           user = create(:user)
           team = create(:team)
-          create(:service_provider, team: team)
+          create(:service_provider, team:)
 
           login_as(user)
 
@@ -164,7 +164,7 @@ feature 'User teams CRUD' do
       scenario 'Delete when a team still has service providers' do
         admin = create(:admin)
         team = create(:team)
-        create(:service_provider, team: team)
+        create(:service_provider, team:)
 
         login_as(admin)
 
