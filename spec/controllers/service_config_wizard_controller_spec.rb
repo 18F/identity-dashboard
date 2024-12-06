@@ -87,8 +87,10 @@ RSpec.describe ServiceConfigWizardController do
       initial_attributes = saml_app_config.reload.attributes
 
       put :create, params: { service_provider: saml_app_config.id }
-      put :update, params: {id: 'authentication', wizard_step: {
+      put :update, params: {id: 'protocol', wizard_step: {
         identity_protocol: 'openid_connect_pkce',
+      }}
+      put :update, params: {id: 'authentication', wizard_step: {
         ial: saml_app_config.ial,
         default_aal: saml_app_config.default_aal,
         attribute_bundle: saml_app_config.attribute_bundle,
@@ -136,7 +138,6 @@ RSpec.describe ServiceConfigWizardController do
       it 'can post' do
         expect do
           put :update, params: {id: 'authentication', wizard_step: {
-            identity_protocol: 'openid_connect_private_key_jwt',
             ial: '1',
             # Rails forms regularly put an initial, hidden, and blank entry for various inputs
             attribute_bundle: ['', 'email'],
@@ -150,12 +151,14 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'sets attribute bundle errors' do
         expect do
+          put :update, params: {id: 'protocol', wizard_step: {
+            identity_protocol: 'saml'
+          }}
           put :update, params: {id: 'authentication', wizard_step: {
-            identity_protocol: 'saml',
             ial: '2',
             attribute_bundle: [],
           }}
-        end.to_not(change {WizardStep.count})
+        end.to(change {WizardStep.count}.by(1))
         expect(response).to_not be_redirect
         expect(assigns[:model].errors.messages.keys).to eq([:attribute_bundle])
         actual_error = assigns[:model].errors[:attribute_bundle].to_sentence
