@@ -21,7 +21,9 @@ gem 'enum_help'
 gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v4.1.0'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
-gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', tag: 'v0.8.0'
+# TODO: Make sure to replace this with the new version of identity-validations before you merge
+# TODO: If you forget the above it will be incredibly embarassing. Do not forget that you wrote this note to yourself
+gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', branch: 'jmhooper-add-post-idv-follow-up-url-validations'
 gem 'jsbundling-rails', '>= 1.2.2'
 gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'

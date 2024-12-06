@@ -260,6 +260,25 @@ describe ServiceProvider do
       expect(file_uri_sp).to_not be_valid
     end
 
+    it 'validates that the post_idv_follow_up_url is an absolute, parsable uri' do
+      valid_sp = build(:service_provider, post_idv_follow_up_url: 'http://foo.com')
+      valid_native_sp = build(:service_provider, post_idv_follow_up_url: 'example-app:/result')
+      missing_scheme_sp = build(:service_provider, post_idv_follow_up_url: 'foo.com')
+      relative_uri_sp = build(:service_provider, post_idv_follow_up_url: '/asdf/hjkl')
+      bad_uri_sp = build(:service_provider, post_idv_follow_up_url: ' http://foo.com')
+      malformed_uri_sp = build(:service_provider, post_idv_follow_up_url: 'super.foo.com:result')
+      file_uri_sp = build(:service_provider,
+                           post_idv_follow_up_url: 'file:///usr/sbin/evil_script.sh')
+
+      expect(valid_sp).to be_valid
+      expect(valid_native_sp).to be_valid
+      expect(missing_scheme_sp).to_not be_valid
+      expect(relative_uri_sp).to_not be_valid
+      expect(bad_uri_sp).to_not be_valid
+      expect(malformed_uri_sp).to_not be_valid
+      expect(file_uri_sp).to_not be_valid
+    end
+
     it 'validates that the push_notification_url is an absolute, parsable uri' do
       valid_sp = build(:service_provider, push_notification_url: 'http://foo.com')
       valid_native_sp = build(:service_provider, push_notification_url: 'example-app:/result')
