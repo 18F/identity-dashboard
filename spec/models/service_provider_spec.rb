@@ -46,7 +46,7 @@ describe ServiceProvider do
           expect(service_provider).to_not be_valid
 
           expect(service_provider.errors.first.message).to eq(
-            'Logo must be less than 1MB',
+            'Logo must be less than 50kB',
           )
         end
       end
