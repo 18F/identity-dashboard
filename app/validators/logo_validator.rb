@@ -25,7 +25,7 @@ class LogoValidator < ActiveModel::Validator
 
   def logo_is_less_than_max_size
     if record.logo_file.blob.byte_size > MAX_LOGO_SIZE
-      record.errors.add(:logo_file, 'Logo must be less than 50kb')
+      record.errors.add(:logo_file, 'Logo must be less than 50kB')
     end
   end
 
