@@ -376,6 +376,32 @@ feature 'Service Config Wizard' do
           capitalize,
         )
       end
+
+      it 'renders Post IdV Follow-up URL input if IAL2 is selected' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate_ial_2,
+                                 user: user)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('redirects')
+
+        expect(page).to have_content(
+          t('simple_form.labels.service_provider.post_idv_follow_up_url'),
+        )
+      end
+
+      it 'does not render Post IdV Follow-up URL input if IAL1 is selected' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate_ial_1,
+                                 user: user)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('redirects')
+
+        expect(page).to_not have_content(
+          t('simple_form.labels.service_provider.post_idv_follow_up_url'),
+        )
+      end
     end
 
     it 'renders Help text as expected' do

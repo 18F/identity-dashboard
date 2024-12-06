@@ -147,7 +147,7 @@ describe ServiceProvider do
             filename: 'logo_with_script.svg',
           ))
         end
-      end 
+      end
     end
 
     describe 'logo with a different file extension' do

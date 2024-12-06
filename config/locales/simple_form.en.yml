@@ -39,6 +39,7 @@ en:
         identity_protocol: Identity Protocol
         issuer: Issuer
         logo_file: Logo file
+        post_idv_follow_up_url: Post IdV Follow-up URL
         push_notification_url: Push notification URL
         production: Ready for Production
         redirect_uris_oidc: Redirect URIs

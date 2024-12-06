@@ -147,7 +147,9 @@ module ServiceProviderHelper
       'push_notification_url' => sp_hash['push_notification_url'],
       'redirect_uris' => sp_hash['redirect_uris'],
     }
-    hash_with_ial_attr = add_IAL_attribute(base_hash, sp_hash['failure_to_proof_url'])
+    hash_with_ial_attr = add_IAL_attribute(
+      base_hash, sp_hash['failure_to_proof_url'], sp_hash['post_idv_follow_up_url']
+    )
 
     if base_hash['protocol'] == 'saml'
       add_saml_attributes(hash_with_ial_attr, sp_hash)
@@ -175,9 +177,12 @@ module ServiceProviderHelper
     configs_hash.merge!(saml_attrs)
   end
 
-  def add_IAL_attribute(config_hash, failure_to_proof_url)
+  def add_IAL_attribute(config_hash, failure_to_proof_url, post_idv_follow_up_url)
     return config_hash if config_hash['ial'] != 2
-    config_hash.merge({'failure_to_proof_url' => failure_to_proof_url})
+    config_hash.merge(
+      'failure_to_proof_url' => failure_to_proof_url,
+      'post_idv_follow_up_url' => post_idv_follow_up_url,
+    )
   end
 
   def add_oidc_attributes(config_hash)
