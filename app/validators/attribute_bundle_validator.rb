@@ -1,7 +1,7 @@
 # The AttributeBundleValidator validates an attribute that is an array of strings.
 # It requires that the record being validated has these as method or properties:
 # * `ial`, of type Integer
-# * `identity_protocol`, of type String
+# * `saml?`, of type Boolean
 # * `attribute_bundle`, of type Array<String>
 class AttributeBundleValidator < ActiveModel::Validator
   ALLOWED_IAL1_ATTRIBUTES = %w[
