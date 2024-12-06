@@ -152,7 +152,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'sets attribute bundle errors' do
         expect do
           put :update, params: {id: 'protocol', wizard_step: {
-            identity_protocol: 'saml'
+            identity_protocol: 'saml',
           }}
           put :update, params: {id: 'authentication', wizard_step: {
             ial: '2',
