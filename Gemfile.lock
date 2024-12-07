@@ -684,7 +684,7 @@ DEPENDENCIES
   listen (~> 3.3)
   lru_redux
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.16.5)
+  nokogiri (~> 1.16.8)
   omniauth-rails_csrf_protection
   omniauth_login_dot_gov!
   paper_trail (~> 15.0, >= 15.0.0)
