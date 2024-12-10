@@ -33,10 +33,10 @@ gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_go
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 15.0', '>= 15.0.0'
-gem 'puma', '>= 6.4.3'
 gem 'pg'
 gem 'propshaft'
 gem 'pry-rails'
+gem 'puma', '>= 6.4.3'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
@@ -51,6 +51,7 @@ gem 'ruby_regex'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.0-18f'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
+gem 'sorbet-runtime'
 gem 'uglifier'
 gem 'wicked', '~> 2.0'
 
@@ -59,6 +60,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
+  gem 'sorbet'
   gem 'web-console', '>= 4.2.1'
 end
 
@@ -67,22 +69,23 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
+  gem 'rspec_junit_formatter'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
   gem 'rubocop', '~> 1.66.0', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
-  gem 'rspec_junit_formatter'
+  gem 'tapioca', require: false
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara', '>= 3.39.1'
-  gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
   gem 'simplecov-cobertura'

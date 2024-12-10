@@ -1,9 +1,10 @@
+TeamAuditEvent = Struct.new(:event, :created_at, :whodunnit, :changes, :id)
 # TeamAuditEvent allows us to pull both teams edits and team_users edits at once.
 #
 # It also can decorate the team_users edits so they we can pull consistent data out
 # of both types of edits.
-class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
-  EVENT_RENAMING = {'create' => 'add', 'destroy' => 'remove'}.freeze
+class TeamAuditEvent
+  EVENT_RENAMING = { 'create' => 'add', 'destroy' => 'remove' }.freeze
 
   # TeamAuditEvent.by_team(team, scope: )
   #
@@ -46,13 +47,12 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   def self.membership_versions_by_team(team, scope: PaperTrail::Version.all)
     team_id = team.id
     if team_id.blank?
-      raise ArgumentError.new("Team #{team.name} is missing a team ID. Has it been saved yet?")
+      raise ArgumentError, "Team #{team.name} is missing a team ID. Has it been saved yet?"
     end
 
     scope.
       where(item_type: 'UserTeam').
-      where(%(object_changes @> '{"group_id":[?]}'), team_id).
-      or(
+      where(%(object_changes @> '{"group_id":[?]}'), team_id).or(
         # In theory, nothing in the current application can intentionally null out the group_id
         # without deleting the user, too, but let's check for that just to be safe.
         scope.
@@ -87,7 +87,7 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   end
 
   def object_changes
-    changes['user_email'] ||= changes['user_id'].map {|user_id| User.find_by(id: user_id)&.email }
+    changes['user_email'] ||= changes['user_id'].map { |user_id| User.find_by(id: user_id)&.email }
     changes
   end
 

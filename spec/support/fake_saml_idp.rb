@@ -54,7 +54,6 @@ class FakeSamlIdp < Sinatra::Base
   end
 
   def build_configs
-    sp_config_settings = Saml::Config::SETTINGS
     SamlIdp.configure do |config|
       idp_base_url = 'http://idp.example.com'
 
