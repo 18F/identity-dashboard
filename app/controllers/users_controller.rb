@@ -1,6 +1,10 @@
+# typed: true
+
 class UsersController < ApplicationController
-  before_action -> { authorize User, :manage_users? }, except: [:none]
-  before_action -> { authorize User }, only: [:none]
+  extend T::Sig
+
+  before_action -> { T.unsafe(self).authorize User, :manage_users? }, except: [:none]
+  before_action -> { T.unsafe(self).authorize User }, only: [:none]
 
   def index
     @users = User.all.sorted
@@ -22,18 +26,18 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find_by(id: params[:id])
-    @user_team = @user && (@user.user_teams.first || build_user_team )
+    @user = User.find(params[:id])
+    @user_team = @user.user_teams.first || build_user_team
   end
 
   def update
-    user = User.find_by(id: params[:id])
+    user = User.find(params[:id])
     role = Role.find_by(name: user_params.delete(:user_team)&.dig(:role_name))
     user_params[:admin] = role.legacy_admin? if role
     user.transaction do
       user.update!(user_params)
       user.user_teams.each do |team|
-        team.role_name = role.name
+        team.role = role
         team.save!
       end
     end
@@ -41,8 +45,9 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    user = User.find_by(id: params[:id])
+    user = User.find(params[:id])
     return unless user.destroy
+
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
     redirect_to users_path
   end
