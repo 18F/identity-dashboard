@@ -160,9 +160,8 @@ describe ServiceProviderHelper do
         expect(config_hash(oidc_jwt_sp)).to include(attribute_name)
       end
     end
-    it 'returns a hash with IdV redirects if ial 2 - oidc' do
+    it 'returns a hash with failure_to_proof_url if ial 2 - oidc' do
       sp_config_oidc_attributes.push('failure_to_proof_url')
-      sp_config_oidc_attributes.push('post_idv_follow_up_url')
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
       end
@@ -170,9 +169,8 @@ describe ServiceProviderHelper do
     it 'returns the ial config as an integer instead of a string' do
       expect(config_hash(saml_sp_ial_2)['ial']).to be_an(Integer)
     end
-    it 'returns a hash with IdV redirects if ial 2 - saml' do
+    it 'returns a hash with failure_to_proof_url if ial 2 - saml' do
       sp_config_saml_attributes.push('failure_to_proof_url')
-      sp_config_oidc_attributes.push('post_idv_follow_up_url')
       sp_config_saml_attributes.each do |attribute_name|
         expect(config_hash(saml_sp_ial_2)).to include(attribute_name)
       end

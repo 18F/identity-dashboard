@@ -263,11 +263,6 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  hint: I18n.t('service_provider_form.failure_to_proof_url'),
                  required: true %>
 
-  <%= form.input :post_idv_follow_up_url,
-                 input_html: { class: 'usa-input' },
-                 label: 'Post IdV Follow-Up URL',
-                 hint: I18n.t('service_provider_form.post_idv_follow_up_url') %>
-
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: 'Push notification URL',
@@ -343,8 +338,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <p class="usa-label">Help text</p>
     <% if help_text_options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
-     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section
-      of the developer documentation. You should understand the guidance when you request support.</p>
+     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section 
+      of the developer documentation. You should understand the guidance when you request support.</p>                                 
       <%= render 'form_default_help_text', form: form, service_provider: @service_provider %>
     <% else %>
       <p>You have no existing help text.</p>

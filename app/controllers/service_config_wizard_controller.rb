@@ -17,7 +17,7 @@ class ServiceConfigWizardController < AuthenticatedController
     draft_service_provider
     show_saml_options?
     show_oidc_options?
-    show_idv_redirect_urls?
+    show_proof_failure_url?
   ]
 
   def new
@@ -148,7 +148,7 @@ class ServiceConfigWizardController < AuthenticatedController
     !show_saml_options?
   end
 
-  def show_idv_redirect_urls?
+  def show_proof_failure_url?
     @model.ial.to_i > 1
   end
 
@@ -192,7 +192,6 @@ class ServiceConfigWizardController < AuthenticatedController
       :metadata_url,
       :return_to_sp_url,
       :failure_to_proof_url,
-      :post_idv_follow_up_url,
       :push_notification_url,
       :signed_response_message_requested,
       :sp_initiated_login_url,
@@ -316,7 +315,6 @@ class ServiceConfigWizardController < AuthenticatedController
       sp_initiated_login_url
       return_to_sp_url
       failure_to_proof_url
-      post_idv_follow_up_url
       push_notification_url
       app_name
     ]

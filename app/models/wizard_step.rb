@@ -13,12 +13,12 @@ class WizardStep < ApplicationRecord
   DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
 
   # A list of steps and their attributes
-  #
+  # 
   # Generally, you won't want to access this list directly outside of the WizardStep class itself.
   # This list contains fields that should get preserved when editing an existing config
   # but we do not want to show up in the UI. This constant is an implementation detail.
-  #
-  # Instead, use `STEP` constant to get a list of the non-hidden steps or
+  # 
+  # Instead, use `STEP` constant to get a list of the non-hidden steps or 
   # use a method in this class that encapsulates the implementation.
   STEP_DATA = {
     intro: WizardStep::Definition.new,
@@ -48,7 +48,6 @@ class WizardStep < ApplicationRecord
       assertion_consumer_logout_service_url: '',
       block_encryption: DEFAULT_SAML_ENCRYPTION,
       failure_to_proof_url: '',
-      post_idv_follow_up_url: '',
       push_notification_url: '',
       redirect_uris: '',
       return_to_sp_url: '',
@@ -98,7 +97,7 @@ class WizardStep < ApplicationRecord
   validates :app_name, presence: true, on: 'settings'
   validates :group_id, presence: true, on: 'settings'
   validate :group_is_valid, on: 'settings'
-
+ 
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
@@ -127,9 +126,6 @@ class WizardStep < ApplicationRecord
   validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with IdentityValidations::UriValidator,
     attribute: :failure_to_proof_url,
-    on: 'redirects'
-    validates_with IdentityValidations::UriValidator,
-    attribute: :post_idv_follow_up_url,
     on: 'redirects'
   validates_with IdentityValidations::UriValidator,
     attribute: :push_notification_url,
