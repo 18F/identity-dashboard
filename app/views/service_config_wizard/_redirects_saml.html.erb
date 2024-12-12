@@ -56,10 +56,6 @@
                    label: accessible_label(form, 'Failure to Proof URL', :failure_to_proof_url),
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
-    <%= form.input :post_idv_follow_up_url,
-                   input_html: { class: 'usa-input' },
-                   label: accessible_label(form, 'Post IdV Follow-up URL', :post_idv_follow_up_url),
-                   hint: I18n.t('service_provider_form.post_idv_follow_up_url') %>
   <% end %>
   <%= form.input :redirect_uris,
                  input_html: { class: 'usa-input' },
