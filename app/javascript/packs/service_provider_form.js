@@ -6,7 +6,6 @@ function ialOptionSetup() {
   const ialLevel = document.getElementById('service_provider_ial');
   const ialAttributesCheckboxes = document.querySelectorAll('.ial-attr-wrapper');
   const failureToProofURL = document.querySelector('.service_provider_failure_to_proof_url');
-  const postIdvFollowUpURL = document.querySelector('.service_provider_post_idv_follow_up_url');
   const ial1Attributes = ['email', 'all_emails', 'x509_subject', 'x509_presented', 'verified_at'];
   const failureToProofURLInput = failureToProofURL && failureToProofURL.querySelector('input');
 
@@ -35,17 +34,14 @@ function ialOptionSetup() {
     switch (ial) {
       case '1':
         hideElement(failureToProofURL);
-        hideElement(postIdvFollowUpURL);
         toggleIAL1Options();
         break;
       case '2':
         showElement(failureToProofURL);
-        showElement(postIdvFollowUpURL);
         toggleIAL2Options();
         break;
       default:
         showElement(failureToProofURL);
-        showElement(postIdvFollowUpURL);
         toggleIAL2Options();
     }
   };

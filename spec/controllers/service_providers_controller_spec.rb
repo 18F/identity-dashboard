@@ -261,7 +261,6 @@ describe ServiceProvidersController do
             sp_initiated_login_url: '  https://login.me  ',
             return_to_sp_url: ' https://returntospurl.biz  ',
             failure_to_proof_url: '  https://failuretoproof.com  ',
-            post_idv_follow_up_url: '  https://postidvfollowupurl.com  ',
             push_notification_url: ' https://pushnotifications.com  ',
             app_name: '   app name  ',
             help_text: init_help_params,
@@ -276,7 +275,6 @@ describe ServiceProvidersController do
         expect(sp.sp_initiated_login_url).to eq('https://login.me')
         expect(sp.return_to_sp_url).to eq('https://returntospurl.biz')
         expect(sp.failure_to_proof_url).to eq('https://failuretoproof.com')
-        expect(sp.post_idv_follow_up_url).to eq('https://postidvfollowupurl.com')
         expect(sp.push_notification_url).to eq('https://pushnotifications.com')
         expect(sp.app_name).to eq('app name')
       end
