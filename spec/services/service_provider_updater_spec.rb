@@ -10,7 +10,7 @@ describe ServiceProviderUpdater do
       'X-LOGIN-DASHBOARD-TOKEN' => token,
       'Content-Type' => 'gzip/json',
       'Content-Encoding' => 'gzip',
-      }
+    }
   end
 
   before do
@@ -27,7 +27,7 @@ describe ServiceProviderUpdater do
     end
 
     context 'when a body is passed in' do
-      let(:body) { {service_provider: {}} }
+      let(:body) { { service_provider: {} } }
 
       it 'returns status code 200 for success' do
         expect(ServiceProviderUpdater.post_update(body)).to eq 200
@@ -54,12 +54,12 @@ describe ServiceProviderUpdater do
       end
 
       it 'returns http status code for failure' do
-        expect(ServiceProviderUpdater.post_update).to be nil
+        expect(described_class.post_update).to be_nil
       end
 
       it 'notifies NewRelic of the error' do
         expect(::NewRelic::Agent).to receive(:notice_error)
-        ServiceProviderUpdater.post_update
+        described_class.post_update
       end
     end
   end

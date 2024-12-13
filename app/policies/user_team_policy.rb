@@ -1,5 +1,4 @@
 class UserTeamPolicy < BasePolicy
-
   def manage_team_users?
     admin? || in_team?
   end

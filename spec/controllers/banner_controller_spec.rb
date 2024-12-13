@@ -5,9 +5,9 @@ RSpec.describe BannersController do
   let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
   let(:banner) { create(:banner) }
 
-  let (:updated_message) { 'Updated Banner' }
-  let (:updated_start_date) { Date.today - 1.year }
-  let (:updated_end_date) { Date.today + 1.year } 
+  let(:updated_message) { 'Updated Banner' }
+  let(:updated_start_date) { Time.zone.today - 1.year }
+  let(:updated_end_date) { Time.zone.today + 1.year }
 
   context 'when logged in as admin' do
     before do
@@ -19,9 +19,9 @@ RSpec.describe BannersController do
       expect(response).to be_successful
       get :index
       expect(response).to be_successful
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_successful
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_redirect
       patch :update, params: banner.attributes
       expect(response).to be_redirect
@@ -30,14 +30,14 @@ RSpec.describe BannersController do
     describe 'create' do
       it 'redirects to the banner index' do
         allow(Banner).to receive(:new).and_return(instance_double(Banner, save: true))
-        get :create, params: { banner: { message: 'test message' }}
+        get :create, params: { banner: { message: 'test message' } }
         expect(response.redirect_url).to eq(banners_url)
       end
     end
 
     describe 'update' do
       it 'redirects to the banner index' do
-        put :update, params: { 
+        put :update, params: {
           id: banner.id,
           banner: {
             message: updated_message,
@@ -53,15 +53,15 @@ RSpec.describe BannersController do
     end
   end
 
-  context 'when not logged in ' do
+  context 'when not logged in' do
     it 'denies all access' do
       get :new
       expect(response).to be_unauthorized
       get :index
       expect(response).to be_unauthorized
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_unauthorized
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_unauthorized
       patch :update, params: banner.attributes
       expect(response).to be_unauthorized
@@ -78,12 +78,12 @@ RSpec.describe BannersController do
       expect(response).to be_unauthorized
       get :index
       expect(response).to be_unauthorized
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_unauthorized
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_unauthorized
       patch :update, params: banner.attributes
       expect(response).to be_unauthorized
-    end  
+    end
   end
 end

@@ -57,9 +57,9 @@ class Analytics
 
   def create_logger
     @analytics_logger || AnalyticsLogger.new(
-      request: request,
-      user: user,
-      session: session,
+      request:,
+      user:,
+      session:,
     )
   end
 end

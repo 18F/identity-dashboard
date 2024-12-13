@@ -33,7 +33,7 @@ describe Api::ServiceProvidersController do
     end
 
     it 'does not return the protocol attribute' do
-      sp = create(:service_provider, :with_team, active: true, approved: true)
+      create(:service_provider, :with_team, active: true, approved: true)
 
       get :index
       expect(response_from_json.first.keys).to_not include :protocol
@@ -41,8 +41,9 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#show' do
-    let(:sp) { create(:service_provider, :with_team)}
-    before { get :show, params: {id: sp.id} }
+    let(:sp) { create(:service_provider, :with_team) }
+
+    before { get :show, params: { id: sp.id } }
 
     it 'returns the service provider whose params are passed in' do
       serialized = ServiceProviderSerializer.new(sp, action: :show).to_h
@@ -51,9 +52,7 @@ describe Api::ServiceProvidersController do
     end
 
     it 'includes the protocol attribute' do
-
       expect(response_from_json.keys).to include :protocol
     end
-
   end
 end

@@ -3,6 +3,7 @@ require 'nokogiri'
 
 RSpec.describe ServiceProviderSerializer do
   subject(:serializer) { ServiceProviderSerializer.new(service_provider) }
+
   let(:logo_filename) { 'logo.svg' }
   let(:team_agency_id) { SecureRandom.random_number(10_000) }
 
@@ -21,7 +22,6 @@ RSpec.describe ServiceProviderSerializer do
   end
 
   describe '#as_json' do
-    
     subject(:as_json) { serializer.as_json }
 
     it 'serializes attributes' do
@@ -52,6 +52,7 @@ RSpec.describe ServiceProviderSerializer do
 
     describe 'when the option "action: :show" is passed' do
       subject(:serializer) { ServiceProviderSerializer.new(service_provider, action: :show) }
+
       it 'passes the protocol attribute through' do
         expect(as_json[:protocol]).to eq 'oidc'
       end

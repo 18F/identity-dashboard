@@ -4,6 +4,7 @@ require 'axe-rspec'
 feature 'Service provider pages', :js do
   context 'for admins' do
     let(:admin) { create(:admin) }
+
     before { login_as(admin) }
 
     scenario 'all service providers page is accessible' do
@@ -13,7 +14,7 @@ feature 'Service provider pages', :js do
 
     context 'a service provider exists' do
       let(:user) { create(:user, :with_teams) }
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
+      let(:app) { create(:service_provider, :with_users_team, user:, logo: 'generic.svg') }
 
       context 'show page' do
         # admins have access to more features
@@ -52,7 +53,7 @@ feature 'Service provider pages', :js do
     end
 
     context 'service provider exists' do
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
+      let(:app) { create(:service_provider, :with_users_team, user:, logo: 'generic.svg') }
 
       context 'show page' do
         scenario 'is accessible' do
@@ -63,11 +64,10 @@ feature 'Service provider pages', :js do
         context 'with a SAML app' do
           let(:app) do
             create(:service_provider,
-              :saml,
-              :with_users_team,
-              user: user,
-              logo: 'generic.svg',
-            )
+                   :saml,
+                   :with_users_team,
+                   user:,
+                   logo: 'generic.svg')
           end
 
           scenario 'is accessible' do

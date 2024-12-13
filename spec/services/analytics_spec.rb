@@ -1,14 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe Analytics do
+  subject(:analytics) do
+    Analytics.new(
+      user: current_user,
+      request:,
+      session:,
+      logger:,
+    )
+  end
+
   let(:path) { 'fake_path' }
   let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
-  let(:current_user) { create(:user, uuid: uuid) }
+  let(:current_user) { create(:user, uuid:) }
   let(:session) { {} }
   let(:logger) { instance_double(FakeLogger) }
   let(:analytics_attributes) do
     {
-      path: path,
+      path:,
       event_properties: {},
     }.merge(request_attributes)
   end
@@ -28,26 +37,17 @@ RSpec.describe Analytics do
     }
   end
 
-  subject(:analytics) do
-    Analytics.new(
-      user: current_user,
-      request: request,
-      session: session,
-      logger: logger,
-    )
-  end
-
   describe '#track_event' do
     it 'collects data and sends the event to the backend' do
-      expect(logger).to receive(:track).with('Trackable Event',analytics_attributes)
+      expect(logger).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
 
     it 'does not track nil values' do
-      expect(logger).to receive(:track).with('Trackable Event',analytics_attributes)
+      expect(logger).to receive(:track).with('Trackable Event', analytics_attributes)
 
-      analytics.track_event('Trackable Event', {example: nil})
+      analytics.track_event('Trackable Event', { example: nil })
     end
   end
 end

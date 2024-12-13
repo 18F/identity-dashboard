@@ -1,15 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe IdpPublicKeys do
-  before { Rails.cache.clear }
-
-  let(:public_keys) do
-    3.times.map do
-      OpenSSL::PKey::RSA.new(2048).public_key
-    end
-  end
+  subject(:loader) { IdpPublicKeys.new(idp_url: 'http://idp.example.com') }
 
   before do
+    Rails.cache.clear
     stub_request(:get, 'http://idp.example.com/.well-known/openid-configuration').
       to_return(body: {
         jwks_uri: 'http://idp.example.com/certs',
@@ -21,6 +16,11 @@ RSpec.describe IdpPublicKeys do
       }.to_json)
   end
 
+  let(:public_keys) do
+    3.times.map do
+      OpenSSL::PKey::RSA.new(2048).public_key
+    end
+  end
 
   describe '.all' do
     before do
@@ -37,9 +37,6 @@ RSpec.describe IdpPublicKeys do
         to have_been_requested.once
     end
   end
-
-  subject(:loader) { IdpPublicKeys.new(idp_url: 'http://idp.example.com') }
-
 
   describe '#load_all' do
     it 'loads from the IDP' do

@@ -3,55 +3,67 @@ require 'rails_helper'
 RSpec.describe BannerHelper do
   describe '#sort_banners_by_timing' do
     # Upcoming messages
-    let(:banner_no_dates) { build(:banner,
-      start_date: nil,
-      end_date: nil,
-    )}
-    let(:banner_no_end) { build(:banner,
-      start_date: Date.today - 1.day,
-      end_date: nil,
-    )}
-    let(:banner_today) { build(:banner,
-      start_date: Date.today,
-      end_date: Date.today,
-    )}
-    let(:banner_recent) { build(:banner,
-      start_date: Date.today - 7.day,
-      end_date: Date.today + 7.days,
-    )}
-    let(:banner_recent_short) { build(:banner,
-      start_date: Date.today - 1.day,
-      end_date: Date.today + 6.days,
-    )}
-    let(:banner_recent_long) { build(:banner,
-      start_date: Date.today - 1.day,
-      end_date: Date.today + 1.month,
-    )}
-    let(:banner_old) { build(:banner,
-      start_date: Date.today - 1.month,
-      end_date: Date.today + 1.day ,
-    )}
+    let(:banner_no_dates) do
+      build(:banner,
+            start_date: nil,
+            end_date: nil)
+    end
+    let(:banner_no_end) do
+      build(:banner,
+            start_date: Time.zone.today - 1.day,
+            end_date: nil)
+    end
+    let(:banner_today) do
+      build(:banner,
+            start_date: Time.zone.today,
+            end_date: Time.zone.today)
+    end
+    let(:banner_recent) do
+      build(:banner,
+            start_date: Time.zone.today - 7.days,
+            end_date: Time.zone.today + 7.days)
+    end
+    let(:banner_recent_short) do
+      build(:banner,
+            start_date: Time.zone.today - 1.day,
+            end_date: Time.zone.today + 6.days)
+    end
+    let(:banner_recent_long) do
+      build(:banner,
+            start_date: Time.zone.today - 1.day,
+            end_date: Time.zone.today + 1.month)
+    end
+    let(:banner_old) do
+      build(:banner,
+            start_date: Time.zone.today - 1.month,
+            end_date: Time.zone.today + 1.day)
+    end
     # Past messages
-    let(:banner_past) { build(:banner,
-      start_date: Date.today - 1.month,
-      end_date: Date.today - 1.day,
-    )}
-    let(:banner_past_short_mid) { build(:banner,
-      start_date: Date.today - 12.days,
-      end_date: Date.today - 1.day,
-    )}
-    let(:banner_past_short) { build(:banner,
-      start_date: Date.today - 7.days,
-      end_date: Date.today - 1.day,
-    )}
-    let(:banner_past_mid) { build(:banner,
-      start_date: Date.today - 6.months,
-      end_date: Date.today - 7.months,
-      )}
-    let(:banner_past_far) { build(:banner,
-      start_date: Date.today - 1.year,
-      end_date: Date.today - 11.months,
-    )}
+    let(:banner_past) do
+      build(:banner,
+            start_date: Time.zone.today - 1.month,
+            end_date: Time.zone.today - 1.day)
+    end
+    let(:banner_past_short_mid) do
+      build(:banner,
+            start_date: Time.zone.today - 12.days,
+            end_date: Time.zone.today - 1.day)
+    end
+    let(:banner_past_short) do
+      build(:banner,
+            start_date: Time.zone.today - 7.days,
+            end_date: Time.zone.today - 1.day)
+    end
+    let(:banner_past_mid) do
+      build(:banner,
+            start_date: Time.zone.today - 6.months,
+            end_date: Time.zone.today - 7.months)
+    end
+    let(:banner_past_far) do
+      build(:banner,
+            start_date: Time.zone.today - 1.year,
+            end_date: Time.zone.today - 11.months)
+    end
 
     it 'sorts messages by upcoming/current or past' do
       banners = [
@@ -138,30 +150,31 @@ RSpec.describe BannerHelper do
   end
 
   describe '#get_active_banners' do
-    let(:current_banner_one) {
+    let(:current_banner_one) do
       build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days,
                      end_date: Time.zone.now.beginning_of_day + 2.days)
-    }
-    let(:current_banner_two) {
+    end
+    let(:current_banner_two) do
       build(:banner, start_date: Time.zone.now.beginning_of_day - 10.days,
                      end_date: Time.zone.now.beginning_of_day + 2.days)
-    }
-    let(:current_banner_three) {
+    end
+    let(:current_banner_three) do
       build(:banner, start_date: Time.zone.now.beginning_of_day - 5.days)
-    }
-    let(:banner_no_dates) {
+    end
+    let(:banner_no_dates) do
       build(:banner)
-    }
-    let(:banner_no_end) { build(:banner,
-      start_date: Date.today - 1.day,
-      end_date: nil,
-    )}
-    let(:ended_banner) {
-      build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days, 
+    end
+    let(:banner_no_end) do
+      build(:banner,
+            start_date: Time.zone.today - 1.day,
+            end_date: nil)
+    end
+    let(:ended_banner) do
+      build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days,
                      end_date: Time.zone.now.beginning_of_day - 1.day)
-    }
+    end
 
-    before do 
+    before do
       current_banner_one.save
       current_banner_two.save
       current_banner_three.save
@@ -184,7 +197,7 @@ RSpec.describe BannerHelper do
 
     it 'orders the banners by start_date' do
       displayed_banners = get_active_banners
-      
+
       expect(displayed_banners.first).to eq(banner_no_dates)
       expect(displayed_banners.second).to eq(current_banner_two)
       expect(displayed_banners.third).to eq(current_banner_three)

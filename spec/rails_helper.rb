@@ -7,7 +7,7 @@ require 'rspec/rails'
 require 'pundit/rspec'
 require 'paper_trail/frameworks/rspec'
 
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |file| require file }
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |file| require file }
 
 RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
@@ -24,17 +24,17 @@ RSpec.configure do |config|
     remove_uploaded_files
   end
 
-  config.before(:each) do
+  config.before do
     stub_request(:any, /idp.example.com/).to_rack(FakeSamlIdp)
   end
 
-  config.after(:each) do
+  config.after do
     Warden.test_reset!
   end
 end
 
 def remove_uploaded_files
-  FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
+  FileUtils.rm_rf(Rails.root.join('tmp/storage'))
 end
 
 ActiveRecord::Migration.maintain_test_schema!

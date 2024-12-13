@@ -11,8 +11,8 @@ if Rails.env.development? || Rails.env.test?
       issuer = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:identity-idp-local'
 
       create(:service_provider,
-             user: user,
-             issuer: issuer,
+             user:,
+             issuer:,
              agency: Agency.find_by(name: 'General Services Administration'),
              friendly_name: Rails.application.config.app_name,
              description: 'user friendly Login.gov dashboard',

@@ -57,6 +57,5 @@ feature 'Nav links' do
 
       expect(page).to_not have_content('Security Events')
     end
-
   end
 end

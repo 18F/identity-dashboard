@@ -1,6 +1,7 @@
 require 'rails_helper'
 describe TeamHelper do
   let(:user) { build(:user) }
+
   describe '#can_edit_teams?' do
     it "returns false if user doesn't have a team" do
       expect(can_edit_teams?(user)).to eq(false)

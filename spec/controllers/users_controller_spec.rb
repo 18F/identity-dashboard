@@ -20,6 +20,7 @@ describe UsersController do
         expect(response.status).to eq(200)
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :new
@@ -39,6 +40,7 @@ describe UsersController do
         expect(response.status).to eq(200)
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :index
@@ -76,6 +78,7 @@ describe UsersController do
         end
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :edit, params: { id: 1 }
@@ -95,20 +98,21 @@ describe UsersController do
         expect(response.status).to eq(302)
       end
 
-      it 'will assign a new role to all teams' do
+      it 'assigns a new role to all teams' do
         user_to_edit = create(:user, :with_teams)
         user_to_edit.user_teams.each do |ut|
           expect(ut.role_name).to be_nil
         end
         patch :update, params: { id: user_to_edit, user: {
-          user_team: {role_name: 'Partner Admin' },
-        }}
+          user_team: { role_name: 'Partner Admin' },
+        } }
         user_to_edit.reload
         user_to_edit.user_teams.each do |ut|
           expect(ut.role_name).to eq('Partner Admin')
         end
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
@@ -129,6 +133,7 @@ describe UsersController do
           expect(response.status).to eq(302)
         end
       end
+
       context 'when the user is invalid' do
         it "renders the 'new' view" do
           patch :create, params: { user: { admin: true, email: user.email } }
@@ -136,6 +141,7 @@ describe UsersController do
         end
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
@@ -159,9 +165,9 @@ describe UsersController do
     end
 
     context 'when the user is not an admin'
-      it 'has an error response' do
-        delete :destroy, params: { id: user_to_delete.id }
-        expect(response.status).to eq(401)
-      end
+    it 'has an error response' do
+      delete :destroy, params: { id: user_to_delete.id }
+      expect(response.status).to eq(401)
+    end
   end
 end

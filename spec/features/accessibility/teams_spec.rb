@@ -71,13 +71,15 @@ feature 'Team pages', :js do
 
           context 'add email' do
             let(:email) { 'user@example.com' }
+
             before do
               fill_in 'Email', with: email
               click_on 'Add'
             end
 
             context 'bad email' do
-              let(:email) { 'blah '}
+              let(:email) { 'blah ' }
+
               scenario 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)
               end

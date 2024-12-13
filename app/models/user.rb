@@ -69,6 +69,7 @@ class User < ApplicationRecord
 
   def primary_role
     return 'Login.gov Admin' if admin?
+
     user_teams.first&.role_name || 'Partner Admin'
   end
 

@@ -152,25 +152,24 @@ describe 'users' do
     scenario 'delete button only present for other team member', versioning: true do
       login_as team_member
       visit team_users_path(team)
-      expect(page.all('a', text:'Delete').length).to eq(1)
+      expect(page.all('a', text: 'Delete').length).to eq(1)
       click_on 'Delete'
-      expect(current_path).to eq(team_remove_confirm_path(team.id,other_team_member.id))
+      expect(page).to have_current_path(team_remove_confirm_path(team.id, other_team_member.id),
+                                        ignore_query: true)
     end
 
     scenario 'add user button goes to add user page', versioning: true do
       login_as team_member
       visit team_users_path(team)
       click_on 'Add user'
-      expect(current_path).to eq(new_team_user_path(team.id))
+      expect(page).to have_current_path(new_team_user_path(team.id), ignore_query: true)
     end
 
     scenario 'back button goes to team details page', versioning: true do
       login_as team_member
       visit team_users_path(team)
       click_on 'Back'
-      expect(current_path).to eq(team_path(team.id))
+      expect(page).to have_current_path(team_path(team.id), ignore_query: true)
     end
-
   end
-
 end

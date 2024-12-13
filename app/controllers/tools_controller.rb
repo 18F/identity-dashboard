@@ -16,7 +16,6 @@ class ToolsController < AuthenticatedController
                         '<a href="https://www.samltool.com/validate_logout_req.php" ' +
                         'target="_blank">tool</a> to validate logout requests.'
 
-
       @validation_attempted = false
       render 'saml_request' and return
     end

@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 feature 'Banners' do
-  let(:current_banner) {
+  let(:current_banner) do
     build(:banner, message: 'A banner, with a <a href="banner_test_link">link</a>',
                    start_date: Time.zone.now.beginning_of_day - 2.days,
                    end_date: Time.zone.now.beginning_of_day + 2.days)
-  }
-  let(:script_banner) {
+  end
+  let(:script_banner) do
     build(:banner, message: '<script>alert("alert")</script>',
                    start_date: Time.zone.now.beginning_of_day - 2.days,
                    end_date: Time.zone.now.beginning_of_day + 2.days)
-  }
+  end
 
   before do
     current_banner.save
@@ -39,7 +39,7 @@ feature 'Banners' do
   end
 
   context 'it displays at the approptiate start time' do
-    before do 
+    before do
       allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day - 2.days + 1.second)
       visit root_path
     end
@@ -50,7 +50,7 @@ feature 'Banners' do
   end
 
   context 'it does not display at the before the start time' do
-    before do 
+    before do
       allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day - 3.days)
       visit root_path
     end
@@ -60,9 +60,8 @@ feature 'Banners' do
     end
   end
 
-
   context 'it displays at the approptiate end time' do
-    before do 
+    before do
       allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day + 2.days - 1.second)
       visit root_path
     end
@@ -73,7 +72,7 @@ feature 'Banners' do
   end
 
   context 'it does not display at the before the start time' do
-    before do 
+    before do
       allow(Time).to receive(:now).and_return(Time.zone.now.beginning_of_day + 3.days)
       visit root_path
     end

@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User teams CRUD' do
   scenario 'Create' do
     admin = create(:admin)
-    user = create(:user)
+    create(:user)
     create(:agency, name: 'GSA')
 
     login_as(admin)
@@ -14,7 +14,7 @@ feature 'User teams CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create'
-    expect(current_path).to eq(team_users_path(Team.last))
+    expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
   end
@@ -55,14 +55,14 @@ feature 'User teams CRUD' do
 
     visit teams_all_path
     find("a[href='#{edit_team_path(org)}']").click
-    expect(current_path).to eq(edit_team_path(org))
+    expect(page).to have_current_path(edit_team_path(org))
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(current_path).to eq(team_path(org.id))
+    expect(page).to have_current_path(team_path(org.id))
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -74,7 +74,7 @@ feature 'User teams CRUD' do
     org1 = create(:team)
     org2 = create(:team)
     team = create(:team)
-    sp = create(:service_provider, team: team)
+    sp = create(:service_provider, team:)
 
     login_as(admin)
     visit teams_all_path
@@ -89,17 +89,17 @@ feature 'User teams CRUD' do
   end
 
   describe 'show' do
-    scenario 'admin edits a team', versioning: true do
+    scenario 'admin edits a team', :versioning do
       admin = create(:admin)
       team = create(:team)
       user = create(:user, teams: [team])
-      create(:service_provider, team: team)
+      create(:service_provider, team:)
 
       login_as(admin)
       visit teams_all_path
       find("a[href='#{team_path(team)}']", text: team.name).click
 
-      expect(current_path).to eq(team_path(team))
+      expect(page).to have_current_path(team_path(team))
       expect(page).to have_content(team.name)
       expect(page).to have_content(team.agency.name)
       expect(page).to have_content(user.email)
@@ -108,8 +108,8 @@ feature 'User teams CRUD' do
       find("a[href='#{team_remove_confirm_path(team, user)}']").click
       click_on I18n.t('teams.users.remove.button')
       find('.usa-button', text: 'Back').click
-      
-      expect(current_path).to eq(team_path(team))
+
+      expect(page).to have_current_path(team_path(team))
       newest_event_text = find('#versions>:first-child').text
       expect(newest_event_text).to include("user_id #{user.id}")
       expect(newest_event_text).to include("By: #{admin.email}")
@@ -123,7 +123,7 @@ feature 'User teams CRUD' do
     scenario 'regular user attempts to view a team' do
       user = create(:user)
       team = create(:team)
-      create(:service_provider, team: team)
+      create(:service_provider, team:)
 
       login_as(user)
 
@@ -143,7 +143,7 @@ feature 'User teams CRUD' do
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(current_path).to eq(teams_path)
+    expect(page).to have_current_path(teams_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
@@ -151,14 +151,14 @@ feature 'User teams CRUD' do
   scenario 'Delete when a team still has service providers' do
     admin = create(:admin)
     team = create(:team)
-    create(:service_provider, team: team)
+    create(:service_provider, team:)
 
     login_as(admin)
 
     visit edit_team_path(team)
     click_on 'Delete'
 
-    expect(current_path).to eq(edit_team_path(team))
+    expect(page).to have_current_path(edit_team_path(team))
     expect(page).to have_content(I18n.t('notices.team_delete_failed'))
   end
 end

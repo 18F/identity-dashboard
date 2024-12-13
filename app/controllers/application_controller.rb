@@ -36,8 +36,8 @@ class ApplicationController < ActionController::Base
     @analytics ||=
       Analytics.new(
         user: current_user,
-        request: request,
-        session: session,
+        request:,
+        session:,
       )
   end
 
@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
 
   def set_requested_url
     return if session[:requested_url]
+
     session[:requested_url] = request.original_url
   end
 

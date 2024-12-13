@@ -6,18 +6,18 @@ RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
 
   let(:expired_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.day.ago, issuer: issuer),
+      instance_double(OpenSSL::X509::Certificate, not_after: 1.day.ago, issuer:),
     )
   end
 
   let(:valid_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.year.from_now, issuer: issuer),
+      instance_double(OpenSSL::X509::Certificate, not_after: 1.year.from_now, issuer:),
     )
   end
 
   subject(:td_tag) do
-    render partial: 'service_providers/certificate_expiration_td', locals: { app: app }
+    render partial: 'service_providers/certificate_expiration_td', locals: { app: }
 
     Nokogiri::HTML(rendered).at_css('td')
   end

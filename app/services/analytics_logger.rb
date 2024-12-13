@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'securerandom'
 
 # `Logger` is a class in the standard library, so we need a custom name
@@ -22,11 +23,11 @@ class AnalyticsLogger
 
   def track(name, properties = {}, options = {})
     data = {
-      visit_token: visit_token,
+      visit_token:,
       user_id: user.try(:uuid),
       user_role: user.try(:primary_role),
       name: name.to_s,
-      properties: properties,
+      properties:,
       time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
     }.compact

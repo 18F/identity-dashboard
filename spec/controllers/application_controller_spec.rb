@@ -21,7 +21,7 @@ RSpec.describe ApplicationController do
         user_agent: request.user_agent,
         ip: request.remote_ip,
         host: request.host,
-        trace_id: trace_id,
+        trace_id:,
       )
     end
 

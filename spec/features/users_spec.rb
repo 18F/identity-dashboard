@@ -12,7 +12,7 @@ feature 'admin manages users' do
     visit service_providers_path
     click_on 'Users'
 
-    expect(current_path).to eq(users_path)
+    expect(page).to have_current_path(users_path, ignore_query: true)
   end
 
   scenario 'user index page shows all users' do
@@ -32,7 +32,7 @@ feature 'admin manages users' do
     admin = create(:admin)
     users = create_list(:user, 3)
     everyone = [admin, users].flatten
-    headings = ['Email','Signed in','Role','Actions']
+    headings = ['Email', 'Signed in', 'Role', 'Actions']
 
     login_as(admin)
     visit users_path
@@ -65,13 +65,13 @@ feature 'admin manages users' do
     visit users_path
     find("a[aria-label='#{t('links.aria.edit', name: user.email)}']").click
 
-    expect(current_path).to eq(edit_user_path(user))
+    expect(page).to have_current_path(edit_user_path(user), ignore_query: true)
     expect(page).to have_content(user.email)
 
     check('Admin')
     click_on 'Update'
 
-    expect(current_path).to eq(users_path)
+    expect(page).to have_current_path(users_path, ignore_query: true)
     expect(find('tr', text: user.email)).to have_content('true')
   end
 
@@ -79,17 +79,17 @@ feature 'admin manages users' do
     flag_in
     admin = create(:admin)
     roles = ['Login.gov Admin',
-            'Partner Admin',
-            'Partner Developer',
-            'Partner Readonly']
+             'Partner Admin',
+             'Partner Developer',
+             'Partner Readonly']
 
     login_as(admin)
     visit edit_user_path(admin.id)
 
     expect(page).to have_content('Permissions')
-    radio_labels = find_all('.usa-radio__label').map { |label|
+    radio_labels = find_all('.usa-radio__label').map do |label|
       label.text
-    }
+    end
     roles.each do |role|
       expect(radio_labels).to include(role)
     end

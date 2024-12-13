@@ -91,11 +91,11 @@ RSpec.describe TeamAuditEvent do
       TeamAuditEvent.decorate(mock_scope)
     end
 
-    it 'will look up TeamUser event email addresses' do
+    it 'looks up TeamUser event email addresses' do
       user = create(:user)
       entry = PaperTrail::Version.new(
         item_type: 'UserTeam',
-        object_changes: {'user_id' => [nil, user.id]},
+        object_changes: { 'user_id' => [nil, user.id] },
       )
       results = TeamAuditEvent.decorate([entry])
       expect(results.count).to be(1)
@@ -104,7 +104,7 @@ RSpec.describe TeamAuditEvent do
   end
 
   describe '.by_team' do
-    it 'will block access with a supplied scope that might come from PaperTrail' do
+    it 'blocks access with a supplied scope that might come from PaperTrail' do
       permission_denied_scope = PaperTrail::Version.none
       expected_denial_sql = permission_denied_scope.to_sql
 
@@ -116,7 +116,7 @@ RSpec.describe TeamAuditEvent do
       expect(generated_sql).to include(expected_denial_sql)
     end
 
-    it 'will permit access through a supplied scope' do
+    it 'permits access through a supplied scope' do
       permission_allowed_scope = PaperTrail::Version.all
       expected_allowal_sql = permission_allowed_scope.to_sql
       denial_sql = PaperTrail::Version.none.to_sql

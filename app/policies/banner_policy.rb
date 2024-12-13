@@ -4,7 +4,8 @@ class BannerPolicy < BasePolicy
   end
 
   def edit?
-    return false if record.ended? 
+    return false if record.ended?
+
     admin?
   end
 

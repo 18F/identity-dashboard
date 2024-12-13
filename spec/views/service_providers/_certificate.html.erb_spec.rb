@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'service_providers/_certificate.html.erb' do
+  subject(:render_view) do
+    render 'service_providers/certificate', certificate:
+  end
+
   let(:expiration) { 1.year.from_now }
 
   let(:certificate) do
@@ -13,10 +17,6 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
         to_pem: "----BEGIN CERTIFICATE-----\nI AM A PEM\n----END CERTIFICATE----",
       ),
     )
-  end
-
-  subject(:render_view) do
-    render 'service_providers/certificate', certificate: certificate
   end
 
   it 'renders the issuer, subject, and serial number' do

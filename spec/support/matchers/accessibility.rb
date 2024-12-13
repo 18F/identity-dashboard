@@ -18,7 +18,7 @@ RSpec::Matchers.define :have_valid_idrefs do
     invalid_idref_messages.blank?
   end
 
-  failure_message do |page|
+  failure_message do |_page|
     <<~STR
       Found #{invalid_idref_messages.count} elements with invalid ID reference links:
 
@@ -88,12 +88,13 @@ RSpec::Matchers.define :have_valid_markup do
 
   def page_markup_syntax_errors
     return @page_markup_syntax_errors if defined?(@page_markup_syntax_errors)
+
     @page_markup_syntax_errors = Nokogiri::HTML5(page_html, max_errors: 20).errors
   end
 
   match { |_page| page_markup_syntax_errors.blank? }
 
-  failure_message do |page|
+  failure_message do |_page|
     <<~STR
       Expected page to have valid markup. Found syntax errors:
 
@@ -166,7 +167,7 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   match do |page|
-    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'img' }
+    expect(decorative_svgs(page)).to all(satisfy { |img| img[:role] == 'img' })
   end
 
   failure_message do |page|
@@ -319,6 +320,6 @@ end
 def activate_skip_link
   page.evaluate_script('document.activeElement.blur()')
   page.active_element.send_keys(:tab)
-  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
+  expect(page.active_element).to have_content(t('shared.skip_link'))
   page.active_element.send_keys(:enter)
 end

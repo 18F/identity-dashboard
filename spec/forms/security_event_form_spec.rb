@@ -4,12 +4,8 @@ RSpec.describe SecurityEventForm do
   subject(:form) { SecurityEventForm.new(body: jwt) }
 
   let(:idp_private_key) { OpenSSL::PKey::RSA.new(2048) }
-  let(:idp_public_key) { idp_private_key.public_key }
-  before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
-
   let(:jwt) { JWT.encode(payload, idp_private_key, 'RS256', typ: 'secevent+jwt') }
   let(:user) { create(:user) }
-
   let(:payload) do
     {
       jti: SecureRandom.hex,
@@ -25,6 +21,9 @@ RSpec.describe SecurityEventForm do
       },
     }
   end
+  let(:idp_public_key) { idp_private_key.public_key }
+
+  before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
 
   describe '#submit' do
     context 'with a valid JWT' do

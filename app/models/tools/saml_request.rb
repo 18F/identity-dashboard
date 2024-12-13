@@ -17,9 +17,7 @@ module Tools
       auth_request.matching_cert.serial
     end
 
-    def logout_request?
-      auth_request.logout_request?
-    end
+    delegate :logout_request?, to: :auth_request
 
     def xml
       Nokogiri.XML(auth_request.raw_xml).to_xml
@@ -32,9 +30,9 @@ module Tools
     end
 
     def valid_signature
-     return @valid_signature if defined? @valid_signature
+      return @valid_signature if defined? @valid_signature
 
-     @valid_signature = check_signature_validity
+      @valid_signature = check_signature_validity
     end
 
     def sp
@@ -98,12 +96,12 @@ module Tools
     def saml_params
       @saml_params ||= begin
         s_params = url_params(auth_url)
-        s_params.present? ? s_params : { SAMLRequest: auth_url }
+        s_params.presence || { SAMLRequest: auth_url }
       end
     end
 
     def url_params(url)
-      CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [ k.to_sym, v[0] ] }
+      CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [k.to_sym, v[0]] }
     end
   end
 end

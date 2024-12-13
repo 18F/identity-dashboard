@@ -1,5 +1,5 @@
 class BannersController < ApplicationController
-  before_action -> { authorize Banner, :manage_banners?}
+  before_action -> { authorize Banner, :manage_banners? }
   before_action :set_banner, only: %i[ show edit update ]
   after_action :verify_authorized
   after_action :verify_policy_scoped
@@ -39,13 +39,14 @@ class BannersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_banner
-      @banner = policy_scope(Banner).find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def banner_params
-      params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_banner
+    @banner = policy_scope(Banner).find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def banner_params
+    params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
+  end
 end

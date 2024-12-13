@@ -2,9 +2,11 @@ require 'rails_helper'
 require 'nokogiri'
 
 describe ServiceProvider do
+  let(:service_provider) { build(:service_provider) }
+
   describe 'Associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:team) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:team) }
   end
 
   describe 'Attachments' do
@@ -124,7 +126,7 @@ describe ServiceProvider do
       end
 
       describe 'it has no viewBox attributes' do
-        let(:filename) { '../logo_without_size.svg'}
+        let(:filename) { '../logo_without_size.svg' }
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -137,7 +139,7 @@ describe ServiceProvider do
       end
 
       describe 'it has a script in the xml' do
-        let(:filename) { '../logo_with_script.svg'}
+        let(:filename) { '../logo_with_script.svg' }
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -162,8 +164,8 @@ describe ServiceProvider do
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:friendly_name) }
-    it { should validate_presence_of(:issuer) }
+    it { is_expected.to validate_presence_of(:friendly_name) }
+    it { is_expected.to validate_presence_of(:issuer) }
 
     it 'accepts a correctly formatted issuer' do
       valid_service_provider = build(
@@ -180,7 +182,7 @@ describe ServiceProvider do
         issuer: 'i-dont-care-about-your-rules even a little',
       )
 
-      expect(invalid_service_provider).not_to be_valid
+      expect(invalid_service_provider).to_not be_valid
     end
 
     it 'accepts an incorrectly formatted issuer on update' do
@@ -218,7 +220,7 @@ describe ServiceProvider do
     end
 
     it 'validates with the certs_are_pems validator' do
-      validator = ServiceProvider.validators.find {|v| v.instance_of?(CertsArePemsValidator) }
+      validator = ServiceProvider.validators.find { |v| v.instance_of?(CertsArePemsValidator) }
       expect(validator).to receive(:validate).and_return(true)
       expect(service_provider).to be_valid
     end
@@ -268,7 +270,7 @@ describe ServiceProvider do
       bad_uri_sp = build(:service_provider, post_idv_follow_up_url: ' http://foo.com')
       malformed_uri_sp = build(:service_provider, post_idv_follow_up_url: 'super.foo.com:result')
       file_uri_sp = build(:service_provider,
-                           post_idv_follow_up_url: 'file:///usr/sbin/evil_script.sh')
+                          post_idv_follow_up_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
       expect(valid_native_sp).to be_valid
@@ -309,7 +311,7 @@ describe ServiceProvider do
       sp = build(:service_provider, ial: 2)
       expect(sp).to be_valid
       sp = build(:service_provider, ial: 3)
-      expect(sp).not_to be_valid
+      expect(sp).to_not be_valid
       sp = build(:service_provider, ial: nil)
       expect(sp).to be_valid
     end
@@ -340,11 +342,11 @@ describe ServiceProvider do
 
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
-          :service_provider,
-          help_text: {
-            'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
-            'forgot_password': {}
-          },
+        :service_provider,
+        help_text: {
+          'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
+          'forgot_password': {}
+        },
       )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end
@@ -377,9 +379,7 @@ describe ServiceProvider do
     end
   end
 
-  let(:service_provider) { build(:service_provider) }
-
-  it { should have_readonly_attribute(:issuer) }
+  it { is_expected.to have_readonly_attribute(:issuer) }
 
   describe '#recently_approved?' do
     it 'detects when flag toggles to true' do
@@ -391,7 +391,7 @@ describe ServiceProvider do
   end
 
   describe '#service_provider=' do
-    it 'should filter out nil and empty strings' do
+    it 'filters out nil and empty strings' do
       service_provider.redirect_uris = ['https://foo.com', nil, 'http://bar.com', '']
 
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'http://bar.com'])
@@ -399,7 +399,7 @@ describe ServiceProvider do
   end
 
   describe '#block_encryption' do
-    it 'should default to aes256-cbc' do
+    it 'defaults to aes256-cbc' do
       sp = build(:service_provider)
       expect(sp.block_encryption).to eq('aes256-cbc')
     end
@@ -419,7 +419,8 @@ describe ServiceProvider do
   end
 
   describe '#certificates' do
-    subject(:sp) { build(:service_provider, certs: certs) }
+    subject(:sp) { build(:service_provider, certs:) }
+
     let(:certs) { nil }
 
     context 'with nil' do
@@ -439,7 +440,7 @@ describe ServiceProvider do
     end
 
     context 'with multiple certs' do
-      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'wraps them as ServiceProviderCertificates' do
         wrapped = certs.map do |cert|
@@ -452,11 +453,12 @@ describe ServiceProvider do
   end
 
   describe '#remove_certificate' do
-    subject(:sp) { build(:service_provider, certs: certs) }
+    subject(:sp) { build(:service_provider, certs:) }
+
     let(:certs) { nil }
 
     context 'when removing a serial that matches in the certs array' do
-      let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'removes that cert' do
         expect { sp.remove_certificate(200) }.
@@ -468,7 +470,7 @@ describe ServiceProvider do
     end
 
     context 'when removing a serial that does not exist' do
-      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'does not remove anything' do
         expect { sp.remove_certificate(100) }.to_not(change { sp.certificates.size })
@@ -481,10 +483,12 @@ describe ServiceProvider do
       sp = build(:service_provider, identity_protocol: 'saml')
       expect(!sp.oidc?)
     end
+
     it 'returns true for OIDC private_key_jwt integrations' do
       sp = build(:service_provider, identity_protocol: 'openid_connect_private_key_jwt')
       expect(sp.oidc?)
     end
+
     it 'returns true for OIDC PKCE integrations' do
       sp = build(:service_provider, identity_protocol: 'openid_connect_pkce')
       expect(sp.oidc?)

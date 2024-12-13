@@ -7,7 +7,7 @@ end
 RSpec.configure do |config|
   include MailerSpecHelper
 
-  config.before(:each) do
+  config.before do
     deliveries.clear
   end
 end

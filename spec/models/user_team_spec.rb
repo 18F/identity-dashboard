@@ -13,7 +13,7 @@ RSpec.describe UserTeam, type: :model do
       user = create(:user)
       team = create(:team)
 
-      expect { create(:user_team, user: user, team: team) }.to \
+      expect { create(:user_team, user:, team:) }.to \
         change { PaperTrail::Version.count }.by(1)
     end
 
@@ -33,8 +33,8 @@ RSpec.describe UserTeam, type: :model do
   end
 
   describe '#valid?' do
-    it { should allow_value(nil).for(:role_name) }
-    it { should allow_value('Login.gov Admin').for(:role_name) }
-    it { should_not allow_value('Some Random Admin').for(:role_name) }
+    it { is_expected.to allow_value(nil).for(:role_name) }
+    it { is_expected.to allow_value('Login.gov Admin').for(:role_name) }
+    it { is_expected.to_not allow_value('Some Random Admin').for(:role_name) }
   end
 end

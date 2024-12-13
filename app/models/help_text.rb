@@ -27,9 +27,10 @@ class HelpText
   # the localizations won't have enough context.
   def self.lookup(service_provider:, params: nil)
     raise ArgumentError, '`HelpText.lookup`: nothing to look up' unless params || service_provider
-    params ||= service_provider.attributes['help_text'] unless service_provider&.attributes.blank?
 
-    new(help_text: params, service_provider: service_provider)
+    params ||= service_provider.attributes['help_text'] if service_provider&.attributes.present?
+
+    new(help_text: params, service_provider:)
   end
 
   attr_reader :help_text, :service_provider
@@ -43,6 +44,7 @@ class HelpText
   def blank?
     CONTEXTS.any? do |context|
       next unless help_text[context]
+
       help_text[context].values.any? do |value|
         return false unless blank_text?(value)
       end
@@ -53,6 +55,7 @@ class HelpText
   def presets_only?
     CONTEXTS.each do |context|
       next unless help_text[context]
+
       LOCALES.each do |locale|
         next if help_text[context][locale].blank?
         return false unless PRESETS[context].include?(
@@ -65,7 +68,8 @@ class HelpText
 
   def revert_unless_presets_only
     return self if presets_only?
-    HelpText.lookup(service_provider: service_provider)
+
+    HelpText.lookup(service_provider:)
   end
 
   def fetch(context, lang)
@@ -76,18 +80,22 @@ class HelpText
     is_presets_only = presets_only?
     result = {}
     CONTEXTS.each do |context|
-      result[context] = Hash.new
+      result[context] = {}
       base_value = fetch(context, LOCALE_FOR_PRESETS)
       LOCALES.each do |locale|
         value = is_presets_only ? base_value : fetch(context, locale)
         is_a_preset = PRESETS[context].include?(value)
         if is_a_preset
-          result[context][locale] = blank_text?(value) ? '' : I18n.t(
-            "service_provider_form.help_text.#{context}.#{value}",
-            locale: locale,
-            sp_name: sp_name,
-            agency: agency_name,
-          )
+          result[context][locale] = if blank_text?(value)
+                                      ''
+                                    else
+                                      I18n.t(
+                                        "service_provider_form.help_text.#{context}.#{value}",
+                                        locale:,
+                                        sp_name:,
+                                        agency: agency_name,
+                                      )
+                                    end
         elsif base_value && fetch(context, locale)
           result[context][locale] = help_text[context][locale]
         end
@@ -109,17 +117,19 @@ class HelpText
   def revert_presets_to_short_name
     CONTEXTS.each do |context|
       next if help_text[context].blank?
+
       PRESETS[context].each do |preset|
         LOCALES.each do |locale|
           help_text[context][locale] = 'blank' and next if blank_text?(help_text[context][locale])
-          if help_text[context][locale] == I18n.t(
+
+          next unless help_text[context][locale] == I18n.t(
             "service_provider_form.help_text.#{context}.#{preset}",
-            locale: locale,
-            sp_name: sp_name,
+            locale:,
+            sp_name:,
             agency: agency_name,
           )
-            help_text[context][locale] = preset
-          end
+
+          help_text[context][locale] = preset
         end
       end
     end

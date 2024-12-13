@@ -25,9 +25,9 @@ class SecurityEventForm
 
   def create_security_event!
     SecurityEvent.create!(
-      user: user,
+      user:,
       uuid: payload['jti'],
-      event_type: event_type,
+      event_type:,
       issued_at: payload['iat'] ? Time.zone.at(payload['iat']) : nil,
       raw_event: payload.to_json,
     )

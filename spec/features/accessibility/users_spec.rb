@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'User pages', :js do
-
   context 'as an admin' do
     let(:admin) { create(:admin) }
+
     before { login_as(admin) }
 
     context 'all_users view' do
@@ -34,6 +34,7 @@ feature 'User pages', :js do
     # these are unauthorized views, but we should ensure that error
     # views pass accessibility tests
     let(:user) { create(:user) }
+
     before { login_as(user) }
 
     context 'all_users view' do

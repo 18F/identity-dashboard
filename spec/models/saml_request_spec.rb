@@ -17,6 +17,7 @@ describe 'SamlRequest' do
   describe '#valid' do
     let(:decoded_request) { double SamlIdp::Request }
     let(:validity) { true }
+
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request)
       allow(decoded_request).to receive(:valid?) { validity }
@@ -25,7 +26,7 @@ describe 'SamlRequest' do
     describe 'when the request is valid' do
       it 'returns true' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be true
@@ -40,9 +41,10 @@ describe 'SamlRequest' do
 
     describe 'when the request is not valid' do
       let(:validity) { false }
+
       it 'returns false if' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be false
@@ -104,6 +106,7 @@ describe 'SamlRequest' do
 
     describe 'if a bad cert is passed in' do
       let(:cert) { 'i am not a cert!' }
+
       before do
         allow(decoded_request).to receive(:service_provider) { sp }
       end
@@ -150,14 +153,14 @@ describe 'SamlRequest' do
       let(:validity) { false }
 
       it 'does not run the valid_signature methods' do
-        expect(decoded_request).not_to receive(:service_provider)
+        expect(decoded_request).to_not receive(:service_provider)
         subject.run_validations
       end
     end
 
     describe 'when valid is true' do
       it 'runs valid_signature' do
-        expect(decoded_request).to receive(:service_provider) { nil }
+        expect(decoded_request).to receive(:service_provider).and_return(nil)
         subject.run_validations
       end
     end
@@ -169,7 +172,7 @@ describe 'SamlRequest' do
 
       before do
         expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
-        expect(decoded_request).to receive(:raw_xml) { raw_xml}
+        expect(decoded_request).to receive(:raw_xml) { raw_xml }
       end
 
       it 'transforms the XML with Nokogiri correctly' do
@@ -186,7 +189,7 @@ describe 'SamlRequest' do
 
       describe 'it is a logout request' do
         before do
-          expect(decoded_request).to receive(:logout_request?) { true }
+          expect(decoded_request).to receive(:logout_request?).and_return(true)
         end
 
         it 'returns true' do
@@ -196,7 +199,7 @@ describe 'SamlRequest' do
 
       describe 'it is not a logout request' do
         before do
-          expect(decoded_request).to receive(:logout_request?) { false }
+          expect(decoded_request).to receive(:logout_request?).and_return(false)
         end
 
         it 'returns false' do

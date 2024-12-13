@@ -11,7 +11,7 @@ describe Users::OmniauthController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123',
+          'id_token' => 'abc123',
         },
       }
     end
@@ -22,7 +22,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists and is on a team or allowed to create teams' do
       it 'signs the user in' do
-        user=create(:team_member, email: email)
+        user = create(:team_member, email:)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
@@ -36,7 +36,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists, is not on a team, but is an admin' do
       it 'signs the user in' do
-        user = create(:user, email: email, admin: true)
+        user = create(:user, email:, admin: true)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
@@ -50,10 +50,10 @@ describe Users::OmniauthController do
 
     context 'when a user exists but is on no team and not allowed to create teams' do
       it 'redirects to the empty user path' do
-        user = create(:user, email: email)
+        create(:user, email:)
         session[:requested_url] = service_providers_url
 
-        expect(subject).not_to receive(:sign_in)
+        expect(subject).to_not receive(:sign_in)
 
         get :callback
 
@@ -65,7 +65,7 @@ describe Users::OmniauthController do
       let(:email) { 'test@test.agency․gov' }
 
       it 'redirects to the empty user path' do
-        expect(subject).not_to receive(:sign_in)
+        expect(subject).to_not receive(:sign_in)
 
         get :callback
 
@@ -84,7 +84,7 @@ describe Users::OmniauthController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123',
+          'id_token' => 'abc123',
         },
       }
     end
@@ -95,7 +95,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists but is on no team' do
       it 'signs the user in' do
-        user = create(:user, email: email)
+        user = create(:user, email:)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)

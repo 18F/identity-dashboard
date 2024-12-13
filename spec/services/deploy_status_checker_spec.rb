@@ -48,11 +48,13 @@ RSpec.describe DeployStatusChecker do
     describe '#status_class' do
       context 'with no host' do
         let(:host) { nil }
+
         it { expect(status.status_class).to eq('deploy-disabled') }
       end
 
       context 'with an error' do
         let(:error) { 'error' }
+
         it { expect(status.status_class).to eq('deploy-error') }
       end
 

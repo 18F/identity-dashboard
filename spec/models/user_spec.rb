@@ -3,12 +3,12 @@ require 'rails_helper'
 describe User do
   include MailerSpecHelper
 
-  describe 'Associations' do
-    it { should have_many(:service_providers) }
-    it { should have_many(:security_events) }
-  end
-
   let(:user) { build(:user) }
+
+  describe 'Associations' do
+    it { is_expected.to have_many(:service_providers) }
+    it { is_expected.to have_many(:security_events) }
+  end
 
   describe '#uuid' do
     it 'does not assign uuid on create' do
@@ -28,7 +28,7 @@ describe User do
 
   describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
-      team = create(:team)
+      create(:team)
       user_team = create(:user_team)
       user_team.destroy
       deletion_history = user_team.user.user_deletion_history
@@ -40,11 +40,11 @@ describe User do
     it 'returns formated record from user_deletion_history' do
       user.save
       history_record = {
-        'id'=>1,
-        'user_id'=>2,
-        'group_id'=>3,
-        'removed_at'=>'2021-06-08T17:34:06Z',
-        'whodunnit_id'=>'1',
+        'id' => 1,
+        'user_id' => 2,
+        'group_id' => 3,
+        'removed_at' => '2021-06-08T17:34:06Z',
+        'whodunnit_id' => '1',
       }
       report_item = user.user_deletion_report_item(history_record)
       expect(report_item[:user_id]).to eq(2)
@@ -53,7 +53,7 @@ describe User do
 
   describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history for user' do
-      team = create(:team)
+      create(:team)
       user_team = create(:user_team)
       user = user_team.user
       user_team.destroy
@@ -67,12 +67,13 @@ describe User do
       team = create(:team)
       user.teams = [team]
       user.save
-      user_sp = create(:service_provider, user: user)
-      team_sp = create(:service_provider, team: team)
+      user_sp = create(:service_provider, user:)
+      team_sp = create(:service_provider, team:)
       create(:service_provider)
       sorted_sps = [user_sp, team_sp].sort_by { |x| x.friendly_name.downcase }
       expect(user.scoped_service_providers).to eq(sorted_sps)
     end
+
     it "alphabetizes the list of user created and the user's team sps" do
       team = create(:team)
       user.teams = [team]
@@ -100,9 +101,7 @@ describe User do
     end
 
     it 'returns all user teams for admins' do
-      2.times do
-        create(:team)
-      end
+      create_list(:team, 2)
       user.admin = true
       user.save
 
@@ -116,9 +115,9 @@ describe User do
       user.email = email
       user.save
       expect(user).to be_valid
-      user_with_same_email = User.new(email: email)
+      user_with_same_email = User.new(email:)
       user_with_same_email.save
-      expect(user_with_same_email).not_to be_valid
+      expect(user_with_same_email).to_not be_valid
       user.destroy
       user_with_same_email.save
       expect(user_with_same_email).to be_valid

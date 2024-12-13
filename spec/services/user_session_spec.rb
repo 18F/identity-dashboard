@@ -2,8 +2,10 @@ require 'rails_helper'
 
 describe UserSession do
   describe '#call' do
+    subject { described_class.new(auth_hash).call }
+
     let(:email) { 'test@test.com' }
-    let!(:user) { create(:user, email: email) }
+    let!(:user) { create(:user, email:) }
     let(:uuid) { '123-asdf-qwerty' }
 
     let(:auth_hash) do
@@ -12,8 +14,6 @@ describe UserSession do
         'uuid' => uuid,
       }
     end
-
-    subject { described_class.new(auth_hash).call }
 
     context 'when the user exists' do
       it 'returns the user' do

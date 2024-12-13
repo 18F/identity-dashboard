@@ -24,7 +24,7 @@ describe DeleteUnconfirmedUsers do
         )
 
         ['user1@late.gov', 'user2@late.gov'].each do |email|
-          User.create(email: email, created_at: 15.days.ago)
+          User.create(email:, created_at: 15.days.ago)
         end
 
         expect(described_class.call).to eq(2)

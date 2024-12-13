@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'Service Providers CRUD' do
-
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end
@@ -46,7 +45,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'saml fields are shown on sp show page when saml is selected' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, user: user)
+      service_provider = create(:service_provider, :saml, user:)
       login_as(user)
 
       visit service_provider_path(service_provider)
@@ -57,7 +56,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'oidc fields are shown on sp show page when oidc is selected' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      service_provider = create(:service_provider, :with_oidc_jwt, user:)
       login_as(user)
 
       visit service_provider_path(service_provider)
@@ -67,7 +66,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'saml fields are shown on sp edit page when saml is selected' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, user: user)
+      service_provider = create(:service_provider, :saml, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -82,7 +81,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'oidc fields are shown on sp edit page when oidc is selected' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_oidc_jwt, user: user)
+      service_provider = create(:service_provider, :with_oidc_jwt, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -92,7 +91,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can update service provider team' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, user: user)
+      service_provider = create(:service_provider, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -102,12 +101,12 @@ feature 'Service Providers CRUD' do
 
       service_provider.reload
       expect(service_provider.agency).to eq(user.teams[1].agency)
-      expect(service_provider.agency).not_to eq(user.teams[0].agency)
+      expect(service_provider.agency).to_not eq(user.teams[0].agency)
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_users_team, user: user)
+      service_provider = create(:service_provider, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -134,7 +133,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can view all saml fields when editing a saml app', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
 
       login_as(user)
 
@@ -157,7 +156,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'ACS URL is required with SAML protocol', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
 
       login_as(user)
 
@@ -188,7 +187,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
 
       login_as(user)
 
@@ -217,7 +216,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
@@ -244,7 +243,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'can view but not edit existing custom help text' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :with_users_team, user: user)
+      service_provider = create(:service_provider, :with_users_team, user:)
 
       login_as(user)
 
@@ -259,7 +258,7 @@ feature 'Service Providers CRUD' do
       help_text_context = HelpText::CONTEXTS.sample
       initial_help_text = { help_text_context => {
         'en' => HelpText::PRESETS[help_text_context].sample,
-      }}
+      } }
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
@@ -302,7 +301,9 @@ feature 'Service Providers CRUD' do
 
     scenario 'sees read-only text boxes when help text is custom' do
       user = create(:user, :with_teams)
-      initial_help_text = { HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!'}}
+      initial_help_text = {
+        HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!' },
+      }
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
@@ -321,22 +322,22 @@ feature 'Service Providers CRUD' do
 
     scenario 'cannot edit allow_prompt_login' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).not_to have_css('input#service_provider_allow_prompt_login')
+      expect(page).to_not have_css('input#service_provider_allow_prompt_login')
     end
 
     scenario 'cannot edit email_nameid_format_allowed' do
       user = create(:user, :with_teams)
-      service_provider = create(:service_provider, :saml, :with_users_team, user: user)
+      service_provider = create(:service_provider, :saml, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
+      expect(page).to_not have_css('input#service_provider_email_nameid_format_allowed')
     end
 
     # rubocop:disable Layout/LineLength
@@ -347,16 +348,17 @@ feature 'Service Providers CRUD' do
       friendly_name = '<Application Friendly Name>'
       agency = '<Agency>'
 
-      #taken from service_providers.en.yml
-      default_help_text_options = ['Leave blank', 
-      "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
-      "Sign in to Login.gov with your #{agency} email.",
-      "Sign in to Login.gov with your #{agency} PIV/CAC.",
-      "Create a Login.gov account using your #{agency} email.",
-      'Create a Login.gov account using the same email provided on your application.',
-      'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.',
+      # taken from service_providers.en.yml
+      default_help_text_options = [
+        'Leave blank',
+        "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
+        "Sign in to Login.gov with your #{agency} email.",
+        "Sign in to Login.gov with your #{agency} PIV/CAC.",
+        "Create a Login.gov account using your #{agency} email.",
+        'Create a Login.gov account using the same email provided on your application.',
+        'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.',
       ]
-      
+
       visit new_service_provider_path
 
       expect(page).to have_content('You can choose from the default help text options')
@@ -412,11 +414,11 @@ feature 'Service Providers CRUD' do
 
       ial1_attributes.each do |atr|
         selector = "[for=service_provider_attribute_bundle_#{atr}]"
-        expect(page).to have_selector(selector, wait: 0.1)
+        expect(page).to have_selector(selector)
       end
       ial2_attributes.each do |atr|
         selector = "[for=service_provider_attribute_bundle_#{atr}]"
-        expect(page).to_not have_selector(selector, wait: 0.1)
+        expect(page).to_not have_selector(selector)
       end
     end
 
@@ -428,7 +430,7 @@ feature 'Service Providers CRUD' do
       select(I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service')
 
       attributes =
-       %w[email all_emails verified_at x509_subject x509_presented first_name last_name dob ssn address1 address2 city state zipcode phone]
+        %w[email all_emails verified_at x509_subject x509_presented first_name last_name dob ssn address1 address2 city state zipcode phone]
 
       attributes.each do |atr|
         selector = "[for=service_provider_attribute_bundle_#{atr}]"
@@ -444,11 +446,11 @@ feature 'Service Providers CRUD' do
       scenario 'cannot add help text for new configurations' do
         user = create(:user, :with_teams)
         login_as(user)
-        
+
         visit new_service_provider_path
-  
+
         expect(page).to have_content('Do you need to add help text for your application? Contact us.')
-        expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
+        expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
       end
     end
 
@@ -456,7 +458,7 @@ feature 'Service Providers CRUD' do
   end
 
   context 'admin user' do
-    scenario 'can view SP with no team', versioning: true do
+    scenario 'can view SP with no team', :versioning do
       admin = create(:admin)
       service_provider = create(:service_provider)
       login_as(admin)
@@ -470,15 +472,15 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'editing some preset help text but not all' do
-      not_blank_sign_up_preset = ['agency_email', 'first_time'].sample
-      not_blank_sign_in_preset = ['agency_email', 'first_time'].sample
+      not_blank_sign_up_preset = %w[agency_email first_time].sample
+      not_blank_sign_in_preset = %w[agency_email first_time].sample
       help_text_en = '<p>Text with some basic <a href="www.hello.com">html</a></p>'
       help_text_es = '<p>Palabras con <a href="www.hello.com">html</a> simple</p>'
       admin = create(:admin)
       # Let's create a service provider with some defaults and some not
       service_provider = build(:service_provider, :with_team)
       service_provider.help_text = {
-        'sign_up': { en: not_blank_sign_up_preset},
+        'sign_up': { en: not_blank_sign_up_preset },
         'sign_in': { en: not_blank_sign_in_preset, fr: not_blank_sign_in_preset },
         'forgot_password': { en: HelpText::PRESETS['forgot_password'].sample },
       }
@@ -602,7 +604,7 @@ feature 'Service Providers CRUD' do
   context 'Update' do
     scenario 'user updates service provider' do
       user = create(:user, :with_teams)
-      app = create(:service_provider, :with_users_team, user: user)
+      app = create(:service_provider, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -623,9 +625,10 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('email')
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_3'))
     end
+
     scenario 'user updates service provider but service provider is invalid' do
       user = create(:user)
-      app = create(:service_provider, user: user)
+      app = create(:service_provider, user:)
       login_as(user)
 
       allow_any_instance_of(ServiceProvider).to receive(:valid?).and_return(false)
@@ -637,12 +640,13 @@ feature 'Service Providers CRUD' do
       choose 'SAML'
       click_on 'Update'
 
-      expect(page).not_to have_content('Success')
+      expect(page).to_not have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
+
     scenario 'user updates service provider but service provider updater fails' do
       user = create(:user, :with_teams)
-      app = create(:service_provider, :with_users_team, user: user)
+      app = create(:service_provider, :with_users_team, user:)
       login_as(user)
 
       visit edit_service_provider_path(app)
@@ -664,10 +668,9 @@ feature 'Service Providers CRUD' do
       let(:user) { create(:user, :with_teams) }
       let(:sp) do
         create(:service_provider,
-                     :with_users_team,
-
-                     user: user,
-                     certs: [build_pem(serial: existing_serial)])
+               :with_users_team,
+               user:,
+               certs: [build_pem(serial: existing_serial)])
       end
 
       before do
@@ -684,7 +687,7 @@ feature 'Service Providers CRUD' do
         expect(sp.reload.certificates).to be_empty
       end
 
-      context 'file uploads', js: true do
+      context 'file uploads', :js do
         around do |ex|
           Tempfile.create(binmode: !file_content.ascii_only?) do |file|
             @file_path = file.path
@@ -736,7 +739,7 @@ feature 'Service Providers CRUD' do
   scenario 'Read' do
     user = create(:user)
     team = create(:team)
-    app = create(:service_provider, team: team, user: user)
+    app = create(:service_provider, team:, user:)
     login_as(user)
 
     visit service_provider_path(app)
@@ -748,7 +751,7 @@ feature 'Service Providers CRUD' do
 
   scenario 'Delete' do
     user = create(:user)
-    app = create(:service_provider, user: user)
+    app = create(:service_provider, user:)
     login_as(user)
 
     visit service_provider_path(app)
@@ -760,7 +763,7 @@ feature 'Service Providers CRUD' do
   describe 'Call to Action' do
     shared_examples 'a page with a CTA for production applications' do
       let(:user) { create(:user) }
-      let(:sp) { create(:service_provider, user: user, prod_config: true) }
+      let(:sp) { create(:service_provider, user:, prod_config: true) }
       let(:prod_url) { 'https://developers.login.gov/production' }
       let(:zendesk_ticket) { 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332' }
 

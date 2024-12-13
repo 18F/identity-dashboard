@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 describe MakeAdmin do
+  subject { described_class.new(user_info) }
+
   let(:user_info)  { 'futureadmin@example.com,Robert,Smith' }
   let(:email)      { user_info.split(',')[0] }
   let(:first_name) { user_info.split(',')[1] }
   let(:last_name)  { user_info.split(',')[2] }
-
-  subject { described_class.new(user_info) }
 
   before do
     allow(subject).to receive(:warn)

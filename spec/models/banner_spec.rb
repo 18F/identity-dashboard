@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Banner, type: :model do
-  let(:new_banner) { build(:banner)}
+  let(:new_banner) { build(:banner) }
 
   it 'is valid with basic parameters' do
     expect(new_banner.valid?).to be(true)
@@ -17,7 +17,6 @@ RSpec.describe Banner, type: :model do
     new_banner.end_date = Time.zone.now
     expect(new_banner.valid?).to be(true)
   end
-
 
   it 'is vaild if the start date is specified and the end date is not' do
     new_banner.start_date = Time.zone.now + [-1, 0, 1].sample.day
@@ -57,10 +56,11 @@ RSpec.describe Banner, type: :model do
 
   describe '#active?' do
     let(:future_banner) { build(:banner, start_date: Time.zone.now + 2.days) }
-    let(:past_banner) { build(:banner, 
-      start_date: Time.zone.now - 7.days, 
-      end_date: Time.zone.now - 2.days,
-    )}
+    let(:past_banner) do
+      build(:banner,
+            start_date: Time.zone.now - 7.days,
+            end_date: Time.zone.now - 2.days)
+    end
 
     it 'is true for blank dates' do
       expect(new_banner.active?).to be(true)

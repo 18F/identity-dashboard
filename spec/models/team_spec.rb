@@ -6,19 +6,19 @@ describe Team do
   let(:user_team) { create(:user_team) }
 
   describe 'Associations' do
-    it { should have_many(:users) }
-    it { should have_many(:service_providers) }
+    it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:service_providers) }
   end
 
   describe 'Validations' do
-    it { should validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:name) }
 
     it 'validates uniqueness of name' do
       name = 'good name'
-      create(:team, name: name)
-      duplicate = build(:team, name: name)
+      create(:team, name:)
+      duplicate = build(:team, name:)
 
-      expect(duplicate).not_to be_valid
+      expect(duplicate).to_not be_valid
     end
   end
 
@@ -43,11 +43,11 @@ describe Team do
   describe '#user_deletion_report_item' do
     it 'returns formated record from user_deletion_history' do
       history_record = {
-        'id'=>1,
-        'user_id'=>2,
-        'group_id'=>3,
-        'removed_at'=>'2021-06-08T17:34:06Z',
-        'whodunnit_id'=>'1',
+        'id' => 1,
+        'user_id' => 2,
+        'group_id' => 3,
+        'removed_at' => '2021-06-08T17:34:06Z',
+        'whodunnit_id' => '1',
       }
       report_item = team.user_deletion_report_item(history_record)
       expect(report_item[:user_id]).to eq(2)
@@ -61,6 +61,7 @@ describe Team do
       deletion_report = user_team.team.user_deletion_history_report
       expect(deletion_report.first[:user_id]).to eq(user_id)
     end
+
     it 'returns deletion history when email is provided' do
       user_id = user_team.user_id
       user_email = user_team.user.email
@@ -68,9 +69,8 @@ describe Team do
       report = user_team.team.user_deletion_history_report(email: user_email)
       expect(report.first[:user_id]).to eq(user_id)
     end
+
     it 'returns deletion history when limit is provided' do
-      user_id = user_team.user_id
-      user_email = user_team.user.email
       user_team.destroy
       report = user_team.team.user_deletion_history_report(limit: 1)
       expect(report.count).to eq(1)

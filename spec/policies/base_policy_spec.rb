@@ -46,4 +46,3 @@ describe BasePolicy do
     end
   end
 end
-

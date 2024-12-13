@@ -51,6 +51,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def update
     return destroy if can_cancel?
+
     if step == UPLOAD_STEP
       attach_cert
       remove_certificates
@@ -61,6 +62,7 @@ class ServiceConfigWizardController < AuthenticatedController
     end
     if is_valid? && @model.save
       return save_to_service_provider if step == wizard_steps.last
+
       skip_step
     else
       flash[:error] = 'Please check the error(s) in the form below and re-submit.'
@@ -157,6 +159,7 @@ class ServiceConfigWizardController < AuthenticatedController
   def get_model_for_step
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
+
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 
@@ -210,7 +213,7 @@ class ServiceConfigWizardController < AuthenticatedController
     return if params.dig(:wizard_step, :cert).blank?
 
     crt = params[:wizard_step].delete(:cert).read
-    @model.certs << crt unless crt.blank?
+    @model.certs << crt if crt.present?
   end
 
   def remove_certificates
@@ -319,8 +322,8 @@ class ServiceConfigWizardController < AuthenticatedController
       app_name
     ]
 
-    service_provider.attributes.each do |k,v|
-      v.try(:strip!) unless !string_attributes.include?(k)
+    service_provider.attributes.each do |k, v|
+      v.try(:strip!) if string_attributes.include?(k)
     end
 
     if service_provider.redirect_uris

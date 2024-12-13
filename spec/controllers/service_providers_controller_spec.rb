@@ -4,20 +4,20 @@ describe ServiceProvidersController do
   let(:user) { create(:user, :with_teams) }
   let(:admin) { create(:user, :with_teams, admin: true) }
   let(:agency) { create(:agency, name: 'GSA') }
-  let(:team) { create(:team, agency: agency) }
+  let(:team) { create(:team, agency:) }
   let(:init_help_params) do
-    { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
+    { sign_in: { en: '' }, sign_up: { en: '' }, forgot_password: { en: '' } }
   end
-  let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
+  let(:sp) { create(:service_provider, :with_users_team, user:, team:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
-  let(:logo_file_params) {
+  let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
       File.open(fixture_path + '/logo.svg'),
       'image/svg+xml',
       true,
       original_filename: 'alternative_filename.svg',
     )
-  }
+  end
 
   describe '#create' do
     before do
@@ -26,10 +26,10 @@ describe ServiceProvidersController do
 
     context 'help_text config' do
       # group_id (team) is necessary to create a ServiceProvider.
-      it('should fill selected default options: blank set') do
-        help_params_0 = { sign_in: {en: 'blank'},
-          sign_up: {en: 'blank'},
-          forgot_password: {en: 'blank'} }
+      it('fills selected default options: blank set') do
+        help_params_0 = { sign_in: { en: 'blank' },
+                          sign_up: { en: 'blank' },
+                          forgot_password: { en: 'blank' } }
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
@@ -59,13 +59,14 @@ describe ServiceProvidersController do
           },
         })
       end
-      it('should fill selected default options: set 1') do
+
+      it('fills selected default options: set 1') do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
         help_params_1 = { sign_in: { en: sign_in_key },
-          sign_up: { en: sign_up_key },
-          forgot_password: { en: forgot_password_key } }
+                          sign_up: { en: sign_up_key },
+                          forgot_password: { en: forgot_password_key } }
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
@@ -143,7 +144,8 @@ describe ServiceProvidersController do
           },
         })
       end
-      it('should fill selected default options: set 2') do
+
+      it('fills selected default options: set 2') do
         sign_in_key = 'piv_cac'
         sign_up_key = 'agency_email'
         forgot_password_key = 'blank'
@@ -229,6 +231,7 @@ describe ServiceProvidersController do
       before do
         sign_in(admin)
       end
+
       it('allows Login Admin users to set Email NameID Format') do
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
@@ -247,7 +250,7 @@ describe ServiceProvidersController do
     end
 
     context 'when a user enters data into text inputs with leading and trailing spaces' do
-      it('it clears leading and trailing spaces in service provider fields') do
+      it('clears leading and trailing spaces in service provider fields') do
         put :update, params: {
           id: sp.id,
           service_provider: {
@@ -281,12 +284,15 @@ describe ServiceProvidersController do
     end
 
     context 'when uploading a logo' do
-      let(:sp_logo_params) {{
-        issuer: sp.issuer,
-        help_text: init_help_params,
-        logo_file: logo_file_params,
-        approved: true,
-      }}
+      let(:sp_logo_params) do
+        {
+          issuer: sp.issuer,
+          help_text: init_help_params,
+          logo_file: logo_file_params,
+          approved: true,
+        }
+      end
+
       it 'caches the logo filename on the sp' do
         put :update, params: {
           id: sp.id,
@@ -305,7 +311,7 @@ describe ServiceProvidersController do
         expect(sp.remote_logo_key).to be_present
       end
 
-      context 'with paper trail versioning enabled', versioning: true do
+      context 'with paper trail versioning enabled', :versioning do
         before do
           put :update, params: {
             id: sp.id,
@@ -341,7 +347,7 @@ describe ServiceProvidersController do
         end
       end
 
-      it 'will not allow a bad logo to overwrite a good logo' do
+      it 'does not allow a bad logo to overwrite a good logo' do
         expect(sp.logo_file).to be_blank
         put :update, params: {
           id: sp.id,
@@ -372,8 +378,8 @@ describe ServiceProvidersController do
       let(:sp) do
         create(:service_provider,
                :with_users_team,
-               user: user,
-               certs: [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300) ])
+               user:,
+               certs: [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)])
       end
 
       it 'deletes certs with the corresponding serials' do
@@ -382,7 +388,7 @@ describe ServiceProvidersController do
               id: sp.id,
               service_provider: {
                 issuer: sp.issuer,
-                remove_certificates: ['100', '200'],
+                remove_certificates: %w[100 200],
                 help_text: init_help_params,
               },
             }
@@ -396,9 +402,9 @@ describe ServiceProvidersController do
 
     it 'adds new certs uploaded to the certs array' do
       file = Rack::Test::UploadedFile.new(
-               StringIO.new(build_pem(serial: 10)),
-               original_filename: 'my-cert.crt',
-             )
+        StringIO.new(build_pem(serial: 10)),
+        original_filename: 'my-cert.crt',
+      )
 
       put :update, params: {
         id: sp.id,
@@ -413,9 +419,9 @@ describe ServiceProvidersController do
 
     it 'errors when cert data is not PEM encoded' do
       file = Rack::Test::UploadedFile.new(
-               StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
-               original_filename: 'my-cert.der',
-             )
+        StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
+        original_filename: 'my-cert.der',
+      )
 
       expect do
         put :update, params: {
@@ -439,13 +445,13 @@ describe ServiceProvidersController do
     end
 
     it 'sends a serialized service provider to the IDP' do
-      allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
+      allow(ServiceProviderSerializer).to receive(:new).and_return('attributes')
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
       put :update, params: {
         id: sp.id,
         service_provider: { issuer: sp.issuer, help_text: init_help_params },
       }
-      provider = ServiceProvider.find_by(issuer: sp.issuer)
+      ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },
@@ -453,13 +459,13 @@ describe ServiceProvidersController do
     end
 
     context 'help_text config' do
-      it('should fill selected default options: set 1') do
+      it('fills selected default options: set 1') do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
         help_params_1 = { sign_in: { en: sign_in_key },
-          sign_up: { en: sign_up_key },
-          forgot_password: { en: forgot_password_key } }
+                          sign_up: { en: sign_up_key },
+                          forgot_password: { en: forgot_password_key } }
         put :update, params: {
           id: sp.id,
           service_provider: { issuer: sp.issuer, help_text: help_params_1 },
