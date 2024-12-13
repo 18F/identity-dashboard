@@ -66,6 +66,7 @@ group :development do
   gem 'binding_of_caller'
   gem 'bummr', require: false
   gem 'listen', '~> 3.3'
+  gem 'spoom', require: false
   gem 'web-console', '>= 4.2.1'
 end
 
