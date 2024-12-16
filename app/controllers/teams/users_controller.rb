@@ -16,9 +16,10 @@ class Teams::UsersController < AuthenticatedController
       new_membership = UserTeam.build(team:, user: new_member, role: new_member.primary_role)
       authorize new_membership
       new_membership.save!
-    else
-      new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
+      flash[:success] = I18n.t('teams.users.create.success', email: member_email)
+      redirect_to new_team_user_path and return
     end
+    new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path and return
   rescue ActiveRecord::RecordInvalid => e
@@ -47,15 +48,14 @@ class Teams::UsersController < AuthenticatedController
       authorize UserTeam.find_by(user:, team:)
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
+      redirect_to team_users_path and return
+    end
+    if user_present_not_current_user(user)
+      team.users.delete(user)
+      flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
     else
-      if user_present_not_current_user(user)
-        team.users.delete(user)
-        flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
-        redirect_to team_users_path
-      else
-        render_401
-      end
+      render_401
     end
   end
 
