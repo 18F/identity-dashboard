@@ -8,6 +8,8 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
 
 inherit_gem:
   pundit: config/rubocop-rspec.yml
@@ -33,11 +35,20 @@ AllCops:
   TargetRubyVersion: <%= File.read(File.join(__dir__, '.ruby-version')).strip %>
   TargetRailsVersion: 7.1
   UseCache: true
-  DisabledByDefault: true
-  SuggestExtensions: false
+  DisabledByDefault: false
+  SuggestExtensions: true
+  NewCops: enable
 
-Rails:
-  Enabled: false
+FactoryBot:
+  Enabled: true
+
+Metrics:
+  Enabled: true
+  Severity: info
+
+Metrics/ClassLength:
+  CountAsOne: array
+  Max: 200
 
 Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
@@ -68,7 +79,6 @@ Layout/ParameterAlignment:
 Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
-  EnforcedStyle: trailing
   SupportedStyles:
   - leading
   - trailing
@@ -448,3 +458,7 @@ RSpec/MultipleMemoizedHelpers:
   #   1 team
   #   1 object the permission is tested for
   Max: 7
+
+Style/Documentation:
+  Exclude:
+    - app/policies/*.rb
