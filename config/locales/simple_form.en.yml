@@ -9,9 +9,10 @@ en:
     lead:
       authentication_html: "The <a class='usa-link' href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect page</a> and the <a class='usa-link' href='https://developers.login.gov/saml/getting-started/'>SAML page</a> of the developer docs have more information about the authentication requirements."
       help_text: You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.
-      protocol: The protocol you choose will determine how you structure the requests made to Login.gov. Note that we recommend using OIDC because SAML is significantly more difficult to set up.
       issuer_html: "The <a class='usa-link' href='https://developers.login.gov/production/#production-configuration-process'>Production configuration process section</a> of the developer docs has more information about issuer strings."
       settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our developer docs</a> has additional information about setting up your app."
+      protocol: The protocol you choose will determine how you structure the requests made to Login.gov. Note that we recommend using OIDC because SAML is significantly more difficult to set up.
+      protocol_html: The <a href='https://developers.login.gov/oidc/getting-started/' class='usa-link'>OpenID Connect page</a> and the <a href='https://developers.login.gov/saml/getting-started/' class='usa-link'>SAML page</a> of the developer docs have more information about the authentication requirements.
     labels:
       required: required
       select: "- Select -"
@@ -36,11 +37,12 @@ en:
           sign_up: Sign-up
           forgot_password: Forgot password
           custom_help: Custom help text
-        ial: Identity Assurance Level (IAL1 or IAL2)
+        ial: Level of Service (IAL)
         identity_protocol: Identity Protocol
         issuer: Issuer
         logo_file: Logo file
         push_notification_url: Push notification URL
+        public_certificate: Public certificate
         production: Ready for Production
         redirect_uris_oidc: Redirect URIs
         redirect_uris_saml: Additional Redirect URIs
