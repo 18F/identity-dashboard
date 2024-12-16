@@ -17,8 +17,8 @@
   } else {
     const file = e.target.files[0];
 
-    if (file.size > (1024 * 1024)) { // file.size returns bytes
-      errorDiv.textContent = "ERROR: Logo must not be larger than 1MB.";
+    if (file.size > (50 * 1024)) { // file.size returns bytes
+      errorDiv.textContent = "ERROR: Logo must not be larger than 50kB.";
     }
   }
 });
