@@ -29,10 +29,12 @@ class WizardStep < ApplicationRecord
       group_id: nil,
       prod_config: false,
     }),
+    protocol: WizardStep::Definition.new({
+      identity_protocol: ServiceProvider.identity_protocols.keys.first,
+    }),
     authentication: WizardStep::Definition.new({
       attribute_bundle: [],
       default_aal: 0,
-      identity_protocol: ServiceProvider.identity_protocols.keys.first,
       ial: '1',
     }),
     issuer: WizardStep::Definition.new({
@@ -273,7 +275,7 @@ class WizardStep < ApplicationRecord
   end
 
   def saml?
-    get_step('authentication').identity_protocol == 'saml'
+    get_step('protocol').identity_protocol == 'saml'
   end
 
   def saml_settings_present?
