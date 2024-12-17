@@ -1,7 +1,7 @@
 # The AttributeBundleValidator validates an attribute that is an array of strings.
 # It requires that the record being validated has these as method or properties:
 # * `ial`, of type Integer
-# * `identity_protocol`, of type String
+# * `saml?`, of type Boolean
 # * `attribute_bundle`, of type Array<String>
 class AttributeBundleValidator < ActiveModel::Validator
   ALLOWED_IAL1_ATTRIBUTES = %w[
@@ -35,7 +35,7 @@ class AttributeBundleValidator < ActiveModel::Validator
     # attribute bundle should not be empty when saml and ial2 are selected
     if record.attribute_bundle.blank? &&
        [2, '2'].include?(record.ial) &&
-       record.identity_protocol == 'saml'
+       record.saml?
 
        record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
