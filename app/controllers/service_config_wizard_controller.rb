@@ -164,16 +164,6 @@ class ServiceConfigWizardController < AuthenticatedController
     step == step_name
   end
 
-  def auth_step
-    # Should this be `@model.auth_step` ?
-    @auth_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'authentication')
-  end
-
-  def protocol_step
-    # Should this be `@model.protocol_step` ?
-    @protocol_step ||= policy_scope(WizardStep).find_by(user: current_user, step_name: 'protocol')
-  end
-
   def redirect_unless_flagged_in
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
