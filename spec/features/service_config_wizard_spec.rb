@@ -92,7 +92,7 @@ feature 'Service Config Wizard' do
         'acs_url' => 'http://localhost/acs', # required for SAML
         'assertion_consumer_logout_service_url'=>'',
         'sp_initiated_login_url'=>'',
-        'block_encryption'=>'aes256-gcm',
+        'block_encryption'=>'aes256-cbc',
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
         'push_notification_url'=>'',
