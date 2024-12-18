@@ -34,11 +34,11 @@ SecureHeaders::Configuration.default do |config|
     base_uri: ["'self'"],
   }
   # Enable for A11y testing. This allows use of the ANDI tool.
-  # if Rails.env.development?
-  #   config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
-  #   config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
-  #   config.csp.img_src.push('*.ssa.gov')
-  # end
+  if Rails.env.development?
+    config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
+    config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
+    config.csp.img_src.push('*.ssa.gov')
+  end
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
