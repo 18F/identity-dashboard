@@ -8,8 +8,9 @@
     <% steps.each_with_index do |step, index| %>
       <% case index <=> current_step_index %>
       <% when -1 %>
+        <%# &ensp; is an en space, to force JAWS to treat this as a new word. %>
         <li class="step-indicator__step step-indicator__step--complete">
-          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">completed</span></span>
+          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %><span class="usa-sr-only">&ensp;completed</span></span>
         </li>
       <% when 0 %>
         <li class="step-indicator__step step-indicator__step--current" aria-current="true">
@@ -17,7 +18,7 @@
         </li>
       <% when 1 %>
         <li class="step-indicator__step">
-          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %> <span class="usa-sr-only">not completed</span></span>
+          <span class="step-indicator__step-title"><%= t("#{localization_base}.#{step}") %><span class="usa-sr-only">&ensp;not completed</span></span>
         </li>
       <% end %>
     <% end %>

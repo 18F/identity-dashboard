@@ -21,7 +21,8 @@
       <% end %>
     </p>
     <% if description %>
-      <%= form.hint t("service_provider_form.#{fieldname}#{html_desc ? '_html' : ''}") %>
+      <%= form.hint t("service_provider_form.#{fieldname}#{html_desc ? '_html' : ''}"),
+        tabindex: 0 %>
     <% end %>
   </div>
   <div class="usa-input__container">
