@@ -198,7 +198,7 @@ class ServiceConfigWizardController < AuthenticatedController
       :logo_file,
       :app_name,
       :prod_config,
-      :redirect_uris,
+      redirect_uris: [],
       attribute_bundle: [],
       help_text: {},
     ]

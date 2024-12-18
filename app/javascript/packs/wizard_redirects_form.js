@@ -1,20 +1,27 @@
-function redirectURISetup() {
-  // Selectors
+const createAddURIBtn = container => {
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.id = 'add-redirect-uri-input';
+  button.classList.add('usa-button', 'usa-button--unstyled');
+  button.innerText = 'Add another URI';
+
+  container.appendChild(button);
+  return button;
+}
+
+const redirectURISetup = () => {
   const redirectURIContainer = document.querySelector('.wizard_step_redirect_uris .usa-input__container');
-  const redirectURI = document.getElementById('add-redirect-uri-input');
+  const addURIBtn = document.getElementById('add-redirect-uri-input')
+    || createAddURIBtn(redirectURIContainer);
 
-  if (!redirectURI) { return; }
-
-  // Functions
   const handleRedirectURIClick = () => {
-    const lastInput = redirectURIContainer.querySelector('input:last-child');
+    const lastInput = redirectURIContainer.querySelector('input:last-of-type');
     const newInput = lastInput.cloneNode(true);
     newInput.value = '';
-    redirectURIContainer.appendChild(newInput);
+    redirectURIContainer.insertBefore(newInput, addURIBtn);
   };
 
-  // Event triggers
-  redirectURI.addEventListener('click', handleRedirectURIClick);
+  addURIBtn.addEventListener('click', handleRedirectURIClick);
 }
 
 window.addEventListener('DOMContentLoaded', redirectURISetup);

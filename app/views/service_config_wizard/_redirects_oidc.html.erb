@@ -13,12 +13,8 @@
                    required: true %>
   <% end %>
   <%= form.input :redirect_uris,
-                 input_html: { class: 'usa-input' },
+                 input_html: { class: 'usa-input', multiple: true },
                  label: accessible_label(form, t('simple_form.labels.service_provider.redirect_uris_oidc'), :redirect_uris),
                  hint: t('service_provider_form.oidc_redirects_html') %>
-  <button type="button"
-          id="add-redirect-uri-input"
-          class="usa-button usa-button--unstyled"
-          >Add another URI</button>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
