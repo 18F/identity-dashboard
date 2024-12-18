@@ -10,6 +10,7 @@ en:
     wizard_steps:
       intro: Introduction
       settings: App settings
+      protocol: Protocol
       authentication: Authentication
       issuer: Issuer
       logo_and_cert: Logo and certificate
@@ -24,7 +25,7 @@ en:
     description: A description of the app (may be helpful for your colleagues).
     team: Assign an agency team to this client.
     protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
-    identity_protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
+    identity_protocol_html: Please review the <a href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect (OIDC)</a> and <a href='https://developers.login.gov/saml/getting-started/'>SAML</a> pages in the developer docs before making this selection.
     ial_option_1: Authentication only (no verified attributes)
     ial_option_2: Identity verification permitted
     aal_option_default: MFA required + remember device up to 30 days (AAL1)

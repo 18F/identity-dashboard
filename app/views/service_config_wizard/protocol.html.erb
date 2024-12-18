@@ -1,0 +1,19 @@
+<h1 class="usa-display"><%= t('service_provider_form.wizard_steps.protocol') %></h1>
+<p class="usa-intro"><%= t('simple_form.lead.protocol') %></p>
+<div class="wizard-main">
+<%= wizard_form do |form| %>
+  <%= render partial: 'fieldset', locals: {
+      form: form,
+      fieldname: 'identity_protocol',
+      description: true,
+      html_desc: true,
+      db_fieldname: :identity_protocol,
+      input_type: 'radio',
+      required: true,
+      inputs: ServiceProvider.identity_protocols.map { |k,v|
+        [titleize(k), k] }.to_h,
+    } %>
+
+  <%= render partial:'footer', locals: { form: form } %>
+<% end %>
+</div>
