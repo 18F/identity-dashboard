@@ -12,7 +12,7 @@ class UserTeam < ApplicationRecord
 
   def role_exists_if_present
     return unless role_name
-    unless Role.find role_name
+    unless Role.find_by(name: role_name)
       errors.add(:role_name, :invalid)
       return false
     end

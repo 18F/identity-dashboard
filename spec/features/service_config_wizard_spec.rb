@@ -38,11 +38,12 @@ feature 'Service Config Wizard' do
       select(Team.find(admin.group_id).name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
-      expect(current_step.text).to match(t('service_provider_form.wizard_steps.authentication'))
+      expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
         click_on 'Back'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+      click_on 'Next' # /protocol
       click_on 'Next' # /authentication
       click_on 'Next' # /issuer
       fill_in('Issuer', with: issuer_name)
@@ -137,6 +138,7 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
+      click_on 'Next' #skip auth step
       fill_in('Issuer', with: expected_data['issuer'])
       click_on 'Next'
       attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
@@ -160,7 +162,7 @@ feature 'Service Config Wizard' do
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
-      expect(current_url).to match("#{service_providers_url}/#{saved_config_data.id}"),
+      expect(current_url).to match(service_providers_url(saved_config_data.id)),
         'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
         next if key == 'default_aal'
@@ -219,7 +221,9 @@ feature 'Service Config Wizard' do
       click_on 'Edit'
       expect(find_field('App name').value).to eq(existing_config.app_name)
       click_on 'Next'
-      # Skip making changes to auth options
+      # Skip making changes to protocol options
+      click_on 'Next'
+       # Skip making changes to auth options
       click_on 'Next'
       issuer_field = find('#wizard_step_issuer')
       expect(issuer_field.value).to eq(existing_config.issuer)

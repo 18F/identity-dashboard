@@ -17,7 +17,7 @@ class ServiceConfigWizardController < AuthenticatedController
     draft_service_provider
     show_saml_options?
     show_oidc_options?
-    show_proof_failure_url?
+    show_idv_redirect_urls?
   ]
 
   def new
@@ -148,7 +148,7 @@ class ServiceConfigWizardController < AuthenticatedController
     !show_saml_options?
   end
 
-  def show_proof_failure_url?
+  def show_idv_redirect_urls?
     @model.ial.to_i > 1
   end
 
@@ -289,9 +289,11 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def save_service_provider(service_provider)
+    is_new = service_provider[:id].nil?
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
+    analytics.sp_config_created if is_new
   end
 
   def publish_service_provider

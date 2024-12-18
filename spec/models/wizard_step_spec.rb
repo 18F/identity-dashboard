@@ -104,24 +104,31 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "authentication"' do
-    let(:authentication_step) { 
-      build(:wizard_step, step_name: 'authentication', wizard_form_data: {
-        identity_protocol: 'openid_connect_private_key_jwt',
-        ial: '1',
-        default_aal: 'on',
-      })
-    }
+    subject { build(:wizard_step, user: first_user, step_name: 'authentication', wizard_form_data: {
+      ial: 1,
+      default_aal: 0,
+      attribute_bundle: [],
+    })}
+
     describe '#valid?' do
       it 'validates good wizard_form_data' do
-        expect(authentication_step.valid?).to be(true), authentication_step.errors.messages
+        expect(subject.valid?).to be(true), subject.errors.full_messages.join
+      end
+    end
+
+    describe '#invalid?' do
+      before do 
+        create(:wizard_step, user: first_user, step_name: 'protocol', wizard_form_data: {
+          identity_protocol: 'saml',
+        })
       end
 
       it 'fails with bad wizard_form_data' do
-        authentication_step.wizard_form_data['ial'] = 2
-        authentication_step.wizard_form_data['identity_protocol'] = 'saml'
-        expect(authentication_step.valid?).to be_falsey
-        bundle_errors = authentication_step.errors[:attribute_bundle]
-        expect(bundle_errors).to eq(['Attribute bundle cannot be empty'])
+        subject.wizard_form_data = {
+          ial: 2,
+        }
+        expect(subject).to_not be_valid
+        expect(subject.errors[:attribute_bundle]).to include('Attribute bundle cannot be empty')
       end
     end
   end

@@ -55,6 +55,32 @@ RSpec.describe TeamAuditEvent do
 
       expect(trail.count).to be(6)
     end
+
+    it 'can handle role changes as well as other changes' do
+      user_access = create(:user_team, :partner_admin)
+      team = user_access.team
+      user_access.role = Role.find_by(name: 'Partner Developer')
+      user_access.save!
+      audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(team))
+      object_changes = audit_events.map(&:object_changes)
+
+      role_change = object_changes.first
+      expect(role_change['role_name']).to eq(['Partner Admin', 'Partner Developer'])
+      expect(role_change['user_email']).to eq([user_access.user.email, nil])
+      expect(role_change['user_id']).to eq([user_access.user.id, nil])
+      # No created_at timestamps should show for actions that are only edits
+      expect(role_change['created_at']).to eq(nil)
+
+      user_addition = object_changes.second
+      expect(user_addition['role_name']).to eq([nil, 'Partner Admin'])
+      expect(user_addition['user_email']).to eq([nil, user_access.user.email])
+      expect(user_addition['user_id']).to eq([nil, user_access.user.id])
+
+      # It's difficult to compare date strings without normalizing them first
+      expect(user_addition['created_at'].first).to be_nil
+      expected_created_date = user_access.user.created_at.to_datetime.to_s
+      expect(DateTime.parse(user_addition['created_at'].last).to_s).to eq(expected_created_date)
+    end
   end
 
   describe '.decorate' do

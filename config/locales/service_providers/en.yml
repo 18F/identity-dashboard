@@ -10,6 +10,7 @@ en:
     wizard_steps:
       intro: Introduction
       settings: App settings
+      protocol: Protocol
       authentication: Authentication
       issuer: Issuer
       logo_and_cert: Logo and certificate
@@ -24,7 +25,7 @@ en:
     description: A description of the app (may be helpful for your colleagues).
     team: Assign an agency team to this client.
     protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
-    identity_protocol: This is the authentication protocol used by the service provider. We highly recommend using OpenID Connect, unless a technical reason prevents you.
+    identity_protocol_html: Please review the <a href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect (OIDC)</a> and <a href='https://developers.login.gov/saml/getting-started/'>SAML</a> pages in the developer docs before making this selection.
     ial_option_1: Authentication only (no verified attributes)
     ial_option_2: Identity verification permitted
     aal_option_default: MFA required + remember device up to 30 days (AAL1)
@@ -37,8 +38,8 @@ en:
     intro_html: "This partner portal is where you will manage your Login.gov integrations for testing and production. Before you start creating an integration, review our <a href='https://developers.login.gov/' class='usa-link'>Developer docs</a> to understand any requirements. If you have any questions, reach out to our engineers through the <a href='https://gsa.enterprise.slack.com/archives/CG64NU5C7' class='usa-link'>Partner Slack Channel</a> or submit a support ticket through the <a href='https://zendesk.login.gov' class='usa-link'>Partner support help desk</a>."
     change_issuer: "The issuer cannot be changed, but you can create a new test app with a different issuer."
     issuer_html: "This is a unique string to identify the app in the IdP, and is also used as the <code>client_id</code>. We recommend something like the following, replacing <code>agency_name</code> and <code>app_name</code> with your own.</p><p>For OpenID Connect: </p><p><code class=‘ml2’>urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name</code><p>For SAML: </p><p><code class=‘ml2’>urn:gov:gsa:SAML:2.0.profiles:sp:sso:agency_name:app_name</code>"
-    logo_html: "Choose a file to upload as your logo. Your file should follow <a href='https://developers.login.gov/design-guidelines/#agency-logo-guidelines'>our guidelines</a>."
-    logo_input: "Logo file type must be SVG"
+    logo_html: "Choose a file to upload as your logo. Your file should follow <a href='https://developers.login.gov/user-experience/agency-logo/'>our guidelines</a>."
+    logo_input: "Logo file type must be SVG or PNG"
     cert_input: "Upload your PEM encoded public certificate"
     save_new: Create app
     save_existing: Update app
@@ -51,6 +52,7 @@ en:
     signed_response_requested: This feature controls whether or not the entire authentication response is signed, as opposed to just the attribute statement.
     return_to_app_url_html: "The application's URL which Login.gov provides to users when they wish to go directly to the app's site or cancel out of authentication. For example: <code>https://app.agency.gov</code>"
     failure_to_proof_url: The URL provided to users who are unable to complete identity proofing and returning to your application.
+    post_idv_follow_up_url: The URL provided to users who have completed identity verification but have not returned to your application. This URL should provide a prompt for user's to sign in.
     push_notification_url: Your application's endpoint which receives push notifications.
     oidc_redirects_html: "One or more URIs that Login.gov will redirect to after authentication. Login.gov will only redirect to URIs listed here. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#oidc-redirect-uri'>Cancel URL</a> information in our Developer docs for more details."
     saml_redirects_html: "One or more URIs that Login.gov will include in the SAML response CSP headers to allow multiple targets for redirection. These can be web URLs (public, internal, or localhost) or a custom scheme to support native applications, for example: <code>gov.agency.app://result</code>. See the <a href='https://developers.login.gov/user-experience/cancel-url/#saml-return-to-sp-url'>Cancel URL</a> information in our Developer docs for more details."

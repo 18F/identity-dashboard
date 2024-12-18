@@ -4,6 +4,7 @@
 <%= wizard_form do |form| %>
   <%= form.input :issuer,
                  disabled: issuer_read_only?,
+                 required: true,
                  label: accessible_label(form, t('simple_form.labels.service_provider.issuer'), :issuer),
                  label_html: { class: 'usa-input-required' },
                  input_html: { class: 'usa-input', aria: { invalid: false } },

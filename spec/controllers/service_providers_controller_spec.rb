@@ -73,7 +73,7 @@ describe ServiceProvidersController do
           help_text: help_params_1,
         } }
         sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
-  
+
         expect(sp_help.help_text).to eq({
           'sign_in' => {
             'en' => I18n.t(
@@ -157,7 +157,7 @@ describe ServiceProvidersController do
           help_text: help_params_2,
         } }
         sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
-  
+
         expect(sp_help.help_text).to eq({
           'sign_in' => {
             'en' => I18n.t(
@@ -285,7 +285,7 @@ describe ServiceProvidersController do
         issuer: sp.issuer,
         help_text: init_help_params,
         logo_file: logo_file_params,
-        approved: true, 
+        approved: true,
       }}
       it 'caches the logo filename on the sp' do
         put :update, params: {
