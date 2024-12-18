@@ -69,16 +69,8 @@ class User < ApplicationRecord
 
   def primary_role
     return Role::SITE_ADMIN if admin?
+
     user_teams.first&.role || Role.find_by(name: 'Partner Admin')
-  end
-
-  def make_site_admin
-    self.admin = true
-  end
-
-  def make_site_admin!
-    make_site_admin
-    save!
   end
 
   private

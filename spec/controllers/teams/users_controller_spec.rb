@@ -178,7 +178,8 @@ describe Teams::UsersController do
       let(:user_team) { create(:user_team) }
 
       before do
-        user.make_site_admin!
+        user.admin = true
+        user.save!
       end
 
       describe '#remove_confirm' do
