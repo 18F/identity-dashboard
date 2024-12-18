@@ -23,7 +23,7 @@ SimpleForm.setup do |config|
     b.optional :readonly
     b.wrapper tag: :div, class: 'usa-label__group' do |c|
       c.use :label, class: 'usa-label'
-      c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint' }
+      c.use :hint,  wrap_with: { tag: 'p', class: 'usa-hint', html: {tabindex: 0} }
     end
     b.wrapper tag: :div, class: 'usa-input__container' do |c|
       c.use :input, class: 'block col-12', error_class: 'usa-input--error'
