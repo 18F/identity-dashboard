@@ -6,6 +6,7 @@
 %>
 <%= text_field_tag "wizard_step[#{db_fieldname}][]",
                    value,
-                   id: "wizard_step_#{db_fieldname}",
+                   id: "",
                    class: 'usa-input',
-                   multiple: 'multiple' %>
+                   multiple: 'multiple',
+                   aria: { labelledby: fieldname.gsub('.','_') }%>

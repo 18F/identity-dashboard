@@ -10,16 +10,18 @@
   [String] default to pre-select an option
 %>
 <fieldset class="<%= "wizard-field #{input_type} wizard_step_#{db_fieldname.to_s.gsub('.','_')}" %>" >
-  <legend class="usa-sr-only" id="<%= fieldname.gsub('.','_') %>">
-    <%= accessible_label(form, t("simple_form.labels.service_provider.#{fieldname}"), db_fieldname) %>
-  </legend>
+  <% if input_type != 'multi-text' %>
+    <legend class="usa-sr-only" id="<%= fieldname.gsub('.','_') %>">
+      <%= accessible_label(form, t("simple_form.labels.service_provider.#{fieldname}"), db_fieldname) %>
+    </legend>
+  <% end %>
   <div class="usa-label__group">
-    <p class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" aria-hidden="true">
+    <label class="<%= "usa-label #{input_type} #{required ? 'required' : 'optional'}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{fieldname.gsub('.','_')}" %>>
       <%= t("simple_form.labels.service_provider.#{fieldname}") %>
       <% if required %>
         <%= t('simple_form.required.html') %>
       <% end %>
-    </p>
+    </label>
     <% if description %>
       <%= form.hint t("service_provider_form.#{fieldname}#{html_desc ? '_html' : ''}"),
         tabindex: 0 %>
