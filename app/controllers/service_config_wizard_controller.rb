@@ -57,7 +57,7 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    if step = REDIRECTS_STEP
+    if step == REDIRECTS_STEP
       clean_redirect_uris
     end
     unless skippable && params[:wizard_step].blank?
