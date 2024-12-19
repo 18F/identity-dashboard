@@ -2,7 +2,7 @@ const redirectURISetup = () => {
   const redirectURIContainer = document.querySelector('.wizard_step_redirect_uris .usa-input__container');
   const addURIBtn = document.getElementById('add-redirect-uri-input');
 
-  if (!addURIBtn) return;
+  if (!addURIBtn) { return; }
 
   const handleRedirectURIClick = () => {
     const lastInput = redirectURIContainer.querySelector('input:last-of-type');
@@ -13,6 +13,6 @@ const redirectURISetup = () => {
   };
 
   addURIBtn.addEventListener('click', handleRedirectURIClick);
-}
+};
 
 window.addEventListener('DOMContentLoaded', redirectURISetup);
