@@ -234,8 +234,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def clean_redirect_uris
-    list = params[:wizard_step][:redirect_uris] || []
-    list.compact_blank
+    params[:wizard_step][:redirect_uris]&.compact_blank! || []
   end
 
   def skippable
