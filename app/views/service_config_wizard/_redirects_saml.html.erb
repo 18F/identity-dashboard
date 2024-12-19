@@ -57,9 +57,15 @@
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
   <% end %>
-  <%= form.input :redirect_uris,
-                 input_html: { class: 'usa-input', multiple: true },
-                 label: accessible_label(form, t('simple_form.labels.service_provider.redirect_uris_saml'), :redirect_uris),
-                 hint: t('service_provider_form.saml_redirects_html') %>
+  <%= render partial: 'fieldset', locals: {
+    form: form,
+    fieldname: 'redirect_uris_saml',
+    description: true,
+    html_desc: true,
+    required: false,
+    input_type: 'multi-text',
+    db_fieldname: :redirect_uris,
+    text_list: redirect_uris_list,
+  } %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>

@@ -175,11 +175,11 @@
 
 <% if service_provider.oidc? %>
   <h2 class="margin-bottom-0"><label for="uris">Redirect URIs:</label></h2>
-  <p class="text-italic"><%= t('service_provider_form.oidc_redirects_html') %></p>
+  <p class="text-italic"><%= t('service_provider_form.redirect_uris_oidc_html') %></p>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% else # SAML %>
   <h2><label for="uris">Additional Redirect URIs:</label></h2>
-  <p class="text-italic"><%= t('service_provider_form.saml_redirects_html') %></p>
+  <p class="text-italic"><%= t('service_provider_form.redirect_uris_saml_html') %></p>
   <p class="font-mono-xs margin-top-0 margin-left-5" name="uris"><%= (service_provider.redirect_uris || []).sort.join('<br>').html_safe %></p>
 <% end %>
 <hr>
