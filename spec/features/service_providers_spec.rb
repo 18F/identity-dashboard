@@ -168,7 +168,7 @@ feature 'Service Providers CRUD' do
       acs_input.set('https://fake.gov/test/saml/sp_login')
 
       submit_btn.click
-      expect(page).to have_no_selector('.usa-error-message')
+      expect(page).to_not have_css('.usa-error-message')
     end
 
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
@@ -275,7 +275,9 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'sees read-only text boxes when help text is custom' do
-      initial_help_text = { HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!' }}
+      initial_help_text = {
+        HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!' },
+      }
       service_provider = create(:service_provider,
         :with_users_team,
         user:,
@@ -295,7 +297,7 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).not_to have_css('input#service_provider_allow_prompt_login')
+      expect(page).to_not have_css('input#service_provider_allow_prompt_login')
     end
 
     scenario 'cannot edit email_nameid_format_allowed' do
@@ -303,7 +305,7 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
 
-      expect(page).not_to have_css('input#service_provider_email_nameid_format_allowed')
+      expect(page).to_not have_css('input#service_provider_email_nameid_format_allowed')
     end
 
     # rubocop:disable Layout/LineLength
@@ -388,7 +390,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    context 'help_text_options_feature_disabled' do
+    context 'with help text options feature disabled' do
       before do
         allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
       end
@@ -397,14 +399,14 @@ feature 'Service Providers CRUD' do
         visit new_service_provider_path
 
         expect(page).to have_content('Do you need to add help text for your application? Contact us.')
-        expect(page).not_to have_css('#service_provider_help_text_sign_in_en')
+        expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
       end
     end
 
     # rubocop:enable Layout/LineLength
   end
 
-  context 'admin user' do
+  context 'with an admin user' do
     let(:admin) { create(:admin) }
     let(:user_to_log_in_as) { admin }
 
@@ -434,7 +436,7 @@ feature 'Service Providers CRUD' do
       }
       service_provider.save!
 
-      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
 
       visit edit_service_provider_path(service_provider)
 
@@ -535,7 +537,7 @@ feature 'Service Providers CRUD' do
     end
   end
 
-  context 'Update' do
+  describe 'Update' do
     scenario 'user updates service provider' do
       app = create(:service_provider, :with_users_team, user:)
 
@@ -570,7 +572,7 @@ feature 'Service Providers CRUD' do
       choose 'SAML'
       click_on 'Update'
 
-      expect(page).to have_no_content('Success')
+      expect(page).to_not have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
 
@@ -590,7 +592,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
     end
 
-    context 'managing certificates' do
+    context 'when managing certificates' do
       let(:existing_serial) { '111222333444' }
 
       let(:sp) do
@@ -614,7 +616,7 @@ feature 'Service Providers CRUD' do
         expect(sp.reload.certificates).to be_empty
       end
 
-      context 'file uploads', :js do
+      describe 'file uploads', :js do
         around do |ex|
           Tempfile.create(binmode: !file_content.ascii_only?) do |file|
             @file_path = file.path
@@ -625,7 +627,7 @@ feature 'Service Providers CRUD' do
           end
         end
 
-        context 'uploading a valid PEM certificate' do
+        context 'with a valid PEM certificate' do
           let(:file_content) { build_pem }
 
           it 'shows the file name and does not have an error' do
@@ -638,7 +640,7 @@ feature 'Service Providers CRUD' do
           end
         end
 
-        context 'uploading a private key' do
+        context 'with a private key' do
           let(:file_content) { '----PRIVATE KEY----' }
 
           it 'shows an error indicating a private key' do
@@ -649,7 +651,7 @@ feature 'Service Providers CRUD' do
           end
         end
 
-        context 'uploading a DER-encoded file' do
+        context 'with a DER-encoded file' do
           let(:file_content) { OpenSSL::X509::Certificate.new(build_pem).to_der }
 
           it 'show an error' do
@@ -674,7 +676,7 @@ feature 'Service Providers CRUD' do
     scenario 'Read' do
       expect(page).to have_content(sp.friendly_name)
       expect(page).to have_content(team)
-      expect(page).to have_no_content('All service providers')
+      expect(page).to_not have_content('All service providers')
     end
 
     describe 'with a production config' do
