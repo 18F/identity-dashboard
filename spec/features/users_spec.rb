@@ -12,7 +12,7 @@ feature 'admin manages users' do
     visit service_providers_path
     click_on 'Users'
 
-    expect(current_path).to eq(users_path)
+    expect(page).to have_current_path(users_path)
   end
 
   scenario 'user index page shows all users' do
@@ -32,7 +32,7 @@ feature 'admin manages users' do
     admin = create(:admin)
     users = create_list(:user, 3)
     everyone = [admin, users].flatten
-    headings = ['Email','Signed in','Role','Actions']
+    headings = ['Email', 'Signed in', 'Role', 'Actions']
 
     login_as(admin)
     visit users_path
@@ -41,7 +41,8 @@ feature 'admin manages users' do
       expect(page).to have_content(heading)
     end
     everyone.each do |user|
-      expect(page).to have_content(user.email)
+      user_row = find('tr', text: user.email)
+      expect(user_row).to have_content(user.primary_role.friendly_name)
     end
   end
 
@@ -57,22 +58,23 @@ feature 'admin manages users' do
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  xscenario 'admin edits users' do
+  scenario 'admin edits users' do
     admin = create(:admin)
     user = create(:user)
 
     login_as(admin)
     visit users_path
-    find("a[aria-label='#{t('links.aria.edit', name: user.email)}']").click
+    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
+    find("a[href='#{edit_user_path(user)}']").click
 
-    expect(current_path).to eq(edit_user_path(user))
-    expect(page).to have_content(user.email)
+    expect(page).to have_current_path(edit_user_path(user))
+    expect(find_field('user_email').value).to eq(user.email)
 
-    check('Admin')
+    choose 'Login.gov Admin'
     click_on 'Update'
 
-    expect(current_path).to eq(users_path)
-    expect(find('tr', text: user.email)).to have_content('true')
+    expect(page).to have_current_path(users_path)
+    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
   scenario 'rbac flag shows edit user permissions' do
@@ -87,9 +89,7 @@ feature 'admin manages users' do
     visit edit_user_path(admin.id)
 
     expect(page).to have_content('Permissions')
-    radio_labels = find_all('.usa-radio__label').map { |label|
-      label.text
-    }
+    radio_labels = find_all('.usa-radio__label').map(&:text)
     roles.each do |role|
       expect(radio_labels).to include(role)
     end
