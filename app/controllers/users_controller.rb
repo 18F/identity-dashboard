@@ -23,7 +23,8 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find_by(id: params[:id])
-    @user_team = @user && (@user.user_teams.first || build_user_team )
+    @user_team = @user && @user.user_teams.first
+    populate_role_if_missing
   end
 
   def update
@@ -43,6 +44,7 @@ class UsersController < ApplicationController
   def destroy
     user = User.find_by(id: params[:id])
     return unless user.destroy
+
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
     redirect_to users_path
   end
@@ -55,9 +57,8 @@ class UsersController < ApplicationController
     @user_params ||= params.require(:user).permit(:email, :admin, user_team: :role_name)
   end
 
-  def build_user_team
-    user_team = @user.user_teams.build
-    user_team.role = @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
-    user_team
+  def populate_role_if_missing
+    @user_team ||= @user.user_teams.build
+    @user_team.role ||= @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
   end
 end
