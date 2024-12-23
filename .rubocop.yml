@@ -5,6 +5,7 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 
 require:
+  - rubocop-capybara
   - rubocop-rails
   - rubocop-rspec
 
@@ -30,7 +31,8 @@ AllCops:
   TargetRailsVersion: 7.1
   UseCache: true
   DisabledByDefault: true
-  SuggestExtensions: false
+  SuggestExtensions: true
+  NewCops: enable
 
 Rails:
   Enabled: false
@@ -332,4 +334,8 @@ Style/RedundantRegexpCharacterClass:
   Enabled: true
 
 Style/RedundantRegexpEscape:
+  Enabled: true
+
+# https://docs.rubocop.org/rubocop-capybara/cops_capybara.html#capybaracurrentpathexpectation
+Capybara/CurrentPathExpectation:
   Enabled: true

@@ -58,7 +58,7 @@ feature 'Logo upload' do
   end
 
   context 'on update' do
-    let(:service_provider) { create(:service_provider, :with_users_team, user: user) }
+    let(:service_provider) { create(:service_provider, :with_users_team, user:) }
 
     before do
       login_as(user)
@@ -118,14 +118,14 @@ feature 'Logo upload' do
       expect(page).to have_content(I18n.t(
         'service_provider_form.errors.logo_file.has_script_tag',
         filename: 'logo_with_script.svg',
-      ))
-      
+      ) )
+
       click_on 'Update'
 
-      expect(current_path).to eq(service_provider_path(service_provider))
-      
+      expect(page).to have_current_path(service_provider_path(service_provider))
+
       sp = user.service_providers.last
-      
+
       expect(sp.logo).to eq('logo.svg')
     end
   end

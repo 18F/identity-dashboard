@@ -74,11 +74,12 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
+  gem 'rspec_junit_formatter'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
   gem 'rubocop', '~> 1.66.0', require: false
+  gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
-  gem 'rspec_junit_formatter'
 end
 
 group :test do

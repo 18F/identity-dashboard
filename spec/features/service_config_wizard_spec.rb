@@ -5,9 +5,9 @@ feature 'Service Config Wizard' do
   let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
   let(:custom_help_text) {{
-    'sign_in'=>{'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
-    'sign_up'=>{'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
-    'forgot_password'=>{'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
+    'sign_in' => {'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
+    'sign_up' => {'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
+    'forgot_password' => {'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
   }}
   let(:standard_help_text) {{
     'sign_in'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
@@ -25,9 +25,9 @@ feature 'Service Config Wizard' do
       test_name = "Test name #{rand(1..1000)}"
       issuer_name = "test:config:#{rand(1...1000)}"
       help_text = {
-        'sign_in'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'sign_up'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'forgot_password'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'sign_in' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
+        'sign_up' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
+        'forgot_password' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
       }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
@@ -39,7 +39,7 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
-        click_on 'Back'
+      click_on 'Back'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
@@ -90,32 +90,32 @@ feature 'Service Config Wizard' do
         # # TODO: add data, skipped for now
         # redirect uris
         'acs_url' => 'http://localhost/acs', # required for SAML
-        'assertion_consumer_logout_service_url'=>'',
-        'sp_initiated_login_url'=>'',
-        'block_encryption'=>'aes256-cbc',
+        'assertion_consumer_logout_service_url' => '',
+        'sp_initiated_login_url' => '',
+        'block_encryption' => 'aes256-cbc',
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
-        'push_notification_url'=>'',
-        'redirect_uris'=>[],
+        'push_notification_url' => '',
+        'redirect_uris' => [],
         # help text
-        'help_text'=>{
-          'sign_in'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+        'help_text' => {
+          'sign_in' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'sign_up'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'sign_up' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'forgot_password'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'forgot_password' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
         },
       }
@@ -138,7 +138,7 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
-      click_on 'Next' #skip auth step
+      click_on 'Next' # skip auth step
       fill_in('Issuer', with: expected_data['issuer'])
       click_on 'Next'
       attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
@@ -166,8 +166,9 @@ feature 'Service Config Wizard' do
         'failed to redirect to the service provider details page'
       expected_data.keys.each do |key|
         next if key == 'default_aal'
+
         expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
-          "#{key} expected: #{expected_data[key].to_s}\n#{key} received: #{saved_config_data[key]}"
+          "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
       end
 
       expect(saved_config_data['default_aal']).to be_nil
@@ -223,7 +224,7 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       # Skip making changes to protocol options
       click_on 'Next'
-       # Skip making changes to auth options
+      # Skip making changes to auth options
       click_on 'Next'
       issuer_field = find('#wizard_step_issuer')
       expect(issuer_field.value).to eq(existing_config.issuer)
@@ -269,10 +270,10 @@ feature 'Service Config Wizard' do
     describe 'starting at the service provider index' do
       let(:first_step) { ServiceConfigWizardController::STEPS[0] }
 
-      it 'will go to the first wizard step if nothing is saved' do
+      it 'goes to the first wizard step if nothing is saved' do
         visit service_providers_path
         click_on 'Create a new app'
-        expect(current_path).to eq(service_config_wizard_path(first_step))
+        expect(page).to have_current_path(service_config_wizard_path(first_step))
       end
 
       context 'if setup wizard was already started' do
@@ -298,7 +299,7 @@ feature 'Service Config Wizard' do
           visit service_providers_path
           click_on 'Create a new app'
           click_on 'Continue application'
-          expect(current_path).to eq(service_config_wizard_path('settings'))
+          expect(page).to have_current_path(service_config_wizard_path('settings'))
           expect(find('#wizard_step_app_name').value).to eq(new_name)
           expect(find('#wizard_step_friendly_name').value).to eq(new_friendly_name)
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
@@ -308,7 +309,7 @@ feature 'Service Config Wizard' do
           click_on 'Create a new app'
           click_on 'Start a new application'
           click_on 'Create a new application'
-          expect(current_path).to eq(service_config_wizard_path(first_step))
+          expect(page).to have_current_path(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
           expect(saved_steps).to be(0)
         end

@@ -77,13 +77,15 @@ feature 'Team pages', :js do
 
           context 'add email' do
             let(:email) { 'user@example.com' }
+
             before do
               fill_in 'Email', with: email
               click_on 'Add'
             end
 
             context 'bad email' do
-              let(:email) { 'blah '}
+              let(:email) { 'blah ' }
+
               scenario 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)
               end
@@ -148,7 +150,7 @@ feature 'Team pages', :js do
               click_on 'Add user'
 
               # Asserting this so we can rely on `new_team_user_path` for subsequent scenarios
-              expect(current_path).to eq(new_team_user_path(user_team_membership.team))
+              expect(page).to have_current_path(new_team_user_path(user_team_membership.team))
 
               expect_page_to_have_no_accessibility_violations(page)
             end
@@ -163,6 +165,7 @@ feature 'Team pages', :js do
 
             context 'with a good email' do
               let(:email) { 'user@example.com' }
+
               it 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)
               end
@@ -171,6 +174,7 @@ feature 'Team pages', :js do
                 before do
                   click_on 'Back'
                 end
+
                 it 'is accessible' do
                   expect_page_to_have_no_accessibility_violations(page)
                 end
@@ -178,7 +182,7 @@ feature 'Team pages', :js do
             end
 
             context 'with a bad email' do
-              let(:email) { 'blah '}
+              let(:email) { 'blah ' }
 
               scenario 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)
