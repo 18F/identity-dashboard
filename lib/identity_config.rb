@@ -16,7 +16,6 @@ class IdentityConfig
       config.add(:certificate_expiration_warning_period, type: :integer)
       config.add(:dashboard_api_token, type: :string)
       config.add(:event_log_filename, type: :string)
-      config.add(:help_text_options_feature_enabled, type: :boolean)
       config.add(:idp_sp_url, type: :string)
       config.add(:idp_url, type: :string)
       config.add(:mailer_domain, type: :string)
@@ -28,8 +27,11 @@ class IdentityConfig
       config.add(:saml_sp_private_key_password, type: :string)
       config.add(:secret_key_base, type: :string)
       config.add(:serve_static_files, type: :boolean)
-      config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
+
+      # Feature Flags, options expected to be higher churn than the above settings
       config.add(:access_controls_enabled, type: :boolean, allow_nil: true)
+      config.add(:help_text_options_feature_enabled, type: :boolean)
+      config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
   end

@@ -11,13 +11,15 @@ certificate_expiration_warning_period: '60'
 db_pool: '5'
 dp_reaping_frequency: '10'
 event_log_filename: 'events.log'
-help_text_options_feature_enabled: true
 newrelic_license_key: changeme
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
-service_config_wizard_enabled: true
+
+# Feature Flags, options expected to be higher churn than the above settings
 access_controls_enabled: true
+help_text_options_feature_enabled: true
+service_config_wizard_enabled: true
 
 development:
   dashboard_api_token: test_token
@@ -28,7 +30,6 @@ development:
   saml_sp_issuer: 'http://localhost:3001'
 production:
   dashboard_api_token: changeme
-  help_text_options_feature_enabled: false
   idp_sp_url: changeme
   idp_url: changeme
   mailer_domain: changeme
@@ -36,8 +37,11 @@ production:
   saml_sp_issuer: changeme
   saml_sp_private_key: changeme
   saml_sp_private_key_password: changeme
-  service_config_wizard_enabled: false
+
+  # Feature Flags, options expected to be higher churn than the above settings
   access_controls_enabled: false
+  help_text_options_feature_enabled: false
+  service_config_wizard_enabled: false
 test:
   dashboard_api_token: sekret
   idp_sp_url: 'http://idp.example.com/api/service_provider'
