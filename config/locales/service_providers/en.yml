@@ -59,7 +59,7 @@ en:
     attribute_bundle: "The default attributes that Login.gov will return to your application during authentication."
     help_text: You can specify help text in these different areas to alert users of important information for logging into your app.
     active: Setting Accessible to “No” will remove this application from the Integration environment. This configuration setting will have no effect on Production applications.
-    custom_help_text_html: "If your app requires custom help text, reach out to the <a href='https://logingov.zendesk.com'>Partner Support Help Desk</a>. Help text guidance is outlined in the <a class='usa-link' href='https://developers.login.gov/user-experience/help-text/'>User experience section</a> of the developer docs. Please review the guidance before requesting support."
+    custom_help_text_html: "If your app requires custom help text, reach out to the <a href='https://logingov.zendesk.com'>partner support help desk</a>. Help text guidance is outlined in the <a class='usa-link' href='https://developers.login.gov/user-experience/help-text/'>User experience section</a> of the developer docs. Please review the guidance before requesting support."
     help_text:
       sign_in:
         blank: Leave blank
