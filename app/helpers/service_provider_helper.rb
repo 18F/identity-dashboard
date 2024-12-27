@@ -62,16 +62,19 @@ module ServiceProviderHelper
 
   def sp_allow_prompt_login_img_alt(sp_allows_prompt_login)
     return 'prompt=login enabled' if sp_allows_prompt_login
+
     'prompt=login disabled'
   end
 
   def sp_email_nameid_format_allowed_img_alt(sp_email_nameid_format_allowed)
     return 'Email NameID format allowed' if sp_email_nameid_format_allowed
+
     'Email NameID format prohibited'
   end
 
   def sp_signed_response_message_requested_img_alt(sp_response_message_requested)
     return 'Signed response message requested' if sp_response_message_requested
+
     'Signed response message not requested'
   end
 
@@ -97,7 +100,8 @@ module ServiceProviderHelper
 
   def show_minimal_help_text_element?(service_provider)
     return false if service_provider_policy.edit_custom_help_text?
-    text_info = HelpText.lookup(service_provider: service_provider)
+
+    text_info = HelpText.lookup(service_provider:)
     text_info.blank? || text_info.presets_only?
   end
 
@@ -161,17 +165,15 @@ module ServiceProviderHelper
   def add_saml_attributes(configs_hash, sp_hash)
     saml_attrs = {
       'acs_url' => sp_hash['acs_url'],
-      # rubocop:disable Layout/LineLength
-      'assertion_consumer_logout_service_url'=> sp_hash['assertion_consumer_logout_service_url'],
+      'assertion_consumer_logout_service_url' => sp_hash['assertion_consumer_logout_service_url'],
       'sp_initiated_login_url' => sp_hash['sp_initiated_login_url'],
-      # rubocop:enable Layout/LineLength
       'block_encryption' => sp_hash['block_encryption'],
       'protocol' => 'saml',
     }
-    if(sp_hash['signed_response_message_requested'] == true)
+    if sp_hash['signed_response_message_requested'] == true
       saml_attrs['signed_response_message_requested'] = true
     end
-    if(sp_hash['email_nameid_format_allowed'] == true)
+    if sp_hash['email_nameid_format_allowed'] == true
       saml_attrs['email_nameid_format_allowed'] = true
     end
     configs_hash.merge!(saml_attrs)
@@ -179,6 +181,7 @@ module ServiceProviderHelper
 
   def add_IAL_attribute(config_hash, failure_to_proof_url, post_idv_follow_up_url)
     return config_hash if config_hash['ial'] != 2
+
     config_hash.merge(
       'failure_to_proof_url' => failure_to_proof_url,
       'post_idv_follow_up_url' => post_idv_follow_up_url,
@@ -187,13 +190,18 @@ module ServiceProviderHelper
 
   def add_oidc_attributes(config_hash)
     if config_hash['protocol'] == 'openid_connect_pkce'
-      config_hash.merge({'pkce' => true, 'protocol' => 'oidc'})
+      config_hash.merge({ 'pkce' => true, 'protocol' => 'oidc' })
     else
-      config_hash.merge({'pkce' => false, 'protocol' => 'oidc'})
+      config_hash.merge({ 'pkce' => false, 'protocol' => 'oidc' })
     end
   end
 
   def wizard_draft_exists?
     policy_scope(WizardStep).where(user: current_user).any?
+  end
+
+  def edit_button_goes_to_wizard?
+    IdentityConfig.store.service_config_wizard_enabled &&
+      IdentityConfig.store.edit_button_uses_service_config_wizard
   end
 end
