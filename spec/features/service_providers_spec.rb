@@ -679,6 +679,28 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content('All service providers')
     end
 
+    describe 'the `edit_button_uses_service_config_wizard` flag' do
+      it 'uses the 1-page form when flagged out' do
+        allow(IdentityConfig.store).to receive_messages(
+          service_config_wizard_enabled: true, edit_button_uses_service_config_wizard: false,
+        )
+        visit service_provider_path(sp)
+        click_on 'Edit'
+        expect(page).to have_current_path(edit_service_provider_path(sp))
+      end
+
+      it 'uses the wizard when flagged in' do
+        allow(IdentityConfig.store).to receive_messages(
+          service_config_wizard_enabled: true, edit_button_uses_service_config_wizard: true,
+        )
+        visit service_provider_path(sp)
+        click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path(:settings))
+        friendly_name = find_by_id('wizard_step_friendly_name').value
+        expect(friendly_name).to eq(sp.friendly_name)
+      end
+    end
+
     describe 'with a production config' do
       let(:sp) { create(:service_provider, user:, prod_config: true) }
 
