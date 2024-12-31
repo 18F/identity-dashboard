@@ -20,10 +20,6 @@ module ServiceConfigWizardHelper
     end
   end
 
-  def redirect_uris_list(wizard = @model)
-    wizard.redirect_uris || []
-  end
-
   def view_parsed_help_text
     text_params = params.has_key?(@model) ? wizard_step_params[:help_text] : nil
     @parsed_help_text ||= HelpText.lookup(

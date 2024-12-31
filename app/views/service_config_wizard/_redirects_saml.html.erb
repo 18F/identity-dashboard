@@ -65,7 +65,7 @@
     required: false,
     input_type: 'multi-text',
     db_fieldname: :redirect_uris,
-    text_list: redirect_uris_list,
+    text_list: @model.redirect_uris,
   } %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
