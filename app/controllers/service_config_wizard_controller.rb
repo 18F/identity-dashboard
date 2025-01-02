@@ -3,6 +3,7 @@ class ServiceConfigWizardController < AuthenticatedController
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
+  REDIRECTS_STEP = 'redirects'
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -56,6 +57,7 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
+    clean_redirect_uris if step == REDIRECTS_STEP
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
@@ -198,7 +200,7 @@ class ServiceConfigWizardController < AuthenticatedController
       :logo_file,
       :app_name,
       :prod_config,
-      :redirect_uris,
+      redirect_uris: [],
       attribute_bundle: [],
       help_text: {},
     ]
@@ -231,6 +233,10 @@ class ServiceConfigWizardController < AuthenticatedController
     @model.attach_logo(logo_file_param)
   end
 
+  def clean_redirect_uris
+    params[:wizard_step][:redirect_uris]&.compact_blank! || []
+  end
+
   def skippable
     step == UPLOAD_STEP
   end
@@ -256,10 +262,6 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def transform_to_service_provider_attributes(wizard_step_data)
-    if wizard_step_data.has_key?('redirect_uris')
-      wizard_step_data['redirect_uris'] = Array(wizard_step_data['redirect_uris'])
-    end
-
     # This isn't enough to transfer the file contents to the new record.
     # That transfer is done elsewhere since it is not a simple attribute.
     if wizard_step_data.has_key?('logo_name')
