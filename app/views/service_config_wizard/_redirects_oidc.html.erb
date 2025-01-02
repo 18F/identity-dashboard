@@ -12,9 +12,15 @@
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
   <% end %>
-  <%= form.input :redirect_uris,
-                 input_html: { class: 'usa-input' },
-                 label: accessible_label(form, t('simple_form.labels.service_provider.redirect_uris_oidc'), :redirect_uris),
-                 hint: t('service_provider_form.oidc_redirects_html') %>
+  <%= render partial: 'fieldset', locals: {
+    form: form,
+    fieldname: 'redirect_uris_oidc',
+    description: true,
+    html_desc: true,
+    required: false,
+    input_type: 'multi-text',
+    db_fieldname: :redirect_uris,
+    text_list: @model.redirect_uris,
+  } %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>

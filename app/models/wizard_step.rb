@@ -51,7 +51,7 @@ class WizardStep < ApplicationRecord
       block_encryption: DEFAULT_SAML_ENCRYPTION,
       failure_to_proof_url: '',
       push_notification_url: '',
-      redirect_uris: '',
+      redirect_uris: [],
       return_to_sp_url: '',
       signed_response_message_requested: true,
       sp_initiated_login_url: '',
