@@ -19,6 +19,8 @@
 
     if (file.size > (50 * 1024)) { // file.size returns bytes
       errorDiv.textContent = "ERROR: Logo must not be larger than 50kB.";
+      // reset the input to avoid sending the file to server
+      e.target.value = '';
     }
   }
 });
