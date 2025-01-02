@@ -105,6 +105,20 @@
   padding: .5rem;
 }
 
+.usa-section--dark .usa-button--inverse {
+  background-color: transparent;
+  border: 1px solid;
+}
+
+.feature-card {
+  .feature-icon, h3 {
+    display: inline-block;
+    float: left;
+    vertical-align: top;
+    padding: 0;
+  }
+}
+
 .usa-header--basic {
   @include at-media($theme-header-min-width) {
     .usa-nav__primary-item > .usa-current,
