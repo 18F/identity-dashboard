@@ -7,7 +7,7 @@
         <%= button_to t('links.sign_in'),
                       '/auth/logindotgov',
                       method: :post,
-                      class: 'usa-button display-inline-block' %>
+                      class: 'usa-button' %>
         <%= link_to t('home.dev_docs'),
                     'https://developers.login.gov',
                     class: 'usa-button usa-button--inverse' %>
@@ -17,7 +17,9 @@
   <section class="grid-container">
     <h2 class="border-bottom border-primary-light padding-bottom-2 margin-top-4">Discover the possibilities</h2>
     <ul class="usa-card-group">
-      <%= render 'components/feature_card' %>
+      <% Portal::Constants::LANDING_CARDS.each do |content| %>
+        <%= render 'components/feature_card', content: content %>
+      <% end %>
     </ul>
   </section>
   <h1 class="usa-display">

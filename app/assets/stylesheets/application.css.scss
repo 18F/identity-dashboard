@@ -105,17 +105,24 @@
   padding: .5rem;
 }
 
+.site-hero form {
+  display: inline-block;
+}
+
 .usa-section--dark .usa-button--inverse {
   background-color: transparent;
   border: 1px solid;
 }
 
-.feature-card {
-  .feature-icon, h3 {
-    display: inline-block;
-    float: left;
-    vertical-align: top;
-    padding: 0;
+.usa-card__header {
+  .usa-icon {
+    vertical-align: middle;
+    margin-right: 1em;
+    fill: $theme-color-primary;
+  }
+
+  h3 {
+    margin-block-start: 0;
   }
 }
 

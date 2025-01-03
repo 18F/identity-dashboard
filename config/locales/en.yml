@@ -61,6 +61,25 @@ en:
     deployed_by_html: Deployed %{time} ago. View %{href}.
     dev_docs: View developer guide
     partners_link: login.gov/partners
+    cards:
+      edit:
+        title: Edit existing production configuration
+        body: Modify your current production integrations with ease.
+      new:
+        title: Create a new integration configuration
+        body: Set up new integrations quickly by defining configuration details.
+      rbac:
+        title: Manage user team access
+        body: Easily access permissions for your team members.
+      saml:
+        title: Test your SAML signatures and debug them
+        body: View the integrity of your SAML signatures and debug issues in a controlled environment.
+      test:
+        title: Test integrations in the sandbox
+        body: Safely test, validate, and trouble shoot issues without impacting the production data.
+      view:
+        title: View your application integrations
+        body: Get a comprehensive overview of all your connected applications.
   links:
     aria:
       delete: Delete %{name}

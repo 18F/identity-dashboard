@@ -1,15 +1,15 @@
-<li class="usa-card feature-card">
+<li class="usa-card feature-card grid-col-4">
   <div class="usa-card__container border-0">
-    <div class="usa-card__header">
-      <div class="feature-icon">
+    <div class="usa-card__header grid-row">
+      <div class="feature-icon grid-col flex-auto">
         <svg class="usa-icon usa-icon--size-3" aria-hidden="true" focusable="false" role="img">
-          <use href="/assets/img/sprite.svg#groups"></use>
+          <use href="<%="/assets/img/sprite.svg##{content[:icon]}"%>"></use>
         </svg>
       </div>
-      <h3>Manage user team access</h3>
+      <h3 class="grid-col flex-fill"><%= t content[:title] %></h3>
     </div>
     <div class="usa-card__body">
-      <p class="usa-prose">Easily access permissions for your team members.</p>
+      <p class="usa-prose"><%= t content[:body] %></p>
     </div>
   </div>
 </li>
