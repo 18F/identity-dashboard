@@ -55,7 +55,16 @@
           </div>
           <div class="margin-top-4 js-pem-file-name"></div>
         </div>
-        <%= content_tag 'div', t('service_provider_form.certificate_example_html') %>
+        <%= content_tag 'p', t('service_provider_form.certificate_example_html'), class: 'usa-hint' %>
+        <pre tabindex="0"><code><%=
+          <<~CERT
+          -----BEGIN CERTIFICATE-----
+          MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
+          BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
+          B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
+          -----END CERTIFICATE-----
+          CERT
+        %></code></pre>
       </div>
     </fieldset>
 
