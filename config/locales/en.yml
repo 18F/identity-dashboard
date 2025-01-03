@@ -55,7 +55,9 @@ en:
   users:
     rbac_description_html: "Lorem ipsum dolor sit insert <a class='usa-link' href='#'>roles and permissions guidance link</a> somewhere in here. Pulvinar cras dui non ultricies tempus leo purus cras morbi. Nobh dictum bulputate ut null blandit feugiat eget."
   home:
-    body_intro: Use the portal to manage your Login.gov test integrations.
+    landing_title: Simple integration for a more secure login experience
+    landing_subtitle: Manage and test your integrations in the Partner Portal sandbox so that your users can log in with confidence.
+    feature_section: Discover the possibilities
     body_partners_html: Interested in Login.gov for your federal government applications?
       Visit %{href_partners}
     deployed_by_html: Deployed %{time} ago. View %{href}.
@@ -89,7 +91,7 @@ en:
     edit: Edit
     pending_changes: pending changes
     service_providers: My service providers
-    sign_in: Sign in with Login.gov
+    sign_in: Sign in with
     sign_out: Sign out
     teams: Manage user teams
     users: Manage users
