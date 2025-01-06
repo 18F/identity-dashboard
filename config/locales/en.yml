@@ -6,6 +6,24 @@ en:
         group_id: "Team"
   errors:
     not_authorized: You are not authorized to perform this action.
+  footer:
+    disclaimer_html: "An official website of the <a href='https://www.gsa.gov' class='usa-link'>General Services Administration</a>"
+    about_agency: About GSA
+    accessibility: Accessibility support
+    foia: FOIA requests
+    no_fear_act: No FEAR Act data
+    ig: Office of the Inspector General
+    performance: Performance reports
+    privacy: Privacy policy
+    status: Login.gov system status
+    usa_gov:
+      text: Looking for U.S. government information and services?
+      link: Visit USA.gov
+    labels:
+      identifier: Agency identifier
+      gsa_link_logo: GSA homepage
+      description: Agency description
+      links: Important links
   forms:
     buttons:
       cancel: Cancel

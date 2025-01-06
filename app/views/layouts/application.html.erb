@@ -126,20 +126,26 @@
       </div>
     </main>
 
-    <footer class="usa-footer usa-footer--slim" role="contentinfo">
-      <div class="grid-container usa-footer__return-to-top">
-        <a href="#">Return to top</a>
-      </div>
-      <div class="usa-footer__secondary-section">
-        <div class="grid-container">
-          <div class="usa-footer__logo grid-row grid-gap-2">
-            <div class="grid-col-auto">
-              <%= image_tag 'gsa-logo-rev.svg', alt: 'U.S. General Services Administration logo', class: 'usa-footer__logo-img', role: 'img' %>
+    <% if user_signed_in? %>
+      <footer class="usa-footer usa-footer--slim" role="contentinfo">
+        <% if user_signed_in? %>
+          <div class="grid-container usa-footer__return-to-top">
+            <a href="#">Return to top</a>
+          </div>
+        <% end %>
+        <div class="usa-footer__secondary-section">
+          <div class="grid-container">
+            <div class="usa-footer__logo grid-row grid-gap-2">
+              <div class="grid-col-auto">
+                <%= image_tag 'gsa-logo-rev.svg', alt: 'U.S. General Services Administration logo', class: 'usa-footer__logo-img', role: 'img' %>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    <% else %>
+      <%= render 'layouts/footer' %>
+    <% end %>
 
     <%= javascript_include_tag 'application.js' %>
     <%= javascript_include_tag 'main.js' %>
