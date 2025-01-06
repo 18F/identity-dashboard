@@ -610,6 +610,10 @@ GEM
     uniform_notifier (1.16.0)
     uri (0.13.1)
     useragent (0.16.10)
+    view_component (3.21.0)
+      activesupport (>= 5.2.0, < 8.1)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     virtus (2.0.0)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -717,6 +721,7 @@ DEPENDENCIES
   sinatra (~> 4.1.0)
   timecop
   uglifier
+  view_component (~> 3.21)
   web-console (>= 4.2.1)
   webmock
   websocket-driver (= 0.7.3)

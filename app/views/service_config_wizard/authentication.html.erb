@@ -3,26 +3,21 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
 
-  <%= render partial: 'fieldset', locals: {
+  <%= render(ServiceConfigWizardFieldsetComponent.new(
       form: form,
-      fieldname: 'ial',
-      description: true,
-      html_desc: true,
-      db_fieldname: :ial,
+      model_method: 'ial',
       input_type: 'radio',
       required: true,
       inputs: {
         t('service_provider_form.ial_option_1') => 1,
         t('service_provider_form.ial_option_2') => 2,
       }
-    } %>
+    )) %>
 
-  <%= render partial: 'fieldset', locals: {
+  <%= render(ServiceConfigWizardFieldsetComponent.new(
       form: form,
-      fieldname: 'default_aal',
-      description: false,
-      html_desc: false,
-      db_fieldname: :default_aal,
+      model_method: 'default_aal',
+      translation_key: "",
       input_type: 'radio',
       required: true,
       inputs: {
@@ -30,18 +25,15 @@
         t('service_provider_form.aal_option_2') => 2,
         t('service_provider_form.aal_option_3') => 3,
       }
-    } %>
+    )) %>
 
-  <%= render partial: 'fieldset', locals: {
+  <%= render(ServiceConfigWizardFieldsetComponent.new(
       form: form,
-      fieldname: 'attribute_bundle',
-      description: true,
-      html_desc: true,
-      db_fieldname: :attribute_bundle,
+      model_method: 'attribute_bundle',
       input_type: 'checkbox',
       required: false,
       inputs: ServiceProvider.possible_attributes
-    } %>
+    )) %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>
