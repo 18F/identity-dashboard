@@ -3,10 +3,11 @@
   [String] title
   [String] body
 %>
-<li class="usa-card feature-card grid-col-4">
+<%# .grid-container should also be .position-relative %>
+<li class="usa-card tablet:grid-col-4 margin-bottom-1">
   <div class="usa-card__container border-0">
     <div class="usa-card__header grid-row">
-      <div class="feature-icon grid-col flex-auto">
+      <div class="grid-col flex-auto">
         <svg class="usa-icon usa-icon--size-3" aria-hidden="true" focusable="false" role="img">
           <use href="<%= asset_path "sprite.svg##{icon}"%>"></use>
         </svg>

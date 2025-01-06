@@ -4,7 +4,7 @@
 );
 @use 'uswds-core' as *;
 
-@forward 'partner_banner';
+@forward 'home';
 @forward 'service_config_wizard';
 @forward 'step-indicator';
 
@@ -105,32 +105,6 @@
   padding: .5rem;
 }
 
-.usa-button svg {
-  vertical-align: top;
-  margin-left: 0.2em;
-}
-
-.site-hero form {
-  display: inline-block;
-}
-
-.usa-section--dark .usa-button--inverse {
-  background-color: transparent;
-  border: 1px solid;
-}
-
-.usa-card__header {
-  .usa-icon {
-    vertical-align: middle;
-    margin-right: 1em;
-    fill: $theme-color-primary;
-  }
-
-  h3 {
-    margin-block-start: 0;
-  }
-}
-
 .usa-header--basic {
   @include at-media($theme-header-min-width) {
     .usa-nav__primary-item > .usa-current,
@@ -151,8 +125,4 @@
 
 .width-quarter {
   width: 25%;
-}
-
-#main-content {
-  padding-top: 0;
 }

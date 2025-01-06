@@ -15,7 +15,7 @@
       </div>
     </div>
   </section>
-  <section class="grid-container">
+  <section class="grid-container position-relative">
     <h2 class="border-bottom border-primary-light padding-bottom-2 margin-top-4"><%= t('home.feature_section') %></h2>
     <ul class="usa-card-group">
       <% Portal::Constants::LANDING_CARDS.each do |content| %>
@@ -23,5 +23,5 @@
       <% end %>
     </ul>
   </section>
-  <%= render 'components/partner_banner' %>
+  <%= render 'components/logo_banner' %>
 <% end %>

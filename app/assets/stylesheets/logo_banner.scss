@@ -2,14 +2,14 @@
 $container-spacing: units(2);
 $container-spacing-sm: units(7);
 
-.partners-banner {
+.logo-banner {
   background-color: color('white');
   padding-bottom: ($container-spacing * 2);
   padding-left: $container-spacing-sm;
   padding-right: $container-spacing-sm;
 }
 
-.partners-banner__backdrop {
+.logo-banner__backdrop {
   display: flex;
   position: relative;
   box-sizing: content-box;
@@ -18,19 +18,16 @@ $container-spacing-sm: units(7);
   background-color: $theme-color-primary-darker;
   border-radius: 1rem;
   overflow: hidden;
-  padding: units(1) $container-spacing-sm;
+  padding: $container-spacing-sm;
 }
 
-.partners-banner__backdrop::before {
+.logo-banner__backdrop::before {
   content: '';
   @include u-pin('all');
   background-image: url(decorative-logo.png);
   background-repeat: no-repeat;
   background-position: -5.5rem 50%;
-
-  @include at-media('card') {
-    background-size: 70%;
-  }
+  opacity: 0;
 
   @include at-media('tablet') {
     background-size: 40%;
@@ -42,7 +39,7 @@ $container-spacing-sm: units(7);
   }
 }
 
-.partners-banner__content {
+.logo-banner__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -51,11 +48,11 @@ $container-spacing-sm: units(7);
   color: color('white');
 }
 
-.partners-banner__tagline {
+.logo-banner__tagline {
   margin: 0;
 }
 
-.partners-banner__link {
+.logo-banner__link {
   vertical-align: top;
   color: color('white');
 }
