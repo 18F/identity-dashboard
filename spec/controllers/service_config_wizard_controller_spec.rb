@@ -6,14 +6,14 @@ RSpec.describe ServiceConfigWizardController do
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency: agency) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
-  let(:logo_file_params) {
+  let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
       File.open(fixture_path + '/logo.svg'),
       'image/svg+xml',
       true,
       original_filename: 'alternative_filename.svg',
     )
-  }
+  end
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -28,7 +28,7 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'as an admin' do
-    let(:wizard_steps_ready_to_go) {
+    let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail,
       # so it's factory is called here with `create`.
       # 
@@ -40,7 +40,7 @@ RSpec.describe ServiceConfigWizardController do
         build(:service_provider, :ready_to_activate, team: create(:team)),
         admin,
       )
-    }
+    end
 
     before do
       sign_in admin
@@ -384,13 +384,13 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'as a non-admin user' do
-    let(:wizard_steps_ready_to_go) {
+    let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
       WizardStep.steps_from_service_provider(
         build(:service_provider, :ready_to_activate, team: create(:team)),
         user,
       )
-    }
+    end
 
     before do
       sign_in user

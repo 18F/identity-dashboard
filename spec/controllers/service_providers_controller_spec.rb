@@ -10,14 +10,14 @@ describe ServiceProvidersController do
   end
   let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
-  let(:logo_file_params) {
+  let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
       File.open(fixture_path + '/logo.svg'),
       'image/svg+xml',
       true,
       original_filename: 'alternative_filename.svg',
     )
-  }
+  end
 
   describe '#create' do
     before do
@@ -281,12 +281,14 @@ describe ServiceProvidersController do
     end
 
     context 'when uploading a logo' do
-      let(:sp_logo_params) {{
-        issuer: sp.issuer,
-        help_text: init_help_params,
-        logo_file: logo_file_params,
-        approved: true,
-      }}
+      let(:sp_logo_params) do 
+        {
+          issuer: sp.issuer,
+          help_text: init_help_params,
+          logo_file: logo_file_params,
+          approved: true,
+        }
+      end
       it 'caches the logo filename on the sp' do
         put :update, params: {
           id: sp.id,
