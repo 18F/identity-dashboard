@@ -11,7 +11,7 @@ describe Users::OmniauthController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123',
+          'id_token' => 'abc123',
         },
       }
     end
@@ -22,7 +22,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists and is on a team or allowed to create teams' do
       it 'signs the user in' do
-        user=create(:team_member, email: email)
+        user = create(:team_member, email: email)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
@@ -84,7 +84,7 @@ describe Users::OmniauthController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123',
+          'id_token' => 'abc123',
         },
       }
     end

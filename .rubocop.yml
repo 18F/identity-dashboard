@@ -364,3 +364,6 @@ Layout/BlockEndNewline:
 
 Layout/MultilineBlockLayout:
   Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true

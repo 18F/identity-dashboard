@@ -6,16 +6,31 @@ feature 'Service Config Wizard' do
   let(:admin) { create(:user, admin: true, group_id: team.id) }
   let(:custom_help_text) do 
     {
-      'sign_in'=>{'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
-      'sign_up'=>{'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
-      'forgot_password'=>{'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
+      'sign_in' => {
+        'en' => 'Do sign in',
+        'es' => 'Do sign in',
+        'fr' => 'Do sign in',
+        'zh' => 'Do sign in',
+      },
+      'sign_up' => {'en' => 'Join Us','es' => 'Join Us','fr' => 'Join Us','zh' => 'Join Us'},
+      'forgot_password' => {
+        'en' => 'Get help',
+        'es' => 'Get help',
+        'fr' => 'Get help', 
+        'zh' => 'Get help',
+      },
     }
   end
   let(:standard_help_text) do 
     {
-      'sign_in'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
-      'sign_up'=>{'en'=>'first_time','es'=>'first_time','fr'=>'first_time','zh'=>'first_time'},
-      'forgot_password'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
+      'sign_in' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
+      'sign_up' => {
+        'en' => 'first_time',
+        'es' => 'first_time',
+        'fr' => 'first_time',
+        'zh' => 'first_time',
+      },
+      'forgot_password' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
     }
   end
 
@@ -29,9 +44,9 @@ feature 'Service Config Wizard' do
       test_name = "Test name #{rand(1..1000)}"
       issuer_name = "test:config:#{rand(1...1000)}"
       help_text = {
-        'sign_in'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'sign_up'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'forgot_password'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'sign_in' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
+        'sign_up' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
+        'forgot_password' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
       }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
@@ -94,32 +109,32 @@ feature 'Service Config Wizard' do
         # # TODO: add data, skipped for now
         # redirect uris
         'acs_url' => 'http://localhost/acs', # required for SAML
-        'assertion_consumer_logout_service_url'=>'',
-        'sp_initiated_login_url'=>'',
-        'block_encryption'=>'aes256-cbc',
+        'assertion_consumer_logout_service_url' => '',
+        'sp_initiated_login_url' => '',
+        'block_encryption' => 'aes256-cbc',
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
-        'push_notification_url'=>'',
-        'redirect_uris'=>[],
+        'push_notification_url' => '',
+        'redirect_uris' => [],
         # help text
-        'help_text'=>{
-          'sign_in'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+        'help_text' => {
+          'sign_in' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'sign_up'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'sign_up' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'forgot_password'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'forgot_password' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
         },
       }

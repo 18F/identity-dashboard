@@ -442,9 +442,9 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {
             id: 'help_text',
             wizard_step: { help_text:{
-              'sign_in'=>{'en'=>'blank'},
-              'sign_up'=>{'en'=>'blank'},
-              'forgot_password'=>{'en'=>'blank'},
+              'sign_in' => {'en' => 'blank'},
+              'sign_up' => {'en' => 'blank'},
+              'forgot_password' => {'en' => 'blank'},
             }},
           }
           error_messages = assigns['model'].errors.messages.merge(
@@ -465,7 +465,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: { id: 'help_text', wizard_step: { help_text: {
             'sign_in' => { 'en' => non_blank_sign_in_preset },
             'sign_up' => { 'en' => non_blank_sign_up_preset },
-            'forgot_password'=> { 'en' => non_blank_forgot_password_preset},
+            'forgot_password' => { 'en' => non_blank_forgot_password_preset},
           }}}
         end.to(change {ServiceProvider.count}.by(1))
         actual_help_text = ServiceProvider.last.help_text
