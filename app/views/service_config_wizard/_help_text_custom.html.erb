@@ -1,9 +1,17 @@
 <div class="wizard-main">
-  <div class="usa-alert usa-alert--info">
-    <div class="usa-alert__body">
-      <p class="usa-alert__text"><%= t('notices.service_provider_help_text_html') %></p>
+  <% if policy(draft_service_provider).edit_custom_help_text? %>
+    <div class="usa-alert usa-alert--info">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text"><%= t('notices.service_provider_help_text_html') %></p>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <div class="usa-alert usa-alert--warning">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text"><%= t('notices.service_provider_help_text_no_permisison_html') %></p>
+      </div>
+    </div>
+  <% end %>
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
       <% HelpText::CONTEXTS.each do |context| %>

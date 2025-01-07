@@ -4,7 +4,7 @@ feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
-  let(:custom_help_text) do 
+  let(:custom_help_text) do
     {
       'sign_in' => {
         'en' => 'Do sign in',
@@ -16,12 +16,12 @@ feature 'Service Config Wizard' do
       'forgot_password' => {
         'en' => 'Get help',
         'es' => 'Get help',
-        'fr' => 'Get help', 
+        'fr' => 'Get help',
         'zh' => 'Get help',
       },
     }
   end
-  let(:standard_help_text) do 
+  let(:standard_help_text) do
     {
       'sign_in' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
       'sign_up' => {
@@ -438,11 +438,28 @@ feature 'Service Config Wizard' do
     end
 
     it 'shows OIDC help text' do
-      pending
       visit service_config_wizard_path('authentication')
       first_para = find_all('p[class="usa-hint"]').first
       expect(first_para.text).to eq(
         'See "Type of Service Level" in the OpenID Connect Authorization section.',
+      )
+    end
+  end
+
+  context 'when selecting SAML' do
+    before do
+      IdentityConfig.store[:service_config_wizard_enabled] = true
+      login_as([admin, user].sample)
+      visit service_config_wizard_path('protocol')
+      choose 'SAML'
+      click_on 'Next'
+    end
+
+    it 'shows SAML help text' do
+      visit service_config_wizard_path('authentication')
+      first_para = find_all('p[class="usa-hint"]').first
+      expect(first_para.text).to eq(
+        'See "Type of Service Level" in the SAML Authentication section of the developer docs.',
       )
     end
   end

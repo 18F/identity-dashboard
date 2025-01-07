@@ -5,7 +5,7 @@
     </legend>
   <% end %>
   <div class="usa-label__group">
-    <label class="<%= "usa-label #{input_type} #{required_class}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{fieldname.gsub('.','_')}" %>>
+    <label class="<%= "usa-label #{input_type} #{required_class}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{param_name}" %>>
       <%= t("simple_form.labels.service_provider.#{label_translation_key}") %>
       <% if required %>
         <%= t('simple_form.required.html') %>
@@ -34,7 +34,6 @@
         inputs: inputs,
       } %>
     <% elsif input_type == 'multi-text' %>
-      <% text_list.push '' if text_list.empty? %>
       <% text_list.each do |value| %>
         <%= render partial: 'components/multiple_text', locals: {
           form: form,

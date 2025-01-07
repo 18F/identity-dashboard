@@ -24,4 +24,3 @@ class BrowserCache
     @cache.clear
   end
 end
-

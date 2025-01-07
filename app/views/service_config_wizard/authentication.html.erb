@@ -3,21 +3,22 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
 
-  <%= render(ServiceConfigWizardFieldsetComponent.new(
-      form: form,
-      model_method: 'ial',
+  <%= render(WizardFieldsetComponent.new(
+      form:,
+      param_name: 'ial',
       input_type: 'radio',
       required: true,
+      description_key: show_oidc_options? ? 'ial_oidc_html' : 'ial_saml_html',
       inputs: {
         t('service_provider_form.ial_option_1') => 1,
         t('service_provider_form.ial_option_2') => 2,
       }
     )) %>
 
-  <%= render(ServiceConfigWizardFieldsetComponent.new(
-      form: form,
-      model_method: 'default_aal',
-      translation_key: "",
+  <%= render(WizardFieldsetComponent.new(
+      form:,
+      param_name: 'default_aal',
+      description_key: show_oidc_options? ? 'aal_oidc_html' : 'aal_saml_html',
       input_type: 'radio',
       required: true,
       inputs: {
@@ -27,10 +28,11 @@
       }
     )) %>
 
-  <%= render(ServiceConfigWizardFieldsetComponent.new(
+  <%= render(WizardFieldsetComponent.new(
       form: form,
-      model_method: 'attribute_bundle',
+      param_name: 'attribute_bundle',
       input_type: 'checkbox',
+      description_key: show_oidc_options? ? 'attribute_bundle_html' : 'attribute_bundle_saml_html',
       required: false,
       inputs: ServiceProvider.possible_attributes
     )) %>
