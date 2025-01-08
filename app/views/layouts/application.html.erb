@@ -104,7 +104,7 @@
 
 
 
-    <main class="usa-layout-docs usa-section" id="main-content">
+    <main class="usa-layout-docs usa-section <%= 'padding-top-0' unless user_signed_in? %>" id="main-content">
       <div class="usa-layout-docs-main_content">
         <% @active_banners.each do |banner| %>
           <div class="usa-alert usa-alert--info margin-bottom-105">

@@ -8,20 +8,20 @@
           <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
         </a>
       </div>
-
-      <button class="usa-menu-btn">Menu</button>
+      <% if user_signed_in? %>
+        <button class="usa-menu-btn">Menu</button>
+      <% end %>
     </div>
 
-
-    <nav aria-label="Primary navigation" class="usa-nav">
-      <div class="usa-nav__inner">
-        <button class="usa-nav__close">
-          <svg role="img" class="usa-icon usa-icon--size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-            <use xlink:href="<%= asset_path 'sprite.svg#close' %>"></use>
-          </svg>
-        </button>
-        <ul class="usa-nav__primary usa-accordion">
-          <% if user_signed_in? %>
+    <% if user_signed_in? %>
+      <nav aria-label="Primary navigation" class="usa-nav">
+        <div class="usa-nav__inner">
+          <button class="usa-nav__close">
+            <svg role="img" class="usa-icon usa-icon--size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+              <use xlink:href="<%= asset_path 'sprite.svg#close' %>"></use>
+            </svg>
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
             <li class="usa-nav__primary-item">
               <%= navigation_link_to 'Apps', service_providers_path %>
             </li>
@@ -85,9 +85,9 @@
                 <span><%= t('links.sign_out') %></span>
               </a>
             </li>
-          <% end %>
-        </ul>
-      </div>
-    </nav>
+          </ul>
+        </div>
+      </nav>
+    <% end %>
   </div>
 </div>
