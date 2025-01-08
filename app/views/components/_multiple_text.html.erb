@@ -10,3 +10,8 @@
                    class: 'usa-input',
                    multiple: 'multiple',
                    aria: { labelledby: fieldname.gsub('.','_') }%>
+<% @model.errors.each do |error| %>
+  <% if Regexp.new("#{db_fieldname.to_s.gsub('_',' ')}.+#{value} is",'i') =~ error.full_message %>
+    <p class="usa-error-message"><%= error.full_message %></p>
+  <% end %>
+<% end %>
