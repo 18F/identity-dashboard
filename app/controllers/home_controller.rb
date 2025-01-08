@@ -1,3 +1,5 @@
+require 'portal/constants'
+
 class HomeController < ApplicationController
   def index
     render :index and return unless user_signed_in?

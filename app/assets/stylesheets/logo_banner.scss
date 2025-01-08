@@ -1,0 +1,59 @@
+@use 'uswds-core' as *;
+$container-spacing: units(2);
+$container-spacing-sm: units(7);
+
+.logo-banner {
+  background-color: color('white');
+  padding-bottom: ($container-spacing * 2);
+  padding-left: $container-spacing-sm;
+  padding-right: $container-spacing-sm;
+}
+
+.logo-banner__backdrop {
+  display: flex;
+  position: relative;
+  box-sizing: content-box;
+  text-align: center;
+  margin: 0 auto;
+  background-color: $theme-color-primary-darker;
+  border-radius: 1rem;
+  overflow: hidden;
+  padding: $container-spacing-sm;
+}
+
+.logo-banner__backdrop::before {
+  content: '';
+  @include u-pin('all');
+  background-image: url(decorative-logo.png);
+  background-repeat: no-repeat;
+  background-position: -5.5rem 50%;
+  opacity: 0;
+
+  @include at-media('tablet') {
+    background-size: 40%;
+    opacity: 0.9;
+  }
+
+  @include at-media('desktop') {
+    background-size: 30%;
+  }
+}
+
+.logo-banner__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+  color: color('white');
+}
+
+.logo-banner__tagline {
+  margin: 0;
+}
+
+.logo-banner__link {
+  vertical-align: top;
+  color: color('white');
+}
+

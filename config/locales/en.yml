@@ -6,6 +6,24 @@ en:
         group_id: "Team"
   errors:
     not_authorized: You are not authorized to perform this action.
+  footer:
+    disclaimer_html: "An official website of the <a href='https://www.gsa.gov' class='usa-link'>General Services Administration</a>"
+    about_agency: About GSA
+    accessibility: Accessibility support
+    foia: FOIA requests
+    no_fear_act: No FEAR Act data
+    ig: Office of the Inspector General
+    performance: Performance reports
+    privacy: Privacy policy
+    status: Login.gov system status
+    usa_gov:
+      text: Looking for U.S. government information and services?
+      link: Visit USA.gov
+    labels:
+      identifier: Agency identifier
+      gsa_link_logo: GSA homepage
+      description: Agency description
+      links: Important links
   forms:
     buttons:
       cancel: Cancel
@@ -55,13 +73,33 @@ en:
   users:
     rbac_description_html: "Lorem ipsum dolor sit insert <a class='usa-link' href='#'>roles and permissions guidance link</a> somewhere in here. Pulvinar cras dui non ultricies tempus leo purus cras morbi. Nobh dictum bulputate ut null blandit feugiat eget."
   home:
-    body_dev_docs_html: Visit our %{href_dev_docs} to learn more.
-    body_intro: Use the portal to manage your Login.gov test integrations.
+    landing_title: Simple integration for a more secure login experience
+    landing_subtitle: Manage and test your integrations in the Partner Portal sandbox so that your users can log in with confidence.
+    feature_section: Discover the possibilities
     body_partners_html: Interested in Login.gov for your federal government applications?
       Visit %{href_partners}
     deployed_by_html: Deployed %{time} ago. View %{href}.
-    dev_docs_link: developer documentation
+    dev_docs: View developer guide
     partners_link: login.gov/partners
+    cards:
+      edit:
+        title: Edit existing production configuration
+        body: Modify your current production integrations with ease.
+      new:
+        title: Create a new integration configuration
+        body: Set up new integrations quickly by defining configuration details.
+      rbac:
+        title: Manage user team access
+        body: Easily access permissions for your team members.
+      saml:
+        title: Test your SAML signatures and debug them
+        body: View the integrity of your SAML signatures and debug issues in a controlled environment.
+      test:
+        title: Test integrations in the sandbox
+        body: Safely test, validate, and trouble shoot issues without impacting the production data.
+      view:
+        title: View your application integrations
+        body: Get a comprehensive overview of all your connected applications.
   links:
     aria:
       delete: Delete %{name}
@@ -71,7 +109,7 @@ en:
     edit: Edit
     pending_changes: pending changes
     service_providers: My service providers
-    sign_in: Sign in
+    sign_in: Sign in with
     sign_out: Sign out
     teams: Manage user teams
     users: Manage users
