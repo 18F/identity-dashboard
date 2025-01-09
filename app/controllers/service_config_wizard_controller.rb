@@ -50,6 +50,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def update
     return destroy if can_cancel?
+
     if step == UPLOAD_STEP
       attach_cert
       remove_certificates
@@ -61,6 +62,7 @@ class ServiceConfigWizardController < AuthenticatedController
     end
     if is_valid? && @model.save
       return save_to_service_provider if step == wizard_steps.last
+
       skip_step
     else
       flash[:error] = 'Please check the error(s) in the form below and re-submit.'
@@ -157,6 +159,7 @@ class ServiceConfigWizardController < AuthenticatedController
   def get_model_for_step
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
+
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 

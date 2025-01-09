@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
 
   def set_requested_url
     return if session[:requested_url]
+
     session[:requested_url] = request.original_url
   end
 

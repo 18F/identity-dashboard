@@ -67,8 +67,8 @@ describe User do
       team = create(:team)
       user.teams = [team]
       user.save
-      user_sp = create(:service_provider, user: user)
-      team_sp = create(:service_provider, team: team)
+      user_sp = create(:service_provider, user:)
+      team_sp = create(:service_provider, team:)
       create(:service_provider)
       sorted_sps = [user_sp, team_sp].sort_by { |x| x.friendly_name.downcase }
       expect(user.scoped_service_providers).to eq(sorted_sps)
@@ -116,7 +116,7 @@ describe User do
       user.email = email
       user.save
       expect(user).to be_valid
-      user_with_same_email = User.new(email: email)
+      user_with_same_email = User.new(email:)
       user_with_same_email.save
       expect(user_with_same_email).not_to be_valid
       user.destroy

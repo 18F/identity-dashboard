@@ -3,7 +3,7 @@ class UserSession
 
   def initialize(info)
     @email = info['email']
-    @user = User.find_by(email: email) || unregistered_government_user
+    @user = User.find_by(email:) || unregistered_government_user
     @user&.update!(uuid: info['uuid'])
   end
 
@@ -20,6 +20,6 @@ class UserSession
       /(#{Regexp.escape(tld)})\Z/.match?(email)
     end.empty?
 
-    @user = User.create(email: email)
+    @user = User.create(email:)
   end
 end

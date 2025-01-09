@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UserSession do
   describe '#call' do
     let(:email) { 'test@test.com' }
-    let!(:user) { create(:user, email: email) }
+    let!(:user) { create(:user, email:) }
     let(:uuid) { '123-asdf-qwerty' }
 
     let(:auth_hash) do

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe WizardStepPolicy do
   let(:admin) { build(:user, admin: true)}
   let(:user) { build(:user)}
-  let(:step_for_user) { build(:wizard_step, user: user) }
+  let(:step_for_user) { build(:wizard_step, user:) }
 
   permissions :destroy? do
     context 'with the feature flag' do

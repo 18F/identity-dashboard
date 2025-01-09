@@ -238,7 +238,7 @@ feature 'Service Providers CRUD' do
       }}
       service_provider = create(:service_provider,
         :with_users_team,
-        user:,
+        user: user,
         help_text: initial_help_text,
       )
 
@@ -280,7 +280,7 @@ feature 'Service Providers CRUD' do
       }
       service_provider = create(:service_provider,
         :with_users_team,
-        user:,
+        user: user,
         help_text: initial_help_text,
       )
 
@@ -598,7 +598,7 @@ feature 'Service Providers CRUD' do
       let(:sp) do
         create(:service_provider,
                      :with_users_team,
-                     user:,
+                     user: user,
                      certs: [build_pem(serial: existing_serial)],
         )
       end
@@ -702,7 +702,7 @@ feature 'Service Providers CRUD' do
     end
 
     describe 'with a production config' do
-      let(:sp) { create(:service_provider, user:, prod_config: true) }
+      let(:sp) { create(:service_provider, user: user, prod_config: true) }
 
       it 'displays the production call to action links' do
         prod_url = 'https://developers.login.gov/production'
