@@ -19,7 +19,7 @@ FactoryBot.define do
       ial = [1, 2].sample
       send("with_ial_#{ial}")
       with_ial_2_bundle if ial == 2
-      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      send %i[saml with_oidc_jwt with_oidc_pkce].sample
       default_aal { [1, 2, 3].sample }
       active { false }
     end
@@ -28,7 +28,7 @@ FactoryBot.define do
       sequence(:app_name) { |n| "App Name #{n}" }
       with_team
       with_ial_1
-      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      send %i[saml with_oidc_jwt with_oidc_pkce].sample
       default_aal { [1, 2, 3].sample }
       active { false }
     end
@@ -38,7 +38,7 @@ FactoryBot.define do
       with_team
       with_ial_2
       with_ial_2_bundle
-      send [:saml, :with_oidc_jwt, :with_oidc_pkce].sample
+      send %i[saml with_oidc_jwt with_oidc_pkce].sample
       default_aal { [1, 2, 3].sample }
       active { false }
     end

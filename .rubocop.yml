@@ -368,6 +368,28 @@ Layout/MultilineBlockLayout:
 Layout/SpaceAroundOperators:
   Enabled: true
 
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/FirstArgumentIndentation:
+  Enabled: false
+
+Style/WordArray:
+  MinSize: 3
+
+Style/SymbolArray:
+  MinSize: 3
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Layout/DotPosition:
+  EnforcedStyle: leading
+  Enabled: false
+
 Style/GuardClause:
   Enabled: true
 

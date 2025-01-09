@@ -499,11 +499,11 @@ RSpec.describe ServiceConfigWizardController do
         put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text}}
         new_service_provider = ServiceProvider.last
         put :create, params: { service_provider: new_service_provider}
-        context_to_be_blank = ['sign_in', 'sign_up', 'forgot_password'].sample
+        context_to_be_blank = %w[sign_in sign_up forgot_password].sample
         updated_help_text = initial_help_text.merge(context_to_be_blank => {'en' => 'blank'})
         put :update, params: { id: 'help_text', wizard_step: { help_text: updated_help_text }}
         new_service_provider.reload
-        ['sign_in', 'sign_up', 'forgot_password'].each do |context|
+        %w[sign_in sign_up forgot_password].each do |context|
           saved_help_text_for_context = new_service_provider.help_text[context]['en']
           if context == context_to_be_blank
             expect(saved_help_text_for_context).to eq('')

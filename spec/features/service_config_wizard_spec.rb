@@ -414,8 +414,7 @@ feature 'Service Config Wizard' do
       existing_config = create(:service_provider,
             :ready_to_activate,
             help_text: custom_help_text,
-            user: user,
-      )
+            user: user)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')

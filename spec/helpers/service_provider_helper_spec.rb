@@ -241,16 +241,16 @@ describe ServiceProviderHelper do
     context 'sp_response_message_requested is true' do
       it 'returns a string saying signed response is requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          true),
-        ).to eq 'Signed response message requested'
+          true,
+        )).to eq 'Signed response message requested'
       end
     end
 
     context 'sp_response_message_requested is false' do
       it 'returns a string saying signed response is not requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          false),
-        ).to eq 'Signed response message not requested'
+          false,
+        )).to eq 'Signed response message not requested'
       end
     end
   end
@@ -298,7 +298,8 @@ describe ServiceProviderHelper do
           it 'returns false' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be false
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be false
           end
         end
 
@@ -314,7 +315,8 @@ describe ServiceProviderHelper do
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
 
@@ -331,7 +333,8 @@ describe ServiceProviderHelper do
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
 
@@ -347,7 +350,8 @@ describe ServiceProviderHelper do
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
       end

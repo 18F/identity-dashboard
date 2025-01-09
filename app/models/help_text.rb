@@ -3,8 +3,8 @@
 # This current iteration is an attempt to add some functionality without a the sizable refactor
 # required to create that new model
 class HelpText
-  CONTEXTS = ['sign_in', 'sign_up', 'forgot_password'].freeze
-  LOCALES = ['en', 'es', 'fr', 'zh'].freeze
+  CONTEXTS = %w[sign_in sign_up forgot_password].freeze
+  LOCALES = %w[en es fr zh].freeze
   # If a preset is set for one locale, it should be the same for all of them.
   # On the off chance that something is unexpected in the database, pick one to be authoritative
   LOCALE_FOR_PRESETS = 'en'.freeze
@@ -12,8 +12,8 @@ class HelpText
   # Hash<String,Array<String>> PRESETS A collection of valid preset help texts
   # Hash keys are valid CONTEXTS values. Arrays are a list of keys in the locale YAML files
   PRESETS = {
-    'sign_in' => ['blank', 'first_time', 'agency_email', 'piv_cac'],
-    'sign_up' => ['blank', 'first_time', 'agency_email', 'same_email'],
+    'sign_in' => %w[blank first_time agency_email piv_cac],
+    'sign_up' => %w[blank first_time agency_email same_email],
     'forgot_password' => ['blank', 'troubleshoot_html'],
   }.freeze
 

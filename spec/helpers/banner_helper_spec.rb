@@ -6,75 +6,63 @@ RSpec.describe BannerHelper do
     let(:banner_no_dates) do 
       build(:banner,
       start_date: nil,
-      end_date: nil,
-    )
+      end_date: nil)
 end
     let(:banner_no_end) do 
       build(:banner,
       start_date: Date.today - 1.day,
-      end_date: nil,
-    )
+      end_date: nil)
 end
     let(:banner_today) do 
       build(:banner,
       start_date: Date.today,
-      end_date: Date.today,
-    )
+      end_date: Date.today)
 end
     let(:banner_recent) do 
       build(:banner,
       start_date: Date.today - 7.day,
-      end_date: Date.today + 7.days,
-    )
+      end_date: Date.today + 7.days)
 end
     let(:banner_recent_short) do 
       build(:banner,
       start_date: Date.today - 1.day,
-      end_date: Date.today + 6.days,
-    )
+      end_date: Date.today + 6.days)
 end
     let(:banner_recent_long) do 
       build(:banner,
       start_date: Date.today - 1.day,
-      end_date: Date.today + 1.month,
-    )
+      end_date: Date.today + 1.month)
 end
     let(:banner_old) do 
       build(:banner,
       start_date: Date.today - 1.month,
-      end_date: Date.today + 1.day ,
-    )
+      end_date: Date.today + 1.day )
 end
     # Past messages
     let(:banner_past) do 
       build(:banner,
       start_date: Date.today - 1.month,
-      end_date: Date.today - 1.day,
-    )
+      end_date: Date.today - 1.day)
 end
     let(:banner_past_short_mid) do 
       build(:banner,
       start_date: Date.today - 12.days,
-      end_date: Date.today - 1.day,
-    )
+      end_date: Date.today - 1.day)
 end
     let(:banner_past_short) do 
       build(:banner,
       start_date: Date.today - 7.days,
-      end_date: Date.today - 1.day,
-    )
+      end_date: Date.today - 1.day)
 end
     let(:banner_past_mid) do 
       build(:banner,
       start_date: Date.today - 6.months,
-      end_date: Date.today - 7.months,
-      )
+      end_date: Date.today - 7.months)
 end
     let(:banner_past_far) do 
       build(:banner,
       start_date: Date.today - 1.year,
-      end_date: Date.today - 11.months,
-    )
+      end_date: Date.today - 11.months)
 end
 
     it 'sorts messages by upcoming/current or past' do
@@ -179,8 +167,7 @@ end
     let(:banner_no_end) do 
       build(:banner,
       start_date: Date.today - 1.day,
-      end_date: nil,
-    )
+      end_date: nil)
 end
     let(:ended_banner) do
       build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days, 
