@@ -18,7 +18,7 @@ describe Users::SessionsController do
           'uuid' => uuid,
         },
         'credentials' => {
-          'id_token'=> 'abc123',
+          'id_token' => 'abc123',
         },
       }
     end

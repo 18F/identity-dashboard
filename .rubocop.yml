@@ -349,3 +349,21 @@ RSpec/NotToNot:
 #     - when
 #     - with
 #     - without
+
+Style/BlockDelimiters:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Layout/BlockEndNewline:
+  Enabled: true
+
+Layout/MultilineBlockLayout:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true

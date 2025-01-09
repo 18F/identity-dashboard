@@ -4,7 +4,8 @@ describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, admin: true) }
-  let(:help_text) do {
+  let(:help_text) do 
+    {
       sign_in: { en: '' },
       sign_up: { en: '' },
       forgot_password: { en: '' },
