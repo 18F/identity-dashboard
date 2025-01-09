@@ -4,9 +4,13 @@ RSpec.describe BannerPolicy, type: :policy do
   let(:user) { User.new }
   let(:admin) { User.new(admin: true )}
   let(:banner) { build(:banner)}
-  let(:ended_banner) {
- build(:banner, start_date: Time.zone.now.beginning_of_day - 2.days, 
-end_date: Time.zone.now.beginning_of_day - 1.day)}
+  let(:ended_banner) do
+    build(
+      :banner,
+      start_date: Time.zone.now.beginning_of_day - 2.days,
+      end_date: Time.zone.now.beginning_of_day - 1.day,
+    )
+  end
 
   subject { described_class }
 

@@ -57,10 +57,12 @@ RSpec.describe Banner, type: :model do
 
   describe '#active?' do
     let(:future_banner) { build(:banner, start_date: Time.zone.now + 2.days) }
-    let(:past_banner) { build(:banner, 
-      start_date: Time.zone.now - 7.days, 
-      end_date: Time.zone.now - 2.days,
-    )}
+    let(:past_banner) do 
+      build(:banner, 
+        start_date: Time.zone.now - 7.days, 
+        end_date: Time.zone.now - 2.days,
+      )
+    end
 
     it 'is true for blank dates' do
       expect(new_banner.active?).to be(true)

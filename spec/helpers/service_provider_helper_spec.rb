@@ -76,9 +76,9 @@ describe ServiceProviderHelper do
     let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
     let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
     let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
-    let(:saml_without_requested_response) {
+    let(:saml_without_requested_response) do
       create(:service_provider, :saml, :without_signed_response_message_requested)
-    }
+    end
     let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
     let(:sp_config_saml_attributes) do
       %w[
@@ -289,9 +289,9 @@ describe ServiceProviderHelper do
         describe 'and is not blank' do
           let(:help_text) do
             {
-              'sign_in'=> {'en'=>'<b>Some sign-in help text</b>'},
-              'sign_up'=> {'en'=>'<b>Some sign-up help text</b>'},
-              'forgot_password'=> {'en'=>'<b>Some forgot password help text</b>'},
+              'sign_in' => {'en' => '<b>Some sign-in help text</b>'},
+              'sign_up' => {'en' => '<b>Some sign-up help text</b>'},
+              'forgot_password' => {'en' => '<b>Some forgot password help text</b>'},
             }
           end
 
@@ -305,9 +305,9 @@ describe ServiceProviderHelper do
         describe 'it is just empty strings' do
           let(:help_text) do
             {
-              'sign_in'=> {'en'=>''},
-              'sign_up'=> {'en'=>''},
-              'forgot_password'=> {'en'=>''},
+              'sign_in' => {'en' => ''},
+              'sign_up' => {'en' => ''},
+              'forgot_password' => {'en' => ''},
             }
           end
 
@@ -322,9 +322,9 @@ describe ServiceProviderHelper do
         describe 'it is just empty strings with whitespace' do
           let(:help_text) do
             {
-              'sign_in'=> {'en'=>' '},
-              'sign_up'=> {'en'=>' '},
-              'forgot_password'=> {'en'=>'  '},
+              'sign_in' => {'en' => ' '},
+              'sign_up' => {'en' => ' '},
+              'forgot_password' => {'en' => '  '},
             }
           end
 
@@ -338,9 +338,9 @@ describe ServiceProviderHelper do
         describe 'it is just some empty hashes' do
           let(:help_text) do
             {
-              'sign_in'=> {},
-              'sign_up'=> {},
-              'forgot_password'=> {},
+              'sign_in' => {},
+              'sign_up' => {},
+              'forgot_password' => {},
             }
           end
 
