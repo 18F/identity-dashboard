@@ -40,11 +40,11 @@ describe User do
     it 'returns formated record from user_deletion_history' do
       user.save
       history_record = {
-        'id'=>1,
-        'user_id'=>2,
-        'group_id'=>3,
-        'removed_at'=>'2021-06-08T17:34:06Z',
-        'whodunnit_id'=>'1',
+        'id' => 1,
+        'user_id' => 2,
+        'group_id' => 3,
+        'removed_at' => '2021-06-08T17:34:06Z',
+        'whodunnit_id' => '1',
       }
       report_item = user.user_deletion_report_item(history_record)
       expect(report_item[:user_id]).to eq(2)

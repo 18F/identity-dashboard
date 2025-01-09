@@ -4,16 +4,35 @@ feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
-  let(:custom_help_text) {{
-    'sign_in'=>{'en'=>'Do sign in','es'=>'Do sign in','fr'=>'Do sign in','zh'=>'Do sign in'},
-    'sign_up'=>{'en'=>'Join Us','es'=>'Join Us','fr'=>'Join Us','zh'=>'Join Us'},
-    'forgot_password'=>{'en'=>'Get help','es'=>'Get help','fr'=>'Get help','zh'=>'Get help'},
-  }}
-  let(:standard_help_text) {{
-    'sign_in'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
-    'sign_up'=>{'en'=>'first_time','es'=>'first_time','fr'=>'first_time','zh'=>'first_time'},
-    'forgot_password'=>{'en'=>'blank','es'=>'blank','fr'=>'blank','zh'=>'blank'},
-  }}
+  let(:custom_help_text) do 
+    {
+      'sign_in' => {
+        'en' => 'Do sign in',
+        'es' => 'Do sign in',
+        'fr' => 'Do sign in',
+        'zh' => 'Do sign in',
+      },
+      'sign_up' => {'en' => 'Join Us','es' => 'Join Us','fr' => 'Join Us','zh' => 'Join Us'},
+      'forgot_password' => {
+        'en' => 'Get help',
+        'es' => 'Get help',
+        'fr' => 'Get help', 
+        'zh' => 'Get help',
+      },
+    }
+  end
+  let(:standard_help_text) do 
+    {
+      'sign_in' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
+      'sign_up' => {
+        'en' => 'first_time',
+        'es' => 'first_time',
+        'fr' => 'first_time',
+        'zh' => 'first_time',
+      },
+      'forgot_password' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
+    }
+  end
 
   context 'as admin' do
     before do
@@ -25,9 +44,9 @@ feature 'Service Config Wizard' do
       test_name = "Test name #{rand(1..1000)}"
       issuer_name = "test:config:#{rand(1...1000)}"
       help_text = {
-        'sign_in'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'sign_up'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
-        'forgot_password'=>{'en'=>'hello','es'=>'hola','fr'=>'bonjour','zh'=>'你好'},
+        'sign_in' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
+        'sign_up' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
+        'forgot_password' => {'en' => 'hello','es' => 'hola','fr' => 'bonjour','zh' => '你好'},
       }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
@@ -50,23 +69,23 @@ feature 'Service Config Wizard' do
       click_on 'Next' # /logo_and_cert
       click_on 'Next' # /redirects
       click_on 'Next' # /help_text
-      HelpText::CONTEXTS.each { |context|
-        HelpText::LOCALES.each { |locale|
+      HelpText::CONTEXTS.each do |context|
+        HelpText::LOCALES.each do |locale|
           fill_in(
             "wizard_step_help_text_#{context}_#{locale}",
             with: help_text[context][locale])
-        }
-      }
+        end
+      end
       click_on 'Create app' # details page
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
-      HelpText::CONTEXTS.each { |context|
-        HelpText::LOCALES.each { |locale|
+      HelpText::CONTEXTS.each do |context|
+        HelpText::LOCALES.each do |locale|
           expect(find(
             "#wizard_step_help_text_#{context}_#{locale}",
           ).value).to eq(help_text[context][locale])
-        }
-      }
+        end
+      end
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
@@ -90,32 +109,32 @@ feature 'Service Config Wizard' do
         # # TODO: add data, skipped for now
         # redirect uris
         'acs_url' => 'http://localhost/acs', # required for SAML
-        'assertion_consumer_logout_service_url'=>'',
-        'sp_initiated_login_url'=>'',
-        'block_encryption'=>'aes256-cbc',
+        'assertion_consumer_logout_service_url' => '',
+        'sp_initiated_login_url' => '',
+        'block_encryption' => 'aes256-cbc',
         'signed_response_message_requested' => 'true',
         'return_to_sp_url' => 'http://localhost/sp_return', # required for SAML
-        'push_notification_url'=>'',
-        'redirect_uris'=>[],
+        'push_notification_url' => '',
+        'redirect_uris' => [],
         # help text
-        'help_text'=>{
-          'sign_in'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+        'help_text' => {
+          'sign_in' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'sign_up'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'sign_up' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
-          'forgot_password'=>{
-            'en'=>'hello',
-            'es'=>'hola',
-            'fr'=>'bonjour',
-            'zh'=>'你好',
+          'forgot_password' => {
+            'en' => 'hello',
+            'es' => 'hola',
+            'fr' => 'bonjour',
+            'zh' => '你好',
           },
         },
       }
@@ -138,7 +157,7 @@ feature 'Service Config Wizard' do
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
-      click_on 'Next' #skip auth step
+      click_on 'Next' # skip auth step
       fill_in('Issuer', with: expected_data['issuer'])
       click_on 'Next'
       attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
@@ -152,13 +171,13 @@ feature 'Service Config Wizard' do
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
       # Help text
-      HelpText::CONTEXTS.each { |context|
-        HelpText::LOCALES.each { |locale|
+      HelpText::CONTEXTS.each do |context|
+        HelpText::LOCALES.each do |locale|
           fill_in(
             "wizard_step_help_text_#{context}_#{locale}",
             with: expected_data['help_text'][context][locale])
-        }
-      }
+        end
+      end
       click_on 'Create app'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
@@ -386,9 +405,9 @@ feature 'Service Config Wizard' do
       IdentityConfig.store[:service_config_wizard_enabled] = true
       visit service_config_wizard_path('help_text')
 
-      find_all('.usa-radio__input[checked]').each { |input|
+      find_all('.usa-radio__input[checked]').each do |input|
         expect(input.value).to eq('blank')
-      }
+      end
       # rubocop:disable Layout/LineLength
       choose 'Sign in to Login.gov with your {Agency} email.'
       choose 'Create a Login.gov account using the same email provided on your application.'
@@ -408,11 +427,11 @@ feature 'Service Config Wizard' do
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
 
-      HelpText::CONTEXTS.each { |context|
-        HelpText::LOCALES.each { |locale|
+      HelpText::CONTEXTS.each do |context|
+        HelpText::LOCALES.each do |locale|
           expect(page).to have_content(custom_help_text[context][locale])
-        }
-      }
+        end
+      end
     end
   end
 end
