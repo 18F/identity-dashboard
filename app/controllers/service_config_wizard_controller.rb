@@ -22,6 +22,7 @@ class ServiceConfigWizardController < AuthenticatedController
   ]
 
   def new
+    destroy
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
   end
 
@@ -32,22 +33,19 @@ class ServiceConfigWizardController < AuthenticatedController
   # Initializes data for the wizard.
   # Tries to find a ServiceProvider as the template for the data.
   # Will overwrite existing steps if a ServiceProvider is found.
-  # Will delete any existing steps if a ServiceProvider is not found.
   def create
     service_provider_id = params[:service_provider]
 
-    if service_provider_id.present?
-      service_provider = policy_scope(ServiceProvider).find(service_provider_id)
-      steps = WizardStep.steps_from_service_provider(service_provider, current_user)
-      # TODO: what if the service provider is somehow invalid?
-      steps.each(&:save)
+    # No existing config specified, so fall back on default behavior
+    return new unless service_provider_id
 
-      # Skip the intro when editing an existing config
-      redirect_to service_config_wizard_path(STEPS[1])
-    else
-      destroy
-      new
-    end
+    service_provider = policy_scope(ServiceProvider).find(service_provider_id)
+    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
+    # TODO: what if the service provider is somehow invalid?
+    steps.each(&:save)
+
+    # Skip the intro when editing an existing config
+    redirect_to service_config_wizard_path(STEPS[1])
   end
 
   def update

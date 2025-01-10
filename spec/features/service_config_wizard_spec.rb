@@ -288,7 +288,7 @@ feature 'Service Config Wizard' do
     describe 'starting at the service provider index' do
       let(:first_step) { ServiceConfigWizardController::STEPS[0] }
 
-      it 'will go to the first wizard step if nothing is saved' do
+      it 'will go to the first wizard step' do
         visit service_providers_path
         click_on 'Create a new app'
         expect(current_path).to eq(service_config_wizard_path(first_step))
@@ -310,23 +310,12 @@ feature 'Service Config Wizard' do
           click_on 'Next'
         end
 
-        it 'offers a choice to wipe existing steps' do
+        it 'wipes existing steps and starts fresh' do
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
           expect(saved_steps).to be(1)
 
           visit service_providers_path
           click_on 'Create a new app'
-          click_on 'Continue application'
-          expect(current_path).to eq(service_config_wizard_path('settings'))
-          expect(find('#wizard_step_app_name').value).to eq(new_name)
-          expect(find('#wizard_step_friendly_name').value).to eq(new_friendly_name)
-          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
-          expect(saved_steps).to be(1)
-
-          visit service_providers_path
-          click_on 'Create a new app'
-          click_on 'Start a new application'
-          click_on 'Create a new application'
           expect(current_path).to eq(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
           expect(saved_steps).to be(0)
