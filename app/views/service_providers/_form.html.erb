@@ -26,7 +26,7 @@
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: t('service_provider_form.friendly_name_html') %>
+                 hint: t('service_provider_form.friendly_name') %>
 
 
   <%= form.input :description,
@@ -338,7 +338,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <p class="usa-label">Help text</p>
     <% if help_text_options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
-     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section
+     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">partner support help desk</a>. Help text guidance is outlined in the User experience section
       of the developer documentation. You should understand the guidance when you request support.</p>
       <%= render 'form_default_help_text', form: form, service_provider: @service_provider %>
     <% else %>
