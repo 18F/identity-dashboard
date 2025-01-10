@@ -1,5 +1,5 @@
 <% unless flash.empty? %>
-  <div class="margin-bottom-2">
+  <div class="margin-bottom-2 grid-container">
     <% flash.each do |name, msg| %>
       <% if msg.is_a?(String) %>
         <% alert_name = name == 'notice' ? 'info' : name %>
