@@ -170,12 +170,14 @@
 <p class="text-italic"><%= I18n.t('service_provider_form.failure_to_proof_url') %></p>
 <hr>
 
-<h2 class="margin-bottom-0">
-  <label for="post_idv_follow_up_url">Post IdV Follow-up URL: </label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.post_idv_follow_up_url %></span>
-</h2>
-<p class="text-italic"><%= I18n.t('service_provider_form.post_idv_follow_up_url') %></p>
-<hr>
+<% if current_user.admin? %>
+  <h2 class="margin-bottom-0">
+    <label for="post_idv_follow_up_url">Post IdV Follow-up URL: </label>
+    <span class="font-mono-xs margin-left-5"><%= service_provider.post_idv_follow_up_url %></span>
+  </h2>
+  <p class="text-italic"><%= I18n.t('service_provider_form.post_idv_follow_up_url') %></p>
+  <hr>
+<% end %>
 
 <h2 class="margin-bottom-0">
   <label for="push_notification_url">Push Notification URL: </label>
