@@ -5,7 +5,7 @@
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.logo_file') %></legend>
       <div class="usa-label__group">
         <p class="usa-label"><%= t('simple_form.labels.service_provider.logo_file') %></p>
-        <%= form.hint t('service_provider_form.logo_html') %>
+        <%= form.hint t('service_provider_form.logo') %>
       </div>
       <div class="usa-input__container">
         <% if form.object.logo_file.attached? && form.object.logo_file.persisted? %>
@@ -39,31 +39,8 @@
       <div class="usa-label__group">
         <p class="usa-label"><%= t('simple_form.labels.service_provider.upload_certificate') %></p>
         <%= form.hint t('service_provider_form.certificate_html') %>
-        <pre tabindex="0"><code>-----BEGIN CERTIFICATE-----
-MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
-BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
-B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
------END CERTIFICATE-----</code></pre>
       </div>
       <div class="usa-input__container">
-        <% form.object.certificates.each do |certificate| %>
-          <%= render 'service_providers/certificate', certificate: certificate do %>
-            <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-              <div class="usa-alert__text">
-                <%= check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
-                                  certificate.serial,
-                                  false,
-                                  name: "wizard_step[remove_certificates][]",
-                                  class: 'usa-checkbox__input' %>
-                <%= content_tag :label,
-                                for: "wizard_step_remove_certificates_#{certificate.serial}",
-                                class: 'usa-checkbox__label' do %>
-                  <%= t('simple_form.labels.service_provider.remove_cert') %>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        <% end %>
         <div class="lg-card margin-top-2">
           <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.cert_input') %></label>
 
@@ -78,8 +55,48 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
           </div>
           <div class="margin-top-4 js-pem-file-name"></div>
         </div>
+        <%= content_tag 'p', t('service_provider_form.certificate_example_html'), class: 'usa-hint' %>
+        <pre tabindex="0"><code><%=
+          <<~CERT
+          -----BEGIN CERTIFICATE-----
+          MIIDXTCCAkWgAwIBAgIJAJC1HiIAZAiIMA0GCSqGSIb3Df
+          BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVx
+          B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
+          -----END CERTIFICATE-----
+          CERT
+        %></code></pre>
       </div>
     </fieldset>
+
+    <% if form.object.certificates.any? %>
+      <fieldset class="wizard-field file service_provider_logo_file" id="certificate-container">
+        <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.public_certificate') %></legend>
+        <div class="usa-label__group">
+          <p class="usa-label"><%= t('simple_form.labels.service_provider.public_certificate') %></p>
+          <%= form.hint t('service_provider_form.public_certificate') %>
+        </div>
+        <div class="usa-input__container">
+          <% form.object.certificates.each do |certificate| %>
+            <%= render 'service_providers/certificate', certificate: certificate do %>
+              <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
+                <div class="usa-alert__text">
+                  <%= check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
+                                    certificate.serial,
+                                    false,
+                                    name: "wizard_step[remove_certificates][]",
+                                    class: 'usa-checkbox__input' %>
+                  <%= content_tag :label,
+                                  for: "wizard_step_remove_certificates_#{certificate.serial}",
+                                  class: 'usa-checkbox__label' do %>
+                    <%= t('simple_form.labels.service_provider.remove_cert') %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </fieldset>
+    <% end %>
     <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>

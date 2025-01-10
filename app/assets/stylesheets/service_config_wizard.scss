@@ -8,8 +8,11 @@
 
   pre,
   dl {
-    overflow: scroll;
+    overflow: auto;
     max-width: 100%;
+    > code {
+      font-size: 0.92rem;
+    }
   }
 
   .usa-intro {
