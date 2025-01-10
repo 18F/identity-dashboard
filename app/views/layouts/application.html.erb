@@ -106,7 +106,7 @@
 
     <main class="usa-layout-docs usa-section <%= 'padding-top-0' unless user_signed_in? %>" id="main-content">
       <div class="usa-layout-docs-main_content">
-        <% if @active_banners.present? %>
+        <% if @active_banners.present? && user_signed_in? %>
           <div class="grid-container">
           <% @active_banners.each do |banner| %>
             <div class="usa-alert usa-alert--info margin-bottom-105">
@@ -119,12 +119,13 @@
           <% end %>
           </div>
         <% end %>
-        <%= render 'layouts/messages' %>
         <% if user_signed_in? %>
+          <%= render 'layouts/messages' %>
           <div class="grid-container">
             <%= content_for?(:content) ? yield(:content) : yield %>
           </div>
         <% else %>
+          <%= render 'layouts/messages' %>
           <%= yield %>
         <% end %>
       </div>
