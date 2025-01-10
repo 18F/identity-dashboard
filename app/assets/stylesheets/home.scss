@@ -12,9 +12,22 @@
   margin-bottom: units(2);
 }
 
-.usa-section--dark .usa-button--inverse {
-  background-color: transparent;
-  border: 1px solid;
+.usa-alert__text a {
+  @include u-text('primary');
+
+  &:hover {
+    @include u-text('primary-dark');
+  }
+}
+.usa-section--dark {
+  .usa-alert__text {
+    @include u-text('ink');
+  }
+
+  .usa-button--inverse {
+    background-color: transparent;
+    border: 1px solid;
+  }
 }
 
 .usa-card-group {
