@@ -18,6 +18,9 @@
   &:hover {
     @include u-text('primary-dark');
   }
+  &:visited {
+    color: revert;
+  }
 }
 .usa-section--dark {
   .usa-alert__text {
