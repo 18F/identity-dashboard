@@ -13,13 +13,17 @@
 }
 
 .usa-alert__text a {
-  @include u-text('primary');
+  // This comes from the USWDS @mixin typeset-link (.usa-link)
+  color: color($theme-link-color);
 
-  &:hover {
-    @include u-text('primary-dark');
-  }
   &:visited {
-    color: revert;
+    color: color($theme-link-visited-color);
+  }
+  &:hover {
+    color: color($theme-link-hover-color);
+  }
+  &:active {
+    color: color($theme-link-active-color);
   }
 }
 .usa-section--dark {
