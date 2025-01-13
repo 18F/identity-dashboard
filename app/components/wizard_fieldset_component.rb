@@ -50,4 +50,8 @@ class WizardFieldsetComponent < ViewComponent::Base
   def description?
     @description_key.present?
   end
+
+  def html_key
+    @html_key ||= label_translation_key.parameterize
+  end
 end

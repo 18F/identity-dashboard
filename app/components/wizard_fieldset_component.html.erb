@@ -1,11 +1,11 @@
-<fieldset class="<%= "wizard-field #{input_type} wizard_step_#{model_method.to_s.gsub('.','_')}" %>" >
+<fieldset class="<%= "wizard-field #{input_type} wizard_step_#{html_key}" %>" >
   <% if input_type != 'multi-text' %>
-    <legend class="usa-sr-only" id="<%= param_name.gsub('.','_') %>">
+    <legend class="usa-sr-only" id="<%= html_key %>">
       <%= accessible_label(form, t("simple_form.labels.service_provider.#{label_translation_key}"), model_method) %>
     </legend>
   <% end %>
   <div class="usa-label__group">
-    <label class="<%= "usa-label #{input_type} #{required_class}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{param_name}" %>>
+    <label class="<%= "usa-label #{input_type} #{required_class}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{html_key}" %>>
       <%= t("simple_form.labels.service_provider.#{label_translation_key}") %>
       <% if required %>
         <%= t('simple_form.required.html') %>
@@ -20,7 +20,7 @@
     <% if input_type == 'radio' %>
       <%= render partial: 'components/radio_collection', locals: {
         form: form,
-        fieldname: param_name,
+        describedby: html_key,
         db_fieldname: model_method,
         inputs: inputs,
         # specified, saved, or first listed option
@@ -29,7 +29,7 @@
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
-        fieldname: param_name,
+        describedby: html_key,
         db_fieldname: model_method,
         inputs: inputs,
       } %>
