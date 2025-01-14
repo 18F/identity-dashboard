@@ -15,27 +15,24 @@
   <%= form.input :sp_initiated_login_url,
                  input_html: { class: 'usa-input' },
                  label: accessible_label(form, t('simple_form.labels.service_provider.sp_initiated_login_url'), :sp_initiated_login_url),
-                 hint: t('service_provider_form.sp_initiated_login_url_html') %>
+                 hint: t('service_provider_form.sp_initiated_login_url') %>
   <%= form.input :block_encryption,
                  collection: ServiceProvider.block_encryptions.keys,
                  input_html: { class: 'usa-select' },
                  label: accessible_label(form, t('simple_form.labels.service_provider.block_encryption'), :block_encryption),
                  include_blank: false,
-                 hint: t('service_provider_form.saml_assertion_encryption') %>
+                 hint: t('service_provider_form.saml_assertion_encryption_html') %>
 
-  <%= render partial: 'fieldset', locals: {
-      form: form,
-      fieldname: 'signed_response_message_requested',
-      description: false,
-      html_desc: false,
+  <%= render(WizardFieldsetComponent.new(
+      form:,
+      param_name: 'signed_response_message_requested',
+      description_key: 'signed_response_requested',
       input_type: 'radio',
-      required: false,
-      db_fieldname: :signed_response_message_requested,
       inputs: {
         "Yes" => true,
         "No" => false,
-      },
-    } %>
+      }
+    )) %>
 
 
   <%= form.input :return_to_sp_url,
@@ -48,7 +45,7 @@
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: accessible_label(form, t('simple_form.labels.service_provider.push_notification_url'), :push_notification_url),
-                 hint: t('service_provider_form.push_notification_url') %>
+                 hint: t('service_provider_form.push_notification_url_html') %>
   <% if show_idv_redirect_urls? %>
     <%= form.input :failure_to_proof_url,
                    input_html: { class: 'usa-input', aria: { invalid: false } },
@@ -57,15 +54,11 @@
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
   <% end %>
-  <%= render partial: 'fieldset', locals: {
-    form: form,
-    fieldname: 'redirect_uris_saml',
-    description: true,
-    html_desc: true,
-    required: false,
+  <%= render(WizardFieldsetComponent.new(
+    form:,
+    param_name: 'redirect_uris',
     input_type: 'multi-text',
-    db_fieldname: :redirect_uris,
-    text_list: @model.redirect_uris,
-  } %>
+    inputs: @model.redirect_uris,
+  )) %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>

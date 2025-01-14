@@ -10,7 +10,7 @@
                          prompt: t('simple_form.labels.select'),
                          disabled: !can_edit_teams?(current_user),
                          required: true,
-                         hint: I18n.t('service_provider_form.team') %>
+                         hint: I18n.t('service_provider_form.team_guided') %>
 
     <%= render partial: 'fieldset', locals: {
         form: form,
@@ -46,7 +46,7 @@
                     as: :usa_textarea,
                     label_html: { class: 'usa-input-optional' },
                     label: accessible_label(form, t('simple_form.labels.service_provider.description'), :description),
-                    hint: I18n.t('service_provider_form.description') %>
+                    hint: I18n.t('service_provider_form.description_guided') %>
     <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>
