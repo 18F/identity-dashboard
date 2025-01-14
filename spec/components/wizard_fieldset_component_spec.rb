@@ -17,7 +17,13 @@ RSpec.describe WizardFieldsetComponent, type: :component do
     ))
     expect(render.text).to include('OpenID Connect JWT')
     expect(render.text).to include('SAML')
-    expect(render.to_s).to include(t('service_provider_form.identity_protocol_html'))
+
+    # Need to compare like with like or otherwise this test may fail for unimportant reasons
+    expected_html = '<p tabindex="0" class="usa-hint">' + \
+                    t('service_provider_form.identity_protocol_html') + \
+                    '</p>'
+    expected_html = Nokogiri.parse(expected_html).children
+    expect(render.to_s).to include(expected_html.to_s)
   end
 
   it 'can use an arbitrary description' do
@@ -27,7 +33,17 @@ RSpec.describe WizardFieldsetComponent, type: :component do
     ))
     expect(render.text).to include('OpenID Connect JWT')
     expect(render.text).to include('SAML')
-    expect(render.to_s).to_not include(t('service_provider_form.identity_protocol_html'))
-    expect(render.to_s).to include(t('service_provider_form.certificate'))
+
+    # Need to compare like with like or otherwise this test may fail for unimportant reasons
+    default_html = '<p tabindex="0" class="usa-hint">' + \
+                   t('service_provider_form.identity_protocol_html') + \
+                   '</p>'
+    default_html = Nokogiri.parse(default_html).children
+    override_html = '<p tabindex="0" class="usa-hint">' + \
+                    t('service_provider_form.certificate') + \
+                    '</p>'
+    override_html = Nokogiri.parse(override_html).children
+    expect(render.to_s).to_not include(default_html.to_s)
+    expect(render.to_s).to include(override_html.to_s)
   end
 end
