@@ -285,7 +285,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
-    flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+    flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 290"
   end
 
   def save_service_provider(service_provider)
@@ -300,7 +300,7 @@ class ServiceConfigWizardController < AuthenticatedController
     if ServiceProviderUpdater.post_update(body_attributes) == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
-      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
+      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 305"
     end
   end
 
