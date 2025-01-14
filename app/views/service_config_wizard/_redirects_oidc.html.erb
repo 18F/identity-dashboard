@@ -3,7 +3,7 @@
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: accessible_label(form, t('simple_form.labels.service_provider.push_notification_url'), :push_notification_url),
-                 hint: t('service_provider_form.push_notification_url') %>
+                 hint: t('service_provider_form.push_notification_url_html') %>
   <% if show_idv_redirect_urls? %>
     <%= form.input :failure_to_proof_url,
                    input_html: { class: 'usa-input', aria: { invalid: false } },
@@ -12,15 +12,11 @@
                    hint: I18n.t('service_provider_form.failure_to_proof_url'),
                    required: true %>
   <% end %>
-  <%= render partial: 'fieldset', locals: {
-    form: form,
-    fieldname: 'redirect_uris_oidc',
-    description: true,
-    html_desc: true,
-    required: false,
+  <%= render(WizardFieldsetComponent.new(
+    form:,
+    param_name: 'redirect_uris',
     input_type: 'multi-text',
-    db_fieldname: :redirect_uris,
     text_list: @model.redirect_uris,
-  } %>
+  )) %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
