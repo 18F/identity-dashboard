@@ -210,7 +210,7 @@ end
 
     it 'orders the banners by start_date' do
       displayed_banners = get_active_banners
-      
+
       expect(displayed_banners.first).to eq(banner_no_dates)
       expect(displayed_banners.second).to eq(current_banner_two)
       expect(displayed_banners.third).to eq(current_banner_three)

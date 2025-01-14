@@ -1,10 +1,10 @@
 <%# expected locals:
-  [Method] form such that form is a valid instance of wizard_form
-  [String] fieldname such that simple_form and service_provider have valid translations
-  [Symbol] db_fieldname such that the database has an associated column
-  [Hash] inputs hash where key is the label and value is the input value
+  @param form [SimpleForm] such that form is a valid instance of wizard_form
+  @param describedby [String] a proper value for `aria-describedby`
+  @param db_fieldname [Symbol] such that the database has an associated column
+  @param inputs [Hash] where key is the label and value is the input value
 %>
-<div class="usa-checkbox" aria-describedby="<%= fieldname.gsub('.','_') %>">
+<div class="usa-checkbox" aria-describedby="<%= describedby %>">
   <p class="usa-error-message js-bundle-input-error-message">
     <%= form.object.errors[db_fieldname].to_sentence.presence %>
   </p>

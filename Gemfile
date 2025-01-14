@@ -8,6 +8,7 @@ gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
+gem 'autoprefixer-rails', '~> 10.1'
 gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-s3', require: false
 gem 'browser'
@@ -52,6 +53,7 @@ gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.0-18f'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
+gem 'view_component', '~> 3.21'
 gem 'wicked', '~> 2.0'
 
 group :deploy do
@@ -103,5 +105,3 @@ end
 group :production do
   gem 'rails_serve_static_assets'
 end
-
-gem 'autoprefixer-rails', '~> 10.1'

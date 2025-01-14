@@ -31,7 +31,7 @@
     <% if input_type == 'radio' %>
       <%= render partial: 'components/radio_collection', locals: {
         form: form,
-        fieldname: fieldname,
+        describedby: fieldname,
         db_fieldname: db_fieldname,
         inputs: inputs,
         # specified, saved, or first listed option
@@ -40,7 +40,7 @@
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
-        fieldname: fieldname,
+        describedby: fieldname,
         db_fieldname: db_fieldname,
         inputs: inputs,
       } %>

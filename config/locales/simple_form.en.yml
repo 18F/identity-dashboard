@@ -44,7 +44,7 @@ en:
         push_notification_url: Push notification URL
         public_certificate: Public certificate
         production: Ready for Production
-        redirect_uris_oidc: Redirect URIs
+        redirect_uris: Redirect URIs
         redirect_uris_saml: Additional Redirect URIs
         redirect_uris_oidc_label: One or more URIs that Login.gov will redirect to after authentication.
         remove_cert: Remove this certificate
