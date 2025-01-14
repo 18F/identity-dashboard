@@ -32,7 +32,7 @@
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.app_name'), :app_name),
                     placeholder: 'Ex: DHS-CSP',
-                    hint: t('service_provider_form.app_name_html') %>
+                    hint: t('service_provider_form.app_name_guided_html') %>
 
     <%= form.input :friendly_name,
                     input_html: { class: 'usa-input', aria: { invalid: false } },
@@ -40,7 +40,7 @@
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.friendly_name'), :friendly_name),
                     placeholder: 'Ex: DHS Customer Service Portal',
-                    hint: t('service_provider_form.friendly_name') %>
+                    hint: t('service_provider_form.friendly_name_guided') %>
 
     <%= form.input :description,
                     as: :usa_textarea,
