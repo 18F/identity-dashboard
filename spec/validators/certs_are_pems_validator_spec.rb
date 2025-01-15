@@ -8,7 +8,8 @@ end
 
 RSpec.describe CertsArePemsValidator, type: 'model' do
   subject { CertsTestRecord.new }
-  let(:valid_cert) { <<~CERT
+  let(:valid_cert) do 
+    <<~CERT
     -----BEGIN CERTIFICATE-----
     MIIDAjCCAeoCCQDnptBMGdfBIjANBgkqhkiG9w0BAQsFADBCMQswCQYDVQQGEwJV
     UzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHU2VhdHRsZTEMMAoGA1UE
@@ -29,7 +30,7 @@ RSpec.describe CertsArePemsValidator, type: 'model' do
     e0sZY2CS
     -----END CERTIFICATE-----
     CERT
-  }
+  end
 
   it 'accepts a blank certificate' do
     expect(subject).to allow_value(['']).for(:certs)

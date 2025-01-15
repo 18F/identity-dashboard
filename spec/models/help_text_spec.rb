@@ -3,15 +3,15 @@ require 'rails_helper'
 describe HelpText do
   let(:service_provider) { build(:service_provider) }
   let(:subject) { HelpText.lookup(service_provider: service_provider)}
-  let(:all_presets_help_text) {
+  let(:all_presets_help_text) do
     HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
       result[context] = Hash.new
       HelpText::LOCALES.each do |locale|
         result[context][locale] = HelpText::PRESETS[context].sample
       end
     end
-  }
-  let(:maybe_presets_help_text) {
+  end
+  let(:maybe_presets_help_text) do
     HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
       result[context] = Hash.new
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
@@ -28,8 +28,8 @@ describe HelpText do
         end
       end
     end
-  }
-  let(:blank_help_text) {
+  end
+  let(:blank_help_text) do
     HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
       result[context] = Hash.new
       can_be_blank = HelpText::PRESETS[context].include?('blank')
@@ -39,7 +39,7 @@ describe HelpText do
         result[context][locale] = options.sample
       end
     end
-  }
+  end
 
   RSpec::Matchers.matcher :be_a_help_text_preset_for do |context|
     match do |actual|
@@ -193,7 +193,7 @@ describe HelpText do
       end
     end
     context 'when the params are not all presets do' do
-      let(:params) {
+      let(:params) do
         params = all_presets_help_text
         # Be absolutely sure at least one param is not a preset
         params[HelpText::CONTEXTS.sample][HelpText::LOCALES.sample] = [
@@ -201,7 +201,7 @@ describe HelpText do
           'This is a test!',
         ].sample
         params
-      }
+      end
       it 'reverts to the service provider and throws away the params' do
         subject = HelpText.lookup(params: params, service_provider: service_provider)
         subject = subject.revert_unless_presets_only

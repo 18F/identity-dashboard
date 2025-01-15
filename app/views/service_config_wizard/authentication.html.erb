@@ -3,26 +3,22 @@
 <div class="wizard-main">
 <%= wizard_form do |form| %>
 
-  <%= render partial: 'fieldset', locals: {
-      form: form,
-      fieldname: 'ial',
-      description: true,
-      html_desc: true,
-      db_fieldname: :ial,
+  <%= render(WizardFieldsetComponent.new(
+      form:,
+      param_name: 'ial',
       input_type: 'radio',
       required: true,
+      description_key: show_oidc_options? ? 'ial_oidc_html' : 'ial_saml_html',
       inputs: {
         t('service_provider_form.ial_option_1') => 1,
         t('service_provider_form.ial_option_2') => 2,
       }
-    } %>
+    )) %>
 
-  <%= render partial: 'fieldset', locals: {
-      form: form,
-      fieldname: 'default_aal',
-      description: false,
-      html_desc: false,
-      db_fieldname: :default_aal,
+  <%= render(WizardFieldsetComponent.new(
+      form:,
+      param_name: 'default_aal',
+      description_key: show_oidc_options? ? 'aal_oidc_html' : 'aal_saml_html',
       input_type: 'radio',
       required: true,
       inputs: {
@@ -30,18 +26,16 @@
         t('service_provider_form.aal_option_2') => 2,
         t('service_provider_form.aal_option_3') => 3,
       }
-    } %>
+    )) %>
 
-  <%= render partial: 'fieldset', locals: {
+  <%= render(WizardFieldsetComponent.new(
       form: form,
-      fieldname: 'attribute_bundle',
-      description: true,
-      html_desc: false,
-      db_fieldname: :attribute_bundle,
+      param_name: 'attribute_bundle',
       input_type: 'checkbox',
+      description_key: show_oidc_options? ? 'attribute_bundle_html' : 'attribute_bundle_saml_html',
       required: false,
       inputs: ServiceProvider.possible_attributes
-    } %>
+    )) %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>
 </div>

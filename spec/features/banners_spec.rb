@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 feature 'Banners' do
-  let(:current_banner) {
+  let(:current_banner) do
     build(:banner, message: 'A banner, with a <a href="banner_test_link">link</a>',
                    start_date: Time.zone.now.beginning_of_day - 2.days,
                    end_date: Time.zone.now.beginning_of_day + 2.days)
-  }
-  let(:script_banner) {
+  end
+  let(:script_banner) do
     build(:banner, message: '<script>alert("alert")</script>',
                    start_date: Time.zone.now.beginning_of_day - 2.days,
                    end_date: Time.zone.now.beginning_of_day + 2.days)
-  }
+  end
 
   before do
     current_banner.save

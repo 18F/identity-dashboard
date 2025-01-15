@@ -104,11 +104,13 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "authentication"' do
-    subject { build(:wizard_step, user: first_user, step_name: 'authentication', wizard_form_data: {
-      ial: 1,
-      default_aal: 0,
-      attribute_bundle: [],
-    })}
+    subject do 
+      build(:wizard_step, user: first_user, step_name: 'authentication', wizard_form_data: {
+        ial: 1,
+        default_aal: 0,
+        attribute_bundle: [],
+      })
+    end
 
     describe '#valid?' do
       it 'validates good wizard_form_data' do
@@ -385,22 +387,26 @@ RSpec.describe WizardStep, type: :model do
   end
 
   describe '.steps_from_service_provider' do
-    let(:valid_data_to_hide) {{
-      active: true,
-      allow_prompt_login: true,
-      approved: true,
-      email_nameid_format_allowed: true,
-      metadata_url: 'https://localhost/metadata',
-    }}
+    let(:valid_data_to_hide) do
+      {
+        active: true,
+        allow_prompt_login: true,
+        approved: true,
+        email_nameid_format_allowed: true,
+        metadata_url: 'https://localhost/metadata',
+      }
+    end
 
     let(:original_user) { create(:user) }
     let(:ui_user) { create(:user) }
 
-    let(:all_attributes_service_provider) { create(
-      :service_provider,
-      **valid_data_to_hide,
-      user: original_user,
-    )}
+    let(:all_attributes_service_provider) do 
+      create(
+        :service_provider,
+        **valid_data_to_hide,
+        user: original_user,
+      )
+    end
 
     it 'puts all attributes into a step' do
       wizard_steps = WizardStep.steps_from_service_provider(

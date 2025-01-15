@@ -8,6 +8,7 @@ gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
+gem 'autoprefixer-rails', '~> 10.1'
 gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-s3', require: false
 gem 'browser'
@@ -33,16 +34,16 @@ gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_go
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~> 15.0', '>= 15.0.0'
-gem 'puma', '>= 6.4.3'
 gem 'pg'
 gem 'propshaft'
 gem 'pry-rails'
+gem 'puma', '>= 6.4.3'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
-gem 'rails', '~> 7.1.4'
+gem 'rails', '~> 7.1.5', '>= 7.1.5.1'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
@@ -52,6 +53,7 @@ gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.0-18f'
 gem 'secure_headers', '~> 3.9'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
+gem 'view_component', '~> 3.21'
 gem 'wicked', '~> 2.0'
 
 group :deploy do
@@ -74,26 +76,27 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
+  gem 'rspec_junit_formatter'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
   gem 'rubocop', '~> 1.66.0', require: false
+  gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
-  gem 'rspec_junit_formatter'
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara', '>= 3.39.1'
-  gem 'selenium-webdriver'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
   gem 'simplecov-cobertura'
-  gem 'sinatra', '>= 4.0.0'
+  gem 'sinatra', '~> 4.1.0'
   gem 'timecop'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
@@ -102,5 +105,3 @@ end
 group :production do
   gem 'rails_serve_static_assets'
 end
-
-gem 'autoprefixer-rails', '~> 10.1'

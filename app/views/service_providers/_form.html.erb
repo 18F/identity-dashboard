@@ -26,7 +26,7 @@
                  input_html: { class: 'usa-input', aria: { invalid: false } },
                  label_html: { class: 'usa-input-required'},
                  label: 'Friendly name',
-                 hint: t('service_provider_form.friendly_name_html') %>
+                 hint: t('service_provider_form.friendly_name') %>
 
 
   <%= form.input :description,
@@ -92,7 +92,7 @@
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
-    <%= form.hint t('service_provider_form.attribute_bundle') %>
+    <%= form.hint t('service_provider_form.attribute_bundle_html') %>
 
     <span class="usa-error-message js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
@@ -226,7 +226,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.input :sp_initiated_login_url,
                    input_html: { class: 'usa-input' },
                    label: 'SP Initiated Login URL',
-                   hint: t('service_provider_form.sp_initiated_login_url_html') %>
+                   hint: t('service_provider_form.sp_initiated_login_url') %>
 
     <%= form.input :block_encryption,
                    input_html: { class: 'usa-select' },
@@ -302,11 +302,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <% end %>
 
     <div class='oidc-fields'>
-      <%= t('service_provider_form.oidc_redirects_html') %>
+      <%= t('service_provider_form.redirect_uris_oidc_html') %>
     </div>
 
     <div class='saml-fields margin-0'>
-      <%= form.hint t('service_provider_form.saml_redirects_html') %>
+      <%= form.hint t('service_provider_form.redirect_uris_saml_html') %>
     </div>
 
     <%= form.button :button,
@@ -338,7 +338,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <p class="usa-label">Help text</p>
     <% if help_text_options_enabled? %>
      <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
-     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">Partner Support Help Desk</a>. Help text guidance is outlined in the User experience section
+     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com">partner support help desk</a>. Help text guidance is outlined in the User experience section
       of the developer documentation. You should understand the guidance when you request support.</p>
       <%= render 'form_default_help_text', form: form, service_provider: @service_provider %>
     <% else %>

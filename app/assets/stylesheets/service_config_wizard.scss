@@ -8,8 +8,11 @@
 
   pre,
   dl {
-    overflow: scroll;
+    overflow: auto;
     max-width: 100%;
+    > code {
+      font-size: 0.92rem;
+    }
   }
 
   .usa-intro {
@@ -38,6 +41,10 @@
       position: relative;
       width: 100%;
       max-width: calc(100vw - 2.1rem);
+    }
+
+    .usa-button--unstyled {
+      margin-top: .5rem; 
     }
 
     @include at-media('desktop') {
@@ -124,7 +131,7 @@
   }
 
   // this classname is programmatically generated
-  .service_provider_return_to_sp_url {
+  .wizard_step_return_to_sp_url {
     padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid $theme-color-primary-light;

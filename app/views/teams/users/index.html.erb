@@ -1,12 +1,16 @@
-<h1>Manage users for <%= @team.name %></h1>
+<% if policy(@current_user_team_membership).manage_team_users? %>
+  <h1>Manage users for <%= @team.name %></h1>
+<% else %>
+  <h1>Users for <%= @team.name %></h1>
+<% end %>
 
-<div>
+<% if policy(@current_user_team_membership).manage_team_users? %>
   <%= button_to "Add user",
     new_team_user_path(@team.id),
     method: :get,
     class: 'usa-button usa-button--outline'
   %>
-</div>
+<% end %>
 <table class="usa-table">
   <thead>
     <tr>
@@ -16,15 +20,17 @@
     </tr>
   </thead>
   <tbody>
-    <% @team.users.each do |user| %>
+    <% @team.user_teams.each do |membership| %>
       <tr>
-        <td><%= user.email %></td>
-        <td><%= user.last_sign_in_at || "Never" %></td>
+        <td><%= membership.user.email %></td>
+        <td><%= membership.user.last_sign_in_at || "Never" %></td>
         <td>
-          <%= link_to 'Delete', team_remove_confirm_path(@team.id,user.id),
-                      form_class: 'display-inline',
-                      method: :get,
-                      class: 'usa-button--unstyled usa-link margin-right-1' if user.id != current_user.id %>
+          <% if policy(membership).remove_confirm? %>
+            <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
+                        form_class: 'display-inline',
+                        method: :get,
+                        class: 'usa-button--unstyled usa-link margin-right-1' %>
+          <% end %>
         </td>
       </tr>
     <% end %>
