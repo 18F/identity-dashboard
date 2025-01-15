@@ -7,6 +7,7 @@
 require:
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-capybara
 
 AllCops:
   Exclude:
@@ -332,4 +333,37 @@ Style/RedundantRegexpCharacterClass:
   Enabled: true
 
 Style/RedundantRegexpEscape:
+  Enabled: true
+
+Capybara/NegationMatcher:
+  EnforcedStyle: not_to
+
+RSpec/NotToNot:
+  # Disabled for now so we can discuss when we want to enable it
+  Enabled: false
+  EnforcedStyle: to_not
+
+## This is the default setting
+# RSpec/ContextWording:
+#   Prefixes:
+#     - when
+#     - with
+#     - without
+
+Style/BlockDelimiters:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Layout/BlockEndNewline:
+  Enabled: true
+
+Layout/MultilineBlockLayout:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
   Enabled: true

@@ -14,6 +14,7 @@ require "rails/test_unit/railtie"
 require "identity/logging/railtie"
 
 require_relative '../lib/identity_config'
+require_relative '../lib/portal/constants'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.

@@ -1,0 +1,21 @@
+<%# expected locals:
+  [String] icon
+  [String] title
+  [String] body
+%>
+<%# .grid-container should also be .position-relative %>
+<li class="usa-card tablet:grid-col-4 margin-bottom-1">
+  <div class="usa-card__container border-0">
+    <div class="usa-card__header grid-row">
+      <div class="grid-col flex-auto">
+        <svg class="usa-icon usa-icon--size-3" aria-hidden="true" focusable="false" role="img">
+          <use href="<%= asset_path "sprite.svg##{icon}"%>"></use>
+        </svg>
+      </div>
+      <h3 class="grid-col flex-fill"><%= t title %></h3>
+    </div>
+    <div class="usa-card__body">
+      <p class="usa-prose"><%= t body %></p>
+    </div>
+  </div>
+</li>

@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe UserTeam, type: :model do
   describe '#user_id' do
-    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:group_id). \
-    with_message('This user is already a member of the team.') }
+    it { 
+      is_expected.to validate_uniqueness_of(:user_id).scoped_to(:group_id).
+        with_message('This user is already a member of the team.')
+    }
   end
 
   describe 'paper_trail', versioning: true do
@@ -13,7 +15,7 @@ RSpec.describe UserTeam, type: :model do
       user = create(:user)
       team = create(:team)
 
-      expect { create(:user_team, user: user, team: team) }.to \
+      expect { create(:user_team, user:, team:) }.to \
         change { PaperTrail::Version.count }.by(1)
     end
 
@@ -33,8 +35,8 @@ RSpec.describe UserTeam, type: :model do
   end
 
   describe '#valid?' do
-    it { should allow_value(nil).for(:role_name) }
-    it { should allow_value('Login.gov Admin').for(:role_name) }
-    it { should_not allow_value('Some Random Admin').for(:role_name) }
+    it { is_expected.to allow_value(nil).for(:role_name) }
+    it { is_expected.to allow_value('Login.gov Admin').for(:role_name) }
+    it { is_expected.not_to allow_value('Some Random Admin').for(:role_name) }
   end
 end

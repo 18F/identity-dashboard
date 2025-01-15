@@ -50,6 +50,24 @@ Branches should be rebased to main to keep the history on the main branch clear 
 
 Branches should be completed and sent for review via Pull Request and merged into main via squashed merge-commit to keep noise in main down.
 
+# Code Standards
+How do we conduct code review
+What are norms we want to enforce
+
+TBD
+
+# Testing Standards
+When do we use feature tests / integration / regression / unit tests
+What do we always want to test
+
+TBD
+
+# Linting / Rubocop
+When do we delete code, cleaning up old feature flags
+Linters and settings we have setup
+
+TBD
+
 
 ## License
 

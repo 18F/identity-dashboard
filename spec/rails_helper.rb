@@ -6,14 +6,16 @@ require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'pundit/rspec'
 require 'paper_trail/frameworks/rspec'
+require 'view_component/test_helpers'
 
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |file| require file }
+Rails.root.glob('spec/support/**/*.rb').each { |file| require file }
 
 RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = false
 
+  config.include ViewComponent::TestHelpers, type: :component
   config.include Warden::Test::Helpers
 
   config.before(:suite) do
@@ -24,17 +26,17 @@ RSpec.configure do |config|
     remove_uploaded_files
   end
 
-  config.before(:each) do
+  config.before do
     stub_request(:any, /idp.example.com/).to_rack(FakeSamlIdp)
   end
 
-  config.after(:each) do
+  config.after do
     Warden.test_reset!
   end
 end
 
 def remove_uploaded_files
-  FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
+  FileUtils.rm_rf(Rails.root.join('tmp/storage'))
 end
 
 ActiveRecord::Migration.maintain_test_schema!

@@ -1,0 +1,17 @@
+<%# expected locals:
+  [SimpleForm] form
+  [String] fieldname such that simple_form and service_provider have valid translations
+  [Symbol] db_fieldname such that the database has an associated column
+  [String] value to pre-select radio option
+%>
+<%= text_field_tag "wizard_step[#{db_fieldname}][]",
+                   value,
+                   id: "",
+                   class: 'usa-input',
+                   multiple: 'multiple',
+                   aria: { labelledby: fieldname.gsub('.','_') }%>
+<% @model.errors[db_fieldname].each do |error| %>
+  <% if Regexp.new("\\A#{value} ") =~ error %>
+    <p class="usa-error-message"><%= error %></p>
+  <% end %>
+<% end %>

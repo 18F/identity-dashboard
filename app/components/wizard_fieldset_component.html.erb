@@ -1,0 +1,52 @@
+<fieldset class="<%= "wizard-field #{input_type} wizard_step_#{html_key}" %>" >
+  <% if input_type != 'multi-text' %>
+    <legend class="usa-sr-only" id="<%= html_key %>">
+      <%= accessible_label(form, t("simple_form.labels.service_provider.#{label_translation_key}"), model_method) %>
+    </legend>
+  <% end %>
+  <div class="usa-label__group">
+    <label class="<%= "usa-label #{input_type} #{required_class}" %>" <%= input_type != 'multi-text' ? 'aria-hidden=true' : "id=#{html_key}" %>>
+      <%= t("simple_form.labels.service_provider.#{label_translation_key}") %>
+      <% if required %>
+        <%= t('simple_form.required.html') %>
+      <% end %>
+    </label>
+    <% if description? %>
+      <%= form.hint t("service_provider_form.#{description_key}"),
+        tabindex: 0 %>
+    <% end %>
+  </div>
+  <div class="usa-input__container">
+    <% if input_type == 'radio' %>
+      <%= render partial: 'components/radio_collection', locals: {
+        form: form,
+        describedby: html_key,
+        db_fieldname: model_method,
+        inputs: inputs,
+        # specified, saved, or first listed option
+        default: defined?(default) ? default : "#{draft_service_provider[model_method] || inputs.values[0]}",
+      } %>
+    <% elsif input_type == 'checkbox' %>
+      <%= render partial: 'checkbox_collection', locals: {
+        form: form,
+        describedby: html_key,
+        db_fieldname: model_method,
+        inputs: inputs,
+      } %>
+    <% elsif input_type == 'multi-text' %>
+      <% text_list.each do |value| %>
+        <%= render partial: 'components/multiple_text', locals: {
+          form: form,
+          fieldname: param_name,
+          db_fieldname: model_method,
+          value: value,
+        } %>
+      <% end %>
+      <button type="button"
+              id="add-redirect-uri-input"
+              class="usa-button usa-button--unstyled">
+        Add another URI
+      </button>
+    <% end %>
+  </div>
+</fieldset>

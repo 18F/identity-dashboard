@@ -41,9 +41,9 @@ class Team < ApplicationRecord
       order(created_at: :desc).
       limit(limit).
       pluck(:object, :created_at, :whodunnit).
-      select { |object, _, _|
+      select do |object, _, _|
         email.nil? || User.find_by(id: object['user_id'])&.email == email
-      }.
+      end.
       map do |deleted_record, removed_at, whodunnit_id|
         deleted_record['removed_at'] = removed_at
         deleted_record['whodunnit_id'] = whodunnit_id

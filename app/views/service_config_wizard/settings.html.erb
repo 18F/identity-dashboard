@@ -10,7 +10,7 @@
                          prompt: t('simple_form.labels.select'),
                          disabled: !can_edit_teams?(current_user),
                          required: true,
-                         hint: I18n.t('service_provider_form.team') %>
+                         hint: I18n.t('service_provider_form.team_guided') %>
 
     <%= render partial: 'fieldset', locals: {
         form: form,
@@ -32,7 +32,7 @@
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.app_name'), :app_name),
                     placeholder: 'Ex: DHS-CSP',
-                    hint: t('service_provider_form.app_name_html') %>
+                    hint: t('service_provider_form.app_name_guided_html') %>
 
     <%= form.input :friendly_name,
                     input_html: { class: 'usa-input', aria: { invalid: false } },
@@ -40,13 +40,13 @@
                     required: true,
                     label: accessible_label(form, t('simple_form.labels.service_provider.friendly_name'), :friendly_name),
                     placeholder: 'Ex: DHS Customer Service Portal',
-                    hint: t('service_provider_form.friendly_name_html') %>
+                    hint: t('service_provider_form.friendly_name_guided') %>
 
     <%= form.input :description,
                     as: :usa_textarea,
                     label_html: { class: 'usa-input-optional' },
                     label: accessible_label(form, t('simple_form.labels.service_provider.description'), :description),
-                    hint: I18n.t('service_provider_form.description') %>
+                    hint: I18n.t('service_provider_form.description_guided') %>
     <%= render partial:'footer', locals: { form: form } %>
   <% end %>
 </div>
