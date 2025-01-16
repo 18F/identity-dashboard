@@ -16,7 +16,7 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
   end
 
   subject(:render_view) do
-    render 'service_providers/certificate', certificate: certificate
+    render 'service_providers/certificate', certificate:
   end
 
   it 'renders the issuer, subject, and serial number' do
@@ -53,7 +53,7 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
   end
 
   it 'renders the contents of the block (if given) inside the card' do
-    render 'service_providers/certificate', certificate: certificate do
+    render('service_providers/certificate', certificate:) do
       <<-HTML.html_safe
         <div id="from-block">
       HTML

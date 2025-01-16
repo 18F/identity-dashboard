@@ -24,7 +24,7 @@ module BannerHelper
       b_int <=> a_int
     end
 
-    return { upcoming: upcoming, past: past }
+    { upcoming:, past: }
   end
 
   def get_active_banners

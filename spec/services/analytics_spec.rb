@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Analytics do
   let(:path) { 'fake_path' }
   let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
-  let(:current_user) { create(:user, uuid: uuid) }
+  let(:current_user) { create(:user, uuid:) }
   let(:session) { {} }
   let(:logger) { instance_double(FakeLogger) }
   let(:analytics_attributes) do

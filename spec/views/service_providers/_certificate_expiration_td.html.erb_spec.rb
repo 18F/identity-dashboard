@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
-  let(:app) { instance_double('Service_Provider', certificates: certificates) }
+  let(:app) { instance_double('Service_Provider', certificates:) }
   let(:issuer) { OpenSSL::X509::Name.new([['O', 'GSA']]) }
 
   let(:expired_certificate) do
@@ -17,7 +17,7 @@ RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
   end
 
   subject(:td_tag) do
-    render partial: 'service_providers/certificate_expiration_td', locals: { app: app }
+    render partial: 'service_providers/certificate_expiration_td', locals: { app: }
 
     Nokogiri::HTML(rendered).at_css('td')
   end

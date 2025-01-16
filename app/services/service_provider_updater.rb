@@ -15,7 +15,7 @@ class ServiceProviderUpdater
 
   class << self
     def conn
-      Faraday.new(url: idp_url, headers:)
+      Faraday.new(url: idp_url, headers: headers)
     end
 
     def idp_url

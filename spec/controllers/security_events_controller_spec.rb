@@ -8,7 +8,7 @@ RSpec.describe SecurityEventsController do
     sign_in(user)
 
     2.times do
-      create(:security_event, user: user)
+      create(:security_event, user:)
     end
     create(:security_event, user: other_user)
   end
@@ -88,12 +88,12 @@ RSpec.describe SecurityEventsController do
   end
 
   describe '#show' do
-    subject(:action) { get :show, params: { id: id } }
-    let(:security_event) { create(:security_event, user: user) }
+    subject(:action) { get :show, params: { id: } }
+    let(:security_event) { create(:security_event, user:) }
     let(:id) { security_event.id }
 
     context 'for an event belonging to the current user' do
-      let(:security_event) { create(:security_event, user: user) }
+      let(:security_event) { create(:security_event, user:) }
 
       it 'renders the event' do
         action

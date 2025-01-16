@@ -58,7 +58,7 @@ feature 'Logo upload' do
   end
 
   context 'on update' do
-    let(:service_provider) { create(:service_provider, :with_users_team, user: user) }
+    let(:service_provider) { create(:service_provider, :with_users_team, user:) }
 
     before do
       login_as(user)

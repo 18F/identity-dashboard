@@ -15,8 +15,8 @@ describe Team do
 
     it 'validates uniqueness of name' do
       name = 'good name'
-      create(:team, name: name)
-      duplicate = build(:team, name: name)
+      create(:team, name:)
+      duplicate = build(:team, name:)
 
       expect(duplicate).not_to be_valid
     end

@@ -74,6 +74,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
 
   def remote_logo_key
     return unless object.logo_file.attached?
+
     object.logo_file.key
   end
 
