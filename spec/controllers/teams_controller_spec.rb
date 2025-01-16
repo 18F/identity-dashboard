@@ -121,7 +121,7 @@ describe TeamsController do
       context 'and no fed email address' do
         before do
           user.update(email: 'user@example.com')
-          post :create, params: { team: { name:, agency_id: agency.id } }
+          post :create, params: { team: { name: name, agency_id: agency.id } }
         end
 
         it 'returns a 401' do
@@ -136,7 +136,7 @@ describe TeamsController do
 
       context 'has a government email address' do
         before do
-          post :create, params: { team: { name:, agency_id: agency.id } }
+          post :create, params: { team: { name: name, agency_id: agency.id } }
         end
 
         it 'creates the team' do

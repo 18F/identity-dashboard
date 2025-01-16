@@ -4,7 +4,7 @@ RSpec.describe ServiceConfigWizardController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
   let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
   let(:agency) { create(:agency, name: 'GSA') }
-  let(:team) { create(:team, agency: agency) }
+  let(:team) { create(:team, agency:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(

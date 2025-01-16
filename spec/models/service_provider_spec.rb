@@ -419,7 +419,7 @@ describe ServiceProvider do
   end
 
   describe '#certificates' do
-    subject(:sp) { build(:service_provider, certs: certs) }
+    subject(:sp) { build(:service_provider, certs:) }
     let(:certs) { nil }
 
     context 'with nil' do
@@ -452,7 +452,7 @@ describe ServiceProvider do
   end
 
   describe '#remove_certificate' do
-    subject(:sp) { build(:service_provider, certs: certs) }
+    subject(:sp) { build(:service_provider, certs:) }
     let(:certs) { nil }
 
     context 'when removing a serial that matches in the certs array' do

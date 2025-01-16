@@ -10,12 +10,14 @@ module UserHelper
   def sign_in_icon(user)
     return 'alerts/success.svg' if user.uuid?
     return 'alerts/warning.svg' if user.unconfirmed?
+
     'alerts/error.svg'
   end
 
   def title(user)
     return 'User has signed in' if user.uuid?
     return "Unconfirmed user (sign-in deadline: #{deadline(user)})" if user.unconfirmed?
+
     'User has not yet signed in'
   end
 

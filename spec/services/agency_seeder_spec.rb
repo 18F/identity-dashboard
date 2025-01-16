@@ -20,7 +20,7 @@ RSpec.describe AgencySeeder do
 
     context 'when trying to rename an agency to a name that already exists' do
       before do
-        agency = create(:agency, id: 1, name: 'some name')
+        create(:agency, id: 1, name: 'some name')
       end
 
       let(:agency_configs) do
@@ -60,7 +60,7 @@ RSpec.describe AgencySeeder do
 
       before do
         agency = create(:agency, id: 1, name: 'original name')
-        create(:service_provider, agency_id: agency.id, team: create(:team, agency: agency))
+        create(:service_provider, agency_id: agency.id, team: create(:team, agency:))
       end
 
       it 'does not violate the constraint by deleting' do

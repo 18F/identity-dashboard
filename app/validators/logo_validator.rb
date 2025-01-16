@@ -17,6 +17,7 @@ class LogoValidator < ActiveModel::Validator
   def validate(record)
     @record = record
     return unless record.pending_or_current_logo_data
+
     logo_is_less_than_max_size
     logo_file_mime_type
     logo_file_ext_matches_type
@@ -24,13 +25,14 @@ class LogoValidator < ActiveModel::Validator
   end
 
   def logo_is_less_than_max_size
-    if record.logo_file.blob.byte_size > MAX_LOGO_SIZE
-      record.errors.add(:logo_file, 'Logo must be less than 50kB')
-    end
+    return unless record.logo_file.blob.byte_size > MAX_LOGO_SIZE
+
+    record.errors.add(:logo_file, 'Logo must be less than 50kB')
   end
 
   def logo_file_mime_type
     return if mime_type_valid?
+
     record.errors.add(
       :logo_file,
       "The file you uploaded (#{record.logo_file.filename}) is not a PNG or SVG",

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::SecurityEventsController do
   describe '#create' do
-    subject(:action) { post :create, body: body }
+    subject(:action) { post :create, body: }
 
     let(:idp_private_key) { OpenSSL::PKey::RSA.new(2048) }
     let(:idp_public_key) { idp_private_key.public_key }

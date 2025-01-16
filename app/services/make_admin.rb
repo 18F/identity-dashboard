@@ -16,6 +16,7 @@ class MakeAdmin
   def call
     raise(USAGE_WARNING) if user_info_invalid?
     return puts("INFO: User \"#{email}\" already has admin privileges.") if admin.admin?
+
     make_admin
     puts "SUCCESS: Promoted \"#{email}\" to admin."
   end
@@ -33,7 +34,7 @@ class MakeAdmin
   def admin
     @admin ||= begin
       new_user_warning = "INFO: User \"#{email}\" not found; creating a new User."
-      schrodingers_admin = User.find_or_initialize_by(email: email)
+      schrodingers_admin = User.find_or_initialize_by(email:)
       puts new_user_warning unless schrodingers_admin.persisted?
       schrodingers_admin
     end
