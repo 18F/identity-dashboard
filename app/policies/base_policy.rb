@@ -47,7 +47,11 @@ class BasePolicy
     end
 
     def resolve
-      scope
+      scope.none
+    end
+
+    def admin?
+      user&.admin?
     end
   end
 
