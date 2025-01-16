@@ -29,6 +29,11 @@ describe HomeController do
         get :index
         expect(response.status).to eq(200)
       end
+
+      it 'sets canonical url' do
+        get :index
+        expect(@canonical_url).not_to be_empty 
+      end
     end
   end
 end
