@@ -383,8 +383,8 @@ Style/SymbolArray:
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
-# Layout/SpaceInsideHashLiteralBraces:
-#   Enabled: true
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
 
 RSpec/MultipleExpectations:
   Enabled: false

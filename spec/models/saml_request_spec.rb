@@ -31,7 +31,7 @@ describe 'SamlRequest' do
     describe 'when the request is valid' do
       it 'returns true' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be true
@@ -48,7 +48,7 @@ describe 'SamlRequest' do
       let(:validity) { false }
       it 'returns false' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be false

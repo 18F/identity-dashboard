@@ -235,7 +235,7 @@ feature 'Service Providers CRUD' do
       help_text_context = HelpText::CONTEXTS.sample
       initial_help_text = { help_text_context => {
         'en' => HelpText::PRESETS[help_text_context].sample,
-      }}
+      } }
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,

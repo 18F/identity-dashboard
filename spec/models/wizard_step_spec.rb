@@ -33,7 +33,7 @@ RSpec.describe WizardStep, type: :model do
     it 'pulls wizard_form_data back out' do
       expected_name = "Test name #{rand(1..10000)}"
       subject = WizardStep.new(step_name: 'settings')
-      subject.wizard_form_data = {friendly_name: expected_name}
+      subject.wizard_form_data = { friendly_name: expected_name }
       expect(subject.friendly_name).to eq(expected_name)
     end
   end
@@ -143,7 +143,7 @@ RSpec.describe WizardStep, type: :model do
       end
 
       it 'is valid with an issuer set' do
-        expect(subject).to allow_value({'issuer' => test_issuer }).for(:wizard_form_data)
+        expect(subject).to allow_value({ 'issuer' => test_issuer }).for(:wizard_form_data)
       end
 
       it 'is invalid if issuer already exists' do
@@ -163,10 +163,10 @@ RSpec.describe WizardStep, type: :model do
           service_provider_id: service_provider.id,
         })
         issuer_step = build(:wizard_step, step_name: 'issuer', user: hidden_step.user)
-        issuer_step.wizard_form_data = {issuer: test_issuer}
+        issuer_step.wizard_form_data = { issuer: test_issuer }
         expect(issuer_step).to be_valid
 
-        issuer_step.wizard_form_data = {issuer: in_use_issuer}
+        issuer_step.wizard_form_data = { issuer: in_use_issuer }
         expect(issuer_step).to_not be_valid
       end
     end
@@ -177,7 +177,7 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#certificates' do
       let(:certs) { nil }
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs:}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: { certs: }) }
 
       context 'with nil' do
         let(:certs) { nil }
@@ -249,7 +249,7 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#remove_certificate' do
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs:}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: { certs: }) }
       let(:certs) { nil }
 
       context 'when removing a serial that matches in the certs array' do
@@ -372,8 +372,8 @@ RSpec.describe WizardStep, type: :model do
       test_issuer = "test:issuer:#{rand(1..100)}"
       create(:wizard_step, step_name: 'issuer',
         user: subject_user,
-        wizard_form_data: {issuer: test_issuer})
-      expect(WizardStep.all_step_data_for_user(subject_user)).to eq({'issuer' => test_issuer})
+        wizard_form_data: { issuer: test_issuer })
+      expect(WizardStep.all_step_data_for_user(subject_user)).to eq({ 'issuer' => test_issuer })
       WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
       expect(WizardStep.all_step_data_for_user(subject_user).keys).
         to_not include('issuer')

@@ -19,9 +19,9 @@ RSpec.describe BannersController do
       expect(response).to be_successful
       get :index
       expect(response).to be_successful
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_successful
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_redirect
       patch :update, params: banner.attributes
       expect(response).to be_redirect
@@ -30,7 +30,7 @@ RSpec.describe BannersController do
     describe 'create' do
       it 'redirects to the banner index' do
         allow(Banner).to receive(:new).and_return(instance_double(Banner, save: true))
-        get :create, params: { banner: { message: 'test message' }}
+        get :create, params: { banner: { message: 'test message' } }
         expect(response.redirect_url).to eq(banners_url)
       end
     end
@@ -59,9 +59,9 @@ RSpec.describe BannersController do
       expect(response).to be_unauthorized
       get :index
       expect(response).to be_unauthorized
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_unauthorized
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_unauthorized
       patch :update, params: banner.attributes
       expect(response).to be_unauthorized
@@ -78,9 +78,9 @@ RSpec.describe BannersController do
       expect(response).to be_unauthorized
       get :index
       expect(response).to be_unauthorized
-      get :edit, params: {id: banner.id}
+      get :edit, params: { id: banner.id }
       expect(response).to be_unauthorized
-      put :create, params: { banner: { message: 'test message'}}
+      put :create, params: { banner: { message: 'test message' } }
       expect(response).to be_unauthorized
       patch :update, params: banner.attributes
       expect(response).to be_unauthorized

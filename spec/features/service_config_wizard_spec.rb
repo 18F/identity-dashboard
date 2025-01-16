@@ -12,7 +12,7 @@ feature 'Service Config Wizard' do
         'fr' => 'Do sign in',
         'zh' => 'Do sign in',
       },
-      'sign_up' => {'en' => 'Join Us', 'es' => 'Join Us', 'fr' => 'Join Us', 'zh' => 'Join Us'},
+      'sign_up' => { 'en' => 'Join Us', 'es' => 'Join Us', 'fr' => 'Join Us', 'zh' => 'Join Us' },
       'forgot_password' => {
         'en' => 'Get help',
         'es' => 'Get help',
@@ -23,14 +23,14 @@ feature 'Service Config Wizard' do
   end
   let(:standard_help_text) do
     {
-      'sign_in' => {'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank'},
+      'sign_in' => { 'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank' },
       'sign_up' => {
         'en' => 'first_time',
         'es' => 'first_time',
         'fr' => 'first_time',
         'zh' => 'first_time',
       },
-      'forgot_password' => {'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank'},
+      'forgot_password' => { 'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank' },
     }
   end
 

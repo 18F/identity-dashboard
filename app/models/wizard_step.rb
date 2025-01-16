@@ -57,7 +57,7 @@ class WizardStep < ApplicationRecord
       sp_initiated_login_url: '',
     }),
     help_text: WizardStep::Definition.new({
-      help_text: { sign_in: ''},
+      help_text: { sign_in: '' },
     }),
     # Unless we are editing an existing config, this extra step should not get created.
     hidden: WizardStep::Definition.new({

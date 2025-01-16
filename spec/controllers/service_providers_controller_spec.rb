@@ -6,7 +6,7 @@ describe ServiceProvidersController do
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency:) }
   let(:init_help_params) do
-    { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
+    { sign_in: { en: '' }, sign_up: { en: '' } , forgot_password: { en: '' } }
   end
   let(:sp) { create(:service_provider, :with_users_team, user:, team:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
@@ -27,9 +27,9 @@ describe ServiceProvidersController do
     context 'help_text config' do
       # group_id (team) is necessary to create a ServiceProvider.
       it('should fill selected default options: blank set') do
-        help_params_0 = { sign_in: {en: 'blank'},
-          sign_up: {en: 'blank'},
-          forgot_password: {en: 'blank'} }
+        help_params_0 = { sign_in: { en: 'blank' },
+          sign_up: { en: 'blank' },
+          forgot_password: { en: 'blank' } }
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,

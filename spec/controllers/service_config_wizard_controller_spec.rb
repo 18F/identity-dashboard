@@ -48,16 +48,16 @@ RSpec.describe ServiceConfigWizardController do
 
     it 'can get all steps' do
       ServiceConfigWizardController::STEPS.each do |wizard_step|
-        get :show, params: {id: wizard_step}
+        get :show, params: { id: wizard_step }
         expect(response).to be_ok
         expect(assigns[:model].step_name).to eq(wizard_step)
       end
     end
 
     it 'will wipe all step data if the user cancels on the last step' do
-      create(:wizard_step, user: admin, wizard_form_data: { help_text: {'sign_in' => 'blank'}})
+      create(:wizard_step, user: admin, wizard_form_data: { help_text: { 'sign_in' => 'blank' } })
       expect do
-        put :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
+        put :update, params: { id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel' }
       end.to(change { WizardStep.count }.by(-1))
       expect(response.redirect_url).to eq(service_providers_url)
     end
@@ -87,16 +87,16 @@ RSpec.describe ServiceConfigWizardController do
       initial_attributes = saml_app_config.reload.attributes
 
       put :create, params: { service_provider: saml_app_config.id }
-      put :update, params: {id: 'protocol', wizard_step: {
+      put :update, params: { id: 'protocol', wizard_step: {
         identity_protocol: 'openid_connect_pkce',
-      }}
-      put :update, params: {id: 'authentication', wizard_step: {
+      } }
+      put :update, params: { id: 'authentication', wizard_step: {
         ial: saml_app_config.ial,
         default_aal: saml_app_config.default_aal,
         attribute_bundle: saml_app_config.attribute_bundle,
-      }}
+      } }
       last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
-      put :update, params: {id: last_step.step_name, wizard_step: last_step.wizard_form_data }
+      put :update, params: { id: last_step.step_name, wizard_step: last_step.wizard_form_data }
 
       new_attributes = saml_app_config.reload.attributes
       expect(new_attributes['updated_at']).to be >= initial_attributes['updated_at']
@@ -121,11 +121,11 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "settings"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'settings', wizard_step: {
+          put :update, params: { id: 'settings', wizard_step: {
             app_name: "App name #{rand(1..1000)}",
             friendly_name: "Friendly name name #{rand(1..1000)}",
             group_id: create(:team).id,
-          }}
+          } }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -137,11 +137,11 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "authentication"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'authentication', wizard_step: {
+          put :update, params: { id: 'authentication', wizard_step: {
             ial: '1',
             # Rails forms regularly put an initial, hidden, and blank entry for various inputs
             attribute_bundle: ['', 'email'],
-          }}
+          } }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -151,13 +151,13 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'sets attribute bundle errors' do
         expect do
-          put :update, params: {id: 'protocol', wizard_step: {
+          put :update, params: { id: 'protocol', wizard_step: {
             identity_protocol: 'saml',
-          }}
-          put :update, params: {id: 'authentication', wizard_step: {
+          } }
+          put :update, params: { id: 'authentication', wizard_step: {
             ial: '2',
             attribute_bundle: [],
-          }}
+          } }
         end.to(change { WizardStep.count }.by(1))
         expect(response).to_not be_redirect
         expect(assigns[:model].errors.messages.keys).to eq([:attribute_bundle])
@@ -169,7 +169,8 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "issuer"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'issuer', wizard_step: {issuer: "test:sso:#{rand(1..1000)}"}}
+          put :update,
+params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -184,7 +185,7 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'allows blank info' do
         expect do
-          put :update, params: {id: 'logo_and_cert'}
+          put :update, params: { id: 'logo_and_cert' }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -195,10 +196,10 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'can post new wizard_form_data' do
         expect do
-          put :update, params: {id: 'logo_and_cert', wizard_step: {
+          put :update, params: { id: 'logo_and_cert', wizard_step: {
             logo_file: good_logo,
             cert: good_cert,
-          }}
+          } }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -214,19 +215,19 @@ RSpec.describe ServiceConfigWizardController do
           original_filename: 'empty.pem',
         )
         expect do
-          put :update, params: {id: 'logo_and_cert', wizard_step: {
+          put :update, params: { id: 'logo_and_cert', wizard_step: {
             cert: empty_upload,
-          }}
+          } }
         end.to(change { WizardStep.count }.by(1))
         expect(response).to be_redirect
         expect(WizardStep.last.certs).to eq([])
       end
 
       it 'can overwrite existing wizard_form_data' do
-        put :update, params: {id: 'logo_and_cert', wizard_step: {
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
           logo_file: good_logo,
           cert: good_cert,
-        }}
+        } }
         original_settings = WizardStep.last
         original_certs = original_settings.certs
         original_serial = OpenSSL::X509::Certificate.new(original_certs.first).serial
@@ -243,11 +244,11 @@ RSpec.describe ServiceConfigWizardController do
         )
         new_logo_upload = fixture_file_upload('logo.png', 'image/png')
         expect do
-          put :update, params: {id: 'logo_and_cert', wizard_step: {
+          put :update, params: { id: 'logo_and_cert', wizard_step: {
             logo_file: new_logo_upload,
             remove_certificates: [original_serial],
             cert: new_cert,
-          }}
+          } }
         end.to_not(change { WizardStep.count })
 
         expect(response).to be_redirect
@@ -268,9 +269,9 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'sets errors for bad SVGs' do
         expect do
-          put :update, params: {id: 'logo_and_cert', wizard_step: {
+          put :update, params: { id: 'logo_and_cert', wizard_step: {
             logo_file: fixture_file_upload('../logo_with_script.svg'),
-          }}
+          } }
         end.to_not(change { WizardStep.count })
         expect(response).to_not be_redirect
         actual_error = assigns[:model].errors[:logo_file].to_sentence
@@ -284,15 +285,15 @@ RSpec.describe ServiceConfigWizardController do
       it 'keeps an existing logo if a new logo is bad' do
         good_logo_checksum = OpenSSL::Digest.base64digest('MD5', good_logo.read)
         bad_logo_upload = fixture_file_upload('../logo_without_size.svg')
-        put :update, params: {id: 'logo_and_cert', wizard_step: {
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
           logo_file: good_logo,
-        }}
+        } }
         saved_step = WizardStep.last
         expect(saved_step.logo_file.blob.checksum).to eq(good_logo_checksum)
 
-        put :update, params: {id: 'logo_and_cert', wizard_step: {
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
           logo_file: bad_logo_upload,
-        }}
+        } }
         expect(response).to_not be_redirect
         actual_error = assigns[:model].errors[:logo_file].to_sentence
         expected_error = I18n.t(
@@ -309,9 +310,9 @@ RSpec.describe ServiceConfigWizardController do
         wizard_steps_ready_to_go.each(&:save!)
         logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert' }
         expect(logo_step.logo_file).to be_blank
-        put :update, params: {id: 'logo_and_cert', wizard_step: { logo_file: good_logo }}
+        put :update, params: { id: 'logo_and_cert', wizard_step: { logo_file: good_logo } }
         expect do
-          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          put :update, params: { id: 'help_text', wizard_step: { active: false } }
         end.to(change { ServiceProvider.count }.by(1))
         expect(ServiceProvider.last.logo_file.download).to eq(good_logo.read)
       end
@@ -320,7 +321,7 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "redirects"' do
       it 'can post' do
         expect do
-          put :update, params: {id: 'redirects', wizard_step: {active: false}}
+          put :update, params: { id: 'redirects', wizard_step: { active: false } }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -334,7 +335,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'can save valid service provider settings' do
         wizard_steps_ready_to_go.each(&:save!)
         expect do
-          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          put :update, params: { id: 'help_text', wizard_step: { active: false } }
           error_messages = assigns['model'].errors.messages.merge(
             assigns['service_provider'].errors.messages,
           )
@@ -348,7 +349,7 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'will stay on this step when the service provider would be invalid' do
         expect do
-          put :update, params: {id: 'help_text', wizard_step: {active: false}}
+          put :update, params: { id: 'help_text', wizard_step: { active: false } }
         end.to(change { ServiceProvider.count }.by(0))
         error_messages = assigns['model'].errors.messages.merge(
           assigns['service_provider'].errors.messages,
@@ -358,7 +359,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'returns to list of apps if nothing is saved' do
-      put :update, params: {id: 'help_text', commit: 'cancel'}
+      put :update, params: { id: 'help_text', commit: 'cancel' }
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(service_providers_url)
     end
@@ -369,13 +370,13 @@ RSpec.describe ServiceConfigWizardController do
       let(:good_upload_checksum) { OpenSSL::Digest.base64digest('MD5', good_upload.read) }
 
       scenario 'adding a logo to a config' do
-        put :create, params: {service_provider: existing_service_provider}
+        put :create, params: { service_provider: existing_service_provider }
         expect(existing_service_provider.logo_file).to_not be_attached
-        put :update, params: {id: 'logo_and_cert', wizard_step: {
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
           logo_file: good_upload,
-        }}
+        } }
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
-        put :update, params: {id: 'help_text', wizard_step: default_help_text_data}
+        put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
         existing_service_provider.reload
         expect(existing_service_provider.logo_file).to be_attached
         expect(existing_service_provider.logo_file.checksum).to eq(good_upload_checksum)
@@ -420,7 +421,7 @@ RSpec.describe ServiceConfigWizardController do
         put :update,
           params: {
             id: 'logo_and_cert',
-            wizard_step: { cert: file},
+            wizard_step: { cert: file },
           }
         logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
@@ -442,10 +443,10 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {
             id: 'help_text',
             wizard_step: { help_text:{
-              'sign_in' => {'en' => 'blank'},
-              'sign_up' => {'en' => 'blank'},
-              'forgot_password' => {'en' => 'blank'},
-            }},
+              'sign_in' => { 'en' => 'blank' },
+              'sign_up' => { 'en' => 'blank' },
+              'forgot_password' => { 'en' => 'blank' },
+            } },
           }
           error_messages = assigns['model'].errors.messages.merge(
             assigns['service_provider'].errors.messages,
@@ -465,8 +466,8 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: { id: 'help_text', wizard_step: { help_text: {
             'sign_in' => { 'en' => non_blank_sign_in_preset },
             'sign_up' => { 'en' => non_blank_sign_up_preset },
-            'forgot_password' => { 'en' => non_blank_forgot_password_preset},
-          }}}
+            'forgot_password' => { 'en' => non_blank_forgot_password_preset },
+          } } }
         end.to(change { ServiceProvider.count }.by(1))
         actual_help_text = ServiceProvider.last.help_text
         expect(actual_help_text['sign_in']['en']).to eq(I18n.t(
@@ -496,12 +497,12 @@ RSpec.describe ServiceConfigWizardController do
           'sign_up' => { 'en' => non_blank_sign_up_preset },
           'forgot_password' => { 'en' => non_blank_forgot_password_preset },
         }
-        put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text}}
+        put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text } }
         new_service_provider = ServiceProvider.last
-        put :create, params: { service_provider: new_service_provider}
+        put :create, params: { service_provider: new_service_provider }
         context_to_be_blank = %w[sign_in sign_up forgot_password].sample
-        updated_help_text = initial_help_text.merge(context_to_be_blank => {'en' => 'blank'})
-        put :update, params: { id: 'help_text', wizard_step: { help_text: updated_help_text }}
+        updated_help_text = initial_help_text.merge(context_to_be_blank => { 'en' => 'blank' })
+        put :update, params: { id: 'help_text', wizard_step: { help_text: updated_help_text } }
         new_service_provider.reload
         %w[sign_in sign_up forgot_password].each do |context|
           saved_help_text_for_context = new_service_provider.help_text[context]['en']

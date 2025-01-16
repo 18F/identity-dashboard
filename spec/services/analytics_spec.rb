@@ -47,7 +47,7 @@ RSpec.describe Analytics do
     it 'does not track nil values' do
       expect(logger).to receive(:track).with('Trackable Event', analytics_attributes)
 
-      analytics.track_event('Trackable Event', {example: nil})
+      analytics.track_event('Trackable Event', { example: nil })
     end
   end
 end

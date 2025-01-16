@@ -71,7 +71,7 @@ describe HelpText do
     it 'is true for blank text' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => blank_help_text},
+        params: { 'help_text' => blank_help_text },
       )
       expect(help_text_from_params).to be_blank
 
@@ -82,7 +82,7 @@ describe HelpText do
     it 'is true for an empty hash' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => {}},
+        params: { 'help_text' => {} },
       )
       expect(help_text_from_params).to be_blank
       service_provider.help_text = {}

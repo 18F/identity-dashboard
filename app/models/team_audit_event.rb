@@ -3,7 +3,7 @@
 # It also can decorate the team_users edits so they we can pull consistent data out
 # of both types of edits.
 class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
-  EVENT_RENAMING = {'create' => 'add', 'destroy' => 'remove'}.freeze
+  EVENT_RENAMING = { 'create' => 'add', 'destroy' => 'remove' }.freeze
 
   # TeamAuditEvent.by_team(team, scope: )
   #

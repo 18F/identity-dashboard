@@ -72,7 +72,7 @@ describe TeamsController do
 
       it 'will show audit events' do
         test_version = PaperTrail::Version.new(
-          object_changes: {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
+          object_changes: { 'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"] },
           created_at: 1.minute.ago,
           whodunnit: 'admin@login.gsa.gov',
           event: 'create',

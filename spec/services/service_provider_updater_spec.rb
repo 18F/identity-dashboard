@@ -27,7 +27,7 @@ describe ServiceProviderUpdater do
     end
 
     context 'when a body is passed in' do
-      let(:body) { {service_provider: {}} }
+      let(:body) { { service_provider: {} } }
 
       it 'returns status code 200 for success' do
         expect(ServiceProviderUpdater.post_update(body)).to eq 200
