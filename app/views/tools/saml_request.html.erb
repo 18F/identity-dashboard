@@ -1,26 +1,23 @@
 <h1>Validate SAML Authentication Request Signature</h1>
-<p class="usa-intro">Check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
+<p class="usa-intro">You can use this tool to check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
 <% if @validation_attempted %>
   <hr/>
-  
-  <% if !@request.valid %>
-    <div class="usa-alert <%= @request.valid ? "usa-alert--success" : "usa-alert--error"%>">
+
+  <% if !@request.xml_valid? %>
+    <div class="usa-alert usa-alert--error">
       <div class="usa-alert__body">
         <h2 class="usa-alert__heading">
-          Request: <%= @request.valid ? "Valid" : "Invalid" %>
+          Invalid XML
         </h2>
-        <% if !@request.valid %>
-          <p>
-            We could not decode your SAML request. Make sure it is encoded correctly, as described in
-            <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.<br />
-            Also note that all other URL parameters need to be properly URL-encoded.
-            Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
-          </p>
-        <% end %>
+        <p>
+          We could not decode your SAML request. Make sure it is encoded correctly, as described in
+          <a href="https://developers.login.gov/saml/#auth-request" target="_blank">our documentation</a>.<br />
+          Also note that all other URL parameters need to be properly URL-encoded.
+          Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
+        </p>
       </div>
     </div>
   <% elsif can_view_request_details?(@request.sp) %>
-
     <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
       <div class="usa-alert__body">
         <h2 class="usa-alert__heading">
