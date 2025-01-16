@@ -1,8 +1,9 @@
 <h1>Validate SAML Authentication Request Signature</h1>
-<p class="usa-intro">You can use this tool to check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
+<p class="usa-intro">Check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
 <% if @validation_attempted %>
   <hr/>
-  <% if can_view_request_details?(@sp) %>
+  
+  <% if !@request.valid %>
     <div class="usa-alert <%= @request.valid ? "usa-alert--success" : "usa-alert--error"%>">
       <div class="usa-alert__body">
         <h2 class="usa-alert__heading">
@@ -18,6 +19,7 @@
         <% end %>
       </div>
     </div>
+  <% elsif can_view_request_details?(@request.sp) %>
 
     <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
       <div class="usa-alert__body">
