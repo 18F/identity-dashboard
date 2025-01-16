@@ -309,7 +309,7 @@ class WizardStep < ApplicationRecord
   def enforce_valid_data(new_data)
     return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
 
-    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
+    new_data.filter! { |key, _v| STEP_DATA[step_name].has_field? key }
     STEP_DATA[step_name].fields.merge(new_data)
   end
 

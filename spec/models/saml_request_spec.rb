@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 describe 'SamlRequest' do
-  let(:auth_url) { 'auth_url '}
+  let(:auth_url) { 'auth_url ' }
   let(:cert) { build_pem(serial: 200) }
   let(:dash_sp) { create(:service_provider) }
   let(:decoded_request) { double SamlIdp::Request }
   let(:issuer) { dash_sp.issuer }
   let(:params) { { auth_url:, cert: }.with_indifferent_access }
   let(:sp) { SamlIdp::ServiceProvider.new(identifier: issuer) }
-  
+
   let(:decoded_request) { double SamlIdp::Request }
-  
+
   subject(:request) { Tools::SamlRequest.new(params) }
 
   describe '#init' do
@@ -185,7 +185,7 @@ describe 'SamlRequest' do
 
       before do
         expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
-        expect(decoded_request).to receive(:raw_xml) { raw_xml}
+        expect(decoded_request).to receive(:raw_xml) { raw_xml }
       end
 
       it 'transforms the XML with Nokogiri correctly' do

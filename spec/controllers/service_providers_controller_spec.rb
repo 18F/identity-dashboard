@@ -281,7 +281,7 @@ describe ServiceProvidersController do
     end
 
     context 'when uploading a logo' do
-      let(:sp_logo_params) do 
+      let(:sp_logo_params) do
         {
           issuer: sp.issuer,
           help_text: init_help_params,

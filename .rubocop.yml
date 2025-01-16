@@ -383,6 +383,9 @@ Style/SymbolArray:
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
+# Layout/SpaceInsideHashLiteralBraces:
+#   Enabled: true
+
 RSpec/MultipleExpectations:
   Enabled: false
 
@@ -404,4 +407,31 @@ Style/HashSyntax:
   EnforcedShorthandSyntax: consistent
 
 Rails/Output:
+  Enabled: true
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: err
+
+Rails/ActionOrder:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Style/NegatedUnless:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/BlockAlignment:
   Enabled: true

@@ -72,14 +72,14 @@ describe ServiceProviderHelper do
 
   describe '#config_hash' do
     let(:saml_sp) { create(:service_provider, :saml) }
-    let(:oidc_pkce_sp) {create(:service_provider, :with_oidc_pkce )}
-    let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
+    let(:oidc_pkce_sp) { create(:service_provider, :with_oidc_pkce ) }
+    let(:oidc_jwt_sp) { create(:service_provider, :with_oidc_jwt ) }
     let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
-    let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
+    let(:oidc_jwt_sp_2) { create(:service_provider, :with_oidc_jwt, :with_ial_2) }
     let(:saml_without_requested_response) do
       create(:service_provider, :saml, :without_signed_response_message_requested)
     end
-    let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
+    let(:saml_email_id_format) { create(:service_provider, :saml, :with_email_id_format) }
     let(:sp_config_saml_attributes) do
       %w[
         agency_id

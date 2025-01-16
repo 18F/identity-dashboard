@@ -312,7 +312,7 @@ feature 'Service Providers CRUD' do
       agency = '<Agency>'
 
       # taken from service_providers.en.yml
-      default_help_text_options = ['Leave blank', 
+      default_help_text_options = ['Leave blank',
       "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
       "Sign in to Login.gov with your #{agency} email.",
       "Sign in to Login.gov with your #{agency} PIV/CAC.",

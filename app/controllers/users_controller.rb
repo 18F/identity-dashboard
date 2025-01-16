@@ -10,6 +10,12 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def edit
+    @user = User.find_by(id: params[:id])
+    @user_team = @user && @user.user_teams.first
+    populate_role_if_missing
+  end
+
   def create
     @user = User.new(user_params)
 
@@ -19,12 +25,6 @@ class UsersController < ApplicationController
     else
       render :new
     end
-  end
-
-  def edit
-    @user = User.find_by(id: params[:id])
-    @user_team = @user && @user.user_teams.first
-    populate_role_if_missing
   end
 
   def update

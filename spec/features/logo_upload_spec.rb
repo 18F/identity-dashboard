@@ -119,13 +119,13 @@ feature 'Logo upload' do
         'service_provider_form.errors.logo_file.has_script_tag',
         filename: 'logo_with_script.svg',
       ))
-      
+
       click_on 'Update'
 
       expect(current_path).to eq(service_provider_path(service_provider))
-      
+
       sp = user.service_providers.last
-      
+
       expect(sp.logo).to eq('logo.svg')
     end
   end

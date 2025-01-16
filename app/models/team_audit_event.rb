@@ -87,7 +87,7 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   end
 
   def object_changes
-    changes['user_email'] ||= changes['user_id'].map {|user_id| User.find_by(id: user_id)&.email }
+    changes['user_email'] ||= changes['user_id'].map { |user_id| User.find_by(id: user_id)&.email }
     changes
   end
 

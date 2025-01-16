@@ -31,7 +31,7 @@ RSpec.describe ServiceConfigWizardController do
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail,
       # so it's factory is called here with `create`.
-      # 
+      #
       # The service provider factory used is here because it has good defaults — it should
       # be the authoritative factory for what we need in a service provider. By calling that factory
       # with `build``, we get its defaults without saving it to the database. Done this way, we can
@@ -58,7 +58,7 @@ RSpec.describe ServiceConfigWizardController do
       create(:wizard_step, user: admin, wizard_form_data: { help_text: {'sign_in' => 'blank'}})
       expect do
         put :update, params: {id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel'}
-      end.to(change {WizardStep.count}.by(-1))
+      end.to(change { WizardStep.count }.by(-1))
       expect(response.redirect_url).to eq(service_providers_url)
     end
 
@@ -128,12 +128,12 @@ RSpec.describe ServiceConfigWizardController do
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('settings') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step)) if next_step
       end
     end
- 
+
     describe 'step "authentication"' do
       it 'can post' do
         expect do
@@ -144,7 +144,7 @@ RSpec.describe ServiceConfigWizardController do
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
@@ -158,7 +158,7 @@ RSpec.describe ServiceConfigWizardController do
             ial: '2',
             attribute_bundle: [],
           }}
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         expect(response).to_not be_redirect
         expect(assigns[:model].errors.messages.keys).to eq([:attribute_bundle])
         actual_error = assigns[:model].errors[:attribute_bundle].to_sentence
@@ -172,7 +172,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {id: 'issuer', wizard_step: {issuer: "test:sso:#{rand(1..1000)}"}}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('issuer') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
@@ -187,7 +187,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {id: 'logo_and_cert'}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_index = ServiceConfigWizardController::STEPS.index('logo_and_cert') + 1
         next_step = ServiceConfigWizardController::STEPS[next_index]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -201,7 +201,7 @@ RSpec.describe ServiceConfigWizardController do
           }}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
         expect(WizardStep.last.certs).to eq([good_cert.read])
@@ -217,7 +217,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
             cert: empty_upload,
           }}
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         expect(response).to be_redirect
         expect(WizardStep.last.certs).to eq([])
       end
@@ -233,7 +233,7 @@ RSpec.describe ServiceConfigWizardController do
         original_saved_logo = original_settings.logo_file
         expect(original_saved_logo.blob.checksum).
           to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
-        
+
 
         # Deliberately picking a serial that's shorter than fixed value of the original serial
         new_serial = rand(1..100_000)
@@ -248,7 +248,7 @@ RSpec.describe ServiceConfigWizardController do
             remove_certificates: [original_serial],
             cert: new_cert,
           }}
-        end.to_not(change {WizardStep.count})
+        end.to_not(change { WizardStep.count })
 
         expect(response).to be_redirect
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
@@ -271,7 +271,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {id: 'logo_and_cert', wizard_step: {
             logo_file: fixture_file_upload('../logo_with_script.svg'),
           }}
-        end.to_not(change {WizardStep.count})
+        end.to_not(change { WizardStep.count })
         expect(response).to_not be_redirect
         actual_error = assigns[:model].errors[:logo_file].to_sentence
         expected_error = I18n.t(
@@ -307,12 +307,12 @@ RSpec.describe ServiceConfigWizardController do
 
       it 'can move a valid logo from the wizard step to a service provider' do
         wizard_steps_ready_to_go.each(&:save!)
-        logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert'}
+        logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert' }
         expect(logo_step.logo_file).to be_blank
         put :update, params: {id: 'logo_and_cert', wizard_step: { logo_file: good_logo }}
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
-        end.to(change {ServiceProvider.count}.by(1))
+        end.to(change { ServiceProvider.count }.by(1))
         expect(ServiceProvider.last.logo_file.download).to eq(good_logo.read)
       end
     end
@@ -323,7 +323,7 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: {id: 'redirects', wizard_step: {active: false}}
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
-        end.to(change {WizardStep.count}.by(1))
+        end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('redirects') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
       end
@@ -340,7 +340,7 @@ RSpec.describe ServiceConfigWizardController do
           )
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{error_messages}"
-        end.to(change {ServiceProvider.count}.by(1))
+        end.to(change { ServiceProvider.count }.by(1))
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
         expect(WizardStep.where(user: admin)).to be_empty
@@ -349,7 +349,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'will stay on this step when the service provider would be invalid' do
         expect do
           put :update, params: {id: 'help_text', wizard_step: {active: false}}
-        end.to(change {ServiceProvider.count}.by(0))
+        end.to(change { ServiceProvider.count }.by(0))
         error_messages = assigns['model'].errors.messages.merge(
           assigns['service_provider'].errors.messages,
         )
@@ -451,7 +451,7 @@ RSpec.describe ServiceConfigWizardController do
             assigns['service_provider'].errors.messages,
           )
           expect(response).to be_redirect, "Not redirected. Errors found: #{error_messages}"
-        end.to(change {ServiceProvider.count}.by(1))
+        end.to(change { ServiceProvider.count }.by(1))
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
         expect(WizardStep.where(user:)).to be_empty
@@ -467,7 +467,7 @@ RSpec.describe ServiceConfigWizardController do
             'sign_up' => { 'en' => non_blank_sign_up_preset },
             'forgot_password' => { 'en' => non_blank_forgot_password_preset},
           }}}
-        end.to(change {ServiceProvider.count}.by(1))
+        end.to(change { ServiceProvider.count }.by(1))
         actual_help_text = ServiceProvider.last.help_text
         expect(actual_help_text['sign_in']['en']).to eq(I18n.t(
           "service_provider_form.help_text.sign_in.#{non_blank_sign_in_preset}",

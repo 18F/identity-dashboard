@@ -14,10 +14,10 @@ def build_pem(serial: SecureRandom.rand(100_000))
   ef = OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = root_ca
   ef.issuer_certificate = root_ca
-  root_ca.add_extension(ef.create_extension('basicConstraints','CA:TRUE',true))
-  root_ca.add_extension(ef.create_extension('keyUsage','keyCertSign, cRLSign', true))
-  root_ca.add_extension(ef.create_extension('subjectKeyIdentifier','hash',false))
-  root_ca.add_extension(ef.create_extension('authorityKeyIdentifier','keyid:always',false))
+  root_ca.add_extension(ef.create_extension('basicConstraints', 'CA:TRUE', true))
+  root_ca.add_extension(ef.create_extension('keyUsage', 'keyCertSign, cRLSign', true))
+  root_ca.add_extension(ef.create_extension('subjectKeyIdentifier', 'hash', false))
+  root_ca.add_extension(ef.create_extension('authorityKeyIdentifier', 'keyid:always', false))
   root_ca.sign(root_key, OpenSSL::Digest.new('SHA256'))
 
   key = OpenSSL::PKey::RSA.new 2048
@@ -32,8 +32,8 @@ def build_pem(serial: SecureRandom.rand(100_000))
   ef = OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = cert
   ef.issuer_certificate = root_ca
-  cert.add_extension(ef.create_extension('keyUsage','digitalSignature', true))
-  cert.add_extension(ef.create_extension('subjectKeyIdentifier','hash',false))
+  cert.add_extension(ef.create_extension('keyUsage', 'digitalSignature', true))
+  cert.add_extension(ef.create_extension('subjectKeyIdentifier', 'hash', false))
   cert.sign(root_key, OpenSSL::Digest.new('SHA256'))
 
   cert.to_pem

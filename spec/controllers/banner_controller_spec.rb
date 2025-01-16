@@ -7,7 +7,7 @@ RSpec.describe BannersController do
 
   let (:updated_message) { 'Updated Banner' }
   let (:updated_start_date) { Date.today - 1.year }
-  let (:updated_end_date) { Date.today + 1.year } 
+  let (:updated_end_date) { Date.today + 1.year }
 
   context 'when logged in as admin' do
     before do
@@ -37,7 +37,7 @@ RSpec.describe BannersController do
 
     describe 'update' do
       it 'redirects to the banner index' do
-        put :update, params: { 
+        put :update, params: {
           id: banner.id,
           banner: {
             message: updated_message,
@@ -84,6 +84,6 @@ RSpec.describe BannersController do
       expect(response).to be_unauthorized
       patch :update, params: banner.attributes
       expect(response).to be_unauthorized
-    end  
+    end
   end
 end

@@ -21,13 +21,13 @@ class ServiceConfigWizardController < AuthenticatedController
     show_idv_redirect_urls?
   ]
 
+  def show
+    render_wizard
+  end
+
   def new
     destroy
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
-  end
-
-  def show
-    render_wizard
   end
 
   # Initializes data for the wizard.
@@ -322,8 +322,8 @@ class ServiceConfigWizardController < AuthenticatedController
       app_name
     ]
 
-    service_provider.attributes.each do |k,v|
-      v.try(:strip!) unless !string_attributes.include?(k)
+    service_provider.attributes.each do |k, v|
+      v.try(:strip!) if string_attributes.include?(k)
     end
 
     if service_provider.redirect_uris

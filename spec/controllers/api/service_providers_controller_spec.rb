@@ -41,7 +41,7 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#show' do
-    let(:sp) { create(:service_provider, :with_team)}
+    let(:sp) { create(:service_provider, :with_team) }
     before { get :show, params: {id: sp.id} }
 
     it 'returns the service provider whose params are passed in' do

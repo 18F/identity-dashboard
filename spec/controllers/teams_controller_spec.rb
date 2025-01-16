@@ -116,7 +116,7 @@ describe TeamsController do
 
   describe '#create' do
     context 'when the user is not an admin' do
-      let(:name) { 'unique name'}
+      let(:name) { 'unique name' }
 
       context 'and no fed email address' do
         before do
@@ -234,8 +234,8 @@ describe TeamsController do
         end
 
         context 'when no update is made' do
-          let(:user1)  { create(:team_member, teams: [org])}
-          let(:user2)  { create(:team_member, teams: [org])}
+          let(:user1)  { create(:team_member, teams: [org]) }
+          let(:user2)  { create(:team_member, teams: [org]) }
           before do
             org.update(users: [user, user1, user2])
           end
@@ -271,8 +271,8 @@ describe TeamsController do
       end
 
       context 'when no update is made' do
-        let(:user1)  { create(:team_member, teams: [org])}
-        let(:user2)  { create(:team_member, teams: [org])}
+        let(:user1)  { create(:team_member, teams: [org]) }
+        let(:user2)  { create(:team_member, teams: [org]) }
         before do
           org.update(users: [user, user1, user2])
         end
