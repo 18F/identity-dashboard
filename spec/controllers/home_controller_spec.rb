@@ -17,6 +17,11 @@ describe HomeController do
         get :index
         expect(response.status).to eq(200)
       end
+
+      it 'sets canonical url' do
+        get :index
+        expect(assigns(:canonical_url)).to be_empty 
+      end
     end
 
     context 'when the user is not signed in' do
@@ -32,7 +37,7 @@ describe HomeController do
 
       it 'sets canonical url' do
         get :index
-        expect(@canonical_url).not_to be_empty 
+        expect(assigns(:canonical_url)).not_to be_empty 
       end
     end
   end
