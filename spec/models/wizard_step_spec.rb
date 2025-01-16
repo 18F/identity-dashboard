@@ -23,7 +23,7 @@ RSpec.describe WizardStep, type: :model do
   describe 'dynamic form properties' do
     it 'populates all properties for all steps' do
       WizardStep::STEPS.each do |step_name|
-        subject = WizardStep.new(step_name: step_name)
+        subject = WizardStep.new(step_name:)
         WizardStep::STEP_DATA[step_name].fields.keys.each do |field_name|
           expect(subject.send field_name).to eq(WizardStep::STEP_DATA[step_name].fields[field_name])
         end
@@ -179,7 +179,7 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#certificates' do
       let(:certs) { nil }
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs: certs}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs:}) }
 
       context 'with nil' do
         let(:certs) { nil }
@@ -251,7 +251,7 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#remove_certificate' do
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs: certs}) }
+      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: {certs:}) }
       let(:certs) { nil }
 
       context 'when removing a serial that matches in the certs array' do

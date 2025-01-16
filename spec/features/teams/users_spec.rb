@@ -127,7 +127,7 @@ describe 'users' do
       login_as team_member
       visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
     end
 
     scenario 'access permitted to partner admin team member to remove other team member' do
@@ -135,7 +135,7 @@ describe 'users' do
       login_as partner_admin_team_member
       visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
     end
   end
 
@@ -148,7 +148,7 @@ describe 'users' do
 
     scenario 'team member clicks cancel' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
       click_on 'Cancel'
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
@@ -156,7 +156,7 @@ describe 'users' do
 
     scenario 'team member removes user' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',
@@ -173,7 +173,7 @@ describe 'users' do
 
     scenario 'team member clicks cancel' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
       click_on 'Cancel'
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
@@ -181,7 +181,7 @@ describe 'users' do
 
     scenario 'team member removes user' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team:))
+                                          email: other_team_member.email, team: team))
       click_on I18n.t('teams.users.remove.button')
       expect(current_path).to eq(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',

@@ -367,3 +367,19 @@ Layout/MultilineBlockLayout:
 
 Layout/SpaceAroundOperators:
   Enabled: true
+
+Style/GuardClause:
+  Enabled: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: consistent
+
+Rails/Output:
+  Enabled: true

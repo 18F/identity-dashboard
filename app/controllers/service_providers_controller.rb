@@ -69,6 +69,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def all
     return unless current_user.admin?
+
     all_apps = ServiceProvider.all.sort_by(&:created_at).reverse
 
     prod_apps = all_apps.select { |sp| sp.prod_config == true }
@@ -111,6 +112,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def authorize_approval
     return unless params.require(:service_provider).key?(:approved) && !current_user.admin?
+
     raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
   end
 
@@ -263,7 +265,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def build_service_provider_array(prod_apps, sandbox_apps)
-    return [
+    [
       {
         type: 'Production',
         apps: prod_apps,
@@ -276,8 +278,8 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def deleted_service_providers
-    PaperTrail::Version.where(:item_type => 'ServiceProvider').
-                       where(:event => 'destroy').
+    PaperTrail::Version.where(item_type: 'ServiceProvider').
+                       where(event: 'destroy').
                        where('created_at > ?', 12.months.ago).
                        order(created_at: :desc)
   end

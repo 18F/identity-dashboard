@@ -296,7 +296,7 @@ describe ServiceProviderHelper do
           end
 
           it 'returns false' do
-            service_provider = ServiceProvider.new(help_text: help_text)
+            service_provider = ServiceProvider.new(help_text:)
             expect(
               helper.show_minimal_help_text_element?(service_provider)).to be false
           end
@@ -312,7 +312,7 @@ describe ServiceProviderHelper do
           end
 
           it 'returns true' do
-            service_provider = ServiceProvider.new(help_text: help_text)
+            service_provider = ServiceProvider.new(help_text:)
             expect(
               helper.show_minimal_help_text_element?(service_provider)).to be true
           end
@@ -329,7 +329,7 @@ describe ServiceProviderHelper do
           end
 
           it 'returns true' do
-            service_provider = ServiceProvider.new(help_text: help_text)
+            service_provider = ServiceProvider.new(help_text:)
             expect(
               helper.show_minimal_help_text_element?(service_provider)).to be true
           end
@@ -345,7 +345,7 @@ describe ServiceProviderHelper do
           end
 
           it 'returns true' do
-            service_provider = ServiceProvider.new(help_text: help_text)
+            service_provider = ServiceProvider.new(help_text:)
             expect(
               helper.show_minimal_help_text_element?(service_provider)).to be true
           end
@@ -357,7 +357,7 @@ describe ServiceProviderHelper do
       let(:user) { create(:admin) }
       let(:help_text) { {} }
       it 'returns false' do
-        service_provider = ServiceProvider.new(help_text: help_text)
+        service_provider = ServiceProvider.new(help_text:)
         expect(helper.show_minimal_help_text_element?(service_provider)).to be false
       end
     end

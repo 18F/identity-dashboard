@@ -13,7 +13,7 @@ RSpec.describe WizardFieldsetComponent, type: :component do
 
   it 'looks for a description translation key ending in `_html` by default' do
     render = render_inline(described_class.new(
-      form:, input_type: 'radio', param_name: 'identity_protocol', inputs: protocol_inputs,
+      form: form, input_type: 'radio', param_name: 'identity_protocol', inputs: protocol_inputs,
     ))
     expect(render.text).to include('OpenID Connect JWT')
     expect(render.text).to include('SAML')
@@ -28,7 +28,7 @@ RSpec.describe WizardFieldsetComponent, type: :component do
 
   it 'can use an arbitrary description' do
     render = render_inline(described_class.new(
-      form:, input_type: 'radio', param_name: 'identity_protocol', inputs: protocol_inputs,
+      form: form, input_type: 'radio', param_name: 'identity_protocol', inputs: protocol_inputs,
       description_key: 'certificate'
     ))
     expect(render.text).to include('OpenID Connect JWT')

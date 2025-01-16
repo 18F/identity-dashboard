@@ -4,11 +4,11 @@ describe ServiceProvidersController do
   let(:user) { create(:user, :with_teams) }
   let(:admin) { create(:user, :with_teams, admin: true) }
   let(:agency) { create(:agency, name: 'GSA') }
-  let(:team) { create(:team, agency: agency) }
+  let(:team) { create(:team, agency:) }
   let(:init_help_params) do
     { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
   end
-  let(:sp) { create(:service_provider, :with_users_team, user: user, team: team) }
+  let(:sp) { create(:service_provider, :with_users_team, user:, team:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(

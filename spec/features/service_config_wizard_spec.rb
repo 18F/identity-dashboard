@@ -342,7 +342,7 @@ feature 'Service Config Wizard' do
       it 'renders Failure to proof URL input if IAL2 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user: user)
+                                 user:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -353,7 +353,7 @@ feature 'Service Config Wizard' do
       it 'does not render Failure to proof URL input if IAL1 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_1,
-                                 user: user)
+                                 user:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -366,7 +366,7 @@ feature 'Service Config Wizard' do
       it 'validates Failure to proof URL input' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user: user)
+                                 user:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -414,7 +414,7 @@ feature 'Service Config Wizard' do
       existing_config = create(:service_provider,
             :ready_to_activate,
             help_text: custom_help_text,
-            user:,
+            user: user,
       )
       visit service_provider_path(existing_config)
       click_on 'Edit'

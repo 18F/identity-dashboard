@@ -26,7 +26,7 @@ feature 'Security events pages', :js do
 
         context 'when there are RISC events in the table' do
           before do
-            create_list(:security_event, 4, user: user)
+            create_list(:security_event, 4, user:)
           end
 
           scenario 'is accessible' do
@@ -69,7 +69,7 @@ feature 'Security events pages', :js do
 
         context 'when there are RISC events in the table' do
           before do
-            create_list(:security_event, 4, user: user)
+            create_list(:security_event, 4, user:)
           end
 
           scenario 'is accessible' do
@@ -90,7 +90,7 @@ feature 'Security events pages', :js do
 
   context 'individual security events show view' do
     let(:user) { create(:user) }
-    let(:event) { create(:security_event, user: user) }
+    let(:event) { create(:security_event, user:) }
 
     context 'as a logged in user' do
       before { login_as user }
