@@ -25,7 +25,7 @@ class User < ApplicationRecord
 
   def scoped_service_providers(scope: nil)
     scope ||= ServiceProvider.all
-    scope.where(user: self).or(scope.where(id: service_providers)).order('lower(friendly_name)')
+    scope.where(id: service_providers).order('lower(friendly_name)')
   end
 
   def user_deletion_history

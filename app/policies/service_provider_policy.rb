@@ -10,7 +10,10 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def new?
-    admin? || (membership && !partner_read_only?)
+    admin? || user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'Partner Developer') ||
+        membership.role == Role.find_by(name: 'Partner Admin')
+    end
   end
 
   def edit?

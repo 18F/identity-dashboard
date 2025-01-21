@@ -135,6 +135,7 @@ RSpec.describe WizardStep, type: :model do
 
   context 'step "issuer"' do
     let(:test_issuer) { "test:sso:#{rand(1..1000)}" }
+
     describe '#valid?' do
       subject { build(:wizard_step, step_name: 'issuer') }
       it 'is not valid by default' do
@@ -156,13 +157,16 @@ RSpec.describe WizardStep, type: :model do
       end
 
       it 'is valid if the issuer is for the service_provider you are editing' do
-        service_provider = create(:service_provider, issuer: test_issuer)
+        user = create(:user, :with_teams)
+        app_to_edit = create(:service_provider, issuer: test_issuer, team: user.teams.sample)
         in_use_issuer = "#{test_issuer}:#{rand(1..1000)}"
-        _other_service_provder = create(:service_provider, issuer: in_use_issuer)
-        hidden_step = create(:wizard_step, step_name: 'hidden', wizard_form_data: {
-          service_provider_id: service_provider.id,
+        _other_service_provder = create(:service_provider,
+                                        # team doesn't matter — should fail regardless of team
+                                        issuer: in_use_issuer)
+        create(:wizard_step, step_name: 'hidden', user: user, wizard_form_data: {
+          service_provider_id: app_to_edit.id,
         })
-        issuer_step = build(:wizard_step, step_name: 'issuer', user: hidden_step.user)
+        issuer_step = build(:wizard_step, step_name: 'issuer', user: user)
         issuer_step.wizard_form_data = { issuer: test_issuer }
         expect(issuer_step).to be_valid
 

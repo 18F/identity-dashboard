@@ -22,7 +22,7 @@ describe 'Users::ServiceProviders' do
     end
 
     it 'disallows non owner from approving the app' do
-      user_on_the_team = create(:user, teams: [sp.team])
+      user_on_the_team = create(:user_team, :partner_developer, team: sp.team).user
       login_as(user_on_the_team)
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }

@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe ServiceConfigWizardController do
-  let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
+  let(:team) { create(:team, agency:) }
+  let(:user) do
+    user = create(:user, uuid: SecureRandom.uuid, admin: false)
+    create(:user_team, :partner_admin, user:, team: )
+    user
+  end
   let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
   let(:agency) { create(:agency, name: 'GSA') }
-  let(:team) { create(:team, agency:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
@@ -37,7 +41,7 @@ RSpec.describe ServiceConfigWizardController do
       # with `build``, we get its defaults without saving it to the database. Done this way, we can
       # test that the controller can create a reasonable service_provider that isn't already saved.
       WizardStep.steps_from_service_provider(
-        build(:service_provider, :ready_to_activate, team: create(:team)),
+        build(:service_provider, :ready_to_activate, team:),
         admin,
       )
     end
@@ -388,7 +392,7 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
       WizardStep.steps_from_service_provider(
-        build(:service_provider, :ready_to_activate, team: create(:team)),
+        build(:service_provider, :ready_to_activate, team:),
         user,
       )
     end
@@ -498,7 +502,7 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
           'forgot_password' => { 'en' => non_blank_forgot_password_preset },
         }
         put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text } }
-        new_service_provider = ServiceProvider.last
+        new_service_provider = create(:service_provider, with_team_from_user: user)
         put :create, params: { service_provider: new_service_provider }
         context_to_be_blank = %w[sign_in sign_up forgot_password].sample
         updated_help_text = initial_help_text.merge(context_to_be_blank => { 'en' => 'blank' })
