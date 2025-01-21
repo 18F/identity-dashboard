@@ -10,6 +10,21 @@ RSpec.describe ApplicationController do
     request.headers['X-Amzn-Trace-Id'] = trace_id
   end
 
+  describe '#set_cache_headers' do
+    controller do
+      def index
+        render plain: 'Test'
+      end
+    end
+
+    it 'sets headers to disable cache' do
+      get :index
+
+      expect(response.headers['Cache-Control']).to eq 'no-store'
+      expect(response.headers['Pragma']).to eq 'no-cache'
+    end
+  end
+
   describe '#append_info_to_payload' do
     let(:payload) { {} }
 
