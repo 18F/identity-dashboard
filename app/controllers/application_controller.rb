@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
   private
 
   def set_cache_headers
+    return if request.path == '/'
+
     response.headers['Cache-Control'] = 'no-store'
     response.headers['Pragma'] = 'no-cache'
   end

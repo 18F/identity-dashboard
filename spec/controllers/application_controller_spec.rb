@@ -18,10 +18,19 @@ RSpec.describe ApplicationController do
     end
 
     it 'sets headers to disable cache' do
+      request.path = '/logged-in'
       get :index
 
       expect(response.headers['Cache-Control']).to eq 'no-store'
       expect(response.headers['Pragma']).to eq 'no-cache'
+    end
+
+    it 'does not disable cache on the splash page' do
+      request.path = '/'
+      get :index
+
+      expect(response.headers['Cache-Control']).to_not eq 'no-store'
+      expect(response.headers['Pragma']).to_not eq 'no-cache'
     end
   end
 
