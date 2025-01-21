@@ -45,6 +45,10 @@ module Tools
      @valid_signature = check_signature_validity
     end
 
+    def signed?
+      auth_request.signed?
+    end
+
     def sp
       @sp ||= ServiceProvider.find_by(issuer: auth_request&.issuer)
     end

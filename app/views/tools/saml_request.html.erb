@@ -17,6 +17,17 @@
         </p>
       </div>
     </div>
+  <% elsif !@request.signed? %>
+    <div class="usa-alert usa-alert--info">
+      <div class="usa-alert__body">
+        <h2 class="usa-alert__heading">
+          Request not signed 
+        </h2>
+        <p>
+          We strongly encourage you to cryptographically sign authentication requests, unless there are technical limitations on your side that prevent this. In addition to providing increased security, this allows for seamless rotation of your application’s public certificate in the future. 
+        </p>
+      </div>
+    </div>
   <% elsif can_view_request_details?(@request.sp) %>
     <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
       <div class="usa-alert__body">
@@ -32,20 +43,28 @@
             <code><%= @request.matching_cert_sn.to_s(16) %></code> (hex)
           </div>
         <% else %>
-          <h3>Specific problems found:</h3>
-          <ul class="usa-list">
-            </li>
-            <% @request.errors.each do |error| %>
-              <li> <%= error %> </li>
-            <% end %>
-          </ul>
+          <% if @request.errors.present? %>
+            <h3>Specific request problems found:</h3>
+            <ul class="usa-list">
+              </li>
+              <% @request.errors.each do |error| %>
+                <li> <%= error %> </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <% if @request.cert_errors.present? %>
+            <h3>Specific certificate problems found:</h3>
+            <ul class="usa-list">
+              </li>
+              <% @request.cert_errors&.each do |error| %>
+                <li> Certificate with the serial <%= error[:cert] %> has this issue: <%= error[:error_code] %> </li>
+              <% end %>
+            </ul>
+          <% end %>
           <h3>Other issues to look into:</h3>
             <ul class="usa-list">
               <li>
                 <span class="text-heavy">No signature:</span> Is the request signed? If not, you should check your application's SAML config settings and enable it.
-              </li>
-              <li>
-                <span class="text-heavy">Wrong hashing algorithm:</span> Login.gov only supports SHA256
               </li>
               <li>
                 <span class="text-heavy">Wrong certificate:</span>
