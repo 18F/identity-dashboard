@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
+  before_action :set_cache_headers
   before_action :set_paper_trail_whodunnit
   before_action :set_requested_url
   before_action :get_banner_messages
@@ -42,6 +43,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_cache_headers
+    return if request.path == '/'
+
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Pragma'] = 'no-cache'
+  end
 
   def set_requested_url
     return if session[:requested_url]
