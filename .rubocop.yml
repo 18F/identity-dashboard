@@ -9,6 +9,9 @@ require:
   - rubocop-rspec
   - rubocop-capybara
 
+inherit_gem:
+  pundit: config/rubocop-rspec.yml
+
 AllCops:
   Exclude:
     - 'bin/**/*'
@@ -435,3 +438,13 @@ Layout/EmptyLineBetweenDefs:
 
 Layout/BlockAlignment:
   Enabled: true
+
+# Not enabled yet. Still testing.
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+  # at minimum, 7 is required for testing RBAC:
+  #   4 user team roles
+  #   1 "not on the team" role
+  #   1 team
+  #   1 object the permission is tested for
+  Max: 7
