@@ -68,7 +68,7 @@ module Tools
 
         return false
       end
-      
+
       if sp.nil?
         @errors.push(<<~EOS.squish)
           No registered Service Provider matched the Issuer in this request.

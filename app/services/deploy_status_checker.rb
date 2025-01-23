@@ -50,8 +50,8 @@ class DeployStatusChecker
 
     response = load_status(deploy)
     status_from_json(deploy, JSON.parse(response.body))
-  rescue StandardError => error
-    status_from_error(deploy, "#{error.class}: #{error.message}")
+  rescue StandardError => err
+    status_from_error(deploy, "#{err.class}: #{err.message}")
   end
 
   # @return [Net::HTTPResponse]

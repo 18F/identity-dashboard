@@ -83,7 +83,7 @@ feature 'Team pages', :js do
             end
 
             context 'bad email' do
-              let(:email) { 'blah '}
+              let(:email) { 'blah ' }
               scenario 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)
               end
@@ -124,7 +124,7 @@ feature 'Team pages', :js do
       end
 
       context 'as a Partner Admin' do
-        let(:user_team_membership) { create(:user_team, :partner_admin)}
+        let(:user_team_membership) { create(:user_team, :partner_admin) }
 
         it 'is accessible when creating a new team' do
           create(:agency, name: 'GSA')
@@ -178,7 +178,7 @@ feature 'Team pages', :js do
             end
 
             context 'with a bad email' do
-              let(:email) { 'blah '}
+              let(:email) { 'blah ' }
 
               scenario 'is accessible' do
                 expect_page_to_have_no_accessibility_violations(page)

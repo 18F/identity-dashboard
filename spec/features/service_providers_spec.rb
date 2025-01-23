@@ -235,12 +235,11 @@ feature 'Service Providers CRUD' do
       help_text_context = HelpText::CONTEXTS.sample
       initial_help_text = { help_text_context => {
         'en' => HelpText::PRESETS[help_text_context].sample,
-      }}
+      } }
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
-        help_text: initial_help_text,
-      )
+        help_text: initial_help_text)
 
       # The first option does not start out as an empty string
       expect(service_provider.help_text.fetch(HelpText::CONTEXTS.first, {})['en']).to_not eq('')
@@ -281,8 +280,7 @@ feature 'Service Providers CRUD' do
       service_provider = create(:service_provider,
         :with_users_team,
         user: user,
-        help_text: initial_help_text,
-      )
+        help_text: initial_help_text)
 
       visit edit_service_provider_path(service_provider)
 
@@ -314,7 +312,7 @@ feature 'Service Providers CRUD' do
       agency = '<Agency>'
 
       # taken from service_providers.en.yml
-      default_help_text_options = ['Leave blank', 
+      default_help_text_options = ['Leave blank',
       "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
       "Sign in to Login.gov with your #{agency} email.",
       "Sign in to Login.gov with your #{agency} PIV/CAC.",
@@ -599,8 +597,7 @@ feature 'Service Providers CRUD' do
         create(:service_provider,
                      :with_users_team,
                      user: user,
-                     certs: [build_pem(serial: existing_serial)],
-        )
+                     certs: [build_pem(serial: existing_serial)])
       end
 
       before do
