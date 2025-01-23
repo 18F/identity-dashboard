@@ -2,8 +2,24 @@ class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
 
+  def index
+    includes = %i[users service_providers agency]
+    @teams = current_user.teams.includes(*includes).all
+  end
+
+  def show
+    @audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
+      team,
+      scope: policy_scope(PaperTrail::Version),
+    ))
+  end
+
   def new
     @team = Team.new
+    @agencies = Agency.all.order(:name)
+  end
+
+  def edit
     @agencies = Agency.all.order(:name)
   end
 
@@ -17,10 +33,6 @@ class TeamsController < AuthenticatedController
       @agencies = Agency.all.order(:name)
       render :new
     end
-  end
-
-  def edit
-    @agencies = Agency.all.order(:name)
   end
 
   def update
@@ -43,23 +55,11 @@ class TeamsController < AuthenticatedController
     redirect_back(fallback_location: teams_path)
   end
 
-  def index
-    includes = %i[users service_providers agency]
-    @teams = current_user.teams.includes(*includes).all
-  end
-
   def all
     includes = %i[users service_providers agency]
     @teams = Team.includes(*includes).all
 
     render 'teams/all'
-  end
-
-  def show
-    @audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
-      team,
-      scope: policy_scope(PaperTrail::Version),
-    ))
   end
 
   private

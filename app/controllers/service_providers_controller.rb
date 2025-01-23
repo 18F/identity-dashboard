@@ -1,8 +1,8 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all, :deleted]
+  before_action -> { authorize ServiceProvider }, only: %i[index create new all deleted]
   before_action -> {
       authorize(service_provider, :member_or_admin?)
-    }, only: %i[update edit show destroy]
+  }, only: %i[update edit show destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :authorize_email_nameid_format_allowed, only: %i[create update]
@@ -17,6 +17,16 @@ class ServiceProvidersController < AuthenticatedController
 
     @service_providers = build_service_provider_array(prod_apps, sandbox_apps)
   end
+
+  def show
+    @service_provider_versions = @service_provider.versions.reverse_order
+  end
+
+  def new
+    @service_provider = ServiceProvider.new
+  end
+
+  def edit; end
 
   def create
     @service_provider = ServiceProvider.new
@@ -55,16 +65,6 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.destroy
     flash[:success] = I18n.t('notices.service_provider_deleted', issuer: service_provider.issuer)
     redirect_to service_providers_path
-  end
-
-  def new
-    @service_provider = ServiceProvider.new
-  end
-
-  def edit; end
-
-  def show
-    @service_provider_versions = @service_provider.versions.reverse_order
   end
 
   def all
@@ -230,7 +230,6 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.remote_logo_key = service_provider.logo_file.key
   end
 
-
   def clear_formatting(service_provider)
     string_attributes = %w[
       issuer
@@ -246,8 +245,8 @@ class ServiceProvidersController < AuthenticatedController
       app_name
     ]
 
-    service_provider.attributes.each do |k,v|
-      v.try(:strip!) unless !string_attributes.include?(k)
+    service_provider.attributes.each do |k, v|
+      v.try(:strip!) if string_attributes.include?(k)
     end
 
     if service_provider.redirect_uris

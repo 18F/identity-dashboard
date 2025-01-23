@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe WizardStepPolicy do
-  let(:admin) { build(:user, admin: true)}
-  let(:user) { build(:user)}
+  let(:admin) { build(:user, admin: true) }
+  let(:user) { build(:user) }
   let(:step_for_user) { build(:wizard_step, user:) }
 
   permissions :destroy? do
@@ -10,7 +10,7 @@ describe WizardStepPolicy do
       before do
         expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
       end
-      
+
       it 'is true with the feature flag for all admins' do
         expect(WizardStepPolicy).to permit(admin, step_for_user)
       end
@@ -33,5 +33,5 @@ describe WizardStepPolicy do
       end
     end
   end
-  
+
 end

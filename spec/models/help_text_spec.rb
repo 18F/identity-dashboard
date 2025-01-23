@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe HelpText do
   let(:service_provider) { build(:service_provider) }
-  let(:subject) { HelpText.lookup(service_provider:)}
+  let(:subject) { HelpText.lookup(service_provider:) }
   let(:all_presets_help_text) do
     HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
       result[context] = Hash.new
@@ -71,7 +71,7 @@ describe HelpText do
     it 'is true for blank text' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => blank_help_text},
+        params: { 'help_text' => blank_help_text },
       )
       expect(help_text_from_params).to be_blank
 
@@ -82,7 +82,7 @@ describe HelpText do
     it 'is true for an empty hash' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => {}},
+        params: { 'help_text' => {} },
       )
       expect(help_text_from_params).to be_blank
       service_provider.help_text = {}
@@ -140,7 +140,7 @@ describe HelpText do
 
     it 'writes out localized presets' do
       service_provider = build(:service_provider, agency: build(:agency))
-      # 'sign_in' and 'sign_up' both have a service provider name substitution and 
+      # 'sign_in' and 'sign_up' both have a service provider name substitution and
       # an agency name substitution in their localizations.
       # We can use them to test both format substitution options
       all_presets_help_text['sign_in']['en'] = 'first_time'

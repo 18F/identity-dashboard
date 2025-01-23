@@ -15,7 +15,7 @@ class BundleTestRecord
 end
 
 RSpec.describe AttributeBundleValidator, type: 'model' do
-  let(:first_user) {create(:user)}
+  let(:first_user) { create(:user) }
   let(:test_model) { BundleTestRecord.new }
   let(:ial_1_bundle) { %w[email all_emails verified_at x509_subject x509_presented] }
   let(:ial_2_bundle) { %w[first_name last_name dob ssn address1 address2 city state zipcode phone] }
@@ -32,7 +32,7 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
       expect(saml_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
       expect(saml_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
     end
-  
+
     it 'validates SAML at IAL 2 correctly' do
       saml_sp_ial2 = BundleTestRecord.new.tap do |model|
         model.ial = [2, '2'].sample

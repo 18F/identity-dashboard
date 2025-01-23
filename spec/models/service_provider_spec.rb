@@ -124,7 +124,7 @@ describe ServiceProvider do
       end
 
       describe 'it has no viewBox attributes' do
-        let(:filename) { '../logo_without_size.svg'}
+        let(:filename) { '../logo_without_size.svg' }
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -137,7 +137,7 @@ describe ServiceProvider do
       end
 
       describe 'it has a script in the xml' do
-        let(:filename) { '../logo_with_script.svg'}
+        let(:filename) { '../logo_with_script.svg' }
 
         it 'is not valid' do
           expect(service_provider).to_not be_valid
@@ -218,7 +218,7 @@ describe ServiceProvider do
     end
 
     it 'validates with the certs_are_pems validator' do
-      validator = ServiceProvider.validators.find {|v| v.instance_of?(CertsArePemsValidator) }
+      validator = ServiceProvider.validators.find { |v| v.instance_of?(CertsArePemsValidator) }
       expect(validator).to receive(:validate).and_return(true)
       expect(service_provider).to be_valid
     end
@@ -345,7 +345,7 @@ describe ServiceProvider do
             'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
             'forgot_password': {}
           },
-      )
+        )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end
 

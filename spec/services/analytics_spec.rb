@@ -39,15 +39,15 @@ RSpec.describe Analytics do
 
   describe '#track_event' do
     it 'collects data and sends the event to the backend' do
-      expect(logger).to receive(:track).with('Trackable Event',analytics_attributes)
+      expect(logger).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
 
     it 'does not track nil values' do
-      expect(logger).to receive(:track).with('Trackable Event',analytics_attributes)
+      expect(logger).to receive(:track).with('Trackable Event', analytics_attributes)
 
-      analytics.track_event('Trackable Event', {example: nil})
+      analytics.track_event('Trackable Event', { example: nil })
     end
   end
 end

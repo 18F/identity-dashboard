@@ -63,11 +63,10 @@ feature 'Service provider pages', :js do
         context 'with a SAML app' do
           let(:app) do
             create(:service_provider,
-              :saml,
-              :with_users_team,
-              user: user,
-              logo: 'generic.svg',
-            )
+                   :saml,
+                   :with_users_team,
+                   user: user,
+                   logo: 'generic.svg')
           end
 
           scenario 'is accessible' do
