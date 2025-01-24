@@ -1,6 +1,47 @@
 class ServiceProviderPolicy < BasePolicy
   attr_reader :user, :record
 
+  BASE_PARAMS = [
+    :acs_url,
+    :active,
+    :agency_id,
+    :assertion_consumer_logout_service_url,
+    :block_encryption,
+    :description,
+    :friendly_name,
+    :group_id,
+    :ial,
+    :default_aal,
+    :identity_protocol,
+    :issuer,
+    :logo,
+    :metadata_url,
+    :return_to_sp_url,
+    :failure_to_proof_url,
+    :push_notification_url,
+    :signed_response_message_requested,
+    :sp_initiated_login_url,
+    :logo_file,
+    :app_name,
+    :prod_config,
+    { attribute_bundle: [],
+      redirect_uris: [],
+      help_text: {} },
+  ].freeze
+
+  ADMIN_PARAMS = (BASE_PARAMS + %i[
+    email_nameid_format_allowed
+    allow_prompt_login
+    approved
+  ]).freeze
+
+  def permitted_attributes
+    return ADMIN_PARAMS if admin?
+    return BASE_PARAMS unless IdentityConfig.store.prod_like_env
+
+    BASE_PARAMS.reject { |param| param == :ial }
+  end
+
   def index?
     true
   end

@@ -198,6 +198,32 @@ describe ServiceProviderPolicy do
       let(:object) { app }
     end
   end
+
+  describe '#permitted_attributes' do
+    it 'allows base attributes for non-admin in not-prod' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      subject = described_class.new(build(:user), ServiceProvider)
+      expect(subject.permitted_attributes).to eq(described_class::BASE_PARAMS)
+    end
+
+    it 'allows extra attributes for site admin in prod' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      subject = described_class.new(site_admin, ServiceProvider)
+      expected_attributes = described_class::BASE_PARAMS + %i[
+        email_nameid_format_allowed
+        allow_prompt_login
+        approved
+      ]
+      expect(subject.permitted_attributes).to eq(expected_attributes)
+    end
+
+    it 'forbids IAL for non-admin in prod' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      subject = described_class.new(build(:user), ServiceProvider)
+      expected_attributes = described_class::BASE_PARAMS.reject { |param| param == :ial }
+      expect(subject.permitted_attributes).to eq(expected_attributes)
+    end
+  end
 end
 
 describe ServiceProviderPolicy::Scope do

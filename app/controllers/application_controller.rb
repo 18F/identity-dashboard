@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   rescue_from Pundit::NotAuthorizedError, with: :render_401
+  rescue_from ActionController::UnpermittedParameters, with: :render_401
 
   def new_session_path(_scope)
     root_url
