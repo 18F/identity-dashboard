@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe BasePolicy do
   let(:user) { build(:user) }
-  let(:team) { build(:team) }
+  let(:sp) { build(:service_provider) }
 
   permissions :index? do
     it 'does not allow user to list the index' do
@@ -11,8 +11,9 @@ describe BasePolicy do
   end
 
   permissions :show? do
-    it 'does not allow user to show an object' do
-      expect(BasePolicy).to_not permit(user, team)
+    it 'depends on the scope' do
+      expect("#{sp.class}Policy::Scope".constantize).to receive(:new).and_call_original
+      expect(BasePolicy).to_not permit(user, sp)
     end
   end
 

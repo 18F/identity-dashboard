@@ -47,7 +47,7 @@ class BasePolicy
     end
 
     def resolve
-      scope.none
+      raise NotImplementedError, 'BasePolicy::Scope#resolve should be overridden in a child class'
     end
 
     def admin?
