@@ -72,7 +72,7 @@ describe TeamsController do
 
       it 'will show audit events' do
         test_version = PaperTrail::Version.new(
-          object_changes: {'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"]},
+          object_changes: { 'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"] },
           created_at: 1.minute.ago,
           whodunnit: 'admin@login.gsa.gov',
           event: 'create',
@@ -80,8 +80,10 @@ describe TeamsController do
         )
 
         expect(TeamAuditEvent).to receive(:by_team).
-          with(org, scope: PaperTrail::Version.all).
-          and_return([test_version])
+          with(
+            org,
+            scope: PaperTrail::VersionPolicy::Scope.new(user, PaperTrail::Version).resolve,
+          ).and_return([test_version])
 
         get :show, params: { id: org.id }
 
@@ -116,7 +118,7 @@ describe TeamsController do
 
   describe '#create' do
     context 'when the user is not an admin' do
-      let(:name) { 'unique name'}
+      let(:name) { 'unique name' }
 
       context 'and no fed email address' do
         before do
@@ -234,8 +236,8 @@ describe TeamsController do
         end
 
         context 'when no update is made' do
-          let(:user1)  { create(:team_member, teams: [org])}
-          let(:user2)  { create(:team_member, teams: [org])}
+          let(:user1)  { create(:team_member, teams: [org]) }
+          let(:user2)  { create(:team_member, teams: [org]) }
           before do
             org.update(users: [user, user1, user2])
           end
@@ -271,8 +273,8 @@ describe TeamsController do
       end
 
       context 'when no update is made' do
-        let(:user1)  { create(:team_member, teams: [org])}
-        let(:user2)  { create(:team_member, teams: [org])}
+        let(:user1)  { create(:team_member, teams: [org]) }
+        let(:user2)  { create(:team_member, teams: [org]) }
         before do
           org.update(users: [user, user1, user2])
         end

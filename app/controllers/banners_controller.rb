@@ -1,6 +1,6 @@
 class BannersController < ApplicationController
-  before_action -> { authorize Banner, :manage_banners?}
-  before_action :set_banner, only: %i[ show edit update ]
+  before_action -> { authorize Banner, :manage_banners? }
+  before_action :set_banner, only: %i[show edit update]
   after_action :verify_authorized
   after_action :verify_policy_scoped
 

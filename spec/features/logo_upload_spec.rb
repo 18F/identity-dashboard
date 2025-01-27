@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Logo upload' do
-  let(:user) { create(:user, :with_teams) }
+  let(:user) { create(:user_team, [:partner_admin, :partner_developer].sample).user }
 
   context 'on create' do
     before do
@@ -58,7 +58,7 @@ feature 'Logo upload' do
   end
 
   context 'on update' do
-    let(:service_provider) { create(:service_provider, :with_users_team, user:) }
+    let(:service_provider) { create(:service_provider, with_team_from_user: user) }
 
     before do
       login_as(user)
@@ -119,13 +119,13 @@ feature 'Logo upload' do
         'service_provider_form.errors.logo_file.has_script_tag',
         filename: 'logo_with_script.svg',
       ))
-      
+
       click_on 'Update'
 
       expect(current_path).to eq(service_provider_path(service_provider))
-      
+
       sp = user.service_providers.last
-      
+
       expect(sp.logo).to eq('logo.svg')
     end
   end

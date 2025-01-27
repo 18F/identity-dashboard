@@ -1,6 +1,6 @@
 class ServiceProviderUpdater
-  def self.post_update(body=nil)
-    resp = conn.post {|req| req.body = Zlib.gzip(body.to_json) if body.present? }
+  def self.post_update(body = nil)
+    resp = conn.post { |req| req.body = Zlib.gzip(body.to_json) if body.present? }
 
     status_code = resp.status
     return status_code if status_code == 200
@@ -8,8 +8,8 @@ class ServiceProviderUpdater
     failure = StandardError.new "ServiceProviderUpdater failed with status: #{status_code}"
     handle_error(failure)
     status_code
-  rescue StandardError => error
-    handle_error(error)
+  rescue StandardError => err
+    handle_error(err)
     status_code
   end
 

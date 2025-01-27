@@ -21,13 +21,13 @@ class ServiceConfigWizardController < AuthenticatedController
     show_idv_redirect_urls?
   ]
 
+  def show
+    render_wizard
+  end
+
   def new
     destroy
     redirect_to service_config_wizard_path(Wicked::FIRST_STEP)
-  end
-
-  def show
-    render_wizard
   end
 
   # Initializes data for the wizard.
@@ -40,6 +40,7 @@ class ServiceConfigWizardController < AuthenticatedController
     return new unless service_provider_id
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
+    authorize service_provider
     steps = WizardStep.steps_from_service_provider(service_provider, current_user)
     # TODO: what if the service provider is somehow invalid?
     steps.each(&:save)
@@ -98,9 +99,9 @@ class ServiceConfigWizardController < AuthenticatedController
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
       service_provider = if @model.existing_service_provider?
-        ServiceProvider.find(all_wizard_data['service_provider_id'])
+        policy_scope(ServiceProvider).find(all_wizard_data['service_provider_id'])
       else
-        ServiceProvider.new
+        policy_scope(ServiceProvider).new
       end
       service_provider.attributes = service_provider.attributes.merge(
         transform_to_service_provider_attributes(all_wizard_data),
@@ -123,6 +124,7 @@ class ServiceConfigWizardController < AuthenticatedController
     logo_file = @model.get_step('logo_and_cert').logo_file
     service_provider.logo_file.attach(logo_file.blob) if logo_file.blob
 
+    authorize service_provider
     validate_and_save_service_provider
     return render_wizard if flash[:error].present?
 
@@ -322,8 +324,8 @@ class ServiceConfigWizardController < AuthenticatedController
       app_name
     ]
 
-    service_provider.attributes.each do |k,v|
-      v.try(:strip!) unless !string_attributes.include?(k)
+    service_provider.attributes.each do |k, v|
+      v.try(:strip!) if string_attributes.include?(k)
     end
 
     if service_provider.redirect_uris

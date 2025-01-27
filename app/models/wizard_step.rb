@@ -57,7 +57,7 @@ class WizardStep < ApplicationRecord
       sp_initiated_login_url: '',
     }),
     help_text: WizardStep::Definition.new({
-      help_text: { sign_in: ''},
+      help_text: { sign_in: '' },
     }),
     # Unless we are editing an existing config, this extra step should not get created.
     hidden: WizardStep::Definition.new({
@@ -309,7 +309,7 @@ class WizardStep < ApplicationRecord
   def enforce_valid_data(new_data)
     return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
 
-    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
+    new_data.filter! { |key, _v| STEP_DATA[step_name].has_field? key }
     STEP_DATA[step_name].fields.merge(new_data)
   end
 
@@ -337,7 +337,7 @@ class WizardStep < ApplicationRecord
 
   def original_service_provider
     id = WizardStep.find_by(step_name: 'hidden', user: user)&.service_provider_id
-    id && ServiceProvider.find(id)
+    id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
   end
 
   def group_is_valid
@@ -345,10 +345,9 @@ class WizardStep < ApplicationRecord
   end
 
   def attachment_changes_string_buffer
-    if attachment_changes['logo_file'].attachable.respond_to?(:download)
-      return attachment_changes['logo_file'].attachable.download
-    end
+    attachable = attachment_changes['logo_file'].attachable
+    return attachable.download if attachable.respond_to?(:download)
 
-    File.read(attachment_changes['logo_file'].attachable.open)
+    File.read(attachable.open)
   end
 end

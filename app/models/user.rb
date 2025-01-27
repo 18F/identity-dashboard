@@ -23,10 +23,9 @@ class User < ApplicationRecord
     end
   end
 
-  def scoped_service_providers
-    (member_service_providers + service_providers).
-      uniq.
-      sort_by! { |sp| sp.friendly_name.downcase }
+  def scoped_service_providers(scope: nil)
+    scope ||= ServiceProvider.all
+    scope.where(id: service_providers).order('lower(friendly_name)')
   end
 
   def user_deletion_history
@@ -71,11 +70,5 @@ class User < ApplicationRecord
     return Role::SITE_ADMIN if admin?
 
     user_teams.first&.role || Role.find_by(name: 'Partner Admin')
-  end
-
-  private
-
-  def member_service_providers
-    ServiceProvider.where(user_id: id)
   end
 end

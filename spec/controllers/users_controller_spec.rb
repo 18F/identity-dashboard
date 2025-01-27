@@ -101,8 +101,8 @@ describe UsersController do
           expect(ut.role_name).to be_nil
         end
         patch :update, params: { id: user_to_edit, user: {
-          user_team: {role_name: 'Partner Admin' },
-        }}
+          user_team: { role_name: 'Partner Admin' },
+        } }
         user_to_edit.reload
         user_to_edit.user_teams.each do |ut|
           expect(ut.role_name).to eq('Partner Admin')

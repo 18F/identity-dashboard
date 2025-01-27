@@ -1,9 +1,16 @@
 require 'rails_helper'
 
 describe 'SamlRequest' do
+  let(:auth_url) { 'auth_url ' }
   let(:cert) { build_pem(serial: 200) }
-  let(:auth_url) { 'auth_url '}
+  let(:dash_sp) { create(:service_provider) }
+  let(:decoded_request) { double SamlIdp::Request }
+  let(:issuer) { dash_sp.issuer }
   let(:params) { { auth_url:, cert: }.with_indifferent_access }
+  let(:sp) { SamlIdp::ServiceProvider.new(identifier: issuer) }
+
+  let(:decoded_request) { double SamlIdp::Request }
+
   subject(:request) { Tools::SamlRequest.new(params) }
 
   describe '#init' do
@@ -15,7 +22,6 @@ describe 'SamlRequest' do
   end
 
   describe '#valid' do
-    let(:decoded_request) { double SamlIdp::Request }
     let(:validity) { true }
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request)
@@ -25,7 +31,7 @@ describe 'SamlRequest' do
     describe 'when the request is valid' do
       it 'returns true' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be true
@@ -40,9 +46,9 @@ describe 'SamlRequest' do
 
     describe 'when the request is not valid' do
       let(:validity) { false }
-      it 'returns false if' do
+      it 'returns false' do
         expect(SamlIdp::Request).to receive(:from_deflated_request).with(
-          auth_url, get_params: {SAMLRequest: auth_url}
+          auth_url, get_params: { SAMLRequest: auth_url }
         ) { decoded_request }
 
         expect(subject.valid).to be false
@@ -57,19 +63,14 @@ describe 'SamlRequest' do
   end
 
   describe '#valid_signature' do
-    let(:decoded_request) { double SamlIdp::Request }
-    let(:issuer) { '1234' }
-    let(:sp) { SamlIdp::ServiceProvider.new }
-
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
-      allow(decoded_request).to receive(:issuer) { issuer }
       allow(decoded_request).to receive(:service_provider) { sp }
+      allow(decoded_request).to receive(:issuer) { issuer }
     end
 
     describe 'if there are no certs' do
       let(:cert) { '' }
-      let(:issuer) { nil }
 
       it 'returns false' do
         expect(subject.valid_signature).to be false
@@ -85,9 +86,9 @@ describe 'SamlRequest' do
       end
     end
 
-    describe 'if there is no Service Provider in the auth request' do
+    describe 'when no Issuer value is in the auth request' do
       before do
-        allow(decoded_request).to receive(:service_provider) { nil }
+        allow(decoded_request).to receive(:issuer) { nil }
       end
 
       it 'returns false' do
@@ -95,18 +96,36 @@ describe 'SamlRequest' do
       end
 
       it 'adds an error' do
-        err = 'No matching Service Provider founded in this request. ' +
-              'Please check issuer attribute.'
+        err = <<~EOS.squish
+          No Issuer value found in request.
+          Please check Issuer attribute.
+        EOS
         subject.valid_signature
         expect(subject.errors).to eq [err]
       end
     end
 
-    describe 'if a bad cert is passed in' do
-      let(:cert) { 'i am not a cert!' }
+    describe 'when the Issuer value does not match a SP' do
       before do
-        allow(decoded_request).to receive(:service_provider) { sp }
+        allow(decoded_request).to receive(:issuer) { 'an-issuer' }
       end
+
+      it 'returns false' do
+        expect(subject.valid_signature).to be false
+      end
+
+      it 'adds an error' do
+        err = <<~EOS.squish
+                   No registered Service Provider matched the Issuer in this request.
+          Please check Issuer attribute.
+        EOS
+        subject.valid_signature
+        expect(subject.errors).to eq [err]
+      end
+    end
+
+    describe 'when a bad cert is passed in' do
+      let(:cert) { 'i am not a cert!' }
 
       it 'returns false' do
         expect(subject.valid_signature).to be false
@@ -136,9 +155,7 @@ describe 'SamlRequest' do
   end
 
   describe '#run_validations' do
-    let(:decoded_request) { double SamlIdp::Request }
     let(:validity) { true }
-    let(:sp) { SamlIdp::ServiceProvider.new }
 
     before do
       allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
@@ -157,19 +174,18 @@ describe 'SamlRequest' do
 
     describe 'when valid is true' do
       it 'runs valid_signature' do
-        expect(decoded_request).to receive(:service_provider) { nil }
+        expect(decoded_request).to receive(:issuer)
         subject.run_validations
       end
     end
 
     describe '#xml' do
-      let(:decoded_request) { double SamlIdp::Request }
       let(:raw_xml) { '<XMLtag />' }
       let(:xml) { Nokogiri::XML(raw_xml).to_xml }
 
       before do
         expect(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
-        expect(decoded_request).to receive(:raw_xml) { raw_xml}
+        expect(decoded_request).to receive(:raw_xml) { raw_xml }
       end
 
       it 'transforms the XML with Nokogiri correctly' do
@@ -178,8 +194,6 @@ describe 'SamlRequest' do
     end
 
     describe '#logout_request' do
-      let(:decoded_request) { double SamlIdp::Request }
-
       before do
         allow(SamlIdp::Request).to receive(:from_deflated_request) { decoded_request }
       end

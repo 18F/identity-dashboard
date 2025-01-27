@@ -137,11 +137,10 @@ class ServiceProvider < ApplicationRecord
   private
 
   def attachment_changes_string_buffer
-    if attachment_changes['logo_file'].attachable.respond_to?(:download)
-      return attachment_changes['logo_file'].attachable.download
-    end
+    attachable = attachment_changes['logo_file'].attachable
+    return attachable.download if attachable.respond_to?(:download)
 
-    File.read(attachment_changes['logo_file'].attachable.open)
+    File.read(attachable.open)
   end
 
   def sanitize_help_text_content

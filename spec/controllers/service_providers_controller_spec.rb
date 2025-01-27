@@ -6,9 +6,9 @@ describe ServiceProvidersController do
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency:) }
   let(:init_help_params) do
-    { sign_in: {en: ''}, sign_up: {en: ''} , forgot_password: {en: ''} }
+    { sign_in: { en: '' }, sign_up: { en: '' } , forgot_password: { en: '' } }
   end
-  let(:sp) { create(:service_provider, :with_users_team, user:, team:) }
+  let(:sp) { create(:service_provider, team:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
@@ -27,9 +27,9 @@ describe ServiceProvidersController do
     context 'help_text config' do
       # group_id (team) is necessary to create a ServiceProvider.
       it('should fill selected default options: blank set') do
-        help_params_0 = { sign_in: {en: 'blank'},
-          sign_up: {en: 'blank'},
-          forgot_password: {en: 'blank'} }
+        help_params_0 = { sign_in: { en: 'blank' },
+          sign_up: { en: 'blank' },
+          forgot_password: { en: 'blank' } }
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
@@ -281,7 +281,7 @@ describe ServiceProvidersController do
     end
 
     context 'when uploading a logo' do
-      let(:sp_logo_params) do 
+      let(:sp_logo_params) do
         {
           issuer: sp.issuer,
           help_text: init_help_params,
@@ -373,9 +373,8 @@ describe ServiceProvidersController do
     context 'when deleting certs' do
       let(:sp) do
         create(:service_provider,
-               :with_users_team,
-               user: user,
-               certs: [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300) ])
+               team: team,
+               certs: [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)])
       end
 
       it 'deletes certs with the corresponding serials' do

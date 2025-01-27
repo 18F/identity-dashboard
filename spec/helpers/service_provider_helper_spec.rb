@@ -72,14 +72,14 @@ describe ServiceProviderHelper do
 
   describe '#config_hash' do
     let(:saml_sp) { create(:service_provider, :saml) }
-    let(:oidc_pkce_sp) {create(:service_provider, :with_oidc_pkce )}
-    let(:oidc_jwt_sp) {create(:service_provider, :with_oidc_jwt )}
+    let(:oidc_pkce_sp) { create(:service_provider, :with_oidc_pkce ) }
+    let(:oidc_jwt_sp) { create(:service_provider, :with_oidc_jwt ) }
     let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
-    let(:oidc_jwt_sp_2) {create(:service_provider, :with_oidc_jwt, :with_ial_2)}
+    let(:oidc_jwt_sp_2) { create(:service_provider, :with_oidc_jwt, :with_ial_2) }
     let(:saml_without_requested_response) do
       create(:service_provider, :saml, :without_signed_response_message_requested)
     end
-    let(:saml_email_id_format) {create(:service_provider, :saml, :with_email_id_format)}
+    let(:saml_email_id_format) { create(:service_provider, :saml, :with_email_id_format) }
     let(:sp_config_saml_attributes) do
       %w[
         agency_id
@@ -241,16 +241,16 @@ describe ServiceProviderHelper do
     context 'sp_response_message_requested is true' do
       it 'returns a string saying signed response is requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          true),
-        ).to eq 'Signed response message requested'
+          true,
+        )).to eq 'Signed response message requested'
       end
     end
 
     context 'sp_response_message_requested is false' do
       it 'returns a string saying signed response is not requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          false),
-        ).to eq 'Signed response message not requested'
+          false,
+        )).to eq 'Signed response message not requested'
       end
     end
   end
@@ -289,32 +289,34 @@ describe ServiceProviderHelper do
         describe 'and is not blank' do
           let(:help_text) do
             {
-              'sign_in' => {'en' => '<b>Some sign-in help text</b>'},
-              'sign_up' => {'en' => '<b>Some sign-up help text</b>'},
-              'forgot_password' => {'en' => '<b>Some forgot password help text</b>'},
+              'sign_in' => { 'en' => '<b>Some sign-in help text</b>' },
+              'sign_up' => { 'en' => '<b>Some sign-up help text</b>' },
+              'forgot_password' => { 'en' => '<b>Some forgot password help text</b>' },
             }
           end
 
           it 'returns false' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be false
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be false
           end
         end
 
         describe 'it is just empty strings' do
           let(:help_text) do
             {
-              'sign_in' => {'en' => ''},
-              'sign_up' => {'en' => ''},
-              'forgot_password' => {'en' => ''},
+              'sign_in' => { 'en' => '' },
+              'sign_up' => { 'en' => '' },
+              'forgot_password' => { 'en' => '' },
             }
           end
 
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
 
@@ -322,16 +324,17 @@ describe ServiceProviderHelper do
         describe 'it is just empty strings with whitespace' do
           let(:help_text) do
             {
-              'sign_in' => {'en' => ' '},
-              'sign_up' => {'en' => ' '},
-              'forgot_password' => {'en' => '  '},
+              'sign_in' => { 'en' => ' ' },
+              'sign_up' => { 'en' => ' ' },
+              'forgot_password' => { 'en' => '  ' },
             }
           end
 
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
 
@@ -347,7 +350,8 @@ describe ServiceProviderHelper do
           it 'returns true' do
             service_provider = ServiceProvider.new(help_text:)
             expect(
-              helper.show_minimal_help_text_element?(service_provider)).to be true
+              helper.show_minimal_help_text_element?(service_provider),
+            ).to be true
           end
         end
       end

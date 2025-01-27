@@ -235,7 +235,7 @@ describe 'users' do
       visit team_users_path(team)
       expect(find_all('a', text:'Delete').count).to eq(1)
       click_on 'Delete'
-      expect(current_path).to eq(team_remove_confirm_path(team.id,other_team_member.id))
+      expect(current_path).to eq(team_remove_confirm_path(team.id, other_team_member.id))
     end
 
     scenario 'delete button only present for another team member who is a Partner Admin' do

@@ -1,15 +1,18 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: [:index, :create, :new, :all, :deleted]
-  before_action -> {
-      authorize(service_provider, :member_or_admin?)
-    }, only: %i[update edit show destroy]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
+  before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :authorize_email_nameid_format_allowed, only: %i[create update]
 
+  after_action :verify_authorized
+  after_action :verify_policy_scoped,
+               except: :publish # `#publish` is currently an API call only, so no DB scope required
+
   helper_method :parsed_help_text, :localized_help_text
 
   def index
+    skip_policy_scope # The #scoped_service_providers scope is good enough for now
     all_apps = current_user.scoped_service_providers
 
     prod_apps = all_apps.select { |sp| sp.prod_config == true }
@@ -18,11 +21,28 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = build_service_provider_array(prod_apps, sandbox_apps)
   end
 
-  def create
-    @service_provider = ServiceProvider.new
-    attach_cert
+  def show
+    @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
+  end
 
+  def new
+    @service_provider = policy_scope(ServiceProvider).new
+    authorize @service_provider
+  end
+
+  def edit; end
+
+  def create
+    @service_provider = policy_scope(ServiceProvider).new
+
+    cert = params[:service_provider].delete(:cert)
     @service_provider.assign_attributes(service_provider_params)
+    # We can't properly check authorization until after the user has a chance to assign a team
+    authorize @service_provider
+
+    # Probably better to only attach a cert after checking the user has permission
+    attach_cert(cert)
+
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
@@ -34,14 +54,15 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def update
-    attach_cert
+    cert = params[:service_provider].delete(:cert)
+    attach_cert(cert)
     remove_certificates
 
     service_provider.assign_attributes(service_provider_params)
     attach_logo_file if logo_file_param
     if helpers.help_text_options_enabled?
       help_text = parsed_help_text
-      if !policy(@service_provider).edit_custom_help_text?
+      unless policy(@service_provider).edit_custom_help_text?
         help_text = parsed_help_text.revert_unless_presets_only
       end
       service_provider.help_text = help_text.to_localized_h
@@ -57,20 +78,8 @@ class ServiceProvidersController < AuthenticatedController
     redirect_to service_providers_path
   end
 
-  def new
-    @service_provider = ServiceProvider.new
-  end
-
-  def edit; end
-
-  def show
-    @service_provider_versions = @service_provider.versions.reverse_order
-  end
-
   def all
-    return unless current_user.admin?
-
-    all_apps = ServiceProvider.all.sort_by(&:created_at).reverse
+    all_apps = policy_scope(ServiceProvider).order(created_at: :desc)
 
     prod_apps = all_apps.select { |sp| sp.prod_config == true }
     sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
@@ -79,6 +88,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def publish
+    authorize ServiceProviderUpdater
     if ServiceProviderUpdater.post_update == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
@@ -95,7 +105,11 @@ class ServiceProvidersController < AuthenticatedController
   private
 
   def service_provider
-    @service_provider ||= ServiceProvider.find(params[:id])
+    # TODO: improve the 404 page and let this be a `find` that raises a `NotFound` error,
+    # removing the `not_authorized` error
+    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:id])
+
+    @service_provider || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
   def parsed_help_text
@@ -188,20 +202,20 @@ class ServiceProvidersController < AuthenticatedController
       :app_name,
       :prod_config,
       :email_nameid_format_allowed,
-      attribute_bundle: [],
-      redirect_uris: [],
-      help_text: {},
+      { attribute_bundle: [],
+        redirect_uris: [],
+        help_text: {} },
     ]
     params.require(:service_provider).permit(*permit_params)
   end
 
   # relies on ServiceProvider#certs_are_pems for validation
-  def attach_cert
-    return if params.dig(:service_provider, :cert).blank?
+  def attach_cert(cert)
+    return if cert.blank?
 
     service_provider.certs ||= []
-    crt = params[:service_provider].delete(:cert).read
-    service_provider.certs << crt unless crt.blank?
+    crt = cert.read
+    service_provider.certs << crt if crt.present?
   end
 
   def remove_certificates
@@ -230,7 +244,6 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.remote_logo_key = service_provider.logo_file.key
   end
 
-
   def clear_formatting(service_provider)
     string_attributes = %w[
       issuer
@@ -246,14 +259,12 @@ class ServiceProvidersController < AuthenticatedController
       app_name
     ]
 
-    service_provider.attributes.each do |k,v|
-      v.try(:strip!) unless !string_attributes.include?(k)
+    service_provider.attributes.each do |k, v|
+      v.try(:strip!) if string_attributes.include?(k)
     end
 
-    if service_provider.redirect_uris
-      service_provider.redirect_uris.each do |uri|
-        uri.try(:strip!)
-      end
+    service_provider.redirect_uris&.each do |uri|
+      uri.try(:strip!)
     end
     service_provider
   end
@@ -278,7 +289,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def deleted_service_providers
-    PaperTrail::Version.where(item_type: 'ServiceProvider').
+    policy_scope(PaperTrail::Version).where(item_type: 'ServiceProvider').
                        where(event: 'destroy').
                        where('created_at > ?', 12.months.ago).
                        order(created_at: :desc)
