@@ -403,7 +403,7 @@ feature 'Service Providers CRUD' do
 
     context 'can not view papertrail', :versioning do
       before do
-        allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       end
 
       scenario 'version history is not included on the page' do
@@ -548,7 +548,7 @@ feature 'Service Providers CRUD' do
 
     context 'can view papertrail', :versioning do
       before do
-        allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       end
 
       scenario 'version history is included on the page' do

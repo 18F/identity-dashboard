@@ -220,6 +220,6 @@
   method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
 
 
-<% if policy(PaperTrail::Version).can_view_papertrail? %>
+<% if IdentityConfig.store.access_controls_enabled && policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @service_provider_versions %>
 <% end %>

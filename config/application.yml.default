@@ -21,7 +21,6 @@ access_controls_enabled: true
 edit_button_uses_service_config_wizard: true
 help_text_options_feature_enabled: true
 service_config_wizard_enabled: true
-papertrail_rbac_enabled: true
 
 development:
   dashboard_api_token: test_token
