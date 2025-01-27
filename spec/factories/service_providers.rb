@@ -84,10 +84,16 @@ FactoryBot.define do
       email_nameid_format_allowed { true }
     end
 
-    trait :with_users_team do
-      after(:build) do |service_provider|
-        team = service_provider.user&.teams[0]
-        service_provider.team = team
+    transient do
+      with_team_from_user { nil }
+      after(:build) do |service_provider, context|
+        if context.with_team_from_user
+          if context.with_team_from_user.teams.none?
+            raise ArgumentError, 'FACTORY: `with_team_from_user:` requires a user with a team'
+          end
+
+          service_provider.team = context.with_team_from_user.teams[0]
+        end
       end
     end
   end

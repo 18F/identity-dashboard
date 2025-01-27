@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe ServiceConfigWizardController do
-  let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
+  let(:team) { create(:team, agency:) }
+  let(:user) do
+    user = create(:user, uuid: SecureRandom.uuid, admin: false)
+    create(:user_team, :partner_admin, user:, team: )
+    user
+  end
   let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
   let(:agency) { create(:agency, name: 'GSA') }
-  let(:team) { create(:team, agency:) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
@@ -37,7 +41,7 @@ RSpec.describe ServiceConfigWizardController do
       # with `build``, we get its defaults without saving it to the database. Done this way, we can
       # test that the controller can create a reasonable service_provider that isn't already saved.
       WizardStep.steps_from_service_provider(
-        build(:service_provider, :ready_to_activate, team: create(:team)),
+        build(:service_provider, :ready_to_activate, team:),
         admin,
       )
     end
@@ -388,7 +392,7 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
       WizardStep.steps_from_service_provider(
-        build(:service_provider, :ready_to_activate, team: create(:team)),
+        build(:service_provider, :ready_to_activate, team:),
         user,
       )
     end
@@ -498,7 +502,7 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
           'forgot_password' => { 'en' => non_blank_forgot_password_preset },
         }
         put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text } }
-        new_service_provider = ServiceProvider.last
+        new_service_provider = create(:service_provider, with_team_from_user: user)
         put :create, params: { service_provider: new_service_provider }
         context_to_be_blank = %w[sign_in sign_up forgot_password].sample
         updated_help_text = initial_help_text.merge(context_to_be_blank => { 'en' => 'blank' })
@@ -513,6 +517,40 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
           end
         end
       end
+    end
+  end
+
+  context 'as a user without team write privieleges' do
+    let(:user) do
+      user = create(:user, uuid: SecureRandom.uuid, admin: false)
+      create(:user_team, :partner_readonly, user:, team: )
+      user
+    end
+    let(:service_provider) { create(:service_provider, team:) }
+
+    before do
+      sign_in user
+    end
+
+    it 'cannot create from existing' do
+      service_provider = create(:service_provider, team:)
+      put :create, params: { service_provider: service_provider.id }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'cannot save' do
+      WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
+      default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+      put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'can save on a team with more permissions' do
+      create(:user_team, :partner_admin, user: user, team: create(:team) )
+      WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
+      default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+      put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

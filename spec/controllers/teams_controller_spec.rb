@@ -80,8 +80,10 @@ describe TeamsController do
         )
 
         expect(TeamAuditEvent).to receive(:by_team).
-          with(org, scope: PaperTrail::Version.all).
-          and_return([test_version])
+          with(
+            org,
+            scope: PaperTrail::VersionPolicy::Scope.new(user, PaperTrail::Version).resolve,
+          ).and_return([test_version])
 
         get :show, params: { id: org.id }
 
