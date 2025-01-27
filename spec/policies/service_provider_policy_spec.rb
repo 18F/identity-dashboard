@@ -1,85 +1,171 @@
 require 'rails_helper'
 
 describe ServiceProviderPolicy do
-  let(:admin_user) { create(:admin) }
-  let(:other_user) { create(:restricted_ic) }
-  let(:owner)      { create(:user) }
-  let(:app)        { create(:service_provider, user: owner) }
+  let(:site_admin) { create(:admin) }
+  let(:team) { create(:team) }
+  let(:partner_admin) { create(:user_team, :partner_admin, team:).user }
+  let(:partner_developer) { create(:user_team, :partner_developer, team:).user }
+  let(:partner_readonly) { create(:user_team, :partner_readonly, team:).user }
+  let(:non_team_member) { create(:user) }
+  let(:app) { create(:service_provider, team:) }
 
-  permissions :all? do
-    it 'allows admin to view' do
-      expect(ServiceProviderPolicy).to permit(admin_user, ServiceProvider)
+  shared_examples_for 'allows all team members except Partner Readonly for `object`' do
+    it 'forbids Partner Readonly' do
+      expect(described_class).to_not permit(partner_readonly, object)
     end
 
-    it 'does not allow an owner to view' do
-      expect(ServiceProviderPolicy).to_not permit(owner, ServiceProvider)
+    it 'forbids non-team-member users' do
+      expect(described_class).to_not permit(non_team_member, object)
     end
 
-    it 'does not allow a random user to view' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, ServiceProvider)
+    it 'allows Site Admin' do
+      expect(described_class).to permit(site_admin, object)
+    end
+
+    it 'allows Partner Admin' do
+      expect(described_class).to permit(partner_admin, object)
+    end
+
+    it 'allows Partner Developer' do
+      expect(described_class).to permit(partner_developer, object)
     end
   end
 
-  permissions :create? do
-    it 'allows admin to create Service Provider' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
+  shared_examples_for 'allows site admins only for `object`' do
+    it 'allows admin' do
+      expect(described_class).to permit(site_admin, object)
     end
 
-    it 'allows any user to create Service Provider' do
-      expect(ServiceProviderPolicy).to permit(other_user, app)
+    it 'forbids Partner Admin' do
+      expect(described_class).to_not permit(partner_admin, object)
     end
 
-    it 'allows an unrestricted user to create Service Provider' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
+    it 'forbids Partner Developer' do
+      expect(described_class).to_not permit(partner_developer, object)
+    end
+
+    it 'forbids Partner Readonly' do
+      expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids non-team-member users' do
+      expect(described_class).to_not permit(non_team_member, object)
     end
   end
 
   permissions :index? do
-    it 'allows admin to see an index of Service Providers' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
+    it 'allows Site Admin' do
+      expect(described_class).to permit(site_admin, ServiceProvider)
     end
 
-    it 'allows any user to see an index of Service Providers' do
-      expect(ServiceProviderPolicy).to permit(other_user, app)
+    it 'allows Partner Admin' do
+      expect(described_class).to permit(partner_admin, ServiceProvider)
     end
 
-    it 'allows an unrestricted user to see an index of Service Providers' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
+    it 'allows Partner Developer' do
+      expect(described_class).to permit(partner_developer, ServiceProvider)
+    end
+
+    it 'allows Partner Readonly' do
+      expect(described_class).to permit(partner_readonly, ServiceProvider)
+    end
+
+    it 'allows non-team-member users' do
+      # Policy scopes ensure they'll only see the service providers they have permissions for
+      expect(described_class).to permit(non_team_member, ServiceProvider)
     end
   end
 
-  permissions :member_or_admin? do
-    it 'allows owner or admin to destroy' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
+  permissions :show? do
+    it 'forbids non-team-member users' do
+      expect(described_class).to_not permit(non_team_member, app)
     end
 
-    it 'does not allow random user to destroy' do
-      expect(ServiceProviderPolicy).to_not permit(other_user, app)
+    it 'allows Site Admin' do
+      expect(described_class).to permit(site_admin, app)
     end
 
-    context 'user is a member of the team' do
-      before do
-        app.team.users << other_user
-      end
+    it 'allows Partner Admin' do
+      expect(described_class).to permit(partner_admin, app)
+    end
 
-      it 'allows user to destroy' do
-        expect(ServiceProviderPolicy).to_not permit(other_user, app)
-      end
+    it 'allows Partner Developer' do
+      expect(described_class).to permit(partner_developer, app)
+    end
+
+    it 'allows Partner Readonly' do
+      expect(described_class).to permit(partner_readonly, app)
     end
   end
 
   permissions :new? do
-    it 'allows admin to initiate' do
-      expect(ServiceProviderPolicy).to permit(admin_user, app)
+    it_behaves_like 'allows all team members except Partner Readonly for `object`' do
+      let(:object) { ServiceProvider.new(team:) }
     end
+  end
 
-    it 'allows any user to initiate' do
-      expect(ServiceProviderPolicy).to permit(other_user, app)
+  permissions :edit? do
+    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+      let(:object) { app }
     end
+  end
 
-    it 'allows an unrestricted user to initiate' do
-      expect(ServiceProviderPolicy).to permit(owner, app)
+  permissions :create? do
+    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+      let(:object) { app }
     end
+  end
+
+  permissions :update? do
+    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+      let(:object) { app }
+    end
+  end
+
+  permissions :all? do
+    it_behaves_like 'allows site admins only for `object`' do
+      let(:object) { ServiceProvider }
+    end
+  end
+
+  permissions :deleted? do
+    it_behaves_like 'allows site admins only for `object`' do
+      let(:object) { ServiceProvider }
+    end
+  end
+
+  permissions :edit_custom_help_text? do
+    it_behaves_like 'allows site admins only for `object`' do
+      let(:object) { app }
+    end
+  end
+end
+
+describe ServiceProviderPolicy::Scope do
+  let(:user_double) { object_double(build(:user)) }
+  let(:test_scope) { object_double(ServiceProvider.all) }
+
+  it 'does not filter when admin' do
+    allow(user_double).to receive(:admin?).and_return(true)
+
+    resolution = described_class.new(user_double, test_scope).resolve
+
+    expect(resolution).to be(test_scope)
+  end
+
+  it 'filters by user when not admin' do
+    intermediary_scope = object_spy(ServiceProvider.all)
+    expected_result = ["canary_value_#{rand(1..1000)}"]
+
+    allow(user_double).to receive(:admin?).and_return(false)
+    allow(user_double).to receive(:scoped_service_providers)
+      .with(scope: test_scope)
+      .and_return(intermediary_scope)
+    allow(intermediary_scope).to receive(:reorder).with(nil).and_return(expected_result)
+
+    resolution = described_class.new(user_double, test_scope).resolve
+
+    expect(user_double).to have_received(:admin?)
+    expect(resolution).to be(expected_result)
   end
 end

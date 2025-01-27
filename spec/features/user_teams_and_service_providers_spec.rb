@@ -6,17 +6,18 @@ feature 'Users can access service providers that belong to their user team' do
       scenario 'users in the related user team can see the service provider' do
         team = create(:team)
         user1 = create(:user, teams: [team])
+        not_a_member_team = create(:team)
         user2 = create(:user)
         user_team_app = create(:service_provider, team: team, user: user2)
-        user_created_app = create(:service_provider, user: user1)
-        na_app = create(:service_provider)
+        no_longer_a_member_app = create(:service_provider, user: user1, team: not_a_member_team)
+        other_app = create(:service_provider)
 
         login_as(user1)
         visit service_providers_path
 
         expect(page).to have_content(user_team_app.friendly_name)
-        expect(page).to have_content(user_created_app.friendly_name)
-        expect(page).to_not have_content(na_app.friendly_name)
+        expect(page).to_not have_content(no_longer_a_member_app.friendly_name)
+        expect(page).to_not have_content(other_app.friendly_name)
       end
     end
 

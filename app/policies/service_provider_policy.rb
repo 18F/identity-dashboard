@@ -1,6 +1,37 @@
 class ServiceProviderPolicy < BasePolicy
   attr_reader :user, :record
 
+  def index?
+    true
+  end
+
+  def show?
+    member_or_admin?
+  end
+
+  def new?
+    admin? || user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'Partner Developer') ||
+        membership.role == Role.find_by(name: 'Partner Admin')
+    end
+  end
+
+  def edit?
+    admin? || (membership && !partner_read_only?)
+  end
+
+  def create?
+    admin? || (membership && !partner_read_only?)
+  end
+
+  def update?
+    admin? || (membership && !partner_read_only?)
+  end
+
+  def destroy?
+    member_or_admin?
+  end
+
   def all?
     admin?
   end
@@ -9,34 +40,30 @@ class ServiceProviderPolicy < BasePolicy
     admin?
   end
 
-  def create?
-    true
-  end
-
-  def index?
-    true
-  end
-
-  def member_or_admin?
-    owner? || admin? || member?
-  end
-
-  def new?
-    true
-  end
-
   def edit_custom_help_text?
     admin?
   end
 
-  private
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if admin?
 
-  def owner?
-    record.user == user
+      user.scoped_service_providers(scope:).reorder(nil)
+    end
   end
 
-  def member?
+  private
+
+  def partner_read_only?
+    membership.role == Role.find_by(name: 'Partner Readonly')
+  end
+
+  def member_or_admin?
+    admin? || !!membership
+  end
+
+  def membership
     team = record.team
-    team.present? && user.teams.include?(team)
+    team && UserTeam.find_by(team:, user:)
   end
 end

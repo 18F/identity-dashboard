@@ -2,8 +2,12 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:user) { create(:user, admin: false) }
   let(:admin) { create(:user, admin: true, group_id: team.id) }
+
+  # Currently must be Partner Admin or Partner Developer to create a service provider
+  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
+  let(:user) { user_membership.user }
+
   let(:custom_help_text) do
     {
       'sign_in' => {
@@ -184,26 +188,27 @@ feature 'Service Config Wizard' do
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
       expect(current_url).to match(service_providers_url(saved_config_data.id)),
-        'failed to redirect to the service provider details page'
+                             'failed to redirect to the service provider details page'
       expected_data.each_key do |key|
         next if key == 'default_aal'
 
-        expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
-          "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
+        expect(saved_config_data[key].to_s)
+          .to eq(expected_data[key].to_s),
+            "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
       end
 
       expect(saved_config_data['default_aal']).to be_nil
 
       expect(saved_config_data['certs']).
         to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
-        'cert failed to save as expected'
+           'cert failed to save as expected'
       expect(page).to have_content(t(
         'notices.service_provider_saved',
         issuer: expected_data['issuer'],
       ))
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
-      'error: draft data not deleted'
+                                                          'error: draft data not deleted'
     end
 
     it 'correctly labels team in error when team is blank' do
@@ -269,9 +274,8 @@ feature 'Service Config Wizard' do
 
     it 'saves standard Help text on edit' do
       existing_config = create(:service_provider,
-                              :ready_to_activate,
-                              help_text: standard_help_text,
-                              user: user)
+                               :ready_to_activate,
+                               help_text: standard_help_text)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
@@ -298,12 +302,10 @@ feature 'Service Config Wizard' do
       end
 
       context 'when setup wizard is already started' do
-        let(:team) { create(:team) }
         let(:new_name) { "Initial Name #{rand(1..1000)}" }
         let(:new_friendly_name) { "Initial Friendly Name #{rand(1..1000)}" }
 
         before do
-          user.teams << team
           visit service_providers_path
           click_on 'Create a new app'
           click_on 'Next'
@@ -342,7 +344,7 @@ feature 'Service Config Wizard' do
       it 'renders Failure to proof URL input if IAL2 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user:)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -353,7 +355,7 @@ feature 'Service Config Wizard' do
       it 'does not render Failure to proof URL input if IAL1 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_1,
-                                 user:)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -366,7 +368,7 @@ feature 'Service Config Wizard' do
       it 'validates Failure to proof URL input' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user:)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -412,9 +414,9 @@ feature 'Service Config Wizard' do
 
     it 'renders read-only with custom Help text' do
       existing_config = create(:service_provider,
-            :ready_to_activate,
-            help_text: custom_help_text,
-            user: user)
+                               :ready_to_activate,
+                               help_text: custom_help_text,
+                               team: team)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
