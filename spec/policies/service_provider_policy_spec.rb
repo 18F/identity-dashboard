@@ -74,6 +74,11 @@ describe ServiceProviderPolicy do
       # Policy scopes ensure they'll only see the service providers they have permissions for
       expect(described_class).to permit(non_team_member, ServiceProvider)
     end
+
+    it 'allows anywone without the RBAC flag' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+      expect(described_class).to permit(non_team_member, ServiceProvider)
+    end
   end
 
   permissions :show? do
@@ -96,11 +101,31 @@ describe ServiceProviderPolicy do
     it 'allows Partner Readonly' do
       expect(described_class).to permit(partner_readonly, app)
     end
+
+    describe 'user owner not in team' do
+      it 'allows with RBAC off' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+        expect(described_class).to permit(non_team_member, app)
+      end
+
+      it 'is ignored with RBAC oon' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+        expect(described_class).to_not permit(non_team_member, app)
+      end
+    end
   end
 
   permissions :new? do
     it_behaves_like 'allows all team members except Partner Readonly for `object`' do
       let(:object) { ServiceProvider.new(team:) }
+    end
+
+    it 'allows Parter Readonly with RBAC off' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+      app = ServiceProvider.new(team:)
+      expect(described_class).to permit(partner_readonly, app)
     end
   end
 
@@ -108,17 +133,51 @@ describe ServiceProviderPolicy do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
       let(:object) { app }
     end
+
+    describe 'user owner not in team' do
+      it 'allows with RBAC off' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+        expect(described_class).to permit(non_team_member, app)
+      end
+
+      it 'is ignored with RBAC oon' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+        expect(described_class).to_not permit(non_team_member, app)
+      end
+    end
   end
 
   permissions :create? do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
       let(:object) { app }
     end
+
+    it 'allows Parter Readonly with RBAC off' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+      app = ServiceProvider.new(team:)
+      expect(described_class).to permit(partner_readonly, app)
+    end
   end
 
   permissions :update? do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
       let(:object) { app }
+    end
+
+    describe 'user owner not in team' do
+      it 'allows with RBAC off' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+        expect(described_class).to permit(non_team_member, app)
+      end
+
+      it 'is ignored with RBAC oon' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+        expect(described_class).to_not permit(non_team_member, app)
+      end
     end
   end
 
