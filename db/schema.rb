@@ -81,6 +81,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_175024) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "name"
+    t.string "friendly_name"
+    t.index ["name"], name: 'index_roles_on_name', unique: true
+  end
+
   create_table "security_events", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid"
