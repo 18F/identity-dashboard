@@ -10,6 +10,8 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def new?
+    return true unless IdentityConfig.store.access_controls_enabled
+
     admin? || user.user_teams.any? do |membership|
       membership.role == Role.find_by(name: 'Partner Developer') ||
         membership.role == Role.find_by(name: 'Partner Admin')
@@ -17,15 +19,21 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def edit?
-    admin? || (membership && !partner_read_only?)
+    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
   end
 
   def create?
-    admin? || (membership && !partner_read_only?)
+    return true unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
   end
 
   def update?
-    admin? || (membership && !partner_read_only?)
+    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
   end
 
   def destroy?
@@ -54,11 +62,13 @@ class ServiceProviderPolicy < BasePolicy
 
   private
 
-  def partner_read_only?
+  def partner_readonly?
     membership.role == Role.find_by(name: 'Partner Readonly')
   end
 
   def member_or_admin?
+    return true if record.user == user && !IdentityConfig.store.access_controls_enabled
+
     admin? || !!membership
   end
 

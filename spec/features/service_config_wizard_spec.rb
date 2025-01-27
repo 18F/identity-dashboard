@@ -429,6 +429,18 @@ feature 'Service Config Wizard' do
     end
   end
 
+  context 'when partner readonly' do
+    let(:user_membership) { create(:user_team, :partner_readonly, team:) }
+    let(:user) { user_membership.user }
+
+    it 'displays an unauthorized page' do
+      login_as user
+      visit new_service_config_wizard_path
+      expect(page).to have_content('Unauthorized')
+      expect(page).to_not have_content('Next')
+    end
+  end
+
   context 'when selecting OIDC' do
     before do
       IdentityConfig.store[:service_config_wizard_enabled] = true

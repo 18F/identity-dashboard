@@ -15,7 +15,9 @@ class ApplicationController < ActionController::Base
   end
 
   def render_401
-    render file: 'public/401.html', status: :unauthorized
+    # Not specifying the layout can cause problems when the `rescue_from` is triggered
+    # from a controller that uses a different layout
+    render layout: 'application', file: 'public/401.html', status: :unauthorized
   end
 
   def user_for_paper_trail
