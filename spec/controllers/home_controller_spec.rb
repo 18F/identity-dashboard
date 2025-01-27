@@ -20,7 +20,7 @@ describe HomeController do
 
       it 'sets canonical url' do
         get :index
-        expect(assigns(:canonical_url)).to eq(nil) 
+        expect(assigns(:canonical_url)).to eq(nil)
       end
     end
 
@@ -37,7 +37,7 @@ describe HomeController do
 
       it 'sets canonical url' do
         get :index
-        expect(assigns(:canonical_url)).not_to be_empty 
+        expect(assigns(:canonical_url)).not_to be_empty
       end
     end
   end
