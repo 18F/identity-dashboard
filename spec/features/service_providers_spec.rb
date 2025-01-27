@@ -401,6 +401,18 @@ feature 'Service Providers CRUD' do
       end
     end
 
+    context 'can not view papertrail', :versioning do
+      before do
+        allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
+      end
+
+      scenario 'version history is included on the page' do 
+        sp = create(:service_provider, :with_team, ial: 1)
+
+        visit service_provider_path(sp)
+        expect(page).to_not have_content('Version History')
+      end
+    end
     # rubocop:enable Layout/LineLength
   end
 
@@ -532,6 +544,19 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to have_content('Contains ial 2 attributes when ial 1 is selected')
+    end
+
+    context 'can view papertrail', :versioning do
+      before do
+        allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
+      end
+
+      scenario 'version history is included on the page' do 
+        sp = create(:service_provider, :with_team, ial: 1)
+
+        visit service_provider_path(sp)
+        expect(page).to have_content('Version History')
+      end
     end
   end
 
