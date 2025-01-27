@@ -406,7 +406,7 @@ feature 'Service Providers CRUD' do
         allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
       end
 
-      scenario 'version history is not included on the page' do 
+      scenario 'version history is not included on the page' do
         sp = create(:service_provider, :with_team, ial: 1)
 
         visit service_provider_path(sp)
@@ -551,7 +551,7 @@ feature 'Service Providers CRUD' do
         allow(IdentityConfig.store).to receive(:papertrail_rbac_enabled).and_return(true)
       end
 
-      scenario 'version history is included on the page' do 
+      scenario 'version history is included on the page' do
         sp = create(:service_provider, :with_team, ial: 1)
 
         visit service_provider_path(sp)
