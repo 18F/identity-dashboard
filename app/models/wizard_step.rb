@@ -337,7 +337,7 @@ class WizardStep < ApplicationRecord
 
   def original_service_provider
     id = WizardStep.find_by(step_name: 'hidden', user: user)&.service_provider_id
-    id && ServiceProvider.find(id)
+    id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
   end
 
   def group_is_valid

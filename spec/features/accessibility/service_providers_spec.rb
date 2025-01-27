@@ -13,7 +13,7 @@ feature 'Service provider pages', :js do
 
     context 'a service provider exists' do
       let(:user) { create(:user, :with_teams) }
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
+      let(:app) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
 
       context 'show page' do
         # admins have access to more features
@@ -52,7 +52,7 @@ feature 'Service provider pages', :js do
     end
 
     context 'service provider exists' do
-      let(:app) { create(:service_provider, :with_users_team, user: user, logo: 'generic.svg') }
+      let(:app) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
 
       context 'show page' do
         scenario 'is accessible' do
@@ -64,8 +64,7 @@ feature 'Service provider pages', :js do
           let(:app) do
             create(:service_provider,
                    :saml,
-                   :with_users_team,
-                   user: user,
+                   with_team_from_user: user,
                    logo: 'generic.svg')
           end
 

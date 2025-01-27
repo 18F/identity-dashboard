@@ -3,7 +3,8 @@ require 'rails_helper'
 describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
   let(:user) { create(:user) }
-  let(:admin_user) { create(:user, admin: true) }
+  let(:site_admin) { create(:user, admin: true) }
+  let(:partner_admin) { create(:user_team, :partner_admin, team: sp.team).user }
   let(:help_text) do
     {
       sign_in: { en: '' },
@@ -13,42 +14,42 @@ describe 'Users::ServiceProviders' do
   end
   describe 'approve on update' do
     it 'disallows app owner from approving the app' do
-      login_as(sp.user)
+      login_as(partner_admin)
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }
 
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
 
     it 'disallows non owner from approving the app' do
-      login_as(user)
+      user_on_the_team = create(:user_team, :partner_developer, team: sp.team).user
+      login_as(user_on_the_team)
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }
 
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
 
-
     it 'allows admin to approve' do
-      login_as(admin_user)
+      login_as(site_admin)
 
       put service_provider_path(sp), params: {
         service_provider: { approved: 'true', help_text: help_text },
       }
 
-      expect(response.status).to eq(302) # redirect on success
+      expect(response).to have_http_status(:found) # redirect on success
       sp.reload
-      expect(sp.approved).to eq(true)
+      expect(sp.approved).to be(true)
     end
   end
 
   describe 'view an app' do
-    it 'allows owner to view' do
-      login_as(sp.user)
+    it 'allows Partner Admin to view' do
+      login_as(partner_admin)
 
       get service_provider_path(sp)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it 'disallows non-owner from viewing' do
@@ -56,15 +57,15 @@ describe 'Users::ServiceProviders' do
 
       get service_provider_path(sp)
 
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
 
     it 'permits admin to view' do
-      login_as(admin_user)
+      login_as(site_admin)
 
       get service_provider_path(sp)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end
