@@ -1,57 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProviderPolicy do
-  let(:site_admin) { create(:admin) }
-  let(:team) { create(:team) }
-  let(:partner_admin) { create(:user_team, :partner_admin, team:).user }
-  let(:partner_developer) { create(:user_team, :partner_developer, team:).user }
-  let(:partner_readonly) { create(:user_team, :partner_readonly, team:).user }
-  let(:non_team_member) { create(:user) }
   let(:app) { create(:service_provider, team:) }
-
-  shared_examples_for 'allows all team members except Partner Readonly for `object`' do
-    it 'forbids Partner Readonly' do
-      expect(described_class).to_not permit(partner_readonly, object)
-    end
-
-    it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
-    end
-
-    it 'allows Site Admin' do
-      expect(described_class).to permit(site_admin, object)
-    end
-
-    it 'allows Partner Admin' do
-      expect(described_class).to permit(partner_admin, object)
-    end
-
-    it 'allows Partner Developer' do
-      expect(described_class).to permit(partner_developer, object)
-    end
-  end
-
-  shared_examples_for 'allows site admins only for `object`' do
-    it 'allows admin' do
-      expect(described_class).to permit(site_admin, object)
-    end
-
-    it 'forbids Partner Admin' do
-      expect(described_class).to_not permit(partner_admin, object)
-    end
-
-    it 'forbids Partner Developer' do
-      expect(described_class).to_not permit(partner_developer, object)
-    end
-
-    it 'forbids Partner Readonly' do
-      expect(described_class).to_not permit(partner_readonly, object)
-    end
-
-    it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
-    end
-  end
 
   permissions :index? do
     it 'allows Site Admin' do

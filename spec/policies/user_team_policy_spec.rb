@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 describe UserTeamPolicy do
-  let(:partner_admin_membership) { create(:user_team, :partner_admin) }
-  let(:partner_developer_membership) { create(:user_team, :partner_developer) }
-  let(:partner_readonly_membership) { create(:user_team, :partner_readonly) }
-  let(:partner_admin) { partner_admin_membership.user }
-  let(:partner_developer) { partner_developer_membership.user }
-  let(:partner_readonly) { partner_readonly_membership.user }
-  let(:site_admin) { build(:admin) }
-  let(:other_user) { build(:restricted_ic) }
+  let(:partner_admin_membership) { UserTeam.find_or_create_by(user: partner_admin, team: team) }
+  let(:partner_developer_membership) do
+    UserTeam.find_or_create_by(user: partner_developer, team: team)
+  end
+  let(:partner_readonly_membership) do
+    UserTeam.find_or_create_by(user: partner_readonly, team: team)
+  end
   let(:without_role_membership) { create(:user_team) }
 
   permissions :manage_team_users? do
@@ -25,7 +24,7 @@ describe UserTeamPolicy do
     end
 
     it 'does not allow a random user to manage team users' do
-      expect(described_class).to_not permit(other_user, without_role_membership)
+      expect(described_class).to_not permit(non_team_member, without_role_membership)
     end
   end
 
