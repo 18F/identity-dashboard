@@ -32,6 +32,6 @@
 </ul>
 <%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
 
-<% if IdentityConfig.store.access_controls_enabled && policy(PaperTrail::Version).can_view_papertrail? %>
+<% policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @audit_events %>
 <% end %>
