@@ -33,6 +33,14 @@ class TeamPolicy < BasePolicy
     in_team? || admin?
   end
 
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if admin?
+
+      scope.where(id: user.teams)
+    end
+  end
+
   private
 
   def in_team?

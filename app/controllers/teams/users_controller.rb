@@ -2,18 +2,27 @@ class Teams::UsersController < AuthenticatedController
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 
+  if IdentityConfig.store.access_controls_enabled
+    after_action :verify_authorized
+    after_action :verify_policy_scoped
+  end
+
   def index
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
   end
 
   def new
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
-    @user = User.new
+    @user = policy_scope(User).new
   end
 
   def create
     if IdentityConfig.store.access_controls_enabled
-      new_membership = UserTeam.build(team: team, user: new_member, role: new_member.primary_role)
+      new_membership = policy_scope(UserTeam).build(
+        team: team,
+        user: new_member,
+        role: new_member.primary_role,
+      )
       authorize new_membership
       new_membership.save!
       flash[:success] = I18n.t('teams.users.create.success', email: member_email)
@@ -23,13 +32,14 @@ class Teams::UsersController < AuthenticatedController
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path and return
   rescue ActiveRecord::RecordInvalid => err
+    skip_authorization
     flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
   end
 
   def remove_confirm
     if IdentityConfig.store.access_controls_enabled
-      membership_to_delete = UserTeam.find_by(user:, team:)
+      membership_to_delete = policy_scope(UserTeam).find_by(user:, team:)
       authorize membership_to_delete
       return
     end
@@ -45,7 +55,7 @@ class Teams::UsersController < AuthenticatedController
     if IdentityConfig.store.access_controls_enabled
       # If unauthorized, the option to delete should not show up in the UI
       # so it is acceptable to return a 401 instead of a redirect here
-      authorize UserTeam.find_by(user:, team:)
+      authorize policy_scope(UserTeam).find_by(user:, team:)
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path and return
@@ -86,7 +96,8 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def current_user_team_membership
-    @current_user_team_membership ||= team.user_teams.find_by(user: current_user) || UserTeam.new
+    @current_user_team_membership ||= policy_scope(team.user_teams).find_by(user: current_user) ||
+                                      policy_scope(UserTeam).new
   end
 
   def authorize_manage_team_users
