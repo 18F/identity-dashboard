@@ -9,28 +9,31 @@
 # The enforcement of permissions should occur through the relevant Pundit policy class for
 # the object the user is accessing.
 #
-class Role
+class Role < ApplicationRecord
   attr_reader :name, :friendly_name
+
+  ROLES = {
+    :login_admin => 'Login.gov Admin',
+    :partner_admin => 'Partner Admin',
+    :partner_dev => 'Partner Developer',
+    :partner_readonly => 'Partner Readonly',
+  }.freeze
+  SITE_ADMIN = ROLES[:login_admin].freeze
 
   # Don't use `Role.new` from outside the class itself.
   # Generally, you'll want to use `Role.find_by` instead
-  def initialize(name:, friendly_name: nil)
-    @name = name
-    @friendly_name = friendly_name || name
-  end
+  # def initialize(name:, friendly_name: nil)
+  #   @name = name
+  #   @friendly_name = friendly_name || name
+  # end
 
-  SITE_ADMIN = new(name: 'Login.gov Admin')
+  # ACTIVE_ROLES = ROLES.each do |r, f|
+  #   new(name: r, friendly_name: f)
+  # end
 
-  ACTIVE_ROLES = [
-    SITE_ADMIN,
-    new(name: 'Partner Admin'),
-    new(name: 'Partner Developer'),
-    new(name: 'Partner Readonly'),
-  ].freeze
-
-  def self.find_by(name:)
-    ACTIVE_ROLES.find { |r| r.name == name }
-  end
+  # def self.find_by(name:)
+  #   ACTIVE_ROLES.find { |r| r.name == name }
+  # end
 
   def legacy_admin?
     name == 'Login.gov Admin'
