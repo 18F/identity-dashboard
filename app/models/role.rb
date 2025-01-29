@@ -13,12 +13,12 @@ class Role < ApplicationRecord
   attr_reader :name, :friendly_name
 
   ROLES = {
-    :login_admin => 'Login.gov Admin',
+    :logingov_admin => 'Login.gov Admin',
     :partner_admin => 'Partner Admin',
     :partner_dev => 'Partner Developer',
     :partner_readonly => 'Partner Readonly',
   }.freeze
-  SITE_ADMIN = ROLES[:login_admin].freeze
+  SITE_ADMIN = ROLES[:logingov_admin].freeze
 
   # Don't use `Role.new` from outside the class itself.
   # Generally, you'll want to use `Role.find_by` instead
@@ -36,6 +36,6 @@ class Role < ApplicationRecord
   # end
 
   def legacy_admin?
-    name == 'Login.gov Admin'
+    name == 'logingov_admin'
   end
 end
