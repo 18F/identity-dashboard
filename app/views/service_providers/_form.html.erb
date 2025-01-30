@@ -263,6 +263,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  hint: I18n.t('service_provider_form.failure_to_proof_url'),
                  required: true %>
 
+  <%= form.input :post_idv_follow_up_url,
+                 input_html: { class: 'usa-input' },
+                 label: 'Post IdV Follow-Up URL',
+                 hint: I18n.t('service_provider_form.post_idv_follow_up_url') %>
+
   <%= form.input :push_notification_url,
                  input_html: { class: 'usa-input' },
                  label: 'Push notification URL',

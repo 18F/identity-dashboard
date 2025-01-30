@@ -197,6 +197,7 @@ class ServiceConfigWizardController < AuthenticatedController
       :metadata_url,
       :return_to_sp_url,
       :failure_to_proof_url,
+      :post_idv_follow_up_url,
       :push_notification_url,
       :signed_response_message_requested,
       :sp_initiated_login_url,
@@ -320,6 +321,7 @@ class ServiceConfigWizardController < AuthenticatedController
       sp_initiated_login_url
       return_to_sp_url
       failure_to_proof_url
+      post_idv_follow_up_url
       push_notification_url
       app_name
     ]
