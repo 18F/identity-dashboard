@@ -10,7 +10,7 @@ describe 'users' do
   let(:partner_admin_team_member) { partner_admin_membership.user }
   let(:readonly_membership) { create(:user_team, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_membership.user }
-  let(:admin_user) { create(:admin) }
+  let(:site_admin) { create(:admin) }
   let(:user) { create(:user) }
 
   before do
@@ -35,13 +35,13 @@ describe 'users' do
 
     scenario 'access permitted to admin (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as admin_user
+      login_as site_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
     scenario 'access permitted to admin' do
-      login_as admin_user
+      login_as site_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
@@ -208,7 +208,7 @@ describe 'users' do
     end
 
     scenario 'access permitted to admin' do
-      login_as admin_user
+      login_as site_admin
       visit team_users_path(team)
       expect(page).to have_content("Manage users for #{team.name}")
     end
@@ -275,6 +275,65 @@ describe 'users' do
       visit team_users_path(team)
       click_on 'Back'
       expect(page).to have_current_path(team_path(team.id))
+    end
+  end
+
+  feature 'modifying team user permissions' do
+    context 'when admin' do
+      before { login_as site_admin }
+
+      it 'allows modifying any user roles' do
+        user_to_change = [partner_admin_team_member, readonly_team_member].sample
+        old_role = UserTeam.find_by(user: user_to_change, team: team).role
+        new_role = (Role::ACTIVE_ROLES - [Role::SITE_ADMIN, old_role]).sample
+
+        visit team_users_path(team)
+
+        # xpath breakdown:
+        # any table row                 # //tr
+        # where                         # [ ]
+        # this element has a child `td` # ./td
+        # where                         # [ ]
+        # its text contains the email   # contains(text(), #{email})
+        within :xpath, "//tr[./td[contains(text(),'#{user_to_change.email}')]]" do
+          click_on 'Edit Role'
+        end
+        choose new_role.friendly_name
+        click_on 'Update'
+        user_to_change.reload
+        actual_role = UserTeam.find_by(user: user_to_change, team: team).role
+        expect(actual_role).to eq(new_role)
+      end
+    end
+
+    context 'when partner admin' do
+      before { login_as partner_admin_team_member }
+
+      it 'does not show edit button for self' do
+        editable_user = [team_member, readonly_team_member].sample
+
+        visit team_users_path(team)
+
+        # xpath breakdown:
+        # any table row                 # //tr
+        # where                         # [ ]
+        # this element has a child `td` # ./td
+        # where                         # [ ]
+        # its text contains the email   # contains(text(), #{email})
+        within :xpath, "//tr[./td[contains(text(),'#{editable_user.email}')]]" do
+          expect(self).to have_link('Edit Role')
+        end
+        within :xpath, "//tr[./td[contains(text(),'#{partner_admin_team_member.email}')]]" do
+          expect(self).to_not have_link('Edit Role')
+        end
+      end
+
+      it 'does not show site admin role' do
+        visit edit_team_user_path(team, team_member)
+        input_item_text = find_all(:xpath, '//li[.//input]').map(&:text)
+        expected_input_text = (Role::ACTIVE_ROLES - [Role::SITE_ADMIN]).map(&:friendly_name)
+        expect(input_item_text).to eq(expected_input_text)
+      end
     end
   end
 end

@@ -19,6 +19,8 @@ class UserTeamPolicy < BasePolicy
     create? && record.user != user
   end
 
+  alias update? edit?
+
   def new?
     create?
   end

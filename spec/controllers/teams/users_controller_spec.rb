@@ -31,7 +31,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to change { UserTeam.count }.by(-1)
+      end.to change(UserTeam, :count).by(-1)
       expect(team.users).to_not include(user_to_delete)
     end
   end
@@ -41,13 +41,13 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to_not change { UserTeam.count }
+      end.to_not(change(UserTeam, :count))
       expect(team.users.reload).to include(user_to_delete)
       expect(response).to be_unauthorized
     end
   end
 
-  context 'logged in' do
+  context 'when logged in' do
     before do
       sign_in user
     end
@@ -73,6 +73,32 @@ describe Teams::UsersController do
 
       describe '#create' do
         it_behaves_like 'can create valid users'
+      end
+
+      describe '#update' do
+        let(:updatable_membership) { create(:user_team, :partner_developer, team:) }
+
+        it 'allows valid roles' do
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'Partner Readonly' },
+          }
+          updatable_membership.reload
+          expect(updatable_membership.role.friendly_name).to eq('Partner Readonly')
+        end
+
+        it 'does not accept invalid roles' do
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'totally-fake-role' },
+          }
+          errors = assigns[:membership].errors.full_messages
+          expect(errors).to eq(['Role name is invalid'])
+          updatable_membership.reload
+          expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
+        end
       end
 
       describe '#remove_confirm' do

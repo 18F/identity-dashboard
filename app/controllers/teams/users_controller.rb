@@ -7,13 +7,21 @@ class Teams::UsersController < AuthenticatedController
     after_action :verify_policy_scoped
   end
 
+  helper_method :roles_for_options, :show_actions?
+
   def index
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
+    @memberships = team.user_teams.includes(:user).order('users.email')
   end
 
   def new
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
     @user = policy_scope(User).new
+  end
+
+  def edit
+    authorize membership
+    @user = membership.user
   end
 
   def create
@@ -35,6 +43,18 @@ class Teams::UsersController < AuthenticatedController
     skip_authorization
     flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
+  end
+
+  def update
+    authorize membership
+    membership.assign_attributes(membership_params)
+    membership.save
+    if membership.errors.any?
+      @user = membership.user
+      render :edit
+    else
+      redirect_to team_users_path(team)
+    end
   end
 
   def remove_confirm
@@ -69,6 +89,16 @@ class Teams::UsersController < AuthenticatedController
     end
   end
 
+  def roles_for_options
+    (Role::ACTIVE_ROLES - [Role::SITE_ADMIN]).map { |r| [r.name, r.friendly_name] }
+  end
+
+  def show_actions?
+    return true unless IdentityConfig.store.access_controls_enabled
+
+    @memberships.any? { |membership| policy(membership).destroy? || policy(membership).edit? }
+  end
+
   private
 
   def member_email
@@ -91,13 +121,23 @@ class Teams::UsersController < AuthenticatedController
     params.require(:user).permit(:email)
   end
 
+  def membership_params
+    params.require(:user_team).permit(:role_name)
+  end
+
   def team
-    @team ||= Team.includes(:users).find(params[:team_id])
+    @team ||= policy_scope(Team).find_by(id: params[:team_id])
   end
 
   def current_user_team_membership
-    @current_user_team_membership ||= policy_scope(team.user_teams).find_by(user: current_user) ||
-                                      policy_scope(UserTeam).new
+    if team
+      @current_user_team_membership = policy_scope(team.user_teams).find_by(user: current_user)
+    end
+    @current_user_team_membership ||= policy_scope(UserTeam).new
+  end
+
+  def membership
+    @membership ||= policy_scope(UserTeam).find_by(user:, team:)
   end
 
   def authorize_manage_team_users

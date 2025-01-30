@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action -> { authorize User, :manage_users? }, except: %i[edit update none]
+  before_action -> { authorize User, :manage_users? }, except: %i[none]
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
   after_action :verify_policy_scoped
@@ -16,7 +16,6 @@ class UsersController < ApplicationController
 
   def edit
     @user = policy_scope(User).find_by(id: params[:id])
-    authorize(@user || User)
     @user_team = @user && @user.user_teams.first
     populate_role_if_missing
   end
@@ -34,7 +33,6 @@ class UsersController < ApplicationController
 
   def update
     @user = policy_scope(User).find_by(id: params[:id])
-    authorize(user || User)
 
     role = Role.find_by(name: user_params.delete(:user_team)&.dig(:role_name))
     user_params[:admin] = role.legacy_admin? if role

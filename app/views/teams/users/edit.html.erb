@@ -1,0 +1,26 @@
+<h1 class="usa-display">
+  Edit user
+  <% if @user.first_name && @user.last_name %>
+    <%= "#{@user.first_name} #{@user.last_name} (#{@user.email})" %>
+  <% else %>
+    <%= @user.email %>
+  <% end %>
+</h1>
+
+<%= simple_form_for(@membership, url: team_user_path(@membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
+  <%= form.error_notification %>
+  <fieldset class="usa-fieldset margin-top-3">
+    <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
+    <p><%= t('users.rbac_description_html') %></p>
+    <%= render partial: 'components/radio_collection', locals: {
+      form: form,
+      db_fieldname: :role_name,
+      describedby: 'rbac_description',
+      inputs: roles_for_options,
+      default: @membership.role_name
+    } %>
+  </fieldset>
+  <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
+  <%= link_to t('forms.buttons.cancel'), users_path,
+              class: 'usa-button usa-button--outline float-left' %>
+<% end %>
