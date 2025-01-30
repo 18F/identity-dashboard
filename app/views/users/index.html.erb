@@ -36,7 +36,7 @@
                           role: 'img' %></td>
         <td>
           <% if IdentityConfig.store.access_controls_enabled %>
-            <%= user.primary_role.friendly_name %>
+            <%= user.primary_role['friendly_name'] %>
           <% else %>
             <%= image_tag 'security-key.svg',
                             height: '27', width: '27',

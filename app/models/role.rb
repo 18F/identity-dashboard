@@ -12,28 +12,16 @@
 class Role < ApplicationRecord
   attr_reader :name, :friendly_name
 
-  ROLES = {
-    :logingov_admin => 'Login.gov Admin',
-    :partner_admin => 'Partner Admin',
-    :partner_dev => 'Partner Developer',
-    :partner_readonly => 'Partner Readonly',
+  ACTIVE_ROLES = {
+    'logingov_admin': 'Login.gov Admin',
+    'partner_admin': 'Partner Admin',
+    'partner_dev': 'Partner Developer',
+    'partner_readonly': 'Partner Readonly',
   }.freeze
-  SITE_ADMIN = ROLES[:logingov_admin].freeze
-
-  # Don't use `Role.new` from outside the class itself.
-  # Generally, you'll want to use `Role.find_by` instead
-  # def initialize(name:, friendly_name: nil)
-  #   @name = name
-  #   @friendly_name = friendly_name || name
-  # end
-
-  # ACTIVE_ROLES = ROLES.each do |r, f|
-  #   new(name: r, friendly_name: f)
-  # end
-
-  # def self.find_by(name:)
-  #   ACTIVE_ROLES.find { |r| r.name == name }
-  # end
+  SITE_ADMIN = {
+    'name': 'logingov_admin',
+    'friendly_name': ACTIVE_ROLES['logingov_admin'],
+  }.freeze
 
   def legacy_admin?
     name == 'logingov_admin'
