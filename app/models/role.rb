@@ -13,14 +13,14 @@ class Role < ApplicationRecord
   attr_reader :name, :friendly_name
 
   ACTIVE_ROLES = {
-    'logingov_admin': 'Login.gov Admin',
-    'partner_admin': 'Partner Admin',
-    'partner_dev': 'Partner Developer',
-    'partner_readonly': 'Partner Readonly',
+    :logingov_admin => 'Login.gov Admin',
+    :partner_admin => 'Partner Admin',
+    :partner_developer => 'Partner Developer',
+    :partner_readonly => 'Partner Readonly',
   }.freeze
   SITE_ADMIN = {
-    'name': 'logingov_admin',
-    'friendly_name': ACTIVE_ROLES['logingov_admin'],
+    :name => :logingov_admin,
+    :friendly_name => ACTIVE_ROLES[:logingov_admin],
   }.freeze
 
   def legacy_admin?

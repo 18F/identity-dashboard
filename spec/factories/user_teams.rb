@@ -4,15 +4,15 @@ FactoryBot.define do
     team
 
     trait :partner_admin do
-      role_name { 'Partner Admin' }
+      role_name { 'partner_admin' }
     end
 
     trait :partner_developer do
-      role_name { 'Partner Developer' }
+      role_name { 'partner_developer' }
     end
 
     trait :partner_readonly do
-      role_name { 'Partner Readonly' }
+      role_name { 'partner_readonly' }
     end
   end
 end
