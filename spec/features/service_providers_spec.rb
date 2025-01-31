@@ -1,10 +1,20 @@
 require 'rails_helper'
 
 feature 'Service Providers CRUD' do
-  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample) }
-  let(:user) { user_membership.user }
-  let(:team) { user_membership.team }
+  let(:team) { create(:team) }
+  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
+  let(:user) { 
+    user_membership.user[:group_id] = team.id
+    user_membership.user 
+  }
   let(:user_to_log_in_as) { user }
+  
+  let(:admin_membership) { create(:user_team, role: :logingov_admin, team:) }
+  let(:admin) {
+    admin_membership.user[:admin] = true
+    admin_membership.user[:group_id] = team.id
+    admin_membership.user
+  }
 
   before do
     login_as user_to_log_in_as
@@ -15,6 +25,8 @@ feature 'Service Providers CRUD' do
   end
   # Tests with :js require JavaScript to ensure protocol fields are properly toggled
   context 'with a regular user' do
+    let(:user_to_log_in_as) { user }
+
     scenario 'can create service provider' do
       visit new_service_provider_path
 
@@ -419,7 +431,6 @@ feature 'Service Providers CRUD' do
   end
 
   context 'with an admin user' do
-    let(:admin) { create(:admin) }
     let(:user_to_log_in_as) { admin }
 
     scenario 'can view SP with no team', :versioning do
@@ -507,7 +518,6 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
-      admin = create(:admin)
       sp = create(:service_provider, :with_team)
       login_as(admin)
 
@@ -563,6 +573,8 @@ feature 'Service Providers CRUD' do
   end
 
   describe 'Update' do
+    let(:user_to_log_in_as) { user }
+
     scenario 'user updates service provider' do
       app = create(:service_provider, with_team_from_user: user)
 
@@ -689,6 +701,8 @@ feature 'Service Providers CRUD' do
   end
 
   describe 'starting on the `show` page' do
+    let(:user_to_log_in_as) { user }
+
     let(:sp) { create(:service_provider, team:) }
 
     before do
@@ -737,6 +751,7 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Delete' do
+    let(:user_to_log_in_as) { user }
     app = create(:service_provider, team:)
 
     visit service_provider_path(app)

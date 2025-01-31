@@ -174,18 +174,18 @@ describe User do
 
   describe '#primary_role' do
     it 'returns Partner Admin if the user has no teams yet' do
-      expect(user.primary_role.friendly_name).to eq('Partner Admin')
+      expect(user.primary_role.friendly_name).to eq('partner_admin')
     end
 
     it 'returns "Login.gov Admin" if the admin boolean is set' do
       user = build(:user, admin: true)
-      expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
+      expect(user.primary_role.friendly_name).to eq('logingov_admin')
     end
 
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
       first_team = user.user_teams.first
-      expected_role = Role.find_by(name: ['Login.gov Admin', 'Partner Admin'].sample)
+      expected_role = Role.find_by(name: ['logingov_admin', 'partner_admin'].sample)
       first_team.role = expected_role
       first_team.save
       expect(user.primary_role).to eq(expected_role)
