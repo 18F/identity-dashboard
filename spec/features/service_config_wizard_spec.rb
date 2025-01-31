@@ -2,13 +2,15 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:admin) { create(:user, admin: true, group_id: team.id) }
+  let(:admin_membership) { create(:user_team, role: :logingov_admin, team:) }
+  let(:admin) {
+    admin_membership.user[:admin] = true
+    admin_membership.user[:group_id] = team.id
+    admin_membership.user
+  }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
-  let(:user_membership) { 
-    binding.pry
-    create(:user_team, [:partner_admin, :partner_developer].sample, team:)
-  }
+  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
   let(:user) { user_membership.user }
 
   let(:custom_help_text) do
