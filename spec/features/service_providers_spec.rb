@@ -2,11 +2,12 @@ require 'rails_helper'
 
 feature 'Service Providers CRUD' do
   let(:team) { create(:team) }
-  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
-  let(:user) { 
+  let(:user_membership) { create(:user_team, role: [:partner_admin, :partner_developer].sample, team:) }
+  let(:user) {
     user_membership.user[:group_id] = team.id
-    user_membership.user 
+    user_membership.user
   }
+
   let(:user_to_log_in_as) { user }
   
   let(:admin_membership) { create(:user_team, role: :logingov_admin, team:) }
@@ -25,8 +26,6 @@ feature 'Service Providers CRUD' do
   end
   # Tests with :js require JavaScript to ensure protocol fields are properly toggled
   context 'with a regular user' do
-    let(:user_to_log_in_as) { user }
-
     scenario 'can create service provider' do
       visit new_service_provider_path
 
@@ -751,7 +750,6 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Delete' do
-    let(:user_to_log_in_as) { user }
     app = create(:service_provider, team:)
 
     visit service_provider_path(app)

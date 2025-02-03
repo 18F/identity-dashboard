@@ -8,5 +8,11 @@ class CreateRoles < ActiveRecord::Migration[7.1]
 
       t.index :name
     end
+
+    reversible do |direction|
+      direction.up do
+        Role.initialize_roles
+      end
+    end
   end
 end

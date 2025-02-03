@@ -12,6 +12,8 @@
 class Role < ApplicationRecord
   attr_reader :name, :friendly_name
 
+  belongs_to :user_team
+
   ACTIVE_ROLES = {
     :logingov_admin => 'Login.gov Admin',
     :partner_admin => 'Partner Admin',
@@ -25,5 +27,14 @@ class Role < ApplicationRecord
 
   def legacy_admin?
     name == 'logingov_admin'
+  end
+
+  def initialize_roles
+    Role::ACTIVE_ROLES.each do |name, friendly_name|
+      if !Role.find_by(name:)
+        Role.create(name:, friendly_name:)
+        puts "#{name} added to roles as #{friendly_name}"
+      end
+    end
   end
 end
