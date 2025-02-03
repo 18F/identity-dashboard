@@ -3,7 +3,7 @@ class UserTeam < ApplicationRecord
 
   has_paper_trail on: %i[create update destroy]
 
-  belongs_to :role, foreign_key: 'role_name', primary_key: 'name'
+  belongs_to :role, foreign_key: 'role_name', primary_key: 'name', optional: true
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :user_teams
 
@@ -19,13 +19,5 @@ class UserTeam < ApplicationRecord
       return false
     end
     true
-  end
-
-  def role=(new_role)
-    self.role_name = new_role.name
-  end
-
-  def role
-    Role.find_by(name: role_name)
   end
 end

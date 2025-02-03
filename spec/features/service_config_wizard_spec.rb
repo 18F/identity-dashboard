@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:admin_membership) { create(:user_team, role: :logingov_admin, team:) }
+  let(:admin_membership) { create(:user_team, role_name: :logingov_admin, team:) }
   let(:admin) {
     admin_membership.user[:admin] = true
     admin_membership.user[:group_id] = team.id

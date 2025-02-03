@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Service Providers CRUD' do
   let(:team) { create(:team) }
-  let(:user_membership) { create(:user_team, role: [:partner_admin, :partner_developer].sample, team:) }
+  let(:user_membership) { create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team:) }
   let(:user) {
     user_membership.user[:group_id] = team.id
     user_membership.user
@@ -10,7 +10,7 @@ feature 'Service Providers CRUD' do
 
   let(:user_to_log_in_as) { user }
   
-  let(:admin_membership) { create(:user_team, role: :logingov_admin, team:) }
+  let(:admin_membership) { create(:user_team, role_name: :logingov_admin, team:) }
   let(:admin) {
     admin_membership.user[:admin] = true
     admin_membership.user[:group_id] = team.id
