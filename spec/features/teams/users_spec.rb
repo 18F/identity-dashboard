@@ -98,6 +98,7 @@ describe 'users' do
     end
 
     scenario 'team member adds new user' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       email_to_add = 'new_user@example.com'
       fill_in 'Email', with: email_to_add
       click_on 'Add'
@@ -113,6 +114,7 @@ describe 'users' do
     end
 
     scenario 'team member adds existing user not member of team' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       fill_in 'Email', with: user.email
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
