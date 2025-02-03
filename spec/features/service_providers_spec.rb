@@ -517,8 +517,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
+      user_to_log_in_as admin
       sp = create(:service_provider, :with_team)
-      login_as(admin)
 
       visit edit_service_provider_path(sp)
       check 'service_provider_allow_prompt_login'

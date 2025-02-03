@@ -10,9 +10,7 @@
 # the object the user is accessing.
 #
 class Role < ApplicationRecord
-  attr_reader :name, :friendly_name
-
-  belongs_to :user_team
+  has_many :user_team
 
   ACTIVE_ROLES = {
     :logingov_admin => 'Login.gov Admin',
@@ -29,7 +27,7 @@ class Role < ApplicationRecord
     name == 'logingov_admin'
   end
 
-  def initialize_roles
+  def self.initialize_roles
     Role::ACTIVE_ROLES.each do |name, friendly_name|
       if !Role.find_by(name:)
         Role.create(name:, friendly_name:)
