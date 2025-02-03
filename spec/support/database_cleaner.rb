@@ -3,6 +3,12 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
   end
 
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = DatabaseCleaner::ActiveRecord::Truncation.new(
+      except: ['roles']
+    )
+  end
+
   config.before(:each) do
     DatabaseCleaner.start
   end
