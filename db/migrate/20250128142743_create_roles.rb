@@ -8,7 +8,7 @@ class CreateRoles < ActiveRecord::Migration[7.1]
 
       t.index :name
     end
-
+    # initialize default roles when migrating into DB
     reversible do |direction|
       direction.up do
         Role.initialize_roles
