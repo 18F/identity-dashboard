@@ -17,6 +17,9 @@ class Role < ApplicationRecord
     partner_readonly: 'Partner Readonly',
   }.freeze
 
+  has_many :user_teams,
+           dependent: :nullify, foreign_key: 'role_name', primary_key: 'name', inverse_of: :role
+
   def self.site_admin
     @site_admin ||= Role.find_by!(name: :logingov_admin)
   end
@@ -25,13 +28,9 @@ class Role < ApplicationRecord
     name == 'logingov_admin'
   end
 
-  def self.initialize_roles(&block)
-    logger = block_given? ? block : ->(event_log) { Rails.logger.info event_log }
+  def self.initialize_roles
     Role::ACTIVE_ROLES_NAMES.each do |name, friendly_name|
-      unless Role.find_by(name:)
-        Role.create(name:, friendly_name:)
-        logger.call "#{name} added to roles as #{friendly_name}"
-      end
+      Role.create(name:, friendly_name:) unless Role.find_by(name:)
     end
   end
 end
