@@ -12,11 +12,11 @@
 class Role < ApplicationRecord
   has_many :user_team
 
-  ACTIVE_ROLES = {
-    :logingov_admin => 'Login.gov Admin',
-    :partner_admin => 'Partner Admin',
-    :partner_developer => 'Partner Developer',
-    :partner_readonly => 'Partner Readonly',
+  ACTIVE_ROLES_NAMES = {
+    logingov_admin: 'Login.gov Admin',
+    partner_admin: 'Partner Admin',
+    partner_developer: 'Partner Developer',
+    partner_readonly: 'Partner Readonly',
   }.freeze
   SITE_ADMIN = Role.find_by(name: :logingov_admin)
 

@@ -5,7 +5,7 @@ RSpec.configure do |config|
 
   config.before(:each, js: true) do
     DatabaseCleaner.strategy = DatabaseCleaner::ActiveRecord::Truncation.new(
-      except: ['roles']
+      except: ['roles'],
     )
   end
 

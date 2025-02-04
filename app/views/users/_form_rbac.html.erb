@@ -9,7 +9,7 @@
       form: ut_form,
       db_fieldname: :role_name,
       describedby: 'rbac_description',
-      inputs: Role::ACTIVE_ROLES.map {|n,f| [f,n]},
+      inputs: Role::ACTIVE_ROLES_NAMES.map {|n,f| [f,n]},
       default: @user_team.role_name
     } %>
   <% end %>

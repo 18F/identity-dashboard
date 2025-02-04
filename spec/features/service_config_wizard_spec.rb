@@ -199,7 +199,7 @@ feature 'Service Config Wizard' do
 
         expect(saved_config_data[key].to_s)
           .to eq(expected_data[key].to_s),
-            "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
+              "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
       end
 
       expect(saved_config_data['default_aal']).to be_nil
@@ -300,7 +300,7 @@ feature 'Service Config Wizard' do
     describe 'starting at the service provider index' do
       let(:first_step) { ServiceConfigWizardController::STEPS[0] }
 
-      it 'will go to the first wizard step' do
+      it 'goes to the first wizard step' do
         visit service_providers_path
         click_on 'Create a new app'
         expect(page).to have_current_path(service_config_wizard_path(first_step))
@@ -326,7 +326,7 @@ feature 'Service Config Wizard' do
 
           visit service_providers_path
           click_on 'Create a new app'
-          expect(current_path).to eq(service_config_wizard_path(first_step))
+          expect(page).to have_current_path(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
           expect(saved_steps).to be(0)
         end
