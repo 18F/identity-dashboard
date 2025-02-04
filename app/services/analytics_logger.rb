@@ -24,7 +24,7 @@ class AnalyticsLogger
     data = {
       visit_token: visit_token,
       user_id: user.try(:uuid),
-      user_role: user.try(:primary_role),
+      user_role: user&.primary_role&.name,
       name: name.to_s,
       properties: properties,
       time: options[:time] || Time.current,

@@ -72,7 +72,7 @@ describe UsersController do
           editing_user.admin = false
           editing_user.save!
           get :edit, params: { id: editing_user.id }
-          expect(assigns['user_team'].role_name).to eq('Partner Admin')
+          expect(assigns['user_team'].role_name).to eq('partner_admin')
         end
       end
     end
@@ -101,11 +101,11 @@ describe UsersController do
           expect(ut.role_name).to be_nil
         end
         patch :update, params: { id: user_to_edit, user: {
-          user_team: { role_name: 'Partner Admin' },
+          user_team: { role_name: 'partner_admin' },
         } }
         user_to_edit.reload
         user_to_edit.user_teams.each do |ut|
-          expect(ut.role_name).to eq('Partner Admin')
+          expect(ut.role_name).to eq('partner_admin')
         end
       end
     end
