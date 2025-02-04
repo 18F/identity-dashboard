@@ -67,7 +67,7 @@ class User < ApplicationRecord
   end
 
   def primary_role
-    return Role::SITE_ADMIN if admin?
+    return Role.site_admin if admin?
 
     user_teams.first&.role || Role.find_by(name: 'partner_admin')
   end
