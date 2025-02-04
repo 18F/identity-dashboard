@@ -2,7 +2,7 @@ class DropRoles < ActiveRecord::Migration[7.1]
   def change
     # The table never got deployed to production but it did get
     # into staging environments, so it should be rolled back properly
-    drop_table :roles do |t|
+    drop_table :roles, if_exists: true do |t|
       t.string :name, null: false
 
       t.timestamps
