@@ -24,11 +24,12 @@ class Role < ApplicationRecord
     name == 'logingov_admin'
   end
 
-  def self.initialize_roles
-    Role::ACTIVE_ROLES.each do |name, friendly_name|
-      if !Role.find_by(name:)
+  def self.initialize_roles(&block)
+    logger = block_given? ? block : ->(event_log) { Rails.logger.info event_log }
+    Role::ACTIVE_ROLES_NAMES.each do |name, friendly_name|
+      unless Role.find_by(name:)
         Role.create(name:, friendly_name:)
-        puts "#{name} added to roles as #{friendly_name}"
+        logger.call "#{name} added to roles as #{friendly_name}"
       end
     end
   end

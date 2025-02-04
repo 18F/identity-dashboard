@@ -11,7 +11,7 @@ class CreateRoles < ActiveRecord::Migration[7.1]
     # initialize default roles when migrating into DB
     reversible do |direction|
       direction.up do
-        Role.initialize_roles
+        Role.initialize_roles { |event_log| puts event_log }
       end
     end
   end
