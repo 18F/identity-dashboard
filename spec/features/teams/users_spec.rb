@@ -121,6 +121,15 @@ describe 'users' do
       team_member_emails = team.reload.users.map(&:email)
       expect(team_member_emails).to include(user.email)
     end
+
+    scenario 'add a user not yet in the system' do
+      random_email = "random_user_#{rand(1..1000)}@gsa.gov"
+      fill_in 'Email', with: random_email
+      click_on 'Add'
+      expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+      team_member_emails = team.reload.users.map(&:email)
+      expect(team_member_emails).to include(random_email)
+    end
   end
 
   feature 'remove team user page access' do

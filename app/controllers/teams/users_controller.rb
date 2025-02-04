@@ -13,7 +13,7 @@ class Teams::UsersController < AuthenticatedController
 
   def create
     if IdentityConfig.store.access_controls_enabled
-      new_membership = UserTeam.build(team: team, user: new_member, role_name: new_member.primary_role)
+      new_membership = UserTeam.build(team: team, user: new_member, role: new_member.primary_role)
       authorize new_membership
       new_membership.save!
       flash[:success] = I18n.t('teams.users.create.success', email: member_email)
