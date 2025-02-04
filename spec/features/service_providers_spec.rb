@@ -2,20 +2,13 @@ require 'rails_helper'
 
 feature 'Service Providers CRUD' do
   let(:team) { create(:team) }
-  let(:user_membership) { create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team:) }
-  let(:user) {
-    user_membership.user[:group_id] = team.id
-    user_membership.user
-  }
+  let(:user_membership) do
+    create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: team)
+  end
+  let(:user) { user_membership.user }
+  let(:admin) { create(:admin) }
 
   let(:user_to_log_in_as) { user }
-  
-  let(:admin_membership) { create(:user_team, role_name: :logingov_admin, team:) }
-  let(:admin) {
-    admin_membership.user[:admin] = true
-    admin_membership.user[:group_id] = team.id
-    admin_membership.user
-  }
 
   before do
     login_as user_to_log_in_as
@@ -517,7 +510,6 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
-      user_to_log_in_as = admin
       sp = create(:service_provider, :with_team)
 
       visit edit_service_provider_path(sp)

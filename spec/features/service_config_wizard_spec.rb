@@ -2,12 +2,7 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:admin_membership) { create(:user_team, role_name: :logingov_admin, team:) }
-  let(:admin) {
-    admin_membership.user[:admin] = true
-    admin_membership.user[:group_id] = team.id
-    admin_membership.user
-  }
+  let(:admin) { create(:admin, :with_teams) }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
   let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
@@ -63,7 +58,8 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
-      select(Team.find(admin.group_id).name, from: 'Team')
+      team_to_pick = admin.teams.sample
+      select(team_to_pick.name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
@@ -99,11 +95,12 @@ feature 'Service Config Wizard' do
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
+      team_to_pick = admin.teams.sample
       # These are expected values, listed in the order the currently appear in the step forms
       # These are all required values that we'll fill in, or expected default values
       expected_data = {
         # settings
-        'group_id' => admin.group_id, # required
+        'group_id' => team_to_pick.id, # required
         'prod_config' => 'false',
         'app_name' => 'my-app', # required
         'friendly_name' => 'My App', # required
@@ -162,8 +159,8 @@ feature 'Service Config Wizard' do
       fill_in('App name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
       team_field = find_field('Team')
-      select(Team.find(admin.group_id).name, from: 'Team')
-      expect(team_field.value).to eq(admin.group_id.to_s)
+      select(team_to_pick.name, from: 'Team')
+      expect(team_field.value).to eq(team_to_pick.id.to_s)
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
