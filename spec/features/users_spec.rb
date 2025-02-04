@@ -4,11 +4,11 @@ def flag_in
   allow(IdentityConfig.store).to receive_messages(access_controls_enabled: true)
 end
 
-feature 'admin manages users' do
+feature 'login.gov admin manages users' do
   scenario 'manage user page accessible from nav bar link' do
-    admin = create(:admin)
+    logingov_admin = create(:logingov_admin)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit service_providers_path
     click_on 'Users'
 
@@ -16,10 +16,10 @@ feature 'admin manages users' do
   end
 
   scenario 'user index page shows all users' do
-    admin = create(:admin)
+    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit users_path
 
     users.each do |user|
@@ -29,12 +29,12 @@ feature 'admin manages users' do
 
   scenario 'rbac flag index page shows user table' do
     flag_in
-    admin = create(:admin)
+    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
-    everyone = [admin, users].flatten
+    everyone = [logingov_admin, users].flatten
     headings = ['Email', 'Signed in', 'Role', 'Actions']
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit users_path
 
     headings.each do |heading|
@@ -46,23 +46,23 @@ feature 'admin manages users' do
     end
   end
 
-  scenario 'admin can delete unconfirmed users' do
-    admin = create(:admin)
+  scenario 'login.gov admin can delete unconfirmed users' do
+    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
     users[1].update(created_at: 20.days.ago)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit users_path
 
     click_on t('forms.buttons.remove_unconfirmed_users')
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  scenario 'admin edits users' do
-    admin = create(:admin)
+  scenario 'logingov_admin edits users' do
+    logingov_admin = create(:logingov_admin)
     user = create(:user)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit users_path
     expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
     find("a[href='#{edit_user_path(user)}']").click
@@ -79,14 +79,14 @@ feature 'admin manages users' do
 
   scenario 'rbac flag shows edit user permissions' do
     flag_in
-    admin = create(:admin)
+    logingov_admin = create(:logingov_admin)
     roles = ['Login.gov Admin',
-            'Partner Admin',
-            'Partner Developer',
-            'Partner Readonly']
+             'Partner Admin',
+             'Partner Developer',
+             'Partner Readonly']
 
-    login_as(admin)
-    visit edit_user_path(admin.id)
+    login_as(logingov_admin)
+    visit edit_user_path(logingov_admin.id)
 
     expect(page).to have_content('Permissions')
     radio_labels = find_all('.usa-radio__label').map(&:text)

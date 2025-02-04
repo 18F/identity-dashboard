@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
   let(:user) { create(:user) }
-  let(:site_admin) { create(:user, admin: true) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:partner_admin) { create(:user_team, :partner_admin, team: sp.team).user }
   let(:help_text) do
     {
@@ -30,8 +30,8 @@ describe 'Users::ServiceProviders' do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it 'allows admin to approve' do
-      login_as(site_admin)
+    it 'allows login.gov admin to approve' do
+      login_as(logingov_admin)
 
       put service_provider_path(sp), params: {
         service_provider: { approved: 'true', help_text: help_text },
@@ -60,8 +60,8 @@ describe 'Users::ServiceProviders' do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it 'permits admin to view' do
-      login_as(site_admin)
+    it 'permits login.gov admin to view' do
+      login_as(logingov_admin)
 
       get service_provider_path(sp)
 

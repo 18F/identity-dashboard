@@ -1,7 +1,7 @@
 <h1 class="usa-display">Hello</h1>
 <% if allowlisted_user?(current_user) %>
   <p class='usa-intro'>Access your existing testing and production apps, create new apps, and manage teams with this portal.</p>
-<% elsif current_user.admin? %>
+<% elsif current_user.logingov_admin? %>
   <p class='usa-intro'>Let's help our Partners integrate apps with Login.gov</p>
 <% end %>
 

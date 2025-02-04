@@ -2,7 +2,7 @@ class ToolPolicy < BasePolicy
   attr_reader :user, :record
 
   def can_view_request_details?
-    admin? || in_team?
+    logingov_admin? || in_team?
   end
 
   private

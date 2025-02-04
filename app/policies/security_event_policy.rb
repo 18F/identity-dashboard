@@ -2,6 +2,6 @@ class SecurityEventPolicy < BasePolicy
   attr_reader :user, :record
 
   def manage_security_events?
-    admin?
+    logingov_admin?
   end
 end

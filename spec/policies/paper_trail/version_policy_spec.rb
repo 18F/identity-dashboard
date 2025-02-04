@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 describe PaperTrail::VersionPolicy::Scope do
-  let(:site_admin) { create(:admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:regular_user) { create(:user) }
   let(:scope_double) { instance_double(ActiveRecord::Relation) }
 
-  it 'allows everything for site admins' do
-    resolution = described_class.new(site_admin, scope_double).resolve
+  it 'allows everything for login.gov admins' do
+    resolution = described_class.new(logingov_admin, scope_double).resolve
     expect(resolution).to be(scope_double)
   end
 

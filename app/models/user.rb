@@ -16,7 +16,7 @@ class User < ApplicationRecord
   scope :sorted, -> { order(email: :asc) }
 
   def scoped_teams
-    if admin?
+    if logingov_admin?
       Team.all
     else
       teams
@@ -66,9 +66,15 @@ class User < ApplicationRecord
     last_sign_in_at.nil? && created_at < 14.days.ago
   end
 
+  def logingov_admin?
+    # TODO: change this
+    admin?
+  end
+
   def primary_role
-    return Role::SITE_ADMIN if admin?
+    return Role::LOGINGOV_ADMIN if logingov_admin?
 
     user_teams.first&.role || Role.find_by(name: 'partner_admin')
   end
 end
+

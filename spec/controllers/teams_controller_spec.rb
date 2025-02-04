@@ -14,8 +14,8 @@ describe TeamsController do
   end
 
   describe '#new' do
-    context 'when the user is an admin' do
-      before { user.update(admin: true) }
+    context 'when the user is a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :new
@@ -61,10 +61,8 @@ describe TeamsController do
   end
 
   describe '#show' do
-    context 'when admin' do
-      before do
-        user.admin = true
-      end
+    context 'when login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'shows the team template' do
         get :show, params: { id: org.id }
@@ -93,7 +91,7 @@ describe TeamsController do
       end
     end
 
-    context 'when not an admin but a team member' do
+    context 'when a team member not login.gov admin' do
       before do
         org.users << user
       end
@@ -118,7 +116,7 @@ describe TeamsController do
   end
 
   describe '#create' do
-    context 'when the user is not an admin' do
+    context 'when not a login.gov admin' do
       let(:name) { 'unique name' }
 
       context 'and no fed email address' do
@@ -156,10 +154,8 @@ describe TeamsController do
       end
     end
 
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       context 'when it creates successfully' do
         it 'has a redirect response' do
@@ -183,10 +179,8 @@ describe TeamsController do
   end
 
   describe '#destroy' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a redirect response' do
         delete :destroy, params: { id: org.id }
@@ -201,10 +195,8 @@ describe TeamsController do
   end
 
   describe '#edit' do
-    context 'when admin' do
-      before do
-        user.admin = true
-      end
+    context 'when login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
       it 'shows the edit template' do
         get :edit, params: { id: org.id }
         expect(response).to render_template(:edit)
@@ -213,7 +205,6 @@ describe TeamsController do
 
     context 'when not an admin but a team member' do
       before do
-        user.admin = false
         org.users << user
       end
 
@@ -225,10 +216,8 @@ describe TeamsController do
   end
 
   describe '#update' do
-    context 'when user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       context 'when the update is successful' do
         it 'has a redirect response' do
@@ -267,9 +256,8 @@ describe TeamsController do
       end
     end
 
-    context 'when user is not an admin but a member of the team' do
+    context 'when user is not login.gov admin but a member of the team' do
       before do
-        user.admin = false
         org.users << user
       end
 
@@ -295,7 +283,7 @@ describe TeamsController do
       end
     end
 
-    context 'when user is neither a admin nor a team member' do
+    context 'when user is neither a login.gov admin nor a team member' do
       it 'has an unauthorized response' do
         patch :update, params: {
           id: org.id,
