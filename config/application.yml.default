@@ -12,6 +12,7 @@ db_pool: '5'
 dp_reaping_frequency: '10'
 event_log_filename: 'events.log'
 newrelic_license_key: changeme
+prod_like_env: false
 rack_timeout_service_timeout_seconds: '15'
 secret_key_base: changeme
 serve_static_files: 'false'
@@ -35,6 +36,7 @@ production:
   idp_url: changeme
   mailer_domain: changeme
   post_logout_redirect_uri: changeme
+  prod_like_env: true
   saml_sp_issuer: changeme
   saml_sp_private_key: changeme
   saml_sp_private_key_password: changeme
