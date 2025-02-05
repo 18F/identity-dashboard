@@ -15,9 +15,13 @@ RSpec.describe Role, type: :model do
 
     Role.find_each(&:destroy)
     Role.initialize_roles { |message| logger.info message }
-    expect(logger).to have_received(:info).with 'logingov_admin added to roles as Login.gov Admin'
-    expect(logger).to have_received(:info).with 'partner_admin added to roles as Partner Admin'
-    expect(logger).to have_received(:info).with 'partner_developer added to roles as Partner Developer'
-    expect(logger).to have_received(:info).with 'partner_readonly added to roles as Partner Readonly'
+    expect(logger).to have_received(:info)
+      .with 'logingov_admin added to roles as Login.gov Admin'
+    expect(logger).to have_received(:info)
+      .with 'partner_admin added to roles as Partner Admin'
+    expect(logger).to have_received(:info)
+      .with 'partner_developer added to roles as Partner Developer'
+    expect(logger).to have_received(:info)
+      .with 'partner_readonly added to roles as Partner Readonly'
   end
 end
