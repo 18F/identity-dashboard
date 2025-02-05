@@ -30,7 +30,7 @@
         <td><%= membership.user.email %></td>
         <td><%= membership.user.last_sign_in_at || "Never" %></td>
         <% if IdentityConfig.store.access_controls_enabled %>
-          <td><%= membership.role_name %></td>
+          <td><%= membership.role&.friendly_name %></td>
         <% end %>
         <% if show_actions? %>
           <td>

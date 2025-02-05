@@ -90,7 +90,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    (Role::ACTIVE_ROLES - [Role::SITE_ADMIN]).map { |r| [r.name, r.friendly_name] }
+    (Role.all - [Role::SITE_ADMIN]).map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?

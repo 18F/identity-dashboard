@@ -82,10 +82,10 @@ describe Teams::UsersController do
           put :update, params: {
             team_id: team.id,
             id: updatable_membership.user.id,
-            user_team: { role_name: 'Partner Readonly' },
+            user_team: { role_name: 'partner_readonly' },
           }
           updatable_membership.reload
-          expect(updatable_membership.role.friendly_name).to eq('Partner Readonly')
+          expect(updatable_membership.role.name).to eq('partner_readonly')
         end
 
         it 'does not accept invalid roles' do

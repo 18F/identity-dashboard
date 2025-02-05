@@ -285,7 +285,7 @@ describe 'users' do
       it 'allows modifying any user roles' do
         user_to_change = [partner_admin_team_member, readonly_team_member].sample
         old_role = UserTeam.find_by(user: user_to_change, team: team).role
-        new_role = (Role::ACTIVE_ROLES - [Role::SITE_ADMIN, old_role]).sample
+        new_role = (Role.all - [Role::SITE_ADMIN, old_role]).sample
 
         visit team_users_path(team)
 
@@ -331,7 +331,7 @@ describe 'users' do
       it 'does not show site admin role' do
         visit edit_team_user_path(team, team_member)
         input_item_text = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_input_text = (Role::ACTIVE_ROLES - [Role::SITE_ADMIN]).map(&:friendly_name)
+        expected_input_text = (Role.all - [Role::SITE_ADMIN]).map(&:friendly_name)
         expect(input_item_text).to eq(expected_input_text)
       end
     end
