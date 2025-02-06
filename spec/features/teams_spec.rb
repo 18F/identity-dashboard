@@ -61,6 +61,7 @@ feature 'User teams CRUD' do
     end
 
     scenario 'User can be added to another team' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       admin = create(:admin)
       user = create(:user)
       team1 = create(:team, users: [user])

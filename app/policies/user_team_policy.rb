@@ -8,11 +8,11 @@ class UserTeamPolicy < BasePolicy
   end
 
   def index?
-    admin? || team_membership && role_name != 'Partner Readonly'
+    admin? || team_membership && role_name != 'partner_readonly'
   end
 
   def create?
-    admin? || role_name == 'Partner Admin'
+    admin? || role_name == 'partner_admin'
   end
 
   def new?
