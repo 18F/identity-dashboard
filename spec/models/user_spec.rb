@@ -185,7 +185,7 @@ describe User do
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
       first_team = user.user_teams.first
-      expected_role = Role.find_by(name: ['Login.gov Admin', 'Partner Admin'].sample)
+      expected_role = Role.find_by(name: ['logingov_admin', 'partner_admin'].sample)
       first_team.role = expected_role
       first_team.save
       expect(user.primary_role).to eq(expected_role)

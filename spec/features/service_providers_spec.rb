@@ -1,9 +1,13 @@
 require 'rails_helper'
 
 feature 'Service Providers CRUD' do
-  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample) }
+  let(:team) { create(:team) }
+  let(:user_membership) do
+    create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: team)
+  end
   let(:user) { user_membership.user }
-  let(:team) { user_membership.team }
+  let(:admin) { create(:admin) }
+
   let(:user_to_log_in_as) { user }
 
   before do
@@ -419,7 +423,6 @@ feature 'Service Providers CRUD' do
   end
 
   context 'with an admin user' do
-    let(:admin) { create(:admin) }
     let(:user_to_log_in_as) { admin }
 
     scenario 'can view SP with no team', :versioning do
@@ -507,9 +510,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
-      admin = create(:admin)
       sp = create(:service_provider, :with_team)
-      login_as(admin)
 
       visit edit_service_provider_path(sp)
       check 'service_provider_allow_prompt_login'
@@ -563,6 +564,8 @@ feature 'Service Providers CRUD' do
   end
 
   describe 'Update' do
+    let(:user_to_log_in_as) { user }
+
     scenario 'user updates service provider' do
       app = create(:service_provider, with_team_from_user: user)
 
@@ -689,6 +692,8 @@ feature 'Service Providers CRUD' do
   end
 
   describe 'starting on the `show` page' do
+    let(:user_to_log_in_as) { user }
+
     let(:sp) { create(:service_provider, team:) }
 
     before do
