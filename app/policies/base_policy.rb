@@ -65,7 +65,7 @@ class BasePolicy
     return admin? unless IdentityConfig.store.access_controls_enabled
 
     admin? || user.user_teams.any? do |membership|
-      membership.role == Role.find_by(name: 'Login.gov Admin')
+      membership.role == Role.find_by(name: 'logingov_admin')
     end
   end
 
@@ -73,7 +73,7 @@ class BasePolicy
     return true unless IdentityConfig.store.access_controls_enabled
 
     user.user_teams.any? do |membership|
-      membership.role == Role.find_by(name: 'Partner Admin')
+      membership.role == Role.find_by(name: 'partner_admin')
     end
   end
 end
