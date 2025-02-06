@@ -52,6 +52,12 @@ class ServiceProviderPolicy < BasePolicy
     admin?
   end
 
+  def ial_read_only?
+    return false unless IdentityConfig.store.access_controls_enabled && IdentityConfig.store.prod_like_env
+
+    !(admin? || membership.role == Role::SITE_ADMIN)
+  end
+
   class Scope < BasePolicy::Scope
     def resolve
       return scope if admin?

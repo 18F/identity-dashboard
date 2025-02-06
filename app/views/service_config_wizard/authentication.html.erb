@@ -5,6 +5,7 @@
 
   <%= render(WizardFieldsetComponent.new(
       form:,
+      disabled: policy(draft_service_provider).ial_read_only?,
       param_name: 'ial',
       input_type: 'radio',
       required: true,
