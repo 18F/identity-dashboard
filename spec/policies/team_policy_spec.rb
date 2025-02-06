@@ -6,19 +6,38 @@ describe TeamPolicy do
   let(:gov_email_user) { build(:user) }
   let(:nongov_email_user) { build(:user, email: 'user@example.com') }
   let(:team) { build(:team) }
+  let(:partner_admin_user) { create(:user_team, :partner_admin).user }
+  let(:partner_developer_user) { create(:user_team, :partner_developer).user }
+  let(:partner_readonly_user) { create(:user_team, :partner_readonly).user }
 
   before do
     team.users << team_user
+    team.users << partner_admin_user
+    team.users << partner_developer_user
+    team.users << partner_readonly_user
+  end
+
+  before do
+    allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
   end
 
   permissions :create? do
     context 'users with gov email addresses' do
-      it 'admin users are allowed to create teams' do
-        expect(TeamPolicy).to permit(admin_user)
+      it 'who are admins or partner admins are allowed to create their team' do
+        expect(TeamPolicy).to permit(admin_user, team)
+        expect(TeamPolicy).to permit(partner_admin_user, team)
       end
 
-      it 'are allowed to create teams' do
-        expect(TeamPolicy).to permit(gov_email_user)
+      it 'who are not partner admins or login admins are not allowed to create teams' do
+        expect(TeamPolicy).to_not permit(team_user, team)
+      end
+
+      context 'if they are admins' do
+        before { gov_email_user.update(admin: true) }
+
+        it 'are allowed to create teams' do
+          expect(TeamPolicy).to permit(gov_email_user)
+        end
       end
     end
 
@@ -35,12 +54,24 @@ describe TeamPolicy do
         end
       end
     end
+
+    context 'if they are not admin or partner admin' do
+      it 'are not allowed to create teams' do
+        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
+        expect(TeamPolicy).to_not permit(partner_developer_user, team)
+      end
+    end      
   end
 
   permissions :edit? do
     context 'team members' do
-      it 'are allowed to edit their team' do
-        expect(TeamPolicy).to permit(team_user, team)
+      it 'who are partner admins are allowed to edit their team' do
+        expect(TeamPolicy).to permit(partner_admin_user, team)
+      end
+      it 'who are not partner admins are not allowed to edit their team' do
+        expect(TeamPolicy).to_not permit(team_user, team)
+        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
+        expect(TeamPolicy).to_not permit(partner_developer_user, team)
       end
     end
 
@@ -59,8 +90,13 @@ describe TeamPolicy do
 
   permissions :update? do
     context 'team members' do
-      it 'are allowed to update their team' do
-        expect(TeamPolicy).to permit(team_user, team)
+      it 'who are partner admins are allowed to update their team' do
+        expect(TeamPolicy).to permit(partner_admin_user, team)
+      end
+      it 'who are not partner admins are not allowed to update their team' do
+        expect(TeamPolicy).to_not permit(team_user, team)
+        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
+        expect(TeamPolicy).to_not permit(partner_developer_user, team)
       end
     end
 
@@ -75,6 +111,7 @@ describe TeamPolicy do
         expect(TeamPolicy).to_not permit(nongov_email_user, team)
       end
     end
+
   end
 
   permissions :new? do
@@ -107,6 +144,12 @@ describe TeamPolicy do
     context 'admins' do
       it 'can destroy teams' do
         expect(TeamPolicy).to permit(admin_user, team)
+      end
+    end
+
+    context 'partner admin users' do
+      it 'cannot destroy teams' do
+        expect(TeamPolicy).to_not permit(partner_admin_user, team)
       end
     end
 

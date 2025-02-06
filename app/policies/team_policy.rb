@@ -2,19 +2,20 @@ class TeamPolicy < BasePolicy
   include TeamHelper
 
   def all?
-    admin?
+    user_has_login_admin_role?
   end
 
   def create?
-    allowlisted_user?(user) || admin?
+    user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def destroy?
-    admin?
+    user_has_login_admin_role?
   end
 
   def edit?
-    in_team? || admin?
+    user_has_login_admin_role? ||
+      (in_team? && user_has_partner_admin_role?)
   end
 
   def index?
@@ -22,20 +23,37 @@ class TeamPolicy < BasePolicy
   end
 
   def new?
-    allowlisted_user?(user) || admin?
+    allowlisted_user?(user) || user_has_login_admin_role?
   end
 
   def show?
-    in_team? || admin?
+    in_team? || user_has_login_admin_role?
   end
 
   def update?
-    in_team? || admin?
+    user_has_login_admin_role? ||
+      (in_team? && user_has_partner_admin_role?)
   end
 
   private
 
   def in_team?
     record.users.include?(user)
+  end
+
+  def user_has_login_admin_role?
+    return admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'Login.gov Admin')
+    end
+  end
+
+  def user_has_partner_admin_role?
+    return true unless IdentityConfig.store.access_controls_enabled
+
+    user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'Partner Admin')
+    end
   end
 end
