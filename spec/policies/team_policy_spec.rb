@@ -5,16 +5,13 @@ describe TeamPolicy do
   let(:team_user) { build(:user) }
   let(:gov_email_user) { build(:user) }
   let(:nongov_email_user) { build(:user, email: 'user@example.com') }
-  let(:team) { build(:team) }
-  let(:partner_admin_user) { create(:user_team, :partner_admin).user }
-  let(:partner_developer_user) { create(:user_team, :partner_developer).user }
-  let(:partner_readonly_user) { create(:user_team, :partner_readonly).user }
+  let(:team) { create(:team) }
+  let(:partner_admin_user) { create(:user_team, :partner_admin, team:).user }
+  let(:partner_developer_user) { create(:user_team, :partner_developer, team:).user }
+  let(:partner_readonly_user) { create(:user_team, :partner_readonly, team:).user }
 
   before do
     team.users << team_user
-    team.users << partner_admin_user
-    team.users << partner_developer_user
-    team.users << partner_readonly_user
   end
 
   before do
