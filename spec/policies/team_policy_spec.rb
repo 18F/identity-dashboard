@@ -60,7 +60,7 @@ describe TeamPolicy do
         expect(TeamPolicy).to_not permit(partner_readonly_user, team)
         expect(TeamPolicy).to_not permit(partner_developer_user, team)
       end
-    end      
+    end
   end
 
   permissions :edit? do
