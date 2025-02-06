@@ -59,6 +59,6 @@ class UsersController < ApplicationController
 
   def populate_role_if_missing
     @user_team ||= @user.user_teams.build
-    @user_team.role ||= @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'Partner Admin')
+    @user_team.role ||= @user.admin? ? Role::SITE_ADMIN : Role.find_by(name: 'partner_admin')
   end
 end

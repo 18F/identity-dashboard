@@ -10,6 +10,7 @@ describe Teams::UsersController do
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       post :create, params: { team_id: team.id, user: { email: valid_email } }
 
       expect(response).to redirect_to(new_team_user_path(team))
