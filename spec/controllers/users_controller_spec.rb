@@ -17,14 +17,14 @@ describe UsersController do
 
       it 'has a success response' do
         get :new
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
 
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :new
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -37,14 +37,14 @@ describe UsersController do
 
       it 'has a success response' do
         get :index
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
 
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :index
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -57,7 +57,7 @@ describe UsersController do
 
       it 'has a success response' do
         get :edit, params: { id: user.id }
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       context 'when editing a user without a team' do
@@ -82,7 +82,7 @@ describe UsersController do
     context 'when the user is not an admin' do
       it 'has an error response' do
         get :edit, params: { id: 1 }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -95,7 +95,7 @@ describe UsersController do
 
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
 
       it 'assigns a new role to all teams' do
@@ -116,7 +116,7 @@ describe UsersController do
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -130,7 +130,7 @@ describe UsersController do
       context 'when the user is valid' do
         it 'has a redirect response' do
           patch :create, params: { user: { admin: true, email: 'example@example.com' } }
-          expect(response.status).to eq(302)
+          expect(response).to have_http_status(:found)
         end
       end
 
@@ -145,7 +145,7 @@ describe UsersController do
     context 'when the user is not an admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -160,14 +160,14 @@ describe UsersController do
       end
 
       it 'has a redirect response' do
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
     end
 
     context 'when the user is not an admin'
     it 'has an error response' do
       delete :destroy, params: { id: user_to_delete.id }
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end
