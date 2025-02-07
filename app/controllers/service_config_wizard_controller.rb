@@ -3,7 +3,6 @@ class ServiceConfigWizardController < AuthenticatedController
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
-  REDIRECTS_STEP = 'redirects'
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -57,7 +56,11 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    clean_redirect_uris if step == REDIRECTS_STEP
+    clean_redirect_uris if step == WizardStep::ATTRIBUTE_STEP_LOOKUP['redirect_uris']
+    # IAL is read-only on prod for partners. Sets stored value.
+    if step == WizardStep::ATTRIBUTE_STEP_LOOKUP['ial'] && params[:wizard_step][:ial].blank?
+      params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
+    end
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end

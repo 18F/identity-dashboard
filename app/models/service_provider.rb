@@ -5,6 +5,7 @@ class ServiceProvider < ApplicationRecord
   # See https://github.com/18F/identity-validations
   include IdentityValidations::ServiceProviderValidation
   include ActionView::Helpers::SanitizeHelper
+  include ServiceProviderHelper
 
   has_paper_trail on: %i[create update destroy]
 
