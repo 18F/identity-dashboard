@@ -20,6 +20,11 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def edit
+    unless IdentityConfig.store.access_controls_enabled
+      redirect_to(action: :index, team_id: team)
+      return
+    end
+
     authorize membership
     @user = membership.user
   end
@@ -46,6 +51,10 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def update
+    unless IdentityConfig.store.access_controls_enabled
+      redirect_to(action: :index, team_id: team)
+      return
+    end
     authorize membership
     membership.assign_attributes(membership_params)
     membership.save

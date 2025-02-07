@@ -99,6 +99,27 @@ describe Teams::UsersController do
           updatable_membership.reload
           expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
         end
+
+        it 'redirects without RBAC flag' do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'totally-fake-role' },
+          }
+          expect(response).to redirect_to(team_users_path(team))
+        end
+      end
+
+      describe '#edit' do
+        it 'redirects without RBAC flag' do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+          get :edit, params: {
+            team_id: team.id,
+            id: user,
+          }
+          expect(response).to redirect_to(team_users_path(team))
+        end
       end
 
       describe '#remove_confirm' do
