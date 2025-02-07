@@ -16,7 +16,7 @@ class TeamPolicy < BasePolicy
   def edit?
     user_has_login_admin_role? ||
       (in_team? && !IdentityConfig.store.access_controls_enabled) ||
-        user_has_partner_admin_role?
+      user_has_partner_admin_role?
   end
 
   def index?
