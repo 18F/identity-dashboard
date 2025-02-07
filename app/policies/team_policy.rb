@@ -6,7 +6,7 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    allowlisted_user?(user) && (user_has_login_admin_role? || user_has_partner_admin_role?)
+    allowlisted_user?(user) || user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def destroy?
@@ -15,7 +15,8 @@ class TeamPolicy < BasePolicy
 
   def edit?
     user_has_login_admin_role? ||
-      (in_team? && user_has_partner_admin_role?)
+      (in_team? && !IdentityConfig.store.access_controls_enabled) ||
+        user_has_partner_admin_role?
   end
 
   def index?

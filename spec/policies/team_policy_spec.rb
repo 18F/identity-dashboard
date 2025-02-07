@@ -25,10 +25,6 @@ describe TeamPolicy do
         expect(TeamPolicy).to permit(partner_admin_user, team)
       end
 
-      it 'who are not partner admins or login admins are not allowed to create teams' do
-        expect(TeamPolicy).to_not permit(team_user, team)
-      end
-
       context 'if they are admins' do
         before { gov_email_user.update(admin: true) }
 
@@ -49,13 +45,6 @@ describe TeamPolicy do
         it 'are allowed to create teams' do
           expect(TeamPolicy).to permit(nongov_email_user)
         end
-      end
-    end
-
-    context 'if they are not admin or partner admin' do
-      it 'are not allowed to create teams' do
-        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
-        expect(TeamPolicy).to_not permit(partner_developer_user, team)
       end
     end
   end
