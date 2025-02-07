@@ -39,7 +39,7 @@ class UsersController < ApplicationController
     user.transaction do
       user.update!(user_params)
       user.user_teams.each do |team|
-        team.role_name = role.name
+        team.role = role
         team.save!
       end
     end
