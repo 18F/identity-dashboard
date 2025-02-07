@@ -6,7 +6,7 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    user_has_login_admin_role? || user_has_partner_admin_role?
+    allowlisted_user?(user) && (user_has_login_admin_role? || user_has_partner_admin_role?)
   end
 
   def destroy?
