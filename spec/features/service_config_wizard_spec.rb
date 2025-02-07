@@ -446,7 +446,15 @@ feature 'Service Config Wizard' do
   context 'when selecting OIDC' do
     before do
       IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      user_to_login = [admin, user].sample
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: Team) 
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose ['OpenID Connect Private Key JWT', 'OpenID Connect PKCE'].sample
       click_on 'Next'
@@ -464,7 +472,15 @@ feature 'Service Config Wizard' do
   context 'when selecting SAML' do
     before do
       IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      user_to_login = [admin, user].sample
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: Team) 
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose 'SAML'
       click_on 'Next'
