@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-def flag_in
-  IdentityConfig.store.access_controls_enabled = true
-end
+feature 'admin manages users with RBAC' do
+  before do
+    allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+  end
 
-feature 'admin manages users' do
   scenario 'manage user page accessible from nav bar link' do
     admin = create(:admin)
 
@@ -28,7 +28,6 @@ feature 'admin manages users' do
   end
 
   scenario 'rbac flag index page shows user table' do
-    flag_in
     admin = create(:admin)
     users = create_list(:user, 3)
     everyone = [admin, users].flatten
@@ -58,7 +57,7 @@ feature 'admin manages users' do
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  scenario 'admin edits users' do
+  scenario 'promoting a user' do
     admin = create(:admin)
     user = create(:user)
 
@@ -77,13 +76,50 @@ feature 'admin manages users' do
     expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
+  scenario 'demoting a user not on a team' do
+    admin = create(:admin)
+    user = create(:admin)
+
+    login_as(admin)
+    visit users_path
+    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
+    find("a[href='#{edit_user_path(user)}']").click
+
+    expect(page).to have_current_path(edit_user_path(user))
+    expect(find_field('user_email').value).to eq(user.email)
+    choose 'Partner Developer'
+    click_on 'Update'
+
+    expect(page).to have_current_path(users_path)
+    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
+    expect(find('tr', text: user.email)).to have_content('Partner Admin')
+  end
+
+  scenario 'demoting a user on a team' do
+    admin = create(:admin)
+    user = create(:admin, :with_teams)
+
+    login_as(admin)
+    visit users_path
+    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
+    find("a[href='#{edit_user_path(user)}']").click
+
+    expect(page).to have_current_path(edit_user_path(user))
+    expect(find_field('user_email').value).to eq(user.email)
+    choose 'Partner Developer'
+    click_on 'Update'
+
+    expect(page).to have_current_path(users_path)
+    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
+    expect(find('tr', text: user.email)).to have_content('Partner Developer')
+  end
+
   scenario 'rbac flag shows edit user permissions' do
-    flag_in
     admin = create(:admin)
     roles = ['Login.gov Admin',
-            'Partner Admin',
-            'Partner Developer',
-            'Partner Readonly']
+             'Partner Admin',
+             'Partner Developer',
+             'Partner Readonly']
 
     login_as(admin)
     visit edit_user_path(admin.id)
@@ -92,6 +128,42 @@ feature 'admin manages users' do
     radio_labels = find_all('.usa-radio__label').map(&:text)
     roles.each do |role|
       expect(radio_labels).to include(role)
+    end
+  end
+
+  feature 'admin manages users without RBAC' do
+    before do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+    end
+
+    scenario 'promoting a user' do
+      admin = create(:admin)
+      user = create(:user, :with_teams)
+
+      login_as(admin)
+      visit users_path
+      find("a[href='#{edit_user_path(user)}']").click
+
+      expect(page).to have_current_path(edit_user_path(user))
+      expect(page).to have_content('Make admin?')
+      choose 'Yes'
+      click_on 'Update'
+      expect(user.reload).to be_admin
+    end
+
+    scenario 'demoting a user' do
+      admin = create(:admin)
+      user = create(:admin)
+
+      login_as(admin)
+      visit users_path
+      find("a[href='#{edit_user_path(user)}']").click
+
+      expect(page).to have_current_path(edit_user_path(user))
+      expect(page).to have_content('Make admin?')
+      choose 'No'
+      click_on 'Update'
+      expect(user.reload).to_not be_admin
     end
   end
 end

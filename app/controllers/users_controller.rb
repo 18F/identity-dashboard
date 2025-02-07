@@ -33,16 +33,12 @@ class UsersController < ApplicationController
 
   def update
     @user = policy_scope(User).find_by(id: params[:id])
-
-    role = Role.find_by(name: user_params.delete(:user_team)&.dig(:role_name))
-    user_params[:admin] = role.legacy_admin? if role
-    user.transaction do
-      user.update!(user_params)
-      user.user_teams.each do |team|
-        team.role = role
-        team.save!
-      end
+    if assigning_admin?
+      assign_admin(@user)
+    else
+      update_roles(@user)
     end
+    user.update!(user_params)
     redirect_to users_url
   end
 
@@ -57,6 +53,37 @@ class UsersController < ApplicationController
   def none; end
 
   private
+
+  def assigning_admin?
+    if IdentityConfig.store.access_controls_enabled
+      user_params[:user_team]&.dig(:role_name) == 'logingov_admin'
+    else
+      user_params[:admin] != 'false'
+    end
+  end
+
+  def assign_admin(user)
+    user_params.delete(:user_team)
+    user_params[:admin] = true
+    policy_scope(user.user_teams).find_each do |membership|
+      membership.role = Role::SITE_ADMIN
+      membership.save!
+    end
+  end
+
+  def update_roles(user)
+    if IdentityConfig.store.access_controls_enabled && user_params[:user_team]
+      role = Role.find_by(name: user_params[:user_team][:role_name])
+    end
+    user_params.delete(:user_team)
+    user_params[:admin] = false
+    role ||= Role::SITE_ADMIN if assigning_admin?
+    role ||= Role.find_by(name: 'partner_admin')
+    policy_scope(user.user_teams).find_each do |membership|
+      membership.role = role
+      membership.save!
+    end
+  end
 
   def user_params
     @user_params ||= params.require(:user).permit(:email, :admin, user_team: :role_name)
