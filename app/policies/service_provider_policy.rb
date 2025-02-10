@@ -53,7 +53,9 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def ial_readonly?
-    return false unless IdentityConfig.store.access_controls_enabled && IdentityConfig.store.prod_like_env
+    unless IdentityConfig.store.access_controls_enabled && IdentityConfig.store.prod_like_env
+      return false
+    end
 
     !(admin? || membership.role == Role::SITE_ADMIN)
   end
