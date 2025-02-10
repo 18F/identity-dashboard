@@ -3,6 +3,9 @@ require 'rails_helper'
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:admin) { create(:admin, :with_teams) }
+  let(:admin_membership) {
+    create(:user_team, :logingov_admin, team: admin.teams[0])
+  }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
   let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
@@ -287,6 +290,22 @@ feature 'Service Config Wizard' do
       # rubocop:enable Layout/LineLength
       expect(page).to have_content(content)
     end
+
+    describe 'and Production gate is enabled' do
+      IdentityConfig.store[:access_controls_enabled] = true
+      IdentityConfig.store[:prod_like_env] = true
+
+      it 'allows Login.gov Admin to update IAL' do
+        visit service_config_wizard_path('settings')
+        select(admin.teams[0].name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on "Next"
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+    end
   end
 
   context 'when not admin' do
@@ -427,6 +446,22 @@ feature 'Service Config Wizard' do
         HelpText::LOCALES.each do |locale|
           expect(page).to have_content(custom_help_text[context][locale])
         end
+      end
+    end
+
+    describe 'and Production gate is enabled' do
+      IdentityConfig.store[:access_controls_enabled] = true
+      IdentityConfig.store[:prod_like_env] = true
+
+      it 'does not allow Partners to update IAL' do
+        visit service_config_wizard_path('settings')
+        select(team.name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on "Next"
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
       end
     end
   end

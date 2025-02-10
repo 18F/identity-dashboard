@@ -173,7 +173,7 @@ describe ServiceProviderPolicy do
         expect(described_class).to permit(non_team_member, app)
       end
 
-      it 'is ignored with RBAC oon' do
+      it 'is ignored with RBAC on' do
         app.user = non_team_member
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(non_team_member, app)
