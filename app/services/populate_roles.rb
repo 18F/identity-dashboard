@@ -1,23 +1,32 @@
 # PopulateRole designed to be invoked from a rake task
 # as such, uses puts() instead of logger
 # rubocop:disable Rails/Output
+
 include TeamHelper
 
 class PopulateRoles
     USAGE_WARNING = <<-WARN.strip.freeze
-      WARNING: this will loop through all UserTeams without roles and set roles based on legacy permissions
+      WARNING: this will loop through all UserTeams with invalid or nil roles and reset roles based on legacy permissions
     WARN
+
+    VALID_ROLENAMES = ["partner_admin", "partner_developer", "partner_readonly", "login_admin"]
   
     def initialize()
-        @userteamswithoutrole = UserTeam.all.where(role_name: nil)
+        puts USAGE_WARNING
+        @userteamswithoutrole = UserTeam.all.where.not(role_name: VALID_ROLENAMES )
+        # check against array of exact role names (not friendly names)
+        puts @userteamswithoutrole
     end
   
     def call
-      @usersteamswithoutrole.each do |userteam|
+      return puts("INFO: All UserTeams already have valid roles.") if @userteamswithoutrole.length == 0
+      @userteamswithoutrole.each do |userteam|
         user = get_user(userteam)
         role = get_legacy_role(user)
-        set_role(role)
+        set_role(userteam, role)
+        puts "User #{user.email} role updated to #{role}"
       end
+      puts "SUCCESS: All invalid UserTeams have been updated"
     end
   
     private
@@ -27,13 +36,12 @@ class PopulateRoles
     end
 
     def get_legacy_role(user)
-        return 'login_admin' if user.admin?
         #partner_admin = legacy allowlisted
         return 'partner_admin' if allowlisted_user?(user)
         return 'partner_developer'
     end
 
-    def set_role(role)
+    def set_role(userteam, role)
         userteam.role = Role.find_by(name: role)
         userteam.save!
     end
