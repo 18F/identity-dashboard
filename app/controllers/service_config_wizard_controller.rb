@@ -56,11 +56,8 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    clean_redirect_uris if step == WizardStep::ATTRIBUTE_STEP_LOOKUP['redirect_uris']
-    # IAL is read-only on prod for partners. Sets stored value.
-    if step == WizardStep::ATTRIBUTE_STEP_LOOKUP['ial'] && params[:wizard_step][:ial].blank?
-      params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
-    end
+    clean_redirect_uris if is_step_with_param('redirect_uris')
+    validate_ial if is_step_with_param('ial')
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
@@ -172,6 +169,10 @@ class ServiceConfigWizardController < AuthenticatedController
     step == step_name
   end
 
+  def is_step_with_param(param_name)
+    step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
+  end
+
   def redirect_unless_flagged_in
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
@@ -241,6 +242,13 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def clean_redirect_uris
     params[:wizard_step][:redirect_uris]&.compact_blank! || []
+  end
+
+  def validate_ial
+    if policy(draft_service_provider).ial_readonly?
+      # reset unpermitted IAL change
+      params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
+    end
   end
 
   def skippable

@@ -71,6 +71,7 @@
                  collection: [[I18n.t('service_provider_form.ial_option_1'), 1],
                               [I18n.t('service_provider_form.ial_option_2'), 2]],
                  selected: form.object.ial,
+                 disabled: policy(service_provider).ial_readonly?,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
                  hint: t('service_provider_form.ial_html') %>
