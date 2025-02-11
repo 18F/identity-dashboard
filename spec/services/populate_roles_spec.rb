@@ -49,7 +49,7 @@ describe PopulateRoles do
       end
     end
 
-    context 'when there are no invalid User Teams' do
+    context 'when there are no invalid or nil User Teams' do
         it 'display a message and exit script' do
             user = User.create(
                 email: nongov_email,

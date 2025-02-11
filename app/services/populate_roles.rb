@@ -9,22 +9,26 @@ class PopulateRoles
       WARNING: this will loop through all UserTeams with invalid or nil roles and reset roles based on legacy permissions
     WARN
 
-    VALID_ROLENAMES = ["partner_admin", "partner_developer", "partner_readonly", "login_admin"]
+    VALID_ROLENAMES = ["partner_admin", "partner_developer", "partner_readonly", "logingov_admin"]
   
     def initialize()
         puts USAGE_WARNING
-        @userteamswithoutrole = UserTeam.all.where.not(role_name: VALID_ROLENAMES )
+        @userteamswithoutrole = UserTeam.where(role_name: nil).or UserTeam.where.not(role_name: PopulateRoles::VALID_ROLENAMES)
         # check against array of exact role names (not friendly names)
         puts @userteamswithoutrole
     end
   
     def call
       return puts("INFO: All UserTeams already have valid roles.") if @userteamswithoutrole.length == 0
-      @userteamswithoutrole.each do |userteam|
-        user = get_user(userteam)
-        role = get_legacy_role(user)
-        set_role(userteam, role)
-        puts "User #{user.email} role updated to #{role}"
+      begin
+        @userteamswithoutrole.each do |userteam|
+          user = get_user(userteam)
+          role = get_legacy_role(user)
+          set_role(userteam, role)
+          puts "User #{user.email} role updated to #{role}"
+        end
+        rescue StandardError => err
+          puts "ERROR: #{err}"
       end
       puts "SUCCESS: All invalid UserTeams have been updated"
     end
