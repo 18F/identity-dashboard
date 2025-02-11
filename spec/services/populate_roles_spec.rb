@@ -13,10 +13,16 @@ describe PopulateRoles do
 
   let(:without_role_membership) { create(:user_team) }
   let(:with_role_membership) { create(:user_team, :partner_developer) }
+  let(:logger) {instance_double(Logger)}
 
-  subject { described_class.new() }
+  subject { described_class.new(logger) }
 
   describe '#call' do
+    before do
+      allow(logger).to receive(:info).with(any_args)
+      allow(logger).to receive(:warn).with(any_args)
+    end
+
     context 'when the user has gov email address' do
       it 'updates role name to partner_admin' do
         user = User.create(
@@ -29,7 +35,7 @@ describe PopulateRoles do
         subject.call
         user.reload
         expect(user.user_teams.first.role_name).to eq("partner_admin")
-        expect(subject).to receive(:puts).with("SUCCESS: All invalid UserTeams have been updated")
+        expect(logger).to have_received(:info).with("SUCCESS: All invalid UserTeams have been updated")
       end
     end
 
@@ -45,7 +51,7 @@ describe PopulateRoles do
         subject.call
         user.reload
         expect(user.user_teams.first.role_name).to eq("partner_developer")
-        expect(subject).to receive(:puts).with("SUCCESS: All invalid UserTeams have been updated")
+        expect(logger).to have_received(:info).with("SUCCESS: All invalid UserTeams have been updated")
       end
     end
 
@@ -59,7 +65,7 @@ describe PopulateRoles do
             )
             user.user_teams << with_role_membership
             subject.call
-            expect(subject).to receive(:puts).with("INFO: All UserTeams already have valid roles.")
+            expect(logger).to have_received(:info).with("INFO: All UserTeams already have valid roles.")
         end
     end
   end
