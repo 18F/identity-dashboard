@@ -283,19 +283,18 @@ describe 'users' do
       before { login_as site_admin }
 
       it 'allows modifying any user roles' do
-        user_to_change = [partner_admin_team_member, readonly_team_member].sample
+        team_users = [partner_admin_team_member, readonly_team_member]
+
+        user_to_change = team_users.sample
         old_role = UserTeam.find_by(user: user_to_change, team: team).role
         new_role = (Role.all - [Role::SITE_ADMIN, old_role]).sample
 
+        user_to_not_change = (team_users - [user_to_change]).first
+        expected_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+
         visit team_users_path(team)
 
-        # xpath breakdown:
-        # any table row                 # //tr
-        # where                         # [ ]
-        # this element has a child `td` # ./td
-        # where                         # [ ]
-        # its text contains the email   # contains(text(), #{email})
-        within :xpath, "//tr[./td[contains(text(),'#{user_to_change.email}')]]" do
+        within('tr', text: user_to_change.email) do
           click_on 'Edit Role'
         end
         choose new_role.friendly_name
@@ -303,6 +302,9 @@ describe 'users' do
         user_to_change.reload
         actual_role = UserTeam.find_by(user: user_to_change, team: team).role
         expect(actual_role).to eq(new_role)
+        user_to_not_change.reload
+        actual_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+        expect(actual_unchanged_role).to eq(expected_unchanged_role)
       end
     end
 
@@ -314,25 +316,19 @@ describe 'users' do
 
         visit team_users_path(team)
 
-        # xpath breakdown:
-        # any table row                 # //tr
-        # where                         # [ ]
-        # this element has a child `td` # ./td
-        # where                         # [ ]
-        # its text contains the email   # contains(text(), #{email})
-        within :xpath, "//tr[./td[contains(text(),'#{editable_user.email}')]]" do
+        within('tr', text: editable_user.email) do
           expect(self).to have_link('Edit Role')
         end
-        within :xpath, "//tr[./td[contains(text(),'#{partner_admin_team_member.email}')]]" do
+        within('tr', text: partner_admin_team_member.email) do
           expect(self).to_not have_link('Edit Role')
         end
       end
 
       it 'does not show site admin role' do
         visit edit_team_user_path(team, team_member)
-        input_item_text = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_input_text = (Role.all - [Role::SITE_ADMIN]).map(&:friendly_name)
-        expect(input_item_text).to eq(expected_input_text)
+        input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
+        expected_input_strings = (Role.all - [Role::SITE_ADMIN]).map(&:friendly_name)
+        expect(input_item_strings).to eq(expected_input_strings)
       end
     end
   end
