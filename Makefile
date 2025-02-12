@@ -29,6 +29,9 @@ lint_database_schema_files: ## Checks that database schema files have not change
 test:
 	bundle exec rspec
 
+test_basic:
+	bundle exec rspec --exclude-pattern "spec/features/accessibility/*_spec.rb"
+
 run:
 	foreman start -p $(PORT)
 

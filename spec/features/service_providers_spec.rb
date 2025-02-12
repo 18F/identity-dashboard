@@ -7,6 +7,9 @@ feature 'Service Providers CRUD' do
   end
   let(:user) { user_membership.user }
   let(:admin) { create(:admin) }
+  let(:admin_membership) do
+    create(:user_team, :logingov_admin, team:)
+  end
 
   let(:user_to_log_in_as) { user }
 
@@ -394,6 +397,28 @@ feature 'Service Providers CRUD' do
       end
     end
 
+    context 'and Production gate is enabled' do
+      before do
+        IdentityConfig.store[:prod_like_env] = true
+        IdentityConfig.store[:edit_button_uses_service_config_wizard] = false
+      end
+
+      it 'allows Partners to set initial IAL' do
+        visit new_service_provider_path
+
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
+      end
+
+      it 'does not allow Partners to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: team)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        expect(page.find('#service_provider_ial').disabled?).to be(true)
+      end
+    end
+
     context 'with help text options feature disabled' do
       before do
         allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
@@ -559,6 +584,28 @@ feature 'Service Providers CRUD' do
 
         visit service_provider_path(sp)
         expect(page).to have_content('Version History')
+      end
+    end
+
+    context 'and Production gate is enabled' do
+      before do
+        IdentityConfig.store[:prod_like_env] = true
+        IdentityConfig.store[:edit_button_uses_service_config_wizard] = false
+      end
+
+      it 'allows Login.gov Admins to set initial IAL' do
+        visit new_service_provider_path
+
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
+      end
+
+      it 'allows Login.gov Admins to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: team)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
       end
     end
   end

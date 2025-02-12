@@ -292,15 +292,28 @@ feature 'Service Config Wizard' do
     end
 
     describe 'and Production gate is enabled' do
-      IdentityConfig.store[:access_controls_enabled] = true
-      IdentityConfig.store[:prod_like_env] = true
+      before do
+        IdentityConfig.store[:prod_like_env] = true
+        IdentityConfig.store[:edit_button_uses_service_config_wizard] = true
+      end
 
-      it 'allows Login.gov Admin to update IAL' do
+      it 'allows Login.gov Admin to set initial IAL' do
         visit service_config_wizard_path('settings')
         select(admin.teams[0].name, from: 'Team')
         fill_in('App name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'allows Login.gov Admin to update IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: admin.teams[0])
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
@@ -450,15 +463,28 @@ feature 'Service Config Wizard' do
     end
 
     describe 'and Production gate is enabled' do
-      IdentityConfig.store[:access_controls_enabled] = true
-      IdentityConfig.store[:prod_like_env] = true
+      before do
+        IdentityConfig.store[:prod_like_env] = true
+        IdentityConfig.store[:edit_button_uses_service_config_wizard] = true
+      end
 
-      it 'does not allow Partners to update IAL' do
+      it 'allows Partners to set initial IAL' do
         visit service_config_wizard_path('settings')
         select(team.name, from: 'Team')
         fill_in('App name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'does not allow Partners to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: team)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
