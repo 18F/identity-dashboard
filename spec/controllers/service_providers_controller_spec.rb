@@ -547,12 +547,6 @@ describe ServiceProvidersController do
     describe 'Production gate is enabled' do
       before do
         IdentityConfig.store[:prod_like_env] = true
-        post :create, params: { service_provider: {
-          issuer: 'my.issuer.string',
-          group_id: user.teams.first.id,
-          friendly_name: 'ABC',
-          ial: 1,
-        } }
       end
 
       context 'with Partner user' do
