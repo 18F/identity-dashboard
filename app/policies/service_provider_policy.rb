@@ -54,9 +54,7 @@ class ServiceProviderPolicy < BasePolicy
 
   def ial_readonly?
     # readonly is for Prod edit
-    if !IdentityConfig.store.prod_like_env || record.ial.blank?
-      return false
-    end
+    return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
     !(admin? || membership.role == Role::SITE_ADMIN)
   end

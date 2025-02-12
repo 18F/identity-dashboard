@@ -2,13 +2,19 @@ require 'rails_helper'
 
 describe ServiceProvidersController do
   let(:user) { create(:user, :with_teams) }
+  let(:user_membership) do
+    create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: user.teams[0])
+  end
   let(:admin) { create(:user, :with_teams, admin: true) }
+  let(:admin_membership) do
+    create(:user_team, role_name: :logingov_admin, team: admin.teams[0])
+  end
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency:) }
   let(:init_help_params) do
     { sign_in: { en: '' }, sign_up: { en: '' } , forgot_password: { en: '' } }
   end
-  let(:sp) { create(:service_provider, team:) }
+  let(:sp) { create(:service_provider, team: team, ial: 1) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
@@ -535,6 +541,49 @@ describe ServiceProvidersController do
             ),
           },
         })
+      end
+    end
+
+    describe 'Production gate is enabled' do
+      before do
+        IdentityConfig.store[:prod_like_env] = true
+        post :create, params: { service_provider: {
+          issuer: 'my.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'ABC',
+          ial: 1,
+        } }
+      end
+
+      context 'with Partner user' do
+        before do
+          sign_in(user)
+          sp.ial = '1'
+        end
+
+        it 'does not allow updates to IAL' do
+          put :update, params: {
+            id: sp.id,
+            service_provider: { issuer: sp.issuer, ial: '2' },
+          }
+          sp.reload
+          expect(sp.ial).to eq(1)
+        end
+      end
+
+      context 'with Login.gov Admin' do
+        before do
+          sign_in(admin)
+        end
+
+        it 'allows updates to IAL' do
+          put :update, params: {
+            id: sp.id,
+            service_provider: { issuer: sp.issuer, ial: 2 },
+          }
+          sp.reload
+          expect(sp.ial).to eq(2)
+        end
       end
     end
   end

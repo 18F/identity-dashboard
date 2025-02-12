@@ -482,7 +482,7 @@ feature 'Service Config Wizard' do
       it 'does not allow Partners to edit IAL' do
         existing_config = create(:service_provider,
                                :ready_to_activate_ial_1,
-                               team: team)
+                               team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('authentication')

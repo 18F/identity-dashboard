@@ -148,9 +148,10 @@ class ServiceProvidersController < AuthenticatedController
   def authorize_ial_update
     return unless IdentityConfig.store.prod_like_env
 
-    if policy(service_provider).ial_readonly? && service_provider_params[:ial]
+    return unless policy(service_provider).ial_readonly? && service_provider_params[:ial]
+
       raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
-    end
+
   end
 
   def validate_and_save_service_provider(initial_action)

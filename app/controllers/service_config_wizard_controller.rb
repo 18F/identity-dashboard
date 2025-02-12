@@ -245,10 +245,11 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def validate_ial
-    if policy(draft_service_provider).ial_readonly?
+    return unless policy(draft_service_provider).ial_readonly?
+
       # reset unpermitted IAL change
       params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
-    end
+
   end
 
   def skippable
