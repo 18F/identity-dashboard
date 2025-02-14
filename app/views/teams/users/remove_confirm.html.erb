@@ -5,10 +5,9 @@
   <li> <%= I18n.t('teams.users.remove.confirm') %></li>
 </ul>
 
-<p class="border-underline padding-bottom-2 margin-top-4">
+<p class="border-underline padding-bottom-2 margin-top-4"> </p>
   <%= button_to I18n.t('teams.users.remove.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
-</p>
-
+<br />
 <%= link_to I18n.t('forms.buttons.cancel'), team_users_path(@team.id),
               class: 'usa-button usa-button--outline' %>
 

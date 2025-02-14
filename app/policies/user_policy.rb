@@ -8,4 +8,14 @@ class UserPolicy < BasePolicy
   def none?
     true
   end
+
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if admin?
+
+      # Rails can hand this off efficiently to the database
+      user_ids_on_current_teams = UserTeam.select(:user_id).where(team: user.teams)
+      scope.where(id: user_ids_on_current_teams)
+    end
+  end
 end

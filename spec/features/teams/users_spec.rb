@@ -10,7 +10,7 @@ describe 'users' do
   let(:partner_admin_team_member) { partner_admin_membership.user }
   let(:readonly_membership) { create(:user_team, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_membership.user }
-  let(:admin_user) { create(:admin) }
+  let(:site_admin) { create(:admin) }
   let(:user) { create(:user) }
 
   before do
@@ -35,13 +35,13 @@ describe 'users' do
 
     scenario 'access permitted to admin (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as admin_user
+      login_as site_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
     scenario 'access permitted to admin' do
-      login_as admin_user
+      login_as site_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
@@ -161,7 +161,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email: other_team_member.email, team: team))
       click_on 'Cancel'
-      expect(current_path).to eq(team_users_path(team))
+      expect(page).to have_current_path(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
     end
 
@@ -169,7 +169,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email: other_team_member.email, team: team))
       click_on I18n.t('teams.users.remove.button')
-      expect(current_path).to eq(team_users_path(team))
+      expect(page).to have_current_path(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',
                                           email: other_team_member.email))
     end
@@ -186,7 +186,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email: other_team_member.email, team: team))
       click_on 'Cancel'
-      expect(current_path).to eq(team_users_path(team))
+      expect(page).to have_current_path(team_users_path(team))
       expect(page).to have_content(other_team_member.email)
     end
 
@@ -194,7 +194,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
                                           email: other_team_member.email, team: team))
       click_on I18n.t('teams.users.remove.button')
-      expect(current_path).to eq(team_users_path(team))
+      expect(page).to have_current_path(team_users_path(team))
       expect(page).to have_content(I18n.t('teams.users.remove.success',
                                           email: other_team_member.email))
     end
@@ -208,7 +208,7 @@ describe 'users' do
     end
 
     scenario 'access permitted to admin' do
-      login_as admin_user
+      login_as site_admin
       visit team_users_path(team)
       expect(page).to have_content("Manage users for #{team.name}")
     end
@@ -240,41 +240,107 @@ describe 'users' do
       expect(page).to have_content(other_team_member.email)
     end
 
+    scenario 'lists users even with an old, bugged user removal' do
+      bad_membership = create(:user_team, team:)
+      bad_membership.update_attribute(:user_id, nil)
+      login_as partner_admin_team_member
+      visit team_users_path(team)
+      expect(page).to have_content("Manage users for #{team.name}")
+      expect(page).to have_content(partner_admin_team_member.email)
+      expect(page).to have_content(team_member.email)
+      expect(page).to have_content(other_team_member.email)
+    end
+
     scenario 'delete button only present for any other team member (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
       visit team_users_path(team)
-      expect(find_all('a', text:'Delete').count).to eq(1)
+      expect(find_all('a', text: 'Delete').count).to eq(1)
       click_on 'Delete'
-      expect(current_path).to eq(team_remove_confirm_path(team.id, other_team_member.id))
+      expect(page).to have_current_path(team_remove_confirm_path(team.id, other_team_member.id))
     end
 
     scenario 'delete button only present for another team member who is a Partner Admin' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as team_member
       visit team_users_path(team)
-      expect(find_all('a', text:'Delete').count).to eq(0)
+      expect(find_all('a', text: 'Delete').count).to eq(0)
 
       login_as partner_admin_team_member
       visit team_users_path(team)
       # two users: `team_member` and `other_team_member`
-      expect(find_all('a', text:'Delete').count).to eq(2)
-      find_all('a', text:'Delete').first.click
-      expect(current_path).to eq(team_remove_confirm_path(team.id, team_member.id))
+      expect(find_all('a', text: 'Delete').count).to eq(2)
+      find_all('a', text: 'Delete').first.click
+      expect(page).to have_current_path(team_remove_confirm_path(team.id, team_member.id))
     end
 
     scenario 'add user button goes to add user page' do
       login_as partner_admin_team_member
       visit team_users_path(team)
       click_on 'Add user'
-      expect(current_path).to eq(new_team_user_path(team.id))
+      expect(page).to have_current_path(new_team_user_path(team.id))
     end
 
     scenario 'back button goes to team details page' do
       login_as partner_admin_team_member
       visit team_users_path(team)
       click_on 'Back'
-      expect(current_path).to eq(team_path(team.id))
+      expect(page).to have_current_path(team_path(team.id))
+    end
+  end
+
+  feature 'modifying team user permissions' do
+    context 'when admin' do
+      before { login_as site_admin }
+
+      it 'allows modifying any user roles' do
+        team_users = [partner_admin_team_member, readonly_team_member]
+
+        user_to_change = team_users.sample
+        old_role = UserTeam.find_by(user: user_to_change, team: team).role
+        new_role = (Role.all - [Role::SITE_ADMIN, old_role]).sample
+
+        user_to_not_change = (team_users - [user_to_change]).first
+        expected_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+
+        visit team_users_path(team)
+
+        within('tr', text: user_to_change.email) do
+          click_on 'Edit Role'
+        end
+        choose new_role.friendly_name
+        click_on 'Update'
+        user_to_change.reload
+        actual_role = UserTeam.find_by(user: user_to_change, team: team).role
+        expect(actual_role).to eq(new_role)
+        user_to_not_change.reload
+        actual_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+        expect(actual_unchanged_role).to eq(expected_unchanged_role)
+      end
+    end
+
+    context 'when partner admin' do
+      before { login_as partner_admin_team_member }
+
+      it 'does not show edit button for self' do
+        editable_user = [team_member, readonly_team_member].sample
+
+        visit team_users_path(team)
+
+        within('tr', text: editable_user.email) do
+          expect(self).to have_link('Edit Role')
+        end
+        within('tr', text: partner_admin_team_member.email) do
+          expect(self).to_not have_link('Edit Role')
+        end
+      end
+
+      it 'does not show site admin role' do
+        visit edit_team_user_path(team, team_member)
+        input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
+        expected_input_strings = (Role.all - [Role::SITE_ADMIN]).map(&:friendly_name)
+        expect(input_item_strings).to eq(expected_input_strings)
+      end
     end
   end
 end
