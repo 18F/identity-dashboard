@@ -15,6 +15,12 @@ class UserTeamPolicy < BasePolicy
     admin? || role_name == 'partner_admin'
   end
 
+  def edit?
+    create? && record.user != user
+  end
+
+  alias update? edit?
+
   def new?
     create?
   end
@@ -22,7 +28,7 @@ class UserTeamPolicy < BasePolicy
   def destroy?
     return true if admin?
 
-    record.user != user && create?
+    edit?
   end
 
   def remove_confirm?
@@ -30,6 +36,14 @@ class UserTeamPolicy < BasePolicy
       destroy?
     else
       manage_team_users? && record.user != user
+    end
+  end
+
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if admin?
+
+      scope.where(team: user.teams)
     end
   end
 
