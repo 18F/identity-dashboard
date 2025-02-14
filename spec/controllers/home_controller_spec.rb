@@ -15,12 +15,12 @@ describe HomeController do
     context 'when the user is signed in' do
       it 'has a redirect response' do
         get :index
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it 'sets canonical url' do
         get :index
-        expect(assigns(:canonical_url)).to eq(nil)
+        expect(assigns(:canonical_url)).to be_nil
       end
     end
 
@@ -32,7 +32,7 @@ describe HomeController do
 
       it 'has a success response' do
         get :index
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it 'sets canonical url' do

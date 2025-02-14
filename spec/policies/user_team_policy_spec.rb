@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 describe UserTeamPolicy do
-  let(:partner_admin_membership) { create(:user_team, :partner_admin) }
-  let(:partner_developer_membership) { create(:user_team, :partner_developer) }
-  let(:partner_readonly_membership) { create(:user_team, :partner_readonly) }
+  let(:team) { create(:team) }
+  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:) }
+  let(:partner_developer_membership) { create(:user_team, :partner_developer, team:) }
+  let(:partner_readonly_membership) { create(:user_team, :partner_readonly, team:) }
   let(:partner_admin) { partner_admin_membership.user }
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
@@ -57,6 +58,30 @@ describe UserTeamPolicy do
     it 'forbids Partner Readonly' do
       new_membership = partner_readonly_membership.team.user_teams.build
       expect(described_class).to_not permit(partner_readonly, new_membership)
+    end
+  end
+
+  permissions :edit? do
+    it 'allows Site Admins' do
+      expect(described_class).to permit(site_admin, partner_admin_membership)
+    end
+
+    it 'allows Partner Admins' do
+      new_membership = team.user_teams.build
+      expect(described_class).to permit(partner_admin, new_membership)
+    end
+
+    it 'forbids Partner Admins for own memberships' do
+      expect(described_class).to_not permit(partner_admin, partner_admin_membership)
+    end
+
+    context 'with anyone else' do
+      %i[partner_readonly partner_developer other_user].each do |role_name|
+        it "forbids #{role_name}" do
+          new_membership = team.user_teams.build
+          expect(described_class).to_not permit(send(role_name), new_membership)
+        end
+      end
     end
   end
 
