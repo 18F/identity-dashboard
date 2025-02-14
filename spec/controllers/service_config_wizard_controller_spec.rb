@@ -173,8 +173,10 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "issuer"' do
       it 'can post' do
         expect do
-          put :update,
-params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
+          put :update, params: {
+            id: 'issuer',
+            wizard_step: { issuer: "test:sso:#{rand(1..1000)}" },
+          }
           expect(response).to be_redirect,
             "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
         end.to(change { WizardStep.count }.by(1))
@@ -386,6 +388,29 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
         expect(existing_service_provider.logo_file.checksum).to eq(good_upload_checksum)
       end
     end
+
+    context 'and Production gate is enabled' do
+      IdentityConfig.store.prod_like_env = true
+      let (:existing_service_provider) do
+        create(:service_provider,
+                                        :ready_to_activate_ial_1,
+                                        team: admin.teams[0],
+                                        issuer: "issuer:string:#{rand(1...1000)}",
+                                        friendly_name: 'Friendly App')
+      end
+      before do
+        put :create, params: { service_provider: existing_service_provider }
+      end
+
+      it 'allows Login.gov Admins to update IAL on existing configs' do
+        initial_ial = existing_service_provider.reload.attributes['ial']
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+        put :update, params: { id: 'authentication', wizard_step: { ial: 2 } }
+        put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+        updated_ial = existing_service_provider.reload.attributes['ial']
+        expect(updated_ial).to_not eq(initial_ial)
+      end
+    end
   end
 
   context 'as a non-admin user' do
@@ -516,6 +541,31 @@ params: { id: 'issuer', wizard_step: { issuer: "test:sso:#{rand(1..1000)}" } }
             expect(saved_help_text_for_context).to_not be_blank
           end
         end
+      end
+    end
+
+    context 'and Production gate is enabled' do
+      IdentityConfig.store.prod_like_env = true
+      let (:existing_service_provider) do
+        create(:service_provider,
+                                        :ready_to_activate_ial_1,
+                                        team: team,
+                                        issuer: "issuer:string:#{rand(1...1000)}",
+                                        friendly_name: 'Friendly App')
+      end
+
+      before do
+        put :create, params: { service_provider: existing_service_provider }
+      end
+
+      it 'does not allow Partners to update IAL on existing configs' do
+        initial_ial = existing_service_provider.reload.attributes['ial']
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+        put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
+        put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+        # fails silently
+        updated_ial = existing_service_provider.reload.attributes['ial']
+        expect(updated_ial).to eq(initial_ial)
       end
     end
   end
