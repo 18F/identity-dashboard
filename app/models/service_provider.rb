@@ -21,12 +21,12 @@ class ServiceProvider < ApplicationRecord
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
 
-  enum block_encryption: {
+  enum :block_encryption, {
     'none' => 0,
     'aes256-gcm' => 2,
     'aes256-cbc' => 1,
-  }, _suffix: 'encryption'
-  enum identity_protocol: { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
+  }, suffix: 'encryption'
+  enum :identity_protocol, { openid_connect_private_key_jwt: 0, openid_connect_pkce: 2, saml: 1 }
 
   before_validation(on: %i[create update]) do
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
