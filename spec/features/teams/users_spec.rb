@@ -240,6 +240,17 @@ describe 'users' do
       expect(page).to have_content(other_team_member.email)
     end
 
+    scenario 'lists users even with an old, bugged user removal' do
+      bad_membership = create(:user_team, team:)
+      bad_membership.update_attribute(:user_id, nil)
+      login_as partner_admin_team_member
+      visit team_users_path(team)
+      expect(page).to have_content("Manage users for #{team.name}")
+      expect(page).to have_content(partner_admin_team_member.email)
+      expect(page).to have_content(team_member.email)
+      expect(page).to have_content(other_team_member.email)
+    end
+
     scenario 'delete button only present for any other team member (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
