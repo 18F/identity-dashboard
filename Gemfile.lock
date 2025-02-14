@@ -110,9 +110,6 @@ GEM
       activemodel (>= 4.1)
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
-    active_record_upsert (0.11.2)
-      activerecord (>= 5.2, < 7.2)
-      pg (>= 0.18, < 2.0)
     activejob (7.1.5.1)
       activesupport (= 7.1.5.1)
       globalid (>= 0.3.6)
@@ -645,7 +642,6 @@ PLATFORMS
 DEPENDENCIES
   actionmailer-text (>= 0.1.1)
   active_model_serializers (>= 0.10.14)
-  active_record_upsert
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
   aws-sdk-core (>= 3.188.0)

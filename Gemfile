@@ -4,7 +4,6 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
-gem 'active_record_upsert'
 gem 'acts_as_paranoid'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
