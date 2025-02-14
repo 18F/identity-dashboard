@@ -87,11 +87,12 @@ class WizardStep < ApplicationRecord
 
   belongs_to :user
 
+  step_enum_values = STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
+    enum[step] = step
+  end
   # We want the hidden step to be a valid step name to save in the database
   # so we can track attributes even if they should not show up in the UI
-  enum(step_name: STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
-    enum[step] = step
-  end.freeze)
+  enum :step_name, step_enum_values
 
   has_one_attached :logo_file
 
