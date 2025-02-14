@@ -130,17 +130,17 @@ class ServiceProvider < ApplicationRecord
 
   def pending_or_current_logo_data
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
-    return logo_file.blob.download if logo_file.blob
+
+    logo_file.blob.download if logo_file.blob
   end
 
   private
 
   def attachment_changes_string_buffer
-    if attachment_changes['logo_file'].attachable.respond_to?(:download)
-      return attachment_changes['logo_file'].attachable.download
-    else
-      return File.read(attachment_changes['logo_file'].attachable.open)
-    end
+    attachable = attachment_changes['logo_file'].attachable
+    return attachable.download if attachable.respond_to?(:download)
+
+    File.read(attachable.open)
   end
 
   def sanitize_help_text_content

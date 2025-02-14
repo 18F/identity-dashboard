@@ -63,28 +63,32 @@ describe User do
   end
 
   describe '#scoped_service_providers' do
-    it 'returns user created sps and the users team sps' do
+    it 'returns only the users team sps regardless of who created them' do
       team = create(:team)
       user.teams = [team]
       user.save
-      user_sp = create(:service_provider, user: user)
-      team_sp = create(:service_provider, team: team)
-      create(:service_provider)
-      sorted_sps = [user_sp, team_sp].sort_by { |x| x.friendly_name.downcase }
+      team_sp = create(:service_provider, team:)
+      user_and_team_sp = create(:service_provider, user:, team:)
+      _user_only_sp = create(:service_provider, user:)
+      _neither_sp = create(:service_provider)
+      sorted_sps = [team_sp, user_and_team_sp].sort_by { |x| x.friendly_name.downcase }
       expect(user.scoped_service_providers).to eq(sorted_sps)
     end
-    it "alphabetizes the list of user created and the user's team sps" do
+    it "alphabetizes the list user's team sps" do
       team = create(:team)
       user.teams = [team]
       user.save
       sp = {}
       %i[a G c I e].shuffle.each do |prefix|
         sp[prefix.downcase] = create(:service_provider,
-                                     user: user, friendly_name: "#{prefix}_service_provider")
+                                     user: user,
+                                     team: team,
+                                     friendly_name: "#{prefix}_service_provider")
       end
       %i[f B h D j].shuffle.each do |prefix|
         sp[prefix.downcase] = create(:service_provider,
-                                     team: team, friendly_name: "#{prefix}_service_provider")
+                                     team: team,
+                                     friendly_name: "#{prefix}_service_provider")
       end
       expect(user.scoped_service_providers).to eq(sp.keys.sort.map { |k| sp[k] })
     end
@@ -116,7 +120,7 @@ describe User do
       user.email = email
       user.save
       expect(user).to be_valid
-      user_with_same_email = User.new(email: email)
+      user_with_same_email = User.new(email:)
       user_with_same_email.save
       expect(user_with_same_email).not_to be_valid
       user.destroy
@@ -181,7 +185,7 @@ describe User do
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
       first_team = user.user_teams.first
-      expected_role = Role.find_by(name: ['Login.gov Admin', 'Partner Admin'].sample)
+      expected_role = Role.find_by(name: ['logingov_admin', 'partner_admin'].sample)
       first_team.role = expected_role
       first_team.save
       expect(user.primary_role).to eq(expected_role)

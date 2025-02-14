@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UserTeam, type: :model do
   describe '#user_id' do
-    it { 
+    it {
       is_expected.to validate_uniqueness_of(:user_id).scoped_to(:group_id).
         with_message('This user is already a member of the team.')
     }
@@ -36,7 +36,7 @@ RSpec.describe UserTeam, type: :model do
 
   describe '#valid?' do
     it { is_expected.to allow_value(nil).for(:role_name) }
-    it { is_expected.to allow_value('Login.gov Admin').for(:role_name) }
-    it { is_expected.not_to allow_value('Some Random Admin').for(:role_name) }
+    it { is_expected.to allow_value('logingov_admin').for(:role_name) }
+    it { is_expected.not_to allow_value('some_random_admin').for(:role_name) }
   end
 end

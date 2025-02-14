@@ -57,7 +57,7 @@ class WizardStep < ApplicationRecord
       sp_initiated_login_url: '',
     }),
     help_text: WizardStep::Definition.new({
-      help_text: { sign_in: ''},
+      help_text: { sign_in: '' },
     }),
     # Unless we are editing an existing config, this extra step should not get created.
     hidden: WizardStep::Definition.new({
@@ -171,6 +171,7 @@ class WizardStep < ApplicationRecord
       attribute_names.
       each_with_object({}) do |attribute_name, hash|
         next if ['created_at', 'updated_at'].include? attribute_name
+
         hash[attribute_name] = case attribute_name
           when 'logo'
             'logo_name'
@@ -191,6 +192,7 @@ class WizardStep < ApplicationRecord
 
     service_provider.attribute_names.each do |source_attr_name|
       next unless service_provider_to_wizard_attribute_map.has_key?(source_attr_name)
+
       wizard_attribute_name = service_provider_to_wizard_attribute_map[source_attr_name]
       step_name = ATTRIBUTE_STEP_LOOKUP[wizard_attribute_name]
       steps[step_name].wizard_form_data[wizard_attribute_name] =
@@ -201,6 +203,7 @@ class WizardStep < ApplicationRecord
 
   def step_name=(new_name)
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
+
     super
     self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
   end
@@ -242,6 +245,7 @@ class WizardStep < ApplicationRecord
 
   def attach_logo(logo_data)
     return unless step_name == 'logo_and_cert'
+
     self.logo_file = logo_data
     self.wizard_form_data = wizard_form_data.merge({
       logo_name: logo_file.filename.to_s,
@@ -264,6 +268,7 @@ class WizardStep < ApplicationRecord
 
   def get_step(step_to_find)
     return self if step_name == step_to_find
+
     WizardStepPolicy::Scope.new(self.user, self.class).
       resolve.
       find_or_initialize_by(user: self.user, step_name: step_to_find)
@@ -271,6 +276,7 @@ class WizardStep < ApplicationRecord
 
   def ial
     return wizard_form_data['ial'] if step_name == 'authentication'
+
     get_step('authentication').ial
   end
 
@@ -290,7 +296,8 @@ class WizardStep < ApplicationRecord
   def pending_or_current_logo_data
     return false unless step_name == 'logo_and_cert'
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
-    return logo_file.blob.download if logo_file.blob
+
+    logo_file.blob.download if logo_file.blob
   end
 
   def existing_service_provider?
@@ -301,7 +308,8 @@ class WizardStep < ApplicationRecord
 
   def enforce_valid_data(new_data)
     return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
-    new_data.filter! {|key, _v| STEP_DATA[step_name].has_field? key}
+
+    new_data.filter! { |key, _v| STEP_DATA[step_name].has_field? key }
     STEP_DATA[step_name].fields.merge(new_data)
   end
 
@@ -316,18 +324,20 @@ class WizardStep < ApplicationRecord
 
   def issuer_service_provider_uniqueness
     return if existing_service_provider? && original_service_provider.issuer == issuer
-    errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer: issuer).any?
+
+    errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer:).any?
   end
 
   def failure_to_proof_url_for_idv
     using_idv = ial.to_i > 1
     return if !using_idv
+
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end
 
   def original_service_provider
-    id = WizardStep.find_by(step_name: 'hidden', user:)&.service_provider_id
-    id && ServiceProvider.find(id)
+    id = WizardStep.find_by(step_name: 'hidden', user: user)&.service_provider_id
+    id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
   end
 
   def group_is_valid
@@ -335,10 +345,9 @@ class WizardStep < ApplicationRecord
   end
 
   def attachment_changes_string_buffer
-    if attachment_changes['logo_file'].attachable.respond_to?(:download)
-      return attachment_changes['logo_file'].attachable.download
-    else
-      return File.read(attachment_changes['logo_file'].attachable.open)
-    end
+    attachable = attachment_changes['logo_file'].attachable
+    return attachable.download if attachable.respond_to?(:download)
+
+    File.read(attachable.open)
   end
 end

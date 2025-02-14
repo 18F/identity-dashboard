@@ -5,7 +5,7 @@ class WizardStepPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      scope.where(user: user)
+      scope.where(user:)
     end
   end
 end

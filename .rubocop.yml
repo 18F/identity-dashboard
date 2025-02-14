@@ -9,6 +9,9 @@ require:
   - rubocop-rspec
   - rubocop-capybara
 
+inherit_gem:
+  pundit: config/rubocop-rspec.yml
+
 AllCops:
   Exclude:
     - 'bin/**/*'
@@ -367,3 +370,81 @@ Layout/MultilineBlockLayout:
 
 Layout/SpaceAroundOperators:
   Enabled: true
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/FirstArgumentIndentation:
+  Enabled: false
+
+Style/WordArray:
+  MinSize: 3
+
+Style/SymbolArray:
+  MinSize: 3
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Layout/DotPosition:
+  EnforcedStyle: leading
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: consistent
+
+Rails/Output:
+  Enabled: true
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: err
+
+Rails/ActionOrder:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Style/NegatedUnless:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/BlockAlignment:
+  Enabled: true
+
+# Not enabled yet. Still testing.
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+  # at minimum, 7 is required for testing RBAC:
+  #   4 user team roles
+  #   1 "not on the team" role
+  #   1 team
+  #   1 object the permission is tested for
+  Max: 7

@@ -10,13 +10,12 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
         issuer: OpenSSL::X509::Name.new([['O', 'TTS'], ['C', 'US']]),
         subject: OpenSSL::X509::Name.new([['O', 'GSA'], ['C', 'US']]),
         serial: OpenSSL::BN.new(SecureRandom.rand(100_000)),
-        to_pem: "----BEGIN CERTIFICATE-----\nI AM A PEM\n----END CERTIFICATE----",
-      ),
+        to_pem: "----BEGIN CERTIFICATE-----\nI AM A PEM\n----END CERTIFICATE----"),
     )
   end
 
   subject(:render_view) do
-    render 'service_providers/certificate', certificate: certificate
+    render 'service_providers/certificate', certificate:
   end
 
   it 'renders the issuer, subject, and serial number' do
@@ -53,7 +52,7 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
   end
 
   it 'renders the contents of the block (if given) inside the card' do
-    render 'service_providers/certificate', certificate: certificate do
+    render('service_providers/certificate', certificate:) do
       <<-HTML.html_safe
         <div id="from-block">
       HTML

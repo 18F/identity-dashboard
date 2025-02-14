@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe BannerPolicy, type: :policy do
   let(:user) { User.new }
-  let(:admin) { User.new(admin: true )}
-  let(:banner) { build(:banner)}
+  let(:admin) { User.new(admin: true ) }
+  let(:banner) { build(:banner) }
   let(:ended_banner) do
     build(
       :banner,

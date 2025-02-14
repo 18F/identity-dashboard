@@ -36,7 +36,7 @@ class SecurityEventsController < ApplicationController
     email = params[:email]
 
     if email.present?
-      if (user = User.find_by(email: email))
+      if (user = User.find_by(email:))
         redirect_to security_events_all_path(user_uuid: user.uuid)
         return
       else

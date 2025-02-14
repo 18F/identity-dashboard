@@ -1,8 +1,8 @@
 class Banner < ApplicationRecord
   validates :message, presence: true
-  validates :end_date, 
-    comparison: { greater_than: :start_date, message: 'must be after start date' }, 
-    if: :start_date?, 
+  validates :end_date,
+    comparison: { greater_than: :start_date, message: 'must be after start date' },
+    if: :start_date?,
     allow_blank: true
 
   def started?

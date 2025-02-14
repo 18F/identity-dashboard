@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
+  before_action :set_cache_headers
   before_action :set_paper_trail_whodunnit
   before_action :set_requested_url
   before_action :get_banner_messages
@@ -14,7 +15,9 @@ class ApplicationController < ActionController::Base
   end
 
   def render_401
-    render file: 'public/401.html', status: :unauthorized
+    # Not specifying the layout can cause problems when the `rescue_from` is triggered
+    # from a controller that uses a different layout
+    render layout: 'application', file: 'public/401.html', status: :unauthorized
   end
 
   def user_for_paper_trail
@@ -43,8 +46,16 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def set_cache_headers
+    return if request.path == '/'
+
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Pragma'] = 'no-cache'
+  end
+
   def set_requested_url
     return if session[:requested_url]
+
     session[:requested_url] = request.original_url
   end
 
