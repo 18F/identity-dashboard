@@ -2,18 +2,18 @@ class Teams::UsersController < AuthenticatedController
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 
+  def index
+    authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
+  end
+
   def new
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
     @user = User.new
   end
 
-  def index
-    authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
-  end
-
   def create
     if IdentityConfig.store.access_controls_enabled
-      new_membership = UserTeam.build(team:, user: new_member, role: new_member.primary_role)
+      new_membership = UserTeam.build(team: team, user: new_member, role: new_member.primary_role)
       authorize new_membership
       new_membership.save!
       flash[:success] = I18n.t('teams.users.create.success', email: member_email)
@@ -22,8 +22,8 @@ class Teams::UsersController < AuthenticatedController
     new_member.user_teams << UserTeam.create!(user_id: new_member.id, group_id: team.id)
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path and return
-  rescue ActiveRecord::RecordInvalid => e
-    flash[:error] = "'#{member_email}': " + e.record.errors.full_messages.join(', ')
+  rescue ActiveRecord::RecordInvalid => err
+    flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
   end
 

@@ -21,8 +21,16 @@ module Tools
       auth_request.logout_request?
     end
 
+    def cert_errors
+      auth_request.cert_errors
+    end
+
     def xml
-      Nokogiri.XML(auth_request.raw_xml).to_xml
+      document.to_xml
+    end
+
+    def xml_valid?
+      document.errors.empty?
     end
 
     def valid
@@ -37,6 +45,10 @@ module Tools
      @valid_signature = check_signature_validity
     end
 
+    def signed?
+      auth_request.signed?
+    end
+
     def sp
       @sp ||= ServiceProvider.find_by(issuer: auth_request&.issuer)
     end
@@ -48,10 +60,19 @@ module Tools
     end
 
     def check_signature_validity
-      if auth_service_provider.nil?
+      if auth_request.issuer.nil?
         @errors.push(<<~EOS.squish)
-          No matching Service Provider founded in this request.
-          Please check issuer attribute.
+          No Issuer value found in request.
+          Please check Issuer attribute.
+        EOS
+
+        return false
+      end
+
+      if sp.nil?
+        @errors.push(<<~EOS.squish)
+          No registered Service Provider matched the Issuer in this request.
+          Please check Issuer attribute.
         EOS
 
         return false
@@ -77,6 +98,10 @@ module Tools
         auth_request.matching_cert,
         true,
       )
+    end
+
+    def document
+      Nokogiri.XML(auth_request.raw_xml)
     end
 
     def valid_certs

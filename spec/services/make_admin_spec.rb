@@ -26,9 +26,9 @@ describe MakeAdmin do
         subject.call
 
         user = User.find_by(
-          email: email,
-          first_name: first_name,
-          last_name: last_name,
+          email:,
+          first_name:,
+          last_name:,
         )
 
         expect(user).to_not be_nil

@@ -88,6 +88,7 @@ RSpec::Matchers.define :have_valid_markup do
 
   def page_markup_syntax_errors
     return @page_markup_syntax_errors if defined?(@page_markup_syntax_errors)
+
     @page_markup_syntax_errors = Nokogiri::HTML5(page_html, max_errors: 20).errors
   end
 

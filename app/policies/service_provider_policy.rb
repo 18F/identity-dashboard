@@ -1,6 +1,45 @@
 class ServiceProviderPolicy < BasePolicy
   attr_reader :user, :record
 
+  def index?
+    true
+  end
+
+  def show?
+    member_or_admin?
+  end
+
+  def new?
+    return true unless IdentityConfig.store.access_controls_enabled
+
+    admin? || user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'partner_developer') ||
+        membership.role == Role.find_by(name: 'partner_admin')
+    end
+  end
+
+  def edit?
+    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
+  end
+
+  def create?
+    return true unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
+  end
+
+  def update?
+    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || (membership && !partner_readonly?)
+  end
+
+  def destroy?
+    member_or_admin?
+  end
+
   def all?
     admin?
   end
@@ -9,34 +48,32 @@ class ServiceProviderPolicy < BasePolicy
     admin?
   end
 
-  def create?
-    true
-  end
-
-  def index?
-    true
-  end
-
-  def member_or_admin?
-    owner? || admin? || member?
-  end
-
-  def new?
-    true
-  end
-
   def edit_custom_help_text?
     admin?
   end
 
-  private
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if admin?
 
-  def owner?
-    record.user == user
+      user.scoped_service_providers(scope:).reorder(nil)
+    end
   end
 
-  def member?
+  private
+
+  def partner_readonly?
+    membership.role == Role.find_by(name: 'partner_readonly')
+  end
+
+  def member_or_admin?
+    return true if record.user == user && !IdentityConfig.store.access_controls_enabled
+
+    admin? || !!membership
+  end
+
+  def membership
     team = record.team
-    team.present? && user.teams.include?(team)
+    team && UserTeam.find_by(team:, user:)
   end
 end

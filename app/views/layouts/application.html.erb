@@ -26,6 +26,10 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<%= asset_path 'favicons/favicon-114.png' %>">
     <!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<%= asset_path 'favicons/favicon-144.png' %>">
+    
+    <% if @canonical_url.present? %>
+      <link rel="canonical" href="<%= @canonical_url %>" />
+    <% end %>
 
     <%= stylesheet_link_tag 'application' %>
     <%= csrf_meta_tags %>

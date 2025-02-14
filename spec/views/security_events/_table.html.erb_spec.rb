@@ -4,16 +4,16 @@ RSpec.describe 'security_events/table.html.erb' do
   subject(:render_partial) do
     render partial: 'security_events/table',
           locals: {
-            security_events: security_events,
-            show_user: show_user,
-            prev_page: prev_page,
-            next_page: next_page,
+            security_events:,
+            show_user:,
+            prev_page:,
+            next_page:,
           }
   end
 
   let(:user) { create(:user) }
   let(:security_events) do
-    2.times.map { create(:security_event, user: user) }
+    2.times.map { create(:security_event, user:) }
   end
   let(:show_user) { false }
   let(:prev_page) { nil }

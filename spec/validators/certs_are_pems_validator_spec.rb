@@ -8,7 +8,7 @@ end
 
 RSpec.describe CertsArePemsValidator, type: 'model' do
   subject { CertsTestRecord.new }
-  let(:valid_cert) do 
+  let(:valid_cert) do
     <<~CERT
     -----BEGIN CERTIFICATE-----
     MIIDAjCCAeoCCQDnptBMGdfBIjANBgkqhkiG9w0BAQsFADBCMQswCQYDVQQGEwJV

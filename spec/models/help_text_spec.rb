@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe HelpText do
   let(:service_provider) { build(:service_provider) }
-  let(:subject) { HelpText.lookup(service_provider: service_provider)}
+  let(:subject) { HelpText.lookup(service_provider:) }
   let(:all_presets_help_text) do
     HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
       result[context] = Hash.new
@@ -58,7 +58,7 @@ describe HelpText do
     end
 
     it 'keeps presets as presets' do
-      subject = HelpText.lookup(params: all_presets_help_text, service_provider:)
+      subject = HelpText.lookup(params: all_presets_help_text, service_provider: service_provider)
       HelpText::CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           expect(subject.fetch(context, locale)).to be_a_help_text_preset_for(context)
@@ -71,7 +71,7 @@ describe HelpText do
     it 'is true for blank text' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => blank_help_text},
+        params: { 'help_text' => blank_help_text },
       )
       expect(help_text_from_params).to be_blank
 
@@ -82,7 +82,7 @@ describe HelpText do
     it 'is true for an empty hash' do
       help_text_from_params = HelpText.lookup(
         service_provider: service_provider,
-        params: { 'help_text' => {}},
+        params: { 'help_text' => {} },
       )
       expect(help_text_from_params).to be_blank
       service_provider.help_text = {}
@@ -140,7 +140,7 @@ describe HelpText do
 
     it 'writes out localized presets' do
       service_provider = build(:service_provider, agency: build(:agency))
-      # 'sign_in' and 'sign_up' both have a service provider name substitution and 
+      # 'sign_in' and 'sign_up' both have a service provider name substitution and
       # an agency name substitution in their localizations.
       # We can use them to test both format substitution options
       all_presets_help_text['sign_in']['en'] = 'first_time'
@@ -174,7 +174,7 @@ describe HelpText do
     all_but_one_preset = all_presets_help_text.dup
     all_but_one_preset[test_context]['en'] = 'I accidentally only updated English'
     expect(all_but_one_preset[test_context]['es']).to be_a_help_text_preset_for(test_context)
-    subject = HelpText.lookup(params: all_but_one_preset, service_provider:)
+    subject = HelpText.lookup(params: all_but_one_preset, service_provider: service_provider)
     localized_vaules_for_context = subject.to_localized_h[test_context]
     HelpText::LOCALES.each do |locale|
       expect(localized_vaules_for_context[locale]).to_not be_a_help_text_preset_for(test_context)
@@ -186,7 +186,7 @@ describe HelpText do
     context 'when params are all presets' do
       let(:params) { all_presets_help_text }
       it 'uses the params over the service provider' do
-        subject = HelpText.lookup(params: params, service_provider: service_provider)
+        subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
         expect(subject.help_text.to_json).to eq(params.to_json)
         expect(subject.help_text.to_json).to_not eq(service_provider.help_text.to_json)
@@ -203,7 +203,7 @@ describe HelpText do
         params
       end
       it 'reverts to the service provider and throws away the params' do
-        subject = HelpText.lookup(params: params, service_provider: service_provider)
+        subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
         expect(subject.help_text.to_json).to_not eq(params.to_json)
         expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)

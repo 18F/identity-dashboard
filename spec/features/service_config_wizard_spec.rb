@@ -2,8 +2,12 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:user) { create(:user, admin: false) }
-  let(:admin) { create(:user, admin: true, group_id: team.id) }
+  let(:admin) { create(:admin, :with_teams) }
+
+  # Currently must be Partner Admin or Partner Developer to create a service provider
+  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
+  let(:user) { user_membership.user }
+
   let(:custom_help_text) do
     {
       'sign_in' => {
@@ -12,7 +16,7 @@ feature 'Service Config Wizard' do
         'fr' => 'Do sign in',
         'zh' => 'Do sign in',
       },
-      'sign_up' => {'en' => 'Join Us','es' => 'Join Us','fr' => 'Join Us','zh' => 'Join Us'},
+      'sign_up' => { 'en' => 'Join Us', 'es' => 'Join Us', 'fr' => 'Join Us', 'zh' => 'Join Us' },
       'forgot_password' => {
         'en' => 'Get help',
         'es' => 'Get help',
@@ -23,14 +27,14 @@ feature 'Service Config Wizard' do
   end
   let(:standard_help_text) do
     {
-      'sign_in' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
+      'sign_in' => { 'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank' },
       'sign_up' => {
         'en' => 'first_time',
         'es' => 'first_time',
         'fr' => 'first_time',
         'zh' => 'first_time',
       },
-      'forgot_password' => {'en' => 'blank','es' => 'blank','fr' => 'blank','zh' => 'blank'},
+      'forgot_password' => { 'en' => 'blank', 'es' => 'blank', 'fr' => 'blank', 'zh' => 'blank' },
     }
   end
 
@@ -54,7 +58,8 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
-      select(Team.find(admin.group_id).name, from: 'Team')
+      team_to_pick = admin.teams.sample
+      select(team_to_pick.name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
@@ -90,11 +95,12 @@ feature 'Service Config Wizard' do
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
+      team_to_pick = admin.teams.sample
       # These are expected values, listed in the order the currently appear in the step forms
       # These are all required values that we'll fill in, or expected default values
       expected_data = {
         # settings
-        'group_id' => admin.group_id, # required
+        'group_id' => team_to_pick.id, # required
         'prod_config' => 'false',
         'app_name' => 'my-app', # required
         'friendly_name' => 'My App', # required
@@ -153,8 +159,8 @@ feature 'Service Config Wizard' do
       fill_in('App name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
       team_field = find_field('Team')
-      select(Team.find(admin.group_id).name, from: 'Team')
-      expect(team_field.value).to eq(admin.group_id.to_s)
+      select(team_to_pick.name, from: 'Team')
+      expect(team_field.value).to eq(team_to_pick.id.to_s)
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
@@ -184,26 +190,27 @@ feature 'Service Config Wizard' do
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
       expect(current_url).to match(service_providers_url(saved_config_data.id)),
-        'failed to redirect to the service provider details page'
+                             'failed to redirect to the service provider details page'
       expected_data.each_key do |key|
         next if key == 'default_aal'
 
-        expect(saved_config_data[key].to_s).to eq(expected_data[key].to_s),
-          "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
+        expect(saved_config_data[key].to_s)
+          .to eq(expected_data[key].to_s),
+              "#{key} expected: #{expected_data[key]}\n#{key} received: #{saved_config_data[key]}"
       end
 
       expect(saved_config_data['default_aal']).to be_nil
 
       expect(saved_config_data['certs']).
         to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
-        'cert failed to save as expected'
+           'cert failed to save as expected'
       expect(page).to have_content(t(
         'notices.service_provider_saved',
         issuer: expected_data['issuer'],
       ))
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
-      'error: draft data not deleted'
+                                                          'error: draft data not deleted'
     end
 
     it 'correctly labels team in error when team is blank' do
@@ -269,9 +276,8 @@ feature 'Service Config Wizard' do
 
     it 'saves standard Help text on edit' do
       existing_config = create(:service_provider,
-                              :ready_to_activate,
-                              help_text: standard_help_text,
-                              user: user)
+                               :ready_to_activate,
+                               help_text: standard_help_text)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
@@ -291,19 +297,17 @@ feature 'Service Config Wizard' do
     describe 'starting at the service provider index' do
       let(:first_step) { ServiceConfigWizardController::STEPS[0] }
 
-      it 'will go to the first wizard step' do
+      it 'goes to the first wizard step' do
         visit service_providers_path
         click_on 'Create a new app'
         expect(page).to have_current_path(service_config_wizard_path(first_step))
       end
 
       context 'when setup wizard is already started' do
-        let(:team) { create(:team) }
         let(:new_name) { "Initial Name #{rand(1..1000)}" }
         let(:new_friendly_name) { "Initial Friendly Name #{rand(1..1000)}" }
 
         before do
-          user.teams << team
           visit service_providers_path
           click_on 'Create a new app'
           click_on 'Next'
@@ -319,7 +323,7 @@ feature 'Service Config Wizard' do
 
           visit service_providers_path
           click_on 'Create a new app'
-          expect(current_path).to eq(service_config_wizard_path(first_step))
+          expect(page).to have_current_path(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
           expect(saved_steps).to be(0)
         end
@@ -342,7 +346,7 @@ feature 'Service Config Wizard' do
       it 'renders Failure to proof URL input if IAL2 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user: user)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -353,7 +357,7 @@ feature 'Service Config Wizard' do
       it 'does not render Failure to proof URL input if IAL1 is selected' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_1,
-                                 user: user)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -366,7 +370,7 @@ feature 'Service Config Wizard' do
       it 'validates Failure to proof URL input' do
         existing_config = create(:service_provider,
                                  :ready_to_activate_ial_2,
-                                 user: user)
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('redirects')
@@ -412,10 +416,9 @@ feature 'Service Config Wizard' do
 
     it 'renders read-only with custom Help text' do
       existing_config = create(:service_provider,
-            :ready_to_activate,
-            help_text: custom_help_text,
-            user:,
-      )
+                               :ready_to_activate,
+                               help_text: custom_help_text,
+                               team: team)
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
@@ -425,6 +428,18 @@ feature 'Service Config Wizard' do
           expect(page).to have_content(custom_help_text[context][locale])
         end
       end
+    end
+  end
+
+  context 'when partner readonly' do
+    let(:user_membership) { create(:user_team, :partner_readonly, team:) }
+    let(:user) { user_membership.user }
+
+    it 'displays an unauthorized page' do
+      login_as user
+      visit new_service_config_wizard_path
+      expect(page).to have_content('Unauthorized')
+      expect(page).to_not have_content('Next')
     end
   end
 
