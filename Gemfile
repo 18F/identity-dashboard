@@ -43,7 +43,7 @@ gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
-gem 'rails', '~> 7.1.5', '>= 7.1.5.1'
+gem 'rails', '~> 7.2.0'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
