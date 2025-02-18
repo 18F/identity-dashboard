@@ -150,7 +150,7 @@ describe TeamPolicy do
           end
         end
       end
-    end
+   end
 
     permissions :edit? do
       context 'non team members' do
