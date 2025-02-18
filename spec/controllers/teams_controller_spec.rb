@@ -8,6 +8,7 @@ describe TeamsController do
   let(:agency) { create(:agency) }
 
   before do
+    allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
     sign_in user
   end

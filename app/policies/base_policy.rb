@@ -60,4 +60,20 @@ class BasePolicy
   def admin?
     user&.admin?
   end
+
+  def user_has_login_admin_role?
+    return admin? unless IdentityConfig.store.access_controls_enabled
+
+    admin? || user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'logingov_admin')
+    end
+  end
+
+  def user_has_partner_admin_role?
+    return false unless IdentityConfig.store.access_controls_enabled
+
+    user.user_teams.any? do |membership|
+      membership.role == Role.find_by(name: 'partner_admin')
+    end
+  end
 end
