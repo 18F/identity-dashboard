@@ -26,7 +26,7 @@ class TeamPolicy < BasePolicy
 
   def new?
     (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
-      user_has_login_admin_role?
+      user_has_login_admin_role? || user_has_partner_admin_role
   end
 
   def show?
