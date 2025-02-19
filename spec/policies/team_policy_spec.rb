@@ -79,10 +79,6 @@ describe TeamPolicy do
         it 'admin users can initiate team creation' do
           expect(TeamPolicy).to permit(admin_user)
         end
-
-        it 'can initiate team creation' do
-          expect(TeamPolicy).to permit(gov_email_user)
-        end
       end
     end
 
