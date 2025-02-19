@@ -79,10 +79,6 @@ describe TeamPolicy do
         it 'admin users can initiate team creation' do
           expect(TeamPolicy).to permit(admin_user)
         end
-
-        it 'can initiate team creation' do
-          expect(TeamPolicy).to permit(gov_email_user)
-        end
       end
     end
 
@@ -170,8 +166,8 @@ describe TeamPolicy do
     end
 
     permissions :new? do
-      context 'users with non gov email address' do
-        it 'cannot initiate team creation' do
+      context 'users with non gov email address with RBAC enabled' do
+        it 'can initiate team creation' do
           expect(TeamPolicy).to_not permit(nongov_email_user)
         end
 
@@ -181,6 +177,15 @@ describe TeamPolicy do
           it 'can initiate team creation' do
             expect(TeamPolicy).to permit(admin_user)
           end
+        end
+      end
+      context 'users with non gov email address with RBAC disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+        end
+
+        it 'cannot initiate team creation' do
+          expect(TeamPolicy).to_not permit(nongov_email_user)
         end
       end
     end
