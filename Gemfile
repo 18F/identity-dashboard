@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'actionmailer-text', '>= 0.1.1'
 gem 'active_model_serializers', '>= 0.10.14'
 gem 'active_record_upsert'
 gem 'acts_as_paranoid'
@@ -29,7 +28,7 @@ gem 'jwt'
 gem 'kaminari'
 gem 'lru_redux'
 gem 'newrelic_rpm', '>= 6.14.0'
-gem 'nokogiri', '~> 1.16.5'
+gem 'nokogiri', '~> 1.18.0'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
