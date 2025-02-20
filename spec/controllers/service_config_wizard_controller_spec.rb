@@ -390,15 +390,15 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     context 'and Production gate is enabled' do
-      IdentityConfig.store.prod_like_env = true
       let (:existing_service_provider) do
-        create(:service_provider,
-                                        :ready_to_activate_ial_1,
-                                        team: admin.teams[0],
-                                        issuer: "issuer:string:#{rand(1...1000)}",
-                                        friendly_name: 'Friendly App')
+        create( :service_provider,
+                :ready_to_activate_ial_1,
+                team: admin.teams[0],
+                issuer: "issuer:string:#{rand(1...1000)}",
+                friendly_name: 'Friendly App')
       end
       before do
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
         put :create, params: { service_provider: existing_service_provider }
       end
 
@@ -545,16 +545,16 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     context 'and Production gate is enabled' do
-      IdentityConfig.store.prod_like_env = true
       let (:existing_service_provider) do
-        create(:service_provider,
-                                        :ready_to_activate_ial_1,
-                                        team: team,
-                                        issuer: "issuer:string:#{rand(1...1000)}",
-                                        friendly_name: 'Friendly App')
+        create( :service_provider,
+                :ready_to_activate_ial_1,
+                team: team,
+                issuer: "issuer:string:#{rand(1...1000)}",
+                friendly_name: 'Friendly App')
       end
 
       before do
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
         put :create, params: { service_provider: existing_service_provider }
       end
 

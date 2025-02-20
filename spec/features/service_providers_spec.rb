@@ -425,8 +425,10 @@ feature 'Service Providers CRUD' do
 
     context 'and Production gate is enabled' do
       before do
-        IdentityConfig.store[:prod_like_env] = true
-        IdentityConfig.store[:edit_button_uses_service_config_wizard] = false
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: false,
+        )
       end
 
       it 'allows Partners to set initial IAL' do
@@ -589,8 +591,10 @@ feature 'Service Providers CRUD' do
 
     context 'and Production gate is enabled' do
       before do
-        IdentityConfig.store[:prod_like_env] = true
-        IdentityConfig.store[:edit_button_uses_service_config_wizard] = false
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: false,
+        )
       end
 
       it 'allows Login.gov Admins to set initial IAL' do

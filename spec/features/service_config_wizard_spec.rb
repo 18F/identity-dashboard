@@ -293,8 +293,10 @@ feature 'Service Config Wizard' do
 
     describe 'and Production gate is enabled' do
       before do
-        IdentityConfig.store[:prod_like_env] = true
-        IdentityConfig.store[:edit_button_uses_service_config_wizard] = true
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
       end
 
       it 'allows Login.gov Admin to set initial IAL' do
@@ -430,7 +432,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'renders Help text as expected' do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       visit service_config_wizard_path('help_text')
 
       find_all('.usa-radio__input[checked]').each do |input|
@@ -464,8 +466,10 @@ feature 'Service Config Wizard' do
 
     describe 'and Production gate is enabled' do
       before do
-        IdentityConfig.store[:prod_like_env] = true
-        IdentityConfig.store[:edit_button_uses_service_config_wizard] = true
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
       end
 
       it 'allows Partners to set initial IAL' do
@@ -506,7 +510,7 @@ feature 'Service Config Wizard' do
 
   context 'when selecting OIDC' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       user_to_login = [admin, user].sample
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
@@ -532,7 +536,7 @@ feature 'Service Config Wizard' do
 
   context 'when selecting SAML' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       user_to_login = [admin, user].sample
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"

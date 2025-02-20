@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 def flag_in
-  IdentityConfig.store.access_controls_enabled = true
+  allow(IdentityConfig.store).to receive_messages(access_controls_enabled: true)
 end
 
 feature 'admin manages users' do

@@ -546,7 +546,7 @@ describe ServiceProvidersController do
 
     describe 'Production gate is enabled' do
       before do
-        IdentityConfig.store[:prod_like_env] = true
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
       context 'with Partner user' do
