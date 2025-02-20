@@ -126,7 +126,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_14_203312) do
     t.integer "ial"
     t.string "failure_to_proof_url"
     t.string "push_notification_url"
-    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
+    t.jsonb "help_text", default: {"sign_in" => {}, "sign_up" => {}, "forgot_password" => {}}
     t.string "remote_logo_key"
     t.boolean "allow_prompt_login", default: false
     t.integer "default_aal"
