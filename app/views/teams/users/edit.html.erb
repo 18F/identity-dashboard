@@ -17,7 +17,8 @@
       db_fieldname: :role_name,
       describedby: 'rbac_description',
       inputs: roles_for_options,
-      default: @membership.role&.name
+      default: @membership.role&.name,
+      disabled: false,
     } %>
   </fieldset>
   <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
