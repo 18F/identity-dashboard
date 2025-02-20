@@ -5,6 +5,8 @@ common: &default_settings
   application_logging:
     forwarding:
       enabled: false
+  distributed_tracing:
+    enabled: false
 development:
   <<: *default_settings
   monitor_mode: false
