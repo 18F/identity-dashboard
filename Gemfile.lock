@@ -285,7 +285,7 @@ GEM
       faraday (>= 1, < 3)
     faraday-net_http (3.3.0)
       net-http
-    ffi (1.17.0)
+    ffi (1.17.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.1.1)
@@ -723,7 +723,7 @@ DEPENDENCIES
   wicked (~> 2.0)
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.4.1p0
 
 BUNDLED WITH
    2.5.6
