@@ -318,13 +318,15 @@ feature 'Service Config Wizard' do
         end
 
         it 'wipes existing steps and starts fresh' do
-          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
+                                          team.id).count
           expect(saved_steps).to be(1)
 
           visit service_providers_path
           click_on 'Create a new app'
           expect(page).to have_current_path(service_config_wizard_path(first_step))
-          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
+                                          team.id).count
           expect(saved_steps).to be(0)
         end
       end
