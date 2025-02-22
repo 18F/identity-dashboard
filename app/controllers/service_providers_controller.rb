@@ -4,6 +4,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :authorize_approval, only: [:update]
   before_action :authorize_allow_prompt_login, only: %i[create update]
   before_action :authorize_email_nameid_format_allowed, only: %i[create update]
+  before_action :authorize_ial_update, only: [:update]
 
   after_action :verify_authorized
   after_action :verify_policy_scoped,
@@ -142,6 +143,15 @@ class ServiceProvidersController < AuthenticatedController
                   !current_user.admin?
 
     raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
+  end
+
+  def authorize_ial_update
+    return unless IdentityConfig.store.prod_like_env
+
+    return unless policy(service_provider).ial_readonly? && service_provider_params[:ial]
+
+      raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
+
   end
 
   def validate_and_save_service_provider(initial_action)

@@ -26,7 +26,7 @@ en:
         before_start: Before you start
         block_encryption: SAML Assertion Encryption
         cert_file: Choose a cert file
-        dashboard_config: Portal configuration
+        prod_config: Portal configuration
         default_aal: Default Authentication Assurance Level (AAL)
         description: Description
         error: "ERROR:"

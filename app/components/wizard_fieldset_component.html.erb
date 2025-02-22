@@ -20,6 +20,7 @@
     <% if input_type == 'radio' %>
       <%= render partial: 'components/radio_collection', locals: {
         form: form,
+        disabled:,
         describedby: html_key,
         db_fieldname: model_method,
         inputs: inputs,
@@ -29,6 +30,7 @@
     <% elsif input_type == 'checkbox' %>
       <%= render partial: 'checkbox_collection', locals: {
         form: form,
+        disabled:,
         describedby: html_key,
         db_fieldname: model_method,
         inputs: inputs,
@@ -37,6 +39,7 @@
       <% text_list.each do |value| %>
         <%= render partial: 'components/multiple_text', locals: {
           form: form,
+          disabled:,
           fieldname: param_name,
           db_fieldname: model_method,
           value: value,
