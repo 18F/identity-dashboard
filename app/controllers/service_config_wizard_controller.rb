@@ -3,7 +3,6 @@ class ServiceConfigWizardController < AuthenticatedController
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
-  REDIRECTS_STEP = 'redirects'
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -57,7 +56,8 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    clean_redirect_uris if step == REDIRECTS_STEP
+    clean_redirect_uris if is_step_with_param('redirect_uris')
+    validate_ial if is_step_with_param('ial')
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
@@ -169,6 +169,10 @@ class ServiceConfigWizardController < AuthenticatedController
     step == step_name
   end
 
+  def is_step_with_param(param_name)
+    step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
+  end
+
   def redirect_unless_flagged_in
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
@@ -238,6 +242,13 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def clean_redirect_uris
     params[:wizard_step][:redirect_uris]&.compact_blank! || []
+  end
+
+  def validate_ial
+    return unless policy(draft_service_provider).ial_readonly?
+
+    # reset unpermitted IAL change
+    params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
   end
 
   def skippable

@@ -10,7 +10,8 @@
       db_fieldname: :role_name,
       describedby: 'rbac_description',
       inputs: Role::ACTIVE_ROLES_NAMES.map {|n,f| [f,n]},
-      default: @user_team.role_name
+      default: @user_team.role_name,
+      disabled: false
     } %>
   <% end %>
 </fieldset>

@@ -3,6 +3,9 @@ require 'rails_helper'
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
   let(:admin) { create(:admin, :with_teams) }
+  let(:admin_membership) do
+    create(:user_team, :logingov_admin, team: admin.teams[0])
+  end
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
   let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
@@ -287,6 +290,37 @@ feature 'Service Config Wizard' do
       # rubocop:enable Layout/LineLength
       expect(page).to have_content(content)
     end
+
+    describe 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
+      end
+
+      it 'allows Login.gov Admin to set initial IAL' do
+        visit service_config_wizard_path('settings')
+        select(admin.teams[0].name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'allows Login.gov Admin to update IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: admin.teams[0])
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+    end
   end
 
   context 'when not admin' do
@@ -398,7 +432,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'renders Help text as expected' do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       visit service_config_wizard_path('help_text')
 
       find_all('.usa-radio__input[checked]').each do |input|
@@ -429,6 +463,37 @@ feature 'Service Config Wizard' do
         end
       end
     end
+
+    describe 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
+      end
+
+      it 'allows Partners to set initial IAL' do
+        visit service_config_wizard_path('settings')
+        select(team.name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'does not allow Partners to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
+      end
+    end
   end
 
   context 'when partner readonly' do
@@ -445,8 +510,16 @@ feature 'Service Config Wizard' do
 
   context 'when selecting OIDC' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
+      user_to_login = [admin, user].sample
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: Team)
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose ['OpenID Connect Private Key JWT', 'OpenID Connect PKCE'].sample
       click_on 'Next'
@@ -463,8 +536,16 @@ feature 'Service Config Wizard' do
 
   context 'when selecting SAML' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
+      user_to_login = [admin, user].sample
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: Team)
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose 'SAML'
       click_on 'Next'
