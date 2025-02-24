@@ -217,9 +217,9 @@ describe ServiceProviderPolicy do
       expect(subject.permitted_attributes).to eq(expected_attributes)
     end
 
-    it 'forbids IAL for non-admin in prod' do
+    it 'forbids editing IAL for non-admin in prod' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      subject = described_class.new(build(:user), ServiceProvider)
+      subject = described_class.new(build(:user), build(:service_provider, ial: 1))
       expected_attributes = described_class::BASE_PARAMS.reject { |param| param == :ial }
       expect(subject.permitted_attributes).to eq(expected_attributes)
     end

@@ -31,7 +31,12 @@ class WizardStepPolicy < BasePolicy
 
   def permitted_attributes
     return PARAMS unless IdentityConfig.store.prod_like_env
-    return PARAMS.reject { |param| param == :ial } if !admin? && record.existing_service_provider?
+    return PARAMS if record == WizardStep # Not passed a specific record, passed the whole class
+
+    existing_provider = record.existing_service_provider? && record.original_service_provider
+    if existing_provider && ServiceProviderPolicy.new(user, existing_provider).ial_readonly?
+      return PARAMS.reject { |param| param == :ial }
+    end
 
     PARAMS
   end

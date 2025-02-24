@@ -37,7 +37,7 @@ class ServiceProviderPolicy < BasePolicy
 
   def permitted_attributes
     return ADMIN_PARAMS if admin?
-    return BASE_PARAMS unless IdentityConfig.store.prod_like_env
+    return BASE_PARAMS unless ial_readonly?
 
     BASE_PARAMS.reject { |param| param == :ial }
   end
@@ -94,10 +94,11 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def ial_readonly?
+    return false if record == ServiceProvider # Passed the class instead of an instance
     # readonly is for Prod edit
     return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
-    !(admin? || membership.role == Role::SITE_ADMIN)
+    !admin?
   end
 
   class Scope < BasePolicy::Scope

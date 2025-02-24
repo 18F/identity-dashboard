@@ -53,7 +53,9 @@ describe WizardStepPolicy do
 
       it 'forbids IAL for non-admin editing existing config' do
         editing_step = build(:wizard_step)
+        existing_application = build(:service_provider, ial: 2)
         allow(editing_step).to receive(:existing_service_provider?).and_return true
+        allow(editing_step).to receive(:original_service_provider).and_return existing_application
         subject = described_class.new(user, editing_step)
         expected_attributes = described_class::PARAMS.reject { |param| param == :ial }
         expect(subject.permitted_attributes).to eq(expected_attributes)
