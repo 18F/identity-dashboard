@@ -1,14 +1,16 @@
 <%# expected locals:
-  [SimpleForm] form
-  [String] fieldname such that simple_form and service_provider have valid translations
-  [Symbol] db_fieldname such that the database has an associated column
-  [String] value to pre-select radio option
+  @param form [SimpleForm]
+  @param fieldname [String] so simple_form and service_provider have valid translations
+  @param db_fieldname [Symbol] such that the database has an associated column
+  @param value [String] to pre-select radio option
+  @param disabled [Boolean] whether this input is disabled
 %>
 <%= text_field_tag "wizard_step[#{db_fieldname}][]",
                    value,
                    id: "",
                    class: 'usa-input',
                    multiple: 'multiple',
+                   disabled:,
                    aria: { labelledby: fieldname.gsub('.','_') }%>
 <% @model.errors[db_fieldname].each do |error| %>
   <% if Regexp.new("\\A#{value} ") =~ error %>

@@ -21,7 +21,7 @@ class Team < ApplicationRecord
   def user_deletion_history
     PaperTrail::Version.
       where(event: 'destroy', item_type: 'UserTeam').
-      where("object ->>'group_id' = '?'", id)
+      where("object ->>'group_id' = CAST(? as varchar)", id)
   end
 
   def user_deletion_report_item(deleted_record)

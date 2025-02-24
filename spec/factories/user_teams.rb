@@ -3,6 +3,10 @@ FactoryBot.define do
     user
     team
 
+    trait :logingov_admin do
+      role_name { 'logingov_admin' }
+    end
+
     trait :partner_admin do
       role_name { 'partner_admin' }
     end

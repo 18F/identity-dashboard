@@ -3,6 +3,7 @@
   @param describedby [String] a proper value for `aria-describedby`
   @param db_fieldname [Symbol] such that the database has an associated column
   @param inputs [Hash] where key is the label and value is the input value
+  @param disabled [Boolean] whether this input is disabled
 %>
 <div class="usa-checkbox" aria-describedby="<%= describedby %>">
   <p class="usa-error-message js-bundle-input-error-message">
@@ -13,7 +14,7 @@
                                   :last, :first,
                                   item_wrapper_tag: :div,
                                   item_wrapper_class: 'checkbox__container') do |b| %>
-    <%= b.check_box class: "usa-checkbox__input" %>
+    <%= b.check_box class: "usa-checkbox__input", disabled: %>
     <%= b.label class: "usa-checkbox__label" %>
   <% end %>
 </div>

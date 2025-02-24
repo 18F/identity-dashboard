@@ -25,6 +25,8 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
+    #  enable this if your test output is truncated
+    # expectations.max_formatted_output_length = nil
   end
 
   config.mock_with :rspec do |mocks|
