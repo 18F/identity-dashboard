@@ -200,28 +200,46 @@ describe ServiceProviderPolicy do
   end
 
   describe '#permitted_attributes' do
-    it 'allows base attributes for non-admin in not-prod' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      subject = described_class.new(build(:user), ServiceProvider)
-      expect(subject.permitted_attributes).to eq(described_class::BASE_PARAMS)
+    before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
+
+    context 'when not in prod' do
+      it 'allows base attributes for non-admin' do
+        subject = described_class.new(build(:user), ServiceProvider)
+        expect(subject.permitted_attributes).to eq(described_class::BASE_PARAMS)
+      end
+
+      it 'allows extra attributes for site admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        subject = described_class.new(site_admin, ServiceProvider)
+        expected_attributes = described_class::BASE_PARAMS + %i[
+          email_nameid_format_allowed
+          allow_prompt_login
+          approved
+        ]
+        expect(subject.permitted_attributes).to eq(expected_attributes)
+      end
     end
 
-    it 'allows extra attributes for site admin in prod' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      subject = described_class.new(site_admin, ServiceProvider)
-      expected_attributes = described_class::BASE_PARAMS + %i[
-        email_nameid_format_allowed
-        allow_prompt_login
-        approved
-      ]
-      expect(subject.permitted_attributes).to eq(expected_attributes)
-    end
+    context 'when in prod' do
+      before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
 
-    it 'forbids editing IAL for non-admin in prod' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      subject = described_class.new(build(:user), build(:service_provider, ial: 1))
-      expected_attributes = described_class::BASE_PARAMS.reject { |param| param == :ial }
-      expect(subject.permitted_attributes).to eq(expected_attributes)
+      it 'allows extra attributes for site admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        subject = described_class.new(site_admin, ServiceProvider)
+        expected_attributes = described_class::BASE_PARAMS + %i[
+          email_nameid_format_allowed
+          allow_prompt_login
+          approved
+        ]
+        expect(subject.permitted_attributes).to eq(expected_attributes)
+      end
+
+      it 'forbids editing IAL for non-admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        subject = described_class.new(build(:user), build(:service_provider, ial: 1))
+        expected_attributes = described_class::BASE_PARAMS.reject { |param| param == :ial }
+        expect(subject.permitted_attributes).to eq(expected_attributes)
+      end
     end
   end
 end
