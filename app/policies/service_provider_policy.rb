@@ -94,7 +94,8 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def ial_readonly?
-    return false if record == ServiceProvider # Passed the class instead of an instance
+    # Passed the class instead of an instance. This usually happens when creating a new one.
+    return false if record.instance_of?(Class)
     # readonly is for Prod edit
     return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
