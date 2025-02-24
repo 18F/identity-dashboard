@@ -126,6 +126,10 @@ feature 'Team pages', :js do
       context 'as a Partner Admin' do
         let(:user_team_membership) { create(:user_team, :partner_admin) }
 
+        before do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+        end
+
         it 'is accessible when creating a new team' do
           create(:agency, name: 'GSA')
 
