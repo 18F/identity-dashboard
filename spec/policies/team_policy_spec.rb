@@ -167,7 +167,7 @@ describe TeamPolicy do
 
     permissions :new? do
       context 'users with non gov email address with RBAC enabled' do
-        it 'can initiate team creation' do
+        it 'cannot initiate team creation' do
           expect(TeamPolicy).to_not permit(nongov_email_user)
         end
 
