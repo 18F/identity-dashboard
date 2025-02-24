@@ -112,7 +112,7 @@ class ServiceProvidersController < AuthenticatedController
     if params.has_key?(:service_provider)
       text_params = permitted_attributes(service_provider)[:help_text]
     end
-    HelpText.lookup(params: nil, service_provider:)
+    HelpText.lookup(params: nil, service_provider: service_provider)
     @parsed_help_text ||= HelpText.lookup(
       params: text_params,
       service_provider: service_provider,

@@ -70,7 +70,7 @@ class HelpText
   def revert_unless_presets_only
     return self if presets_only?
 
-    HelpText.lookup(params: @initial_help_text, service_provider:)
+    HelpText.lookup(params: @initial_help_text, service_provider: service_provider)
   end
 
   def fetch(context, lang)
