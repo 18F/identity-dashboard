@@ -51,7 +51,7 @@ describe WizardStepPolicy do
         expect(subject.permitted_attributes).to eq(described_class::PARAMS)
       end
 
-      it 'forbids IAL for non-admin editing existing config' do
+      it 'forbids editing IAL on editing existing config for non-admin' do
         editing_step = build(:wizard_step)
         existing_application = build(:service_provider, ial: 2)
         allow(editing_step).to receive(:existing_service_provider?).and_return true
@@ -61,7 +61,7 @@ describe WizardStepPolicy do
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end
 
-      it 'allows IAL for non-admin on new config' do
+      it 'allows editing IAL on new config for non-admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         subject = described_class.new(user, build(:wizard_step))
         expect(subject.permitted_attributes).to eq(described_class::PARAMS)
