@@ -182,36 +182,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def wizard_step_params
-    permit_params = [
-      :acs_url,
-      :active,
-      :agency_id,
-      :allow_prompt_login,
-      :approved,
-      :assertion_consumer_logout_service_url,
-      :block_encryption,
-      :description,
-      :friendly_name,
-      :group_id,
-      :ial,
-      :default_aal,
-      :identity_protocol,
-      :issuer,
-      :logo,
-      :metadata_url,
-      :return_to_sp_url,
-      :failure_to_proof_url,
-      :push_notification_url,
-      :signed_response_message_requested,
-      :sp_initiated_login_url,
-      :logo_file,
-      :app_name,
-      :prod_config,
-      redirect_uris: [],
-      attribute_bundle: [],
-      help_text: {},
-    ]
-    params.require(:wizard_step).permit(*permit_params)
+    permitted_attributes(WizardStep)
   end
 
   # relies on ServiceProvider#certs_are_pems for validation
