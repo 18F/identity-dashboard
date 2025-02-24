@@ -55,12 +55,12 @@ class ServiceProvidersController < AuthenticatedController
     attach_cert(cert)
     remove_certificates
 
+    help_text = parsed_help_text
     service_provider.assign_attributes(permitted_attributes(service_provider))
     attach_logo_file if logo_file_param
     if helpers.help_text_options_enabled?
-      help_text = parsed_help_text
       unless policy(@service_provider).edit_custom_help_text?
-        help_text = parsed_help_text.revert_unless_presets_only
+        help_text = help_text.revert_unless_presets_only
       end
       service_provider.help_text = help_text.to_localized_h
     end
@@ -109,9 +109,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def parsed_help_text
-    if params.has_key?(service_provider)
+    if params.has_key?(:service_provider)
       text_params = permitted_attributes(service_provider)[:help_text]
     end
+    HelpText.lookup(params: nil, service_provider:)
     @parsed_help_text ||= HelpText.lookup(
       params: text_params,
       service_provider: service_provider,
@@ -147,10 +148,6 @@ class ServiceProvidersController < AuthenticatedController
     else
       flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 154"
     end
-  end
-
-  def error_messages
-    [[@errors] + [service_provider.errors.full_messages]].flatten.compact.to_sentence
   end
 
   # relies on ServiceProvider#certs_are_pems for validation

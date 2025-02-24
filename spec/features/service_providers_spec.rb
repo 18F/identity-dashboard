@@ -262,8 +262,9 @@ feature 'Service Providers CRUD' do
       help_text_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
       expect(help_text_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
 
-      # The first option is currently labeled "Leave blank", so this checks out that logic
+      # The first option is "Leave blank" for `sign_in`, so this exercises the "Leave blank" logic
       help_text_radio_options.first.click
+      # The last option is for `forgot_password` and is something other than "Leave blank"
       help_text_radio_options.last.click
       click_on 'Update'
       visit edit_service_provider_path(service_provider)
