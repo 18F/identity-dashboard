@@ -67,8 +67,8 @@ class User < ApplicationRecord
   end
 
   def logingov_admin?
-    # TODO: change this
-    admin?
+    # TODO: change this implementation
+    admin_without_deprecation?
   end
 
   def primary_role
@@ -76,5 +76,23 @@ class User < ApplicationRecord
 
     user_teams.first&.role || Role.find_by(name: 'partner_admin')
   end
+
+  module DeprecateAdmin
+    def self.deprecator
+      @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')
+    end
+
+    def admin?
+      super
+    end
+
+    private
+
+    alias admin_without_deprecation? admin?
+    private :admin_without_deprecation?
+  end
+
+  include DeprecateAdmin
+  deprecate admin?: 'use `logingov_admin?` instead', deprecator: DeprecateAdmin.deprecator
 end
 

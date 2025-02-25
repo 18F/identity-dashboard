@@ -190,4 +190,20 @@ describe User do
       expect(user.primary_role).to eq(expected_role)
     end
   end
+  describe '#admin?' do
+    it 'is deprecated' do
+      default_behavior = User::DeprecateAdmin.deprecator.behavior
+      User::DeprecateAdmin.deprecator.behavior = :raise
+      expect { User.new.admin? }.to raise_error(ActiveSupport::DeprecationException)
+      User::DeprecateAdmin.deprecator.behavior = default_behavior
+    end
+  end
+  describe '#logingov_admin?' do
+    it 'is not deprecated' do
+      default_behavior = User::DeprecateAdmin.deprecator.behavior
+      User::DeprecateAdmin.deprecator.behavior = :raise
+      expect { User.new.logingov_admin? }.to_not raise_error(ActiveSupport::DeprecationException)
+      User::DeprecateAdmin.deprecator.behavior = default_behavior
+    end
+  end
 end
