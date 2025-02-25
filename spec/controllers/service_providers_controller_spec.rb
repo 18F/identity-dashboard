@@ -542,6 +542,54 @@ describe ServiceProvidersController do
           },
         })
       end
+
+      context 'when not a Login.gov admin' do
+        before do
+          create(:user_team, :partner_developer, user: user, team: sp.team)
+          sign_in user
+        end
+
+        it 'rejects help text params if any are custom' do
+          original_help_text = sp.help_text
+          custom_params = {
+            sign_in: { en: 'random' },
+            sign_up: { en: 'custom' },
+            forgot_password: { en:'blank' },
+          }
+          put :update, params: {
+            id: sp.id,
+            service_provider: { issuer: sp.issuer, help_text: custom_params },
+          }
+          sp.reload
+          expect(sp.help_text['sign_in']['en']).to eq(original_help_text['sign_in']['en'])
+          expect(sp.help_text['sign_up']['en']).to eq(original_help_text['sign_up']['en'])
+          expect(sp.help_text['forgot_password']['en'])
+            .to eq(original_help_text['forgot_password']['en'])
+        end
+
+        it 'allows help text params if all are presets' do
+          original_help_text = sp.help_text
+          custom_params = {
+            sign_in: { en: 'first_time' },
+            sign_up: { en: 'first_time' },
+            forgot_password: { en:'blank' },
+          }
+
+          put :update, params: {
+            id: sp.id,
+            service_provider: { issuer: sp.issuer, help_text: custom_params },
+          }
+          sp.reload
+          expect(sp.help_text['sign_in']['en']).to_not eq(original_help_text['sign_in']['en'])
+          expect(sp.help_text['sign_in']['en']).to eq(t(
+            'service_provider_form.help_text.sign_in.first_time',
+            sp_name: sp.friendly_name,
+          ))
+          expect(sp.help_text['sign_up']['en']).to_not eq(original_help_text['sign_up']['en'])
+          expect(sp.help_text['forgot_password']['en'])
+            .to_not eq(original_help_text['forgot_password']['en'])
+        end
+      end
     end
 
     describe 'Production gate is enabled' do
