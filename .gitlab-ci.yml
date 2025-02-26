@@ -240,7 +240,7 @@ accessibility-specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec --pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
+    - bundle exec rspec --pattern "spec/features/accessibility/**/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
   artifacts:
     when: always
     reports:
@@ -281,7 +281,7 @@ other-specs:
     - *yarn_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
-    - bundle exec rspec --exclude-pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
+    - bundle exec rspec --exclude-pattern "spec/features/accessibility/**/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
   coverage: '/\(\d+.\d+\%\) covered/'
   artifacts:
     when: always
