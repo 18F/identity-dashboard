@@ -5,7 +5,23 @@ describe Api::ServiceProvidersController do
     JSON.parse(response.body, symbolize_names: true)
   end
 
+  let(:user) { create(:user) }
+  let(:token) do
+    token = AuthToken.new_for_user(user)
+    token.save
+    token.ephemeral_token
+  end
+
+  def add_token_to_env(controller, user, token)
+    auth_header_value = ActionController::HttpAuthentication::Token.encode_credentials(
+      token, email: user.email
+    )
+    request.headers['HTTP_AUTHORIZATION'] = auth_header_value
+  end
+
   describe '#index' do
+    before { add_token_to_env(controller, user, token) }
+
     it 'returns active, approved SPs' do
       sp = create(:service_provider, :with_team, active: true, approved: true)
       serialized_sp = ServiceProviderSerializer.new(sp).to_h

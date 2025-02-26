@@ -1,0 +1,14 @@
+<div id="<%= dom_id auth_token %>">
+
+  <p>
+    <strong>Created At:</strong>
+    <%= auth_token.created_at %>
+    <% if auth_token.ephemeral_token.present? %>
+      <div>
+        <p>Please copy your token down now, as this is the only time you will have access to it.</p>
+        <input disabled='disabled' value='<%= auth_token.ephemeral_token %>' size='80' />
+      </div>
+    <% end %>
+  </p>
+
+</div>
