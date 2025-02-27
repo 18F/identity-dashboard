@@ -156,12 +156,11 @@ feature 'Service Config Wizard' do
       end
       expect(team_field_options.count).to_not eq(1)
       expect(team_options_with_current_value.count).to eq(1)
-      expect(team_options_with_current_value[0].text).to eq('- Select -')
+      expect(team_options_with_current_value.first.text).to eq('- Select -')
       fill_in('App name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
-      team_field = find_field('Team')
-      select(team.name, from: 'Team')
-      expect(team_field.value).to eq(team.id.to_s)
+      select(team_to_pick.name, from: 'Team')
+      expect(team_field.value).to eq(team_to_pick.id.to_s)
       click_on 'Next'
       choose 'SAML' # not default, but we're using SAML to test other defaults
       click_on 'Next'
