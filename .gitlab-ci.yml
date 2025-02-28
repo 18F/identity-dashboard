@@ -19,10 +19,10 @@ default:
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
 .yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+  - YARN_CACHE_FOLDER=.yarn-cache yarn install --immutable
 
 .yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+  - YARN_CACHE_FOLDER=.yarn-cache yarn workspaces focus --all --production --immutable
 
 .build_cache:
   - &ruby_cache
