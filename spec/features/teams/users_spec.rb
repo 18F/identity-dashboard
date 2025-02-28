@@ -90,7 +90,7 @@ describe 'users' do
     end
   end
 
-  feature 'add team users' do
+  feature 'add users to a team' do
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
@@ -98,13 +98,12 @@ describe 'users' do
     end
 
     scenario 'team member adds new user' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       email_to_add = 'new_user@example.com'
       fill_in 'Email', with: email_to_add
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
-      team_member_emails = team.reload.users.map(&:email)
-      expect(team_member_emails).to include(email_to_add)
+      new_membership = UserTeam.find_by(user: User.find_by(email: email_to_add), team: team)
+      expect(new_membership.role.name).to eq('partner_readonly')
     end
 
     scenario 'team member adds existing member of team' do
@@ -114,12 +113,11 @@ describe 'users' do
     end
 
     scenario 'team member adds existing user not member of team' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       fill_in 'Email', with: user.email
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
-      team_member_emails = team.reload.users.map(&:email)
-      expect(team_member_emails).to include(user.email)
+      new_membership = UserTeam.find_by(user: User.find_by(email: user.email), team: team)
+      expect(new_membership.role.name).to eq('partner_readonly')
     end
 
     scenario 'add a user not yet in the system' do
@@ -129,6 +127,25 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
       team_member_emails = team.reload.users.map(&:email)
       expect(team_member_emails).to include(random_email)
+    end
+  end
+
+  describe 'login.gov admin with an empty team' do
+    let(:empty_team) { create(:team) }
+    before do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+      login_as logingov_admin
+      visit new_team_user_path(empty_team)
+    end
+
+    it 'defaults new users to the Partner Admin role' do
+      expect(empty_team.users.count).to be 0
+      random_email = "random_user_#{rand(1..1000)}@gsa.gov"
+      fill_in 'Email', with: random_email
+      click_on 'Add'
+      expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+      new_membership = UserTeam.find_by(user: User.find_by(email: random_email), team: empty_team)
+      expect(new_membership.role.name).to eq('partner_admin')
     end
   end
 

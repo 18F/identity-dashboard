@@ -20,4 +20,8 @@ class UserTeam < ApplicationRecord
     end
     true
   end
+
+  def set_default_role
+    self.role_name = team.users.any? ? 'partner_readonly' : 'partner_admin'
+  end
 end
