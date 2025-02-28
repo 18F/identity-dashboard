@@ -41,7 +41,7 @@
             <%= image_tag 'security-key.svg',
                             height: '27', width: '27',
                             alt: 'admin user icon',
-                            role: 'img' if user.admin? %>
+                            role: 'img' if user.logingov_admin? %>
           <% end %>
         </td>
         <td>

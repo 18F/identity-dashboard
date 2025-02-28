@@ -12,15 +12,14 @@ describe UserHelper do
   end
 
   describe('#can_delete_unconfirmed_users?') do
-    it 'returns true if any users are unconfirmed and the current user is an admin' do
-      current_user = build(:user)
-      current_user.admin = true
+    it 'returns true if any users are unconfirmed and the current user is a Login.gov admin' do
+      current_user = build(:user, :logingov_admin)
       user.created_at = 15.days.ago
       users = [user]
       expect(can_delete_unconfirmed_users?(current_user, users)).to be true
     end
 
-    it 'returns false if the current user is not an admin' do
+    it 'returns false if the current user is not an Login.gov admin' do
       current_user = build(:user)
       user.created_at = 2.days.ago
       users = [user]

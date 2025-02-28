@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:admin_user) { build(:admin) }
+  let(:logingov_admin) { build(:logingov_admin) }
   let(:team_user) { build(:user) }
   let(:gov_email_user) { build(:user) }
   let(:nongov_email_user) { build(:user, email: 'user@example.com') }
@@ -21,8 +21,8 @@ describe TeamPolicy do
   context 'users with gov email addresses' do
     permissions :create? do
       context 'users with gov email addresses' do
-        it 'who are admins or partner admins are allowed to create their team' do
-          expect(TeamPolicy).to permit(admin_user, team)
+        it 'who are login.gov admins or partner admins are allowed to create their team' do
+          expect(TeamPolicy).to permit(logingov_admin, team)
           expect(TeamPolicy).to permit(partner_admin_user, team)
         end
 
@@ -48,9 +48,9 @@ describe TeamPolicy do
         end
       end
 
-      context 'admins' do
+      context 'login.gov admins' do
         it 'are allowed to edit any team' do
-          expect(TeamPolicy).to permit(admin_user, team)
+          expect(TeamPolicy).to permit(logingov_admin, team)
         end
       end
     end
@@ -67,25 +67,25 @@ describe TeamPolicy do
         end
       end
 
-      context 'admins' do
+      context 'login.gov admins' do
         it 'are allowed to update any team' do
-          expect(TeamPolicy).to permit(admin_user, team)
+          expect(TeamPolicy).to permit(logingov_admin, team)
         end
       end
     end
 
     permissions :new? do
       context 'users with gov email addresses' do
-        it 'admin users can initiate team creation' do
-          expect(TeamPolicy).to permit(admin_user)
+        it 'login.gov admins can initiate team creation' do
+          expect(TeamPolicy).to permit(logingov_admin)
         end
       end
     end
 
     permissions :destroy? do
-      context 'admins' do
+      context 'login.gov admins' do
         it 'can destroy teams' do
-          expect(TeamPolicy).to permit(admin_user, team)
+          expect(TeamPolicy).to permit(logingov_admin, team)
         end
       end
 
@@ -103,9 +103,9 @@ describe TeamPolicy do
     end
 
     permissions :show? do
-      context 'admins' do
+      context 'login.gov admins' do
         it 'can look at any team' do
-          expect(TeamPolicy).to permit(admin_user, team)
+          expect(TeamPolicy).to permit(logingov_admin, team)
         end
       end
 
@@ -117,9 +117,9 @@ describe TeamPolicy do
     end
 
     permissions :all? do
-      context 'admins' do
+      context 'login.gov admins' do
         it 'can view all teams' do
-          expect(TeamPolicy).to permit(admin_user)
+          expect(TeamPolicy).to permit(logingov_admin)
         end
       end
 
@@ -171,11 +171,11 @@ describe TeamPolicy do
           expect(TeamPolicy).to_not permit(nongov_email_user)
         end
 
-        context 'admins' do
-          before { admin_user.update(email: 'user@examle.com') }
+        context 'login.gov admins' do
+          before { logingov_admin.update(email: 'user@examle.com') }
 
           it 'can initiate team creation' do
-            expect(TeamPolicy).to permit(admin_user)
+            expect(TeamPolicy).to permit(logingov_admin)
           end
         end
       end

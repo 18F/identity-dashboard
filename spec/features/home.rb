@@ -11,11 +11,11 @@ feature 'Home' do
     end
   end
 
-  context 'an admin user' do
+  context 'when login.gov admin' do
     scenario 'should see manage teams and manage users' do
-      admin = create(:admin)
+      logingov_admin = create(:user, :logingov_admin)
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit root_path
 
       expect(page).to have_content('Teams')

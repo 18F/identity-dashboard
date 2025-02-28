@@ -222,7 +222,7 @@ describe Teams::UsersController do
       end
     end
 
-    context 'as site admin' do
+    context 'as login.gov admin' do
       let(:user_team) { create(:user_team) }
 
       before do
@@ -237,8 +237,8 @@ describe Teams::UsersController do
           expect(response).to render_template(:remove_confirm)
         end
 
-        # Membership in this team does not determin site admin rights
-        # so a site admin is safe to remove themself from this team.
+        # Membership in this team does not determin login.gov admin rights
+        # so a login.gov admin is safe to remove themself from this team.
         it 'is allowed for self' do
           get :remove_confirm, params: { team_id: team.id, id: user.id }
           expect(response).to be_ok
@@ -252,8 +252,8 @@ describe Teams::UsersController do
         context 'for self' do
           let(:user_to_delete) { user }
 
-          # Membership in this team does not determin site admin rights
-          # so a site admin is safe to remove themself from this team.
+          # Membership in this team does not determine login.gov admin rights
+          # so a login.gov admin is safe to remove themself from this team.
           it_behaves_like 'destroys user'
         end
       end

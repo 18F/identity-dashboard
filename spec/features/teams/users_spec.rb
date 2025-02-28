@@ -10,7 +10,7 @@ describe 'users' do
   let(:partner_admin_team_member) { partner_admin_membership.user }
   let(:readonly_membership) { create(:user_team, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_membership.user }
-  let(:site_admin) { create(:admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:user) { create(:user) }
 
   before do
@@ -33,15 +33,15 @@ describe 'users' do
       expect(page).to have_content('Add new user')
     end
 
-    scenario 'access permitted to admin (without RBAC)' do
+    scenario 'access permitted to login.gov admin (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as site_admin
+      login_as logingov_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
 
-    scenario 'access permitted to admin' do
-      login_as site_admin
+    scenario 'access permitted to login.gov admin' do
+      login_as logingov_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
@@ -207,8 +207,8 @@ describe 'users' do
       expect(page).to have_content('Unauthorized')
     end
 
-    scenario 'access permitted to admin' do
-      login_as site_admin
+    scenario 'access permitted to login.gov admin' do
+      login_as logingov_admin
       visit team_users_path(team)
       expect(page).to have_content("Manage users for #{team.name}")
     end
@@ -290,15 +290,15 @@ describe 'users' do
   end
 
   feature 'modifying team user permissions' do
-    context 'when admin' do
-      before { login_as site_admin }
+    context 'when login.gov admin' do
+      before { login_as logingov_admin }
 
       it 'allows modifying any user roles' do
         team_users = [partner_admin_team_member, readonly_team_member]
 
         user_to_change = team_users.sample
         old_role = UserTeam.find_by(user: user_to_change, team: team).role
-        new_role = (Role.all - [Role::SITE_ADMIN, old_role]).sample
+        new_role = (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
 
         user_to_not_change = (team_users - [user_to_change]).first
         expected_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
@@ -335,10 +335,10 @@ describe 'users' do
         end
       end
 
-      it 'does not show site admin role' do
+      it 'does not show login.gov admin role' do
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_input_strings = (Role.all - [Role::SITE_ADMIN]).map(&:friendly_name)
+        expected_input_strings = (Role.all - [Role::LOGINGOV_ADMIN]).map(&:friendly_name)
         expect(input_item_strings).to eq(expected_input_strings)
       end
     end

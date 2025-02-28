@@ -120,7 +120,7 @@
                      t('service_provider_form.issuer_html')
                    end %>
 
-  <% if current_user.admin? %>
+  <% if current_user.logingov_admin? %>
     <%# allow_prompt_login checkbox %>
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>

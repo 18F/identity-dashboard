@@ -13,9 +13,8 @@ describe TeamHelper do
       expect(can_edit_teams?(user)).to eq(true)
     end
 
-    it 'returns true if user is an admin' do
-      user.admin = true
-      user.save
+    it 'returns true if user is a login.gov admin' do
+      user = build(:user, :logingov_admin)
 
       expect(can_edit_teams?(user)).to eq(true)
     end
