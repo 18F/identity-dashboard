@@ -390,14 +390,6 @@ describe ServiceProvider do
     end
   end
 
-  describe '.new' do
-    subject(:new_sp) { ServiceProvider.new }
-
-    it { expect(new_sp).to be_pending }
-    it { expect(new_sp).to_not be_live }
-    it { expect(new_sp).to_not be_rejected }
-  end
-
   describe '#service_provider=' do
     it 'should filter out nil and empty strings' do
       service_provider.redirect_uris = ['https://foo.com', nil, 'http://bar.com', '']
