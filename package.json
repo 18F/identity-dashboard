@@ -31,5 +31,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-mocha": "^10.0.5",
     "jsdom": "^20.0.0"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }
