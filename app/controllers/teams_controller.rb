@@ -77,7 +77,7 @@ class TeamsController < AuthenticatedController
   end
 
   def update_params_with_current_user
-    if current_user.admin?
+    if current_user.logingov_admin?
       team_params
     else
       team_params.merge(user_ids: (existing_user_ids + [current_user.id.to_s]).uniq)

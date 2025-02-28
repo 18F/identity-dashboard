@@ -10,10 +10,8 @@ describe UsersController do
   end
 
   describe '#new' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :new
@@ -21,7 +19,7 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin' do
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :new
         expect(response).to have_http_status(:unauthorized)
@@ -30,10 +28,8 @@ describe UsersController do
   end
 
   describe '#index' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :index
@@ -41,7 +37,7 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin' do
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :index
         expect(response).to have_http_status(:unauthorized)
@@ -50,10 +46,8 @@ describe UsersController do
   end
 
   describe '#edit' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :edit, params: { id: user.id }
@@ -63,15 +57,13 @@ describe UsersController do
       context 'when editing a user without a team' do
         let(:editing_user) { build(:user) }
 
-        it 'defaults to the site admin role for admins' do
-          editing_user.admin = true
-          editing_user.save!
+        it 'defaults to the login.gov admin role for login.gov admins' do
+          editing_user = create(:user, :logingov_admin)
           get :edit, params: { id: editing_user.id }
-          expect(assigns['user_team'].role_name).to eq(Role::SITE_ADMIN.name)
+          expect(assigns['user_team'].role_name).to eq(Role::LOGINGOV_ADMIN.name)
         end
 
-        it 'defaults to the admin role for admins' do
-          editing_user.admin = false
+        it 'defaults to the partner admin role for non-login.gov admins' do
           editing_user.save!
           get :edit, params: { id: editing_user.id }
           expect(assigns['user_team'].role_name).to eq('partner_admin')
@@ -79,7 +71,7 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin' do
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :edit, params: { id: 1 }
         expect(response).to have_http_status(:unauthorized)
@@ -88,10 +80,8 @@ describe UsersController do
   end
 
   describe '#update' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when the user is a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
@@ -113,7 +103,7 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin' do
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
@@ -122,10 +112,8 @@ describe UsersController do
   end
 
   describe '#create' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when the user is a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       context 'when the user is valid' do
         it 'has a redirect response' do
@@ -142,7 +130,7 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin' do
+    context 'when the user is not a login.gov admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
@@ -153,9 +141,9 @@ describe UsersController do
   describe '#destroy' do
     let(:user_to_delete) { create(:user) }
 
-    context 'when the user is an admin' do
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
       before do
-        user.admin = true
         delete :destroy, params: { id: user_to_delete.id }
       end
 
@@ -164,10 +152,11 @@ describe UsersController do
       end
     end
 
-    context 'when the user is not an admin'
-    it 'has an error response' do
-      delete :destroy, params: { id: user_to_delete.id }
-      expect(response).to have_http_status(:unauthorized)
+    context 'when not a login.gov admin' do
+      it 'has an error response' do
+        delete :destroy, params: { id: user_to_delete.id }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 end

@@ -34,9 +34,9 @@ describe Users::OmniauthController do
       end
     end
 
-    context 'when a user exists, is not on a team, but is an admin' do
+    context 'when a user is not on a team, but is a login.gov admin' do
       it 'signs the user in' do
-        user = create(:user, email: email, admin: true)
+        user = create(:user, :logingov_admin, email:)
         session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)

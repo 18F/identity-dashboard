@@ -76,7 +76,7 @@
 <p class="text-italic"><%= t('service_provider_form.issuer_html') %></p>
 <hr>
 
-<% if current_user.admin? %>
+<% if current_user.logingov_admin? %>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
   <hr>
   <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
@@ -198,7 +198,7 @@
 <p class="text-italic"><%= I18n.t('service_provider_form.active') %></p>
 <hr>
 
-<% if current_user.admin? %>
+<% if current_user.logingov_admin? %>
   <h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
   <%= render 'service_provider_yaml' %>
 <% end %>

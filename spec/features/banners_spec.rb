@@ -30,8 +30,8 @@ feature 'Banners' do
   end
 
   scenario 'html renders in banners admin table' do
-    admin = create(:admin)
-    login_as(admin)
+    logingov_admin = create(:user, :logingov_admin)
+    login_as(logingov_admin)
 
     visit banners_path
 
@@ -59,7 +59,6 @@ feature 'Banners' do
       expect(page).to_not have_css('.usa-alert')
     end
   end
-
 
   context 'it displays at the approptiate end time' do
     before do

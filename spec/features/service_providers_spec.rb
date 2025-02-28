@@ -6,10 +6,7 @@ feature 'Service Providers CRUD' do
     create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: team)
   end
   let(:user) { user_membership.user }
-  let(:admin) { create(:admin) }
-  let(:admin_membership) do
-    create(:user_team, :logingov_admin, team:)
-  end
+  let(:logingov_admin) { create(:user, :logingov_admin) }
 
   let(:user_to_log_in_as) { user }
 
@@ -450,8 +447,8 @@ feature 'Service Providers CRUD' do
     # rubocop:enable Layout/LineLength
   end
 
-  context 'with an admin user' do
-    let(:user_to_log_in_as) { admin }
+  context 'when login.gov admin' do
+    let(:user_to_log_in_as) { logingov_admin }
 
     scenario 'can view SP with no team', :versioning do
       service_provider = create(:service_provider)
@@ -538,6 +535,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
+      user_to_log_in_as = logingov_admin
       sp = create(:service_provider, :with_team)
 
       visit edit_service_provider_path(sp)

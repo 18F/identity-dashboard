@@ -11,17 +11,15 @@ describe TeamHelper do
   end
 
   describe '#can_view_request_details?' do
-    context 'an admin user' do
-      before do
-        user.update(admin: true)
-      end
+    context 'a login.gov admin user' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'returns true' do
         expect(helper.can_view_request_details?(sp)).to be true
       end
     end
 
-    context 'a non-admin user' do
+    context 'whe not a login.gov admin' do
       it 'returns false' do
         expect(helper.can_view_request_details?(sp)).to be false
       end

@@ -2,17 +2,17 @@ class UserTeamPolicy < BasePolicy
   # TODO: remove `manage_team_users?` after turning on IdentityConfig.store.access_controls_enabled
   # and removing the flag
   def manage_team_users?
-    return admin? || team_membership unless IdentityConfig.store.access_controls_enabled
+    return logingov_admin? || team_membership unless IdentityConfig.store.access_controls_enabled
 
     create?
   end
 
   def index?
-    admin? || team_membership && role_name != 'partner_readonly'
+    logingov_admin? || team_membership && role_name != 'partner_readonly'
   end
 
   def create?
-    admin? || role_name == 'partner_admin'
+    logingov_admin? || role_name == 'partner_admin'
   end
 
   def edit?
@@ -26,7 +26,7 @@ class UserTeamPolicy < BasePolicy
   end
 
   def destroy?
-    return true if admin?
+    return true if logingov_admin?
 
     edit?
   end
@@ -41,7 +41,7 @@ class UserTeamPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if admin?
+      return scope if logingov_admin?
 
       scope.where(team: user.teams)
     end

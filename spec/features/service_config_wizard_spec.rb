@@ -2,10 +2,7 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:admin) { create(:admin, :with_teams) }
-  let(:admin_membership) do
-    create(:user_team, :logingov_admin, team: admin.teams[0])
-  end
+  let(:logingov_admin) { create(:user, :logingov_admin, :with_teams) }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
   let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
@@ -43,7 +40,7 @@ feature 'Service Config Wizard' do
 
   context 'when admin' do
     before do
-      login_as(admin)
+      login_as(logingov_admin)
     end
 
     it 'can remember something filled in' do
@@ -61,7 +58,7 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
-      team_to_pick = admin.teams.sample
+      team_to_pick = logingov_admin.teams.sample
       select(team_to_pick.name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
@@ -98,7 +95,8 @@ feature 'Service Config Wizard' do
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
-      team_to_pick = admin.teams.sample
+      create(:user_team, :partner_admin, user:)
+      team_to_pick = user.teams.sample
       # These are expected values, listed in the order the currently appear in the step forms
       # These are all required values that we'll fill in, or expected default values
       expected_data = {
@@ -158,10 +156,9 @@ feature 'Service Config Wizard' do
       end
       expect(team_field_options.count).to_not eq(1)
       expect(team_options_with_current_value.count).to eq(1)
-      expect(team_options_with_current_value[0].text).to eq('- Select -')
+      expect(team_options_with_current_value.first.text).to eq('- Select -')
       fill_in('App name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
-      team_field = find_field('Team')
       select(team_to_pick.name, from: 'Team')
       expect(team_field.value).to eq(team_to_pick.id.to_s)
       click_on 'Next'
@@ -212,8 +209,8 @@ feature 'Service Config Wizard' do
         issuer: expected_data['issuer'],
       ))
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
-      expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
-                                                          'error: draft data not deleted'
+      expect(WizardStep.all_step_data_for_user(logingov_admin))
+        .to eq({}), 'error: draft data not deleted'
     end
 
     it 'correctly labels team in error when team is blank' do
@@ -301,7 +298,7 @@ feature 'Service Config Wizard' do
 
       it 'allows Login.gov Admin to set initial IAL' do
         visit service_config_wizard_path('settings')
-        select(admin.teams[0].name, from: 'Team')
+        select(logingov_admin.teams[0].name, from: 'Team')
         fill_in('App name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
@@ -313,7 +310,7 @@ feature 'Service Config Wizard' do
       it 'allows Login.gov Admin to update IAL' do
         existing_config = create(:service_provider,
                                :ready_to_activate_ial_1,
-                               team: admin.teams[0])
+                               team: logingov_admin.teams[0])
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('authentication')
@@ -323,7 +320,7 @@ feature 'Service Config Wizard' do
     end
   end
 
-  context 'when not admin' do
+  context 'when not login.gov admin' do
     before do
       login_as(user)
     end
@@ -513,12 +510,12 @@ feature 'Service Config Wizard' do
   context 'when selecting OIDC' do
     before do
       allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
-      user_to_login = [admin, user].sample
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
+      user_to_login = [logingov_admin, user].sample
       login_as(user_to_login)
       visit service_config_wizard_path('settings')
-      select(user_to_login.teams.sample.name, from: Team)
+      select(user_to_login.teams.sample.name, from: 'Team')
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
       click_on 'Next'
@@ -539,12 +536,12 @@ feature 'Service Config Wizard' do
   context 'when selecting SAML' do
     before do
       allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
-      user_to_login = [admin, user].sample
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
+      user_to_login = [logingov_admin, user].sample
       login_as(user_to_login)
       visit service_config_wizard_path('settings')
-      select(user_to_login.teams.sample.name, from: Team)
+      select(user_to_login.teams.sample.name, from: 'Team')
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
       click_on 'Next'

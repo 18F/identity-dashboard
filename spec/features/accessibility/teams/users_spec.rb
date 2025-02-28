@@ -12,8 +12,7 @@ feature 'team users page', :js do
   end
 
   before do
-    site_admin = create(:admin)
-    login_as(site_admin)
+    login_as(create(:logingov_admin))
   end
 
   scenario 'on the index page' do

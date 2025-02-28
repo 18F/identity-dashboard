@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ToolPolicy do
-  let(:admin_user) { build(:admin) }
+  let(:logingov_admin) { build(:logingov_admin) }
   let(:team_user) { build(:user) }
   let(:other_user) { build(:user) }
   let(:team) { build(:team) }
@@ -12,9 +12,9 @@ describe ToolPolicy do
   end
 
   permissions :can_view_request_details? do
-    context 'admin user' do
-      it 'allows admin users to view request details' do
-        expect(ToolPolicy).to permit(admin_user, app)
+    context 'when login.gov admin' do
+      it 'allows login.gov admins to view request details' do
+        expect(ToolPolicy).to permit(logingov_admin, app)
       end
 
       it 'allows team members to view request details' do

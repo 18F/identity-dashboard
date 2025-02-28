@@ -40,7 +40,7 @@ class TeamPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if admin?
+      return scope if logingov_admin?
 
       scope.where(id: user.teams)
     end
