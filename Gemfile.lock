@@ -594,7 +594,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.6.0)
     uniform_notifier (1.16.0)
-    uri (0.13.1)
+    uri (0.13.2)
     useragent (0.16.10)
     view_component (3.21.0)
       activesupport (>= 5.2.0, < 8.1)
