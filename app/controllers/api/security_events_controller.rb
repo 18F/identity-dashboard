@@ -1,5 +1,5 @@
 module Api
-  class SecurityEventsController < ApplicationController
+  class SecurityEventsController < AuthenticatedController
     skip_forgery_protection
 
     def create
