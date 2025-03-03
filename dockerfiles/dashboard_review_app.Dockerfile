@@ -155,8 +155,8 @@ RUN apt autoremove -y --purge build-essential
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
     find $RAILS_ROOT -type d | xargs chmod 755
-RUN chown -R app:app /app /home/app && \
-    chmod -R u+w /app/tmp /tmp
+RUN chown -R app:app $RAILS_ROOT /home/app && \
+    chmod -R u+w $RAILS_ROOT/tmp /tmp
 
 # Set user
 USER app
