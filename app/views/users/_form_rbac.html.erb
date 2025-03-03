@@ -3,7 +3,7 @@
      required: true %>
 <fieldset class="usa-fieldset margin-top-3">
   <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
-  <p><%= t('users.rbac_description_html') %></p>
+  <p><%= 'Editing roles is disabled for users who are not a member of any team.' if @disable_role_change %></p>
   <%= form.fields_for @user_team do |ut_form| %>
     <%= render partial: 'components/radio_collection', locals: {
       form: ut_form,
@@ -11,7 +11,7 @@
       describedby: 'rbac_description',
       inputs: Role::ACTIVE_ROLES_NAMES.map {|n,f| [f,n]},
       default: @user_team.role_name,
-      disabled: false
+      disabled: @disable_role_change
     } %>
   <% end %>
 </fieldset>

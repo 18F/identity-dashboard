@@ -60,7 +60,7 @@ feature 'login.gov admin manages users' do
 
   scenario 'logingov_admin edits users' do
     logingov_admin = create(:logingov_admin)
-    user = create(:user)
+    user = create(:user, :with_teams)
 
     login_as(logingov_admin)
     visit users_path
@@ -77,7 +77,7 @@ feature 'login.gov admin manages users' do
     expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
-  scenario 'rbac flag shows edit user permissions' do
+  scenario 'rbac flag shows edit for user on teams' do
     flag_in
     logingov_admin = create(:logingov_admin)
     roles = ['Login.gov Admin',
@@ -86,10 +86,29 @@ feature 'login.gov admin manages users' do
              'Partner Readonly']
 
     login_as(logingov_admin)
-    visit edit_user_path(logingov_admin.id)
+    visit edit_user_path(create(:user, :with_teams))
 
     expect(page).to have_content('Permissions')
+    expect(find_all('input[disabled]')).to be_none
     radio_labels = find_all('.usa-radio__label').map(&:text)
+    roles.each do |role|
+      expect(radio_labels).to include(role)
+    end
+  end
+
+  scenario 'rbac flag disables edit permissions when no teams assigned' do
+    flag_in
+    logingov_admin = create(:logingov_admin)
+    roles = ['Login.gov Admin',
+             'Partner Admin',
+             'Partner Developer',
+             'Partner Readonly']
+
+    login_as(logingov_admin)
+    visit edit_user_path(create(:user))
+
+    expect(page).to have_content('Permissions')
+    radio_labels = find_all('input[disabled] + .usa-radio__label').map(&:text)
     roles.each do |role|
       expect(radio_labels).to include(role)
     end

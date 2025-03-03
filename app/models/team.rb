@@ -56,4 +56,10 @@ class Team < ApplicationRecord
       sp.update(agency_id: agency.id) if agency
     end
   end
+
+  def has_partner_admin?
+    UserTeam.where(team: self).any? do |membership|
+      membership.role_name == 'partner_admin' && membership.user
+    end
+  end
 end

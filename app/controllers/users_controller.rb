@@ -18,6 +18,7 @@ class UsersController < ApplicationController
     @user = policy_scope(User).find_by(id: params[:id])
     @user_team = @user && @user.user_teams.first
     populate_role_if_missing
+    @disable_role_change = true if @user.teams.none?
   end
 
   def create
@@ -64,10 +65,6 @@ class UsersController < ApplicationController
 
   def populate_role_if_missing
     @user_team ||= @user.user_teams.build
-    @user_team.role ||= if @user.logingov_admin?
-      Role::LOGINGOV_ADMIN
-    else
-      Role.find_by(name: 'partner_admin')
-    end
+    @user_team.role = @user.primary_role
   end
 end
