@@ -88,8 +88,6 @@ class User < ApplicationRecord
       super
     end
 
-    private
-
     alias admin_without_deprecation? admin?
     private :admin_without_deprecation?
   end
@@ -97,4 +95,3 @@ class User < ApplicationRecord
   include DeprecateAdmin
   deprecate admin?: 'use `logingov_admin?` instead', deprecator: DeprecateAdmin.deprecator
 end
-

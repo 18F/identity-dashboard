@@ -96,21 +96,26 @@ feature 'login.gov admin manages users' do
     end
   end
 
-  scenario 'rbac flag disables edit permissions when no teams assigned' do
+  scenario 'when no teams assigned permissions limited to site admin promotion/demotion' do
     flag_in
     logingov_admin = create(:logingov_admin)
-    roles = ['Login.gov Admin',
-             'Partner Admin',
-             'Partner Developer',
-             'Partner Readonly']
-
     login_as(logingov_admin)
-    visit edit_user_path(create(:user))
+    user_to_edit = create(:user)
+    visit edit_user_path(user_to_edit)
 
     expect(page).to have_content('Permissions')
-    radio_labels = find_all('input[disabled] + .usa-radio__label').map(&:text)
-    roles.each do |role|
-      expect(radio_labels).to include(role)
-    end
+    radio_labels = find_all('.usa-radio__label').map(&:text)
+    expect(radio_labels).to eq(['Login.gov Admin',
+                                'Partner Admin'])
+    expect(find_all('input[type=radio]').last).to be_checked
+    find_all('input[type=radio]').first.click
+    click_on 'Update'
+    expect(user_to_edit.reload).to be_logingov_admin
+
+    visit edit_user_path(user_to_edit)
+    expect(find_all('input[type=radio]').first).to be_checked
+    find_all('input[type=radio]').last.click
+    click_on 'Update'
+    expect(user_to_edit.reload).to_not be_logingov_admin
   end
 end

@@ -74,6 +74,7 @@ describe User do
       sorted_sps = [team_sp, user_and_team_sp].sort_by { |x| x.friendly_name.downcase }
       expect(user.scoped_service_providers).to eq(sorted_sps)
     end
+
     it "alphabetizes the list user's team sps" do
       team = create(:team)
       user.teams = [team]
@@ -205,6 +206,7 @@ describe User do
       User::DeprecateAdmin.deprecator.behavior = default_behavior
     end
   end
+
   describe '#logingov_admin?' do
     it 'is not deprecated' do
       default_behavior = User::DeprecateAdmin.deprecator.behavior

@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
   after_action :verify_policy_scoped
-
+  helper_method :options_for_roles
   attr_reader :user
 
   def index
@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     @user = policy_scope(User).find_by(id: params[:id])
     @user_team = @user && @user.user_teams.first
     populate_role_if_missing
-    @disable_role_change = true if @user.teams.none?
+    @has_no_teams = true if @user.teams.none?
   end
 
   def create
@@ -56,6 +56,14 @@ class UsersController < ApplicationController
   end
 
   def none; end
+
+  def options_for_roles
+    if @has_no_teams
+      Role::ACTIVE_ROLES_NAMES.slice(:logingov_admin, :partner_admin).invert
+    else
+      Role::ACTIVE_ROLES_NAMES.invert
+    end
+  end
 
   private
 

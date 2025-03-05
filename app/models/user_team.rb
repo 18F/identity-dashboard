@@ -22,6 +22,6 @@ class UserTeam < ApplicationRecord
   end
 
   def set_default_role
-    self.role_name ||= team.has_partner_admin? ? 'partner_readonly' : 'partner_admin'
+    self.role_name ||= team.missing_a_partner_admin? ? 'partner_admin' : 'partner_readonly'
   end
 end

@@ -57,8 +57,12 @@ class Team < ApplicationRecord
     end
   end
 
-  def has_partner_admin?
-    UserTeam.where(team: self).any? do |membership|
+  # Every team should have a partner admin, but regularly we'll want to create a team before we know
+  # who the partner admin should be.
+  def missing_a_partner_admin?
+    UserTeam.where(team: self).none? do |membership|
+      # Every membership must have a valid user.
+      # Until we clean up the data and add a db constraint, we should check that the user is not nil
       membership.role_name == 'partner_admin' && membership.user
     end
   end
