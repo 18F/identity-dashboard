@@ -3,7 +3,14 @@
      required: true %>
 <fieldset class="usa-fieldset margin-top-3">
   <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
-  <p><%= 'Warning: user is not yet a member of any team.' if @has_no_teams %></p>
+  <% if @has_no_teams %>
+    <div class="usa-alert usa-alert--warning">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text">Some roles are unvailable.</p>
+        <p class="usa-alert__text">The user is not a member of any teams. More roles will be available after team assignment.</p>
+      </div>
+    </div>
+  <% end %>
   <%= form.fields_for @user_team do |ut_form| %>
     <%= render partial: 'components/radio_collection', locals: {
       form: ut_form,
@@ -14,4 +21,5 @@
       disabled: false
     } %>
   <% end %>
+  <p> </p>
 </fieldset>
