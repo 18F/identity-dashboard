@@ -3,15 +3,23 @@
      required: true %>
 <fieldset class="usa-fieldset margin-top-3">
   <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
-  <p><%= t('users.rbac_description_html') %></p>
+  <% if @has_no_teams %>
+    <div class="usa-alert usa-alert--warning">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text">Some roles are unvailable.</p>
+        <p class="usa-alert__text">The user is not a member of any teams. More roles will be available after team assignment.</p>
+      </div>
+    </div>
+  <% end %>
   <%= form.fields_for @user_team do |ut_form| %>
     <%= render partial: 'components/radio_collection', locals: {
       form: ut_form,
       db_fieldname: :role_name,
       describedby: 'rbac_description',
-      inputs: Role::ACTIVE_ROLES_NAMES.map {|n,f| [f,n]},
+      inputs: options_for_roles,
       default: @user_team.role_name,
       disabled: false
     } %>
   <% end %>
+  <p> </p>
 </fieldset>

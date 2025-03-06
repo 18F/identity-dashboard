@@ -73,8 +73,10 @@ class User < ApplicationRecord
 
   def primary_role
     return Role::LOGINGOV_ADMIN if logingov_admin?
+    return user_teams.first.role if user_teams.first&.role.present?
+    return Role.find_by(name: 'partner_readonly') if teams.any?
 
-    user_teams.first&.role || Role.find_by(name: 'partner_admin')
+    Role.find_by(name: 'partner_admin')
   end
 
   module DeprecateAdmin
@@ -86,8 +88,6 @@ class User < ApplicationRecord
       super
     end
 
-    private
-
     alias admin_without_deprecation? admin?
     private :admin_without_deprecation?
   end
@@ -95,4 +95,3 @@ class User < ApplicationRecord
   include DeprecateAdmin
   deprecate admin?: 'use `logingov_admin?` instead', deprecator: DeprecateAdmin.deprecator
 end
-
