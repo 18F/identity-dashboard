@@ -4,11 +4,10 @@ require 'axe-rspec'
 feature 'Security events pages', :js do
   context 'index view' do
     context 'as a logged in user' do
-      let(:user) { create(:user) }
-
       before { login_as user }
 
-      context 'non-admin' do
+      context 'when not login.gov admin' do
+        let(:user) { create(:user) }
         # not authorized but should ensure accesibility
         scenario 'is accessible' do
           visit security_events_path
@@ -17,7 +16,7 @@ feature 'Security events pages', :js do
       end
 
       context 'admin user' do
-        before { user.update(admin: true) }
+        let(:user) { create(:user, :logingov_admin) }
 
         scenario 'is accessible' do
           visit security_events_path
@@ -46,12 +45,13 @@ feature 'Security events pages', :js do
   end
 
   context 'all security events view' do
-    context 'as a logged in user' do
-      let(:user) { create(:user) }
+    # Events need a user
+    let(:user) { create(:user) }
 
+    context 'as a logged in user' do
       before { login_as user }
 
-      context 'non-admin' do
+      context 'when not login.gov admin' do
         # not authorized but should ensure accesibility
         scenario 'is accessible' do
           visit security_events_all_path
@@ -59,8 +59,8 @@ feature 'Security events pages', :js do
         end
       end
 
-      context 'admin user' do
-        before { user.update(admin: true) }
+      context 'when login.gov admin' do
+        before { login_as create(:user, :logingov_admin) }
 
         scenario 'is accessible' do
           visit security_events_all_path
@@ -95,7 +95,7 @@ feature 'Security events pages', :js do
     context 'as a logged in user' do
       before { login_as user }
 
-      context 'non-admin' do
+      context 'when not login.gov admin' do
         # not authorized but should ensure accesibility
         scenario 'is accessible' do
           visit security_event_path(event)
@@ -103,8 +103,8 @@ feature 'Security events pages', :js do
         end
       end
 
-      context 'admin user' do
-        before { user.update(admin: true) }
+      context 'when login.gov admin' do
+        let(:user) { create(:user, :logingov_admin) }
 
         scenario 'is accessible' do
           visit security_event_path(event)
@@ -112,11 +112,12 @@ feature 'Security events pages', :js do
         end
       end
 
-      context 'not logged in user' do
-        scenario 'is accessible' do
-          visit security_event_path(event)
-          expect_page_to_have_no_accessibility_violations(page)
-        end
+    end
+
+    context 'not logged in user' do
+      scenario 'is accessible' do
+        visit security_event_path(event)
+        expect_page_to_have_no_accessibility_violations(page)
       end
     end
   end

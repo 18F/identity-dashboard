@@ -36,7 +36,7 @@ class ServiceProviderPolicy < BasePolicy
   ]).freeze
 
   def permitted_attributes
-    return ADMIN_PARAMS if admin?
+    return ADMIN_PARAMS if logingov_admin?
     return BASE_PARAMS unless ial_readonly?
 
     BASE_PARAMS.reject { |param| param == :ial }
@@ -53,7 +53,7 @@ class ServiceProviderPolicy < BasePolicy
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
 
-    admin? || user.user_teams.any? do |membership|
+    logingov_admin? || user.user_teams.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
         membership.role == Role.find_by(name: 'partner_admin')
     end
@@ -62,19 +62,19 @@ class ServiceProviderPolicy < BasePolicy
   def edit?
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    admin? || (membership && !partner_readonly?)
+    logingov_admin? || (membership && !partner_readonly?)
   end
 
   def create?
     return true unless IdentityConfig.store.access_controls_enabled
 
-    admin? || (membership && !partner_readonly?)
+    logingov_admin? || (membership && !partner_readonly?)
   end
 
   def update?
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    admin? || (membership && !partner_readonly?)
+    logingov_admin? || (membership && !partner_readonly?)
   end
 
   def destroy?
@@ -82,15 +82,15 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def all?
-    admin?
+    logingov_admin?
   end
 
   def deleted?
-    admin?
+    logingov_admin?
   end
 
   def edit_custom_help_text?
-    admin?
+    logingov_admin?
   end
 
   def ial_readonly?
@@ -99,12 +99,12 @@ class ServiceProviderPolicy < BasePolicy
     # readonly is for Prod edit
     return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
-    !admin?
+    !logingov_admin?
   end
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if admin?
+      return scope if logingov_admin?
 
       user.scoped_service_providers(scope:).reorder(nil)
     end
@@ -119,7 +119,7 @@ class ServiceProviderPolicy < BasePolicy
   def member_or_admin?
     return true if record.user == user && !IdentityConfig.store.access_controls_enabled
 
-    admin? || !!membership
+    logingov_admin? || !!membership
   end
 
   def membership

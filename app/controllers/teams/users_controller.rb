@@ -34,8 +34,8 @@ class Teams::UsersController < AuthenticatedController
       new_membership = policy_scope(UserTeam).build(
         team: team,
         user: new_member,
-        role: new_member.primary_role,
       )
+      new_membership.set_default_role
       authorize new_membership
       new_membership.save!
       flash[:success] = I18n.t('teams.users.create.success', email: member_email)
@@ -99,7 +99,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    (Role.all - [Role::SITE_ADMIN]).map { |r| [r.friendly_name, r.name] }
+    (Role.all - [Role::LOGINGOV_ADMIN]).map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?

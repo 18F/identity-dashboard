@@ -74,6 +74,7 @@ describe User do
       sorted_sps = [team_sp, user_and_team_sp].sort_by { |x| x.friendly_name.downcase }
       expect(user.scoped_service_providers).to eq(sorted_sps)
     end
+
     it "alphabetizes the list user's team sps" do
       team = create(:team)
       user.teams = [team]
@@ -107,8 +108,7 @@ describe User do
       2.times do
         create(:team)
       end
-      user.admin = true
-      user.save
+      user = create(:user, :logingov_admin)
 
       expect(user.scoped_teams).to eq(Team.all)
     end
@@ -182,6 +182,12 @@ describe User do
       expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
     end
 
+    it 'returns Partner Readonly if user belongs to teams without role defined' do
+      create(:user_team, user:)
+      create(:user_team, user:)
+      expect(user.primary_role.name).to eq('partner_readonly')
+    end
+
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
       first_team = user.user_teams.first
@@ -189,6 +195,24 @@ describe User do
       first_team.role = expected_role
       first_team.save
       expect(user.primary_role).to eq(expected_role)
+    end
+  end
+
+  describe '#admin?' do
+    it 'is deprecated' do
+      default_behavior = User::DeprecateAdmin.deprecator.behavior
+      User::DeprecateAdmin.deprecator.behavior = :raise
+      expect { User.new.admin? }.to raise_error(ActiveSupport::DeprecationException)
+      User::DeprecateAdmin.deprecator.behavior = default_behavior
+    end
+  end
+
+  describe '#logingov_admin?' do
+    it 'is not deprecated' do
+      default_behavior = User::DeprecateAdmin.deprecator.behavior
+      User::DeprecateAdmin.deprecator.behavior = :raise
+      expect { User.new.logingov_admin? }.to_not raise_error
+      User::DeprecateAdmin.deprecator.behavior = default_behavior
     end
   end
 end

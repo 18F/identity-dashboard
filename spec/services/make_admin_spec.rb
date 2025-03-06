@@ -15,12 +15,12 @@ describe MakeAdmin do
 
   describe '#call' do
     context 'when the user does not exist' do
-      it 'prints an info message and creates the user as an admin' do
+      it 'prints an info message and creates the user as login.gov admin' do
         expect(subject).to receive(:puts).with(
           "INFO: User \"#{email}\" not found; creating a new User.",
         )
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{email}\" to admin.",
+          "SUCCESS: Promoted \"#{email}\" to Login.gov admin.",
         )
 
         subject.call
@@ -32,14 +32,14 @@ describe MakeAdmin do
         )
 
         expect(user).to_not be_nil
-        expect(user.admin).to eq(true)
+        expect(user.logingov_admin?).to eq(true)
       end
     end
 
-    context 'when the user does exist and is not an admin' do
-      it 'promotes the user to be an admin' do
+    context 'when the user does exist and is not a Login admin' do
+      it 'promotes the user to be an Login admin' do
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{email}\" to admin.",
+          "SUCCESS: Promoted \"#{email}\" to Login.gov admin.",
         )
 
         user = User.create(
@@ -53,14 +53,14 @@ describe MakeAdmin do
 
         user.reload
 
-        expect(user.admin).to eq(true)
+        expect(user.logingov_admin?).to eq(true)
       end
     end
 
-    context 'when the user does exist and is an admin' do
+    context 'when the user does exist and is a login.gov admin' do
       it 'prints an info message and does nothing' do
         expect(subject).to receive(:puts).with(
-          "INFO: User \"#{email}\" already has admin privileges.",
+          "INFO: User \"#{email}\" already has Login.gov admin privileges.",
         )
 
         user = User.create(
@@ -72,7 +72,7 @@ describe MakeAdmin do
 
         subject.call
 
-        expect(user.admin).to eq(true)
+        expect(user.logingov_admin?).to eq(true)
       end
     end
 

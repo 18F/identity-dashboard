@@ -28,7 +28,7 @@
             <li class="usa-nav__primary-item">
               <%= navigation_link_to 'Teams', teams_path %>
             </li>
-            <% if current_user.admin? %>
+            <% if current_user.logingov_admin? %>
               <li class="usa-nav__primary-item">
                 <%= navigation_link_to 'Security Events', security_events_path %>
               </li>
@@ -49,7 +49,7 @@
               </ul>
             </li>
 
-            <% if current_user.admin? %>
+            <% if current_user.logingov_admin? %>
               <li class="usa-nav__primary-item">
                 <button
                   type="button"

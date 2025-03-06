@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ServiceConfigWizardController do
   let(:team) { create(:team, agency:) }
-  let(:user) do
+  let(:partner_admin) do
     user = create(:user, uuid: SecureRandom.uuid, admin: false)
-    create(:user_team, :partner_admin, user:, team: )
+    create(:user_team, :partner_admin, user:, team:)
     user
   end
-  let(:admin) { create(:user, :with_teams, uuid: SecureRandom.uuid, admin: true) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:agency) { create(:agency, name: 'GSA') }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
@@ -31,7 +31,7 @@ RSpec.describe ServiceConfigWizardController do
     ServiceConfigWizardController::STEPS.index(step_name)
   end
 
-  context 'as an admin' do
+  context 'as an login.gov admin' do
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail,
       # so it's factory is called here with `create`.
@@ -42,12 +42,12 @@ RSpec.describe ServiceConfigWizardController do
       # test that the controller can create a reasonable service_provider that isn't already saved.
       WizardStep.steps_from_service_provider(
         build(:service_provider, :ready_to_activate, team:),
-        admin,
+        logingov_admin,
       )
     end
 
     before do
-      sign_in admin
+      sign_in logingov_admin
     end
 
     it 'can get all steps' do
@@ -59,7 +59,9 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'will wipe all step data if the user cancels on the last step' do
-      create(:wizard_step, user: admin, wizard_form_data: { help_text: { 'sign_in' => 'blank' } })
+      create(:wizard_step,
+             user: logingov_admin,
+             wizard_form_data: { help_text: { 'sign_in' => 'blank' } })
       expect do
         put :update, params: { id: ServiceConfigWizardController::STEPS.last, commit: 'Cancel' }
       end.to(change { WizardStep.count }.by(-1))
@@ -74,7 +76,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
       end
 
-      it 'will be redirected if the flag is not set' do
+      it 'is redirected if the flag is not set' do
         flag_out
         get :new
         expect(response).to be_redirect
@@ -82,7 +84,7 @@ RSpec.describe ServiceConfigWizardController do
       end
     end
 
-    it 'will persist SAML options when editing an OIDC config' do
+    it 'persists SAML options when editing an OIDC config' do
       saml_app_config = create(:service_provider, :ready_to_activate, :saml)
       # The `#reload` is here because I _think_ our CI env database has slightly less
       # timestamp precision our dev envs and Ruby itself. By making sure we're always pulling
@@ -99,7 +101,7 @@ RSpec.describe ServiceConfigWizardController do
         default_aal: saml_app_config.default_aal,
         attribute_bundle: saml_app_config.attribute_bundle,
       } }
-      last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: admin)
+      last_step = WizardStep.find_by(step_name: WizardStep::STEPS.last, user: logingov_admin)
       put :update, params: { id: last_step.step_name, wizard_step: last_step.wizard_form_data }
 
       new_attributes = saml_app_config.reload.attributes
@@ -215,7 +217,7 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.last.logo_file.download).to eq(good_logo.read)
       end
 
-      it 'will skip an empty cert' do
+      it 'skips an empty cert' do
         empty_upload = Rack::Test::UploadedFile.new(
           StringIO.new(''),
           original_filename: 'empty.pem',
@@ -240,7 +242,6 @@ RSpec.describe ServiceConfigWizardController do
         original_saved_logo = original_settings.logo_file
         expect(original_saved_logo.blob.checksum).
           to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
-
 
         # Deliberately picking a serial that's shorter than fixed value of the original serial
         new_serial = rand(1..100_000)
@@ -350,13 +351,13 @@ RSpec.describe ServiceConfigWizardController do
         end.to(change { ServiceProvider.count }.by(1))
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
-        expect(WizardStep.where(user: admin)).to be_empty
+        expect(WizardStep.where(user: logingov_admin)).to be_empty
       end
 
-      it 'will stay on this step when the service provider would be invalid' do
+      it 'stays on this step when the service provider would be invalid' do
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
-        end.to(change { ServiceProvider.count }.by(0))
+        end.not_to(change { ServiceProvider.count })
         error_messages = assigns['model'].errors.messages.merge(
           assigns['service_provider'].errors.messages,
         )
@@ -393,7 +394,7 @@ RSpec.describe ServiceConfigWizardController do
       let (:existing_service_provider) do
         create( :service_provider,
                 :ready_to_activate_ial_1,
-                team: admin.teams[0],
+                team: create(:team),
                 issuer: "issuer:string:#{rand(1...1000)}",
                 friendly_name: 'Friendly App')
       end
@@ -413,17 +414,17 @@ RSpec.describe ServiceConfigWizardController do
     end
   end
 
-  context 'as a non-admin user' do
+  context 'when a partner admin' do
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
       WizardStep.steps_from_service_provider(
         build(:service_provider, :ready_to_activate, team:),
-        user,
+        partner_admin,
       )
     end
 
     before do
-      sign_in user
+      sign_in partner_admin
     end
 
     it 'can start the first step' do
@@ -433,7 +434,7 @@ RSpec.describe ServiceConfigWizardController do
       expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
     end
 
-    it 'will be redirected if the flag is not set' do
+    it 'is redirected if the flag is not set' do
       flag_out
       get :new
       expect(response).to be_redirect
@@ -448,10 +449,10 @@ RSpec.describe ServiceConfigWizardController do
                )
 
         put :update,
-          params: {
-            id: 'logo_and_cert',
-            wizard_step: { cert: file },
-          }
+            params: {
+              id: 'logo_and_cert',
+              wizard_step: { cert: file },
+            }
         logo_and_cert_step = WizardStep.where(step_name: 'logo_and_cert').last
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
         expect(has_serial).to eq(true)
@@ -471,7 +472,7 @@ RSpec.describe ServiceConfigWizardController do
         expect do
           put :update, params: {
             id: 'help_text',
-            wizard_step: { help_text:{
+            wizard_step: { help_text: {
               'sign_in' => { 'en' => 'blank' },
               'sign_up' => { 'en' => 'blank' },
               'forgot_password' => { 'en' => 'blank' },
@@ -484,7 +485,7 @@ RSpec.describe ServiceConfigWizardController do
         end.to(change { ServiceProvider.count }.by(1))
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
-        expect(WizardStep.where(user:)).to be_empty
+        expect(WizardStep.where(user: partner_admin)).to be_empty
       end
 
       it 'allows picking help text presets' do
@@ -527,7 +528,7 @@ RSpec.describe ServiceConfigWizardController do
           'forgot_password' => { 'en' => non_blank_forgot_password_preset },
         }
         put :update, params: { id: 'help_text', wizard_step: { help_text: initial_help_text } }
-        new_service_provider = create(:service_provider, with_team_from_user: user)
+        new_service_provider = create(:service_provider, with_team_from_user: partner_admin)
         put :create, params: { service_provider: new_service_provider }
         context_to_be_blank = %w[sign_in sign_up forgot_password].sample
         updated_help_text = initial_help_text.merge(context_to_be_blank => { 'en' => 'blank' })
@@ -570,12 +571,8 @@ RSpec.describe ServiceConfigWizardController do
     end
   end
 
-  context 'as a user without team write privieleges' do
-    let(:user) do
-      user = create(:user, uuid: SecureRandom.uuid, admin: false)
-      create(:user_team, :partner_readonly, user:, team: )
-      user
-    end
+  context 'when a user without team write privieleges' do
+    let(:user) { create(:user_team, :partner_readonly, team:).user }
     let(:service_provider) { create(:service_provider, team:) }
 
     before do
@@ -596,7 +593,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'can save on a team with more permissions' do
-      create(:user_team, :partner_admin, user: user, team: create(:team) )
+      create(:user_team, :partner_admin, user: user, team: create(:team))
       WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
@@ -606,7 +603,7 @@ RSpec.describe ServiceConfigWizardController do
 
   context 'when not logged in' do
     it 'requires authentication without checking flag status' do
-      expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).never
+      expect(IdentityConfig.store).not_to receive(:service_config_wizard_enabled)
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(root_url)

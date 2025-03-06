@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProviderPolicy do
-  let(:site_admin) { create(:admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
   let(:partner_admin) { create(:user_team, :partner_admin, team:).user }
   let(:partner_developer) { create(:user_team, :partner_developer, team:).user }
@@ -18,8 +18,8 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(non_team_member, object)
     end
 
-    it 'allows Site Admin' do
-      expect(described_class).to permit(site_admin, object)
+    it 'allows Login Admin' do
+      expect(described_class).to permit(logingov_admin, object)
     end
 
     it 'allows Partner Admin' do
@@ -31,9 +31,9 @@ describe ServiceProviderPolicy do
     end
   end
 
-  shared_examples_for 'allows site admins only for `object`' do
-    it 'allows admin' do
-      expect(described_class).to permit(site_admin, object)
+  shared_examples_for 'allows login.gov admins only for `object`' do
+    it 'allows logingov_admin' do
+      expect(described_class).to permit(logingov_admin, object)
     end
 
     it 'forbids Partner Admin' do
@@ -54,8 +54,8 @@ describe ServiceProviderPolicy do
   end
 
   permissions :index? do
-    it 'allows Site Admin' do
-      expect(described_class).to permit(site_admin, ServiceProvider)
+    it 'allows Login Admin' do
+      expect(described_class).to permit(logingov_admin, ServiceProvider)
     end
 
     it 'allows Partner Admin' do
@@ -86,8 +86,8 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(non_team_member, app)
     end
 
-    it 'allows Site Admin' do
-      expect(described_class).to permit(site_admin, app)
+    it 'allows Login Admin' do
+      expect(described_class).to permit(logingov_admin, app)
     end
 
     it 'allows Partner Admin' do
@@ -182,19 +182,19 @@ describe ServiceProviderPolicy do
   end
 
   permissions :all? do
-    it_behaves_like 'allows site admins only for `object`' do
+    it_behaves_like 'allows login.gov admins only for `object`' do
       let(:object) { ServiceProvider }
     end
   end
 
   permissions :deleted? do
-    it_behaves_like 'allows site admins only for `object`' do
+    it_behaves_like 'allows login.gov admins only for `object`' do
       let(:object) { ServiceProvider }
     end
   end
 
   permissions :edit_custom_help_text? do
-    it_behaves_like 'allows site admins only for `object`' do
+    it_behaves_like 'allows login.gov admins only for `object`' do
       let(:object) { app }
     end
   end
@@ -208,9 +208,9 @@ describe ServiceProviderPolicy do
         expect(subject.permitted_attributes).to eq(described_class::BASE_PARAMS)
       end
 
-      it 'allows extra attributes for site admin' do
+      it 'allows extra attributes for login.gov admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        subject = described_class.new(site_admin, ServiceProvider)
+        subject = described_class.new(logingov_admin, ServiceProvider)
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
           allow_prompt_login
@@ -223,9 +223,9 @@ describe ServiceProviderPolicy do
     context 'when in prod' do
       before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
 
-      it 'allows extra attributes for site admin' do
+      it 'allows extra attributes for login.gov admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        subject = described_class.new(site_admin, ServiceProvider)
+        subject = described_class.new(logingov_admin, ServiceProvider)
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
           allow_prompt_login
@@ -248,19 +248,19 @@ describe ServiceProviderPolicy::Scope do
   let(:user_double) { object_double(build(:user)) }
   let(:test_scope) { object_double(ServiceProvider.all) }
 
-  it 'does not filter when admin' do
-    allow(user_double).to receive(:admin?).and_return(true)
+  it 'does not filter when login.gov admin' do
+    allow(user_double).to receive(:logingov_admin?).and_return(true)
 
     resolution = described_class.new(user_double, test_scope).resolve
 
     expect(resolution).to be(test_scope)
   end
 
-  it 'filters by user when not admin' do
+  it 'filters by user when not login.gov admin' do
     intermediary_scope = object_spy(ServiceProvider.all)
     expected_result = ["canary_value_#{rand(1..1000)}"]
 
-    allow(user_double).to receive(:admin?).and_return(false)
+    allow(user_double).to receive(:logingov_admin?).and_return(false)
     allow(user_double).to receive(:scoped_service_providers)
       .with(scope: test_scope)
       .and_return(intermediary_scope)
@@ -268,7 +268,7 @@ describe ServiceProviderPolicy::Scope do
 
     resolution = described_class.new(user_double, test_scope).resolve
 
-    expect(user_double).to have_received(:admin?)
+    expect(user_double).to have_received(:logingov_admin?)
     expect(resolution).to be(expected_result)
   end
 end

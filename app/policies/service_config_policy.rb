@@ -6,7 +6,7 @@ class ServiceConfigPolicy < BasePolicy
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
 
-    admin? || user.user_teams.any? do |membership|
+    logingov_admin? || user.user_teams.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
         membership.role == Role.find_by(name: 'partner_admin')
     end

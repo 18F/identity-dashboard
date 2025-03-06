@@ -21,9 +21,6 @@ class ServiceProvider < ApplicationRecord
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
 
-  STATUSES = %w[pending live rejected].freeze
-
-  enum :status, Hash[STATUSES.zip STATUSES], default: 'pending'
   enum :block_encryption, {
     'none' => 0,
     'aes256-gcm' => 2,

@@ -2,17 +2,11 @@ require 'rails_helper'
 
 describe ServiceProvidersController do
   let(:user) { create(:user, :with_teams) }
-  let(:user_membership) do
-    create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: user.teams[0])
-  end
-  let(:admin) { create(:user, :with_teams, admin: true) }
-  let(:admin_membership) do
-    create(:user_team, role_name: :logingov_admin, team: admin.teams[0])
-  end
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency:) }
   let(:init_help_params) do
-    { sign_in: { en: '' }, sign_up: { en: '' } , forgot_password: { en: '' } }
+    { sign_in: { en: '' }, sign_up: { en: '' }, forgot_password: { en: '' } }
   end
   let(:sp) { create(:service_provider, team: team, ial: 1) }
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
@@ -32,7 +26,7 @@ describe ServiceProvidersController do
 
     context 'help_text config' do
       # group_id (team) is necessary to create a ServiceProvider.
-      it('should fill selected default options: blank set') do
+      it('fills selected default options: blank set') do
         help_params_0 = { sign_in: { en: 'blank' },
           sign_up: { en: 'blank' },
           forgot_password: { en: 'blank' } }
@@ -65,7 +59,8 @@ describe ServiceProvidersController do
           },
         })
       end
-      it('should fill selected default options: set 1') do
+
+      it('fills selected default options: set 1') do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
@@ -149,7 +144,8 @@ describe ServiceProvidersController do
           },
         })
       end
-      it('should fill selected default options: set 2') do
+
+      it('fills selected default options: set 2') do
         sign_in_key = 'piv_cac'
         sign_up_key = 'agency_email'
         forgot_password_key = 'blank'
@@ -233,8 +229,9 @@ describe ServiceProvidersController do
 
     context 'email_nameid_format_allowed permissions as admin' do
       before do
-        sign_in(admin)
+        sign_in(logingov_admin)
       end
+
       it('allows Login Admin users to set Email NameID Format') do
         post :create, params: { service_provider: {
           issuer: 'my.issuer.string',
@@ -249,11 +246,11 @@ describe ServiceProvidersController do
 
   describe '#update' do
     before do
-      sign_in(admin)
+      sign_in(logingov_admin)
     end
 
     context 'when a user enters data into text inputs with leading and trailing spaces' do
-      it('it clears leading and trailing spaces in service provider fields') do
+      it('clears leading and trailing spaces in service provider fields') do
         put :update, params: {
           id: sp.id,
           service_provider: {
@@ -295,6 +292,7 @@ describe ServiceProvidersController do
           approved: true,
         }
       end
+
       it 'caches the logo filename on the sp' do
         put :update, params: {
           id: sp.id,
@@ -313,7 +311,7 @@ describe ServiceProvidersController do
         expect(sp.remote_logo_key).to be_present
       end
 
-      context 'with paper trail versioning enabled', versioning: true do
+      context 'with paper trail versioning enabled', :versioning do
         before do
           put :update, params: {
             id: sp.id,
@@ -336,7 +334,7 @@ describe ServiceProvidersController do
         end
 
         it 'records the user who made the last change to the sp upon update' do
-          expect(sp.versions.last.whodunnit).to eq(admin.email)
+          expect(sp.versions.last.whodunnit).to eq(logingov_admin.email)
         end
 
         it 'records the previous and current logo filename upon update' do
@@ -349,7 +347,7 @@ describe ServiceProvidersController do
         end
       end
 
-      it 'will not allow a bad logo to overwrite a good logo' do
+      it 'does not allow a bad logo to overwrite a good logo' do
         expect(sp.logo_file).to be_blank
         put :update, params: {
           id: sp.id,
@@ -446,7 +444,7 @@ describe ServiceProvidersController do
     end
 
     it 'sends a serialized service provider to the IDP' do
-      allow(ServiceProviderSerializer).to receive(:new) { 'attributes' }
+      allow(ServiceProviderSerializer).to receive(:new).and_return('attributes')
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
       put :update, params: {
         id: sp.id,
@@ -460,7 +458,7 @@ describe ServiceProvidersController do
     end
 
     context 'help_text config' do
-      it('should fill selected default options: set 1') do
+      it('fills selected default options: set 1') do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
@@ -615,7 +613,7 @@ describe ServiceProvidersController do
 
       context 'with Login.gov Admin' do
         before do
-          sign_in(admin)
+          sign_in(logingov_admin)
         end
 
         it 'allows updates to IAL' do
@@ -664,7 +662,7 @@ describe ServiceProvidersController do
         end
 
         it 'notifies NewRelic of the error' do
-          expect(::NewRelic::Agent).to receive(:notice_error)
+          expect(NewRelic::Agent).to receive(:notice_error)
 
           post :publish
         end
@@ -672,7 +670,7 @@ describe ServiceProvidersController do
     end
 
     describe '#deleted' do
-      context 'when user is not admin' do
+      context 'when not login.gov admin' do
         before do
           user = create(:user)
           sign_in(user)
@@ -680,14 +678,13 @@ describe ServiceProvidersController do
 
         it 'blocks non-Login Admin users' do
           get :deleted
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
 
-      context 'when user is admin' do
+      context 'when user is login.gov admin' do
         before do
-          admin = create(:admin)
-          sign_in(admin)
+          sign_in(create(:logingov_admin))
         end
 
         it 'allows Login Admin users' do

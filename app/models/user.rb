@@ -16,7 +16,7 @@ class User < ApplicationRecord
   scope :sorted, -> { order(email: :asc) }
 
   def scoped_teams
-    if admin?
+    if logingov_admin?
       Team.all
     else
       teams
@@ -66,9 +66,32 @@ class User < ApplicationRecord
     last_sign_in_at.nil? && created_at < 14.days.ago
   end
 
-  def primary_role
-    return Role::SITE_ADMIN if admin?
-
-    user_teams.first&.role || Role.find_by(name: 'partner_admin')
+  def logingov_admin?
+    # TODO: change this implementation
+    admin_without_deprecation?
   end
+
+  def primary_role
+    return Role::LOGINGOV_ADMIN if logingov_admin?
+    return user_teams.first.role if user_teams.first&.role.present?
+    return Role.find_by(name: 'partner_readonly') if teams.any?
+
+    Role.find_by(name: 'partner_admin')
+  end
+
+  module DeprecateAdmin
+    def self.deprecator
+      @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')
+    end
+
+    def admin?
+      super
+    end
+
+    alias admin_without_deprecation? admin?
+    private :admin_without_deprecation?
+  end
+
+  include DeprecateAdmin
+  deprecate admin?: 'use `logingov_admin?` instead', deprecator: DeprecateAdmin.deprecator
 end

@@ -14,8 +14,9 @@ RSpec.describe SecurityEventsController do
   end
 
   describe '#index' do
-    context 'user is not an admin' do
+    context 'when not a login.gov admin' do
       let(:user) { other_user }
+
       it 'renders unauthorized' do
         get :index
         expect(user.admin).to be false
@@ -23,7 +24,8 @@ RSpec.describe SecurityEventsController do
       end
     end
 
-    let(:user) { create(:admin) }
+    let(:user) { create(:logingov_admin) }
+
     it 'renders security events for the current user only' do
       get :index
 
@@ -45,15 +47,15 @@ RSpec.describe SecurityEventsController do
   end
 
   describe '#all' do
-    context 'for an admin user' do
-      let(:user) { create(:admin) }
+    context 'when a login.gov admin' do
+      let(:user) { create(:logingov_admin) }
 
       it 'renders security events for all users' do
         get :all
 
         security_events = assigns[:security_events]
         expect(security_events.size).to eq(3)
-        expect(security_events.map(&:user).uniq).to match_array([user, other_user])
+        expect(security_events.map(&:user).uniq).to contain_exactly(user, other_user)
       end
 
       it 'filters by user with a user_uuid param' do
@@ -78,7 +80,7 @@ RSpec.describe SecurityEventsController do
       end
     end
 
-    context 'for a non-admin user' do
+    context 'when a login.gov admin' do
       it 'renders an error' do
         get :all
 
@@ -89,6 +91,7 @@ RSpec.describe SecurityEventsController do
 
   describe '#show' do
     subject(:action) { get :show, params: { id: } }
+
     let(:security_event) { create(:security_event, user:) }
     let(:id) { security_event.id }
 
@@ -110,8 +113,8 @@ RSpec.describe SecurityEventsController do
         expect(response).to be_unauthorized
       end
 
-      context 'when the current user is an admin' do
-        let(:user) { create(:admin) }
+      context 'when the current user is a login.gov admin' do
+        let(:user) { create(:logingov_admin) }
 
         it 'renders the event' do
           action
@@ -132,7 +135,7 @@ RSpec.describe SecurityEventsController do
   end
 
   describe '#search' do
-    context 'for a non-admin user' do
+    context 'when not login.gov admin' do
       it 'renders an error' do
         post :search
 
@@ -140,8 +143,8 @@ RSpec.describe SecurityEventsController do
       end
     end
 
-    context 'for an admin user' do
-      let(:user) { create(:admin) }
+    context 'when a login.gov admin' do
+      let(:user) { create(:logingov_admin) }
 
       context 'with an email that belongs to a user' do
         it 'redirects back to all with the UUID in the params' do
