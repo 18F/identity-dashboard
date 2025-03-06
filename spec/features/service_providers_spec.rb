@@ -57,9 +57,9 @@ feature 'Service Providers CRUD' do
       user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
       sp = create(:service_provider, team: user_team.team)
       visit service_providers_path
-      expect(page).to_not have_content("Analytics")
+      expect(page).to_not have_content('Analytics')
       visit analytics_path(sp.id)
-      expect(page).to have_content("Unauthorized")
+      expect(page).to have_content('Unauthorized')
     end
 
     scenario 'saml fields are shown on sp show page when saml is selected' do
@@ -540,7 +540,7 @@ feature 'Service Providers CRUD' do
       user_team = create(:user_team, :logingov_admin, user: user_to_log_in_as)
       sp = create(:service_provider, team: user_team.team)
       visit service_providers_path
-      data_link = sp.friendly_name+" data"
+      data_link = sp.friendly_name + ' data'
       expect(page).to have_content(data_link)
       click_on data_link
       expect(page).to have_content('App Analytics Dashboard')

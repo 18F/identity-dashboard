@@ -8,7 +8,8 @@ class Analytics::ServiceProvidersController < ApplicationController
     private
 
     def service_provider
-        @service_provider ||= ServiceProvider.includes(:agency, logo_file_attachment: :blob).find(id)
+        @service_provider ||= ServiceProvider.includes(:agency,
+logo_file_attachment: :blob).find(id)
     end
 
     def id
@@ -16,4 +17,3 @@ class Analytics::ServiceProvidersController < ApplicationController
     end
 end
 
-  
