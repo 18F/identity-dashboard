@@ -60,7 +60,7 @@ feature 'login.gov admin manages users' do
 
   scenario 'logingov_admin edits users' do
     logingov_admin = create(:logingov_admin)
-    user = create(:user)
+    user = create(:user, :with_teams)
 
     login_as(logingov_admin)
     visit users_path
@@ -77,7 +77,7 @@ feature 'login.gov admin manages users' do
     expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
-  scenario 'rbac flag shows edit user permissions' do
+  scenario 'rbac flag shows edit for user on teams' do
     flag_in
     logingov_admin = create(:logingov_admin)
     roles = ['Login.gov Admin',
@@ -86,12 +86,36 @@ feature 'login.gov admin manages users' do
              'Partner Readonly']
 
     login_as(logingov_admin)
-    visit edit_user_path(logingov_admin.id)
+    visit edit_user_path(create(:user, :with_teams))
 
     expect(page).to have_content('Permissions')
+    expect(find_all('input[disabled]')).to be_none
     radio_labels = find_all('.usa-radio__label').map(&:text)
     roles.each do |role|
       expect(radio_labels).to include(role)
     end
+  end
+
+  scenario 'when no teams assigned permissions limited to site admin promotion/demotion' do
+    flag_in
+    logingov_admin = create(:logingov_admin)
+    login_as(logingov_admin)
+    user_to_edit = create(:user)
+    visit edit_user_path(user_to_edit)
+
+    expect(page).to have_content('Permissions')
+    radio_labels = find_all('.usa-radio__label').map(&:text)
+    expect(radio_labels).to eq(['Login.gov Admin',
+                                'Partner Admin'])
+    expect(find_all('input[type=radio]').last).to be_checked
+    find_all('input[type=radio]').first.click
+    click_on 'Update'
+    expect(user_to_edit.reload).to be_logingov_admin
+
+    visit edit_user_path(user_to_edit)
+    expect(find_all('input[type=radio]').first).to be_checked
+    find_all('input[type=radio]').last.click
+    click_on 'Update'
+    expect(user_to_edit.reload).to_not be_logingov_admin
   end
 end
