@@ -17,7 +17,6 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :redirect_uris,
     :return_to_sp_url,
     :failure_to_proof_url,
-    :post_idv_follow_up_url,
     :push_notification_url,
     :signature,
     :signed_response_message_requested,

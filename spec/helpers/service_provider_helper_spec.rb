@@ -162,7 +162,6 @@ describe ServiceProviderHelper do
     end
     it 'returns a hash with IdV redirects if ial 2 - oidc' do
       sp_config_oidc_attributes.push('failure_to_proof_url')
-      sp_config_oidc_attributes.push('post_idv_follow_up_url')
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
       end
