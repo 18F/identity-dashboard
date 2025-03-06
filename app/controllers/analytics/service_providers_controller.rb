@@ -1,4 +1,6 @@
 class Analytics::ServiceProvidersController < ApplicationController
+    before_action -> { authorize User, policy_class: AnalyticsPolicy }
+
     def show
        @issuer = service_provider.issuer
     end
