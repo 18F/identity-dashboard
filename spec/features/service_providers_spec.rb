@@ -536,6 +536,13 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Success')
     end
 
+    scenario 'can publish service providers' do
+      visit service_providers_all_path
+
+      click_on t('forms.buttons.trigger_idp_refresh')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
+    end
+
     scenario 'can see and visit link to analytics path' do
       user_team = create(:user_team, :logingov_admin, user: user_to_log_in_as)
       sp = create(:service_provider, team: user_team.team)
