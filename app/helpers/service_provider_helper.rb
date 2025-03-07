@@ -90,6 +90,10 @@ module ServiceProviderHelper
     IdentityConfig.store.help_text_options_feature_enabled
   end
 
+  def show_analytics_column?
+    current_user.logingov_admin?
+  end
+
   def service_provider_policy
     Pundit.policy(current_user, @service_provider || ServiceProvider)
   end
