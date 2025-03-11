@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
-  config.x_frame_options = 'SAMEORIGIN'
+  config.x_frame_options = 'ALLOWALL'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
@@ -12,14 +12,16 @@ SecureHeaders::Configuration.default do |config|
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
   config.csp = {
     default_src: ["'self'"],
-    frame_src: ["'self'"], # deprecated in CSP 2.0
-    child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
-    # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
+    frame_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # deprecated in CSP 2.0
+    child_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # CSP 2.0 only; replaces frame_src
+    frame_ancestors: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: form_action.flatten,
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: connect_src.flatten,
+    connect_src: connect_src.flatten + [
+      "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'],
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
+    img_src: ["'self'", 'data:', 'blob:',
+"https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com"],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [
@@ -29,24 +31,29 @@ SecureHeaders::Configuration.default do |config|
       'https://dap.digitalgov.gov',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
+      "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com",
     ],
-    style_src: ["'self'"],
+    style_src: ["'self'", "'unsafe-inline'"],
     base_uri: ["'self'"],
   }
+  # config.csp = SecureHeaders::OPT_OUT
   # Enable for A11y testing. This allows use of the ANDI tool.
   if Rails.env.development?
     config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
     config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
     config.csp.img_src.push('*.ssa.gov')
+    config.csp.frame_src.push('*')
+    config.csp.child_src.push('*')
+    config.csp.frame_ancestors.push('*')
   end
-  # Temporarily disabled until we configure pinning. See GitHub issue #1895.
+  # Temporarily disabled until we configure pinning. See GitHub issue # 1895.
   # config.hpkp = {
   #   report_only: false,
   #   max_age: 60.days.to_i,
   #   include_subdomains: true,
   #   pins: [
   #     { sha256: 'abc' },
-  #     { sha256: '123' }
-  #   ]
+  #     { sha256: '123' },
+  #   ],
   # }
 end
