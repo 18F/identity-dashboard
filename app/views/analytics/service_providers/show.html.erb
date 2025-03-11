@@ -1,2 +1,12 @@
 <h1>App <%= @friendly_name %> Analytics Dashboard</h1>
 <h2>Issuer: <code><%= @issuer %> </code> </h2>
+
+<h3>Dashboard Embedded</h3>
+
+<div class="dashboard-container">
+    <iframe
+        width="960"
+        height="720"
+        src= "<%= @dashboard_embed_url %> " >
+    </iframe>
+</div>
