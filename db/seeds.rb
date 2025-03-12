@@ -16,4 +16,12 @@ if Rails.env.development?
   end
 end
 
+if ENV['KUBERNETES_REVIEW_APP'] == 'true'
+  service_provider_seeder = ServiceProviderSeeder.new
+  service_provider_seeder.write_review_app_yaml(dashboard_url: dashboard_url)
+  service_provider_seeder.run
+elsif Identity::Hostdata.config.prod_like_env == true
+  ServiceProviderSeeder.new.run
+end
+
 Role.initialize_roles if Rails.env.test?
