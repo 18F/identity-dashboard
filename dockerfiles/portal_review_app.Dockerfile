@@ -1,7 +1,7 @@
 FROM ruby:3.4.1-slim
 
 # Set environment variables
-ENV RAILS_ROOT /dashboard
+ENV RAILS_ROOT /portal
 ENV RAILS_ENV production
 ENV NODE_ENV production
 ENV RAILS_SERVE_STATIC_FILES true
@@ -15,21 +15,21 @@ ENV NODE_VERSION 18.16.1
 ENV BUNDLER_VERSION 2.5.6
 
 ENV POSTGRES_SSLMODE prefer 
-ENV POSTGRES_DB dashboard
+ENV POSTGRES_DB portal
 ENV POSTGRES_HOST localhost
 ENV POSTGRES_USERNAME postgres
 ENV POSTGRES_PASSWORD password
 ENV POSTGRES_SSLCERT /usr/local/share/aws/rds-combined-ca-bundle.pem
 ENV NEW_RELIC_ENABLED false
 
-ENV DASHBOARD_API_TOKEN changeme
+ENV PORTAL_API_TOKEN changeme
 
 ENV IDP_SP_URL  http://localhost:3000
 ENV IDP_URL http://localhost:3000
 
 ENV POST_LOGOUT_URL http://localhost:3000
 ENV SAML_SP_ISSUER http://localhost:3001
-ENV MAILER_DOMAIN https://dashboard.login.gov
+ENV MAILER_DOMAIN https://portal.login.gov
 ENV LOGIN_DOMAIN identitysandbox.gov
 
 ENV NEW_RELIC_LICENSE_KEY changeme
@@ -161,4 +161,4 @@ USER app
 
 EXPOSE 3001
 
-CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3001?key=/dashboard/keys/localhost.key&cert=/dashboard/keys/localhost.crt"]
+CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3001?key=/portal/keys/localhost.key&cert=/portal/keys/localhost.crt"]

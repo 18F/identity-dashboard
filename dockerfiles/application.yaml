@@ -29,8 +29,8 @@ spec:
               path: /data/ASSET_HOST
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
-              path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              path: /data/PORTAL_URL
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -102,8 +102,8 @@ spec:
               path: /data/ASSET_HOST
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
-              path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              path: /data/PORTAL_URL
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -173,8 +173,8 @@ spec:
             name: worker-config
           patch: |-
             - op: add
-              path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              path: /data/PORTAL_URL
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
@@ -210,8 +210,8 @@ spec:
             name: worker-config-dbsetup
           patch: |-
             - op: add
-              path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              path: /data/PORTAL_URL
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
@@ -299,20 +299,20 @@ spec:
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.pivcac.reviewapps.identitysandbox.gov"
-        # Patch ConfigMap for Dashboard
+        # Patch ConfigMap for portal
         - target:
             kind: ConfigMap
-            name: dashboard-config
+            name: portal-config
           patch: |-
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
             - op: add
               path: /data/POSTGRES_NAME
-              value: "dashboard"
+              value: "portal"
             - op: add
               path: /data/POSTGRES_HOST
-              value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
+              value: "{{ENVIRONMENT}}-portal-pg.review-apps"
             - op: add
               path: /data/POSTGRES_SSLMODE
               value: "prefer"
@@ -321,7 +321,7 @@ spec:
               value: "false"
             - op: add
               path: /data/SAML_SP_ISSUER
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/IDP_URL
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -330,23 +330,23 @@ spec:
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/POST_LOGOUT_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
         - target:
             kind: ConfigMap
-            name: dashboard-config-dbsetup
+            name: portal-config-dbsetup
           patch: |-
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
             - op: add
               path: /data/POSTGRES_NAME
-              value: "dashboard"
+              value: "portal"
             - op: add
               path: /data/POSTGRES_HOST
-              value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
+              value: "{{ENVIRONMENT}}-portal-pg.review-apps"
             - op: add
               path: /data/POSTGRES_SSLMODE
               value: "prefer"
@@ -355,7 +355,7 @@ spec:
               value: "false"
             - op: add
               path: /data/SAML_SP_ISSUER
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/IDP_URL
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -364,11 +364,11 @@ spec:
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/POST_LOGOUT_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
-        # Patch ConfigMap for Dashboard service_providers.yml
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
+        # Patch ConfigMap for portal service_providers.yml
         - target:
             kind: ConfigMap
             name: service-providers-yml
@@ -384,11 +384,11 @@ spec:
                     logo: '18f.svg'
                     certs:
                       - 'identity_dashboard_cert'
-                    return_to_sp_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/'
+                    return_to_sp_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/'
                     redirect_uris:
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov'
-                    push_notification_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov'
+                    push_notification_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/api/security_events'
         - target:
             kind: ConfigMap
             name: service-providers-yml-dbsetup
@@ -404,11 +404,11 @@ spec:
                     logo: '18f.svg'
                     certs:
                       - 'identity_dashboard_cert'
-                    return_to_sp_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/'
+                    return_to_sp_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/'
                     redirect_uris:
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov'
-                    push_notification_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov'
+                    push_notification_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/api/security_events'
         # Patch idp database setup jobs
         - target:
             kind: Job
@@ -440,34 +440,34 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
-        # Patch dashboard database setup jobs
+        # Patch portal database setup jobs
         - target:
             kind: Job
-            name: create-dashboard-database
+            name: create-portal-database
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{PORTAL_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
         - target:
             kind: Job
-            name: migrate-dashboard-database
+            name: migrate-portal-database
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{PORTAL_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
         - target:
             kind: Job
-            name: seed-dashboard-database
+            name: seed-portal-database
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{PORTAL_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -547,17 +547,17 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/1/imagePullPolicy
               value: Always
-        # Patch Dashboard Image
+        # Patch portal Image
         - target:
             kind: Deployment
-            name: dashboard
+            name: portal
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{PORTAL_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/initContainers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{PORTAL_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -591,14 +591,14 @@ spec:
               value: https
         - target:
             kind: Ingress
-            name: dashboard
+            name: portal
           patch: |-
             - op: replace
               path: /metadata/annotations/alb.ingress.kubernetes.io~1group.name
-              value: review-app-dashboard
+              value: review-app-portal
             - op: replace
               path: /spec/rules/0/host
-              value: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
+              value: {{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov
         - target:
             kind: Ingress
             name: pivcac
