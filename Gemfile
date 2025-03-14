@@ -8,6 +8,7 @@ gem 'acts_as_paranoid'
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
 gem 'autoprefixer-rails', '~> 10.1'
 gem 'aws-sdk-core', '>= 3.188.0'
+gem 'aws-sdk-quicksight'
 gem 'aws-sdk-s3', require: false
 gem 'browser'
 gem 'bundler'
