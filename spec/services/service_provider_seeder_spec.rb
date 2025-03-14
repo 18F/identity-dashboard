@@ -1,18 +1,33 @@
+require 'spec_helper'
+require 'pry-byebug'
+require File.expand_path('../../lib/deploy/activate', __dir__)
+
+root = File.expand_path('../../', __dir__)
+Deploy::Activate.new(root:).run
+
 require 'rails_helper'
 
 RSpec.describe ServiceProviderSeeder do
   subject(:instance) { ServiceProviderSeeder.new(rails_env:, deploy_env:) }
+
   let(:rails_env) { 'test' }
   let(:deploy_env) { 'int' }
 
-  describe '#run' do
-    before do
-      Agreements::IntegrationUsage.delete_all
-      Agreements::Integration.delete_all
-      ServiceProvider.delete_all
+  after(:all) do
+    `/bin/rm -rf #{File.expand_path('../../identity-idp-config', __dir__)}`
+    Deploy::Activate::FILES_TO_LINK.each do |file|
+      `/bin/rm #{File.expand_path("../../config/#{file}.yml", __dir__)}`
     end
+  end
 
+  describe '#run' do
     subject(:run) { instance.run }
+
+    # before do
+    #   Agreements::IntegrationUsage.delete_all
+    #   Agreements::Integration.delete_all
+    #   ServiceProvider.delete_all
+    # end
 
     it 'inserts service providers into the database from service_providers.yml' do
       expect { run }.to change(ServiceProvider, :count)
@@ -70,7 +85,7 @@ RSpec.describe ServiceProviderSeeder do
           change { ServiceProvider.find_by(issuer: 'http://test.host').acs_url }
             .to('http://test.host/test/saml/decode_assertion').and(
               change { ServiceProvider.find_by(issuer: 'http://test.host').certs }
-                .to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read]),
+                .to([Rails.root.join('certs/sp/saml_test_sp.crt').read]),
             ),
         )
       end
@@ -87,7 +102,7 @@ RSpec.describe ServiceProviderSeeder do
         allow(IdentityConfig.store).to receive(:team_ursula_email).and_return('team@example.com')
       end
 
-      context 'when %{env} is present in the config file' do
+      context 'when %<env>s is present in the config file' do
         let(:deploy_env) { 'dev' }
 
         it 'is replaced with the deploy_env' do
@@ -179,6 +194,7 @@ RSpec.describe ServiceProviderSeeder do
       let(:seeder) do
         ServiceProviderSeeder.new
       end
+
       before do
         allow(YAML).to receive(:safe_load).and_raise(
           Psych::SyntaxError.new('file', 0, 0, 0, 'problem', 'context'),

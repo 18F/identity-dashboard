@@ -57,7 +57,7 @@ class ServiceProviderSeeder
       },
     }
 
-    File.write(Rails.root.join(@yaml_path, 'service_providers.yml'), hash.to_yaml)
+    Rails.root.join(@yaml_path, 'service_providers.yml').write(hash.to_yaml)
   end
 
   private
@@ -81,7 +81,7 @@ class ServiceProviderSeeder
 
     restrict_env = config['restrict_to_deploy_env']
     in_prod = deploy_env == 'prod'
-    in_sandbox = !%w[prod staging].include?(deploy_env)
+    in_sandbox = %w[prod staging].exclude?(deploy_env)
     in_staging = deploy_env == 'staging'
 
     return true if restrict_env == 'prod' && in_prod
@@ -105,7 +105,7 @@ class ServiceProviderSeeder
       "Extra service providers found in DB: #{extra_sps.join(', ')}",
     )
 
-    return unless IdentityConfig.store.team_ursula_email.present?
+    return if IdentityConfig.store.team_ursula_email.blank?
 
     ReportMailer.warn_error(
       email: IdentityConfig.store.team_ursula_email,
