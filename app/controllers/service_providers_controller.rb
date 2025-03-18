@@ -101,20 +101,16 @@ class ServiceProvidersController < AuthenticatedController
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
 
-    # expected_params = ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION
-    # permitted_params = []
-
-    # expected_params.keys.each do |k|
-    #   permitted_params << k.to_s.to_sym
-    # end  
-    # params.permit(permitted_params)
-
-    ticket_custom_fields = ServiceProvider::ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
-      |(id, func), result| result[id] = func.to_proc.call(@service_provider)
+    ticket_custom_fields = []
+    ServiceProvider::ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
+      |(id, func), result| ticket_custom_fields.push({ id: id, value: func.to_proc.call(@service_provider) })
     end
 
-    ticket_custom_fields.merge!(params[:service_provider].to_enum.to_h)
-    render json: ticket_custom_fields
+    ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
+      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym]})
+    end
+
+    render json: @service_provider.build_zendesk_ticket(current_user, ticket_custom_fields)
   end
 
   private

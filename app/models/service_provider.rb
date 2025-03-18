@@ -134,6 +134,7 @@ class ServiceProvider < ApplicationRecord
     logo_file.blob.download if logo_file.blob
   end
 
+  ZENDESK_TICKET_FORM_URL = 'https://logingov.zendesk.com/api/v2/requests.json'
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
@@ -163,7 +164,7 @@ class ServiceProvider < ApplicationRecord
     4975909708564 => "help_desk_contact_info",
   }
 
-  def build_zendesk_ticket
+  def build_zendesk_ticket(current_user, custom_fields)
     ticket_data = {
       request:  {
         requester: {
@@ -175,9 +176,7 @@ class ServiceProvider < ApplicationRecord
           body: "Please deploy #{self.friendly_name} to the Login.gov Production Environment",
         },
         ticket_form_id: ZENDESK_TICKET_FORM_ID,
-        custom_fields: ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
-          |(id, func), result| result[id] = func.to_proc.call(self)
-        end,
+        custom_fields: custom_fields
       },
     }
   end

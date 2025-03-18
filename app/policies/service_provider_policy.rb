@@ -90,10 +90,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def prod_request?
-    Rails.logger.debug('******************')
-Rails.logger.debug('checking policy')
-Rails.logger.debug('******************')
-    true
+    logingov_admin? || (membership && !partner_readonly?)
   end
 
   def edit_custom_help_text?
