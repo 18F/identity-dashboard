@@ -543,18 +543,7 @@ feature 'Service Providers CRUD' do
       data_link = sp.friendly_name + ' data'
       expect(page).to have_content(data_link)
       click_on data_link
-      expect(page).to have_content('App Analytics Dashboard')
-      expect(page).to have_content(sp.issuer)
-    end
-
-    scenario 'can see and visit link to analytics path' do
-      user_team = create(:user_team, :logingov_admin, user: user_to_log_in_as)
-      sp = create(:service_provider, team: user_team.team)
-      visit service_providers_path
-      data_link = sp.friendly_name + ' data'
-      expect(page).to have_content(data_link)
-      click_on data_link
-      expect(page).to have_content('App Analytics Dashboard')
+      expect(page).to have_content("#{sp.friendly_name.capitalize} Analytics Dashboard")
       expect(page).to have_content(sp.issuer)
     end
 
