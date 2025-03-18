@@ -17,10 +17,10 @@ describe Deploy::Activate do
     runner.run
     Deploy::Activate::FILES_TO_LINK.each do |file|
       source_path = File.expand_path("../../identity-idp-config/#{file}.yml", __dir__)
-      expect(File.file?(source_path)).to be_truthy, "Did not find source file at #{source_path}"
+      expect(File).to be_file(source_path), "Did not find source file at #{source_path}"
 
       symlink_path = File.expand_path("../../config/#{file}.yml", __dir__)
-      expect(File.symlink?(symlink_path)).to be_truthy, "Did not find symlink at #{symlink_path}"
+      expect(File).to be_symlink(symlink_path), "Did not find symlink at #{symlink_path}"
     end
   end
 end
