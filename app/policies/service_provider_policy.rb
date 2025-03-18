@@ -89,6 +89,13 @@ class ServiceProviderPolicy < BasePolicy
     logingov_admin?
   end
 
+  def prod_request?
+    Rails.logger.debug('******************')
+Rails.logger.debug('checking policy')
+Rails.logger.debug('******************')
+    true
+  end
+
   def edit_custom_help_text?
     logingov_admin?
   end

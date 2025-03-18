@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
 
   after_action :verify_authorized
@@ -96,6 +96,25 @@ class ServiceProvidersController < AuthenticatedController
 
   def deleted
     @service_providers = deleted_service_providers
+  end
+
+  def prod_request
+    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
+
+    # expected_params = ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION
+    # permitted_params = []
+
+    # expected_params.keys.each do |k|
+    #   permitted_params << k.to_s.to_sym
+    # end  
+    # params.permit(permitted_params)
+
+    ticket_custom_fields = ServiceProvider::ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
+      |(id, func), result| result[id] = func.to_proc.call(@service_provider)
+    end
+
+    ticket_custom_fields.merge!(params[:service_provider].to_enum.to_h)
+    render json: ticket_custom_fields
   end
 
   private

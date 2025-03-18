@@ -134,6 +134,69 @@ class ServiceProvider < ApplicationRecord
     logo_file.blob.download if logo_file.blob
   end
 
+  ZENDESK_TICKET_FORM_ID = 5663417357332
+
+  ZENDESK_TICKET_FIELD_FUNCTIONS = {
+    20697165967508 => -> (record) { record.logo.present? },
+    4418412738836 => -> (record) { record.agency.name.parameterize.underscore },
+    4417948129556 => -> (record) { record.portal_url },
+    23180053076628 => -> (record) { record.issuer },
+    4417492827796 => -> (record) { record.app_name },
+    4417494977300 => -> (record) { record.ial_zendesk },
+    5064895580308 => -> (record) { record.description },
+    4418367585684 => -> (record) { 'on' },
+    4417169610388 => -> (record) { 'new_integration' },
+  }
+
+  ZENDESK_TICKET_FIELD_INFORMATION = {
+    4417546214292 => "iaa_number",
+    4417940288916 => "application_url",
+    14323206118676 => "audience",
+    4417514509076 => "est_annual_reg",
+    14323273767572 => "monthly_active_users",
+    14326923502100 => "seasonality",
+    4417513940756 => "est_auths",
+    4417512374548 => "launch_date",
+    4417547364628 => "billing_pocs",
+    4417948190868 => "pm_pocs",
+    4417940248340 => "tech_support_pocs",
+    4975909708564 => "help_desk_contact_info",
+  }
+
+  def build_zendesk_ticket
+    ticket_data = {
+      request:  {
+        requester: {
+          name: "#{current_user.first_name} #{current_user.last_name}",
+          email: current_user.email,
+        },
+        subject: "Deploy #{self.friendly_name} to Production",
+        comment: {
+          body: "Please deploy #{self.friendly_name} to the Login.gov Production Environment",
+        },
+        ticket_form_id: ZENDESK_TICKET_FORM_ID,
+        custom_fields: ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
+          |(id, func), result| result[id] = func.to_proc.call(self)
+        end,
+      },
+    }
+  end
+
+  def portal_url
+    "service_providers/#{self.id}"
+  end
+
+  def ial_zendesk
+    case ial
+    when 1, nil
+      I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
+    when 2
+      I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
+    else
+      ial.inspect
+    end
+  end
+
   private
 
   def attachment_changes_string_buffer
@@ -164,4 +227,5 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
+
 end
