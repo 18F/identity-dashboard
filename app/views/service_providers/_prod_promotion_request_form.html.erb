@@ -44,7 +44,8 @@
         data-close-modal
       >
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use href="/assets/img/sprite.svg#close"></use>
+          <%# <%= image_tag 'sprite.svg#close' %> %>
+          <use href="<%=  asset_path('sprite.svg#close') %>"></use>
         </svg>
       </button>
     </div>
