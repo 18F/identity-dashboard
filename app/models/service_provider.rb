@@ -134,7 +134,8 @@ class ServiceProvider < ApplicationRecord
     logo_file.blob.download if logo_file.blob
   end
 
-  ZENDESK_TICKET_FORM_URL = 'https://logingov.zendesk.com/api/v2/requests.json'
+  # ZENDESK_TICKET_POST_URL = 'https://logingov.zendesk.com/api/v2/requests.json'
+  ZENDESK_TICKET_POST_URL = 'http://localhost:3002'
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
@@ -194,6 +195,19 @@ class ServiceProvider < ApplicationRecord
     else
       ial.inspect
     end
+  end
+
+  def create_ticket(ticket_data)
+    headers = { 'Content-Type' => 'application/json' }
+
+    conn = Faraday.new(url: ZENDESK_TICKET_POST_URL, headers: headers)
+
+    resp = conn.post { |req| req.body = ticket_data.to_json }
+    status_code = resp.status
+
+    # if status_code
+      resp.body
+    # end
   end
 
   private
