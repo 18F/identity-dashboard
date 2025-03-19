@@ -8,7 +8,7 @@ variables:
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
-  PORTAL_CI_SHA: 'sha256:316f06267bfdbb5508b8c6eb549143b5949b79ce2669c5a26fcb5ce3c520c264'
+  PORTAL_CI_SHA: 'sha256:dd84af2bdcd8af53ad12293303763ad86ee60c24d25eedc225faf7297296af20'
   GITLAB_CI: 'true'
   APPLICATION_MANIFEST: 'dockerfiles/application.yaml'
 
