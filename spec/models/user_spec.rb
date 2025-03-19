@@ -215,4 +215,20 @@ describe User do
       User::DeprecateAdmin.deprecator.behavior = default_behavior
     end
   end
+
+  describe '#auth_token' do
+    it 'always picks the latest one' do
+      user.save
+      _first_token_record = create(:auth_token, user:)
+      second_token_record = create(:auth_token, user:)
+      expect(user.auth_token).to eq(second_token_record)
+      expect(user.auth_token.ephemeral_token).to be_blank
+
+    end
+    it 'builds a new one if none exists' do
+      new_token = user.auth_token
+      expect(new_token).to_not be_persisted
+      expect(new_token.ephemeral_token).to_not be_blank
+    end
+  end
 end
