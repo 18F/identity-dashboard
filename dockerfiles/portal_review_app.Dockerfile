@@ -22,7 +22,7 @@ ENV POSTGRES_PASSWORD password
 ENV POSTGRES_SSLCERT /usr/local/share/aws/rds-combined-ca-bundle.pem
 ENV NEW_RELIC_ENABLED false
 
-ENV PORTAL_API_TOKEN changeme
+ENV DASHBOARD_API_TOKEN changeme
 
 ENV IDP_SP_URL  http://localhost:3000
 ENV IDP_URL http://localhost:3000
