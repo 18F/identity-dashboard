@@ -101,7 +101,7 @@ en:
     zendesk_ticket:
       iaa_number: 
         label: IAA Number
-        hint_html: "The GTC, Order, and Mod number of the IAA this application will be billed under (please reach out to your agency IAA contact if you have any questions). For more information see here: <a href='https://developers.login.gov/production/#confirm-iaa'>https://developers.login.gov/production/#confirm-iaa</a> . This should look something like the following: LGABCFY210001-0001-0000"
+        hint_html: "The GTC, Order, and Mod number of the IAA this application will be billed under (please reach out to your agency IAA contact if you have any questions). For more information see here: <a href='https://developers.login.gov/production/#confirm-iaa'>https://developers.login.gov/production/#confirm-iaa</a>."
       application_url:
         label: Application URL
         hint_html: The production URL of the application
@@ -125,16 +125,16 @@ en:
         hint_html: The date you will make the Login.gov integration available to your users. Login.gov requires a minimum of 14 days to go live with your application. Integrations go live on Thursdays.
       billing_pocs:
         label: Billing POCs
-        hint_html: "Billing Points of Contact (names, titles, emails, and phone numbers), e.g.,: First Last - Director, Department - first.last@agency.gov - (555) 555-5555"
+        hint_html: "Billing Points of Contact (names, titles, emails, and phone numbers)"
       pm_pocs:
         label: Program Management POCs
-        hint_html: "Program Management Points of Contact (names, titles, emails, and phone numbers), e.g.,: First Last - Program Manager - first.last@agency.gov - (555) 555-5555"
+        hint_html: "Program Management Points of Contact (names, titles, emails, and phone numbers)"
       tech_support_pocs:
         label: Technical Support POCs
-        hint_html: "Technical Support Points of Contact (names, titles, emails, and phone numbers), e.g.,: First Last - Technical Lead - first.last@agency.gov - (555) 555-5555"
+        hint_html: "Technical Support Points of Contact (names, titles, emails, and phone numbers)"
       help_desk_contact_info:
         label: Help Desk Contact Information
-        hint_html: "The phone number and email of the application's help desk, e.g.: (555) 555-5555 - support@agency.gov"
+        hint_html: "The phone number and email of the application's help desk"
       ial_option_1: ial1
       ial_option_2: idv
 
