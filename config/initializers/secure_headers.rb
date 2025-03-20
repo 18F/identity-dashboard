@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
-  config.x_frame_options = 'SAMEORIGIN'
+  config.x_frame_options = 'ALLOWALL'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
@@ -10,35 +10,39 @@ SecureHeaders::Configuration.default do |config|
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
-  config.csp = {
-    default_src: ["'self'"],
-    frame_src: ["'self'"], # deprecated in CSP 2.0
-    child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
-    # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
-    form_action: form_action.flatten,
-    block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: connect_src.flatten,
-    font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
-    media_src: ["'self'"],
-    object_src: ["'none'"],
-    script_src: [
-      "'self'",
-      '*.newrelic.com',
-      '*.nr-data.net',
-      'https://dap.digitalgov.gov',
-      'https://www.google-analytics.com',
-      'https://www.googletagmanager.com',
-    ],
-    style_src: ["'self'"],
-    base_uri: ["'self'"],
-  }
+  # config.csp = {
+  #   default_src: ["'self'"],
+  #   frame_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'http://localhost', '*'], # deprecated in CSP 2.0
+  #   child_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'http://localhost', '*'], # CSP 2.0 only; replaces frame_src
+  #   frame_ancestors: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'http://localhost', '*'], # CSP 2.0 only; overriden by x_frame_options in some browsers
+  #   form_action: form_action.flatten,
+  #   block_all_mixed_content: true, # CSP 2.0 only;
+  #   connect_src: connect_src.flatten,
+  #   font_src: ["'self'", 'data:'],
+  #   img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
+  #   media_src: ["'self'"],
+  #   object_src: ["'none'"],
+  #   script_src: [
+  #     "'self'",
+  #     '*.newrelic.com',
+  #     '*.nr-data.net',
+  #     'https://dap.digitalgov.gov',
+  #     'https://www.google-analytics.com',
+  #     'https://www.googletagmanager.com',
+  #   ],
+  #   style_src: ["'self'", "'unsafe-inline'"],
+  #   base_uri: ["'self'"],
+  # }
+  config.csp = SecureHeaders::OPT_OUT
   # Enable for A11y testing. This allows use of the ANDI tool.
-  if Rails.env.development?
-    config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
-    config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
-    config.csp.img_src.push('*.ssa.gov')
-  end
+  # if Rails.env.development?
+  #   config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
+  #   config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
+  #   config.csp.img_src.push('*.ssa.gov')
+  #   config.csp.frame_src.push('*')
+  #   config.csp.child_src.push('*')
+  #   config.csp.frame_ancestors.push('*')
+  # end
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
