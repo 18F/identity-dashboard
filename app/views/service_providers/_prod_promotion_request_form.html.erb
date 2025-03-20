@@ -14,7 +14,10 @@
           <%= form.hidden_field :id, value: @service_provider.id %>
           <% ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
             <div class="form-group">
-              <%= form.label id, t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label"), class: 'usa-label usa_collection_select' %>
+                  <label class="<%= "usa-label required" %>">
+				      <%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label") %>
+				      <%= t('simple_form.required.html') %>
+				    </label>
               <%= form.text_field id, id: id, 
               	class: 'block col-12 string required usa-input',
               	placeholder: field_info[:placeholder]
