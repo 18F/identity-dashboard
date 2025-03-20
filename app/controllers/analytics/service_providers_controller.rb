@@ -1,10 +1,9 @@
-require 'aws-sdk-core'
 require 'aws-sdk-quicksight'
 
 class Analytics::ServiceProvidersController < ApplicationController
     before_action -> { authorize User, policy_class: AnalyticsPolicy }
 
-    AWS_ACCOUNT_ID = Aws::STS::Client.new.get_caller_identity.account
+    AWS_ACCOUNT_ID = '487317109730'
     # USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/admin@gsa.gov'
     USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/DWAdmin/colter.nattrass'
     DASHBOARD_ID = '0edede6f-3267-4fd1-8196-5529c2f287a6'
