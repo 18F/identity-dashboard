@@ -151,18 +151,18 @@ class ServiceProvider < ApplicationRecord
   }
 
   ZENDESK_TICKET_FIELD_INFORMATION = {
-    4417546214292 => 'iaa_number',
-    4417940288916 => 'application_url',
-    14323206118676 => 'audience',
-    4417514509076 => 'est_annual_reg',
-    14323273767572 => 'monthly_active_users',
-    14326923502100 => 'seasonality',
-    4417513940756 => 'est_auths',
-    4417512374548 => 'launch_date',
-    4417547364628 => 'billing_pocs',
-    4417948190868 => 'pm_pocs',
-    4417940248340 => 'tech_support_pocs',
-    4975909708564 => 'help_desk_contact_info',
+    4417546214292 => {label: 'iaa_number', placeholder: 'LGABCFY210001-0001-0000'},
+    4417940288916 => {label: 'application_url', placeholder: 'https://yourapp.gov/'},
+    14323206118676 => {label: 'audience', placeholder: nil},
+    4417514509076 => {label: 'est_annual_reg', placeholder: 100000},
+    14323273767572 => {label: 'monthly_active_users', placeholder: 20000},
+    14326923502100 => {label: 'seasonality', placeholder: nil},
+    4417513940756 => {label: 'est_auths', placeholder: 50000},
+    4417512374548 => {label: 'launch_date', placeholder: nil},
+    4417547364628 => {label: 'billing_pocs', placeholder: 'First Last - Director, Department - first.last@agency.gov - (555) 555-5555'},
+    4417948190868 => {label: 'pm_pocs', placeholder: 'First Last - Program Manager - first.last@agency.gov - (555) 555-5555'},
+    4417940248340 => {label: 'tech_support_pocs', placeholder: 'First Last - Technical Lead - first.last@agency.gov - (555) 555-5555'},
+    4975909708564 => {label: 'help_desk_contact_info', placeholder: '(555) 555-5555 - support@agency.gov'},
   }
 
   def build_zendesk_ticket(current_user, custom_fields)

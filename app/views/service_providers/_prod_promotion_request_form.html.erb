@@ -12,11 +12,14 @@
         </h2>
         <%= form_with model: @service_provider, url: service_providers_prod_request_path(@service_provider), method: :post do |form| %>
           <%= form.hidden_field :id, value: @service_provider.id %>
-          <% ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, label| %>
+          <% ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
             <div class="form-group">
-              <%= form.label id, t("service_provider_form.zendesk_ticket.#{label}.label"), class: 'usa-label usa_collection_select' %>
-              <%= form.text_field id, id: id, class: 'block col-12 string required usa-input' %>
-              <p class="usa-hint"><%= t("service_provider_form.zendesk_ticket.#{label}.hint_html") %></p>
+              <%= form.label id, t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label"), class: 'usa-label usa_collection_select' %>
+              <%= form.text_field id, id: id, 
+              	class: 'block col-12 string required usa-input',
+              	placeholder: field_info[:placeholder]
+              %>
+              <p class="usa-hint"><%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.hint_html") %></p>
             </div>
           <% end %>
           <div class="usa-modal__footer">
