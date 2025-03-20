@@ -151,18 +151,18 @@ class ServiceProvider < ApplicationRecord
   }
 
   ZENDESK_TICKET_FIELD_INFORMATION = {
-    4417546214292 => "iaa_number",
-    4417940288916 => "application_url",
-    14323206118676 => "audience",
-    4417514509076 => "est_annual_reg",
-    14323273767572 => "monthly_active_users",
-    14326923502100 => "seasonality",
-    4417513940756 => "est_auths",
-    4417512374548 => "launch_date",
-    4417547364628 => "billing_pocs",
-    4417948190868 => "pm_pocs",
-    4417940248340 => "tech_support_pocs",
-    4975909708564 => "help_desk_contact_info",
+    4417546214292 => 'iaa_number',
+    4417940288916 => 'application_url',
+    14323206118676 => 'audience',
+    4417514509076 => 'est_annual_reg',
+    14323273767572 => 'monthly_active_users',
+    14326923502100 => 'seasonality',
+    4417513940756 => 'est_auths',
+    4417512374548 => 'launch_date',
+    4417547364628 => 'billing_pocs',
+    4417948190868 => 'pm_pocs',
+    4417940248340 => 'tech_support_pocs',
+    4975909708564 => 'help_desk_contact_info',
   }
 
   def build_zendesk_ticket(current_user, custom_fields)
@@ -177,7 +177,7 @@ class ServiceProvider < ApplicationRecord
           body: "Please deploy #{self.friendly_name} to the Login.gov Production Environment",
         },
         ticket_form_id: ZENDESK_TICKET_FORM_ID,
-        custom_fields: custom_fields
+        custom_fields: custom_fields,
       },
     }
   end

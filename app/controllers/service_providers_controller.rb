@@ -103,21 +103,23 @@ class ServiceProvidersController < AuthenticatedController
 
     ticket_custom_fields = []
     ServiceProvider::ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
-      |(id, func), result| ticket_custom_fields.push({ id: id, value: func.to_proc.call(@service_provider) })
+      |(id, func), result| ticket_custom_fields.push({ id: id,
+value: func.to_proc.call(@service_provider) })
     end
 
     ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
-      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym]})
+      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
-    ticket_data = @service_provider.build_zendesk_ticket(current_user, ticket_custom_fields)    
+    ticket_data = @service_provider.build_zendesk_ticket(current_user, ticket_custom_fields)
     response = JSON.parse(@service_provider.create_ticket(ticket_data))
-    ticket_id = response.dig("request", "id")
+    ticket_id = response.dig('request', 'id')
 
     unless ticket_id.blank?
-      flash[:success] = "Request submitted successfully. Ticket ##{ticket_id} has been created on your behalf, replies will be sent to #{current_user.email}."
+      flash[:success] = "Request submitted successfully. Ticket ##{ticket_id} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
     else
-      flash[:error] = "Unable to submit request. Please try again."
+      flash[:error] = 'Unable to submit request. Please try again.'
     end
       redirect_to action: 'show', id:@service_provider.id
   end
