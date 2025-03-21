@@ -183,15 +183,35 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(partner_developer_noncreator, object)
     end
 
+    describe 'in prod like env' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      it 'allows logingov admin' do
+        object.user = logingov_admin
+        expect(described_class).to permit(logingov_admin, object)
+      end
+
+      it 'forbids everyone else' do
+        expect(described_class).to_not permit(partner_developer_creator, object)
+        expect(described_class).to_not permit(partner_developer_noncreator, object)
+        expect(described_class).to_not permit(non_team_member, object)
+        expect(described_class).to_not permit(partner_readonly, object)
+        expect(described_class).to_not permit(non_team_member, object)
+      end
+
+    end
+
     describe 'user owner not in team' do
-      it 'allows with RBAC off' do
-        app.user = non_team_member
+      it 'forbids with RBAC off' do
+        object.user = non_team_member
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(non_team_member, app)
+        expect(described_class).to_not permit(non_team_member, app)
       end
 
       it 'is ignored with RBAC on' do
-        app.user = non_team_member
+        object.user = non_team_member
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(non_team_member, app)
       end

@@ -78,6 +78,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def destroy?
+    return logingov_admin? if IdentityConfig.store.prod_like_env
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
     return false if !membership && !logingov_admin?
 
