@@ -30,7 +30,7 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_developer, object)
     end
   end
-  
+
   shared_examples_for 'allows login.gov admins only for `object`' do
     it 'allows logingov_admin' do
       expect(described_class).to permit(logingov_admin, object)
@@ -152,12 +152,12 @@ describe ServiceProviderPolicy do
   permissions :destroy? do
     let(:partner_developer_creator) { create(:user_team, :partner_developer, team:).user }
     let(:partner_developer_noncreator) { create(:user_team, :partner_developer, team:).user }
-    let(:object) { create(:service_provider, team:, user: partner_developer_creator) }
+    let(:object) { create(:service_provider, team: team, user: partner_developer_creator) }
 
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
     end
-    
+
 
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
@@ -195,7 +195,7 @@ describe ServiceProviderPolicy do
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(non_team_member, app)
       end
-      
+
     end
   end
 
