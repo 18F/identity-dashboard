@@ -111,7 +111,11 @@ value: func.to_proc.call(@service_provider) })
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
-    ticket_data = ZendeskRequest::build_zendesk_ticket(@service_provider, current_user, ticket_custom_fields)
+    ticket_data = ZendeskRequest::build_zendesk_ticket(@service_provider, current_user,
+ticket_custom_fields)
+    portal_url = { id: ZendeskRequest::ZENDESK_PORTAL_URL_ID, value: url_for(@service_provider) }
+    ticket_data[:request][:custom_fields] << portal_url
+
     response = JSON.parse(ZendeskRequest::create_ticket(ticket_data))
     ticket_id = response.dig('request', 'id')
 

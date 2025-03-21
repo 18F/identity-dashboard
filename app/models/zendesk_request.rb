@@ -8,7 +8,6 @@ class ZendeskRequest
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
     20697165967508 => -> (record) { record.logo.present? }, # Logo attestation
     4418412738836 => -> (record) { record.agency.name.parameterize.underscore }, # Agency
-    4417948129556 => -> (record) { self.portal_url(record) }, # Portal URL
     23180053076628 => -> (record) { record.issuer }, # Issuer
     4417492827796 => -> (record) { record.app_name }, # Application Name
     4417494977300 => -> (record) { self.ial_zendesk(record) }, # IAL Value
@@ -16,6 +15,9 @@ class ZendeskRequest
     4418367585684 => -> (record) { 'on' }, # Ready to move to production attestation
     4417169610388 => -> (record) { 'new_integration' }, # Request type
   }
+
+  # This is separete because the host isn't available in the model
+  ZENDESK_PORTAL_URL_ID = 4417948129556
 
   ZENDESK_TICKET_FIELD_INFORMATION = {
     4417546214292 => { label: 'iaa_number',
@@ -65,16 +67,16 @@ class ZendeskRequest
       input_type: 'text' },
   }
 
-  def self.build_zendesk_ticket(service_provider, current_user, custom_fields, host)
+  def self.build_zendesk_ticket(service_provider, current_user, custom_fields)
     ticket_data = {
       request:  {
         requester: {
           name: "#{current_user.first_name} #{current_user.last_name}",
           email: current_user.email,
         },
-        subject: "Deploy #{service_provider.friendly_name} to Production",
+        subject: self.ticket_subject(service_provider),
         comment: {
-          body: "Please deploy #{service_provider.friendly_name} to the Login.gov Production Environment",
+          body: self.ticket_body(service_provider),
         },
         ticket_form_id: ZENDESK_TICKET_FORM_ID,
         custom_fields: custom_fields,
@@ -82,9 +84,12 @@ class ZendeskRequest
     }
   end
 
-  def self.portal_url(service_provider)
-    Rails.application.routes.url_helpers.service_provider_url(service_provider, host: 'google')
-    # "https://???/service_providers/#{service_provider.id}"
+  def self.ticket_subject(service_provider)
+    "Deploy #{service_provider.friendly_name} to Production"
+  end
+
+  def self.ticket_body(service_provider)
+    "Please deploy #{service_provider.friendly_name} to the Login.gov Production Environment"
   end
 
   def self.ial_zendesk(service_provider)
