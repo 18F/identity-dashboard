@@ -101,8 +101,10 @@ class ServiceProvidersController < AuthenticatedController
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
 
+    zendesk_request = ZendeskRequest.new(current_user, request.host, @service_provider)
+
     ticket_custom_fields = []
-    ZendeskRequest::ZENDESK_TICKET_FIELD_FUNCTIONS.each_with_object(Hash.new) do
+    zendesk_request.ticket_field_functions.each_with_object(Hash.new) do
       |(id, func), result| ticket_custom_fields.push({ id: id,
 value: func.to_proc.call(@service_provider) })
     end
@@ -111,12 +113,9 @@ value: func.to_proc.call(@service_provider) })
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
-    ticket_data = ZendeskRequest::build_zendesk_ticket(@service_provider, current_user,
-ticket_custom_fields)
-    portal_url = { id: ZendeskRequest::ZENDESK_PORTAL_URL_ID, value: url_for(@service_provider) }
-    ticket_data[:request][:custom_fields] << portal_url
+    ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
 
-    response = JSON.parse(ZendeskRequest::create_ticket(ticket_data))
+    response = JSON.parse(zendesk_request.create_ticket(ticket_data))
     ticket_id = response.dig('request', 'id')
 
     unless ticket_id.blank?

@@ -10,7 +10,6 @@ class ZendeskRequest
     4418412738836 => -> (record) { record.agency.name.parameterize.underscore }, # Agency
     23180053076628 => -> (record) { record.issuer }, # Issuer
     4417492827796 => -> (record) { record.app_name }, # Application Name
-    4417494977300 => -> (record) { self.ial_zendesk(record) }, # IAL Value
     5064895580308 => -> (record) { record.description }, # Ticket Description
     4418367585684 => -> (record) { 'on' }, # Ready to move to production attestation
     4417169610388 => -> (record) { 'new_integration' }, # Request type
@@ -18,6 +17,7 @@ class ZendeskRequest
 
   # This is separete because the host isn't available in the model
   ZENDESK_PORTAL_URL_ID = 4417948129556
+  ZENDESK_IAL_VALUE_ID = 4417494977300
 
   ZENDESK_TICKET_FIELD_INFORMATION = {
     4417546214292 => { label: 'iaa_number',
@@ -67,16 +67,34 @@ class ZendeskRequest
       input_type: 'text' },
   }
 
-  def self.build_zendesk_ticket(service_provider, current_user, custom_fields)
+  attr_accessor :requestor
+  attr_accessor :host
+  attr_accessor :sp
+
+  def initialize(user, host, service_provider)
+    @requestor = user
+    @host = host
+    @service_provider = service_provider
+  end
+
+  def ticket_field_functions 
+    ZENDESK_TICKET_FIELD_FUNCTIONS
+  end
+
+  def build_zendesk_ticket(custom_fields)
+
+    custom_fields << portal_url
+    custom_fields << ial_value
+
     ticket_data = {
       request:  {
         requester: {
-          name: "#{current_user.first_name} #{current_user.last_name}",
-          email: current_user.email,
+          name: "#{@requestor.first_name} #{@requestor.last_name}",
+          email: @requestor.email,
         },
-        subject: self.ticket_subject(service_provider),
+        subject: ticket_subject,
         comment: {
-          body: self.ticket_body(service_provider),
+          body: ticket_body,
         },
         ticket_form_id: ZENDESK_TICKET_FORM_ID,
         custom_fields: custom_fields,
@@ -84,16 +102,21 @@ class ZendeskRequest
     }
   end
 
-  def self.ticket_subject(service_provider)
-    "Deploy #{service_provider.friendly_name} to Production"
+  def ticket_subject
+    "Deploy #{@service_provider.friendly_name} to Production"
   end
 
-  def self.ticket_body(service_provider)
-    "Please deploy #{service_provider.friendly_name} to the Login.gov Production Environment"
+  def ticket_body
+    "Please deploy #{@service_provider.friendly_name} to the Login.gov Production Environment"
   end
 
-  def self.ial_zendesk(service_provider)
-    case service_provider.ial
+  def portal_url
+    url = Rails.application.routes.url_helpers.service_provider_url(@service_provider, host: @host)
+    { id: ZENDESK_PORTAL_URL_ID, value: url }
+  end
+
+  def ial_value
+    ial_value = case @service_provider.ial
     when 1, nil
       I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
     when 2
@@ -101,9 +124,10 @@ class ZendeskRequest
     else
       ial.inspect
     end
+    { id: ZENDESK_PORTAL_URL_ID, value: ial_value }
   end
 
-  def self.create_ticket(ticket_data)
+  def create_ticket(ticket_data)
     headers = { 'Content-Type' => 'application/json' }
 
     conn = Faraday.new(url: ZENDESK_TICKET_POST_URL, headers: headers)
