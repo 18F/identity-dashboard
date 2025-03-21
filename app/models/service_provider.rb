@@ -171,16 +171,16 @@ class ServiceProvider < ApplicationRecord
     },
     4417514509076 => { label: 'est_annual_reg',
       placeholder: 100000,
-      input_type: 'text' },
+      input_type: 'number' },
     14323273767572 => { label: 'monthly_active_users',
       placeholder: 20000,
-      input_type: 'text' },
+      input_type: 'number' },
     14326923502100 => { label: 'seasonality',
       placeholder: nil,
       input_type: 'text' },
     4417513940756 => { label: 'est_auths',
       placeholder: 50000,
-      input_type: 'text' },
+      input_type: 'number' },
     4417512374548 => { label: 'launch_date',
       placeholder: nil,
       input_type: 'date' },
@@ -216,7 +216,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def portal_url
-    "service_providers/#{self.id}"
+    "https://???/service_providers/#{self.id}"
   end
 
   def ial_zendesk

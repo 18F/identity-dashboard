@@ -23,6 +23,11 @@
                 	class: 'block col-12 string required usa-input',
                 	placeholder: field_info[:placeholder]
                 %>
+              <% elsif field_info[:input_type] == 'number' %>
+                <%= form.number_field id, 
+                  class: 'block col-12 string required usa-input',
+                  placeholder: field_info[:placeholder]
+                %>
               <% elsif field_info[:input_type] == 'date' %>
                 <%= form.date_field id, 
                   class: 'block col-12 string required usa-input',
