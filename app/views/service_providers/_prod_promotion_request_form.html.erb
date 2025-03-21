@@ -12,7 +12,7 @@
         </h2>
         <%= form_with model: @service_provider, url: service_providers_prod_request_path(@service_provider), method: :post do |form| %>
           <%= form.hidden_field :id, value: @service_provider.id %>
-          <% ServiceProvider::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
+          <% ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
             <div class="form-group">
               <label class="<%= "usa-label required" %>">
                 <%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label") %>
@@ -20,21 +20,21 @@
               </label>
               <% if field_info[:input_type] == 'text' %>
                 <%= form.text_field id, 
-                	class: 'block col-12 string required usa-input',
+                	class: 'block col-12 maxw-tablet string required usa-input',
                 	placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'number' %>
                 <%= form.number_field id, 
-                  class: 'block col-12 string required usa-input',
+                  class: 'block col-12 maxw-tablet string required usa-input',
                   placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'date' %>
                 <%= form.date_field id, 
-                  class: 'block col-12 string required usa-input',
+                  class: 'block col-12 maxw-tablet string required usa-input',
                   placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'select' %>
-                <%= form.select id, field_info[:options].collect { |opt| [ opt[:label], opt[:value] ] }, { include_blank: true }, class: 'usa-select' %>
+                <%= form.select id, field_info[:options].collect { |opt| [ opt[:label], opt[:value] ] }, { include_blank: true }, class: 'maxw-tablet usa-select' %>
               <% end %>
               <p class="usa-hint"><%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.hint_html") %></p>
             </div>
