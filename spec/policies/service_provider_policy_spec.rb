@@ -198,7 +198,7 @@ describe ServiceProviderPolicy do
         expect(described_class).to_not permit(partner_developer_noncreator, object)
         expect(described_class).to_not permit(non_team_member, object)
         expect(described_class).to_not permit(partner_readonly, object)
-        expect(described_class).to_not permit(non_team_member, object)
+        expect(described_class).to_not permit(partner_admin, object)
       end
 
     end
