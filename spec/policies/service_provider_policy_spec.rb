@@ -18,7 +18,7 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(non_team_member, object)
     end
 
-    it 'allows Login Admin' do
+    it 'allows login.gov admin' do
       expect(described_class).to permit(logingov_admin, object)
     end
 
@@ -30,7 +30,7 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_developer, object)
     end
   end
-
+  
   shared_examples_for 'allows login.gov admins only for `object`' do
     it 'allows logingov_admin' do
       expect(described_class).to permit(logingov_admin, object)
@@ -130,7 +130,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :edit? do
-    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like 'allows all team members except Partner Readonly for `object`' do
       let(:object) { app }
     end
 
@@ -146,6 +146,56 @@ describe ServiceProviderPolicy do
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(non_team_member, app)
       end
+    end
+  end
+
+  permissions :destroy? do
+    let(:partner_developer_creator) { create(:user_team, :partner_developer, team:).user }
+    let(:partner_developer_noncreator) { create(:user_team, :partner_developer, team:).user }
+    let(:object) { create(:service_provider, team:, user: partner_developer_creator) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+    end
+    
+
+    it 'forbids Partner Readonly' do
+      expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids non-team-member users' do
+      expect(described_class).to_not permit(non_team_member, object)
+    end
+
+    it 'allows Login Admin' do
+      expect(described_class).to permit(logingov_admin, object)
+    end
+
+    it 'allows Partner Admin' do
+      expect(described_class).to permit(partner_admin, object)
+    end
+
+    it 'allows Partner Developer if they created the app' do
+      expect(described_class).to permit(partner_developer_creator, object)
+    end
+
+    it 'forbids Partner Developer if they did not create the app' do
+      expect(described_class).to_not permit(partner_developer_noncreator, object)
+    end
+
+    describe 'user owner not in team' do
+      it 'allows with RBAC off' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+        expect(described_class).to permit(non_team_member, app)
+      end
+
+      it 'is ignored with RBAC on' do
+        app.user = non_team_member
+        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
+        expect(described_class).to_not permit(non_team_member, app)
+      end
+      
     end
   end
 
