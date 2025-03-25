@@ -121,6 +121,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com'])
@@ -128,6 +129,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
+      expect(page).to have_content 'https://bar.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
@@ -135,6 +137,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+      expect(page).to_not have_content('https://foo.com')
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
@@ -220,6 +223,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com'])
@@ -228,12 +232,15 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
 
+      expect(page).to have_content 'https://bar.com'
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
 
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+
+      expect(page).to_not have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
