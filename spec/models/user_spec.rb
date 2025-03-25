@@ -231,4 +231,24 @@ describe User do
       expect(new_token.ephemeral_token).to_not be_blank
     end
   end
+
+  describe '#destroy', :versioning do
+    it 'deletes team memberships but not the teams' do
+      membership = create(:user_team)
+      user = membership.user
+      team = membership.team
+      user.destroy
+      # User class has `acts_as_paranoid`
+      user.reload
+      expect(user).to be_deleted
+
+      # `acts_as_paranoid` option `double_tap_destroys_fully` id enabled per default
+      user.destroy
+      expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+
+      team.reload
+      expect(team).to be_valid
+      expect { membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

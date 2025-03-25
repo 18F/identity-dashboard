@@ -102,4 +102,17 @@ describe Team do
       expect(team.to_s).to eq team.name
     end
   end
+
+  describe '#destroy' do
+    it 'deletes team memberships but not the users' do
+      membership = create(:user_team)
+      team = membership.team
+      user = membership.user
+      team.destroy
+      expect { team.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      user.reload
+      expect(user).to be_valid
+    end
+  end
 end
