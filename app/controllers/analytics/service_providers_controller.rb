@@ -14,15 +14,12 @@ class Analytics::ServiceProvidersController < ApplicationController
 
 
     def show
-       @issuer = service_provider.issuer
-       @friendly_name = service_provider.friendly_name.capitalize
-       @quicksight_user = register_quicksight_user(quicksight_client, AWS_ACCOUNT_ID, EMAIL, REGION)
-       @dashboard_embed_url = fetch_quicksight_embed_url(quicksight_client, AWS_ACCOUNT_ID, USER_ARN, DASHBOARD_ID, REGION) # rubocop:disable Layout/LineLength
         @issuer = service_provider.issuer
-#         @quicksight_user = register_quicksight_user(quicksight_client, AWS_ACCOUNT_ID, EMAIL,
-# REGION)
+        @friendly_name = service_provider.friendly_name.capitalize
+        @quicksight_user = register_quicksight_user(quicksight_client, AWS_ACCOUNT_ID, EMAIL,
+REGION)
         @dashboard_embed_url = fetch_quicksight_embed_url_for_registered_user(quicksight_client, AWS_ACCOUNT_ID, USER_ARN, DASHBOARD_ID, REGION) # rubocop:disable Layout/LineLength
-        # @dashboard_embed_url = fetch_quicksight_embed_url_for_anonymous_user(quicksight_client, AWS_ACCOUNT_ID, DASHBOARD_ID, REGION)
+
         respond_to do |format|
             format.html # renders show.html.erb
             format.json { render json: { embed_url: @dashboard_embed_url } }
