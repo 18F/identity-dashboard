@@ -3,7 +3,11 @@ class UserTeam < ApplicationRecord
 
   has_paper_trail on: %i[create update destroy]
 
-  belongs_to :role, foreign_key: 'role_name', primary_key: 'name', optional: true
+  belongs_to :role,
+    foreign_key: 'role_name',
+    primary_key: 'name',
+    inverse_of: 'user_team',
+    optional: true
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :user_teams
 
