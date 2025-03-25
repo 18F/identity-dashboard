@@ -78,7 +78,11 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def destroy?
-    member_or_admin?
+    return logingov_admin? if IdentityConfig.store.prod_like_env
+    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+    return false if !membership && !logingov_admin?
+
+    logingov_admin? || partner_admin? || creator?
   end
 
   def all?
@@ -116,10 +120,18 @@ class ServiceProviderPolicy < BasePolicy
     membership.role == Role.find_by(name: 'partner_readonly')
   end
 
+  def partner_admin?
+    membership.role == Role.find_by(name: 'partner_admin')
+  end
+
   def member_or_admin?
     return true if record.user == user && !IdentityConfig.store.access_controls_enabled
 
     logingov_admin? || !!membership
+  end
+
+  def creator?
+    user.id == record.user_id
   end
 
   def membership
