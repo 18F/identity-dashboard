@@ -4,9 +4,9 @@ class Analytics::ServiceProvidersController < ApplicationController
     before_action -> { authorize User, policy_class: AnalyticsPolicy }
 
     AWS_ACCOUNT_ID = '487317109730'
-    # USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/admin@gsa.gov'
-    USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/DWAdmin/colter.nattrass'
-    DASHBOARD_ID = '0edede6f-3267-4fd1-8196-5529c2f287a6'
+    USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/admin@gsa.gov'
+    # USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/DWAdmin/colter.nattrass'
+    DASHBOARD_ID = 'ee5562fd-c6e9-4e5d-a234-1875ed36379a'
     EMAIL = 'admin@gsa.gov'
     REGION = 'us-west-2'
     ROLE_ARN = 'arn:aws:iam::487317109730:role/'
@@ -55,18 +55,18 @@ logo_file_attachment: :blob).find(id)
         @quicksight_client ||= Aws::QuickSight::Client.new(region: REGION)
     end
 
-    # def register_quicksight_user(client, aws_account_id, email, region)
-    #     Rails.logger.debug("Registering QuickSight user with aws_account_id: #{aws_account_id}, email: #{email}, region: #{region}")
-    #     response = client.register_user({
-    #         aws_account_id: aws_account_id,
-    #         namespace: 'default',
-    #         identity_type: 'QUICKSIGHT',
-    #         user_role: 'READER',
-    #         email: email,
-    #         user_name: email,
-    #     })
-    #     response.user
-    # end
+    def register_quicksight_user(client, aws_account_id, email, region)
+        Rails.logger.debug("Registering QuickSight user with aws_account_id: #{aws_account_id}, email: #{email}, region: #{region}")
+        response = client.register_user({
+            aws_account_id: aws_account_id,
+            namespace: 'default',
+            identity_type: 'QUICKSIGHT',
+            user_role: 'READER',
+            email: email,
+            user_name: email,
+        })
+        response.user
+    end
 
     def fetch_quicksight_embed_url_for_registered_user(client, aws_account_id, user_arn,
                                                        dashboard_id, region)
@@ -94,31 +94,5 @@ logo_file_attachment: :blob).find(id)
         result.embed_url
 
     end
-
-    # def fetch_quicksight_embed_url_for_anonymous_user(client, aws_account_id, dashboard_id)
-    #     Rails.logger.debug("Fetching QuickSight embed URL for anonymous user with aws_account_id: #{aws_account_id}, dashboard_id: #{dashboard_id}")
-    #     response = client.generate_embed_url_for_anonymous_user({
-    #         aws_account_id: aws_account_id,
-    #         session_lifetime_in_minutes: 600,
-    #         namespace: 'default',
-    #         experience_configuration: {
-    #             dashboard: {
-    #                 initial_dashboard_id: dashboard_id,
-    #                 feature_configurations: {
-    #                     state_persistence: {
-    #                         enabled: false,
-    #                     },
-    #                     bookmarks: {
-    #                         enabled: false,
-    #                     },
-    #                 },
-    #             },
-    #         },
-    #         allowed_domains: ['http:localhost'],
-    #     })
-    #
-    #     response.embed_url
-    # end
-
 
 end
