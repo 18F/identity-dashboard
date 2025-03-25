@@ -164,5 +164,4 @@ class ServiceProvider < ApplicationRecord
     )
   end
   # rubocop:enable Rails/TimeZone
-
 end
