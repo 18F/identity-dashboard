@@ -812,7 +812,7 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Delete' do
-    app = create(:service_provider, team:)
+    app = create(:service_provider, team:, user:)
 
     visit service_provider_path(app)
     click_on 'Delete'
