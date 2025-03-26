@@ -79,6 +79,10 @@ class User < ApplicationRecord
     Role.find_by(name: 'partner_admin')
   end
 
+  def auth_token
+    AuthToken.where(user: self).last || AuthToken.new_for_user(self)
+  end
+
   module DeprecateAdmin
     def self.deprecator
       @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')
