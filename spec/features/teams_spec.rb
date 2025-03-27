@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'User teams CRUD' do
+  let(:logingov_admin) { create(:user, :logingov_admin) }
+
   def disable_rbac
     allow(IdentityConfig.store).
       to receive(:access_controls_enabled).
@@ -14,10 +16,9 @@ feature 'User teams CRUD' do
   end
 
   scenario 'Create' do
-    admin = create(:admin)
     create(:agency, name: 'GSA')
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit new_team_path
 
     fill_in 'Description', with: 'department name'
@@ -25,17 +26,16 @@ feature 'User teams CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create'
-    expect(current_path).to eq(team_users_path(Team.last))
+    expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
   end
 
   scenario 'Create (without RBAC)' do
     disable_rbac
-    admin = create(:admin)
     create(:agency, name: 'GSA')
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit new_team_path
 
     fill_in 'Description', with: 'department name'
@@ -43,18 +43,17 @@ feature 'User teams CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create'
-    expect(current_path).to eq(team_users_path(Team.last))
+    expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
   end
 
   context 'User already in a team' do
     scenario 'User does show up in user team that they are assigned to' do
-      admin = create(:admin)
-      user = create(:user)
-      team = create(:team, users: [user])
+      team = create(:team)
+      user = create(:user_team, :partner_developer, team:).user
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit edit_team_path(team)
 
       expect(page).to have_content(user.email)
@@ -62,12 +61,11 @@ feature 'User teams CRUD' do
 
     scenario 'User can be added to another team' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      admin = create(:admin)
       user = create(:user)
       team1 = create(:team, users: [user])
       team2 = create(:team)
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit edit_team_path(team2)
       click_on 'Manage users'
       click_on 'Add user'
@@ -83,23 +81,21 @@ feature 'User teams CRUD' do
     end
 
     scenario 'User does show up in user team that they are assigned to' do
-      admin = create(:admin)
       user = create(:user)
       team = create(:team, users: [user])
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit edit_team_path(team)
 
       expect(page).to have_content(user.email)
     end
 
     scenario 'User can be added to another team' do
-      admin = create(:admin)
       user = create(:user)
       team1 = create(:team, users: [user])
       team2 = create(:team)
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit edit_team_path(team2)
       click_on 'Manage users'
       click_on 'Add user'
@@ -110,21 +106,20 @@ feature 'User teams CRUD' do
   end
 
   scenario 'Update' do
-    admin = create(:admin)
     org = create(:team)
     create(:agency, name: 'USDS')
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit teams_all_path
     find("a[href='#{edit_team_path(org)}']").click
-    expect(current_path).to eq(edit_team_path(org))
+    expect(page).to have_current_path(edit_team_path(org))
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(current_path).to eq(team_path(org.id))
+    expect(page).to have_current_path(team_path(org.id))
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -133,21 +128,20 @@ feature 'User teams CRUD' do
 
   scenario 'Update (without RBAC)' do
     disable_rbac
-    admin = create(:admin)
     org = create(:team)
     create(:agency, name: 'USDS')
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit teams_all_path
     find("a[href='#{edit_team_path(org)}']").click
-    expect(current_path).to eq(edit_team_path(org))
+    expect(page).to have_current_path(edit_team_path(org))
 
     fill_in 'Name', with: 'updated team'
     fill_in 'Description', with: 'updated department'
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(current_path).to eq(team_path(org.id))
+    expect(page).to have_current_path(team_path(org.id))
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -155,13 +149,12 @@ feature 'User teams CRUD' do
   end
 
   scenario 'Index' do
-    admin = create(:admin)
     org1 = create(:team)
     org2 = create(:team)
     team = create(:team)
     sp = create(:service_provider, team:)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit teams_all_path
 
     expect(page).to have_content(org1.name)
@@ -175,13 +168,12 @@ feature 'User teams CRUD' do
 
   scenario 'Index (without RBAC)' do
     disable_rbac
-    admin = create(:admin)
     org1 = create(:team)
     org2 = create(:team)
     team = create(:team)
     sp = create(:service_provider, team:)
 
-    login_as(admin)
+    login_as(logingov_admin)
     visit teams_all_path
 
     expect(page).to have_content(org1.name)
@@ -194,17 +186,16 @@ feature 'User teams CRUD' do
   end
 
   describe 'show' do
-    scenario 'admin edits a team', :versioning do
-      admin = create(:admin)
+    scenario 'login.gov admin edits a team', :versioning do
       team = create(:team)
       user = create(:user, teams: [team])
       create(:service_provider, team:)
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit teams_all_path
       find("a[href='#{team_path(team)}']", text: team.name).click
 
-      expect(current_path).to eq(team_path(team))
+      expect(page).to have_current_path(team_path(team))
       expect(page).to have_content(team.name)
       expect(page).to have_content(team.agency.name)
       expect(page).to have_content(user.email)
@@ -214,10 +205,10 @@ feature 'User teams CRUD' do
       click_on I18n.t('teams.users.remove.button')
       find('.usa-button', text: 'Back').click
 
-      expect(current_path).to eq(team_path(team))
+      expect(page).to have_current_path(team_path(team))
       newest_event_text = find('#versions>:first-child').text
       expect(newest_event_text).to include("user_id #{user.id}")
-      expect(newest_event_text).to include("By: #{admin.email}")
+      expect(newest_event_text).to include("By: #{logingov_admin.email}")
       expect(newest_event_text).to include('Action: Remove')
 
       oldest_event_text = find('#versions>:last-child').text
@@ -244,17 +235,16 @@ feature 'User teams CRUD' do
       disable_rbac
     end
 
-    scenario 'admin edits a team', :versioning do
-      admin = create(:admin)
+    scenario 'login.gov admin edits a team', :versioning do
       team = create(:team)
       user = create(:user, teams: [team])
       create(:service_provider, team:)
 
-      login_as(admin)
+      login_as(logingov_admin)
       visit teams_all_path
       find("a[href='#{team_path(team)}']", text: team.name).click
 
-      expect(current_path).to eq(team_path(team))
+      expect(page).to have_current_path(team_path(team))
       expect(page).to have_content(team.name)
       expect(page).to have_content(team.agency.name)
       expect(page).to have_content(user.email)
@@ -264,10 +254,10 @@ feature 'User teams CRUD' do
       click_on I18n.t('teams.users.remove.button')
       find('.usa-button', text: 'Back').click
 
-      expect(current_path).to eq(team_path(team))
+      expect(page).to have_current_path(team_path(team))
       newest_event_text = find('#versions>:first-child').text
       expect(newest_event_text).to include("user_id #{user.id}")
-      expect(newest_event_text).to include("By: #{admin.email}")
+      expect(newest_event_text).to include("By: #{logingov_admin.email}")
       expect(newest_event_text).to include('Action: Remove')
 
       oldest_event_text = find('#versions>:last-child').text
@@ -290,60 +280,56 @@ feature 'User teams CRUD' do
   end
 
   scenario 'Delete' do
-    admin = create(:admin)
     team = create(:team)
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit teams_all_path
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(current_path).to eq(teams_path)
+    expect(page).to have_current_path(teams_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
 
   scenario 'Delete (without RBAC)' do
     disable_rbac
-    admin = create(:admin)
     team = create(:team)
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit teams_all_path
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(current_path).to eq(teams_path)
+    expect(page).to have_current_path(teams_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
 
   scenario 'Delete when a team still has service providers' do
-    admin = create(:admin)
     team = create(:team)
     create(:service_provider, team:)
 
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit edit_team_path(team)
     click_on 'Delete'
 
-    expect(current_path).to eq(edit_team_path(team))
+    expect(page).to have_current_path(edit_team_path(team))
     expect(page).to have_content(I18n.t('notices.team_delete_failed'))
   end
 
   scenario 'Delete when a team still has service providers (without RBAC)' do
     disable_rbac
-    admin = create(:admin)
     team = create(:team)
     create(:service_provider, team:)
 
-    login_as(admin)
+    login_as(logingov_admin)
 
     visit edit_team_path(team)
     click_on 'Delete'
 
-    expect(current_path).to eq(edit_team_path(team))
+    expect(page).to have_current_path(edit_team_path(team))
     expect(page).to have_content(I18n.t('notices.team_delete_failed'))
   end
 end

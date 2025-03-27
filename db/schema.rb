@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_28_142743) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_25_212140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_28_142743) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["name"], name: "index_agencies_on_name", unique: true
+  end
+
+  create_table "auth_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "encrypted_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_auth_tokens_on_user_id"
   end
 
   create_table "banners", force: :cascade do |t|
@@ -126,7 +134,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_28_142743) do
     t.integer "ial"
     t.string "failure_to_proof_url"
     t.string "push_notification_url"
-    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}
+    t.jsonb "help_text", default: {"sign_in" => {}, "sign_up" => {}, "forgot_password" => {}}
     t.string "remote_logo_key"
     t.boolean "allow_prompt_login", default: false
     t.integer "default_aal"
@@ -193,6 +201,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_28_142743) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "auth_tokens", "users"
   add_foreign_key "service_providers", "agencies"
   add_foreign_key "service_providers", "groups"
   add_foreign_key "wizard_steps", "users"

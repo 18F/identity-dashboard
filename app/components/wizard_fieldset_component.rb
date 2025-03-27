@@ -3,7 +3,7 @@
 # A fieldset for the ServiceConfigWizard
 class WizardFieldsetComponent < ViewComponent::Base
   attr_reader :form, :input_type, :required, :model_method, :param_name, :description_key,
-              :inputs, :label_translation_key, :default
+              :inputs, :label_translation_key, :default, :disabled
 
   use_helper :accessible_label, from: ServiceConfigWizardHelper
 
@@ -31,6 +31,7 @@ class WizardFieldsetComponent < ViewComponent::Base
     @form = form
     @input_type = input_type
     @param_name = param_name
+    @disabled = options[:disabled] || false
     @inputs = inputs
     @model_method = options[:model_method] || @param_name
     @required = options[:required]

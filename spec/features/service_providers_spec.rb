@@ -6,7 +6,7 @@ feature 'Service Providers CRUD' do
     create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: team)
   end
   let(:user) { user_membership.user }
-  let(:admin) { create(:admin) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
 
   let(:user_to_log_in_as) { user }
 
@@ -51,6 +51,15 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(user.teams[0].agency.name)
       expect(page).to have_content(I18n.t('service_provider_form.ial_option_2'))
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_2'))
+    end
+
+    scenario 'cannot see or visit link to analytics path' do
+      user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
+      sp = create(:service_provider, team: user_team.team)
+      visit service_providers_path
+      expect(page).to_not have_content('Analytics')
+      visit analytics_path(sp.id)
+      expect(page).to have_content('Unauthorized')
     end
 
     scenario 'saml fields are shown on sp show page when saml is selected' do
@@ -112,6 +121,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com'])
@@ -119,6 +129,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
+      expect(page).to have_content 'https://bar.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
@@ -126,6 +137,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+      expect(page).to_not have_content('https://foo.com')
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
@@ -211,6 +223,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com'])
@@ -219,12 +232,15 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
 
+      expect(page).to have_content 'https://bar.com'
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
 
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+
+      expect(page).to_not have_content 'https://foo.com'
 
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
@@ -259,8 +275,9 @@ feature 'Service Providers CRUD' do
       help_text_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
       expect(help_text_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
 
-      # The first option is currently labeled "Leave blank", so this checks out that logic
+      # The first option is "Leave blank" for `sign_in`, so this exercises the "Leave blank" logic
       help_text_radio_options.first.click
+      # The last option is for `forgot_password` and is something other than "Leave blank"
       help_text_radio_options.last.click
       click_on 'Update'
       visit edit_service_provider_path(service_provider)
@@ -419,11 +436,35 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content('Version History')
       end
     end
+
+    context 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: false,
+        )
+      end
+
+      it 'allows Partners to set initial IAL' do
+        visit new_service_provider_path
+
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
+      end
+
+      it 'does not allow Partners to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        expect(page.find('#service_provider_ial').disabled?).to be(true)
+      end
+    end
     # rubocop:enable Layout/LineLength
   end
 
-  context 'with an admin user' do
-    let(:user_to_log_in_as) { admin }
+  context 'when login.gov admin' do
+    let(:user_to_log_in_as) { logingov_admin }
 
     scenario 'can view SP with no team', :versioning do
       service_provider = create(:service_provider)
@@ -502,14 +543,19 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Success')
     end
 
-    scenario 'can publish service providers' do
-      visit service_providers_all_path
-
-      click_on t('forms.buttons.trigger_idp_refresh')
-      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
+    scenario 'can see and visit link to analytics path' do
+      user_team = create(:user_team, :logingov_admin, user: user_to_log_in_as)
+      sp = create(:service_provider, team: user_team.team)
+      visit service_providers_path
+      data_link = sp.friendly_name + ' data'
+      expect(page).to have_content(data_link)
+      click_on data_link
+      expect(page).to have_content("#{sp.friendly_name.capitalize} Analytics Dashboard")
+      expect(page).to have_content(sp.issuer)
     end
 
     scenario 'can enable prompt=login for a service provider' do
+      user_to_log_in_as = logingov_admin
       sp = create(:service_provider, :with_team)
 
       visit edit_service_provider_path(sp)
@@ -559,6 +605,30 @@ feature 'Service Providers CRUD' do
 
         visit service_provider_path(sp)
         expect(page).to have_content('Version History')
+      end
+    end
+
+    context 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: false,
+        )
+      end
+
+      it 'allows Login.gov Admins to set initial IAL' do
+        visit new_service_provider_path
+
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
+      end
+
+      it 'allows Login.gov Admins to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        expect(page.find('#service_provider_ial').disabled?).to be(false)
       end
     end
   end

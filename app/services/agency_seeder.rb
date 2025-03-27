@@ -32,9 +32,9 @@ class AgencySeeder
       end
 
       # Update everything to match the YAML config
-      agency_configs.each do |agency_id, values|
-        Agency.new(id: agency_id, name: values['name']).upsert
-      end
+      Agency.upsert_all(
+        agency_configs.map { |agency_id, values| { id: agency_id, name: values['name'] } },
+      )
     end
   end
 end

@@ -21,7 +21,7 @@ class Team < ApplicationRecord
   def user_deletion_history
     PaperTrail::Version.
       where(event: 'destroy', item_type: 'UserTeam').
-      where("object ->>'group_id' = '?'", id)
+      where("object ->>'group_id' = CAST(? as varchar)", id)
   end
 
   def user_deletion_report_item(deleted_record)
@@ -54,6 +54,16 @@ class Team < ApplicationRecord
   def update_service_providers
     service_providers.each do |sp|
       sp.update(agency_id: agency.id) if agency
+    end
+  end
+
+  # Every team should have a partner admin, but regularly we'll want to create a team before we know
+  # who the partner admin should be.
+  def missing_a_partner_admin?
+    UserTeam.where(team: self).none? do |membership|
+      # Every membership must have a valid user.
+      # Until we clean up the data and add a db constraint, we should check that the user is not nil
+      membership.role_name == 'partner_admin' && membership.user
     end
   end
 end

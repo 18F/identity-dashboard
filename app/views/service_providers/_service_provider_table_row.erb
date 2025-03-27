@@ -15,4 +15,7 @@
   <% if show_created_at %>
     <td><%= app.created_at.localtime.strftime("%F %T") %></td>
   <% end %>
+  <% if show_analytics_column? %>
+    <td><%= link_to(app.friendly_name+" data", analytics_path(app.id), class: 'usa-link') %></td>
+  <% end %>
 </tr>

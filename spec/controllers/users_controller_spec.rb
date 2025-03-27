@@ -10,92 +10,85 @@ describe UsersController do
   end
 
   describe '#new' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :new
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
-    context 'when the user is not an admin' do
+
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :new
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
   describe '#index' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :index
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
-    context 'when the user is not an admin' do
+
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :index
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
   describe '#edit' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a success response' do
         get :edit, params: { id: user.id }
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
-      context 'editing a user without a team' do
+      context 'when editing a user without a team' do
         let(:editing_user) { build(:user) }
 
-        it 'defaults to the site admin role for admins' do
-          editing_user.admin = true
-          editing_user.save!
+        it 'defaults to the login.gov admin role for login.gov admins' do
+          editing_user = create(:user, :logingov_admin)
           get :edit, params: { id: editing_user.id }
-          expect(assigns['user_team'].role_name).to eq(Role::SITE_ADMIN.name)
+          expect(assigns['user_team'].role_name).to eq(Role::LOGINGOV_ADMIN.name)
         end
 
-        it 'defaults to the admin role for admins' do
-          editing_user.admin = false
+        it 'defaults to the partner admin role for non-login.gov admins' do
           editing_user.save!
           get :edit, params: { id: editing_user.id }
           expect(assigns['user_team'].role_name).to eq('partner_admin')
         end
       end
     end
-    context 'when the user is not an admin' do
+
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         get :edit, params: { id: 1 }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
   describe '#update' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when the user is a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
 
-      it 'will assign a new role to all teams' do
+      it 'assigns a new role to all teams' do
         user_to_edit = create(:user, :with_teams)
         user_to_edit.user_teams.each do |ut|
           expect(ut.role_name).to be_nil
@@ -109,26 +102,26 @@ describe UsersController do
         end
       end
     end
-    context 'when the user is not an admin' do
+
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
   describe '#create' do
-    context 'when the user is an admin' do
-      before do
-        user.admin = true
-      end
+    context 'when the user is a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
 
       context 'when the user is valid' do
         it 'has a redirect response' do
           patch :create, params: { user: { admin: true, email: 'example@example.com' } }
-          expect(response.status).to eq(302)
+          expect(response).to have_http_status(:found)
         end
       end
+
       context 'when the user is invalid' do
         it "renders the 'new' view" do
           patch :create, params: { user: { admin: true, email: user.email } }
@@ -136,10 +129,11 @@ describe UsersController do
         end
       end
     end
-    context 'when the user is not an admin' do
+
+    context 'when the user is not a login.gov admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -147,21 +141,22 @@ describe UsersController do
   describe '#destroy' do
     let(:user_to_delete) { create(:user) }
 
-    context 'when the user is an admin' do
+    context 'when a login.gov admin' do
+      let(:user) { create(:user, :logingov_admin) }
       before do
-        user.admin = true
         delete :destroy, params: { id: user_to_delete.id }
       end
 
       it 'has a redirect response' do
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
     end
 
-    context 'when the user is not an admin'
+    context 'when not a login.gov admin' do
       it 'has an error response' do
         delete :destroy, params: { id: user_to_delete.id }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
+    end
   end
 end

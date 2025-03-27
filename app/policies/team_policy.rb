@@ -2,19 +2,22 @@ class TeamPolicy < BasePolicy
   include TeamHelper
 
   def all?
-    admin?
+    user_has_login_admin_role?
   end
 
   def create?
-    allowlisted_user?(user) || admin?
+    (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
+      user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def destroy?
-    admin?
+    user_has_login_admin_role?
   end
 
   def edit?
-    in_team? || admin?
+    user_has_login_admin_role? ||
+      (in_team? && !IdentityConfig.store.access_controls_enabled) ||
+      user_has_partner_admin_role?
   end
 
   def index?
@@ -22,15 +25,25 @@ class TeamPolicy < BasePolicy
   end
 
   def new?
-    allowlisted_user?(user) || admin?
+    (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
+      user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def show?
-    in_team? || admin?
+    in_team? || user_has_login_admin_role?
   end
 
   def update?
-    in_team? || admin?
+    user_has_login_admin_role? ||
+      (in_team? && user_has_partner_admin_role?)
+  end
+
+  class Scope < BasePolicy::Scope
+    def resolve
+      return scope if logingov_admin?
+
+      scope.where(id: user.teams)
+    end
   end
 
   private
