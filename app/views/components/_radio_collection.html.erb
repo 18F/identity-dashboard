@@ -3,6 +3,7 @@
   @param describedby [String] a proper value for `aria-describedby`
   @param db_fieldname [Symbol] such that the database has an associated column
   @param inputs [Hash] hash where key is the label and value is the input value
+  @param disabled [Boolean] whether this input is disabled
   @param default [String] to pre-select radio option
 %>
 <ul class="usa-input-list" aria-describedby="<%= describedby %>">
@@ -11,7 +12,7 @@
                                     :last, :first,
                                     item_wrapper_tag: :li,
                                     checked: default) do |b| %>
-    <%= b.radio_button(class: "usa-radio__input") %>
+    <%= b.radio_button(class: "usa-radio__input", disabled:) %>
     <%= b.label(class: "usa-radio__label") %>
   <% end %>
 </ul>

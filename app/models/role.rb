@@ -18,7 +18,7 @@ class Role < ApplicationRecord
     partner_developer: 'Partner Developer',
     partner_readonly: 'Partner Readonly',
   }.freeze
-  SITE_ADMIN = Role.find_by(name: :logingov_admin)
+  LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
 
   def legacy_admin?
     name == 'logingov_admin'

@@ -90,6 +90,10 @@ module ServiceProviderHelper
     IdentityConfig.store.help_text_options_feature_enabled
   end
 
+  def show_analytics_column?
+    current_user.logingov_admin?
+  end
+
   def service_provider_policy
     Pundit.policy(current_user, @service_provider || ServiceProvider)
   end
@@ -152,7 +156,7 @@ module ServiceProviderHelper
       'redirect_uris' => sp_hash['redirect_uris'],
     }
     hash_with_ial_attr = add_IAL_attribute(
-      base_hash, sp_hash['failure_to_proof_url'], sp_hash['post_idv_follow_up_url']
+      base_hash, sp_hash['failure_to_proof_url']
     )
 
     if base_hash['protocol'] == 'saml'
@@ -179,12 +183,11 @@ module ServiceProviderHelper
     configs_hash.merge!(saml_attrs)
   end
 
-  def add_IAL_attribute(config_hash, failure_to_proof_url, post_idv_follow_up_url)
+  def add_IAL_attribute(config_hash, failure_to_proof_url)
     return config_hash if config_hash['ial'] != 2
 
     config_hash.merge(
       'failure_to_proof_url' => failure_to_proof_url,
-      'post_idv_follow_up_url' => post_idv_follow_up_url,
     )
   end
 

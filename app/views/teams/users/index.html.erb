@@ -16,22 +16,37 @@
     <tr>
       <th scope="col">Email</th>
       <th scope="col">Last Login</th>
-      <th scope="col">Actions</th>
+      <% if IdentityConfig.store.access_controls_enabled %>
+        <th scope="col">Role</th>
+      <% end %>
+      <% if show_actions? %>
+        <th scope="col">Actions</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
-    <% @team.user_teams.each do |membership| %>
+    <% @memberships.each do |membership| %>
       <tr>
         <td><%= membership.user.email %></td>
         <td><%= membership.user.last_sign_in_at || "Never" %></td>
-        <td>
-          <% if policy(membership).remove_confirm? %>
-            <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
-                        form_class: 'display-inline',
-                        method: :get,
-                        class: 'usa-button--unstyled usa-link margin-right-1' %>
-          <% end %>
-        </td>
+        <% if IdentityConfig.store.access_controls_enabled %>
+          <td><%= membership.role&.friendly_name %></td>
+        <% end %>
+        <% if show_actions? %>
+          <td>
+            <% if IdentityConfig.store.access_controls_enabled && policy(membership).edit? %>
+              <%= link_to 'Edit Role',
+                          edit_team_user_path(@team, membership.user),
+                          class: 'usa-button--unstyled usa-link margin-right-1' %>
+            <% end %>
+            <% if policy(membership).remove_confirm? %>
+              <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
+                          form_class: 'display-inline',
+                          method: :get,
+                          class: 'usa-button--unstyled usa-link margin-right-1' %>
+            <% end %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

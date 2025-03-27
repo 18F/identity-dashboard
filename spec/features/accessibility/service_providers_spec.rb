@@ -2,9 +2,10 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Service provider pages', :js do
-  context 'for admins' do
-    let(:admin) { create(:admin) }
-    before { login_as(admin) }
+  context 'when login.gov admin' do
+    let(:logingov_admin) { create(:logingov_admin) }
+
+    before { login_as(logingov_admin) }
 
     scenario 'all service providers page is accessible' do
       visit service_providers_all_path
@@ -16,7 +17,7 @@ feature 'Service provider pages', :js do
       let(:app) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
 
       context 'show page' do
-        # admins have access to more features
+        # login.gov admins have access to more features
         scenario 'is accessible' do
           visit service_provider_path(app)
           expect_page_to_have_no_accessibility_violations(page)

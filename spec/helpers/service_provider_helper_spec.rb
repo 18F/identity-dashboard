@@ -72,8 +72,8 @@ describe ServiceProviderHelper do
 
   describe '#config_hash' do
     let(:saml_sp) { create(:service_provider, :saml) }
-    let(:oidc_pkce_sp) { create(:service_provider, :with_oidc_pkce ) }
-    let(:oidc_jwt_sp) { create(:service_provider, :with_oidc_jwt ) }
+    let(:oidc_pkce_sp) { create(:service_provider, :with_oidc_pkce) }
+    let(:oidc_jwt_sp) { create(:service_provider, :with_oidc_jwt) }
     let(:saml_sp_ial_2) { create(:service_provider, :saml, :with_ial_2) }
     let(:oidc_jwt_sp_2) { create(:service_provider, :with_oidc_jwt, :with_ial_2) }
     let(:saml_without_requested_response) do
@@ -128,48 +128,57 @@ describe ServiceProviderHelper do
         iaa_end_date
       ]
     end
+
     it 'returns a properly formatted yaml blurb for SAML' do
       sp_config_saml_attributes.each do |attribute_name|
         expect(config_hash(saml_sp)).to include(attribute_name)
       end
     end
+
     it 'returns saml attribute signed_response_message_requested if true' do
       expect(config_hash(saml_sp)).to include('signed_response_message_requested')
     end
+
     it 'returns saml attributes without signed_response_message_requested if false' do
       expect(config_hash(
         saml_without_requested_response,
       )).not_to include('signed_response_message_requested')
     end
+
     it 'returns saml attribute email_nameid_format_allowed if true' do
       expect(config_hash(
         saml_email_id_format,
       )).to include('email_nameid_format_allowed')
     end
+
     it 'truens saml attributes without email_nameid_format_allowed if false' do
       expect(config_hash(saml_sp)).not_to include('email_nameid_format_allowed')
     end
+
     it 'returns a properly formatted yaml blurb for OIDC pkce' do
       sp_config_oidc_attributes.push('pkce')
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_pkce_sp)).to include(attribute_name)
       end
     end
+
     it 'returns a properly formatted yaml blurb for OIDC jwt' do
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp)).to include(attribute_name)
       end
     end
+
     it 'returns a hash with IdV redirects if ial 2 - oidc' do
       sp_config_oidc_attributes.push('failure_to_proof_url')
-      sp_config_oidc_attributes.push('post_idv_follow_up_url')
       sp_config_oidc_attributes.each do |attribute_name|
         expect(config_hash(oidc_jwt_sp_2)).to include(attribute_name)
       end
     end
+
     it 'returns the ial config as an integer instead of a string' do
       expect(config_hash(saml_sp_ial_2)['ial']).to be_an(Integer)
     end
+
     it 'returns a hash with IdV redirects if ial 2 - saml' do
       sp_config_saml_attributes.push('failure_to_proof_url')
       sp_config_oidc_attributes.push('post_idv_follow_up_url')
@@ -259,6 +268,7 @@ describe ServiceProviderHelper do
     include Devise::Test::ControllerHelpers
 
     let(:user) { create(:user) }
+
     before do
       sign_in user
     end
@@ -269,8 +279,9 @@ describe ServiceProviderHelper do
       end
     end
 
-    describe 'an admin user' do
-      let(:user) { create(:admin) }
+    describe 'a login.gov admin user' do
+      let(:user) { create(:logingov_admin) }
+
       it 'returns false' do
         expect(helper.readonly_help_text?).to be false
       end
@@ -280,11 +291,12 @@ describe ServiceProviderHelper do
   describe '#show_minimal_help_text_element' do
     include Devise::Test::ControllerHelpers
     let(:user) { create(:user) }
+
     before do
       sign_in user
     end
 
-    describe 'non admin user' do
+    context 'when not a login.gov admin user' do
       describe 'when help text exists' do
         describe 'and is not blank' do
           let(:help_text) do
@@ -319,7 +331,6 @@ describe ServiceProviderHelper do
             ).to be true
           end
         end
-
 
         describe 'it is just empty strings with whitespace' do
           let(:help_text) do
@@ -357,9 +368,10 @@ describe ServiceProviderHelper do
       end
     end
 
-    describe 'an admin user' do
-      let(:user) { create(:admin) }
+    describe 'a login.gov admin' do
+      let(:user) { create(:logingov_admin) }
       let(:help_text) { {} }
+
       it 'returns false' do
         service_provider = ServiceProvider.new(help_text:)
         expect(helper.show_minimal_help_text_element?(service_provider)).to be false

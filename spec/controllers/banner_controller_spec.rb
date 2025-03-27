@@ -2,16 +2,16 @@ require 'rails_helper'
 
 RSpec.describe BannersController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
-  let(:admin) { create(:user, uuid: SecureRandom.uuid, admin: true) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:banner) { create(:banner) }
 
-  let (:updated_message) { 'Updated Banner' }
-  let (:updated_start_date) { Date.today - 1.year }
-  let (:updated_end_date) { Date.today + 1.year }
+  let(:updated_message) { 'Updated Banner' }
+  let(:updated_start_date) { Time.zone.today - 1.year }
+  let(:updated_end_date) { Time.zone.today + 1.year }
 
-  context 'when logged in as admin' do
+  context 'when logged in as login.gov admin' do
     before do
-      sign_in admin
+      sign_in logingov_admin
     end
 
     it 'allows all access' do
@@ -53,7 +53,7 @@ RSpec.describe BannersController do
     end
   end
 
-  context 'when not logged in ' do
+  context 'when not logged in' do
     it 'denies all access' do
       get :new
       expect(response).to be_unauthorized
@@ -68,7 +68,7 @@ RSpec.describe BannersController do
     end
   end
 
-  context 'when not logged in as admin' do
+  context 'when not logged in as login.gov admin' do
     before do
       sign_in user
     end

@@ -1,9 +1,6 @@
 class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
-  before_action :authorize_approval, only: [:update]
-  before_action :authorize_allow_prompt_login, only: %i[create update]
-  before_action :authorize_email_nameid_format_allowed, only: %i[create update]
 
   after_action :verify_authorized
   after_action :verify_policy_scoped,
@@ -36,7 +33,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider = policy_scope(ServiceProvider).new
 
     cert = params[:service_provider].delete(:cert)
-    @service_provider.assign_attributes(service_provider_params)
+    @service_provider.assign_attributes(permitted_attributes(service_provider))
     # We can't properly check authorization until after the user has a chance to assign a team
     authorize @service_provider
 
@@ -46,7 +43,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if helpers.help_text_options_enabled? && !current_user.admin
+    if helpers.help_text_options_enabled? && !current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
@@ -58,12 +55,12 @@ class ServiceProvidersController < AuthenticatedController
     attach_cert(cert)
     remove_certificates
 
-    service_provider.assign_attributes(service_provider_params)
+    help_text = parsed_help_text
+    service_provider.assign_attributes(permitted_attributes(service_provider))
     attach_logo_file if logo_file_param
     if helpers.help_text_options_enabled?
-      help_text = parsed_help_text
       unless policy(@service_provider).edit_custom_help_text?
-        help_text = parsed_help_text.revert_unless_presets_only
+        help_text = help_text.revert_unless_presets_only
       end
       service_provider.help_text = help_text.to_localized_h
     end
@@ -101,7 +98,6 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = deleted_service_providers
   end
 
-
   private
 
   def service_provider
@@ -113,7 +109,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def parsed_help_text
-    text_params = params.has_key?(service_provider) ? service_provider_params[:help_text] : nil
+    if params.has_key?(:service_provider)
+      text_params = permitted_attributes(service_provider)[:help_text]
+    end
+    HelpText.lookup(params: nil, service_provider: service_provider)
     @parsed_help_text ||= HelpText.lookup(
       params: text_params,
       service_provider: service_provider,
@@ -122,26 +121,6 @@ class ServiceProvidersController < AuthenticatedController
 
   def localized_help_text
     @localized_help_text ||= parsed_help_text.to_localized_h
-  end
-
-  def authorize_approval
-    return unless params.require(:service_provider).key?(:approved) && !current_user.admin?
-
-    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
-  end
-
-  def authorize_allow_prompt_login
-    return unless params.require(:service_provider).key?(:allow_prompt_login) &&
-                  !current_user.admin?
-
-    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
-  end
-
-  def authorize_email_nameid_format_allowed
-    return unless params.require(:service_provider).key?(:email_nameid_format_allowed) &&
-                  !current_user.admin?
-
-    raise Pundit::NotAuthorizedError, I18n.t('errors.not_authorized')
   end
 
   def validate_and_save_service_provider(initial_action)
@@ -171,44 +150,6 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-  def error_messages
-    [[@errors] + [service_provider.errors.full_messages]].flatten.compact.to_sentence
-  end
-
-  def service_provider_params
-    permit_params = [
-      :acs_url,
-      :active,
-      :agency_id,
-      :allow_prompt_login,
-      :approved,
-      :assertion_consumer_logout_service_url,
-      :block_encryption,
-      :description,
-      :friendly_name,
-      :group_id,
-      :ial,
-      :default_aal,
-      :identity_protocol,
-      :issuer,
-      :logo,
-      :metadata_url,
-      :return_to_sp_url,
-      :failure_to_proof_url,
-      :push_notification_url,
-      :signed_response_message_requested,
-      :sp_initiated_login_url,
-      :logo_file,
-      :app_name,
-      :prod_config,
-      :email_nameid_format_allowed,
-      { attribute_bundle: [],
-        redirect_uris: [],
-        help_text: {} },
-    ]
-    params.require(:service_provider).permit(*permit_params)
-  end
-
   # relies on ServiceProvider#certs_are_pems for validation
   def attach_cert(cert)
     return if cert.blank?
@@ -229,7 +170,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def logo_file_param
-    service_provider_params[:logo_file]
+    permitted_attributes(service_provider)[:logo_file]
   end
 
   def attach_logo_file

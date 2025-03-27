@@ -38,6 +38,7 @@ class HelpText
   def initialize(help_text: {}, service_provider: nil)
     @help_text = help_text
     @service_provider = service_provider || ServiceProvider.new
+    @initial_help_text = @service_provider.help_text.dup
     revert_presets_to_short_name
   end
 
@@ -69,7 +70,7 @@ class HelpText
   def revert_unless_presets_only
     return self if presets_only?
 
-    HelpText.lookup(service_provider:)
+    HelpText.lookup(params: @initial_help_text, service_provider: service_provider)
   end
 
   def fetch(context, lang)

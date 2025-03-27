@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceConfigPolicy do
-  let(:site_admin) { create(:admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
   let(:partner_admin) { create(:user_team, :partner_admin, team:).user }
   let(:partner_developer) { create(:user_team, :partner_developer, team:).user }
@@ -18,8 +18,8 @@ describe ServiceConfigPolicy do
       expect(described_class).to_not permit(non_team_member, object)
     end
 
-    it 'allows Site Admin' do
-      expect(described_class).to permit(site_admin, object)
+    it 'allows login.gov admin' do
+      expect(described_class).to permit(logingov_admin, object)
     end
 
     it 'allows Partner Admin' do

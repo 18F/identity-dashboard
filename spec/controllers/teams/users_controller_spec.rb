@@ -31,7 +31,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to change { UserTeam.count }.by(-1)
+      end.to change(UserTeam, :count).by(-1)
       expect(team.users).to_not include(user_to_delete)
     end
   end
@@ -41,13 +41,13 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to_not change { UserTeam.count }
+      end.to_not(change(UserTeam, :count))
       expect(team.users.reload).to include(user_to_delete)
       expect(response).to be_unauthorized
     end
   end
 
-  context 'logged in' do
+  context 'when logged in' do
     before do
       sign_in user
     end
@@ -73,6 +73,53 @@ describe Teams::UsersController do
 
       describe '#create' do
         it_behaves_like 'can create valid users'
+      end
+
+      describe '#update' do
+        let(:updatable_membership) { create(:user_team, :partner_developer, team:) }
+
+        it 'allows valid roles' do
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'partner_readonly' },
+          }
+          updatable_membership.reload
+          expect(updatable_membership.role.name).to eq('partner_readonly')
+        end
+
+        it 'does not accept invalid roles' do
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'totally-fake-role' },
+          }
+          errors = assigns[:membership].errors.full_messages
+          expect(errors).to eq(['Role name is invalid'])
+          updatable_membership.reload
+          expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
+        end
+
+        it 'redirects without RBAC flag' do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'totally-fake-role' },
+          }
+          expect(response).to redirect_to(team_users_path(team))
+        end
+      end
+
+      describe '#edit' do
+        it 'redirects without RBAC flag' do
+          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
+          get :edit, params: {
+            team_id: team.id,
+            id: user,
+          }
+          expect(response).to redirect_to(team_users_path(team))
+        end
       end
 
       describe '#remove_confirm' do
@@ -175,7 +222,7 @@ describe Teams::UsersController do
       end
     end
 
-    context 'as site admin' do
+    context 'as login.gov admin' do
       let(:user_team) { create(:user_team) }
 
       before do
@@ -190,8 +237,8 @@ describe Teams::UsersController do
           expect(response).to render_template(:remove_confirm)
         end
 
-        # Membership in this team does not determin site admin rights
-        # so a site admin is safe to remove themself from this team.
+        # Membership in this team does not determin login.gov admin rights
+        # so a login.gov admin is safe to remove themself from this team.
         it 'is allowed for self' do
           get :remove_confirm, params: { team_id: team.id, id: user.id }
           expect(response).to be_ok
@@ -205,8 +252,8 @@ describe Teams::UsersController do
         context 'for self' do
           let(:user_to_delete) { user }
 
-          # Membership in this team does not determin site admin rights
-          # so a site admin is safe to remove themself from this team.
+          # Membership in this team does not determine login.gov admin rights
+          # so a login.gov admin is safe to remove themself from this team.
           it_behaves_like 'destroys user'
         end
       end

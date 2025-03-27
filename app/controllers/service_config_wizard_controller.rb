@@ -3,7 +3,6 @@ class ServiceConfigWizardController < AuthenticatedController
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
-  REDIRECTS_STEP = 'redirects'
   attr_reader :wizard_step_model
 
   before_action :redirect_unless_flagged_in
@@ -57,7 +56,8 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    clean_redirect_uris if step == REDIRECTS_STEP
+    clean_redirect_uris if is_step_with_param('redirect_uris')
+    validate_ial if is_step_with_param('ial')
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
@@ -115,7 +115,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user ||= current_user
-    if helpers.help_text_options_enabled? && !current_user.admin
+    if helpers.help_text_options_enabled? && !current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     elsif parsed_help_text.presets_only?
       service_provider.help_text = parsed_help_text.to_localized_h
@@ -169,6 +169,10 @@ class ServiceConfigWizardController < AuthenticatedController
     step == step_name
   end
 
+  def is_step_with_param(param_name)
+    step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
+  end
+
   def redirect_unless_flagged_in
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
@@ -178,36 +182,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def wizard_step_params
-    permit_params = [
-      :acs_url,
-      :active,
-      :agency_id,
-      :allow_prompt_login,
-      :approved,
-      :assertion_consumer_logout_service_url,
-      :block_encryption,
-      :description,
-      :friendly_name,
-      :group_id,
-      :ial,
-      :default_aal,
-      :identity_protocol,
-      :issuer,
-      :logo,
-      :metadata_url,
-      :return_to_sp_url,
-      :failure_to_proof_url,
-      :push_notification_url,
-      :signed_response_message_requested,
-      :sp_initiated_login_url,
-      :logo_file,
-      :app_name,
-      :prod_config,
-      redirect_uris: [],
-      attribute_bundle: [],
-      help_text: {},
-    ]
-    params.require(:wizard_step).permit(*permit_params)
+    permitted_attributes(WizardStep)
   end
 
   # relies on ServiceProvider#certs_are_pems for validation
@@ -240,6 +215,13 @@ class ServiceConfigWizardController < AuthenticatedController
     params[:wizard_step][:redirect_uris]&.compact_blank! || []
   end
 
+  def validate_ial
+    return unless policy(draft_service_provider).ial_readonly?
+
+    # reset unpermitted IAL change
+    params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
+  end
+
   def skippable
     step == UPLOAD_STEP
   end
@@ -249,7 +231,7 @@ class ServiceConfigWizardController < AuthenticatedController
       params[:commit].downcase == 'cancel' &&
       IdentityConfig.store.service_config_wizard_enabled &&
       step == STEPS.last &&
-      current_user.admin?
+      current_user.logingov_admin?
   end
 
   def when_skipping_models

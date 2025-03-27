@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Service Config Wizard' do
   let(:team) { create(:team) }
-  let(:admin) { create(:admin, :with_teams) }
+  let(:logingov_admin) { create(:user, :logingov_admin, :with_teams) }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
   let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
@@ -40,7 +40,7 @@ feature 'Service Config Wizard' do
 
   context 'when admin' do
     before do
-      login_as(admin)
+      login_as(logingov_admin)
     end
 
     it 'can remember something filled in' do
@@ -58,7 +58,7 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       fill_in('App name', with: app_name)
       fill_in('Friendly name', with: test_name)
-      team_to_pick = admin.teams.sample
+      team_to_pick = logingov_admin.teams.sample
       select(team_to_pick.name, from: 'Team')
       click_on 'Next'
       current_step = find('.step-indicator__step--current')
@@ -95,7 +95,8 @@ feature 'Service Config Wizard' do
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
-      team_to_pick = admin.teams.sample
+      create(:user_team, :partner_admin, user:)
+      team_to_pick = user.teams.sample
       # These are expected values, listed in the order the currently appear in the step forms
       # These are all required values that we'll fill in, or expected default values
       expected_data = {
@@ -155,10 +156,9 @@ feature 'Service Config Wizard' do
       end
       expect(team_field_options.count).to_not eq(1)
       expect(team_options_with_current_value.count).to eq(1)
-      expect(team_options_with_current_value[0].text).to eq('- Select -')
+      expect(team_options_with_current_value.first.text).to eq('- Select -')
       fill_in('App name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
-      team_field = find_field('Team')
       select(team_to_pick.name, from: 'Team')
       expect(team_field.value).to eq(team_to_pick.id.to_s)
       click_on 'Next'
@@ -209,8 +209,8 @@ feature 'Service Config Wizard' do
         issuer: expected_data['issuer'],
       ))
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
-      expect(WizardStep.all_step_data_for_user(admin)).to eq({}),
-                                                          'error: draft data not deleted'
+      expect(WizardStep.all_step_data_for_user(logingov_admin))
+        .to eq({}), 'error: draft data not deleted'
     end
 
     it 'correctly labels team in error when team is blank' do
@@ -287,9 +287,40 @@ feature 'Service Config Wizard' do
       # rubocop:enable Layout/LineLength
       expect(page).to have_content(content)
     end
+
+    describe 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
+      end
+
+      it 'allows Login.gov Admin to set initial IAL' do
+        visit service_config_wizard_path('settings')
+        select(logingov_admin.teams[0].name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'allows Login.gov Admin to update IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team: logingov_admin.teams[0])
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+    end
   end
 
-  context 'when not admin' do
+  context 'when not login.gov admin' do
     before do
       login_as(user)
     end
@@ -318,13 +349,15 @@ feature 'Service Config Wizard' do
         end
 
         it 'wipes existing steps and starts fresh' do
-          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
+                                          team.id).count
           expect(saved_steps).to be(1)
 
           visit service_providers_path
           click_on 'Create a new app'
           expect(page).to have_current_path(service_config_wizard_path(first_step))
-          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = '?'", team.id).count
+          saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
+                                          team.id).count
           expect(saved_steps).to be(0)
         end
       end
@@ -398,7 +431,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'renders Help text as expected' do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       visit service_config_wizard_path('help_text')
 
       find_all('.usa-radio__input[checked]').each do |input|
@@ -429,6 +462,37 @@ feature 'Service Config Wizard' do
         end
       end
     end
+
+    describe 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          prod_like_env: true,
+          edit_button_uses_service_config_wizard: true,
+        )
+      end
+
+      it 'allows Partners to set initial IAL' do
+        visit service_config_wizard_path('settings')
+        select(team.name, from: 'Team')
+        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
+        click_on 'Next'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
+      end
+
+      it 'does not allow Partners to edit IAL' do
+        existing_config = create(:service_provider,
+                               :ready_to_activate_ial_1,
+                               team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('authentication')
+        expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
+        expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
+      end
+    end
   end
 
   context 'when partner readonly' do
@@ -445,8 +509,16 @@ feature 'Service Config Wizard' do
 
   context 'when selecting OIDC' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      user_to_login = [logingov_admin, user].sample
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: 'Team')
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose ['OpenID Connect Private Key JWT', 'OpenID Connect PKCE'].sample
       click_on 'Next'
@@ -463,8 +535,16 @@ feature 'Service Config Wizard' do
 
   context 'when selecting SAML' do
     before do
-      IdentityConfig.store[:service_config_wizard_enabled] = true
-      login_as([admin, user].sample)
+      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
+      app_name = "name#{rand(1..1000)}"
+      test_name = "Test name #{rand(1..1000)}"
+      user_to_login = [logingov_admin, user].sample
+      login_as(user_to_login)
+      visit service_config_wizard_path('settings')
+      select(user_to_login.teams.sample.name, from: 'Team')
+      fill_in('App name', with: app_name)
+      fill_in('Friendly name', with: test_name)
+      click_on 'Next'
       visit service_config_wizard_path('protocol')
       choose 'SAML'
       click_on 'Next'

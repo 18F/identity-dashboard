@@ -2,9 +2,9 @@
   <%= form.input :email,
        input_html: { class: 'usa-input', aria: { invalid: false } },
        required: true %>
-    <legend class='usa-sr-only'>Make admin?</legend>
+    <legend class='usa-sr-only'>Make Login.gov admin?</legend>
     <%= form.label :admin,
-                   label: 'Make admin?',
+                   label: 'Make Login.gov admin?',
                    class: 'usa-label' %>
     <%= form.collection_radio_buttons(:admin,
                                     { "Yes" => true, "No" => false },

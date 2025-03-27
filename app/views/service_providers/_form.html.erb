@@ -71,6 +71,7 @@
                  collection: [[I18n.t('service_provider_form.ial_option_1'), 1],
                               [I18n.t('service_provider_form.ial_option_2'), 2]],
                  selected: form.object.ial,
+                 disabled: policy(service_provider).ial_readonly?,
                  input_html: { class: 'usa-input usa-select'},
                  label: 'Level of Service',
                  hint: t('service_provider_form.ial_html') %>
@@ -119,7 +120,7 @@
                      t('service_provider_form.issuer_html')
                    end %>
 
-  <% if current_user.admin? %>
+  <% if current_user.logingov_admin? %>
     <%# allow_prompt_login checkbox %>
     <fieldset class="usa-fieldset">
       <legend class="usa-sr-only">Enable prompt=login</legend>

@@ -12,19 +12,17 @@
                          required: true,
                          hint: I18n.t('service_provider_form.team_guided') %>
 
-    <%= render partial: 'fieldset', locals: {
+    <%= render(WizardFieldsetComponent.new(
         form: form,
-        fieldname: 'dashboard_config',
-        description: false,
-        html_desc: false,
+        param_name: 'prod_config',
         input_type: 'radio',
         required: true,
-        db_fieldname: :prod_config,
+        description_key: '',
         inputs: {
           t('simple_form.labels.service_provider.sandbox') => false,
           t('simple_form.labels.service_provider.production') => true,
         },
-      } %>
+      )) %>
 
     <%= form.input :app_name,
                     input_html: { class: 'usa-input', aria: { invalid: false } },

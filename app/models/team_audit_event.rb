@@ -12,7 +12,7 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   #
   # `scope` should be a pundit policy scope whenever one is applicable
   #
-  # This code probably knows too much about how PaperTrail::Version works.
+  # This code knows too much about how PaperTrail::Version works.
   # This rubs up against the ways ActiveRecord can be frustrating.
   # Thankfully, PaperTrail has been very stable.
   #
@@ -51,13 +51,13 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
 
     scope.
       where(item_type: 'UserTeam').
-      where(%(object_changes @> '{"group_id":[?]}'), team_id).
-      or(
+      where('object_changes @> ?', { group_id: [team_id] }.to_json)
+      .or(
         # In theory, nothing in the current application can intentionally null out the group_id
         # without deleting the user, too, but let's check for that just to be safe.
         scope.
           where(item_type: 'UserTeam').
-          where(%(object @> '{"group_id":?}'), team_id),
+          where('object @> ?', { group_id: team_id }.to_json),
       )
   end
 
