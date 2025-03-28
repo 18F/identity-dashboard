@@ -67,6 +67,7 @@ class ServiceProviderPolicy < BasePolicy
 
   def create?
     return true unless IdentityConfig.store.access_controls_enabled
+    return logingov_admin? if IdentityConfig.store.prod_like_env
 
     logingov_admin? || (membership && !partner_readonly?)
   end
