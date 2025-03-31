@@ -168,11 +168,18 @@ feature 'Service Providers CRUD' do
 
       visit edit_service_provider_path(service_provider)
       acs_input = find_field('service_provider_acs_url')
-      submit_btn = find('input[name="commit"]')
       # unset required field
       acs_input.set('')
 
+      submit_btn = find('input[name="commit"]')
       submit_btn.click
+
+      # Because this test checks an element that can be found both before and after
+      # submitting the form, there's a risk of race conditions. To avoid them, we must first
+      # assert something on the new page that won't exist on the previous page
+      # before fetching the element and asserting it has the properties we care about.
+      expect(page).to have_content("can't be blank")
+
       acs_input = find_field('service_provider_acs_url')
       message = acs_input.native.attribute('validationMessage')
       expect(message).to eq 'Please fill out this field.'
