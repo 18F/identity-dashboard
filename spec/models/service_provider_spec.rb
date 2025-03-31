@@ -393,9 +393,23 @@ describe ServiceProvider do
   describe '.new' do
     subject(:new_sp) { ServiceProvider.new }
 
-    it { expect(new_sp).to be_pending }
-    it { expect(new_sp).to_not be_live }
-    it { expect(new_sp).to_not be_rejected }
+    context 'in prod-like env' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+      it { expect(new_sp).to be_pending }
+      it { expect(new_sp).to_not be_live }
+      it { expect(new_sp).to_not be_rejected }
+    end
+
+    context 'not in prod-like env' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      end
+      it { expect(new_sp).to_not be_pending }
+      it { expect(new_sp).to be_live }
+      it { expect(new_sp).to_not be_rejected }
+    end
   end
 
   describe '#service_provider=' do
