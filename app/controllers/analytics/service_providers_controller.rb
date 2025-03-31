@@ -9,7 +9,7 @@ class Analytics::ServiceProvidersController < ApplicationController
     DASHBOARD_ID = 'ee5562fd-c6e9-4e5d-a234-1875ed36379a'
     EMAIL = 'admin@gsa.gov'
     REGION = 'us-west-2'
-    ROLE_ARN = 'arn:aws:iam::894947205914:role/cnattrass_portal_iam_role'
+    ROLE_ARN = 'arn:aws:iam::487317109730:role/cnattrass_portal-quicksight-analytics-iam-role'
     ROLE_SESSION_NAME = 'YourSessionName'
 
 
