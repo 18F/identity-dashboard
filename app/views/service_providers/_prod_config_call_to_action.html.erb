@@ -6,6 +6,8 @@
       <a class="usa-button usa-button--outline align-center usa-link usa-link--external text-primary text-no-underline" target="_blank" href="https://developers.login.gov/production"><%= t('call_to_action.read_process') %></a>
       <% unless IdentityConfig.store.prod_like_env %>
         <div class="usa-button align-center usa-dark-background" aria-controls="additional-data-modal" data-open-modal><%= t('call_to_action.submit_request') %></div>
+      <% else %>
+        <a class="usa-button align-center usa-dark-background usa-link usa-link--external text-no-underline" target="_blank" href="https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332"><%= t('call_to_action.submit_request') %></a>
       <% end %>
     </div>
     <div class="grid-row margin-top-2 usa-alert measure-5 usa-alert--warning">

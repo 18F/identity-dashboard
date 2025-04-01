@@ -104,8 +104,8 @@ class ServiceProvidersController < AuthenticatedController
     zendesk_request = ZendeskRequest.new(current_user, request.host, @service_provider)
 
     ticket_custom_fields = []
-    zendesk_request.ticket_field_functions.each_with_object(Hash.new) do
-      |(id, func), result| ticket_custom_fields.push({ id: id,
+    zendesk_request.ticket_field_functions.each_with_object(Hash.new) do |(id, func), result|
+      ticket_custom_fields.push({ id: id,
 value: func.to_proc.call(@service_provider) })
     end
 

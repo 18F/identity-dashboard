@@ -77,7 +77,7 @@ class ZendeskRequest
     @service_provider = service_provider
   end
 
-  def ticket_field_functions 
+  def ticket_field_functions
     ZENDESK_TICKET_FIELD_FUNCTIONS
   end
 
