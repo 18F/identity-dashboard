@@ -805,12 +805,8 @@ feature 'Service Providers CRUD' do
     describe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
-      it 'displays the production call to action links' do
-        prod_url = 'https://developers.login.gov/production'
-        zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
-
-        expect(page).to have_css("a[href='#{prod_url}']")
-        expect(page).to have_css("a[href='#{zendesk_ticket}']")
+      it 'displays the production call to action button' do
+        expect(page).to have_css("div[aria-controls='additional-data-modal']")
       end
     end
   end
