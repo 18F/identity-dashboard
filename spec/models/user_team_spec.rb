@@ -51,24 +51,30 @@ RSpec.describe UserTeam, type: :model do
       expect(valid_membership2).to be_valid
     end
 
-    it 'deletes a membership with a null user' do
+    it 'deletes a membership with a null user while keeping related records' do
       valid_membership = create(:user_team)
-      invalidated_membership = create(:user_team)
+      affected_team = valid_membership.team
+      invalidated_membership = create(:user_team, team: affected_team)
       invalidated_membership.update_column(:user_id, nil)
       UserTeam.destroy_orphaned_memberships
       expect { invalidated_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      affected_team.reload
       valid_membership.reload
       expect(valid_membership).to be_valid
+      expect(valid_membership.team).to eq(affected_team)
     end
 
-    it 'deletes a membership with a null team' do
+    it 'deletes a membership with a null team while keeping related records' do
       valid_membership = create(:user_team)
-      invalidated_membership = create(:user_team)
+      affected_user = valid_membership.user
+      invalidated_membership = create(:user_team, user: affected_user)
       invalidated_membership.update_column(:group_id, nil)
       UserTeam.destroy_orphaned_memberships
       expect { invalidated_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      affected_user.reload
       valid_membership.reload
       expect(valid_membership).to be_valid
+      expect(valid_membership.user).to eq(affected_user)
     end
   end
 end
