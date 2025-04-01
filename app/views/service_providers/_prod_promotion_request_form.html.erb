@@ -20,21 +20,21 @@
               </label>
               <% if field_info[:input_type] == 'text' %>
                 <%= form.text_field id, 
-                	class: 'block col-12 maxw-tablet string required usa-input',
+                	class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
                 	placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'number' %>
                 <%= form.number_field id, 
-                  class: 'block col-12 maxw-tablet string required usa-input',
+                  class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
                   placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'date' %>
                 <%= form.date_field id, 
-                  class: 'block col-12 maxw-tablet string required usa-input',
+                  class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
                   placeholder: field_info[:placeholder]
                 %>
               <% elsif field_info[:input_type] == 'select' %>
-                <%= form.select id, field_info[:options].collect { |opt| [ opt[:label], opt[:value] ] }, { include_blank: true }, class: 'maxw-tablet usa-select' %>
+                <%= form.select id, field_info[:options].collect { |opt| [ opt[:label], opt[:value] ] }, { include_blank: true }, class: 'maxw-tablet usa-select prod-request-input' %>
               <% end %>
               <p class="usa-hint"><%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.hint_html") %></p>
             </div>
@@ -51,7 +51,7 @@
                 </button>
               </li>
               <li class="usa-button-group__item">
-                <input type="submit" class="usa-button" data-close-modal value="Submit Request"/>
+                <input type="submit" class="usa-button" id="submit-prod-request" data-close-modal disabled="disabled" value="Submit Request"/>
               </li>
             </ul>
           </div>
@@ -71,3 +71,4 @@
     </div>
   </div>
 </div>
+<%= javascript_include_tag 'production_request.js' %>
