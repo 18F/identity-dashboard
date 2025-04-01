@@ -238,11 +238,12 @@ describe User do
       user = membership.user
       team = membership.team
       user.destroy
-      # User class has `acts_as_paranoid`
+
+      # `User#deleted?` comes from the `acts_as_paranoid` gem
       user.reload
       expect(user).to be_deleted
 
-      # `acts_as_paranoid` option `double_tap_destroys_fully` id enabled per default
+      # `acts_as_paranoid` option `double_tap_destroys_fully` is enabled per default
       user.destroy
       expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
 
