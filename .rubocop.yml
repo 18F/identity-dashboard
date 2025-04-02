@@ -448,3 +448,9 @@ RSpec/MultipleMemoizedHelpers:
   #   1 team
   #   1 object the permission is tested for
   Max: 7
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
+
+Rails/InverseOf:
+  Enabled: true
