@@ -15,10 +15,17 @@ class UserTeam < ApplicationRecord
                                     message: 'This user is already a member of the team.' }
   validate :role_exists_if_present
 
-  def self.destroy_orphaned_memberships
-    data_for_deleted_users = UserTeam.where(user: nil)
-    data_for_deleted_users.destroy_all
-    data_for_deleted_teams = UserTeam.where(team: nil)
+  def self.destroy_orphaned_memberships(logger: nil)
+    data_for_deleted_users = UserTeam.where.missing(:user)
+    if data_for_deleted_users.any?
+      logger&.warn("Deleting team memberships #{data_for_deleted_users.map(&:id)} missing user IDs")
+      data_for_deleted_users.destroy_all
+    end
+
+    data_for_deleted_teams = UserTeam.where.missing(:team)
+    return unless data_for_deleted_teams.any?
+
+    logger&.warn("Deleting team memberships #{data_for_deleted_teams.map(&:id)} missing team IDs")
     data_for_deleted_teams.destroy_all
   end
 
