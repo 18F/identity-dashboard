@@ -3,4 +3,8 @@ namespace :users do
   task make_admin: :environment do
     MakeAdmin.new(ENV['USER']).call
   end
+
+  task destroy_orphaned_memberships: :environment do
+    UserTeam.destroy_orphaned_memberships
+  end
 end
