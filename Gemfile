@@ -85,7 +85,6 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara', '>= 3.39.1'
-  gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
