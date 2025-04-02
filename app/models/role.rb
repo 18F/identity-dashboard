@@ -10,7 +10,12 @@
 # the object the user is accessing.
 #
 class Role < ApplicationRecord
-  has_many :user_team
+  has_many :user_team,
+    foreign_key: 'role_name',
+    primary_key: 'name',
+    inverse_of: :role,
+    # If we delete a role, don't delete the fact that the user who had that role belongs to a team
+    dependent: :nullify
 
   ACTIVE_ROLES_NAMES = {
     logingov_admin: 'Login.gov Admin',

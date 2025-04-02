@@ -3,13 +3,24 @@ class UserTeam < ApplicationRecord
 
   has_paper_trail on: %i[create update destroy]
 
-  belongs_to :role, foreign_key: 'role_name', primary_key: 'name', optional: true
+  belongs_to :role,
+    foreign_key: 'role_name',
+    primary_key: 'name',
+    inverse_of: 'user_team',
+    optional: true
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :user_teams
 
   validates :user_id, uniqueness: { scope: :group_id, on: :create,
                                     message: 'This user is already a member of the team.' }
   validate :role_exists_if_present
+
+  def self.destroy_orphaned_memberships
+    data_for_deleted_users = UserTeam.where(user: nil)
+    data_for_deleted_users.destroy_all
+    data_for_deleted_teams = UserTeam.where(team: nil)
+    data_for_deleted_teams.destroy_all
+  end
 
   def role_exists_if_present
     return unless role_name
