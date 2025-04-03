@@ -5,7 +5,6 @@ class Analytics::ServiceProvidersController < ApplicationController
 
     AWS_ACCOUNT_ID = '487317109730'
     USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/admin@gsa.gov'
-    # USER_ARN = 'arn:aws:quicksight:us-west-2:487317109730:user/default/DWAdmin/colter.nattrass'
     DASHBOARD_ID = 'ee5562fd-c6e9-4e5d-a234-1875ed36379a'
     EMAIL = 'admin@gsa.gov'
     REGION = 'us-west-2'
@@ -81,22 +80,21 @@ logo_file_attachment: :blob).find(id)
             aws_account_id: aws_account_id,
             session_lifetime_in_minutes: 600,
             user_arn: user_arn,
-            experience_configuration: { # required
+            experience_configuration: {
                 dashboard: {
-                initial_dashboard_id: dashboard_id, # required
+                initial_dashboard_id: dashboard_id,
                     feature_configurations: {
                         state_persistence: {
-                            enabled: false, # required
+                            enabled: false,
                         },
                         bookmarks: {
-                            enabled: false, # required
+                            enabled: false,
                         },
                     },
                 },
             },
-            allowed_domains: ['http://localhost'],
+            # allowed_domains: ['http://localhost', 'https://portal.cnattrass.identitysandbox.gov/*'],
         })
-        # Rails.logger.debug("Response: #{result.embed_url}")
         result.embed_url
 
     end
