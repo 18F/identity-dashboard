@@ -324,7 +324,7 @@ describe 'users' do
         visit team_users_path(team)
 
         within('tr', text: user_to_change.email) do
-          click_on 'Edit Role'
+          click_on 'Edit'
         end
         choose new_role.friendly_name
         click_on 'Update'
@@ -346,10 +346,10 @@ describe 'users' do
         visit team_users_path(team)
 
         within('tr', text: editable_user.email) do
-          expect(self).to have_link('Edit Role')
+          expect(self).to have_link('Edit')
         end
         within('tr', text: partner_admin_team_member.email) do
-          expect(self).to_not have_link('Edit Role')
+          expect(self).to_not have_link('Edit')
         end
       end
 

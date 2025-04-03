@@ -23,6 +23,6 @@
     )) %>
   </fieldset>
   <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
-  <%= link_to t('forms.buttons.cancel'), users_path,
+  <%= link_to t('forms.buttons.cancel'), team_users_path(@team),
               class: 'usa-button usa-button--outline float-left' %>
 <% end %>
