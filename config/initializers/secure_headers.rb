@@ -43,14 +43,14 @@ SecureHeaders::Configuration.default do |config|
     config.csp.child_src.push('*')
     config.csp.frame_ancestors.push('*')
   end
-  Temporarily disabled until we configure pinning. See GitHub issue # 1895.
-  config.hpkp = {
-    report_only: false,
-    max_age: 60.days.to_i,
-    include_subdomains: true,
-    pins: [
-      { sha256: 'abc' },
-      { sha256: '123' },
-    ],
-  }
+  # Temporarily disabled until we configure pinning. See GitHub issue # 1895.
+  # config.hpkp = {
+  #   report_only: false,
+  #   max_age: 60.days.to_i,
+  #   include_subdomains: true,
+  #   pins: [
+  #     { sha256: 'abc' },
+  #     { sha256: '123' },
+  #   ],
+  # }
 end
