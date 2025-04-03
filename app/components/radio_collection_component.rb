@@ -7,8 +7,11 @@ class RadioCollectionComponent < ViewComponent::Base
   # @param inputs [Hash] hash where key is the label and value is the input value
   # @param options [Hash] additional options:
 
-  # @option options [String] :default to pre-select one of the inputs
+  # @option options [String] :default to pre-select one of the inputs, should match an input value
   # @option options [Boolean] :disabled whether this field is disabled
+  # @option options [Boolean|nil] :additional_descriptions whether to pull additional descriptions
+  #    for each radio option. This will look for I18n key formatted like
+  #    "#{form_object_class_pluralized_with_underscores}.#{input_value}_description"
   def initialize(form:, describedby:, model_method:, inputs:, **options)
     @form = form
     @describedby = describedby
