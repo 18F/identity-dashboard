@@ -552,7 +552,7 @@ describe ServiceProvidersController do
           custom_params = {
             sign_in: { en: 'random' },
             sign_up: { en: 'custom' },
-            forgot_password: { en:'blank' },
+            forgot_password: { en: 'blank' },
           }
           put :update, params: {
             id: sp.id,
@@ -570,7 +570,7 @@ describe ServiceProvidersController do
           custom_params = {
             sign_in: { en: 'first_time' },
             sign_up: { en: 'first_time' },
-            forgot_password: { en:'blank' },
+            forgot_password: { en: 'blank' },
           }
 
           put :update, params: {
