@@ -223,7 +223,7 @@ describe ServiceProvidersController do
           friendly_name: 'ABC',
           email_nameid_format_allowed: true,
         } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
@@ -239,7 +239,7 @@ describe ServiceProvidersController do
           friendly_name: 'ABC',
           email_nameid_format_allowed: true,
         } }
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
     end
   end
@@ -689,7 +689,7 @@ describe ServiceProvidersController do
 
         it 'allows Login Admin users' do
           get :deleted
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
       end
     end

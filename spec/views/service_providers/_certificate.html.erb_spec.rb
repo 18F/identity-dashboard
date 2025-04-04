@@ -5,7 +5,7 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
 
   let(:certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate',
+      instance_double(OpenSSL::X509::Certificate,
         not_after: expiration,
         issuer: OpenSSL::X509::Name.new([['O', 'TTS'], ['C', 'US']]),
         subject: OpenSSL::X509::Name.new([['O', 'GSA'], ['C', 'US']]),
@@ -22,11 +22,11 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
     render_view
 
     expect(rendered).
-      to have_selector("dt:contains('Issuer') + dd:contains('#{certificate.issuer}')")
+      to have_css("dt:contains('Issuer') + dd:contains('#{certificate.issuer}')")
     expect(rendered).
-      to have_selector("dt:contains('Subject') + dd:contains('#{certificate.subject}')")
+      to have_css("dt:contains('Subject') + dd:contains('#{certificate.subject}')")
     expect(rendered).
-      to have_selector("dt:contains('Serial Number') + dd:contains('#{certificate.serial}')")
+      to have_css("dt:contains('Serial Number') + dd:contains('#{certificate.serial}')")
   end
 
   it 'renders the PEM inside a details/summary block' do
@@ -47,7 +47,7 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
     it 'renders the expired certificate' do
       render_view
 
-      expect(rendered).to have_selector('dd .certificate-expired')
+      expect(rendered).to have_css('dd .certificate-expired')
     end
   end
 
@@ -58,6 +58,6 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
       HTML
     end
 
-    expect(rendered).to have_selector('.lg-card > #from-block')
+    expect(rendered).to have_css('.lg-card > #from-block')
   end
 end

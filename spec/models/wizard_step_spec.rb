@@ -181,6 +181,7 @@ RSpec.describe WizardStep, type: :model do
 
     describe '#certificates' do
       let(:certs) { nil }
+
       subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: { certs: }) }
 
       context 'with nil' do

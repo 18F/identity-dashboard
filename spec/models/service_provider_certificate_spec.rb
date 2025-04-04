@@ -6,7 +6,7 @@ RSpec.describe ServiceProviderCertificate do
   end
 
   let(:plain_cert) do
-    instance_double('OpenSSL::X509::Certificate', not_after:)
+    instance_double(OpenSSL::X509::Certificate, not_after:)
   end
 
   subject(:cert) do

@@ -12,6 +12,7 @@ describe 'Users::ServiceProviders' do
       forgot_password: { en: '' },
     }
   end
+
   describe 'approve on update' do
     it 'disallows app owner from approving the app' do
       login_as(partner_admin)

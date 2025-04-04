@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper do
   describe '#navigation_link_to' do
     let(:current_page) { true }
+
     before do
       allow(self).to receive(:current_page?).with('/current').and_return current_page
     end

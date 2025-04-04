@@ -183,8 +183,10 @@ describe HelpText do
 
   describe '#revert_unless_presets_only' do
     let(:service_provider) { ServiceProvider.new(help_text: maybe_presets_help_text) }
+
     context 'when params are all presets' do
       let(:params) { all_presets_help_text }
+
       it 'uses the params over the service provider' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
@@ -202,6 +204,7 @@ describe HelpText do
         ].sample
         params
       end
+
       it 'reverts to the service provider and throws away the params' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only

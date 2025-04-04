@@ -48,11 +48,13 @@ RSpec.describe DeployStatusChecker do
     describe '#status_class' do
       context 'with no host' do
         let(:host) { nil }
+
         it { expect(status.status_class).to eq('deploy-disabled') }
       end
 
       context 'with an error' do
         let(:error) { 'error' }
+
         it { expect(status.status_class).to eq('deploy-error') }
       end
 
@@ -115,6 +117,7 @@ RSpec.describe DeployStatusChecker do
   describe '#status_from_error' do
     let(:deploy) { DeployStatusChecker::Deploy.new('prod', 'foo.bar') }
     let(:error) { 'error message' }
+
     subject(:status) { checker.status_from_error(deploy, error) }
 
     it 'sets the env and host from the deploy' do

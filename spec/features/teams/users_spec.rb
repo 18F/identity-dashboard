@@ -132,6 +132,7 @@ describe 'users' do
 
   describe 'login.gov admin with an empty team' do
     let(:empty_team) { create(:team) }
+
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as logingov_admin

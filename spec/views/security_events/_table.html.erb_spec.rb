@@ -32,7 +32,7 @@ RSpec.describe 'security_events/table.html.erb' do
     it 'does not have an email column' do
       render_partial
 
-      expect(rendered).to_not have_selector('th[scope=col]', text: 'User')
+      expect(rendered).to_not have_css('th[scope=col]', text: 'User')
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe 'security_events/table.html.erb' do
     it 'adds an email column' do
       render_partial
 
-      expect(rendered).to have_selector('th[scope=col]', text: 'User')
+      expect(rendered).to have_css('th[scope=col]', text: 'User')
       expect(rendered).to include(user.email)
     end
   end
@@ -53,8 +53,8 @@ RSpec.describe 'security_events/table.html.erb' do
     it 'has no previous link and an active next link' do
       render_partial
 
-      expect(rendered).to_not have_selector("a[href='#{prev_page}']", text: 'Previous')
-      expect(rendered).to have_selector("a[href='#{next_page}']", text: 'Next')
+      expect(rendered).to_not have_css("a[href='#{prev_page}']", text: 'Previous')
+      expect(rendered).to have_css("a[href='#{next_page}']", text: 'Next')
     end
   end
 
@@ -65,8 +65,8 @@ RSpec.describe 'security_events/table.html.erb' do
     it 'has active previous and next links' do
       render_partial
 
-      expect(rendered).to have_selector("a[href='#{prev_page}']", text: 'Previous')
-      expect(rendered).to have_selector("a[href='#{next_page}']", text: 'Next')
+      expect(rendered).to have_css("a[href='#{prev_page}']", text: 'Previous')
+      expect(rendered).to have_css("a[href='#{next_page}']", text: 'Next')
     end
   end
 
@@ -76,8 +76,8 @@ RSpec.describe 'security_events/table.html.erb' do
     it 'has no next link and an active previous link' do
       render_partial
 
-      expect(rendered).to have_selector("a[href='#{prev_page}']", text: 'Previous')
-      expect(rendered).to_not have_selector("a[href='#{next_page}']", text: 'Next')
+      expect(rendered).to have_css("a[href='#{prev_page}']", text: 'Previous')
+      expect(rendered).to_not have_css("a[href='#{next_page}']", text: 'Next')
     end
   end
 end

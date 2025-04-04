@@ -143,6 +143,7 @@ describe UsersController do
 
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
+
       before do
         delete :destroy, params: { id: user_to_delete.id }
       end

@@ -8,6 +8,7 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-capybara
+  - rubocop-rspec_rails
 
 inherit_gem:
   pundit: config/rubocop-rspec.yml
@@ -454,3 +455,37 @@ Rails/HasManyOrHasOneDependent:
 
 Rails/InverseOf:
   Enabled: true
+
+Rails/ResponseParsedBody:
+  Enabled: true
+
+RSpecRails/HttpStatus:
+  Enabled: true
+
+RSpecRails/HaveHttpStatus:
+  Enabled: true
+
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: true
+
+Capybara/CurrentPathExpectation:
+  Enabled: true
+
+Capybara/RSpec/HaveSelector:
+  Enabled: true
+
+RSpec/StringAsInstanceDoubleConstant:
+  Enabled: true
+
+RSpec/ExpectChange:
+  Enabled: true
+
+Capybara/SpecificFinders:
+  Enabled: false
+
+Rails/Date:
+  Enabled: true
+
+Layout/FirstHashElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent

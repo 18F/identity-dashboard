@@ -6,6 +6,7 @@ RSpec.describe Api::SecurityEventsController do
 
     let(:idp_private_key) { OpenSSL::PKey::RSA.new(2048) }
     let(:idp_public_key) { idp_private_key.public_key }
+
     before { allow(IdpPublicKeys).to receive(:all).and_return([idp_public_key]) }
 
     context 'with a valid JWT' do
@@ -32,7 +33,7 @@ RSpec.describe Api::SecurityEventsController do
       end
 
       it 'creates a JWT and 201s' do
-        expect { action }.to(change { SecurityEvent.count })
+        expect { action }.to(change(SecurityEvent, :count))
 
         expect(response).to be_created
       end
@@ -44,7 +45,7 @@ RSpec.describe Api::SecurityEventsController do
       it 'logs a warning and does not create a SecurityEvent' do
         expect(Rails.logger).to receive(:warn)
 
-        expect { action }.to_not(change { SecurityEvent.count })
+        expect { action }.to_not(change(SecurityEvent, :count))
 
         expect(response).to be_bad_request
       end

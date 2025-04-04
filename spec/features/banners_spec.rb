@@ -24,7 +24,7 @@ feature 'Banners' do
 
     it 'renders html' do
       expect(page).to have_css('.usa-alert')
-      expect(page).to have_selector("a[href='banner_test_link']")
+      expect(page).to have_css("a[href='banner_test_link']")
       expect(page).to_not have_content('<script>alert("alert")</script>')
     end
   end
@@ -35,7 +35,7 @@ feature 'Banners' do
 
     visit banners_path
 
-    expect(page).to have_selector("th > a[href='banner_test_link']")
+    expect(page).to have_css("th > a[href='banner_test_link']")
   end
 
   context 'it displays at the approptiate start time' do

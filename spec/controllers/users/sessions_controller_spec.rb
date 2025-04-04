@@ -37,7 +37,7 @@ describe Users::SessionsController do
       it 'logs user out' do
         get :destroy
         expect(response.location).to match('http://localhost:3000')
-        expect(response.status).to eq 302
+        expect(response).to have_http_status :found
       end
     end
 

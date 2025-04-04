@@ -16,7 +16,7 @@ RSpec.describe UserTeam, type: :model do
       team = create(:team)
 
       expect { create(:user_team, user:, team:) }.to \
-        change { PaperTrail::Version.count }.by(1)
+        change(PaperTrail::Version, :count).by(1)
     end
 
     it 'tracks updates' do
@@ -24,13 +24,13 @@ RSpec.describe UserTeam, type: :model do
       other_team = create(:team)
 
       expect { user_team.update!(team: other_team) }.to \
-        change { PaperTrail::Version.count }.by(1)
+        change(PaperTrail::Version, :count).by(1)
     end
 
     it 'tracks deletion' do
       user_team = create(:user_team)
 
-      expect { user_team.destroy }.to change { PaperTrail::Version.count }.by(1)
+      expect { user_team.destroy }.to change(PaperTrail::Version, :count).by(1)
     end
   end
 

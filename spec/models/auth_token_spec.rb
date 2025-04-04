@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AuthToken, type: :model do
   let(:logingov_admin) { create(:logingov_admin) }
+
   subject(:new_token_record) { described_class.new_for_user(logingov_admin) }
 
   describe '.new_for_user' do
