@@ -495,3 +495,6 @@ Layout/IndentationWidth:
 
 Layout/AssignmentIndentation:
   Enabled: true
+
+Layout/SpaceAfterColon:
+  Enabled: true
