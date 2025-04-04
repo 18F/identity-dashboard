@@ -1,18 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'service_providers/_certificate_expiration_td.html.erb' do
-  let(:app) { instance_double('Service_Provider', certificates:) }
+  let(:app) { instance_double(ServiceProvider, certificates:) }
   let(:issuer) { OpenSSL::X509::Name.new([['O', 'GSA']]) }
 
   let(:expired_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.day.ago, issuer: issuer),
+      instance_double(OpenSSL::X509::Certificate, not_after: 1.day.ago, issuer: issuer),
     )
   end
 
   let(:valid_certificate) do
     ServiceProviderCertificate.new(
-      instance_double('OpenSSL::X509::Certificate', not_after: 1.year.from_now, issuer: issuer),
+      instance_double(OpenSSL::X509::Certificate, not_after: 1.year.from_now, issuer: issuer),
     )
   end
 

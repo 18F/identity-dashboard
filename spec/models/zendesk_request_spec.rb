@@ -25,19 +25,19 @@ describe ZendeskRequest do
       ticket_data = zendesk_request.build_zendesk_ticket(custom_fields)
 
       expected_response = {
-      request:  {
-        requester: {
-          name: "#{user.first_name} #{user.last_name}",
-          email: user.email,
+        request:  {
+          requester: {
+            name: "#{user.first_name} #{user.last_name}",
+            email: user.email,
+          },
+          subject: "Deploy #{sp.friendly_name} to Production",
+          comment: {
+            body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment",
+          },
+          ticket_form_id: ZendeskRequest::ZENDESK_TICKET_FORM_ID,
+          custom_fields: custom_fields,
         },
-        subject: "Deploy #{sp.friendly_name} to Production",
-        comment: {
-          body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment",
-        },
-        ticket_form_id: ZendeskRequest::ZENDESK_TICKET_FORM_ID,
-        custom_fields: custom_fields,
-      },
-    }
+      }
 
       expect(ticket_data).to eq(expected_response)
     end
