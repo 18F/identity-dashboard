@@ -31,7 +31,7 @@ SecureHeaders::Configuration.default do |config|
       'https://dap.digitalgov.gov',
       'https://www.google-analytics.com',
       'https://www.googletagmanager.com',
-      "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
+      "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com",
     ],
     style_src: ["'self'", "'unsafe-inline'"],
     base_uri: ["'self'"],
