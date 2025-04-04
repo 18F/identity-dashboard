@@ -58,18 +58,18 @@ describe PopulateRoles do
     end
 
     context 'when there are no invalid or nil User Teams' do
-        it 'display a message and exit script' do
-            user = User.create(
-                email: nongov_email,
-                first_name: nongov_first_name,
-                last_name: nongov_last_name,
-                admin: false,
-            )
-            user.user_teams << with_role_membership
-            subject.call
-            expect(logger).to have_received(:info)
-              .with('INFO: All UserTeams already have valid roles.')
-        end
+      it 'display a message and exit script' do
+        user = User.create(
+            email: nongov_email,
+            first_name: nongov_first_name,
+            last_name: nongov_last_name,
+            admin: false,
+        )
+        user.user_teams << with_role_membership
+        subject.call
+        expect(logger).to have_received(:info)
+          .with('INFO: All UserTeams already have valid roles.')
+      end
     end
   end
 end

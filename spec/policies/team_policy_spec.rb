@@ -132,7 +132,7 @@ describe TeamPolicy do
   end
 
   context 'users with non gov email addresses' do
-   permissions :create? do
+    permissions :create? do
       context 'users with non gov email address' do
         it 'are not allowed to create teams' do
           expect(TeamPolicy).to_not permit(nongov_email_user)
@@ -146,7 +146,7 @@ describe TeamPolicy do
           end
         end
       end
-   end
+    end
 
     permissions :edit? do
       context 'non team members' do

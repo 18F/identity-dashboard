@@ -489,3 +489,9 @@ Rails/Date:
 Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
+
+Layout/IndentationWidth:
+  Enabled: true
+
+Layout/AssignmentIndentation:
+  Enabled: true

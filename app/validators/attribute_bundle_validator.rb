@@ -37,7 +37,7 @@ class AttributeBundleValidator < ActiveModel::Validator
        [2, '2'].include?(record.ial) &&
        record.saml?
 
-       record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
+      record.errors.add(:attribute_bundle, 'Attribute bundle cannot be empty')
       return false
     end
 

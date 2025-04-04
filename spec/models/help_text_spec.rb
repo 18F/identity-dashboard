@@ -16,16 +16,17 @@ describe HelpText do
       result[context] = Hash.new
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
       HelpText::LOCALES.each do |locale|
-        result[context][locale] = if preset
-          I18n.t(
-            "service_provider_form.help_text.#{context}.#{preset}",
-            locale: locale,
-            sp_name: service_provider.friendly_name,
-            agency: service_provider.agency&.name,
-          )
-        else
-          ['Pruebas con <em>HTML</em>', 'This is a test!'].sample
-        end
+        result[context][locale] =
+          if preset
+            I18n.t(
+              "service_provider_form.help_text.#{context}.#{preset}",
+              locale: locale,
+              sp_name: service_provider.friendly_name,
+              agency: service_provider.agency&.name,
+            )
+          else
+            ['Pruebas con <em>HTML</em>', 'This is a test!'].sample
+          end
       end
     end
   end
