@@ -58,6 +58,7 @@ describe Api::ServiceProvidersController do
 
   describe '#show' do
     let(:sp) { create(:service_provider, :with_team) }
+
     before { get :show, params: { id: sp.id } }
 
     it 'returns the service provider whose params are passed in' do
@@ -67,9 +68,7 @@ describe Api::ServiceProvidersController do
     end
 
     it 'includes the protocol attribute' do
-
       expect(response_from_json.keys).to include :protocol
     end
-
   end
 end

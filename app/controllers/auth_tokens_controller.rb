@@ -6,12 +6,10 @@ class AuthTokensController < AuthenticatedController
   # with the AuthToken class handling that responsiblity.
 
   # GET /auth_tokens
-  def index
-  end
+  def index; end
 
   # GET /auth_tokens/new
-  def new
-  end
+  def new; end
 
   # POST /auth_tokens
   def create
