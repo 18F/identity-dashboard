@@ -12,12 +12,13 @@ SecureHeaders::Configuration.default do |config|
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
   config.csp = {
     default_src: ["'self'"],
-    frame_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", "https://portal.#{IdentityConfig.store.env_name}.#{IdentityConfig.store.root_domain}"], # deprecated in CSP 2.0
-    child_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", "https://portal.#{IdentityConfig.store.env_name}.#{IdentityConfig.store.root_domain}"], # CSP 2.0 only; replaces frame_src
-    frame_ancestors: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", "https://portal.#{IdentityConfig.store.env_name}.#{IdentityConfig.store.root_domain}"], # CSP 2.0 only; overriden by x_frame_options in some browsers
+    frame_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # deprecated in CSP 2.0
+    child_src: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # CSP 2.0 only; replaces frame_src
+    frame_ancestors: ["'self'", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'], # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: form_action.flatten,
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: connect_src.flatten,
+    connect_src: connect_src.flatten + [
+      "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com", 'https://portal.cnattrass.identitysandbox.gov'],
     font_src: ["'self'", 'data:'],
     img_src: ["'self'", 'data:', 'blob:',
 "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com", "https://#{IdentityConfig.store.aws_region}.quicksight.aws.amazon.com"],
