@@ -33,7 +33,7 @@ RSpec.describe Api::SecurityEventsController do
       end
 
       it 'creates a JWT and 201s' do
-        expect { action }.to(change(SecurityEvent, :count))
+        expect { action }.to(change { SecurityEvent.count })
 
         expect(response).to be_created
       end
@@ -45,7 +45,7 @@ RSpec.describe Api::SecurityEventsController do
       it 'logs a warning and does not create a SecurityEvent' do
         expect(Rails.logger).to receive(:warn)
 
-        expect { action }.to_not(change(SecurityEvent, :count))
+        expect { action }.to_not(change { SecurityEvent.count })
 
         expect(response).to be_bad_request
       end
