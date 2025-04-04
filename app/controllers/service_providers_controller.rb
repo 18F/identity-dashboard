@@ -127,7 +127,7 @@ value: func.to_proc.call(@service_provider) })
         has been created on your behalf, replies will be sent to #{current_user.email}."
     else
       flash[:error] =
-"Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
+        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
       redirect_to action: 'show', id:@service_provider.id
   end

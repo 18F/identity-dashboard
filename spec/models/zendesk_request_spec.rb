@@ -53,9 +53,9 @@ describe ZendeskRequest do
 
   describe 'ticket_body' do
     it 'generates the proper ticket body' do
-    description = zendesk_request.ticket_body
-    expected_body = "Please deploy #{sp.friendly_name} to the Login.gov Production Environment"
-    expect(description).to eq(expected_body)
+      description = zendesk_request.ticket_body
+      expected_body = "Please deploy #{sp.friendly_name} to the Login.gov Production Environment"
+      expect(description).to eq(expected_body)
     end
   end
 

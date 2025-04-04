@@ -40,9 +40,9 @@ module Tools
     end
 
     def valid_signature
-     return @valid_signature if defined? @valid_signature
+      return @valid_signature if defined? @valid_signature
 
-     @valid_signature = check_signature_validity
+      @valid_signature = check_signature_validity
     end
 
     def signed?
