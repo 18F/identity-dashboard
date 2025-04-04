@@ -81,19 +81,19 @@ describe Team do
     it { is_expected.to be_versioned }
 
     it 'tracks creation' do
-      expect { create(:team) }.to change(PaperTrail::Version, :count).by(1)
+      expect { create(:team) }.to change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks updates' do
       team = create(:team)
 
-      expect { team.update!(name: 'Team Awesome') }.to change(PaperTrail::Version, :count).by(1)
+      expect { team.update!(name: 'Team Awesome') }.to change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks deletion' do
       team = create(:team)
 
-      expect { team.destroy }.to change(PaperTrail::Version, :count).by(1)
+      expect { team.destroy }.to change { PaperTrail::Version.count }.by(1)
     end
   end
 

@@ -31,7 +31,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to change(UserTeam, :count).by(-1)
+      end.to change { UserTeam.count }.by(-1)
       expect(team.users).to_not include(user_to_delete)
     end
   end
@@ -41,7 +41,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to_not(change(UserTeam, :count))
+      end.to_not(change { UserTeam.count })
       expect(team.users.reload).to include(user_to_delete)
       expect(response).to be_unauthorized
     end

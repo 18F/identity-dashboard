@@ -235,7 +235,7 @@ feature 'Service Config Wizard' do
     it 'shows uploaded logo file errors' do
       visit service_config_wizard_path('logo_and_cert')
       attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
-      expect { click_on 'Next' }.to_not(change(WizardStep, :count))
+      expect { click_on 'Next' }.to_not(change { WizardStep.count })
       actual_error_message = find('#logo-upload-error').text
       expected_error_message = I18n.t(
         'service_provider_form.errors.logo_file.has_script_tag',

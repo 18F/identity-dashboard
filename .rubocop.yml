@@ -478,6 +478,8 @@ RSpec/StringAsInstanceDoubleConstant:
   Enabled: true
 
 RSpec/ExpectChange:
+  # A couple people expressed a preference for block
+  EnforcedStyle: block
   Enabled: true
 
 Capybara/SpecificFinders:

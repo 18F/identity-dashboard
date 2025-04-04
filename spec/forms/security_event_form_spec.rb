@@ -35,7 +35,7 @@ RSpec.describe SecurityEventForm do
       end
 
       it 'records the event in the database' do
-        expect { form.submit }.to(change(SecurityEvent, :count).by(1))
+        expect { form.submit }.to(change { SecurityEvent.count }.by(1))
 
         security_event = SecurityEvent.last
         aggregate_failures do
