@@ -13,7 +13,7 @@ function toggleSubmitButton() {
 
 function productionRequestModal() {
   prodRequestInputs.forEach((input) => {
-    input.addEventListener('change', toggleSubmitButton);
+    input.addEventListener('keyup', toggleSubmitButton);
   });
 }
 

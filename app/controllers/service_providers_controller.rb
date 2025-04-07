@@ -115,14 +115,14 @@ value: func.to_proc.call(@service_provider) })
 
     ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
 
-    response = JSON.parse(zendesk_request.create_ticket(ticket_data))
-    ticket_id = response.dig('request', 'id')
+    creation_status = zendesk_request.create_ticket(ticket_data)
 
-    unless ticket_id.blank?
-      flash[:success] = "Request submitted successfully. Ticket ##{ticket_id} \
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
         has been created on your behalf, replies will be sent to #{current_user.email}."
     else
-      flash[:error] = 'Unable to submit request. Please try again.'
+      flash[:error] =
+"Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
       redirect_to action: 'show', id:@service_provider.id
   end
