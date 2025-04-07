@@ -66,9 +66,7 @@ class ZendeskRequest
       input_type: 'text' },
   }
 
-  attr_accessor :requestor
-  attr_accessor :host
-  attr_accessor :service_provider
+  attr_accessor :host, :requestor, :service_provider
 
   def initialize(user, host, service_provider)
     @requestor = user
