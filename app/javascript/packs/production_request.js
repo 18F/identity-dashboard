@@ -1,19 +1,19 @@
 const prodRequestInputs = document.querySelectorAll('.prod-request-input');
-const submitButton = document.getElementById('submit-prod-request');
+const zendeskSubmitButton = document.getElementById('submit-prod-request');
 
-function toggleSubmitButton() {
-  let submitDisabled = false;
+function toggleZendeskSubmitButton() {
+  let zendeskSubmitDisabled = false;
   prodRequestInputs.forEach((input) => {
     if (input.value === '' || input.value === input.defaultValue) {
-      submitDisabled = true;
+      zendeskSubmitDisabled = true;
     }
   });
-  submitButton.disabled = submitDisabled;
+  zendeskSubmitButton.disabled = zendeskSubmitDisabled;
 }
 
 function productionRequestModal() {
   prodRequestInputs.forEach((input) => {
-    input.addEventListener('keyup', toggleSubmitButton);
+    input.addEventListener('keyup', toggleZendeskSubmitButton);
   });
 }
 
