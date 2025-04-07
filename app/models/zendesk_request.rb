@@ -69,7 +69,7 @@ class ZendeskRequest
 
   attr_accessor :requestor
   attr_accessor :host
-  attr_accessor :sp
+  attr_accessor :service_provider
 
   def initialize(user, host, service_provider)
     @requestor = user
@@ -121,10 +121,8 @@ class ZendeskRequest
       I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
     when 2
       I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
-    else
-      ial.inspect
     end
-    { id: ZENDESK_PORTAL_URL_ID, value: ial_value }
+    { id: ZENDESK_IAL_VALUE_ID, value: ial_value }
   end
 
   def create_ticket(ticket_data)
