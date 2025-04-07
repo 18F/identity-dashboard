@@ -71,7 +71,13 @@ en:
         confirm: They will no longer be able to see applications associated with the team using this email address.
         confirm_subhead: If you remove this user
   users:
-    rbac_description_html: "Lorem ipsum dolor sit insert <a class='usa-link' href='#'>roles and permissions guidance link</a> somewhere in here. Pulvinar cras dui non ultricies tempus leo purus cras morbi. Nobh dictum bulputate ut null blandit feugiat eget."
+    rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
+  user_teams:
+    rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
+    logingov_admin_description: ''
+    partner_admin_description: Can add and delete users and teams; grant and rescind permissions; create, edit and submit new and existing configs
+    partner_developer_description: Can create, edit and submit new and existing configs
+    partner_readonly_description: Can view existing config applications but cannot make changes
   home:
     landing_title: Simple integration for a more secure login experience
     landing_subtitle: Manage and test your integrations in the Partner Portal sandbox so that your users can log in with confidence.

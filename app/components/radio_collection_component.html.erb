@@ -1,0 +1,9 @@
+<ul class="usa-input-list" aria-describedby="<%= describedby %>">
+  <%= form.collection_radio_buttons(model_method,
+                                    inputs,
+                                    :last, :first,
+                                    item_wrapper_tag: :li,
+                                    checked: default) do |b| %>
+    <% button_and_label_for b %>
+  <% end %>
+</ul>
