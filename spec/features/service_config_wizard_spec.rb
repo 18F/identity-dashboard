@@ -488,6 +488,7 @@ feature 'Service Config Wizard' do
                                team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to_not have_content('Unauthorized')
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(true)

@@ -121,6 +121,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
@@ -129,6 +130,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://bar.com'
 
       service_provider.reload
@@ -137,6 +139,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to_not have_content('https://foo.com')
 
       service_provider.reload
@@ -163,32 +166,61 @@ feature 'Service Providers CRUD' do
       )
     end
 
-    scenario 'ACS URL is required with SAML protocol', :js do
-      service_provider = create(:service_provider, :saml, team:)
+    describe 'ACS URL is required with SAML protocol', :js do
+      let(:service_provider) { create(:service_provider, :saml, team:) }
 
-      visit edit_service_provider_path(service_provider)
-      acs_input = find_field('service_provider_acs_url')
-      submit_btn = find('input[name="commit"]')
-      # unset required field
-      acs_input.set('')
+      before do
+        visit edit_service_provider_path(service_provider)
+      end
 
-      submit_btn.click
-      acs_input = find_field('service_provider_acs_url')
-      message = acs_input.native.attribute('validationMessage')
-      expect(message).to eq 'Please fill out this field.'
+      scenario 'proper errors show up when blank' do
+        expect(page).to_not have_content("can't be blank")
+        acs_input = find_field('service_provider_acs_url')
+        # unset required field
+        acs_input.set('')
 
-      # fill field with invalid string
-      acs_input.set('lorem ipsum')
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
 
-      submit_btn.click
-      acs_input = find_field('service_provider_acs_url')
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('Acs url is invalid')
+        # Because this test checks an element that can be found both before and after
+        # submitting the form, there's a risk of race conditions. To avoid them, we must first
+        # assert something on the new page that isn't true for the previous page
+        # before fetching the element and asserting it has the properties we care about.
+        expect(page).to have_content("can't be blank")
 
-      # ensure that valid URL now submits properly
-      acs_input.set('https://fake.gov/test/saml/sp_login')
+        acs_input = find_field('service_provider_acs_url')
+        message = acs_input.native.attribute('validationMessage')
+        expect(message).to eq 'Please fill out this field.'
 
-      submit_btn.click
-      expect(page).to_not have_css('.usa-error-message')
+        # ensure that valid URL now submits properly
+        acs_input.set('https://fake.gov/test/saml/sp_login')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to_not have_content("can't be blank")
+        expect(page).to_not have_css('.usa-error-message')
+      end
+
+      scenario 'proper errors show up when not a URL' do
+        expect(page).to_not have_content('Acs url is invalid')
+        acs_input = find_field('service_provider_acs_url')
+        # fill field with invalid string
+        acs_input.set('lorem ipsum')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to have_content('Acs url is invalid')
+        expected_error_div = find('.service_provider_acs_url .usa-error-message')
+        expect(expected_error_div.text).to eq('Acs url is invalid')
+
+        # ensure that valid URL now submits properly
+        acs_input = find_field('service_provider_acs_url')
+        acs_input.set('https://fake.gov/test/saml/sp_login')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to_not have_css('.usa-error-message')
+      end
     end
 
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
@@ -223,6 +255,8 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
@@ -232,6 +266,7 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
 
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://bar.com'
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
@@ -240,6 +275,7 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
 
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to_not have_content 'https://foo.com'
 
       service_provider.reload
