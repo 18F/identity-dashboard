@@ -66,7 +66,7 @@ class ZendeskRequest
       input_type: 'text' },
   }
 
-  attr_accessor :host, :requestor, :service_provider
+  attr_accessor :host, :requestor, :service_provider, :conn
 
   def initialize(user, host, service_provider)
     @requestor = user
@@ -125,9 +125,9 @@ class ZendeskRequest
   def create_ticket(ticket_data)
     headers = { 'Content-Type' => 'application/json' }
 
-    conn = Faraday.new(url: ZENDESK_TICKET_POST_URL, headers: headers)
+    @conn ||= Faraday.new(url: ZENDESK_TICKET_POST_URL, headers: headers)
 
-    resp = conn.post { |req| req.body = ticket_data.to_json }
+    resp = @conn.post { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
 
     if resp.status == 201
