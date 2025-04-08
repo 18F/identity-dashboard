@@ -100,8 +100,10 @@ class ServiceProvidersController < AuthenticatedController
 
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
+    portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
+host: request.host)
 
-    zendesk_request = ZendeskRequest.new(current_user, request.host, @service_provider)
+    zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
     zendesk_request.ticket_field_functions.each_with_object(Hash.new) do |(id, func), result|

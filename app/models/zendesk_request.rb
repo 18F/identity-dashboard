@@ -1,7 +1,9 @@
 require 'rails'
 
 class ZendeskRequest
-  ZENDESK_TICKET_POST_URL = 'https://logingov.zendesk.com/api/v2/requests.json'
+  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
+  ZENDESK_POST_PATH = '/api/v2/requests.json'
+
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
@@ -66,11 +68,11 @@ class ZendeskRequest
       input_type: 'text' },
   }
 
-  attr_accessor :host, :requestor, :service_provider, :conn
+  attr_accessor :portal_url, :requestor, :service_provider, :conn
 
-  def initialize(user, host, service_provider)
+  def initialize(user, portal_url, service_provider)
     @requestor = user
-    @host = host
+    @portal_url = portal_url
     @service_provider = service_provider
   end
 
@@ -80,7 +82,7 @@ class ZendeskRequest
 
   def build_zendesk_ticket(custom_fields)
 
-    custom_fields << portal_url
+    custom_fields << portal_url_value
     custom_fields << ial_value
 
     ticket_data = {
@@ -107,9 +109,8 @@ class ZendeskRequest
     "Please deploy #{@service_provider.friendly_name} to the Login.gov Production Environment"
   end
 
-  def portal_url
-    url = Rails.application.routes.url_helpers.service_provider_url(@service_provider, host: @host)
-    { id: ZENDESK_PORTAL_URL_ID, value: url }
+  def portal_url_value
+    { id: ZENDESK_PORTAL_URL_ID, value: @portal_url }
   end
 
   def ial_value
@@ -125,9 +126,9 @@ class ZendeskRequest
   def create_ticket(ticket_data)
     headers = { 'Content-Type' => 'application/json' }
 
-    @conn ||= Faraday.new(url: ZENDESK_TICKET_POST_URL, headers: headers)
+    @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
 
-    resp = @conn.post { |req| req.body = ticket_data.to_json }
+    resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
 
     if resp.status == 201
