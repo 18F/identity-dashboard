@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_25_212140) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_28_162701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_25_212140) do
     t.string "app_name", default: "", null: false
     t.boolean "prod_config", default: false, null: false
     t.string "post_idv_follow_up_url"
+    t.string "status", default: "pending"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
