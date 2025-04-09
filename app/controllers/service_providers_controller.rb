@@ -129,7 +129,7 @@ value: func.to_proc.call(@service_provider) })
       flash[:error] =
         "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
-      redirect_to action: 'show', id:@service_provider.id
+      redirect_to action: 'show', id: @service_provider.id
   end
 
   private
