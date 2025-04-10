@@ -454,3 +454,6 @@ Rails/HasManyOrHasOneDependent:
 
 Rails/InverseOf:
   Enabled: true
+
+Style/Alias:
+  Enabled: true
