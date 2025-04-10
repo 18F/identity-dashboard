@@ -11,7 +11,10 @@ class Teams::UsersController < AuthenticatedController
 
   def index
     authorize current_user_team_membership if IdentityConfig.store.access_controls_enabled
-    @memberships = team.user_teams.where.not(user: nil).includes(:user).order('users.email')
+    @memberships = team.user_teams.where
+      .associated(:user, :team)
+      .includes(:user)
+      .order('users.email')
   end
 
   def new

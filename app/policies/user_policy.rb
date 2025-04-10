@@ -2,7 +2,7 @@ class UserPolicy < BasePolicy
   attr_reader :user
 
   def manage_users?
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   def none?
@@ -11,7 +11,7 @@ class UserPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if logingov_admin?
+      return scope if user_has_login_admin_role?
 
       # Rails can hand this off efficiently to the database
       user_ids_on_current_teams = UserTeam.select(:user_id).where(team: user.teams)

@@ -1,16 +1,16 @@
 <% if policy(@current_user_team_membership).manage_team_users? %>
   <h1>Manage users for <%= @team.name %></h1>
-<% else %>
-  <h1>Users for <%= @team.name %></h1>
-<% end %>
-
-<% if policy(@current_user_team_membership).manage_team_users? %>
+  <p>Manage team members from this screen. Add a new user and manage access and permissions from the Actions column.</p>
   <%= button_to "Add user",
     new_team_user_path(@team.id),
     method: :get,
     class: 'usa-button usa-button--outline'
   %>
+<% else %>
+  <h1>Users for <%= @team.name %></h1>
+  <p>View team members from this screen.</p>
 <% end %>
+
 <table class="usa-table">
   <thead>
     <tr>
@@ -35,7 +35,7 @@
         <% if show_actions? %>
           <td>
             <% if IdentityConfig.store.access_controls_enabled && policy(membership).edit? %>
-              <%= link_to 'Edit Role',
+              <%= link_to 'Edit',
                           edit_team_user_path(@team, membership.user),
                           class: 'usa-button--unstyled usa-link margin-right-1' %>
             <% end %>

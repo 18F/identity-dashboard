@@ -229,6 +229,15 @@ describe ServiceProviderPolicy do
       app = ServiceProvider.new(team:)
       expect(described_class).to permit(partner_readonly, app)
     end
+
+    context 'in a prod-like env' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+      it_behaves_like 'allows login.gov admins only for `object`' do
+        let(:object) { app }
+      end
+    end
   end
 
   permissions :update? do
