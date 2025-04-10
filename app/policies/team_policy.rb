@@ -6,8 +6,10 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
-      user_has_login_admin_role? || user_has_partner_admin_role?
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
+    return allowlisted_user?(user) unless IdentityConfig.store.access_controls_enabled
+
+    user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def destroy?
@@ -40,7 +42,7 @@ class TeamPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if logingov_admin?
+      return scope if user_has_login_admin_role?
 
       scope.where(id: user.teams)
     end

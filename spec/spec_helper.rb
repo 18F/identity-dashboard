@@ -42,6 +42,5 @@ WebMock.disable_net_connect!(
   allow: [
     /localhost/,
     /127\.0\.0\.1/,
-    /codeclimate.com/, # For uploading coverage reports
   ],
 )

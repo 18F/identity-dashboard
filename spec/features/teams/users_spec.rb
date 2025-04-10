@@ -132,6 +132,7 @@ describe 'users' do
 
   describe 'login.gov admin with an empty team' do
     let(:empty_team) { create(:team) }
+
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as logingov_admin
@@ -323,7 +324,7 @@ describe 'users' do
         visit team_users_path(team)
 
         within('tr', text: user_to_change.email) do
-          click_on 'Edit Role'
+          click_on 'Edit'
         end
         choose new_role.friendly_name
         click_on 'Update'
@@ -345,18 +346,22 @@ describe 'users' do
         visit team_users_path(team)
 
         within('tr', text: editable_user.email) do
-          expect(self).to have_link('Edit Role')
+          expect(self).to have_link('Edit')
         end
         within('tr', text: partner_admin_team_member.email) do
-          expect(self).to_not have_link('Edit Role')
+          expect(self).to_not have_link('Edit')
         end
       end
 
-      it 'does not show login.gov admin role' do
+      it 'does show all roles except for login.gov admin role' do
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_input_strings = (Role.all - [Role::LOGINGOV_ADMIN]).map(&:friendly_name)
-        expect(input_item_strings).to eq(expected_input_strings)
+        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN])
+        expect(input_item_strings.count).to eq(expected_roles.count)
+        expected_roles.each_with_index do |role, index|
+          expect(input_item_strings[index]).to include(role.friendly_name)
+        end
+        expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
       end
     end
   end

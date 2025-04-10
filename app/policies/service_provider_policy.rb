@@ -36,7 +36,7 @@ class ServiceProviderPolicy < BasePolicy
   ]).freeze
 
   def permitted_attributes
-    return ADMIN_PARAMS if logingov_admin?
+    return ADMIN_PARAMS if user_has_login_admin_role?
     return BASE_PARAMS unless ial_readonly?
 
     BASE_PARAMS.reject { |param| param == :ial }
@@ -53,7 +53,7 @@ class ServiceProviderPolicy < BasePolicy
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
 
-    logingov_admin? || user.user_teams.any? do |membership|
+    user_has_login_admin_role? || user.user_teams.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
         membership.role == Role.find_by(name: 'partner_admin')
     end
@@ -62,39 +62,40 @@ class ServiceProviderPolicy < BasePolicy
   def edit?
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    logingov_admin? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (membership && !partner_readonly?)
   end
 
   def create?
     return true unless IdentityConfig.store.access_controls_enabled
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
 
-    logingov_admin? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (membership && !partner_readonly?)
   end
 
   def update?
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    logingov_admin? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (membership && !partner_readonly?)
   end
 
   def destroy?
-    return logingov_admin? if IdentityConfig.store.prod_like_env
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
     return member_or_admin? unless IdentityConfig.store.access_controls_enabled
-    return false if !membership && !logingov_admin?
+    return false if !membership && !user_has_login_admin_role?
 
-    logingov_admin? || partner_admin? || creator?
+    user_has_login_admin_role? || partner_admin? || creator?
   end
 
   def all?
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   def deleted?
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   def edit_custom_help_text?
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   def ial_readonly?
@@ -103,12 +104,12 @@ class ServiceProviderPolicy < BasePolicy
     # readonly is for Prod edit
     return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
-    !logingov_admin?
+    !user_has_login_admin_role?
   end
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if logingov_admin?
+      return scope if user_has_login_admin_role?
 
       user.scoped_service_providers(scope:).reorder(nil)
     end
@@ -127,7 +128,7 @@ class ServiceProviderPolicy < BasePolicy
   def member_or_admin?
     return true if record.user == user && !IdentityConfig.store.access_controls_enabled
 
-    logingov_admin? || !!membership
+    user_has_login_admin_role? || !!membership
   end
 
   def creator?

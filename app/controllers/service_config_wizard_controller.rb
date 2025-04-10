@@ -39,7 +39,8 @@ class ServiceConfigWizardController < AuthenticatedController
     return new unless service_provider_id
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
-    authorize service_provider
+    authorize service_provider, :edit?
+
     steps = WizardStep.steps_from_service_provider(service_provider, current_user)
     # TODO: what if the service provider is somehow invalid?
     steps.each(&:save)
