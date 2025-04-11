@@ -9,7 +9,7 @@ class AuthTokenPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      logingov_admin? ? scope.where(user:) : scope.none
+      user_has_login_admin_role? ? scope.where(user:) : scope.none
     end
   end
 end
