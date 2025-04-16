@@ -7,4 +7,3 @@ class UnconfirmedUsersController < ApplicationController
     redirect_to users_path
   end
 end
-

@@ -3,9 +3,13 @@ class AuthToken < ApplicationRecord
 
   has_paper_trail ignore: [:token, :encrypted_token]
 
+  def self.for(user)
+    AuthTokenPolicy::Scope.new(user, self).resolve.where(user:).last
+  end
+
   def self.new_for_user(user)
     # 54 chosen here because BCrypt seems to ignore anything longer
-    self.build(user: user, token: SecureRandom.base64(54))
+    AuthTokenPolicy::Scope.new(user, self).resolve.build(user: user, token: SecureRandom.base64(54))
   end
 
   def token=(new_token)
