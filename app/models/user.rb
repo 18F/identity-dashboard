@@ -80,7 +80,7 @@ class User < ApplicationRecord
   end
 
   def auth_token
-    AuthToken.where(user: self).last || AuthToken.new_for_user(self)
+    AuthToken.for(self)
   end
 
   module DeprecateAdmin

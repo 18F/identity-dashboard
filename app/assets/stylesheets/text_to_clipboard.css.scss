@@ -1,0 +1,7 @@
+.clipboard-message-placeholder > span {
+  transition: opacity .15s ease-in-out;
+  opacity: 0;
+}
+.clipboard-message-placeholder > span.is-visible {
+  opacity: 1;
+}
