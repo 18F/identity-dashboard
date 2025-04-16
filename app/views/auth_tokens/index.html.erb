@@ -1,0 +1,13 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Auth tokens" %>
+
+<h1>Auth tokens status</h1>
+
+<% if @auth_token&.created_at.present? %>
+  <%= render @auth_token %>
+<% else %>
+  <p><strong>No tokens created</strong></p>
+<% end %>
+
+<%= link_to "Reset auth token", new_auth_token_path, class: 'usa-button usa-button--outline' %>

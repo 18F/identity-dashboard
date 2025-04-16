@@ -1,0 +1,22 @@
+<div id="<%= dom_id auth_token %>">
+  <p>
+    <strong>Created At:</strong>
+    <%= auth_token.created_at %>
+    <% if auth_token.ephemeral_token.present? %>
+      <div class='text-to-clipboard-wrapper'>
+        <p>Please copy your token down now, as this is the only time you will have access to it.</p>
+        <div class='clipboard-message-placeholder'></div>
+        <input disabled='disabled' class='clipboard-input' value='<%= auth_token.ephemeral_token %>' size='80' />
+        <button type='button'>
+          <%# This SVG cpied from the USWDS %>
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path>
+          </svg>
+        </button>
+      </div>
+    <% end %>
+  </p>
+
+</div>
+<%= javascript_include_tag 'text_to_clipboard' %>
+<%= stylesheet_link_tag 'text_to_clipboard' %>
