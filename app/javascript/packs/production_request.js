@@ -3,6 +3,7 @@ const zendeskSubmitButton = document.getElementById('submit-prod-request');
 
 function toggleZendeskSubmitButton() {
   let zendeskSubmitDisabled = false;
+  // TODO: use .some to reduce processing
   prodRequestInputs.forEach((input) => {
     if (input.value === '' || input.value === input.defaultValue) {
       zendeskSubmitDisabled = true;
