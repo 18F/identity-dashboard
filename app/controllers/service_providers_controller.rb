@@ -20,6 +20,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def show
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
+    @show_status_indicator = IdentityConfig.store.prod_like_env &&
+                             service_provider.prod_config? &&
+                             policy(service_provider).see_status?
   end
 
   def new

@@ -107,6 +107,10 @@ class ServiceProviderPolicy < BasePolicy
     !user_has_login_admin_role?
   end
 
+  def see_status?
+    user_has_login_admin_role?
+  end
+
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?
