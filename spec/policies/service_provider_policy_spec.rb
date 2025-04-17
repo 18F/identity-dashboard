@@ -278,6 +278,12 @@ describe ServiceProviderPolicy do
     end
   end
 
+  permissions :see_status? do
+    it_behaves_like 'allows login.gov admins only for `object`' do
+      let(:object) { app }
+    end
+  end
+
   describe '#permitted_attributes' do
     before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
 
