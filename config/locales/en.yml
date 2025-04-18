@@ -33,8 +33,7 @@ en:
       edit_service_provider: Edit
       remove_unconfirmed_users: Remove unconfirmed users
       trigger_idp_refresh: Publish service providers
-    confirm_service_provider: Are you sure you want to delete this service provider?
-      This cannot be undone.
+    confirm_service_provider: Are you sure you want to delete this service provider? This cannot be undone.
     required_field: Indicates a required field.
   headings:
     service_providers:
@@ -50,9 +49,7 @@ en:
       new: Create new user team
       new_team: Create a new team
       sub_index: Manage user teams
-      temporary_warning_team_user: "**Warning** Changing your team's agency will affect
-        the UUIDs of the users of an application in this team. Only add an agency
-        if you are prepared to migrate your users across applications."
+      temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an application in this team. Only add an agency if you are prepared to migrate your users across applications."
     users:
       edit: Edit user
       index: Users
@@ -82,8 +79,7 @@ en:
     landing_title: Simple integration for a more secure login experience
     landing_subtitle: Manage and test your integrations in the Partner Portal sandbox so that your users can log in with confidence.
     feature_section: Discover the possibilities
-    body_partners_html: Interested in Login.gov for your federal government applications?
-      Visit %{href_partners}
+    body_partners_html: Interested in Login.gov for your federal government applications? Visit %{href_partners}
     deployed_by_html: Deployed %{time} ago. View %{href}.
     dev_docs: View developer guide
     partners_link: login.gov/partners
@@ -137,12 +133,9 @@ en:
         All configuration changes or new configurations must be promoted to production following the process outlined in the <a href='https://developers.login.gov/production' target='_blank' class='usa-link'>Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
         <br/><br/>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='https://developers.login.gov/production' target='_blank' class='usa-link'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
-    service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov
-      for support.
-    service_providers_refreshed: Success! Service providers publish request has been
-      sent.
-    team_delete_failed: Only teams without apps can be deleted. Reassign or delete
-      the apps first.
+    service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
+    service_providers_refreshed: Success! Service providers publish request has been sent.
+    team_delete_failed: Only teams without apps can be deleted. Reassign or delete the apps first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
   omniauth:

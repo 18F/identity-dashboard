@@ -66,13 +66,13 @@ Layout/ParameterAlignment:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/DotPosition:
-  Description: Checks the position of the dot in multi-line method calls.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
-  EnforcedStyle: trailing
-  SupportedStyles:
-  - leading
-  - trailing
+# Layout/DotPosition:
+#   Description: Checks the position of the dot in multi-line method calls.
+#   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
+#   EnforcedStyle: trailing
+#   SupportedStyles:
+#   - leading
+#   - trailing
 
 Layout/ExtraSpacing:
   # When true, allows most uses of extra spacing if the intent is to align
