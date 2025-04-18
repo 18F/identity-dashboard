@@ -1,0 +1,25 @@
+class AuthTokenAuditor
+  EVENT_TAG = self.to_s.underscore.upcase
+
+  attr_reader :logger
+
+  def initialize(logger = nil)
+    @logger = logger
+    @logger ||= Rails.logger
+  end
+
+  def in_controller(controller, record = nil)
+    email = controller.current_user.email
+    url = controller.request.url
+    logger.warn(
+      "#{EVENT_TAG}: User #{email} running #{controller.class}##{controller.action_name} via #{url}",
+    )
+  end
+
+  def record_change(record)
+    yield if block_given?
+    logger.warn(
+      "#{EVENT_TAG}: Saved changes for #{record.user.email}",
+    )
+  end
+end
