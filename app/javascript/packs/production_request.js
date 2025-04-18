@@ -3,11 +3,10 @@ const zendeskSubmitButton = document.getElementById('submit-prod-request');
 
 function toggleZendeskSubmitButton() {
   let zendeskSubmitDisabled = false;
-  prodRequestInputs.some((input) => {
+  prodRequestInputs.forEach((input) => {
     if (input.value === '' || input.value === input.defaultValue) {
-      return zendeskSubmitDisabled = true;
+      zendeskSubmitDisabled = true;
     }
-    return false;
   });
   zendeskSubmitButton.disabled = zendeskSubmitDisabled;
 }
