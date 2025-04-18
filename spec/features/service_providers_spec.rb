@@ -838,7 +838,7 @@ feature 'Service Providers CRUD' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
       it 'displays the production call to action button' do
-        expect(page).to have_css("div[aria-controls='additional-data-modal']")
+        expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
   end
