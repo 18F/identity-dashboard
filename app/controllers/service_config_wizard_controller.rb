@@ -99,11 +99,12 @@ class ServiceConfigWizardController < AuthenticatedController
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
-      service_provider = if @model.existing_service_provider?
-        policy_scope(ServiceProvider).find(all_wizard_data['service_provider_id'])
-      else
-        policy_scope(ServiceProvider).new
-      end
+      service_provider =
+        if @model.existing_service_provider?
+          policy_scope(ServiceProvider).find(all_wizard_data['service_provider_id'])
+        else
+          policy_scope(ServiceProvider).new
+        end
       service_provider.attributes = service_provider.attributes.merge(
         transform_to_service_provider_attributes(all_wizard_data),
       )
@@ -135,14 +136,15 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def parsed_help_text
     text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
-    @parsed_help_text ||= if text_params.present?
-      HelpText.lookup(
-        params: text_params,
-        service_provider: @service_provider || draft_service_provider,
-      )
-    else
-      HelpText.new(service_provider: @service_provider || draft_service_provider)
-    end
+    @parsed_help_text ||=
+      if text_params.present?
+        HelpText.lookup(
+          params: text_params,
+          service_provider: @service_provider || draft_service_provider,
+        )
+      else
+        HelpText.new(service_provider: @service_provider || draft_service_provider)
+      end
   end
 
   def show_saml_options?

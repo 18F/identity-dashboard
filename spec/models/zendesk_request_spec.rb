@@ -9,7 +9,7 @@ describe ZendeskRequest do
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:conn) { Faraday.new(url: ZendeskRequest::ZENDESK_BASE_URL) { |b| b.adapter(:test, stubs) } }
   # rubocop:disable Layout/LineLength
-  let(:custom_fields) { [{ "id":4418367585684, "value":'on' }, { "id":20697165967508, "value":'on' }, { "id":4418412738836, "value":'General Services Administration' }, { "id":4417546214292, "value":'LGMIA999999' }, { "id":4417547364628, "value":'BillingPOC TestUser - test.user@gsa.gov - 555-555-1234' }, { "id":4417948129556, "value":'https://portal.int.identitysandbox.gov/service_providers/9999' }, { "id":23180053076628, "value":'urn:issuer:testing:gsa:test_application' }, { "id":4417940288916, "value":'https://fakeapplication.gov/logingov' }, { "id":4417492827796, "value":'Application Name - Testing Application' }, { "id":5064895580308, "value":'Application Description' }, { "id":14323206118676, "value":'General public' }, { "id":4417514509076, "value":'100000' }, { "id":14323273767572, "value":'1000' }, { "id":14326923502100, "value":'All Year Seasonality' }, { "id":4417513940756, "value":'1200000' }, { "id":4417494977300, "value":'ial1' }, { "id":4417512374548, "value":'2025-01-01' }, { "id":4417948190868, "value":'PM - test.user@gsa.gov - 555-555-1234' }, { "id":4417940248340, "value":'Techsupport - test.user@gsa.gov - 555-555-1234' }, { "id":4975909708564, "value":'Helpdesk Contact Info' }, { "id":4417169610388, "value":'new_integration' }] }
+  let(:custom_fields) { [{ "id": 4418367585684, "value": 'on' }, { "id": 20697165967508, "value": 'on' }, { "id": 4418412738836, "value": 'General Services Administration' }, { "id": 4417546214292, "value": 'LGMIA999999' }, { "id": 4417547364628, "value": 'BillingPOC TestUser - test.user@gsa.gov - 555-555-1234' }, { "id": 4417948129556, "value": 'https://portal.int.identitysandbox.gov/service_providers/9999' }, { "id": 23180053076628, "value": 'urn:issuer:testing:gsa:test_application' }, { "id": 4417940288916, "value": 'https://fakeapplication.gov/logingov' }, { "id": 4417492827796, "value": 'Application Name - Testing Application' }, { "id": 5064895580308, "value": 'Application Description' }, { "id": 14323206118676, "value": 'General public' }, { "id": 4417514509076, "value": '100000' }, { "id": 14323273767572, "value": '1000' }, { "id": 14326923502100, "value": 'All Year Seasonality' }, { "id": 4417513940756, "value": '1200000' }, { "id": 4417494977300, "value": 'ial1' }, { "id": 4417512374548, "value": '2025-01-01' }, { "id": 4417948190868, "value": 'PM - test.user@gsa.gov - 555-555-1234' }, { "id": 4417940248340, "value": 'Techsupport - test.user@gsa.gov - 555-555-1234' }, { "id": 4975909708564, "value": 'Helpdesk Contact Info' }, { "id": 4417169610388, "value": 'new_integration' }] }
   # rubocop:enable Layout/LineLength
 
   describe 'initialize' do
@@ -25,19 +25,19 @@ describe ZendeskRequest do
       ticket_data = zendesk_request.build_zendesk_ticket(custom_fields)
 
       expected_response = {
-      request:  {
-        requester: {
-          name: "#{user.first_name} #{user.last_name}",
-          email: user.email,
+        request:  {
+          requester: {
+            name: "#{user.first_name} #{user.last_name}",
+            email: user.email,
+          },
+          subject: "Deploy #{sp.friendly_name} to Production",
+          comment: {
+            body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment",
+          },
+          ticket_form_id: ZendeskRequest::ZENDESK_TICKET_FORM_ID,
+          custom_fields: custom_fields,
         },
-        subject: "Deploy #{sp.friendly_name} to Production",
-        comment: {
-          body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment",
-        },
-        ticket_form_id: ZendeskRequest::ZENDESK_TICKET_FORM_ID,
-        custom_fields: custom_fields,
-      },
-    }
+      }
 
       expect(ticket_data).to eq(expected_response)
     end
@@ -53,9 +53,9 @@ describe ZendeskRequest do
 
   describe 'ticket_body' do
     it 'generates the proper ticket body' do
-    description = zendesk_request.ticket_body
-    expected_body = "Please deploy #{sp.friendly_name} to the Login.gov Production Environment"
-    expect(description).to eq(expected_body)
+      description = zendesk_request.ticket_body
+      expected_body = "Please deploy #{sp.friendly_name} to the Login.gov Production Environment"
+      expect(description).to eq(expected_body)
     end
   end
 
