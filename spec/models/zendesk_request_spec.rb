@@ -19,7 +19,9 @@ describe ZendeskRequest do
       end
 
       it 'sets the request type to integration_change' do
-        expect(zendesk_request.ticket_field_functions[4417169610388].call(sp)).to eq('integration_change')
+        expect(
+          zendesk_request.ticket_field_functions[4417169610388].call(sp),
+        ).to eq('integration_change')
       end
     end
 
@@ -29,7 +31,9 @@ describe ZendeskRequest do
       end
 
       it 'sets the request type to new_integration' do
-        expect(zendesk_request.ticket_field_functions[4417169610388].call(sp)).to eq('new_integration')
+        expect(
+          zendesk_request.ticket_field_functions[4417169610388].call(sp),
+        ).to eq('new_integration')
       end
     end
   end
