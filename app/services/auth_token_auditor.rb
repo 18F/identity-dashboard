@@ -12,12 +12,12 @@ class AuthTokenAuditor
     email = controller.current_user.email
     url = controller.request.url
     method = "#{controller.class}##{controller.action_name}"
-    logger.warn("#{EVENT_TAG}: User #{email} running #{method} via #{url}")
+    logger.info("#{EVENT_TAG}: User #{email} running #{method} via #{url}")
   end
 
   def record_change(record)
     yield if block_given?
-    logger.warn(
+    logger.info(
       "#{EVENT_TAG}: Saved changes for #{record.user.email}",
     )
   end

@@ -24,7 +24,7 @@ describe AuthTokenAuditor do
     let(:record_double) { build(:auth_token) }
 
     before do
-      allow(logger_double).to receive(:warn)
+      allow(logger_double).to receive(:info)
     end
 
     describe '#in_controller' do
@@ -33,7 +33,7 @@ describe AuthTokenAuditor do
         action_name = ['create', 'new'].sample
         request = ActionDispatch::Request.new({})
         expect(controller_double).to receive_messages(current_user:, action_name:, request:)
-        expect(logger_double).to receive(:warn).with(
+        expect(logger_double).to receive(:info).with(
           "#{described_class::EVENT_TAG}: User #{current_user.email} running " \
           "#{AuthTokensController}##{action_name} via http://:",
         )
@@ -44,7 +44,7 @@ describe AuthTokenAuditor do
     describe '#record_change' do
       it 'logs a change' do
         new_record = build(:auth_token)
-        expect(logger_double).to receive(:warn).with(
+        expect(logger_double).to receive(:info).with(
           "#{described_class::EVENT_TAG}: Saved changes for #{new_record.user.email}",
         )
         auditor_with_mock.record_change(new_record)
