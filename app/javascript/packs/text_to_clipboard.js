@@ -6,7 +6,7 @@ function textToClipboard(element) {
 
   const message = document.createElement("span");
   message.innerHTML = "Copied to clipboard!";
-  messagePlaceholder.append(this.message);
+  messagePlaceholder.append(message);
   button.addEventListener('click', (_e) => {
     navigator.clipboard.writeText(input.value);
     message.classList.add('is-visible');
