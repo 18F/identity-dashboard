@@ -70,7 +70,7 @@ class WizardStep < ApplicationRecord
       service_provider_id: nil,
       service_provider_user_id: nil,
       post_idv_follow_up_url: nil,
-  }),
+    }),
   }.with_indifferent_access.freeze
 
   STEPS = (STEP_DATA.keys - ['hidden']).freeze

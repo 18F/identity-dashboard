@@ -80,6 +80,7 @@ group :development, :test do
   gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 end
 
 group :test do

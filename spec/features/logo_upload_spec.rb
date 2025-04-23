@@ -122,7 +122,7 @@ feature 'Logo upload' do
 
       click_on 'Update'
 
-      expect(current_path).to eq(service_provider_path(service_provider))
+      expect(page).to have_current_path(service_provider_path(service_provider))
 
       sp = user.service_providers.last
 

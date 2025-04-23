@@ -7,9 +7,9 @@ FactoryBot.define do
     association :user, factory: :user
     association :agency, factory: :agency
     help_text do
-      { 'sign_in':{ en:'<b>Some sign-in help text</b>', es:'', fr:'', zh:'' },
-        'sign_up':{ en:'<b>Some sign-in help text</b>', es:'', fr:'', zh:'' },
-        'forgot_password':{ en:'<b>Some sign-in help text</b>', es:'', fr:'', zh:'' },
+      { 'sign_in': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
+        'sign_up': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
+        'forgot_password': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
       }
     end
 

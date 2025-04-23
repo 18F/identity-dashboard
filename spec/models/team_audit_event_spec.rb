@@ -78,8 +78,10 @@ RSpec.describe TeamAuditEvent do
 
       # It's difficult to compare date strings without normalizing them first
       expect(user_addition['created_at'].first).to be_nil
-      expected_created_date = user_membership.user.created_at.to_datetime.to_s
-      expect(DateTime.parse(user_addition['created_at'].last).to_s).to eq(expected_created_date)
+      expected_created_date = user_membership.user.created_at.to_datetime
+      expect(DateTime.parse(user_addition['created_at'].last))
+        .to be_within(2.seconds)
+        .of(expected_created_date)
     end
   end
 

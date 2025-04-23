@@ -538,6 +538,9 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
     rubocop-rspec (3.2.0)
       rubocop (~> 1.61)
+    rubocop-rspec_rails (2.30.0)
+      rubocop (~> 1.61)
+      rubocop-rspec (~> 3, >= 3.0.1)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     ruby_regex (0.2.1)
@@ -691,6 +694,7 @@ DEPENDENCIES
   rubocop-capybara
   rubocop-rails (>= 2.9)
   rubocop-rspec
+  rubocop-rspec_rails
   ruby_regex
   saml_idp!
   secure_headers (~> 3.9)

@@ -837,12 +837,8 @@ feature 'Service Providers CRUD' do
     describe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
-      it 'displays the production call to action links' do
-        prod_url = 'https://developers.login.gov/production'
-        zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
-
-        expect(page).to have_css("a[href='#{prod_url}']")
-        expect(page).to have_css("a[href='#{zendesk_ticket}']")
+      it 'displays the production call to action button' do
+        expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
   end
@@ -854,5 +850,46 @@ feature 'Service Providers CRUD' do
     click_on 'Delete'
 
     expect(page).to have_content('Success')
+  end
+
+  describe 'status indicator' do
+    let(:app) do
+      create(:service_provider,
+        status: ServiceProvider::STATUSES.sample,
+        prod_config: true,
+        team: team)
+    end
+    let(:user_to_log_in_as) { logingov_admin }
+
+    it 'shows for Login.gov Admin for a prod app in a prod-like env' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show if the env is not prod-like' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show of the user is not a Login.gov Admin' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      login_as user
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show if the app is not flagged for production' do
+      app.prod_config = false
+      app.save!
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Sandbox')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
   end
 end
