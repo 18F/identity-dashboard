@@ -4,6 +4,10 @@
     "node": ">=18",
     "npm": "6.x.x"
   },
+  "private": "true",
+  "workspaces": [
+    "app/javascript/packages/*"
+  ],
   "scripts": {
     "lint": "eslint . --ignore-pattern public --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage",
     "build": "webpack",
