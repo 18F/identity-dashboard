@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "module": "ESNext",
+    "target": "es2020",
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "jsxImportSource": "preact",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["typings/*", "*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["mocha"]
+  },
+  "include": ["./src", "index.ts"]
+}

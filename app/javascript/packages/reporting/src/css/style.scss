@@ -1,0 +1,56 @@
+@import "/node_modules/identity-style-guide/dist/assets/scss/packages/required";
+
+@include usa-link-style;
+
+.plot text {
+  font-size: 10px;
+}
+
+.table-number {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.usa-table tfoot td {
+  font-weight: bold;
+  background-color: color('base-lighter');
+}
+
+.x-axis.rotate-labels {
+  text {
+    transform: rotate(90deg) translate(1em, -1.2em);
+    text-anchor: start;
+  }
+}
+
+/**
+ * Default usa-form is limited to 20rem aka one column
+ */
+.usa-form--full-width {
+  @include u-width(full);
+}
+
+.max-width-300 {
+  max-width: 300px;
+}
+
+.truncate-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+// Borrowed from: https://github.com/18F/identity-idp/blob/main/app/assets/stylesheets/components/_icon.scss
+// Upstream: https://github.com/uswds/uswds/pull/4493
+.usa-icon {
+  .usa-button > &:first-child {
+    // Note: This diverges from the upstream pull request in a couple ways:
+    // 1. There should not be any margins offsetting to account for line height, since Login.gov
+    //    Design System normalizes button line height to 1.
+    // 2. Float is replaced by `vertical-align`, since otherwise it will have the effect of having
+    //    the icon appear to the far edge of the button, rather than next to the text.
+    vertical-align: bottom;
+    margin-right: 0.25rem;
+  }
+}
