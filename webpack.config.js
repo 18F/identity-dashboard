@@ -8,7 +8,10 @@ const isProductionEnv = env === 'production';
 module.exports = {
   mode: isProductionEnv ? 'production' : 'development',
   devtool: isProductionEnv ? false : 'source-map',
-  entry: glob('app/javascript/packs/*.js').reduce((result, filepath) => {
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  },
+  entry: glob('app/javascript/packs/*.[js,ts,tsx,jsx]').reduce((result, filepath) => {
     result[path.parse(filepath).name] = path.resolve(filepath);
     return result;
   }, {}),

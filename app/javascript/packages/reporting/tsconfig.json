@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
-    "module": "ESNext",
+    "module": "preserve",
     "target": "es2020",
     "jsx": "preserve",
     "jsxFactory": "h",
@@ -12,12 +12,13 @@
     "paths": {
       "*": ["typings/*", "*"]
     },
-    "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "types": ["mocha"]
+    "types": ["mocha"],
+    "skipLibCheck": true,
+
   },
   "include": ["./src", "index.ts"]
 }
