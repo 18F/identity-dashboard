@@ -9,8 +9,6 @@
   },  
   "scripts": {
     "build": "vite build",
-    "postbuild": "npm run generate-routes && cp robots.txt _site/",
-    "generate-routes": "node -r esbuild-register bin/generate-routes.js",
     "pages": "npm run build -- --base=${BASEURL:-/}",
     "prettier:fix": "npm run test:lint -- --fix",
     "start": "vite --port ${PORT:-3000}",

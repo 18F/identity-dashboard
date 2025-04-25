@@ -11,7 +11,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
-  entry: glob('app/javascript/packs/*.[js,ts,tsx,jsx]').reduce((result, filepath) => {
+  entry: glob('app/javascript/packs/*.{js,ts,tsx,jsx}').reduce((result, filepath) => {
     result[path.parse(filepath).name] = path.resolve(filepath);
     return result;
   }, {}),
@@ -20,18 +20,25 @@ module.exports = {
     sourceMapFilename: "[file].map",
     path: path.resolve(__dirname, `app/assets/builds`),
   },
-  plugins: [
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
-    })
-  ],
-  module: {
+    module: {
     rules: [
       {
-        test: /\.(js)$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              ['@babel/preset-typescript', { isTSX: true, allExtensions: true }],
+              ['@babel/preset-react',{ runtime: 'automatic', importSource: 'preact' }],
+            ],
+          },
+        },
       },
     ],
   },
-};
+plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+  ],
+}
