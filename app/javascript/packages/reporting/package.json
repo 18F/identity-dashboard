@@ -1,17 +1,12 @@
 {
-  "name": "identity-reporting",
+  "name": "@18f/identity-reporting",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
+
   "engines": {
     "npm": ">=7"
-  },
-  "exports": {
-    ".": {
-      "import": "./index.tsx",
-      "require": "./index.tsx"
-    },
-    "./package.json": "./package.json"
-  },
+  },  
   "scripts": {
     "build": "vite build",
     "postbuild": "npm run generate-routes && cp robots.txt _site/",
