@@ -1,8 +1,6 @@
 import useRegistrationData from "src/hooks/use-registration-data";
 
 export { default as Accordion } from "./accordion";
-export { default as Header } from "./header";
-export { default as Page } from "./page";
 export { default as PlotComponent } from "./plot";
 export { default as ReportFilterControls } from "./report-filter-controls";
 export { default as DailyRegistrationsReport } from "./daily-registrations-report";

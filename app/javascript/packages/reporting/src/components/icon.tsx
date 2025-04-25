@@ -1,7 +1,6 @@
 import { VNode } from "preact";
 // eslint-disable-next-line import/no-relative-packages
-import spriteURL from "../../node_modules/identity-style-guide/dist/assets/img/sprite.svg";
-
+import spriteURL from "identity-style-guide/dist/assets/img/sprite.svg";
 interface IconProps {
   icon: string;
 }

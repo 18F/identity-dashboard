@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
     "jsx": "preserve",
     "jsxImportSource": "preact",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
-  }
+    "jsxFragmentFactory": "Fragment",
+    "moduleResolution": "node"
+  },
+  "include": ["app/javascript/**/*"]
+
 }
