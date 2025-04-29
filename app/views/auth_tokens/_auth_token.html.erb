@@ -5,7 +5,7 @@
     <% if auth_token.ephemeral_token.present? %>
       <div class='text-to-clipboard-wrapper'>
         <p>Please copy your token down now, as this is the only time you will have access to it.</p>
-        <div class='clipboard-message-placeholder'></div>
+        <span class='clipboard-message opacity-0' aria-live='polite'>&nbsp;</span>
         <input disabled='disabled' class='clipboard-input' value='<%= auth_token.ephemeral_token %>' size='80' />
         <button type='button'>
           <%# This SVG cpied from the USWDS %>

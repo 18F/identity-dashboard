@@ -27,7 +27,7 @@ feature 'Auth tokens' do
       expect(page).to have_content('this is the only time you will have access to it')
       page_token = find('input').value
       saved_token = AuthToken.for(logingov_admin)
-      expect(saved_token).to be_valid(page_token)
+      expect(saved_token).to be_valid_token(page_token)
 
       visit auth_tokens_path
       expect(page).to_not have_content('Please copy your token')
@@ -54,7 +54,7 @@ feature 'Auth tokens' do
       button = find '.text-to-clipboard-wrapper button'
       button.click
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
-      expect(logingov_admin.auth_token).to be_valid(copied_text)
+      expect(logingov_admin.auth_token).to be_valid_token(copied_text)
     end
   end
 end
