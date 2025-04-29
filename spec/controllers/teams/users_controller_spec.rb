@@ -100,6 +100,17 @@ describe Teams::UsersController do
           expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
         end
 
+        it 'does not allow partner admins to set others to partner admin' do
+          expect(user.user_teams.where(group_id: team).first.role_name).to eq('partner_admin')
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: 'partner_admin' },
+          }
+          errors = assigns[:membership].errors.full_messages
+          expect(errors).to eq(['Role name partner_admin can not set others to partner admin'])
+        end
+
         it 'redirects without RBAC flag' do
           allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
           put :update, params: {

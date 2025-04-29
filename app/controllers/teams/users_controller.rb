@@ -58,9 +58,20 @@ class Teams::UsersController < AuthenticatedController
       redirect_to(action: :index, team_id: team)
       return
     end
+
     authorize membership
-    membership.assign_attributes(membership_params)
-    membership.save
+
+    user_role = current_user.user_teams.where(group_id: team).first.role_name
+    updated_role = membership_params[:role_name]
+
+    if (user_role == 'partner_admin') && (updated_role != 'partner_admin')
+      membership.assign_attributes(membership_params)
+      membership.save
+    else
+      membership.errors.add(:role_name, 'partner_admin can not set others to partner admin')
+      flash[:error] = 'Cannot update user role, your user does not have proper permission level.'
+    end
+
     if membership.errors.any?
       @user = membership.user
       render :edit
