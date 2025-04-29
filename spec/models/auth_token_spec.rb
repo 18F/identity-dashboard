@@ -35,7 +35,7 @@ RSpec.describe AuthToken, type: :model do
       token.save!
 
       expect(AuthToken.for(logingov_admin).encrypted_token).to eq(token.encrypted_token)
-      expect(AuthToken.for(logingov_admin)).to be_valid(ephemeral_token)
+      expect(AuthToken.for(logingov_admin)).to be_valid_token(ephemeral_token)
     end
   end
 
