@@ -102,7 +102,11 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    (Role.all - [Role::LOGINGOV_ADMIN]).map { |r| [r.friendly_name, r.name] }
+    roles = (Role.all - [Role::LOGINGOV_ADMIN]).map { |r| [r.friendly_name, r.name] }
+    if current_user_team_membership.role_name == 'partner_admin'
+      roles.delete(['Partner Admin', 'partner_admin'])
+    end
+    roles
   end
 
   def show_actions?
