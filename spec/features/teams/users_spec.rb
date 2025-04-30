@@ -353,15 +353,17 @@ describe 'users' do
         end
       end
 
-      it 'does show all roles except for login.gov admin role' do
+      it 'does show all roles except for login.gov admin and partner admin roles' do
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
         expected_roles = (Role.all - [Role::LOGINGOV_ADMIN])
+        expected_roles.delete(Role.find_by(name: 'partner_admin'))
         expect(input_item_strings.count).to eq(expected_roles.count)
         expected_roles.each_with_index do |role, index|
           expect(input_item_strings[index]).to include(role.friendly_name)
         end
         expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
+        expect(page).to_not have_content('Partner Admin')
       end
     end
   end
