@@ -109,6 +109,35 @@ describe Teams::UsersController do
           }
           expect(response).to redirect_to(team_users_path(team))
         end
+
+        context 'in a prod_like_env' do
+          let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
+
+          before do
+            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+            allow(Rails.logger).to receive(:info)
+          end
+
+          it 'logs updates to member roles' do
+            put :update, params: {
+              team_id: team.id,
+              id: updatable_membership.user.id,
+              user_team: { role_name: 'partner_developer' },
+            }
+
+            expect(Rails.logger).to have_received(:info).with(match('team_role_updated'))
+          end
+
+          it 'does not log updates when roles are unchanged' do
+            put :update, params: {
+              team_id: team.id,
+              id: updatable_membership.user.id,
+              user_team: { role_name: 'partner_readonly' },
+            }
+
+            expect(Rails.logger).to_not have_received(:info).with(match('team_role_updated'))
+          end
+        end
       end
 
       describe '#edit' do
