@@ -34,18 +34,6 @@ class ApplicationController < ActionController::Base
     payload[:trace_id] = request.headers['X-Amzn-Trace-Id']
   end
 
-  attr_writer :log
-
-  def log(logger: nil)
-    @log ||=
-      EventLogger.new(
-        user: current_user,
-        request: request,
-        session: session,
-        logger: logger,
-      )
-  end
-
   private
 
   def set_cache_headers

@@ -60,7 +60,9 @@ class Teams::UsersController < AuthenticatedController
     end
     authorize membership
     membership.assign_attributes(membership_params)
-    log.team_role_updated(controller: self, membership: membership) if membership.role_name_changed?
+    if IdentityConfig.store.prod_like_env && membership.role_name_changed?
+      EventLogger.new(controller: self).team_role_updated(controller: self, membership: membership)
+    end
     membership.save
     if membership.errors.any?
       @user = membership.user

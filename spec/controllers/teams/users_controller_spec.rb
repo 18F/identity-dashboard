@@ -115,7 +115,7 @@ describe Teams::UsersController do
 
           before do
             allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-            allow(Rails.logger).to receive(:info)
+            allow(EventLogger).to receive(:team_role_updated)
           end
 
           it 'logs updates to member roles' do
@@ -125,7 +125,7 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_developer' },
             }
 
-            expect(Rails.logger).to have_received(:info).with(match('team_role_updated'))
+            expect(EventLogger).to have_received(:team_role_updated)
           end
 
           it 'does not log updates when roles are unchanged' do
@@ -135,7 +135,7 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_readonly' },
             }
 
-            expect(Rails.logger).to_not have_received(:info).with(match('team_role_updated'))
+            expect(log).to_not have_received(:info).with(match('team_role_updated'))
           end
         end
       end

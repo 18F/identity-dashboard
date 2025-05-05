@@ -11,14 +11,12 @@ RSpec.describe EventLogger do
   let(:time_now) { Time.zone.now() }
   let(:log_attributes) do
     {
-      path: path,
-      event_properties: {},
+      properties: { path: path },
     }.merge(request_attributes)
   end
   let(:request) { FakeRequest.new }
   let(:request_attributes) do
     {
-      log_filename: IdentityConfig.store.event_log_filename,
       visit_id: session[:visit_token],
       user_id: uuid,
       user_role: current_user&.primary_role&.name,
