@@ -18,7 +18,7 @@ class EventLogger
     @options = options
   end
 
-  def track_event(name, properties = {}, options = {})
+  def track_event(name, status, properties = {}, options = {})
     data = {
       visit_id: visit_token,
       user_id: user.try(:uuid),
@@ -27,6 +27,7 @@ class EventLogger
       properties: properties.merge!({ path: request&.path }).compact,
       time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
+      status: status,
     }.compact
 
     data.merge!(request_attributes) if request
