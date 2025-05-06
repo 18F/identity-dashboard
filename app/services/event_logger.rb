@@ -5,30 +5,30 @@ require 'securerandom'
 class EventLogger
   include LogEvents
 
-  attr_reader :request, :controller, :user, :options, :session
+  attr_reader :request, :response, :controller, :user, :options, :session
 
   def initialize(**options)
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
-    @user = options[:user] || @controller.try(:user)
+    @response = options[:response] || @controller.try(:response)
+    @user = options[:user] || @controller.try(:current_user)
     @session = options[:session] || @controller.try(:session)
-    @logger = options[:logger] || Rails.logger
+    @logger = options[:logger] || Logger.new(
+      Rails.root.join('log', IdentityConfig.store.event_log_filename),
+    )
     @options = options
   end
 
   def track_event(name, properties = {}, options = {})
     data = {
-      log_filename: IdentityConfig.store.event_log_filename,
       visit_id: visit_token,
       user_id: user.try(:uuid),
       user_role: user&.primary_role&.name,
       name: name.to_s,
-      properties: {
-        event_properties: properties.compact,
-        path: request&.path,
-      }.compact,
+      properties: properties.merge!({ path: request&.path }).compact,
       time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
+      status: response.try(:status),
     }.compact
 
     data.merge!(request_attributes) if request

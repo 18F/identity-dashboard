@@ -12,6 +12,10 @@ FactoryBot.define do
       teams { create_list(:team, 1) }
     end
 
+    trait :team_member do
+      teams { create_list(:team, 1) }
+    end
+
     factory :logingov_admin do
       admin { true }
     end

@@ -2,6 +2,7 @@
 
 # ABC_XYZ -- Keep it Alphabetical!
 # Security and analytics events are separated alphabetically
+# status should be 'SUCCESS', 'FAILURE', or HTTP status
 
 module LogEvents
   # When a user clicks "Create an app"
@@ -11,7 +12,6 @@ module LogEvents
 
   def team_role_updated(controller:, membership:)
     track_event('team_role_updated', {
-      current_user: controller.current_user.uuid,
       team_user: membership.user.email,
       team: membership.team.name,
       role: {

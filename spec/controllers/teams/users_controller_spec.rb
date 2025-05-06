@@ -110,12 +110,13 @@ describe Teams::UsersController do
           expect(response).to redirect_to(team_users_path(team))
         end
 
-        context 'in a prod_like_env' do
+        context 'logging' do
           let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
+          let(:logger_double) { instance_double(EventLogger) }
 
           before do
-            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-            allow(Rails.logger).to receive(:info)
+            allow(logger_double).to receive(:team_role_updated)
+            allow(EventLogger).to receive(:new).and_return(logger_double)
           end
 
           it 'logs updates to member roles' do
@@ -125,7 +126,7 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_developer' },
             }
 
-            expect(Rails.logger).to have_received(:info).with(match('team_role_updated'))
+            expect(logger_double).to have_received(:team_role_updated)
           end
 
           it 'does not log updates when roles are unchanged' do
@@ -135,7 +136,7 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_readonly' },
             }
 
-            expect(Rails.logger).to_not have_received(:info).with(match('team_role_updated'))
+            expect(logger_double).to_not have_received(:team_role_updated)
           end
         end
       end
