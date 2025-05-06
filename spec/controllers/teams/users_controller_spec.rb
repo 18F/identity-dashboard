@@ -110,12 +110,11 @@ describe Teams::UsersController do
           expect(response).to redirect_to(team_users_path(team))
         end
 
-        context 'in a prod_like_env' do
+        context 'logging' do
           let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
           let(:logger_double) { instance_double(EventLogger) }
 
           before do
-            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
             allow(logger_double).to receive(:team_role_updated)
             allow(EventLogger).to receive(:new).and_return(logger_double)
           end

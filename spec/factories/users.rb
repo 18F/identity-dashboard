@@ -9,6 +9,10 @@ FactoryBot.define do
     end
 
     factory :team_member do
+      teams { create_list(:team, 1)}
+    end
+
+    trait :team_member do
       teams { create_list(:team, 1) }
     end
 
