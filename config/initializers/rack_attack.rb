@@ -1,5 +1,4 @@
 class Rack::Attack
-
   ### Configure Cache ###
 
   # If you don't want to use Rails.cache (Rack::Attack's default), then
@@ -24,7 +23,7 @@ class Rack::Attack
   # Throttle all requests by IP
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-  throttle('req/ip', limit: 100, period: 1.minutes) do |req|
+  throttle('req/ip', limit: 100, period: 1.minute) do |req|
     req.ip # unless req.path.start_with?('/assets')
   end
 
@@ -46,13 +45,17 @@ class Rack::Attack
 
   ### Basic Auth Attacks
   #
-  # After 5 requests with incorrect auth in 1 minute,
+  # After 5 requests with the same user account within 1 minute,
   # block all requests from that IP for 1 hour.
-  blocklist('basic auth crackers') do |req|
-    Allow2Ban.filter(req.ip, maxretry: 5, findtime: 1.minute, bantime: 1.hour) do
-      # Return true if the authorization header is incorrect
-      auth = Basic::Request.new(req.env)
-      auth.credentials != [my_username, my_password]
+  blocklist('suspicious basic auth usage') do |req|
+    if req.env['HTTP_AUTHORIZATION']
+      token_params = ActionController::HttpAuthentication::Token.token_params_from(
+        req.env['HTTP_AUTHORIZATION'],
+      ).to_h
+      email = token_params['email']
+      Allow2Ban.filter(req.ip, maxretry: 5, findtime: 1.minute, bantime: 1.hour) do
+        email.present?
+      end
     end
   end
   ### Custom Throttle Response ###
