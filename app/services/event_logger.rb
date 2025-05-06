@@ -5,11 +5,12 @@ require 'securerandom'
 class EventLogger
   include LogEvents
 
-  attr_reader :request, :controller, :user, :options, :session
+  attr_reader :request, :response, :controller, :user, :options, :session
 
   def initialize(**options)
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
+    @response = options[:response] || @controller.try(:response)
     @user = options[:user] || @controller.try(:current_user)
     @session = options[:session] || @controller.try(:session)
     @logger = options[:logger] || Logger.new(
@@ -18,7 +19,7 @@ class EventLogger
     @options = options
   end
 
-  def track_event(name, status, properties = {}, options = {})
+  def track_event(name, properties = {}, options = {})
     data = {
       visit_id: visit_token,
       user_id: user.try(:uuid),
@@ -27,7 +28,7 @@ class EventLogger
       properties: properties.merge!({ path: request&.path }).compact,
       time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
-      status: status,
+      status: response.try(:status),
     }.compact
 
     data.merge!(request_attributes) if request

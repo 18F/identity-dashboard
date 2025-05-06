@@ -7,11 +7,11 @@
 module LogEvents
   # When a user clicks "Create an app"
   def sp_config_created
-    track_event('sp_config_created', 'SUCCESS')
+    track_event('sp_config_created')
   end
 
   def team_role_updated(controller:, membership:)
-    track_event('team_role_updated', 'SUCCESS', {
+    track_event('team_role_updated', {
       team_user: membership.user.email,
       team: membership.team.name,
       role: {

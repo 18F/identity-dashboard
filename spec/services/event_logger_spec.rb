@@ -11,7 +11,7 @@ RSpec.describe EventLogger do
   let(:time_now) { Time.zone.now() }
   let(:log_attributes) do
     {
-      properties: { path: path },
+      properties: { path: },
     }.merge(request_attributes)
   end
   let(:request) { FakeRequest.new }
@@ -33,6 +33,7 @@ RSpec.describe EventLogger do
       browser_bot: false,
       time: time_now,
       event_id: 'test_event_id',
+      status: 200,
     }
   end
 
