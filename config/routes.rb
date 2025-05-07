@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'users/none' => 'users#none'
   delete '/remove_unconfirmed_users' => 'unconfirmed_users#destroy'
   get '/env' => 'env#index'
+  get '/reports' => 'reports#index'
 
   resources :users
   resources :banners, except: :destroy

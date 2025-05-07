@@ -1,0 +1,25 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Reports" %>
+
+<h1>Reports</h1>
+
+<div id="reports">
+  <details><summary>Roles report</summary>
+    <table class="usa-table grid-col-fill">
+      <thead>
+        <tr><th scope="col">User email</th><th scope="col">Role</th><th scope="col">Team</th></tr>
+      </thead>
+      <tbody>
+        <% @memberships.each do |membership| %>
+          <tr>
+            <td><%= membership.user.email%></td>
+            <td><%= membership.role&.friendly_name %></td>
+            <td><% if membership.team %><%= link_to membership.team.name, membership.team %><% end %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </details>
+  <p><%= link_to 'Download report', reports_path(format: :csv) %>
+</div>
