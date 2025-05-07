@@ -23,8 +23,15 @@ class Rack::Attack
   # Throttle all requests by IP
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-  throttle('req/ip', limit: 100, period: 1.minute) do |req|
-    req.ip # unless req.path.start_with?('/assets')
+  # Safelist localhost when running the test suite, since the test suite will otherwise fail
+  if Rails.env.test?
+    throttle('req/ip', limit: 100, period: 1.minute) do |req|
+      req.ip if req.ip != '127.0.0.1' && req.ip != '::1'
+    end
+  else
+    throttle('req/ip', limit: 100, period: 1.minute) do |req|
+      req.ip # unless req.path.start_with?('/assets')
+    end
   end
 
   ### Prevent Brute-Force Login Attacks ###
@@ -58,6 +65,7 @@ class Rack::Attack
       end
     end
   end
+
   ### Custom Throttle Response ###
 
   # By default, Rack::Attack returns an HTTP 429 for throttled responses,
