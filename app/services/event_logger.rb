@@ -8,14 +8,17 @@ class EventLogger
   attr_reader :request, :response, :controller, :user, :options, :session
 
   def initialize(**options)
+    default_logger = ActiveSupport::Logger.new(
+      Rails.root.join('log', IdentityConfig.store.event_log_filename),
+    )
+    default_logger.formatter = Rails.logger.formatter
+
     @controller = options[:controller]
     @request = options[:request] || @controller.try(:request)
     @response = options[:response] || @controller.try(:response)
     @user = options[:user] || @controller.try(:current_user)
     @session = options[:session] || @controller.try(:session)
-    @logger = options[:logger] || Logger.new(
-      Rails.root.join('log', IdentityConfig.store.event_log_filename),
-    )
+    @logger = options[:logger] || default_logger
     @options = options
   end
 
@@ -25,7 +28,10 @@ class EventLogger
       user_id: user.try(:uuid),
       user_role: user&.primary_role&.name,
       name: name.to_s,
-      properties: properties.merge!({ path: request&.path }).compact,
+      properties: {
+        event_properties: properties.compact,
+        path: request&.path,
+      }.compact,
       time: options[:time] || Time.current,
       event_id: options[:id] || generate_uuid,
       status: response.try(:status),
