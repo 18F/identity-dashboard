@@ -9,7 +9,7 @@ class EventLogger
 
   def initialize(**options)
     default_logger = ActiveSupport::Logger.new(
-      Rails.root.join('log', IdentityConfig.store.event_log_filename)
+      Rails.root.join('log', IdentityConfig.store.event_log_filename),
     )
     default_logger.formatter = Rails.logger.formatter
 
