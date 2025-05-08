@@ -767,7 +767,9 @@ feature 'Service Providers CRUD' do
 
             expect(page).to have_content(File.basename(@file_path))
 
-            error_field = page.find('.js-pem-input-error-message')
+            # Capybara considers empty span tags invisible.
+            error_field = page.find('.js-pem-input-error-message', visible: :all)
+            expect(error_field).to_not be_visible
             expect(error_field.text).to be_empty
           end
         end

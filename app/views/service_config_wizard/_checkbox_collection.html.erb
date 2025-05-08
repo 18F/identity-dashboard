@@ -6,9 +6,11 @@
   @param disabled [Boolean] whether this input is disabled
 %>
 <div class="usa-checkbox" aria-describedby="<%= describedby %>">
-  <p class="usa-error-message js-bundle-input-error-message">
-    <%= form.object.errors[db_fieldname].to_sentence.presence %>
-  </p>
+  <% if form.object.errors[db_fieldname].present? %>
+    <p class="usa-error-message js-bundle-input-error-message">
+      <%= form.object.errors[db_fieldname].to_sentence.presence %>
+    </p>
+  <% end %>
   <%= form.collection_check_boxes(db_fieldname,
                                   inputs,
                                   :last, :first,

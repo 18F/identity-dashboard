@@ -22,7 +22,7 @@
                           label: accessible_label(form, 'Choose a file', :logo_file),
                           class: 'usa-button',
                           id: 'logo-file-button' %>
-          <p class='usa-error-message' id='logo-upload-error'>
+          <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id='logo-upload-error'>
             <% if form.object.errors[:logo_file].present? %>
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
@@ -45,7 +45,7 @@
           <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.cert_input') %></label>
 
           <div class="clearfix">
-            <span class="usa-error-message js-pem-input-error-message">
+            <span class="<%= 'usa-error-message' if form.object.errors[:certs].present? %> js-pem-input-error-message">
               <%= form.object.errors[:certs].to_sentence.presence %>
             </span>
             <%= form.file_field :cert, class: 'input-file js-pem-input' %>
