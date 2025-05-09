@@ -113,10 +113,10 @@ function certificateUploadSetup() {
   // Functions
   const setPemError = (message) => {
     pemInputMessage.textContent = message;
-    if (!!message) {
-      pemInputMessage.classList.add('usa-error-message')
+    if (message) {
+      pemInputMessage.classList.add('usa-error-message');
     } else {
-      pemInputMessage.classList.remove('usa-error-message')
+      pemInputMessage.classList.remove('usa-error-message');
     }
   };
 

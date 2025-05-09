@@ -2,7 +2,7 @@
 (document.getElementById("service_provider_logo_file") || document.querySelector(".logo-input-file")).addEventListener("change", (e) => {
   // Clear the error div
   const errorTag = document.getElementById("logo-upload-error");
-  errorTag.classList.remove('usa-error-message')
+  errorTag.classList.remove('usa-error-message');
   errorTag.textContent = "";
 
   // See https://stackoverflow.com/a/3717847
@@ -19,7 +19,7 @@
     const file = e.target.files[0];
 
     if (file.size > (50 * 1024)) { // file.size returns bytes
-      errorTag.classList.add('usa-error-message')
+      errorTag.classList.add('usa-error-message');
       errorTag.textContent = "ERROR: Logo must not be larger than 50kB.";
       // reset the input to avoid sending the file to server
       e.target.value = '';
