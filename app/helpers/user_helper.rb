@@ -16,7 +16,7 @@ module UserHelper
 
   def title(user)
     if !user.uuid? && user.unconfirmed?
-      return "Sign-in deadline: #{deadline(user)})"
+      return "Sign-in deadline: #{deadline(user)}"
     end
   end
 
@@ -28,9 +28,7 @@ module UserHelper
   end
 
   def alt(user)
-    return 'User has signed in' if user.uuid?
-    return "Unconfirmed user (sign-in deadline: #{deadline(user)})" if user.unconfirmed?
-
-    'User has not yet signed in'
+    return '' if user.uuid? || !user.unconfirmed?
+    return "Sign-in deadline: #{deadline(user)}"
   end
 end
