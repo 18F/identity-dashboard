@@ -1,6 +1,6 @@
 ### Relevant Ticket or Conversation:
 
-### Input Description
+### Description
 
 ### Steps to Reproduce:
   - Outline steps to reproduce the bug, in chronological order 
