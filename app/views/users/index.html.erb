@@ -33,7 +33,7 @@
         <td><%= image_tag sign_in_icon(user), height: '27', width: '27',
                           title: title(user),
                           alt: alt(user),
-                          role: 'img',
+                          aria: { hidden: true },
                           style: 'vertical-align:bottom' %>
           <%= caption(user) %>                  
         </td>
@@ -43,8 +43,8 @@
           <% else %>
             <%= image_tag 'security-key.svg',
                             height: '27', width: '27',
-                            alt: 'admin user icon',
-                            role: 'img' if user.logingov_admin? %>
+                            alt: 'admin user',
+                            aria: { hidden: true } if user.logingov_admin? %>
           <% end %>
         </td>
         <td>
