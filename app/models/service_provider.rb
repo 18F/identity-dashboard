@@ -20,6 +20,7 @@ class ServiceProvider < ApplicationRecord
   validates_with LogoValidator
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
+  validates_with SamlCertsPresentValidator
 
   STATUSES = %w[pending live rejected].freeze
 
