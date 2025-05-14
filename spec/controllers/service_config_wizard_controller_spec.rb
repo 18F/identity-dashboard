@@ -344,9 +344,9 @@ RSpec.describe ServiceConfigWizardController do
         wizard_steps_ready_to_go.each(&:save!)
         logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert' }
         expect(logo_step.logo_file).to be_blank
-        put :update, params: { id: 'logo_and_cert', wizard_step: { 
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
           logo_file: good_logo,
-          cert: good_cert 
+          cert: good_cert,
         } }
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
