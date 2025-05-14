@@ -255,6 +255,10 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_content 'https://foo.com'
+
+      expect(page).to have_current_path(service_provider_path(service_provider))
+      expect(page).to have_content 'https://foo.com'
 
       expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
