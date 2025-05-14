@@ -95,7 +95,7 @@
                    class: 'usa-label' %>
     <%= form.hint t('service_provider_form.attribute_bundle_html') %>
 
-    <span class="usa-error-message js-bundle-input-error-message">
+    <span class="<%= 'usa-error-message' if service_provider.errors[:attribute_bundle].present? %> js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
     </span>
 
@@ -181,7 +181,7 @@
       </label>
 
       <div class="clearfix">
-        <span class="usa-error-message js-pem-input-error-message">
+        <span class="<%= 'usa-error-message' if service_provider.errors[:certs].present? %> js-pem-input-error-message">
           <%= service_provider.errors[:certs].to_sentence.presence %>
         </span>
         <%= form.file_field :cert, class: 'input-file js-pem-input' %>
