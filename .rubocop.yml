@@ -8,6 +8,7 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-capybara
+  - rubocop-rspec_rails
 
 inherit_gem:
   pundit: config/rubocop-rspec.yml
@@ -39,6 +40,9 @@ AllCops:
 Rails:
   Enabled: false
 
+Bundler:
+  Enabled: true
+
 Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
   #
@@ -65,13 +69,13 @@ Layout/ParameterAlignment:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Layout/DotPosition:
-  Description: Checks the position of the dot in multi-line method calls.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
-  EnforcedStyle: trailing
-  SupportedStyles:
-  - leading
-  - trailing
+# Layout/DotPosition:
+#   Description: Checks the position of the dot in multi-line method calls.
+#   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
+#   EnforcedStyle: trailing
+#   SupportedStyles:
+#   - leading
+#   - trailing
 
 Layout/ExtraSpacing:
   # When true, allows most uses of extra spacing if the intent is to align
@@ -272,9 +276,6 @@ Lint/ConstantDefinitionInBlock:
 Lint/IdentityComparison:
   Enabled: true
 
-Bundler/DuplicatedGem:
-  Enabled: true
-
 Naming/BinaryOperatorParameterName:
   Enabled: true
 
@@ -448,3 +449,57 @@ RSpec/MultipleMemoizedHelpers:
   #   1 team
   #   1 object the permission is tested for
   Max: 7
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
+
+Rails/InverseOf:
+  Enabled: true
+
+Style/Alias:
+  Enabled: true
+
+Rails/ResponseParsedBody:
+  Enabled: true
+
+RSpecRails/HttpStatus:
+  Enabled: true
+
+RSpecRails/HaveHttpStatus:
+  Enabled: true
+
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: true
+
+Capybara/CurrentPathExpectation:
+  Enabled: true
+
+Capybara/RSpec/HaveSelector:
+  Enabled: true
+
+RSpec/StringAsInstanceDoubleConstant:
+  Enabled: true
+
+RSpec/ExpectChange:
+  # A couple people expressed a preference for block
+  EnforcedStyle: block
+  Enabled: true
+
+Capybara/SpecificFinders:
+  Enabled: false
+
+Rails/Date:
+  Enabled: true
+
+Layout/FirstHashElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
+Layout/IndentationWidth:
+  Enabled: true
+
+Layout/AssignmentIndentation:
+  Enabled: true
+
+Layout/SpaceAfterColon:
+  Enabled: true

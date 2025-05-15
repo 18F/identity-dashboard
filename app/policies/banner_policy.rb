@@ -1,18 +1,18 @@
 class BannerPolicy < BasePolicy
   def manage_banners?
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   def edit?
     return false if record.ended?
 
-    logingov_admin?
+    user_has_login_admin_role?
   end
 
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      user&.logingov_admin? ? scope.all : scope.none
+      user_has_login_admin_role? ? scope.all : scope.none
     end
   end
 end

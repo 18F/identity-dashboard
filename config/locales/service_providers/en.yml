@@ -98,5 +98,45 @@ en:
       forgot_password:
         blank: Leave blank
         troubleshoot_html: "If you are having trouble accessing your Login.gov account, <a href=\"https://login.gov/help\">visit the Login.gov help center</a> for support."
+    zendesk_ticket:
+      iaa_number: 
+        label: IAA Number
+        hint_html: "The GTC, Order, and Mod number of the IAA this application will be billed under (please reach out to your agency IAA contact if you have any questions). For more information see here: <a href='https://developers.login.gov/production/#confirm-iaa'>https://developers.login.gov/production/#confirm-iaa</a>."
+      application_url:
+        label: Application URL
+        hint_html: The production URL of the application
+      audience:
+        label: Application Audience User Base
+        hint_html: The primary user of your application
+      est_annual_reg:
+        label: Estimated Annual Registrations
+        hint_html: The number of users you expect to register on an annual basis. This number is used to ensure service quality.
+      monthly_active_users:
+        label: Monthly Active Users
+        hint_html: The average or estimated average monthly user base for your application
+      seasonality:
+        label: Seasonality of Application Usage
+        hint_html: Is there any historical and or expected seasonality to the usage of this application? For example, will there be a spike in usage around New Years or during tax season.
+      est_auths:
+        label: Estimated Authentications
+        hint_html: Estimated authentications on an annual basis for your application.
+      launch_date:
+        label: Desired Launch Date
+        hint_html: The date you will make the Login.gov integration available to your users. Login.gov requires a minimum of 14 days to go live with your application. Integrations go live on Thursdays.
+      billing_pocs:
+        label: Billing POCs
+        hint_html: "Billing Points of Contact (names, titles, emails, and phone numbers)"
+      pm_pocs:
+        label: Program Management POCs
+        hint_html: "Program Management Points of Contact (names, titles, emails, and phone numbers)"
+      tech_support_pocs:
+        label: Technical Support POCs
+        hint_html: "Technical Support Points of Contact (names, titles, emails, and phone numbers)"
+      help_desk_contact_info:
+        label: Help Desk Contact Information
+        hint_html: "The phone number and email of the application's help desk"
+      ial_option_1: ial1
+      ial_option_2: idv
+
   banner_form:
     message_hint: Please attempt to keep messages to under 150 characters if possible.

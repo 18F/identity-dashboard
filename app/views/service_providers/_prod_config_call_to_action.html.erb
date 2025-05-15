@@ -4,7 +4,7 @@
     <p class="margin-top-0"><%= t('call_to_action.review_changes') %></p>
     <div class="grid-row"> 
       <a class="usa-button usa-button--outline align-center usa-link usa-link--external text-primary text-no-underline" target="_blank" href="https://developers.login.gov/production"><%= t('call_to_action.read_process') %></a>
-      <a class="usa-button align-center usa-dark-background usa-link usa-link--external text-no-underline" target="_blank" href="https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332"><%= t('call_to_action.submit_request') %></a>
+        <button class="usa-button align-center usa-dark-background" aria-controls="additional-data-modal" data-open-modal><%= t('call_to_action.submit_request') %></button>
     </div>
     <div class="grid-row margin-top-2 usa-alert measure-5 usa-alert--warning">
       <p class="usa-alert__body margin-05">
@@ -13,3 +13,5 @@
     </div>
   </div>
 </div>
+
+<%= render partial: 'prod_promotion_request_form' %>

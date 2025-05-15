@@ -7,8 +7,8 @@ class Team < ApplicationRecord
 
   has_many :service_providers, dependent: :nullify, foreign_key: 'group_id',
                                inverse_of: :team
-  has_many :user_teams, foreign_key: 'group_id', inverse_of: :team
-  has_many :users, dependent: :destroy, through: :user_teams
+  has_many :user_teams, foreign_key: 'group_id', inverse_of: :team, dependent: :destroy
+  has_many :users, through: :user_teams, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 

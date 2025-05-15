@@ -39,13 +39,14 @@ class BannersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_banner
-      @banner = policy_scope(Banner).find(params[:id])
-    end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_banner
+    @banner = policy_scope(Banner).find(params[:id])
+  end
 
     # Only allow a list of trusted parameters through.
-    def banner_params
-      params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
-    end
+  def banner_params
+    params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
+  end
 end

@@ -121,6 +121,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
@@ -129,6 +130,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://bar.com'
 
       service_provider.reload
@@ -137,6 +139,7 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to_not have_content('https://foo.com')
 
       service_provider.reload
@@ -163,32 +166,61 @@ feature 'Service Providers CRUD' do
       )
     end
 
-    scenario 'ACS URL is required with SAML protocol', :js do
-      service_provider = create(:service_provider, :saml, team:)
+    describe 'ACS URL is required with SAML protocol', :js do
+      let(:service_provider) { create(:service_provider, :saml, team:) }
 
-      visit edit_service_provider_path(service_provider)
-      acs_input = find_field('service_provider_acs_url')
-      submit_btn = find('input[name="commit"]')
-      # unset required field
-      acs_input.set('')
+      before do
+        visit edit_service_provider_path(service_provider)
+      end
 
-      submit_btn.click
-      acs_input = find_field('service_provider_acs_url')
-      message = acs_input.native.attribute('validationMessage')
-      expect(message).to eq 'Please fill out this field.'
+      scenario 'proper errors show up when blank' do
+        expect(page).to_not have_content("can't be blank")
+        acs_input = find_field('service_provider_acs_url')
+        # unset required field
+        acs_input.set('')
 
-      # fill field with invalid string
-      acs_input.set('lorem ipsum')
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
 
-      submit_btn.click
-      acs_input = find_field('service_provider_acs_url')
-      expect(find('.service_provider_acs_url .usa-error-message').text).to eq('Acs url is invalid')
+        # Because this test checks an element that can be found both before and after
+        # submitting the form, there's a risk of race conditions. To avoid them, we must first
+        # assert something on the new page that isn't true for the previous page
+        # before fetching the element and asserting it has the properties we care about.
+        expect(page).to have_content("can't be blank")
 
-      # ensure that valid URL now submits properly
-      acs_input.set('https://fake.gov/test/saml/sp_login')
+        acs_input = find_field('service_provider_acs_url')
+        message = acs_input.native.attribute('validationMessage')
+        expect(message).to eq 'Please fill out this field.'
 
-      submit_btn.click
-      expect(page).to_not have_css('.usa-error-message')
+        # ensure that valid URL now submits properly
+        acs_input.set('https://fake.gov/test/saml/sp_login')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to_not have_content("can't be blank")
+        expect(page).to_not have_css('.usa-error-message')
+      end
+
+      scenario 'proper errors show up when not a URL' do
+        expect(page).to_not have_content('Acs url is invalid')
+        acs_input = find_field('service_provider_acs_url')
+        # fill field with invalid string
+        acs_input.set('lorem ipsum')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to have_content('Acs url is invalid')
+        expected_error_div = find('.service_provider_acs_url .usa-error-message')
+        expect(expected_error_div.text).to eq('Acs url is invalid')
+
+        # ensure that valid URL now submits properly
+        acs_input = find_field('service_provider_acs_url')
+        acs_input.set('https://fake.gov/test/saml/sp_login')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+        expect(page).to_not have_css('.usa-error-message')
+      end
     end
 
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
@@ -223,6 +255,8 @@ feature 'Service Providers CRUD' do
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       click_on 'Update'
+
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
 
       service_provider.reload
@@ -232,6 +266,7 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[1].set 'https://bar.com'
       click_on 'Update'
 
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://bar.com'
       service_provider.reload
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
@@ -240,6 +275,7 @@ feature 'Service Providers CRUD' do
       page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
       click_on 'Update'
 
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to_not have_content 'https://foo.com'
 
       service_provider.reload
@@ -731,7 +767,9 @@ feature 'Service Providers CRUD' do
 
             expect(page).to have_content(File.basename(@file_path))
 
-            error_field = page.find('.js-pem-input-error-message')
+            # Capybara considers empty span tags invisible.
+            error_field = page.find('.js-pem-input-error-message', visible: :all)
+            expect(error_field).to_not be_visible
             expect(error_field.text).to be_empty
           end
         end
@@ -801,22 +839,59 @@ feature 'Service Providers CRUD' do
     describe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
-      it 'displays the production call to action links' do
-        prod_url = 'https://developers.login.gov/production'
-        zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
-
-        expect(page).to have_css("a[href='#{prod_url}']")
-        expect(page).to have_css("a[href='#{zendesk_ticket}']")
+      it 'displays the production call to action button' do
+        expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
   end
 
   scenario 'Delete' do
-    app = create(:service_provider, team:)
+    app = create(:service_provider, team:, user:)
 
     visit service_provider_path(app)
     click_on 'Delete'
 
     expect(page).to have_content('Success')
+  end
+
+  describe 'status indicator' do
+    let(:app) do
+      create(:service_provider,
+        status: ServiceProvider::STATUSES.sample,
+        prod_config: true,
+        team: team)
+    end
+    let(:user_to_log_in_as) { logingov_admin }
+
+    it 'shows for Login.gov Admin for a prod app in a prod-like env' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show if the env is not prod-like' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show of the user is not a Login.gov Admin' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      login_as user
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Production')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
+
+    it 'does not show if the app is not flagged for production' do
+      app.prod_config = false
+      app.save!
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit service_provider_path(app)
+      expect(page).to have_content('Portal Configuration: Sandbox')
+      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+    end
   end
 end

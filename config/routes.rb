@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :users
   resources :banners, except: :destroy
   resources :service_config_wizard, except: %i[index edit]
+  resources :auth_tokens, only: %i[index new create]
 
   get '/teams/all' => 'teams#all'
   resources :teams
@@ -29,6 +30,7 @@ Rails.application.routes.draw do
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'
   post '/service_providers/publish' => 'service_providers#publish'
+  post '/service_providers/prod_request' => 'service_providers#prod_request'
   resources :service_providers
 
   get '/security_events/all' => 'security_events#all'

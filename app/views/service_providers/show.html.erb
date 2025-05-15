@@ -6,11 +6,19 @@
   <%= render partial: 'prod_config_call_to_action' %>
 <% end %>
 
+
 <h2 class="margin-bottom-0">
   <label for="identity_protocol">Portal Configuration:</label>
   <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Production' : 'Sandbox' %></span>
 </h2>
 <hr>
+<% if @show_status_indicator %>
+  <h2 class="margin-bottom-0">
+    Portal Production Status:
+    <span class="font-mono-xs margin-left-5"><%= service_provider.status.capitalize %></span>
+  </h2>
+  <hr>
+<% end %>
 
 <h2 class="margin-bottom-0">
   <label for="name">App name: </label>

@@ -30,6 +30,7 @@ development:
   mailer_domain: 'https://dashboard.login.gov'
   post_logout_redirect_uri: http://localhost:3001
   saml_sp_issuer: 'http://localhost:3001'
+  prod_like_env: true
 production:
   dashboard_api_token: changeme
   idp_sp_url: changeme

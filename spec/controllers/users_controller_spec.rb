@@ -101,6 +101,26 @@ describe UsersController do
           expect(ut.role_name).to eq('partner_admin')
         end
       end
+
+      context 'logging' do
+        let(:user_to_edit) { create(:user, :team_member) }
+        let(:logger_double) { instance_double(EventLogger) }
+
+        before do
+          allow(logger_double).to receive(:team_role_updated)
+          allow(EventLogger).to receive(:new).and_return(logger_double)
+        end
+
+        it 'logs updates to member roles only when roles are unchanged' do
+          patch :update, params: { id: user_to_edit.id, user: {
+            user_team: { role_name: 'partner_readonly' },
+          } }
+          patch :update, params: { id: user_to_edit.id, user: {
+            user_team: { role_name: 'partner_readonly' },
+          } }
+          expect(logger_double).to have_received(:team_role_updated).once
+        end
+      end
     end
 
     context 'when not a login.gov admin' do
@@ -143,6 +163,7 @@ describe UsersController do
 
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
+
       before do
         delete :destroy, params: { id: user_to_delete.id }
       end

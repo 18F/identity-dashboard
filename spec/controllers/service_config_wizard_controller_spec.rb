@@ -398,6 +398,7 @@ RSpec.describe ServiceConfigWizardController do
                 issuer: "issuer:string:#{rand(1...1000)}",
                 friendly_name: 'Friendly App')
       end
+
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
         put :create, params: { service_provider: existing_service_provider }

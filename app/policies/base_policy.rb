@@ -50,23 +50,15 @@ class BasePolicy
       raise NotImplementedError, 'BasePolicy::Scope#resolve should be overridden in a child class'
     end
 
-    def logingov_admin?
+    def user_has_login_admin_role?
       user&.logingov_admin?
     end
   end
 
   private
 
-  def logingov_admin?
-    user&.logingov_admin?
-  end
-
   def user_has_login_admin_role?
-    return logingov_admin? unless IdentityConfig.store.access_controls_enabled
-
-    logingov_admin? || user.user_teams.any? do |membership|
-      membership.role == Role.find_by(name: 'logingov_admin')
-    end
+    user&.logingov_admin?
   end
 
   def user_has_partner_admin_role?

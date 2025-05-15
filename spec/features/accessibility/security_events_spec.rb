@@ -8,6 +8,7 @@ feature 'Security events pages', :js do
 
       context 'when not login.gov admin' do
         let(:user) { create(:user) }
+
         # not authorized but should ensure accesibility
         scenario 'is accessible' do
           visit security_events_path
