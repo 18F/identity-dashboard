@@ -20,4 +20,17 @@ module LogEvents
       },
     })
   end
+
+  def model_save(record)
+    model_name = record.class.name.downcase
+    op_name = record.previous_changes == {} ?
+      'deleted' :
+       record.created_at == record.updated_at ?
+        'created' :
+        'updated'
+    changes = record.previous_changes.filter { |k, v|
+      !k.match('updated_at')
+    }
+    track_event("#{model_name}_#{op_name}", changes)
+  end
 end
