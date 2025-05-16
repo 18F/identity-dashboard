@@ -86,6 +86,6 @@ class TeamsController < AuthenticatedController
   end
 
   def log_change(&)
-    ModelAuditor.new(controller: self).record_change(@team, &)
+    RecordAuditor.new(controller: self).record_change(@team, &)
   end
 end

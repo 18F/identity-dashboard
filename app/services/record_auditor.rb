@@ -1,4 +1,4 @@
-class ModelAuditor
+class RecordAuditor
   EVENT_TAG = self.to_s.underscore.upcase
 
   attr_reader :logger
@@ -15,6 +15,6 @@ class ModelAuditor
 
   def record_change(record = nil, &)
     yield if block_given?
-    logger.model_save record
+    logger.record_save record
   end
 end

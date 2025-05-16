@@ -59,4 +59,30 @@ RSpec.describe EventLogger do
       log.track_event('Trackable Event', { example: nil })
     end
   end
+
+  describe '#record_save' do
+    it 'logs record creation' do
+      fake_record = FakeRecord.new
+      fake_record.create
+      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_created\"'))
+
+      log.record_save(fake_record)
+    end
+
+    it 'logs record update' do
+      fake_record = FakeRecord.new
+      fake_record.update
+      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_updated\"'))
+
+      log.record_save(fake_record)
+    end
+
+    it 'logs record deletion' do
+      fake_record = FakeRecord.new
+      fake_record.delete
+      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_deleted\"'))
+
+      log.record_save(fake_record)
+    end
+  end
 end

@@ -23,7 +23,6 @@ class EventLogger
   end
 
   def track_event(name, properties = {}, options = {})
-    binding.pry
     data = {
       visit_id: visit_token,
       user_id: user.try(:uuid),

@@ -6,7 +6,7 @@
 
 module LogEvents
   # Generic CrUD logger
-  def model_save(record)
+  def record_save(record)
     model_name = record.class.name.downcase
     op_name = record.previous_changes == {} ?
       'deleted' :
@@ -24,7 +24,7 @@ module LogEvents
     track_event('sp_config_created')
   end
 
-  def team_role_updated(controller:, membership:)
+  def team_role_updated(membership:)
     track_event('team_role_updated', {
       team_user: membership.user.email,
       team: membership.team.name,

@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       user.update!(user_params)
       user.user_teams.each do |team|
         team.role = role
-        log.team_role_updated(controller: self, membership: team) if team.role_name_changed?
+        log.team_role_updated(membership: team) if team.role_name_changed?
         team.save!
       end
     end
