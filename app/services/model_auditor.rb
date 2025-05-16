@@ -3,7 +3,7 @@ class ModelAuditor
 
   attr_reader :logger
 
-  def initialize(logger: nil, controller:)
+  def initialize(controller:, logger: nil)
     @logger = logger
     @logger ||= EventLogger.new(
       user: controller.current_user,

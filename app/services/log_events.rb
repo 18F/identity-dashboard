@@ -5,6 +5,20 @@
 # status should be 'SUCCESS', 'FAILURE', or HTTP status
 
 module LogEvents
+  # Generic CrUD logger
+  def model_save(record)
+    model_name = record.class.name.downcase
+    op_name = record.previous_changes == {} ?
+      'deleted' :
+       record.created_at == record.updated_at ?
+        'created' :
+        'updated'
+    changes = record.previous_changes.filter do |k, v|
+      !k.match('updated_at')
+    end
+    track_event("#{model_name}_#{op_name}", changes)
+  end
+
   # When a user clicks "Create an app"
   def sp_config_created
     track_event('sp_config_created')
@@ -19,18 +33,5 @@ module LogEvents
         old: membership.role_name_was,
       },
     })
-  end
-
-  def model_save(record)
-    model_name = record.class.name.downcase
-    op_name = record.previous_changes == {} ?
-      'deleted' :
-       record.created_at == record.updated_at ?
-        'created' :
-        'updated'
-    changes = record.previous_changes.filter { |k, v|
-      !k.match('updated_at')
-    }
-    track_event("#{model_name}_#{op_name}", changes)
   end
 end
