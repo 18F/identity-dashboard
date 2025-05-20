@@ -20,6 +20,8 @@ en:
       logo_file:
         no_viewbox: "The logo file you uploaded (%{filename}) is missing a viewBox. Please add a viewBox attribute to your SVG and re-upload"
         has_script_tag: "The logo file you uploaded (%{filename}) contains one or more script tags. Please remove all script tags and re-upload"
+      certs:
+        saml_no_cert: "Certificate is required for SAML"
     app_name_html: "The name of your application as it appears in the signed <a href='https://developers.login.gov/production/#confirm-interagency-agreement-iaa' class='usa-link'>Inter-Agency Agreement (IAA)</a> with Login.gov. Ex: DHS-CSP"
     app_name_guided_html: The application name listed in your signed <a href='https://developers.login.gov/production/#confirm-interagency-agreement-iaa' class='usa-link'>Inter-Agency Agreement (IAA)</a> with Login.gov. Ask your Login.gov Account Manager if you aren't sure what this is.
     friendly_name: "The name of your app that will be displayed to users when logging in. Example: DHS Customer Service Portal"
