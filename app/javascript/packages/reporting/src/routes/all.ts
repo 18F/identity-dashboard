@@ -11,4 +11,9 @@ const ALL_ROUTES = {
   "/account-deletions-report/": "Account Deletions Report",
 };
 
+
+export const NEW_ROUTES = {
+  "/reports": "Daily Auths Report",
+};
+
 export default ALL_ROUTES;

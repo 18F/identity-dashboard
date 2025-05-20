@@ -104,7 +104,7 @@ function toRenderableData(results: ProcessedResult[]): ProcessedRenderableData[]
 
 function loadData(date: Date, env: string, fetch = window.fetch): Promise<ProcessedResult[]> {
   const path = reportPath({ reportName: "daily-registrations-report", date, env });
-  return fetch(path)
+  return fetch(path, { mode: 'no-cors' })
     .then((response) => (response.status === 200 ? response.json() : { results: [] }))
     .then((report) => process(report));
 }

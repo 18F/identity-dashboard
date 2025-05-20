@@ -1,13 +1,17 @@
 import preact from "@preact/preset-vite";
-import type { UserConfig } from "vite";
+import { defineConfig } from "vite";
 
-const config: UserConfig = {
+export default defineConfig({
   plugins: [preact()],
   build: {
     outDir: "_site",
     sourcemap: true,
+    modulePreload: {
+      polyfill: false, // Optional: Disable polyfills for modern browsers
+    },
   },
   publicDir: "data",
-};
-
-export default config;
+  esbuild: {
+    target: "esnext", // Ensure modern ES module syntax
+  },
+});

@@ -1,5 +1,9 @@
 // Export the custom router and its utilities
 export { Router, Link, route, getFullPath } from "./src/router";
+export { default as createReportRoute } from "./src/routes/report-route";
+export { Routes as NewRoutes } from "./src/routes/new-index";
+
+
 export {
   Accordion,
   PlotComponent,
@@ -9,6 +13,9 @@ export {
   DailyDropoffsLineChart,
   AccountDeletionsReport,
   DailyAuthsReport,
+  wrapSingleReport,
+  FilterControl,
+  newSingleReport,  
 } from "./src/components";
 
 // Optionally, export other reusable components or utilities

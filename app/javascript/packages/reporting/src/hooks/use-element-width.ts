@@ -1,7 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
-import type { Ref } from "preact/hooks";
+import type { RefObject } from "preact";
 
-function useElementWidth(ref: Ref<HTMLElement>) {
+function useElementWidth(ref: RefObject<HTMLElement>) {
   const [width, setWidth] = useState(undefined as number | undefined);
 
   useEffect(() => {

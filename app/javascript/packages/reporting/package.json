@@ -1,12 +1,8 @@
 {
   "name": "@18f/identity-reporting",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
-
-  "engines": {
-    "npm": ">=7"
-  },  
+  "type": "module",  
   "scripts": {
     "build": "vite build",
     "pages": "npm run build -- --base=${BASEURL:-/}",
@@ -76,6 +72,7 @@
     "sass": "^1.58.3",
     "sinon": "^15.0.1",
     "typescript": "^4.9.5",
-    "vite": "^4.5.9"
+    "vite": "^4.5.9",
+    "identity-style-guide": "^6.7.0"
   }
 }

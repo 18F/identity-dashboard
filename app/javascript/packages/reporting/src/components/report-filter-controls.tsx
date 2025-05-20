@@ -45,6 +45,10 @@ function ReportFilterControls({ controls }: ReportFilterControlsProps): VNode {
     cumulative,
     setParameters,
   } = useContext(ReportFilterContext);
+
+  console.log("Context start date:", start);
+  console.log("Context finish date:", finish);
+  
   const { agencies } = useContext(AgenciesContext);
   const formRef = useRef(null as HTMLFormElement | null);
 
@@ -56,6 +60,8 @@ function ReportFilterControls({ controls }: ReportFilterControlsProps): VNode {
 
     const formData = new FormData(form);
     Object.entries(overrideFormData).forEach(([key, value]) => formData.set(key, String(value)));
+    // console.log("Form Data:", Object.fromEntries(formData));
+
     setParameters(Object.fromEntries(formData) as Record<string, string>);
     event.preventDefault();
   }

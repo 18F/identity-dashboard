@@ -161,7 +161,7 @@ function loadData(
   return Promise.all(
     utcDays(start, utcDay.offset(finish, 1), 1).map((date) => {
       const path = reportPath({ reportName: "daily-dropoffs-report", date, env, extension: "csv" });
-      return fetch(path).then((response) => response.text());
+      return fetch(path, { mode: 'no-cors' }).then((response) => response.text());
     })
   ).then((reports) => reports.flatMap((r) => process(r)));
 }

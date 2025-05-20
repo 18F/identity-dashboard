@@ -3,13 +3,16 @@ import { StateUpdater, useContext, useEffect, useState } from "preact/hooks";
 
 interface AgenciesContextValues {
   agencies: string[];
-  setAgencies: StateUpdater<string[]>;
+  setAgencies: (value: string[] | ((prevState: string[]) => string[])) => void; // Adjusted type
 }
 
-const AgenciesContext = createContext({
+const AgenciesContext = createContext<AgenciesContextValues>({
   agencies: [],
-  setAgencies: () => null,
-} as AgenciesContextValues);
+  setAgencies: () => {
+    // Default implementation that matches the type
+    throw new Error("setAgencies function must be overridden by a provider");
+  },
+});
 
 function AgenciesContextProvider({ children }: { children: ComponentChildren }): VNode {
   const [agencies, setAgencies] = useState([] as string[]);
