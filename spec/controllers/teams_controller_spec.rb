@@ -6,10 +6,13 @@ describe TeamsController do
   let(:user) { create(:user) }
   let(:org) { create(:team) }
   let(:agency) { create(:agency) }
+  let(:auditor_double) { instance_double(RecordAuditor) }
 
   before do
     allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
+    allow(RecordAuditor).to receive(:new).and_return(auditor_double)
+    allow(auditor_double).to receive(:record_change)
     sign_in user
   end
 
@@ -151,6 +154,10 @@ describe TeamsController do
           team = Team.find_by(name: 'unique name')
           expect(response).to redirect_to(team_users_path(team))
         end
+
+        it 'logs' do
+          expect(auditor_double).to have_received(:record_change)
+        end
       end
     end
 
@@ -182,9 +189,16 @@ describe TeamsController do
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
 
-      it 'has a redirect response' do
+      before do
         delete :destroy, params: { id: org.id }
+      end
+
+      it 'has a redirect response' do
         expect(response).to have_http_status(:found)
+      end
+
+      it 'logs' do
+        expect(auditor_double).to have_received(:record_change)
       end
     end
     context 'when the user is not an admin'
@@ -224,6 +238,11 @@ describe TeamsController do
         it 'has a redirect response' do
           patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
           expect(response).to have_http_status(:found)
+        end
+
+        it 'logs' do
+          patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
+          expect(auditor_double).to have_received(:record_change)
         end
 
         context 'when no update is made' do

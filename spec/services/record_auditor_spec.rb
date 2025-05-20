@@ -21,10 +21,12 @@ describe RecordAuditor do
   end
 
   context 'with some mock objects' do
-    subject(:auditor_with_mock) { described_class.new(
+    subject(:auditor_with_mock) do
+      described_class.new(
       controller: fake_controller,
       logger: logger_double,
-    ) }
+    )
+    end
 
     let(:logger_double) { instance_double(EventLogger) }
 
