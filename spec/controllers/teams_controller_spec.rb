@@ -6,13 +6,13 @@ describe TeamsController do
   let(:user) { create(:user) }
   let(:org) { create(:team) }
   let(:agency) { create(:agency) }
-  let(:auditor_double) { instance_double(RecordAuditor) }
+  let(:logger_double) { instance_double(EventLogger) }
 
   before do
     allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
-    allow(RecordAuditor).to receive(:new).and_return(auditor_double)
-    allow(auditor_double).to receive(:record_change)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
+    allow(logger_double).to receive(:record_save)
     sign_in user
   end
 
@@ -156,7 +156,7 @@ describe TeamsController do
         end
 
         it 'logs' do
-          expect(auditor_double).to have_received(:record_change)
+          expect(logger_double).to have_received(:record_save)
         end
       end
     end
@@ -198,7 +198,7 @@ describe TeamsController do
       end
 
       it 'logs' do
-        expect(auditor_double).to have_received(:record_change)
+        expect(logger_double).to have_received(:record_save)
       end
     end
     context 'when the user is not an admin'
@@ -242,7 +242,7 @@ describe TeamsController do
 
         it 'logs' do
           patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
-          expect(auditor_double).to have_received(:record_change)
+          expect(logger_double).to have_received(:record_save)
         end
 
         context 'when no update is made' do
