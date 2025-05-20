@@ -1,7 +1,8 @@
 <fieldset class="usa-fieldset">
   <%= form.input :email,
        input_html: { class: 'usa-input', aria: { invalid: false } },
-       required: true %>
+       required: true,
+       disabled: action_name == 'edit' %>
     <legend class='usa-sr-only'>Make Login.gov admin?</legend>
     <%= form.label :admin,
                    label: 'Make Login.gov admin?',
