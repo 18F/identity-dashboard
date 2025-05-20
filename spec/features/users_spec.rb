@@ -4,11 +4,16 @@ def flag_in
   allow(IdentityConfig.store).to receive_messages(access_controls_enabled: true)
 end
 
-feature 'login.gov admin manages users' do
-  scenario 'manage user page accessible from nav bar link' do
-    logingov_admin = create(:logingov_admin)
+def flag_out
+  allow(IdentityConfig.store).to receive_messages(access_controls_enabled: false)
+end
 
-    login_as(logingov_admin)
+feature 'login.gov admin manages users' do
+  let(:logingov_admin) { create(:logingov_admin) }
+
+  before { login_as(logingov_admin) }
+
+  scenario 'manage user page accessible from nav bar link' do
     visit service_providers_path
     click_on 'Users'
 
@@ -16,10 +21,8 @@ feature 'login.gov admin manages users' do
   end
 
   scenario 'user index page shows all users' do
-    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
 
-    login_as(logingov_admin)
     visit users_path
 
     users.each do |user|
@@ -29,12 +32,10 @@ feature 'login.gov admin manages users' do
 
   scenario 'rbac flag index page shows user table' do
     flag_in
-    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
     everyone = [logingov_admin, users].flatten
     headings = ['Email', 'Signed in', 'Role', 'Actions']
 
-    login_as(logingov_admin)
     visit users_path
 
     headings.each do |heading|
@@ -47,49 +48,62 @@ feature 'login.gov admin manages users' do
   end
 
   scenario 'login.gov admin can delete unconfirmed users' do
-    logingov_admin = create(:logingov_admin)
     users = create_list(:user, 3)
     users[1].update(created_at: 20.days.ago)
 
-    login_as(logingov_admin)
     visit users_path
 
     click_on t('forms.buttons.remove_unconfirmed_users')
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  scenario 'logingov_admin edits users' do
-    logingov_admin = create(:logingov_admin)
-    user = create(:user, :with_teams)
+  [:flag_in, :flag_out].each do |flag|
+    scenario "logingov_admin creates a user with RBAC #{flag}" do
+      send flag
+      visit users_path
+      click_on 'Create a new user'
+      expect(page).to have_content('New user')
+      expect(page).to_not have_content('Email is invalid')
+      click_on 'Create'
+      expect(page).to have_content('New user')
+      expect(page).to have_content('Email is invalid')
+      new_email = "test#{rand(1..10000)}@test.domain"
+      fill_in 'Email', with: new_email
+      click_on 'Create'
+      expect(page).to have_current_path(users_path)
+      expect(User.last.email).to eq(new_email)
+      expect(page).to have_content("#{new_email} User has not yet signed in")
+    end
 
-    login_as(logingov_admin)
-    visit users_path
-    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
-    find("a[href='#{edit_user_path(user)}']").click
+    scenario "logingov_admin edits users with RBAC #{flag}" do
+      user = create(:user, :with_teams)
 
-    expect(page).to have_current_path(edit_user_path(user))
-    expect(find_field('user_email').value).to eq(user.email)
+      visit users_path
+      expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
+      find("a[href='#{edit_user_path(user)}']").click
 
-    choose 'Login.gov Admin'
-    click_on 'Update'
+      expect(page).to have_current_path(edit_user_path(user))
+      email_field = find_field('user_email', disabled: true)
+      expect(email_field.value).to eq(user.email)
 
-    expect(page).to have_current_path(users_path)
-    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
+      choose 'Login.gov Admin'
+      click_on 'Update'
+
+      expect(page).to have_current_path(users_path)
+      expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
+    end
   end
 
   scenario 'rbac flag shows edit for user on teams' do
     flag_in
-    logingov_admin = create(:logingov_admin)
     roles = ['Login.gov Admin',
              'Partner Admin',
              'Partner Developer',
              'Partner Readonly']
 
-    login_as(logingov_admin)
     visit edit_user_path(create(:user, :with_teams))
 
     expect(page).to have_content('Permissions')
-    expect(find_all('input[disabled]')).to be_none
     radio_labels = find_all('.usa-radio__label').map(&:text)
     roles.each do |role|
       expect(radio_labels).to include(role)
@@ -98,8 +112,6 @@ feature 'login.gov admin manages users' do
 
   scenario 'when no teams assigned permissions limited to site admin promotion/demotion' do
     flag_in
-    logingov_admin = create(:logingov_admin)
-    login_as(logingov_admin)
     user_to_edit = create(:user)
     visit edit_user_path(user_to_edit)
 
