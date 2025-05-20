@@ -10,6 +10,8 @@ SecureHeaders::Configuration.default do |config|
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
+  connect_src << 'https://public-reporting-data.production.identitysandbox.gov' # Add this line
+  connect_src << 'https://public-reporting-data.prod.login.gov/'
   config.csp = {
     default_src: ["'self'"],
     frame_src: ["'self'"], # deprecated in CSP 2.0

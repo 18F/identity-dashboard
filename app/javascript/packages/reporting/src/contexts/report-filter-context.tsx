@@ -54,9 +54,26 @@ function defaultSetParameters(
   params: Record<string, string>,
   location: Location = window.location
 ): void {
+  console.log("defaultSetParameters called with params:", params);
+
   const searchParams = new URLSearchParams(location.search);
-  Object.keys(params).forEach((key) => searchParams.set(key, params[key]));
-  route(pathWithParams(location.pathname, searchParams));
+  console.log("Current location.search:", searchParams);
+
+  Object.keys(params).forEach((key) => {
+    console.log(`Setting parameter: ${key} = ${params[key]}`);
+    searchParams.set(key, params[key]);
+  });
+
+  const newPath = pathWithParams(location.pathname, searchParams);
+  console.log("Current path:", location.pathname);
+
+  // Fallback to manual navigation if `route` fails
+  if (typeof route === "function") {
+    route(newPath);
+  } else {
+    window.history.pushState({}, "", newPath);
+    window.dispatchEvent(new Event("popstate"));
+  }
 }
 
 const ReportFilterContext = createContext({
@@ -79,6 +96,7 @@ function ReportFilterContextProvider({
   children,
   ...rest
 }: { children: ComponentChildren } & ReportFilterContextProviderProps): VNode {
+  console.log("ReportFilterContextProvider initialized");
   return (
     <ReportFilterContext.Provider value={{ ...rest, setParameters: defaultSetParameters }}>
       {children}

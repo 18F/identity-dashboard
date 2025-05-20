@@ -4,10 +4,11 @@
     "node": ">=18",
     "npm": "6.x.x"
   },
-  "private": "true",
-  "workspaces": [
-    "app/javascript/packages/*"
-  ],
+  "private": true,
+  "workspaces":{
+    "packages": ["app/javascript/packages/*"],
+    "nohoist": ["@18f/identity-reporting/identity-style-guide"]
+  },
   "scripts": {
     "lint": "eslint . --ignore-pattern public --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage",
     "build": "webpack",

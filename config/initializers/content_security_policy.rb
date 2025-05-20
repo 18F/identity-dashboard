@@ -13,6 +13,12 @@
 #   policy.script_src  :self, :https
 #   policy.style_src   :self, :https
 
+Rails.application.config.content_security_policy do |policy|
+    policy.connect_src :self, 
+                       'https://public-reporting-data.prod.login.gov'
+    # ...other directives...
+  end
+
 #   # Specify URI for violation reports
 #   # policy.report_uri "/csp-violation-report-endpoint"
 

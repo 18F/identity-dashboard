@@ -6,6 +6,8 @@ import ProofingOverTimeReport from "../components/proofing-over-time-report";
 import DailyRegistrationsReport from "../components/daily-registrations-report";
 import AccountDeletionsReport from "../components/account-deletions-report";
 import { Router } from "../router";
+import HomeRoute from "./home-route";
+import createReportRoute, { ReportRoute } from "./report-route";
 import { Scale } from "../contexts/report-filter-context";
 import ALL_ROUTES from "./all";
 
