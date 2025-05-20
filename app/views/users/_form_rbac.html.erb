@@ -1,6 +1,7 @@
 <%= form.input :email,
      input_html: { class: 'usa-input', aria: { invalid: false } },
-     required: true %>
+     required: true,
+     disabled: action_name == 'edit' %>
 <fieldset class="usa-fieldset margin-top-3">
   <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
   <% if @has_no_teams %>
