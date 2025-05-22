@@ -17,6 +17,7 @@ RSpec.configure do |config|
 
   config.include ViewComponent::TestHelpers, type: :component
   config.include Warden::Test::Helpers
+  config.include ActiveSupport::Testing::TimeHelpers
 
   config.before(:suite) do
     Warden.test_mode!

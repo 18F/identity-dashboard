@@ -19,15 +19,15 @@
       <div>
         <% if status.status_class == 'deploy-success' %>
 
-          <%= image_tag 'alerts/success.svg', alt: 'success', height: '16', width: '16', :class =>'margin-bottom-neg-05', role: 'img' %>
+          <%= image_tag 'alerts/success.svg', alt: 'success', height: '16', width: '16', :class =>'margin-bottom-neg-05', aria: { hidden: true } %>
 
         <% elsif status.status_class == 'deploy-error' %>
 
-          <%= image_tag 'alerts/error.svg', alt: 'error', height: '16', width: '16', :class =>'margin-bottom-neg-05', role: 'img' %>
+          <%= image_tag 'alerts/error.svg', alt: 'error', height: '16', width: '16', :class =>'margin-bottom-neg-05', aria: { hidden: true } %>
 
         <% elsif status.status_class == 'disabled' %>
 
-         <%= image_tag 'alerts/warning.svg', alt: 'disabled', height: '16', width: '16',  :class =>'margin-bottom-neg-05', role: img %>
+         <%= image_tag 'alerts/warning.svg', alt: 'disabled', height: '16', width: '16',  :class =>'margin-bottom-neg-05', aria: { hidden: true } %>
         <% end %>
 
         <% if status.host %>

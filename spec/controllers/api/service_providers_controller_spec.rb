@@ -12,7 +12,7 @@ describe Api::ServiceProvidersController do
     token.ephemeral_token
   end
 
-  def add_token_to_headers(controller, user, token)
+  def add_token_to_headers(user, token)
     auth_header_value = ActionController::HttpAuthentication::Token.encode_credentials(
       token, email: user.email
     )
@@ -20,7 +20,7 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#index' do
-    before { add_token_to_headers(controller, user, token) }
+    before { add_token_to_headers(user, token) }
 
     it 'returns active, approved SPs' do
       sp = create(:service_provider, :with_team, active: true, approved: true)

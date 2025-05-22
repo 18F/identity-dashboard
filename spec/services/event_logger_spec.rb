@@ -36,6 +36,7 @@ RSpec.describe EventLogger do
       status: 200,
     }
   end
+  let(:sp) { create(:service_provider) }
 
   subject(:log) do
     EventLogger.new(
@@ -57,6 +58,32 @@ RSpec.describe EventLogger do
       expect(logger).not_to receive(:info).with(match('\"example\":nil'))
 
       log.track_event('Trackable Event', { example: nil })
+    end
+  end
+
+  describe '#record_save' do
+    it 'logs record creation' do
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_created\"'))
+
+      log.record_save(sp)
+    end
+
+    it 'logs record update' do
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_updated\"'))
+
+      sp.description = 'Updated description'
+      sp.save
+
+      log.record_save(sp)
+    end
+
+    it 'logs record deletion' do
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_deleted\"'))
+
+      ServiceProvider.delete(sp.id)
+      sp.save
+
+      log.record_save(sp)
     end
   end
 end

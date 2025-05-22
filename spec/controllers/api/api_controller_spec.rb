@@ -7,19 +7,18 @@ RSpec.describe Api::ApiController do
     token.ephemeral_token
   end
 
-  def add_token_to_headers(controller, user, token)
+  def add_token_to_headers(user, token)
     auth_header_value = ActionController::HttpAuthentication::Token.encode_credentials(
       token, email: user.email
     )
     request.headers['HTTP_AUTHORIZATION'] = auth_header_value
   end
 
-  controller(Api::ApiController) do
+  controller(described_class) do
     def index
       render plain: 'Test'
     end
   end
-
 
   context 'when user is Login.gov Admin' do
     let(:user) { create(:user, :logingov_admin) }
@@ -34,7 +33,7 @@ RSpec.describe Api::ApiController do
     end
 
     it 'can get with token' do
-      add_token_to_headers(controller, user, token)
+      add_token_to_headers(user, token)
       get :index
       expect(response).to be_ok
       expect(response.body).to_not include('Access denied')
@@ -44,7 +43,7 @@ RSpec.describe Api::ApiController do
   context 'when user with token is not Login.gov Admin' do
     let(:user) { create(:user) }
 
-    before { add_token_to_headers(controller, user, token) }
+    before { add_token_to_headers(user, token) }
 
     it 'cannot get' do
       get :index

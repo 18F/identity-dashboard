@@ -63,6 +63,8 @@ class User < ApplicationRecord
   end
 
   def unconfirmed?
+    # This means "created before 2 weeks ago"
+    # "the date `created_at` is less than the date `14.days.ago`"
     last_sign_in_at.nil? && created_at < 14.days.ago
   end
 

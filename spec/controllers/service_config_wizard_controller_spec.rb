@@ -217,6 +217,33 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.last.logo_file.download).to eq(good_logo.read)
       end
 
+      context 'SAML certs' do
+        it 'errors for SAML with no cert' do
+          put :update, params: { id: 'protocol', wizard_step: {
+            identity_protocol: 'saml',
+          } }
+          expect do
+            put :update, params: { id: 'logo_and_cert', wizard_step: {} }
+          end.to(change { WizardStep.count }.by(0))
+          expect(response).to_not be_redirect
+          actual_error = assigns[:model].errors[:certs].to_sentence
+          expected_error = I18n.t( 'service_provider_form.errors.certs.saml_no_cert' )
+          expect(actual_error).to eq(expected_error)
+        end
+
+        it 'does not error when SAML has cert' do
+          put :update, params: { id: 'protocol', wizard_step: {
+            identity_protocol: 'saml',
+          } }
+          expect do
+            put :update, params: { id: 'logo_and_cert', wizard_step: {
+              cert: good_cert,
+            } }
+          end.to(change { WizardStep.count }.by(1))
+          expect(response).to be_redirect
+        end
+      end
+
       it 'skips an empty cert' do
         empty_upload = Rack::Test::UploadedFile.new(
           StringIO.new(''),
@@ -317,7 +344,10 @@ RSpec.describe ServiceConfigWizardController do
         wizard_steps_ready_to_go.each(&:save!)
         logo_step = wizard_steps_ready_to_go.find { |ws| ws.step_name == 'logo_and_cert' }
         expect(logo_step.logo_file).to be_blank
-        put :update, params: { id: 'logo_and_cert', wizard_step: { logo_file: good_logo } }
+        put :update, params: { id: 'logo_and_cert', wizard_step: {
+          logo_file: good_logo,
+          cert: good_cert,
+        } }
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
         end.to(change { ServiceProvider.count }.by(1))

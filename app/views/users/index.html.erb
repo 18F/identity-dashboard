@@ -19,7 +19,7 @@
   <thead>
     <tr>
       <th scope="col">Email</th>
-      <th scope="col">Signed in</th>
+      <th scope="col">Signed in?</th>
       <th scope="col"><%=
         IdentityConfig.store.access_controls_enabled ? 'Role' : 'Admin'
       %></th>
@@ -33,15 +33,18 @@
         <td><%= image_tag sign_in_icon(user), height: '27', width: '27',
                           title: title(user),
                           alt: alt(user),
-                          role: 'img' %></td>
+                          aria: { hidden: true },
+                          style: 'vertical-align:bottom' %>
+          <%= caption(user) %>                  
+        </td>
         <td>
           <% if IdentityConfig.store.access_controls_enabled %>
             <%= user.primary_role.friendly_name %>
           <% else %>
             <%= image_tag 'security-key.svg',
                             height: '27', width: '27',
-                            alt: 'admin user icon',
-                            role: 'img' if user.logingov_admin? %>
+                            alt: 'admin user',
+                            aria: { hidden: true } if user.logingov_admin? %>
           <% end %>
         </td>
         <td>
@@ -49,6 +52,7 @@
                       form_class: 'display-inline',
                       class: 'usa-button usa-button--unstyled usa-link margin-right-1',
                       data: { confirm: t('notices.confirm_delete') } %>
+          <span>&nbsp;</span>
           <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
         </td>
       </tr>

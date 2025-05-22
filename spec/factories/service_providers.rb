@@ -50,6 +50,7 @@ FactoryBot.define do
       sp_initiated_login_url { 'https://fake.gov/test/saml/sp_login' }
       signed_response_message_requested { 1 }
       sequence(:return_to_sp_url) { |n| "https://test-url-#{n}" }
+      certs = ['cert.pem']
     end
 
     trait :with_oidc_jwt do
