@@ -59,30 +59,48 @@ RSpec.describe EventLogger do
       log.track_event('Trackable Event', { example: nil })
     end
   end
+end
 
-  describe '#record_save' do
+RSpec.describe ServiceProvider, type: :model do
+  let(:sp) { create(:service_provider) }
+  let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
+  let(:current_user) { create(:user, uuid:) }
+  let(:session) { { visit_token: 'test_token' } }
+  let(:request) { FakeRequest.new }
+  let(:logger) { object_double(Rails.logger) }
+
+  subject(:log) do
+    EventLogger.new(
+      user: current_user,
+      request: request,
+      session: session,
+      logger: logger,
+    )
+  end
+
+  describe 'EventLogger#record_save' do
     it 'logs record creation' do
-      fake_record = FakeRecord.new
-      fake_record.create
-      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_created\"'))
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_created\"'))
 
-      log.record_save(fake_record)
+      log.record_save(sp)
     end
 
     it 'logs record update' do
-      fake_record = FakeRecord.new
-      fake_record.update
-      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_updated\"'))
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_updated\"'))
 
-      log.record_save(fake_record)
+      sp.description = 'Updated description'
+      sp.save
+
+      log.record_save(sp)
     end
 
     it 'logs record deletion' do
-      fake_record = FakeRecord.new
-      fake_record.delete
-      expect(logger).to receive(:info).with(match('\"name\":\"fakerecord_deleted\"'))
+      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_deleted\"'))
 
-      log.record_save(fake_record)
+      ServiceProvider.delete(sp.id)
+      sp.save
+
+      log.record_save(sp)
     end
   end
 end
