@@ -30,7 +30,7 @@ test:
 	bundle exec rspec
 
 test_basic:
-	COVERAGE=true bundle exec rspec --exclude-pattern "spec/features/accessibility/*_spec.rb"
+	COVERAGE=true bundle exec rspec --exclude-pattern "spec/features/accessibility/**/*_spec.rb"
 
 run:
 	foreman start -p $(PORT)
