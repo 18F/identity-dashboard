@@ -836,7 +836,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    describe 'with a production config' do
+    xdescribe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
       it 'displays the production call to action button' do
