@@ -10,4 +10,10 @@ class HomeController < ApplicationController
 
     render 'home/authenticated/index'
   end
+
+  def system_use
+    render 'home/system_use' and return unless user_signed_in?
+
+    render 'home/authenticated/index'
+  end
 end
