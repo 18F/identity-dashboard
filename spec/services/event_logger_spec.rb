@@ -63,27 +63,39 @@ RSpec.describe EventLogger do
 
   describe '#record_save' do
     it 'logs record creation' do
-      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_created\"'))
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['name']).to eq 'serviceprovider_create'
+        expect(obj['properties']['event_properties']['id'].class).to eq Integer
+      end
 
-      log.record_save(sp)
+      log.record_save('create', sp)
     end
 
     it 'logs record update' do
-      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_updated\"'))
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['name']).to eq 'serviceprovider_update'
+        expect(obj['properties']['event_properties']['description']).to include('old', 'new')
+      end
 
       sp.description = 'Updated description'
       sp.save
 
-      log.record_save(sp)
+      log.record_save('update', sp)
     end
 
     it 'logs record deletion' do
-      expect(logger).to receive(:info).with(match('\"name\":\"serviceprovider_deleted\"'))
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['name']).to eq 'serviceprovider_delete'
+        expect(obj['properties']['event_properties']).to_not include('updated_at')
+      end
 
       ServiceProvider.delete(sp.id)
       sp.save
 
-      log.record_save(sp)
+      log.record_save('delete', sp)
     end
   end
 end
