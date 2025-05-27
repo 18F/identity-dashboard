@@ -159,7 +159,7 @@
     <% service_provider.certificates.each do |certificate| %>
       <%= render 'certificate', certificate: certificate do %>
         <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-          <div class="usa-alert__text">
+          <div class="usa-alert__body">
             <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
                               certificate.serial,
                               false,
