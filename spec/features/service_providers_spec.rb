@@ -835,18 +835,20 @@ feature 'Service Providers CRUD' do
         expect(friendly_name).to eq(sp.friendly_name)
       end
     end
-    # TODO remove following when Zendesk form is fixed
-    it 'displays the production call to action links' do
-      prod_url = 'https://developers.login.gov/production'
-      zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
 
-      expect(page).to have_css("a[href='#{prod_url}']")
-      expect(page).to have_css("a[href='#{zendesk_ticket}']")
-    end
-    xdescribe 'with a production config' do
+    describe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
-      it 'displays the production call to action button' do
+      # TODO remove following when Zendesk form is fixed
+      it 'displays the production call to action links' do
+        prod_url = 'https://developers.login.gov/production'
+        zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
+
+        expect(page).to have_css("a[href='#{prod_url}']")
+        expect(page).to have_css("a[href='#{zendesk_ticket}']")
+      end
+
+      xit 'displays the production call to action button' do
         expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
