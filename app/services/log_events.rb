@@ -6,17 +6,25 @@
 
 module LogEvents
   # Generic CrUD logger
-  def record_save(record)
+  def record_save(action, record)
     model_name = record.class.name.downcase
-    op_name = record.previous_changes == {} ?
-      'deleted' :
-       record.created_at == record.updated_at ?
-        'created' :
-        'updated'
-    changes = record.previous_changes.filter do |k, v|
-      !k.match('updated_at')
+    changes = {}
+
+    record.previous_changes.each_pair do |k,v|
+      if k != 'updated_at'
+        if !v.is_a? Array
+          changes[k] = v
+        else
+          changes[k] = {
+            old: v[0],
+            new: v[1],
+          }
+        end
+      end
     end
-    track_event("#{model_name}_#{op_name}", changes)
+    changes[:id] = record.id
+
+    track_event("#{model_name}_#{action}", changes)
   end
 
   # When a user clicks "Create an app"
