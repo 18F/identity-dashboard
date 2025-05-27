@@ -2,12 +2,6 @@
   [Method] form such that form is a valid instance of wizard_form
 %>
 <div class="wizard-footer">
-  <% unless first_step? %>
-    <%= link_to 'Back',
-                previous_wizard_path,
-                class: 'usa-button usa-button--outline',
-                role: 'button'%>
-  <% end %>
   <% if no_data? %>
     <%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>
   <% elsif last_step? %>
@@ -17,5 +11,11 @@
     <% end %>
   <% else %>
     <%= form.submit 'Next', class: 'usa-button'%>
+  <% end %>
+  <% unless first_step? %>
+    <%= link_to 'Back',
+                previous_wizard_path,
+                class: 'usa-button usa-button--outline',
+                role: 'button'%>
   <% end %>
 </div>
