@@ -1,6 +1,7 @@
 class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
+  after_action :log_change, only: %i[create update destroy]
 
   def index
     includes = %i[users service_providers agency]
@@ -82,5 +83,9 @@ class TeamsController < AuthenticatedController
     else
       team_params.merge(user_ids: (existing_user_ids + [current_user.id.to_s]).uniq)
     end
+  end
+
+  def log_change
+    log.record_save(@team)
   end
 end

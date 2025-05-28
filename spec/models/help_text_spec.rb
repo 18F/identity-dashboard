@@ -16,16 +16,17 @@ describe HelpText do
       result[context] = Hash.new
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
       HelpText::LOCALES.each do |locale|
-        result[context][locale] = if preset
-          I18n.t(
-            "service_provider_form.help_text.#{context}.#{preset}",
-            locale: locale,
-            sp_name: service_provider.friendly_name,
-            agency: service_provider.agency&.name,
-          )
-        else
-          ['Pruebas con <em>HTML</em>', 'This is a test!'].sample
-        end
+        result[context][locale] =
+          if preset
+            I18n.t(
+              "service_provider_form.help_text.#{context}.#{preset}",
+              locale: locale,
+              sp_name: service_provider.friendly_name,
+              agency: service_provider.agency&.name,
+            )
+          else
+            ['Pruebas con <em>HTML</em>', 'This is a test!'].sample
+          end
       end
     end
   end
@@ -183,8 +184,10 @@ describe HelpText do
 
   describe '#revert_unless_presets_only' do
     let(:service_provider) { ServiceProvider.new(help_text: maybe_presets_help_text) }
+
     context 'when params are all presets' do
       let(:params) { all_presets_help_text }
+
       it 'uses the params over the service provider' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
@@ -202,6 +205,7 @@ describe HelpText do
         ].sample
         params
       end
+
       it 'reverts to the service provider and throws away the params' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only

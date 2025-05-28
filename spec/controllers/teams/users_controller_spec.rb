@@ -31,7 +31,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to change(UserTeam, :count).by(-1)
+      end.to change { UserTeam.count }.by(-1)
       expect(team.users).to_not include(user_to_delete)
     end
   end
@@ -41,7 +41,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to_not(change(UserTeam, :count))
+      end.to_not(change { UserTeam.count })
       expect(team.users.reload).to include(user_to_delete)
       expect(response).to be_unauthorized
     end
@@ -108,6 +108,36 @@ describe Teams::UsersController do
             user_team: { role_name: 'totally-fake-role' },
           }
           expect(response).to redirect_to(team_users_path(team))
+        end
+
+        context 'logging' do
+          let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
+          let(:logger_double) { instance_double(EventLogger) }
+
+          before do
+            allow(logger_double).to receive(:team_role_updated)
+            allow(EventLogger).to receive(:new).and_return(logger_double)
+          end
+
+          it 'logs updates to member roles' do
+            put :update, params: {
+              team_id: team.id,
+              id: updatable_membership.user.id,
+              user_team: { role_name: 'partner_developer' },
+            }
+
+            expect(logger_double).to have_received(:team_role_updated)
+          end
+
+          it 'does not log updates when roles are unchanged' do
+            put :update, params: {
+              team_id: team.id,
+              id: updatable_membership.user.id,
+              user_team: { role_name: 'partner_readonly' },
+            }
+
+            expect(logger_double).to_not have_received(:team_role_updated)
+          end
         end
       end
 

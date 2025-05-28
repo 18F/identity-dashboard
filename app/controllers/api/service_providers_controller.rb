@@ -1,6 +1,5 @@
 module Api
-  class ServiceProvidersController < ApplicationController
-
+  class ServiceProvidersController < ApiController
     def index
       render json: serialized_service_providers(approved_service_providers)
     end

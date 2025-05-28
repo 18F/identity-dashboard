@@ -95,7 +95,7 @@
                    class: 'usa-label' %>
     <%= form.hint t('service_provider_form.attribute_bundle_html') %>
 
-    <span class="usa-error-message js-bundle-input-error-message">
+    <span class="<%= 'usa-error-message' if service_provider.errors[:attribute_bundle].present? %> js-bundle-input-error-message">
       <%= service_provider.errors[:attribute_bundle].to_sentence.presence %>
     </span>
 
@@ -159,7 +159,7 @@
     <% service_provider.certificates.each do |certificate| %>
       <%= render 'certificate', certificate: certificate do %>
         <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-          <div class="usa-alert__text">
+          <div class="usa-alert__body">
             <%= check_box_tag "service_provider[remove_certificates][#{certificate.serial}]",
                               certificate.serial,
                               false,
@@ -181,7 +181,7 @@
       </label>
 
       <div class="clearfix">
-        <span class="usa-error-message js-pem-input-error-message">
+        <span class="<%= 'usa-error-message' if service_provider.errors[:certs].present? %> js-pem-input-error-message">
           <%= service_provider.errors[:certs].to_sentence.presence %>
         </span>
         <%= form.file_field :cert, class: 'input-file js-pem-input' %>

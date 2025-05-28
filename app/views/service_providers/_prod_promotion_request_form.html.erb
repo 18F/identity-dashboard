@@ -1,0 +1,73 @@
+<div class="margin-y-3">
+  <div
+    class="usa-modal usa-modal--lg"
+    id="additional-data-modal"
+    aria-labelledby="modal-1-heading"
+    aria-describedby="modal-1-description"
+  >
+    <div class="usa-modal__content">
+      <div class="usa-modal__main">
+        <h2 class="usa-modal__heading" id="modal-1-heading">
+          Please enter the information below to submit your request to deploy.
+        </h2>
+        <%= form_with model: @service_provider, url: service_providers_prod_request_path(@service_provider), method: :post do |form| %>
+          <%= form.hidden_field :id, value: @service_provider.id %>
+          <% ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
+            <div class="form-group">
+              <label class="<%= "usa-label required" %>">
+                <%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label") %>
+                <%= t('simple_form.required.html') %>
+              </label>
+              <% if field_info[:input_type] == 'text' %>
+                <%= form.text_field id, 
+                	class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
+                	placeholder: field_info[:placeholder]
+                %>
+              <% elsif field_info[:input_type] == 'number' %>
+                <%= form.number_field id, 
+                  class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
+                  placeholder: field_info[:placeholder]
+                %>
+              <% elsif field_info[:input_type] == 'date' %>
+                <%= form.date_field id, 
+                  class: 'block col-12 maxw-tablet string required usa-input prod-request-input',
+                  placeholder: field_info[:placeholder]
+                %>
+              <% elsif field_info[:input_type] == 'select' %>
+                <%= form.select id, field_info[:options].collect { |opt| [ opt[:label], opt[:value] ] }, { include_blank: true }, class: 'maxw-tablet usa-select prod-request-input' %>
+              <% end %>
+              <p class="usa-hint"><%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.hint_html") %></p>
+            </div>
+          <% end %>
+          <div class="usa-modal__footer">
+            <ul class="usa-button-group">
+              <li class="usa-button-group__item">
+                <button
+                  type="button"
+                  class="usa-button usa-button--unstyled padding-105 text-center"
+                  data-close-modal
+                >
+                  Cancel
+                </button>
+              </li>
+              <li class="usa-button-group__item">
+                <input type="submit" class="usa-button" id="submit-prod-request" data-close-modal disabled="disabled" value="Submit Request"/>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+      <button
+        type="button"
+        class="usa-button usa-modal__close"
+        aria-label="Close this window"
+        data-close-modal
+      >
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use href="<%=  asset_path('sprite.svg#close') %>"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+<%= javascript_include_tag 'production_request.js' %>

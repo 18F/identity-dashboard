@@ -1,0 +1,24 @@
+<%= form_with(url: auth_tokens_url) do |form| %>
+
+  <% if auth_token.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(auth_token.errors.count, "error") %> prohibited this auth_token from being saved:</h2>
+
+      <ul>
+        <% auth_token.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <% if @auth_token.created_at.present? %>
+      <p>WARNING: this will invalidate your current token</p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.submit 'Create new token', class: 'usa-button' %>
+  </div>
+<% end %>

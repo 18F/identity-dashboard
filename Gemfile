@@ -41,6 +41,7 @@ gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
+gem 'rack-attack', '~> 6.7'
 gem 'rails', '~> 7.2.0'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
@@ -80,6 +81,7 @@ group :development, :test do
   gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 end
 
 group :test do
