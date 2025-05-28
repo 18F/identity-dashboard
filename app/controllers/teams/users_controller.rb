@@ -5,6 +5,7 @@ class Teams::UsersController < AuthenticatedController
   if IdentityConfig.store.access_controls_enabled
     after_action :verify_authorized
     after_action :verify_policy_scoped
+    after_action :log_change, only: %i[create update destroy]
   end
 
   helper_method :roles_for_options, :show_actions?
@@ -60,7 +61,6 @@ class Teams::UsersController < AuthenticatedController
     end
     authorize membership
     membership.assign_attributes(membership_params)
-    log.team_role_updated(membership:) if membership.role_name_changed?
     membership.save
     if membership.errors.any?
       @user = membership.user
@@ -124,6 +124,7 @@ class Teams::UsersController < AuthenticatedController
 
   def new_member
     @new_member ||= User.find_or_create_by!(email: member_email)
+    @user = @new_member
   end
 
   def user
@@ -163,5 +164,9 @@ class Teams::UsersController < AuthenticatedController
       :manage_team_users?,
       policy_class: UserTeamPolicy,
     )
+  end
+
+  def log_change
+    log.record_save(action_name, membership)
   end
 end
