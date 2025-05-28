@@ -107,7 +107,8 @@ describe UsersController do
         let(:logger_double) { instance_double(EventLogger) }
 
         before do
-          allow(logger_double).to receive(:team_role_updated)
+          allow(logger_double).to receive(:team_data)
+          allow(logger_double).to receive(:record_save)
           allow(EventLogger).to receive(:new).and_return(logger_double)
         end
 
@@ -118,7 +119,9 @@ describe UsersController do
           patch :update, params: { id: user_to_edit.id, user: {
             user_team: { role_name: 'partner_readonly' },
           } }
-          expect(logger_double).to have_received(:team_role_updated).once
+          expect(logger_double).to have_received(:record_save).once do |op, record|
+            expect(record.class.name).to eq('UserTeam')
+          end
         end
       end
     end
