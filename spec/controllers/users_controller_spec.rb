@@ -200,4 +200,11 @@ describe UsersController do
       end
     end
   end
+
+  describe '#none' do
+    it 'works' do
+      get :none
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
