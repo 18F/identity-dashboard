@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
 
   after_action :verify_authorized
@@ -20,6 +20,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def show
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
+    @show_status_indicator = IdentityConfig.store.prod_like_env &&
+                             service_provider.prod_config? &&
+                             policy(service_provider).see_status?
   end
 
   def new
@@ -96,6 +99,37 @@ class ServiceProvidersController < AuthenticatedController
 
   def deleted
     @service_providers = deleted_service_providers
+  end
+
+  def prod_request
+    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
+    portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
+host: request.host)
+
+    zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
+
+    ticket_custom_fields = []
+    zendesk_request.ticket_field_functions.each_with_object(Hash.new) do |(id, func), result|
+      ticket_custom_fields.push({ id: id,
+value: func.to_proc.call(@service_provider) })
+    end
+
+    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
+      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
+    end
+
+    ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
+
+    creation_status = zendesk_request.create_ticket(ticket_data)
+
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
+    else
+      flash[:error] =
+        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
+    end
+      redirect_to action: 'show', id: @service_provider.id
   end
 
   private

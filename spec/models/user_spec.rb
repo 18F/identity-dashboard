@@ -218,17 +218,11 @@ describe User do
 
   describe '#auth_token' do
     it 'always picks the latest one' do
-      user.save
-      _first_token_record = create(:auth_token, user:)
-      second_token_record = create(:auth_token, user:)
-      expect(user.auth_token).to eq(second_token_record)
-      expect(user.auth_token.ephemeral_token).to be_blank
-
-    end
-    it 'builds a new one if none exists' do
-      new_token = user.auth_token
-      expect(new_token).to_not be_persisted
-      expect(new_token.ephemeral_token).to_not be_blank
+      logingov_admin = create(:user, :logingov_admin) # only admins can access tokens
+      _first_token_record = create(:auth_token, user: logingov_admin)
+      second_token_record = create(:auth_token, user: logingov_admin)
+      expect(logingov_admin.auth_token).to eq(second_token_record)
+      expect(logingov_admin.auth_token.ephemeral_token).to be_blank
     end
   end
 

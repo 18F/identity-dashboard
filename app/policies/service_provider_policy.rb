@@ -94,6 +94,10 @@ class ServiceProviderPolicy < BasePolicy
     user_has_login_admin_role?
   end
 
+  def prod_request?
+    user_has_login_admin_role? || (membership && !partner_readonly?)
+  end
+
   def edit_custom_help_text?
     user_has_login_admin_role?
   end
@@ -105,6 +109,10 @@ class ServiceProviderPolicy < BasePolicy
     return false if !IdentityConfig.store.prod_like_env || record.ial.blank?
 
     !user_has_login_admin_role?
+  end
+
+  def see_status?
+    user_has_login_admin_role?
   end
 
   class Scope < BasePolicy::Scope

@@ -1,0 +1,11 @@
+<% content_for :title, "New auth token" %>
+
+<h1>New auth token</h1>
+
+<%= render "form", auth_token: @auth_token %>
+
+<br>
+
+<div>
+  <%= link_to "Back to auth tokens", auth_tokens_path, class: 'usa-button usa-button--outline' %>
+</div>
