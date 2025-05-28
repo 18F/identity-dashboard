@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action -> { authorize User, :manage_users? }, except: %i[none]
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
-  after_action :verify_policy_scoped
+  after_action :verify_policy_scoped, except: [:none]
   helper_method :options_for_roles
   attr_reader :user
 
