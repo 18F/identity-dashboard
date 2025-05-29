@@ -6,7 +6,6 @@ class ServiceProvidersController < AuthenticatedController
   after_action :verify_policy_scoped,
                except: :publish # `#publish` is currently an API call only, so no DB scope required
 
-
   helper_method :parsed_help_text, :localized_help_text
 
   def index
@@ -106,8 +105,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
-    
-    render json: @service_provider and return
+
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
