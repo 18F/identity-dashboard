@@ -2,7 +2,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
 
-  after_action :verify_authorized
+  after_action :verify_authorized, except: :prod_request
   after_action :verify_policy_scoped,
                except: :publish # `#publish` is currently an API call only, so no DB scope required
 
@@ -102,8 +102,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def prod_request
-    render json: {alive: 'here'} and return
-        @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
+    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
 
