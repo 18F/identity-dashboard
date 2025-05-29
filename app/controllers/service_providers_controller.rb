@@ -2,7 +2,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
 
-  after_action :verify_authorized
+  after_action :verify_authorized, except: :prod_request
   after_action :verify_policy_scoped,
                # `#publish` and `#prod_request` are currently an API call only, so no DB scope required
                except: [:publish, :prod_request] 
@@ -107,8 +107,7 @@ class ServiceProvidersController < AuthenticatedController
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
     
-    render json: {sp: @service_provider} and return
-
+    render json: @service_provider and return
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
@@ -125,16 +124,14 @@ value: func.to_proc.call(@service_provider) })
 
     creation_status = zendesk_request.create_ticket(ticket_data)
 
-    render json: creation_status and return
-
-    # if creation_status[:success] == true
-    #   flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
-    #     has been created on your behalf, replies will be sent to #{current_user.email}."
-    # else
-    #   flash[:error] =
-    #     "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
-    # end
-    #   redirect_to action: 'show', id: @service_provider.id
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
+    else
+      flash[:error] =
+        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
+    end
+      redirect_to action: 'show', id: @service_provider.id
   end
 
   private
