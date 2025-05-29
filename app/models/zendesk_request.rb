@@ -126,11 +126,6 @@ class ZendeskRequest
   end
 
   def create_ticket(ticket_data)
-    default_logger = ActiveSupport::Logger.new(
-      Rails.root.join('log', IdentityConfig.store.event_log_filename),
-    )
-    @logger = default_logger
-
     headers = { 'Content-Type' => 'application/json' }
 
     @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
@@ -138,26 +133,19 @@ class ZendeskRequest
     resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
 
-    response_info = {status: resp.status, request: ticket_data.to_json, response: response}
-
-    @logger.info(response_info.to_json)
-
-    response_info
-    
-    # if resp.status == 201
-    #   ticket_id = response.dig('request', 'id')
-    #   { success: true, ticket_id: ticket_id }
-    # else
-    #   errors = response.dig('details', 'base')
-    #   if (errors)
-    #     parsed_errors = []
-    #     errors.each do |e|
-    #       parsed_errors.push(e['description'])
-    #     end
-    #     return { success: false, errors: parsed_errors }
-    #   end
-    #   { success: false, errors: [] }
-    # end
-
+    if resp.status == 201
+      ticket_id = response.dig('request', 'id')
+      { success: true, ticket_id: ticket_id }
+    else
+      errors = response.dig('details', 'base')
+      if (errors)
+        parsed_errors = []
+        errors.each do |e|
+          parsed_errors.push(e['description'])
+        end
+        return { success: false, errors: parsed_errors }
+      end
+      { success: false, errors: [] }
+    end
   end
 end

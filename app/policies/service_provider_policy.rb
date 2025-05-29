@@ -99,7 +99,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def prod_request?
-    logingov_admin? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (membership && !partner_readonly?)
   end
 
   def edit_custom_help_text?
