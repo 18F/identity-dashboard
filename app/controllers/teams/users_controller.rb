@@ -167,6 +167,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def log_change
-    log.record_save(action_name, membership)
+    record = membership || team
+    log.record_save(action_name, record)
   end
 end
