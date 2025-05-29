@@ -4,7 +4,7 @@ class ServiceProvidersController < AuthenticatedController
 
   after_action :verify_authorized, except: :prod_request
   after_action :verify_policy_scoped,
-               except: :publish # `#publish` is currently an API call only, so no DB scope required
+               except: [:publish, :prod_request] # `#publish` is currently an API call only, so no DB scope required
 
   helper_method :parsed_help_text, :localized_help_text
 
