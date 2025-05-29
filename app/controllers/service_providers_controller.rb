@@ -107,6 +107,8 @@ class ServiceProvidersController < AuthenticatedController
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
     
+    render json: {sp: @service_provider} and return
+
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
