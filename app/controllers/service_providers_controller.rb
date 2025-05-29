@@ -102,12 +102,12 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def prod_request
+    render json: {success: true} and return
+
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
-
-    render json: {portalurl: portal_url} and return
-
+    
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
