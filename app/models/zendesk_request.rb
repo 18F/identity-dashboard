@@ -72,7 +72,7 @@ class ZendeskRequest
 
   def initialize(user, portal_url, service_provider)
     @requestor = user
-    @portal_url = portal_url
+    @portal_url = 'https://portal.int.identitysandbox.gov/service_providers/3649' # portal_url
     @service_provider = service_provider
   end
 
