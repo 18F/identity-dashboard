@@ -1,3 +1,4 @@
+<%# Feature flagging for access_controls_enabled currently not required in this view because it is done in the controller. %>
 <h1 class="usa-display">
   Edit user
   <% if @user.first_name && @user.last_name %>
@@ -10,18 +11,18 @@
 <%= simple_form_for(@membership, url: team_user_path(@membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-top-3">
-    <legend class="usa-label" id="rbac_description"><%= t('headings.users.rbac') %></legend>
-    <p><%= t('users.rbac_description_html') %></p>
-    <%= render partial: 'components/radio_collection', locals: {
+    <legend><p id='rbac_description'><%= t('user_teams.rbac_description') %></p></legend>
+    <%= render(RadioCollectionComponent.new(
       form: form,
-      db_fieldname: :role_name,
+      model_method: :role_name,
       describedby: 'rbac_description',
       inputs: roles_for_options,
       default: @membership.role&.name,
       disabled: false,
-    } %>
+      additional_descriptions: true
+    )) %>
   </fieldset>
   <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
-  <%= link_to t('forms.buttons.cancel'), users_path,
+  <%= link_to t('forms.buttons.cancel'), team_users_path(@team),
               class: 'usa-button usa-button--outline float-left' %>
 <% end %>

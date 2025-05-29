@@ -12,7 +12,9 @@ class ZendeskRequest
     5064895580308 => -> (record) { record.description }, # Ticket Description
     23180053076628 => -> (record) { record.issuer }, # Issuer
     20697165967508 => -> (record) { record.logo.present? }, # Logo attestation
-    4417169610388 => -> (record) { 'new_integration' }, # Request type
+    4417169610388 => -> (record) {
+      IdentityConfig.store.prod_like_env ? 'integration_change' : 'new_integration'
+    }, # Request type
     4418367585684 => -> (record) { 'on' }, # Ready to move to production attestation
   }
 

@@ -6,10 +6,13 @@ describe TeamsController do
   let(:user) { create(:user) }
   let(:org) { create(:team) }
   let(:agency) { create(:agency) }
+  let(:logger_double) { instance_double(EventLogger) }
 
   before do
     allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
+    allow(logger_double).to receive(:record_save)
     sign_in user
   end
 
@@ -19,21 +22,21 @@ describe TeamsController do
 
       it 'has a success response' do
         get :new
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
 
     context 'when the user is not an admin' do
       it 'has a success response' do
         get :new
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       context 'the user is not a fed' do
         before { user.update(email: 'user@example.com') }
         it 'has an error response' do
           get :new
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
     end
@@ -43,7 +46,7 @@ describe TeamsController do
     context 'when the user is signed in' do
       it 'has a success response' do
         get :index
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -55,7 +58,7 @@ describe TeamsController do
 
       it 'has a redirect response' do
         get :index
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
       end
     end
   end
@@ -126,7 +129,7 @@ describe TeamsController do
         end
 
         it 'returns a 401' do
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
         end
 
         it 'does not create the team' do
@@ -150,6 +153,10 @@ describe TeamsController do
         it 'redirects' do
           team = Team.find_by(name: 'unique name')
           expect(response).to redirect_to(team_users_path(team))
+        end
+
+        it 'logs' do
+          expect(logger_double).to have_received(:record_save)
         end
       end
     end
@@ -182,21 +189,29 @@ describe TeamsController do
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
 
-      it 'has a redirect response' do
+      before do
         delete :destroy, params: { id: org.id }
-        expect(response.status).to eq(302)
+      end
+
+      it 'has a redirect response' do
+        expect(response).to have_http_status(:found)
+      end
+
+      it 'logs' do
+        expect(logger_double).to have_received(:record_save)
       end
     end
     context 'when the user is not an admin'
     it 'has an error response' do
       delete :destroy, params: { id: org.id }
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
   describe '#edit' do
     context 'when login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
+
       it 'shows the edit template' do
         get :edit, params: { id: org.id }
         expect(response).to render_template(:edit)
@@ -222,12 +237,18 @@ describe TeamsController do
       context 'when the update is successful' do
         it 'has a redirect response' do
           patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
-          expect(response.status).to eq(302)
+          expect(response).to have_http_status(:found)
+        end
+
+        it 'logs' do
+          patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
+          expect(logger_double).to have_received(:record_save)
         end
 
         context 'when no update is made' do
           let(:user1)  { create(:team_member, teams: [org]) }
           let(:user2)  { create(:team_member, teams: [org]) }
+
           before do
             org.update(users: [user, user1, user2])
           end
@@ -264,6 +285,7 @@ describe TeamsController do
       context 'when no update is made' do
         let(:user1)  { create(:team_member, teams: [org]) }
         let(:user2)  { create(:team_member, teams: [org]) }
+
         before do
           org.update(users: [user, user1, user2])
         end
@@ -292,7 +314,7 @@ describe TeamsController do
             agency_id: org.agency_id,
             description: org.description,
           } }
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

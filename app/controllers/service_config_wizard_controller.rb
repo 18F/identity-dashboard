@@ -39,7 +39,8 @@ class ServiceConfigWizardController < AuthenticatedController
     return new unless service_provider_id
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
-    authorize service_provider
+    authorize service_provider, :edit?
+
     steps = WizardStep.steps_from_service_provider(service_provider, current_user)
     # TODO: what if the service provider is somehow invalid?
     steps.each(&:save)
@@ -98,11 +99,12 @@ class ServiceConfigWizardController < AuthenticatedController
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
-      service_provider = if @model.existing_service_provider?
-        policy_scope(ServiceProvider).find(all_wizard_data['service_provider_id'])
-      else
-        policy_scope(ServiceProvider).new
-      end
+      service_provider =
+        if @model.existing_service_provider?
+          policy_scope(ServiceProvider).find(all_wizard_data['service_provider_id'])
+        else
+          policy_scope(ServiceProvider).new
+        end
       service_provider.attributes = service_provider.attributes.merge(
         transform_to_service_provider_attributes(all_wizard_data),
       )
@@ -134,14 +136,15 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def parsed_help_text
     text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
-    @parsed_help_text ||= if text_params.present?
-      HelpText.lookup(
-        params: text_params,
-        service_provider: @service_provider || draft_service_provider,
-      )
-    else
-      HelpText.new(service_provider: @service_provider || draft_service_provider)
-    end
+    @parsed_help_text ||=
+      if text_params.present?
+        HelpText.lookup(
+          params: text_params,
+          service_provider: @service_provider || draft_service_provider,
+        )
+      else
+        HelpText.new(service_provider: @service_provider || draft_service_provider)
+      end
   end
 
   def show_saml_options?
@@ -280,7 +283,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
-    analytics.sp_config_created if is_new
+    log.sp_config_created if is_new
   end
 
   def publish_service_provider

@@ -21,6 +21,9 @@ class ServiceProvider < ApplicationRecord
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
 
+  STATUSES = %w[pending live rejected].freeze
+
+  enum :status, Hash[STATUSES.zip STATUSES], default: 'pending'
   enum :block_encryption, {
     'none' => 0,
     'aes256-gcm' => 2,
@@ -33,6 +36,8 @@ class ServiceProvider < ApplicationRecord
   end
 
   before_save :sanitize_help_text_content
+  after_initialize -> (record) { record.status = 'live' },
+    unless: -> { IdentityConfig.store.prod_like_env }
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p

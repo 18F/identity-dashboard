@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_24_210230) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_28_162701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_24_210230) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["name"], name: "index_agencies_on_name", unique: true
+  end
+
+  create_table "auth_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "encrypted_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_auth_tokens_on_user_id"
   end
 
   create_table "banners", force: :cascade do |t|
@@ -136,6 +144,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_24_210230) do
     t.string "app_name", default: "", null: false
     t.boolean "prod_config", default: false, null: false
     t.string "post_idv_follow_up_url"
+    t.string "status", default: "pending"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
@@ -193,6 +202,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_24_210230) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "auth_tokens", "users"
   add_foreign_key "service_providers", "agencies"
   add_foreign_key "service_providers", "groups"
   add_foreign_key "wizard_steps", "users"

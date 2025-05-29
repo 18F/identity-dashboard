@@ -22,7 +22,7 @@
                           label: accessible_label(form, 'Choose a file', :logo_file),
                           class: 'usa-button',
                           id: 'logo-file-button' %>
-          <p class='usa-error-message' id='logo-upload-error'>
+          <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id='logo-upload-error'>
             <% if form.object.errors[:logo_file].present? %>
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
@@ -37,7 +37,9 @@
     <fieldset class="wizard-field file service_provider_logo_file" id="certificate-container">
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.upload_certificate') %></legend>
       <div class="usa-label__group">
-        <p class="usa-label"><%= t('simple_form.labels.service_provider.upload_certificate') %></p>
+        <p class="usa-label <%= 'usa-input-required' if show_saml_options? %>"><%= t('simple_form.labels.service_provider.upload_certificate') %>
+          <%= t('simple_form.required.html') if show_saml_options? %>
+        </p>
         <%= form.hint t('service_provider_form.certificate_html') %>
       </div>
       <div class="usa-input__container">
@@ -45,7 +47,7 @@
           <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.cert_input') %></label>
 
           <div class="clearfix">
-            <span class="usa-error-message js-pem-input-error-message">
+            <span class="<%= 'usa-error-message' if form.object.errors[:certs].present? %> js-pem-input-error-message">
               <%= form.object.errors[:certs].to_sentence.presence %>
             </span>
             <%= form.file_field :cert, class: 'input-file js-pem-input' %>
@@ -79,7 +81,7 @@
           <% form.object.certificates.each do |certificate| %>
             <%= render 'service_providers/certificate', certificate: certificate do %>
               <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
-                <div class="usa-alert__text">
+                <div class="usa-alert__body">
                   <%= check_box_tag "wizard_step[remove_certificates][#{certificate.serial}]",
                                     certificate.serial,
                                     false,

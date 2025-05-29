@@ -215,4 +215,35 @@ describe User do
       User::DeprecateAdmin.deprecator.behavior = default_behavior
     end
   end
+
+  describe '#auth_token' do
+    it 'always picks the latest one' do
+      logingov_admin = create(:user, :logingov_admin) # only admins can access tokens
+      _first_token_record = create(:auth_token, user: logingov_admin)
+      second_token_record = create(:auth_token, user: logingov_admin)
+      expect(logingov_admin.auth_token).to eq(second_token_record)
+      expect(logingov_admin.auth_token.ephemeral_token).to be_blank
+    end
+  end
+
+  describe '#destroy', :versioning do
+    it 'deletes team memberships but not the teams' do
+      membership = create(:user_team)
+      user = membership.user
+      team = membership.team
+      user.destroy
+
+      # `User#deleted?` comes from the `acts_as_paranoid` gem
+      user.reload
+      expect(user).to be_deleted
+
+      # `acts_as_paranoid` option `double_tap_destroys_fully` is enabled per default
+      user.destroy
+      expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
+
+      team.reload
+      expect(team).to be_valid
+      expect { membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

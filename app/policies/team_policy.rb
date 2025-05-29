@@ -6,8 +6,12 @@ class TeamPolicy < BasePolicy
   end
 
   def create?
-    (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
-      user_has_login_admin_role? || user_has_partner_admin_role?
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
+    unless IdentityConfig.store.access_controls_enabled
+      return allowlisted_user?(user) || user_has_login_admin_role?
+    end
+
+    user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def destroy?
@@ -15,9 +19,11 @@ class TeamPolicy < BasePolicy
   end
 
   def edit?
-    user_has_login_admin_role? ||
-      (in_team? && !IdentityConfig.store.access_controls_enabled) ||
-      user_has_partner_admin_role?
+    unless IdentityConfig.store.access_controls_enabled
+      return in_team? || user_has_login_admin_role?
+    end
+
+    user_has_login_admin_role? || ( membership && membership.role_name == 'partner_admin')
   end
 
   def index?
@@ -25,28 +31,33 @@ class TeamPolicy < BasePolicy
   end
 
   def new?
-    (!IdentityConfig.store.access_controls_enabled && allowlisted_user?(user)) ||
-      user_has_login_admin_role? || user_has_partner_admin_role?
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
+    unless IdentityConfig.store.access_controls_enabled
+      return allowlisted_user?(user) || user_has_login_admin_role?
+    end
+
+    user_has_login_admin_role? || user_has_partner_admin_role?
   end
 
   def show?
     in_team? || user_has_login_admin_role?
   end
 
-  def update?
-    user_has_login_admin_role? ||
-      (in_team? && user_has_partner_admin_role?)
-  end
+  alias update? edit?
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if logingov_admin?
+      return scope if user_has_login_admin_role?
 
       scope.where(id: user.teams)
     end
   end
 
   private
+
+  def membership
+    record && record.class != Class && UserTeam.find_by(team: record, user: user)
+  end
 
   def in_team?
     record.users.include?(user)

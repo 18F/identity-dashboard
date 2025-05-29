@@ -20,6 +20,9 @@ class ServiceProvidersController < AuthenticatedController
 
   def show
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
+    @show_status_indicator = IdentityConfig.store.prod_like_env &&
+                             service_provider.prod_config? &&
+                             policy(service_provider).see_status?
   end
 
   def new
@@ -124,9 +127,9 @@ value: func.to_proc.call(@service_provider) })
         has been created on your behalf, replies will be sent to #{current_user.email}."
     else
       flash[:error] =
-"Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
+        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
-      redirect_to action: 'show', id:@service_provider.id
+      redirect_to action: 'show', id: @service_provider.id
   end
 
   private

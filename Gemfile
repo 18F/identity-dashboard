@@ -27,7 +27,7 @@ gem 'jwt'
 gem 'kaminari'
 gem 'lru_redux'
 gem 'newrelic_rpm', '>= 6.14.0'
-gem 'nokogiri', '~> 1.18.0'
+gem 'nokogiri', '~> 1.18.4'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
@@ -41,6 +41,7 @@ gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
+gem 'rack-attack', '~> 6.7'
 gem 'rails', '~> 7.2.0'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
@@ -80,12 +81,12 @@ group :development, :test do
   gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara', '>= 3.39.1'
-  gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner', '>= 2.0.2'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
