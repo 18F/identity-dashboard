@@ -4,7 +4,8 @@ class ServiceProvidersController < AuthenticatedController
 
   after_action :verify_authorized
   after_action :verify_policy_scoped,
-               except: [:publish, :prod_request] # `#publish` is currently an API call only, so no DB scope required
+               # `#publish` and `#prod_request` are currently an API call only, so no DB scope required
+               except: [:publish, :prod_request] 
 
   helper_method :parsed_help_text, :localized_help_text
 
@@ -102,8 +103,6 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def prod_request
-    render json: {success: true} and return
-
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
