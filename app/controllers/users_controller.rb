@@ -78,9 +78,10 @@ class UsersController < ApplicationController
     @user_team.role = @user.primary_role
   end
 
-  def log_change(team=false)
+  def log_change(team = false)
     record = team || @user
     return if action_name != 'destroy' && record.previous_changes.empty?
+
     log.record_save(action_name, record)
   end
 end

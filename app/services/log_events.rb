@@ -10,7 +10,7 @@ module LogEvents
     model_name = record.class.name.downcase
     changes = record.previous_changes.empty? ? record.as_json : {}
 
-    record.previous_changes.each_pair do |k,v|
+    record.previous_changes.each_pair do |k, v|
       if k != 'updated_at'
         if !v.is_a? Array
           changes[k] = v
@@ -23,9 +23,7 @@ module LogEvents
       end
     end
     changes[:id] = record.id
-    if record.previous_changes[:role_name]
-      changes.merge!(team_data record)
-    end
+    changes.merge!(team_data record) if record.previous_changes[:role_name]
     track_event("#{model_name}_#{action}", changes)
   end
 
