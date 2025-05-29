@@ -2,10 +2,10 @@ class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
 
-  after_action :verify_authorized, except: :prod_request
+  after_action :verify_authorized
   after_action :verify_policy_scoped,
-               # `#publish` and `#prod_request` are currently an API call only, so no DB scope required
-               except: [:publish, :prod_request] 
+               except: :publish # `#publish` is currently an API call only, so no DB scope required
+
 
   helper_method :parsed_help_text, :localized_help_text
 
