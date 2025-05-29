@@ -76,6 +76,14 @@ describe Teams::UsersController do
 
       describe '#create' do
         it_behaves_like 'can create valid users'
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :create, params: { team_id: team.id, user: { email: valid_email } }
+
+            expect(logger_double).to have_received(:record_save).once
+          end
+        end
       end
 
       describe '#update' do
@@ -176,6 +184,14 @@ describe Teams::UsersController do
           let(:user_to_delete) { user }
 
           it_behaves_like 'cannot destroy user'
+        end
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+
+            expect(logger_double).to have_received(:record_save).once
+          end
         end
       end
     end
