@@ -1,0 +1,24 @@
+<div class="grid-container border border-base-lighter radius-sm padding-x-6 padding-top-3 padding-bottom-6 margin-top-7">
+  <h1><%= t('home.system_use') %></h1>
+  <p class="usa-prose">You are accessing a U.S. Government information system, which includes:</p>
+  <ol class="margin-y-2 line-height-sans-5">
+    <li class="margin-bottom-05">This computer,</li>
+    <li class="margin-bottom-05">This computer network,</li>
+    <li class="margin-bottom-05">All computers connected to this network, and</li>
+    <li class="margin-bottom-05">All devices and storage media attached to this network or to a computer on this network.</li>
+  </ol>
+  <ul class="margin-y-2 line-height-sans-5">
+    <li class="margin-bottom-05">This information system is provided for U.S. Government-authorized use only.</li>
+    <li class="margin-bottom-05">Unauthorized or improper use or access of this system may result in disciplinary action, as well as civil and criminal penalties.</li>
+    <li class="margin-bottom-05">By using this information system, you understand and consent to the following:
+      <ol class="margin-y-2 line-height-sans-5">
+        <li class="margin-bottom-05">You have no reasonable expectation of privacy when you use this information system; this includes any communications or data transiting, stored on, originated from, or directed to this information system. At any time, and for any lawful government purpose, the government may monitor, intercept, search, and seize any communication or data transiting, stored on, originated from, or directed to or from this information system.</li>
+        <li class="margin-bottom-05">The government may disclose or use any communications or data transiting, stored on, originated from, or directed to or from this information system for any lawful government purpose.</li>
+      </ol>
+    </li>
+  </ul>
+  <p class="usa-prose">You are NOT authorized to process classified information on this information system</p>
+  <p class="usa-prose">By clicking “I agree” below or by using this system, you consent to the terms set forth in this notice.</p>
+  <%= button_to t('home.system_agree'), '/auth/logindotgov', method: :post, class: 'usa-button margin-top-5', style: 'margin-left:50%;transform:translate(-50%)' %>
+</div>
+

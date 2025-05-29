@@ -102,6 +102,8 @@ en:
       view:
         title: View your application integrations
         body: Get a comprehensive overview of all your connected applications.
+    system_use: System use notification
+    system_agree: I agree
   links:
     aria:
       delete: Delete %{name}
