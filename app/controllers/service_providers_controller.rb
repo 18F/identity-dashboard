@@ -103,7 +103,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
-render json: {here: true} and return
+render json: {here2: true} and return
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
 
