@@ -113,13 +113,13 @@ host: request.host)
       ticket_custom_fields.push({ id: id,
 value: func.to_proc.call(@service_provider) })
     end
-render json: {here4: true, ticketinfo: ticket_custom_fields} and return
 
     ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
     ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
+render json: {here5: true, ticketinfo: ticket_data} and return
 
     creation_status = zendesk_request.create_ticket(ticket_data)
 
