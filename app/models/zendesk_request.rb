@@ -130,6 +130,8 @@ class ZendeskRequest
 
     @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
 
+    return {here3: true, response: ZENDESK_POST_PATH, ticket_data: ticket_data.to_json}
+
     resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     return {here2: true, response: resp}
 
