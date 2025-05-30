@@ -105,7 +105,6 @@ class ServiceProvidersController < AuthenticatedController
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
 host: request.host)
-render json: {here3: true} and return
 
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
@@ -114,6 +113,7 @@ render json: {here3: true} and return
       ticket_custom_fields.push({ id: id,
 value: func.to_proc.call(@service_provider) })
     end
+render json: {here4: true, ticketinfo: ticket_custom_fields} and return
 
     ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
