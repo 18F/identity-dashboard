@@ -119,9 +119,9 @@ value: func.to_proc.call(@service_provider) })
     end
 
     ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
-render json: {here5: true, ticketinfo: ticket_data} and return
 
     creation_status = zendesk_request.create_ticket(ticket_data)
+render json: {here6: true, creation_status: creation_status} and return
 
     if creation_status[:success] == true
       flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
