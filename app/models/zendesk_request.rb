@@ -126,11 +126,11 @@ class ZendeskRequest
   end
 
   def create_ticket(ticket_data)
+    return {here1: true, ticket_data: ticket_data}
     headers = { 'Content-Type' => 'application/json' }
 
     @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
 
-    return {here1: true, conn: @conn.inspect}
 
     resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
