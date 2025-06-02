@@ -7,6 +7,8 @@
 module LogEvents
   # Generic CrUD logger
   def record_save(action, record)
+    return if !record
+
     model_name = record.class.name.downcase
     changes = record.previous_changes.empty? ? record.as_json : {}
 
