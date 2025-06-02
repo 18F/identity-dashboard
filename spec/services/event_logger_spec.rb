@@ -100,6 +100,12 @@ RSpec.describe EventLogger do
       log.record_save('delete', sp)
     end
 
+    it 'does not attempt to log a nil record' do
+      expect(logger).to_not receive(:info)
+
+      log.record_save('create', nil)
+    end
+
     it 'logs team_data when role_name is changed' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
