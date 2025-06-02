@@ -7,6 +7,7 @@ describe Teams::UsersController do
   let(:user_to_delete) { create(:user_team, team:).user }
   let(:valid_email) { 'user1@gsa.gov' }
   let(:invalid_email) { 'invalid' }
+  let(:logger_double) { instance_double(EventLogger) }
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
@@ -50,6 +51,8 @@ describe Teams::UsersController do
   context 'when logged in' do
     before do
       sign_in user
+      allow(logger_double).to receive(:record_save)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
     context 'with Partner Admin role' do
@@ -73,6 +76,14 @@ describe Teams::UsersController do
 
       describe '#create' do
         it_behaves_like 'can create valid users'
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :create, params: { team_id: team.id, user: { email: valid_email } }
+
+            expect(logger_double).to have_received(:record_save).once
+          end
+        end
       end
 
       describe '#update' do
@@ -112,12 +123,6 @@ describe Teams::UsersController do
 
         context 'logging' do
           let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
-          let(:logger_double) { instance_double(EventLogger) }
-
-          before do
-            allow(logger_double).to receive(:team_role_updated)
-            allow(EventLogger).to receive(:new).and_return(logger_double)
-          end
 
           it 'logs updates to member roles' do
             put :update, params: {
@@ -126,7 +131,9 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_developer' },
             }
 
-            expect(logger_double).to have_received(:team_role_updated)
+            expect(logger_double).to have_received(:record_save).once do |op, record|
+              expect(record.previous_changes).to include('role_name')
+            end
           end
 
           it 'does not log updates when roles are unchanged' do
@@ -136,7 +143,9 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_readonly' },
             }
 
-            expect(logger_double).to_not have_received(:team_role_updated)
+            expect(logger_double).to have_received(:record_save) do |op, record|
+              expect(record.previous_changes).to_not include('role_name')
+            end
           end
         end
       end
@@ -175,6 +184,14 @@ describe Teams::UsersController do
           let(:user_to_delete) { user }
 
           it_behaves_like 'cannot destroy user'
+        end
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+
+            expect(logger_double).to have_received(:record_save).once
+          end
         end
       end
     end
