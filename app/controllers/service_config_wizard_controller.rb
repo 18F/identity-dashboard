@@ -1,5 +1,6 @@
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
+  after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
@@ -325,5 +326,12 @@ class ServiceConfigWizardController < AuthenticatedController
     {
       service_provider: ServiceProviderSerializer.new(@service_provider),
     }
+  end
+
+  def log_change
+    return unless step == wizard_steps.last
+
+    action = @service_provider.previous_changes['id'] ? 'create' : 'update'
+    log.record_save(action, @service_provider) unless can_cancel?
   end
 end
