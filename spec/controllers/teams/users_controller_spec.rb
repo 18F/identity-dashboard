@@ -190,7 +190,9 @@ describe Teams::UsersController do
           it 'calls log.record_save' do
             post :destroy, params: { team_id: team.id, id: user_to_delete.id }
 
-            expect(logger_double).to have_received(:record_save).once
+            expect(logger_double).to have_received(:record_save).once do |op, record|
+              expect(record.class.name).to eq('UserTeam')
+            end
           end
         end
       end
