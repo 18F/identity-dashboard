@@ -5,7 +5,8 @@ class Teams::UsersController < AuthenticatedController
   if IdentityConfig.store.access_controls_enabled
     after_action :verify_authorized
     after_action :verify_policy_scoped
-    after_action :log_change, only: %i[create update destroy]
+    before_action :log_change, only: %i[destroy]
+    after_action :log_change, only: %i[create update]
   end
 
   helper_method :roles_for_options, :show_actions?
@@ -167,7 +168,6 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def log_change
-    record = membership || team
-    log.record_save(action_name, record)
+    log.record_save(action_name, membership)
   end
 end
