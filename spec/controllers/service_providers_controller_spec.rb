@@ -628,6 +628,27 @@ describe ServiceProvidersController do
     end
   end
 
+  describe '#destroy' do
+    let(:logger_double) { instance_double(EventLogger) }
+
+    before do
+      allow(logger_double).to receive(:record_save)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
+
+      create(:user_team, :partner_admin, user: user, team: sp.team)
+      sign_in user
+    end
+
+    it 'logs delete events' do
+      delete :destroy, params: { id: sp.id }
+
+      expect(logger_double).to have_received(:record_save) do |op, record|
+        expect(op).to eq('destroy')
+        expect(record.class.name).to eq('ServiceProvider')
+      end
+    end
+  end
+
   describe '#publish' do
     context 'no user' do
       it 'requires authentication' do

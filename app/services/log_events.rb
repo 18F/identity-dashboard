@@ -29,11 +29,6 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
-  # When a user clicks "Create an app"
-  def sp_config_created
-    track_event('sp_config_created')
-  end
-
   def team_data(record)
     {
       team_user: User.find(record[:user_id]).email,
