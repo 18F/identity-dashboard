@@ -330,6 +330,6 @@ class ServiceConfigWizardController < AuthenticatedController
     return unless step == wizard_steps.last
 
     action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
-    log.record_save(action, @service_provider) unless can_cancel?
+    log.record_save(action, draft_service_provider) unless can_cancel?
   end
 end
