@@ -280,7 +280,6 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def save_service_provider(service_provider)
-    is_new = service_provider[:id].nil?
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
@@ -330,7 +329,7 @@ class ServiceConfigWizardController < AuthenticatedController
   def log_change
     return unless step == wizard_steps.last
 
-    # this has to be draft_service_provider for tests
+    # this has to be draft_service_provider for tests, not @service_provider
     action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
     log.record_save(action, @service_provider) unless can_cancel?
   end
