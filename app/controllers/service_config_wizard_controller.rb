@@ -166,6 +166,7 @@ class ServiceConfigWizardController < AuthenticatedController
   private
 
   def get_model_for_step
+    Rails.logger.info "get_model_for_step: #{step}"
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
 
@@ -181,6 +182,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def redirect_unless_flagged_in
+    Rails.logger.info IdentityConfig.store.service_config_wizard_enabled ? 'Flagged into Wizard' : 'Redirect to SP/new'
     redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
   end
 
