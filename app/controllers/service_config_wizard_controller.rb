@@ -35,20 +35,20 @@ class ServiceConfigWizardController < AuthenticatedController
   # Will overwrite existing steps if a ServiceProvider is found.
   def create
     service_provider_id = params[:service_provider]
-    puts "sp_id: #{service_provider_id}"
+    Rails.logger.info "sp_id: #{service_provider_id}"
     # No existing config specified, so fall back on default behavior
     return new unless service_provider_id
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
-    puts "service provider: #{service_provider}"
+    Rails.logger.info "service provider: #{service_provider}"
     authorize service_provider, :edit?
-    puts "authorized"
+    Rails.logger.info "authorized"
     steps = WizardStep.steps_from_service_provider(service_provider, current_user)
-    puts "steps: #{steps}"
+    Rails.logger.info "steps: #{steps}"
     # TODO: what if the service provider is somehow invalid?
     steps.each(&:save)
-    puts "steps saved."
-    puts "new path: #{service_config_wizard_path(STEPS[1])}"
+    Rails.logger.info "steps saved."
+    Rails.logger.info "new path: #{service_config_wizard_path(STEPS[1])}"
     # Skip the intro when editing an existing config
     redirect_to service_config_wizard_path(STEPS[1])
   end
