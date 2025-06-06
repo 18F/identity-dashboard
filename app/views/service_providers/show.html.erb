@@ -213,7 +213,8 @@
 
 <% if edit_button_goes_to_wizard? %>
   <%= button_to t('forms.buttons.edit_service_provider'),
-    service_config_wizard_index_path(service_provider:),
+    service_config_wizard_index_path,
+    params: {service_provider: },
     class: 'usa-button float-left',
     method: :post %>
  <% else %>
