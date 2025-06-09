@@ -388,7 +388,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'stays on this step when the service provider would be invalid' do
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
-        end.not_to(change { ServiceProvider.count })
+        end.to_not(change { ServiceProvider.count })
         error_messages = assigns['model'].errors.messages.merge(
           assigns['service_provider'].errors.messages,
         )
@@ -676,7 +676,7 @@ RSpec.describe ServiceConfigWizardController do
 
   context 'when not logged in' do
     it 'requires authentication without checking flag status' do
-      expect(IdentityConfig.store).not_to receive(:service_config_wizard_enabled)
+      expect(IdentityConfig.store).to_not receive(:service_config_wizard_enabled)
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(root_url)
