@@ -35,4 +35,13 @@ module LogEvents
       team: Team.find(record[:group_id]).name,
     }
   end
+
+  def unauthorized(exception)
+    model_name = exception.record.name.downcase
+    details = {
+      method: exception.query.to_s,
+    }
+
+    track_event("#{model_name}_unauthorized", details)
+  end
 end
