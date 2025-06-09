@@ -6,7 +6,7 @@ RSpec.describe AnalyticsPolicy, type: :policy do
 
   permissions :show? do
     it 'denies users by default' do
-      expect(AnalyticsPolicy).not_to permit(user)
+      expect(AnalyticsPolicy).to_not permit(user)
     end
 
     it 'allows login.gov admins' do

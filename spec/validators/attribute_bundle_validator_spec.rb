@@ -29,8 +29,8 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
       end
       expect(saml_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
       expect(saml_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+      expect(saml_sp_ial1).to_not allow_value(ial_2_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial1).to_not allow_value(%w[gibberish]).for(:attribute_bundle)
     end
 
     it 'validates SAML at IAL 2 correctly' do
@@ -38,10 +38,10 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
         model.ial = [2, '2'].sample
         model.saml = true
       end
-      expect(saml_sp_ial2).not_to allow_value(empty_bundle).for(:attribute_bundle)
+      expect(saml_sp_ial2).to_not allow_value(empty_bundle).for(:attribute_bundle)
       expect(saml_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
       expect(saml_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
-      expect(saml_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+      expect(saml_sp_ial2).to_not allow_value(%w[gibberish]).for(:attribute_bundle)
     end
   end
 
@@ -53,8 +53,8 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
     end
     expect(oidc_sp_ial1).to allow_value(empty_bundle).for(:attribute_bundle)
     expect(oidc_sp_ial1).to allow_value(ial_1_bundle).for(:attribute_bundle)
-    expect(oidc_sp_ial1).not_to allow_value(ial_2_bundle).for(:attribute_bundle)
-    expect(oidc_sp_ial1).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+    expect(oidc_sp_ial1).to_not allow_value(ial_2_bundle).for(:attribute_bundle)
+    expect(oidc_sp_ial1).to_not allow_value(%w[gibberish]).for(:attribute_bundle)
   end
 
   it 'validates OIDC at IAL 2 correctly' do
@@ -65,6 +65,6 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
     expect(oidc_sp_ial2).to allow_value(empty_bundle).for(:attribute_bundle)
     expect(oidc_sp_ial2).to allow_value(ial_1_bundle).for(:attribute_bundle)
     expect(oidc_sp_ial2).to allow_value(ial_2_bundle).for(:attribute_bundle)
-    expect(oidc_sp_ial2).not_to allow_value(%w[gibberish]).for(:attribute_bundle)
+    expect(oidc_sp_ial2).to_not allow_value(%w[gibberish]).for(:attribute_bundle)
   end
 end

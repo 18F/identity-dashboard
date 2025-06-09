@@ -169,7 +169,7 @@ describe 'SamlRequest' do
       let(:validity) { false }
 
       it 'does not run the valid_signature methods' do
-        expect(decoded_request).not_to receive(:service_provider)
+        expect(decoded_request).to_not receive(:service_provider)
         subject.run_validations
       end
     end

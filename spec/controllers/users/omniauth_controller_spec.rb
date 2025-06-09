@@ -53,7 +53,7 @@ describe Users::OmniauthController do
         user = create(:user, email:)
         session[:requested_url] = service_providers_url
 
-        expect(subject).not_to receive(:sign_in)
+        expect(subject).to_not receive(:sign_in)
 
         get :callback
 
@@ -65,7 +65,7 @@ describe Users::OmniauthController do
       let(:email) { 'test@test.agency․gov' }
 
       it 'redirects to the empty user path' do
-        expect(subject).not_to receive(:sign_in)
+        expect(subject).to_not receive(:sign_in)
 
         get :callback
 
