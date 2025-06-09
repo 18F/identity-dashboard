@@ -142,7 +142,7 @@ describe ServiceProviderHelper do
     it 'returns saml attributes without signed_response_message_requested if false' do
       expect(config_hash(
         saml_without_requested_response,
-      )).not_to include('signed_response_message_requested')
+      )).to_not include('signed_response_message_requested')
     end
 
     it 'returns saml attribute email_nameid_format_allowed if true' do
@@ -152,7 +152,7 @@ describe ServiceProviderHelper do
     end
 
     it 'truens saml attributes without email_nameid_format_allowed if false' do
-      expect(config_hash(saml_sp)).not_to include('email_nameid_format_allowed')
+      expect(config_hash(saml_sp)).to_not include('email_nameid_format_allowed')
     end
 
     it 'returns a properly formatted yaml blurb for OIDC pkce' do

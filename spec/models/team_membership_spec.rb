@@ -37,7 +37,7 @@ RSpec.describe TeamMembership do
   describe '#valid?' do
     it { is_expected.to allow_value(nil).for(:role_name) }
     it { is_expected.to allow_value('logingov_admin').for(:role_name) }
-    it { is_expected.not_to allow_value('some_random_admin').for(:role_name) }
+    it { is_expected.to_not allow_value('some_random_admin').for(:role_name) }
   end
 
   describe '.destroy_orphaned_memberships' do
