@@ -80,6 +80,9 @@
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'Deleted apps', service_providers_deleted_path %>
                   </li>
+                  <li class="usa-nav__submenu-item">
+                    <%= link_to 'User permissions report', internal_reports_memberships_path(format: 'csv') %>
+                  </li>
                 </ul>
               </li>
             <% end %>

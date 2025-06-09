@@ -22,14 +22,24 @@ feature 'Home' do
   end
 
   context 'when login.gov admin' do
-    scenario 'should see manage teams and manage users' do
-      logingov_admin = create(:user, :logingov_admin)
+    let(:logingov_admin) { create(:user, :logingov_admin) }
 
+    before do
       login_as(logingov_admin)
       visit root_path
+    end
 
+    scenario 'should see manage teams and manage users' do
       expect(page).to have_content('Teams')
       expect(page).to have_content('Users')
+    end
+
+    scenario 'should see admin nav menu items' do
+      click_on 'Admin'
+      api_auth_link = find_link 'Your API auth token'
+      expect(api_auth_link['href']).to eq(auth_tokens_path)
+      user_csv_link = find_link 'User permissions report'
+      expect(user_csv_link['href']).to eq(internal_reports_memberships_path(format: 'csv'))
     end
   end
 
@@ -42,6 +52,9 @@ feature 'Home' do
 
       expect(page).to have_content('Teams')
       expect(page).to_not have_content('Users')
+      expect(page).to_not have_content('Admin')
+      expect(page).to_not have_content('API auth')
+      expect(page).to_not have_content('permissions report')
     end
   end
 end
