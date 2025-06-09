@@ -56,7 +56,7 @@ RSpec.describe EventLogger do
     end
 
     it 'does not track nil values' do
-      expect(logger).not_to receive(:info).with(match('\"example\":nil'))
+      expect(logger).to_not receive(:info).with(match('\"example\":nil'))
 
       log.track_event('Trackable Event', { example: nil })
     end
