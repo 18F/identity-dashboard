@@ -1,0 +1,4 @@
+"User email","Role","Team"
+<% @memberships.each do |membership| %>
+"<%= membership.user.email %>","<%= membership.role&.friendly_name %>","<%= membership.team %>"
+<% end %>
