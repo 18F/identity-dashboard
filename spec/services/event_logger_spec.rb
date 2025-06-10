@@ -140,7 +140,9 @@ RSpec.describe EventLogger do
     it 'logs UnpermittedParameters exceptions' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
-        expect(obj['properties']['event_properties']['detailed_message']).to match('found unpermitted parameter')
+        expect(
+          obj['properties']['event_properties']['detailed_message'],
+        ).to match('found unpermitted parameter')
         expect(obj['name']).to eq('fakepath_unpermitted_params')
       end
 
