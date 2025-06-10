@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 # ABC_XYZ -- Keep it Alphabetical!
-# Security and analytics events are separated alphabetically
-# status should be 'SUCCESS', 'FAILURE', or HTTP status
 
 module LogEvents
   # Generic CrUD logger

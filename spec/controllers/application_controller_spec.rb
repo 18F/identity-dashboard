@@ -59,4 +59,20 @@ RSpec.describe ApplicationController do
       end
     end
   end
+
+  describe '#log_and_render_401' do
+    let(:logger_double) { instance_double(EventLogger) }
+
+    before do
+      allow(logger_double).to receive(:unauthorized)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
+      allow(controller).to receive(:render)
+    end
+
+    it 'logs unauthorized exeptions' do
+      controller.log_and_render_401 'exception'
+
+      expect(logger_double).to have_received(:unauthorized).with('exception')
+    end
+  end
 end

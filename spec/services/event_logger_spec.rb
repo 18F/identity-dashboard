@@ -118,4 +118,24 @@ RSpec.describe EventLogger do
       log.record_save('update', userteam)
     end
   end
+
+  describe '#unauthorized' do
+    # See service_providers_controller_spec.rb for integration test
+
+    it 'logs exceptions' do
+      record = User.new
+      options = {
+        query: :TestMethod,
+        record: User,
+        policy: UserPolicy.new(current_user, record),
+      }
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['properties']['event_properties']['method']).to eq('TestMethod')
+        expect(obj['name']).to eq('user_unauthorized')
+      end
+
+      log.unauthorized(Pundit::NotAuthorizedError.new options)
+    end
+  end
 end
