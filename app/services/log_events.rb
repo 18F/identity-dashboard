@@ -35,11 +35,17 @@ module LogEvents
   end
 
   def unauthorized(exception)
-    model_name = exception.record.name.downcase
-    details = {
-      method: exception.query.to_s,
-    }
+    details = { detailed_message: exception.detailed_message }
+    
+    if exception.class.method_defined? :query
+      details.merge!({ method: exception.query.to_s })
+      model_name = exception.record.name.downcase
+      event_name = 'unauthorized'
+    else
+      model_name = self.request.path.gsub('_','').match(/^\/?([a-zA-Z_]+)/)[1]
+      event_name = 'unpermitted_params'
+    end
 
-    track_event("#{model_name}_unauthorized", details)
+    track_event("#{model_name}_#{event_name}", details)
   end
 end

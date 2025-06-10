@@ -122,12 +122,11 @@ RSpec.describe EventLogger do
   describe '#unauthorized' do
     # See service_providers_controller_spec.rb for integration test
 
-    it 'logs exceptions' do
-      record = User.new
+    it 'logs NotAuthorizedError exceptions' do
       options = {
         query: :TestMethod,
         record: User,
-        policy: UserPolicy.new(current_user, record),
+        policy: UserPolicy.new(current_user, User.new),
       }
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
@@ -136,6 +135,16 @@ RSpec.describe EventLogger do
       end
 
       log.unauthorized(Pundit::NotAuthorizedError.new options)
+    end
+
+    it 'logs UnpermittedParameters exceptions' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['properties']['event_properties']['detailed_message']).to match('found unpermitted parameter')
+        expect(obj['name']).to eq('fakepath_unpermitted_params')
+      end
+
+      log.unauthorized(ActionController::UnpermittedParameters.new [:one, :two])
     end
   end
 end
