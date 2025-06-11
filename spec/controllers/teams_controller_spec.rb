@@ -13,7 +13,7 @@ describe TeamsController do
     allow(controller).to receive(:current_user).and_return(user)
     allow(EventLogger).to receive(:new).and_return(logger_double)
     allow(logger_double).to receive(:record_save)
-    allow(logger_double).to receive(:exception)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
     sign_in user
   end
 

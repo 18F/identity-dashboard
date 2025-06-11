@@ -130,23 +130,34 @@ RSpec.describe EventLogger do
       }
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
-        expect(obj['properties']['event_properties']['method']).to eq('TestMethod')
-        expect(obj['name']).to eq('user_unauthorized')
+        expect(obj['properties']['event_properties']).to eq({
+          "message" => "not allowed to UserPolicy#TestMethod User",
+          "query" => "TestMethod",
+          "record" => "User",
+          "policy" => "UserPolicy",
+        })
+        expect(obj['name']).to eq('unauthorized_access_attempt')
       end
 
-      log.exception(Pundit::NotAuthorizedError.new(options), 'unauthorized')
+      log.unauthorized_access_attempt(
+        Pundit::NotAuthorizedError.new(options),
+      )
     end
 
     it 'logs UnpermittedParameters exceptions' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
-        expect(
-          obj['properties']['event_properties']['detailed_message'],
-        ).to match('found unpermitted parameter')
-        expect(obj['name']).to eq('fakepath_unpermitted_params')
+        expect(obj['properties']['event_properties']).to match({
+          "message" => "found unpermitted parameters: :one, :two",
+          "params" => "one, two",
+          "record" => "fakepath",
+        })
+        expect(obj['name']).to eq('unpermitted_params_attempt')
       end
 
-      log.exception(ActionController::UnpermittedParameters.new([:one, :two]), 'unpermitted_params')
+      log.unpermitted_params_attempt(
+        ActionController::UnpermittedParameters.new([:one, :two]),
+      )
     end
   end
 end

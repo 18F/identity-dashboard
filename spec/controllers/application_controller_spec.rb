@@ -64,7 +64,8 @@ RSpec.describe ApplicationController do
     let(:logger_double) { instance_double(EventLogger) }
 
     before do
-      allow(logger_double).to receive(:exception)
+      allow(logger_double).to receive(:unauthorized_access_attempt)
+      allow(logger_double).to receive(:unpermitted_params_attempt)
       allow(EventLogger).to receive(:new).and_return(logger_double)
       allow(controller).to receive(:render)
     end
@@ -73,7 +74,7 @@ RSpec.describe ApplicationController do
       it 'logs unauthorized exeptions' do
         controller.log_not_auth_and_render_401 'exception'
 
-        expect(logger_double).to have_received(:exception).with('exception', 'unauthorized')
+        expect(logger_double).to have_received(:unauthorized_access_attempt).with('exception')
       end
     end
 
@@ -81,7 +82,7 @@ RSpec.describe ApplicationController do
       it 'logs unpermitted params exeptions' do
         controller.log_unperm_params_and_render_401 'exception'
 
-        expect(logger_double).to have_received(:exception).with('exception', 'unpermitted_params')
+        expect(logger_double).to have_received(:unpermitted_params_attempt).with('exception')
       end
     end
   end

@@ -34,21 +34,44 @@ module LogEvents
     }
   end
 
-  def exception(exception, event_name)
-    details = { detailed_message: exception.detailed_message }
+  def unauthorized_access_attempt(exception)
+    details = {
+      message: exception.message,
+      query: exception.query.to_s,
+      record: exception.record.is_a?(Class) ?
+        exception.record.name :
+        exception.record.class.name,
+      policy: exception.policy.class.name,
+    }
 
-    if event_name == 'unauthorized'
-      details.merge!({ method: exception.query.to_s })
-      model_name = exception.record.is_a?(Class) ?
-        exception.record.name.downcase :
-        exception.record.class.name.downcase
-    elsif event_name == 'unpermitted_params'
-      model_name = self.request.path.gsub('_', '').match(/^\/?([a-zA-Z_]+)/)[1]
-    else
-      model_name = 'unknown'
-      event_name = 'exception'
-    end
-
-    track_event("#{model_name}_#{event_name}", details)
+    track_event('unauthorized_access_attempt', details)
   end
+
+  def unpermitted_params_attempt(exception)
+    details = {
+      message: exception.message,
+      params: exception.params.join(', '),
+      record: self.request.path.gsub('_', '').match(/^\/?([a-zA-Z]+)/)[1],
+    }
+
+    track_event('unpermitted_params_attempt', details)
+  end
+#   def exception(exception, event_name)
+#     details = { detailed_message: exception.detailed_message }
+
+#     if event_name == 'unauthorized'
+#       details.merge!({ method: exception.query.to_s })
+#       model_name = exception.record.is_a?(Class) ?
+#         exception.record.name.downcase :
+#         exception.record.class.name.downcase
+#     elsif event_name == 'unpermitted_params'
+#       details.merge!({ params: exception.params.join(', ') })
+#       model_name = self.request.path.gsub('_', '').match(/^\/?([a-zA-Z_]+)/)[1]
+#     else
+#       model_name = 'unknown'
+#       event_name = 'exception'
+#     end
+# binding.pry
+#     track_event("#{model_name}_#{event_name}", details)
+#   end
 end

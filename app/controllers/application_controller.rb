@@ -22,12 +22,12 @@ class ApplicationController < ActionController::Base
   end
 
   def log_not_auth_and_render_401(exception)
-    log.exception(exception, 'unauthorized')
+    log.unauthorized_access_attempt(exception)
     render_401
   end
 
   def log_unperm_params_and_render_401(exception)
-    log.exception(exception, 'unpermitted_params')
+    log.unpermitted_params_attempt(exception)
     render_401
   end
 

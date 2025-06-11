@@ -458,7 +458,7 @@ RSpec.describe ServiceConfigWizardController do
     before do
       sign_in partner_admin
       allow(logger_double).to receive(:record_save)
-      allow(logger_double).to receive(:exception)
+      allow(logger_double).to receive(:unauthorized_access_attempt)
       allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
