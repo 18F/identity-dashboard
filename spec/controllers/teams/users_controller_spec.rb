@@ -52,6 +52,7 @@ describe Teams::UsersController do
     before do
       sign_in user
       allow(logger_double).to receive(:record_save)
+      allow(logger_double).to receive(:exception)
       allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 

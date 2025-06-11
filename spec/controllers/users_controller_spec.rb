@@ -10,6 +10,7 @@ describe UsersController do
     allow(controller).to receive(:current_user).and_return(user)
     allow(logger_double).to receive(:team_data)
     allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:exception)
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 

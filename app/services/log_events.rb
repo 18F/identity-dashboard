@@ -39,7 +39,9 @@ module LogEvents
 
     if event_name == 'unauthorized'
       details.merge!({ method: exception.query.to_s })
-      model_name = exception.record.name.downcase
+      model_name = exception.record.is_a?(Class) ?
+        exception.record.name.downcase :
+        exception.record.class.name.downcase
     elsif event_name == 'unpermitted_params'
       model_name = self.request.path.gsub('_', '').match(/^\/?([a-zA-Z_]+)/)[1]
     else

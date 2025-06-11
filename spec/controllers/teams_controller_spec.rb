@@ -13,6 +13,7 @@ describe TeamsController do
     allow(controller).to receive(:current_user).and_return(user)
     allow(EventLogger).to receive(:new).and_return(logger_double)
     allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:exception)
     sign_in user
   end
 
@@ -201,10 +202,11 @@ describe TeamsController do
         expect(logger_double).to have_received(:record_save)
       end
     end
-    context 'when the user is not an admin'
-    it 'has an error response' do
-      delete :destroy, params: { id: org.id }
-      expect(response).to have_http_status(:unauthorized)
+    context 'when the user is not an admin' do
+      it 'has an error response' do
+        delete :destroy, params: { id: org.id }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 
