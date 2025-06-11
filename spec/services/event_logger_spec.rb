@@ -131,10 +131,10 @@ RSpec.describe EventLogger do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj['properties']['event_properties']).to eq({
-          "message" => "not allowed to UserPolicy#TestMethod User",
-          "query" => "TestMethod",
-          "record" => "User",
-          "policy" => "UserPolicy",
+          'message' => 'not allowed to UserPolicy#TestMethod User',
+          'query' => 'TestMethod',
+          'record' => 'User',
+          'policy' => 'UserPolicy',
         })
         expect(obj['name']).to eq('unauthorized_access_attempt')
       end
@@ -148,9 +148,9 @@ RSpec.describe EventLogger do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj['properties']['event_properties']).to match({
-          "message" => "found unpermitted parameters: :one, :two",
-          "params" => "one, two",
-          "record" => "fakepath",
+          'message' => 'found unpermitted parameters: :one, :two',
+          'params' => 'one, two',
+          'record' => 'fakepath',
         })
         expect(obj['name']).to eq('unpermitted_params_attempt')
       end
