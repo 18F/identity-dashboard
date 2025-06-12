@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 describe 'Service Provider API' do
+  it 'fails without authorization header' do
+    app = create(:service_provider)
+    get api_service_providers_path
+    json = response.parsed_body
+    expect(response).to have_http_status(:unauthorized)
+  end
+
   it 'returns JSON' do
     app = create(:service_provider)
     get api_service_providers_path
