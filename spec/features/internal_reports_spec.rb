@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'internal reports' do
+  let(:logingov_admin) { create(:user, :logingov_admin) }
+
   it 'responds with an error when not logged in' do
     visit internal_reports_memberships_path(format: 'csv')
     expect(body).to eq('You need to sign in or sign up before continuing.')
@@ -13,7 +15,6 @@ feature 'internal reports' do
   end
 
   describe 'with some users having multiple roles on different teams' do
-    let(:logingov_admin) { create(:user, :logingov_admin) }
     let(:simple_user) { create(:user_team, :partner_developer).user }
     let(:two_teams_admin) { create(:user_team, :partner_admin).user }
     let(:complex_user) { create(:user_team, :partner_admin).user }
@@ -40,7 +41,7 @@ feature 'internal reports' do
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
       expect(csv_response.length).to eq(7)
-      expect(csv_response[0]).to eq(['User email', 'Role', 'Team'])
+      expect(csv_response[0]).to eq(MembershipCsv::MEMBERSHIPS_HEADER_ROW)
 
       # Because we use `sequence(:email)` in the users factory,
       # the users should always sort into the order we created them
