@@ -50,8 +50,7 @@ module LogEvents
   def unpermitted_params_attempt(exception)
     details = {
       message: exception.message,
-      params: exception.params.join(', '),
-      record: self.request.path.gsub('_', '').match(/^\/?([a-zA-Z]+)/)[1],
+      params: exception.params,
     }
 
     track_event('unpermitted_params_attempt', details)

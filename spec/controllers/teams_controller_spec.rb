@@ -38,6 +38,7 @@ describe TeamsController do
         it 'has an error response' do
           get :new
           expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
     end
@@ -131,6 +132,7 @@ describe TeamsController do
 
         it 'returns a 401' do
           expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
 
         it 'does not create the team' do
@@ -206,6 +208,7 @@ describe TeamsController do
       it 'has an error response' do
         delete :destroy, params: { id: org.id }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -317,6 +320,7 @@ describe TeamsController do
             description: org.description,
           } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end

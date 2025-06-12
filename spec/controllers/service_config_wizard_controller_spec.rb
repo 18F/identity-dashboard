@@ -32,6 +32,12 @@ RSpec.describe ServiceConfigWizardController do
     ServiceConfigWizardController::STEPS.index(step_name)
   end
 
+  before do
+    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
+  end
+
   context 'as an login.gov admin' do
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail,
@@ -457,9 +463,6 @@ RSpec.describe ServiceConfigWizardController do
 
     before do
       sign_in partner_admin
-      allow(logger_double).to receive(:record_save)
-      allow(logger_double).to receive(:unauthorized_access_attempt)
-      allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
     it 'can start the first step' do
@@ -657,6 +660,7 @@ RSpec.describe ServiceConfigWizardController do
       service_provider = create(:service_provider, team:)
       put :create, params: { service_provider: service_provider.id }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
 
     it 'cannot save' do
@@ -664,6 +668,7 @@ RSpec.describe ServiceConfigWizardController do
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
 
     it 'can save on a team with more permissions' do
@@ -672,6 +677,7 @@ RSpec.describe ServiceConfigWizardController do
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
   end
 

@@ -175,6 +175,7 @@ describe Teams::UsersController do
           # so it is acceptable to show "unauthorized" instead of a redirect
           expect(response).to be_unauthorized
           expect(response).to_not render_template(:remove_confirm)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -214,6 +215,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           get :new, params: { team_id: team.id }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -221,6 +223,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           post :create, params: { team_id: team.id, user: { email: valid_email } }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -228,6 +231,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
