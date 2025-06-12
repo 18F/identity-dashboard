@@ -42,7 +42,8 @@ describe ServiceProvider do
       describe 'logo is greater than 1 mb' do
         let(:filename) { '../big-logo.png' }
 
-        it 'is not valid' do
+        it 'is not valid if the logo info is changing' do
+          service_provider.logo = 'new_name.png'
           expect(service_provider).to_not be_valid
 
           expect(service_provider.errors.first.message).to eq(

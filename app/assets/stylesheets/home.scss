@@ -7,6 +7,11 @@
   margin-left: 0.2em;
 }
 
+.usa-button--center {
+  margin-left: 50%;
+  transform: translate(-50%);
+}
+
 .site-hero form {
   display: inline-block;
   margin-bottom: units(2);

@@ -2,12 +2,22 @@ require 'rails_helper'
 
 feature 'Home' do
   context 'when viewing the home page' do
-    scenario 'you should see intro and links to dev docs and partners' do
+    scenario 'you should see intro and appropriate links' do
       visit root_path
 
-      expect(page).to have_content(I18n.t('home.body_intro'))
-      expect(page).to have_content(I18n.t('home.dev_docs_link'))
-      expect(page).to have_content(I18n.t('home.partners_link'))
+      expect(page).to have_content(I18n.t('home.landing_title'))
+      expect(page).to have_content(I18n.t('home.dev_docs'))
+      expect(page).to have_content('Become a Partner')
+      expect(page).to have_content(I18n.t('links.sign_in'))
+    end
+
+    scenario 'you should be able to nav to system use page' do
+      visit root_path
+      click_on (I18n.t('links.sign_in'))
+
+      expect(page).to have_content(I18n.t('home.system_use'))
+      expect(page).to have_content(I18n.t('home.system_agree'))
+      expect(page).to have_css('[action="/auth/logindotgov"]')
     end
   end
 

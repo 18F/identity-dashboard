@@ -5,6 +5,7 @@ class ServiceProvidersController < AuthenticatedController
   after_action :verify_authorized
   after_action :verify_policy_scoped,
                except: :publish # `#publish` is currently an API call only, so no DB scope required
+  after_action :log_change, only: %i[destroy]
 
   helper_method :parsed_help_text, :localized_help_text
 
@@ -26,6 +27,9 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def new
+    if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
+      redirect_to new_service_config_wizard_url
+    end
     @service_provider = policy_scope(ServiceProvider).new
     authorize @service_provider
   end
@@ -271,4 +275,8 @@ value: func.to_proc.call(@service_provider) })
   end
 
   helper_method :service_provider
+
+  def log_change
+    log.record_save(action_name, service_provider)
+  end
 end

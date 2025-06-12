@@ -86,6 +86,6 @@ class TeamsController < AuthenticatedController
   end
 
   def log_change
-    log.record_save(@team)
+    log.record_save(action_name, @team)
   end
 end
