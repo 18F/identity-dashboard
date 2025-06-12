@@ -4,8 +4,7 @@ SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
   config.error_notification_tag = :div
-  config.error_notification_class =
-    'usa-alert usa-alert--error usa-alert__body usa-alert__text text-indent-3'
+  config.error_notification_class = 'usa-alert usa-alert--error'
 
   config.wrappers :base do |b|
     b.use :html5
