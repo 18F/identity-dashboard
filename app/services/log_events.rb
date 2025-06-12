@@ -56,22 +56,4 @@ module LogEvents
 
     track_event('unpermitted_params_attempt', details)
   end
-#   def exception(exception, event_name)
-#     details = { detailed_message: exception.detailed_message }
-
-#     if event_name == 'unauthorized'
-#       details.merge!({ method: exception.query.to_s })
-#       model_name = exception.record.is_a?(Class) ?
-#         exception.record.name.downcase :
-#         exception.record.class.name.downcase
-#     elsif event_name == 'unpermitted_params'
-#       details.merge!({ params: exception.params.join(', ') })
-#       model_name = self.request.path.gsub('_', '').match(/^\/?([a-zA-Z_]+)/)[1]
-#     else
-#       model_name = 'unknown'
-#       event_name = 'exception'
-#     end
-# binding.pry
-#     track_event("#{model_name}_#{event_name}", details)
-#   end
 end
