@@ -79,4 +79,26 @@ class Rack::Attack
   #    {},   # headers
   #    ['']] # body
   # end
+  # self.blocklisted_responder = lambda do |req|
+  # end
+end
+
+# Logging
+ActiveSupport::Notifications.subscribe('throttle.rack_attack') do |name, start, finish, req_id, payload|
+  binding.pry
+  # log.activity_throttled(name, {start:, finish:, payload:})
+end
+
+ActiveSupport::Notifications.subscribe('blocklist.rack_attack') do |name, start, finish, req_id, payload|
+  request = payload[:request]
+
+  EventLogger.new(request:).track_event(
+    'blocklisted',
+    {
+      matched: request.env['rack.attack.matched'],
+      start:,
+      finish:,
+      req_id:,
+    }
+  )
 end

@@ -120,7 +120,7 @@ RSpec.describe EventLogger do
   end
 
   describe '#exception' do
-    # See service_providers_controller_spec.rb for integration test
+    # See individual controller specs for integration tests
 
     it 'logs NotAuthorizedError exceptions' do
       options = {
