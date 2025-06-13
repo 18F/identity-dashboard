@@ -63,7 +63,7 @@ class EventLogger
 
   def request_attributes
     attributes = {
-      user_ip: request.remote_ip,
+      user_ip: request.remote_ip || request.ip,
       hostname: request.host,
     }
 
