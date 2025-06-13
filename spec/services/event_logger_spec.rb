@@ -118,4 +118,45 @@ RSpec.describe EventLogger do
       log.record_save('update', userteam)
     end
   end
+
+  describe '#exception' do
+    # See service_providers_controller_spec.rb for integration test
+
+    it 'logs NotAuthorizedError exceptions' do
+      options = {
+        query: :TestMethod,
+        record: User,
+        policy: UserPolicy.new(current_user, User.new),
+      }
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['properties']['event_properties']).to eq({
+          'message' => 'not allowed to UserPolicy#TestMethod User',
+          'query' => 'TestMethod',
+          'record' => 'User',
+          'policy' => 'UserPolicy',
+        })
+        expect(obj['name']).to eq('unauthorized_access_attempt')
+      end
+
+      log.unauthorized_access_attempt(
+        Pundit::NotAuthorizedError.new(options),
+      )
+    end
+
+    it 'logs UnpermittedParameters exceptions' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['properties']['event_properties']).to match({
+          'message' => 'found unpermitted parameters: :one, :two',
+          'params' => ['one', 'two'],
+        })
+        expect(obj['name']).to eq('unpermitted_params_attempt')
+      end
+
+      log.unpermitted_params_attempt(
+        ActionController::UnpermittedParameters.new([:one, :two]),
+      )
+    end
+  end
 end

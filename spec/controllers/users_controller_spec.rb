@@ -10,6 +10,7 @@ describe UsersController do
     allow(controller).to receive(:current_user).and_return(user)
     allow(logger_double).to receive(:team_data)
     allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
@@ -27,6 +28,7 @@ describe UsersController do
       it 'has an error response' do
         get :new
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -45,6 +47,7 @@ describe UsersController do
       it 'has an error response' do
         get :index
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -79,6 +82,7 @@ describe UsersController do
       it 'has an error response' do
         get :edit, params: { id: 1 }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -128,6 +132,7 @@ describe UsersController do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -162,6 +167,7 @@ describe UsersController do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -191,6 +197,7 @@ describe UsersController do
       it 'has an error response' do
         delete :destroy, params: { id: user_to_delete.id }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end

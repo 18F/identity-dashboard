@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 # ABC_XYZ -- Keep it Alphabetical!
-# Security and analytics events are separated alphabetically
-# status should be 'SUCCESS', 'FAILURE', or HTTP status
 
 module LogEvents
   # Generic CrUD logger
@@ -34,5 +32,27 @@ module LogEvents
       team_user: User.find(record[:user_id]).email,
       team: Team.find(record[:group_id]).name,
     }
+  end
+
+  def unauthorized_access_attempt(exception)
+    details = {
+      message: exception.message,
+      query: exception.query.to_s,
+      record: exception.record.is_a?(Class) ?
+        exception.record.name :
+        exception.record.class.name,
+      policy: exception.policy.class.name,
+    }
+
+    track_event('unauthorized_access_attempt', details)
+  end
+
+  def unpermitted_params_attempt(exception)
+    details = {
+      message: exception.message,
+      params: exception.params,
+    }
+
+    track_event('unpermitted_params_attempt', details)
   end
 end
