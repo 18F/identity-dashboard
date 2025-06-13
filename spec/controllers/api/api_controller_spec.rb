@@ -24,8 +24,6 @@ RSpec.describe Api::ApiController do
     let(:user) { create(:user, :logingov_admin) }
 
     it 'forbids access without a token' do
-      # TODO: this test should pass before ATO
-      pending
       expect(request.headers['HTTP_AUTHORIZATION']).to be_blank
       get :index
       expect(response).to be_unauthorized

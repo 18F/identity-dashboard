@@ -5,10 +5,6 @@ module Api
     private
 
     def authenticate_token
-      # Allow the auth headers to be optional for now.
-      # TODO: make this mandatory before ATO
-      return unless request.headers['HTTP_AUTHORIZATION']
-
       authenticate_or_request_with_http_token do |token, options|
         @user = User.find_by!(email: options[:email])
         auth_token = @user.auth_token if @user
