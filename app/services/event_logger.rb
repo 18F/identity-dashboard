@@ -43,6 +43,7 @@ class EventLogger
   end
 
   def visit_token
+    session ||= {}
     session[:visit_token] ||= generate_uuid
   end
 
@@ -63,7 +64,7 @@ class EventLogger
 
   def request_attributes
     attributes = {
-      user_ip: request.remote_ip || request.ip,
+      user_ip: request.try(:remote_ip) || request.ip,
       hostname: request.host,
     }
 

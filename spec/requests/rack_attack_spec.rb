@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'limiting suspicious requests' do
-  let(:logger_double) { instance_double(EventLogger) }
+  let(:logger) { instance_double(ActiveSupport::Logger) }
 
   before do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.cache.store.clear
-    allow(EventLogger).to receive(:new).and_return(logger_double)
-    allow(logger_double).to receive(:track_event)
+    allow(logger).to receive(:formatter=)
+    allow(logger).to receive(:info)
+    allow(ActiveSupport::Logger).to receive(:new).and_return(logger)
   end
 
   context 'with an invalid token' do
@@ -40,10 +41,11 @@ RSpec.describe 'limiting suspicious requests' do
       end
 
       it 'logs the blocklist action' do
-        expect(logger_double).to have_received(:track_event) do |name, data|
-          expect(name).to eq('blocklisted')
-          expect(data[:matched]).to eq('suspicious basic auth usage')
-          expect(data.keys).to include(:start, :finish, :req_id)
+        expect(logger).to have_received(:info) do |data|
+          obj = JSON.parse data
+          expect(obj['name']).to eq('blocklisted')
+          expect(obj['properties']['event_properties']['matched']).to eq('suspicious basic auth usage')
+          expect(obj['properties']['event_properties'].keys).to include('start', 'finish', 'req_id')
         end
       end
     end
