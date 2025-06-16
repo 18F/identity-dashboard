@@ -26,7 +26,31 @@ RSpec.describe 'limiting suspicious requests' do
       expect(request.env['rack.attack.match_type']).to be_nil
     end
 
-    context 'with frequent attempts' do
+    context 'with frequent auth attempts' do
+      before do
+        freeze_time do
+          6.times do
+            post '/auth/logindotgov', params: { email: 'some-fake-email' }
+          end
+        end
+      end
+
+      it 'blocks access' do
+        expect(response).to_not have_http_status(:ok)
+        expect(request.env['rack.attack.match_type']).to eq(:throttle)
+      end
+
+      it 'logs the throttle action' do
+        expect(logger).to have_received(:info) do |data|
+          obj = JSON.parse data
+          expect(obj['name']).to eq('activity_throttled')
+          expect(obj['properties']['event_properties']['matched']).to eq('auth/ip')
+          expect(obj['properties']['event_properties'].keys).to include('start', 'finish', 'req_id', 'details')
+        end
+      end
+    end
+
+    context 'with frequent attempts (other)' do
       before do
         freeze_time do
           6.times do
