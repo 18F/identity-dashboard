@@ -10,7 +10,7 @@ class UserTeamPolicy < BasePolicy
   end
 
   def index?
-    user_has_login_admin_role? || team_membership && role_name != 'partner_readonly'
+    user_has_login_admin_role? || (team_membership && role_name != 'partner_readonly')
   end
 
   def create?
@@ -21,7 +21,11 @@ class UserTeamPolicy < BasePolicy
     create? && record.user != user
   end
 
-  alias update? edit?
+  def update?
+    return false unless edit?
+
+    true if roles_for_edit.include?(record.role)
+  end
 
   def new?
     create?
@@ -39,6 +43,13 @@ class UserTeamPolicy < BasePolicy
     else
       manage_team_users? && record.user != user
     end
+  end
+
+  def roles_for_edit
+    return Role.none unless edit?
+    return Role.where.not(name: :logingov_admin) if user_has_login_admin_role?
+
+    Role.where.not(name: [:logingov_admin, :partner_admin])
   end
 
   class Scope < BasePolicy::Scope

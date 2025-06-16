@@ -106,8 +106,7 @@ describe Teams::UsersController do
             id: updatable_membership.user.id,
             user_team: { role_name: 'totally-fake-role' },
           }
-          errors = assigns[:membership].errors.full_messages
-          expect(errors).to eq(['Role name is invalid'])
+          expect(response).to be_unauthorized
           updatable_membership.reload
           expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
         end
@@ -120,6 +119,18 @@ describe Teams::UsersController do
             user_team: { role_name: 'totally-fake-role' },
           }
           expect(response).to redirect_to(team_users_path(team))
+        end
+
+        it 'is unauthorized if the policy role list is empty' do
+          policy_double = UserTeamPolicy.new(user, updatable_membership)
+          expect(policy_double).to receive(:roles_for_edit).and_return([]).at_least(:once)
+          allow(UserTeamPolicy).to receive(:new).and_return(policy_double)
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: Role.last.name },
+          }
+          expect(response).to be_unauthorized
         end
 
         context 'logging' do
@@ -242,6 +253,7 @@ describe Teams::UsersController do
 
     context 'with Partner Readonly role' do
       let(:user_team) { create(:user_team, :partner_readonly) }
+      let(:user_to_change) { create(:user_team, team:).user }
 
       describe '#index' do
         it 'is not allowed' do
@@ -257,9 +269,31 @@ describe Teams::UsersController do
         end
       end
 
+      describe '#edit' do
+        it 'is not allowed' do
+          get :edit, params: { team_id: team.id, id: user_to_change.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
       describe '#create' do
         it 'is not allowed' do
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          post :create, params: {
+            team_id: team.id,
+            id: user_to_change.id,
+            user: { email: build(:user).email },
+          }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#update' do
+        it 'is not allowed' do
+          post :update, params: {
+            team_id: team.id,
+            id: user_to_change.id,
+            user_team: { role_name: 'partner_readonly' },
+          }
           expect(response).to be_unauthorized
         end
       end

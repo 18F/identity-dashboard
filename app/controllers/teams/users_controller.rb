@@ -60,8 +60,8 @@ class Teams::UsersController < AuthenticatedController
       redirect_to(action: :index, team_id: team)
       return
     end
-    authorize membership
     membership.assign_attributes(membership_params)
+    authorize membership
     membership.save
     if membership.errors.any?
       @user = membership.user
@@ -104,11 +104,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    roles = (Role.all - [Role::LOGINGOV_ADMIN]).map { |r| [r.friendly_name, r.name] }
-    if current_user_team_membership.role_name == 'partner_admin'
-      roles.delete(['Partner Admin', 'partner_admin'])
-    end
-    roles
+    policy(membership).roles_for_edit.map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?
