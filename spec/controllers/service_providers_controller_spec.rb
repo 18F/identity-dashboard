@@ -18,6 +18,14 @@ describe ServiceProvidersController do
       original_filename: 'alternative_filename.svg',
     )
   end
+  let(:logger_double) { instance_double(EventLogger) }
+
+  before do
+    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
+    allow(logger_double).to receive(:unpermitted_params_attempt)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
+  end
 
   describe '#create' do
     before do
@@ -224,6 +232,7 @@ describe ServiceProvidersController do
           email_nameid_format_allowed: true,
         } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unpermitted_params_attempt)
       end
     end
 
@@ -240,6 +249,21 @@ describe ServiceProvidersController do
           email_nameid_format_allowed: true,
         } }
         expect(response).to have_http_status(:found)
+      end
+    end
+
+    context 'logging' do
+      it 'changes are recorded' do
+        post :create, params: { service_provider: {
+          issuer: 'log.issuer.string',
+          group_id: user.teams.first.id,
+          friendly_name: 'Log',
+        } }
+
+        expect(logger_double).to have_received(:record_save) do |op, record|
+          expect(op).to eq('create')
+          expect(record.class.name).to eq('ServiceProvider')
+        end
       end
     end
   end
@@ -631,6 +655,7 @@ describe ServiceProvidersController do
 
       context 'with Partner user' do
         before do
+          create(:user_team, :partner_admin, user: user, team: sp.team)
           sign_in(user)
           sp.ial = '1'
         end
@@ -642,6 +667,19 @@ describe ServiceProvidersController do
           }
           sp.reload
           expect(sp.ial).to eq(1)
+          expect(logger_double).to have_received(:unpermitted_params_attempt)
+        end
+
+        it 'logs changes' do
+          put :update, params: {
+            id: sp.id,
+            service_provider: { description: "logging test #{rand(1...1000) }" },
+          }
+          sp.reload
+          expect(logger_double).to have_received(:record_save) do |op, record|
+            expect(op).to eq('update')
+            expect(record.class.name).to eq('ServiceProvider')
+          end
         end
       end
 
@@ -663,8 +701,6 @@ describe ServiceProvidersController do
   end
 
   describe '#destroy' do
-    let(:logger_double) { instance_double(EventLogger) }
-
     before do
       allow(logger_double).to receive(:record_save)
       allow(EventLogger).to receive(:new).and_return(logger_double)
@@ -734,6 +770,7 @@ describe ServiceProvidersController do
         it 'blocks non-Login Admin users' do
           get :deleted
           expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
