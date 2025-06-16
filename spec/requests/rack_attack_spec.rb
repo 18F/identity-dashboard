@@ -45,7 +45,8 @@ RSpec.describe 'limiting suspicious requests' do
           obj = JSON.parse data
           expect(obj['name']).to eq('activity_throttled')
           expect(obj['properties']['event_properties']['matched']).to eq('auth/ip')
-          expect(obj['properties']['event_properties'].keys).to include('start', 'finish', 'req_id', 'details')
+          expect(obj['properties']['event_properties'].keys).to include('start', 'finish',
+'req_id', 'details')
         end
       end
     end
@@ -68,7 +69,9 @@ RSpec.describe 'limiting suspicious requests' do
         expect(logger).to have_received(:info) do |data|
           obj = JSON.parse data
           expect(obj['name']).to eq('blocklisted')
-          expect(obj['properties']['event_properties']['matched']).to eq('suspicious basic auth usage')
+          expect(obj['properties']['event_properties']['matched']).to eq(
+            'suspicious basic auth usage',
+          )
           expect(obj['properties']['event_properties'].keys).to include('start', 'finish', 'req_id')
         end
       end

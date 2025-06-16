@@ -38,7 +38,7 @@ class EventLogger
     }.compact
 
     data.merge!(request_attributes) if request
-
+binding.pry
     log_event(data)
   end
 

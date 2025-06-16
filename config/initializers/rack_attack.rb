@@ -84,31 +84,35 @@ class Rack::Attack
 end
 
 # Logging
-ActiveSupport::Notifications.subscribe('throttle.rack_attack') do |name, start, finish, req_id, payload|
+ActiveSupport::Notifications.subscribe(
+  'throttle.rack_attack',
+) do |name, start, finish, req_id, payload|
   request = payload[:request]
 
   EventLogger.new(request:).track_event(
     'activity_throttled',
     {
       matched: request.env['rack.attack.matched'],
-      start:,
-      finish:,
-      req_id:,
-      details: request.env['rack.attack.throttle_data'], 
-    }
+      start: start,
+      finish: finish,
+      req_id: req_id,
+      details: request.env['rack.attack.match_data'],
+    },
   )
 end
 
-ActiveSupport::Notifications.subscribe('blocklist.rack_attack') do |name, start, finish, req_id, payload|
+ActiveSupport::Notifications.subscribe(
+  'blocklist.rack_attack',
+) do |name, start, finish, req_id, payload|
   request = payload[:request]
 
   EventLogger.new(request:).track_event(
     'blocklisted',
     {
       matched: request.env['rack.attack.matched'],
-      start:,
-      finish:,
-      req_id:,
-    }
+      start: start,
+      finish: finish,
+      req_id: req_id,
+    },
   )
 end
