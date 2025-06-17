@@ -68,12 +68,14 @@ RSpec.describe EventLogger do
     end
 
     context 'when the session visit token is not set' do
-      let(:log) { EventLogger.new(
+      let(:log) do
+        EventLogger.new(
         user: current_user,
         request: request,
         session: nil,
         logger: logger,
-      ) }
+      )
+      end
 
       before do
         allow(SecureRandom).to receive(:uuid).and_return('abcdef123456')
