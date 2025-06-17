@@ -85,6 +85,33 @@ describe UserTeamPolicy do
     end
   end
 
+  permissions :update? do
+    it 'allows Login Admins' do
+      expect(described_class).to permit(logingov_admin, partner_admin_membership)
+    end
+
+    it 'allows Partner Admins with some role names' do
+      new_membership = team.user_teams.build(role_name: ['partner_readonly',
+                                                         'partner_developer'].sample)
+      expect(described_class).to permit(partner_admin, new_membership)
+    end
+
+    it 'forbids Partner Admins for own memberships' do
+      expect(described_class).to_not permit(partner_admin, partner_admin_membership)
+    end
+
+    it 'forbids Partner Admins from picking inappropriate roles' do
+      elevated_membership = team.user_teams.build(role_name: ['partner_admin',
+                                                              'logingov_admin'].sample)
+      expect(described_class).to_not permit(partner_admin, elevated_membership)
+    end
+
+    it 'forbids Partner Admins from blanking out the role' do
+      blanked_membership = team.user_teams.build(role_name: nil)
+      expect(described_class).to_not permit(partner_admin, blanked_membership)
+    end
+  end
+
   permissions :destroy? do
     it 'allows login.gov admins' do
       expect(described_class).to permit(logingov_admin, partner_admin_membership)
@@ -111,6 +138,44 @@ describe UserTeamPolicy do
     it 'forbids Partner Developers on the same team' do
       new_membership = partner_developer_membership.team.user_teams.build
       expect(described_class).to_not permit(partner_developer, new_membership)
+    end
+  end
+
+  describe '#roles_for_edit' do
+    it 'is everything but Login Admin for Login Admins' do
+      membership = [partner_admin_membership,
+                    partner_developer_membership,
+                    partner_readonly_membership].sample
+      expected_roles = Role.all - [Role::LOGINGOV_ADMIN]
+      expect(described_class.new(logingov_admin, membership).roles_for_edit).to eq(expected_roles)
+    end
+
+    it 'is everything but Login Admin and Partner Admin for Partner Admins' do
+      membership = [partner_developer_membership, partner_readonly_membership].sample
+      expected_roles = Role.all - [Role::LOGINGOV_ADMIN, Role.find_by(name: 'partner_admin')]
+      expect(described_class.new(partner_admin, membership).roles_for_edit).to eq(expected_roles)
+    end
+
+    it 'is empty for Partner Admins when trying to edit themselves' do
+      expect(described_class.new(partner_admin, partner_admin_membership).roles_for_edit).to eq([])
+    end
+
+    it 'is empty for memberships for teams the Partner Admin is not on' do
+      different_team_membership = build(:user_team)
+      expect(described_class.new(partner_admin, different_team_membership).roles_for_edit).to eq([])
+    end
+
+    it 'is empty for everyone else' do
+      roles_when_dev_edits_readonly = described_class.new(
+        partner_developer,
+        partner_readonly_membership,
+      ).roles_for_edit
+      expect(roles_when_dev_edits_readonly).to eq([])
+      roles_when_readonly_edits_dev = described_class.new(
+        partner_readonly,
+        partner_developer_membership,
+      ).roles_for_edit
+      expect(roles_when_readonly_edits_dev).to eq([])
     end
   end
 end
