@@ -481,10 +481,18 @@ feature 'Service Providers CRUD' do
         )
       end
 
-      it 'redirects to service_config_wizard' do
+      it 'redirects to new service_config_wizard' do
         visit new_service_provider_path
 
         expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
+      end
+
+      it 'redirects to edit service_config_wizard' do
+        user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
+        sp = create(:service_provider, team: user_team.team)
+        visit edit_service_provider_path(id: sp)
+
+        expect(page).to have_current_path(service_config_wizard_index_path(service_provider: sp.id))
       end
     end
     # rubocop:enable Layout/LineLength
