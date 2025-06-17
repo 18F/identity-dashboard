@@ -40,44 +40,55 @@ feature 'internal reports' do
       visit internal_reports_memberships_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
+      expected_table = expected_table_for(
+        two_teams_admin,
+        simple_user,
+        complex_user,
+        additional_team,
+      )
       expect(csv_response.length).to eq(7)
-      expect(csv_response[0]).to eq(MembershipCsv::MEMBERSHIPS_HEADER_ROW)
-
-      # Because we use `sequence(:email)` in the users factory,
-      # the users should always sort into the order we created them
-      admin_two_teams_names = two_teams_admin.teams.map(&:name).sort
-      expect(csv_response[1]).to eq([
-                                      two_teams_admin.email,
-                                      'Partner Admin',
-                                      admin_two_teams_names.first,
-                                    ])
-      expect(csv_response[2]).to eq([
-                                      two_teams_admin.email,
-                                      'Partner Admin',
-                                      admin_two_teams_names.second,
-                                    ])
-      expect(csv_response[3]).to eq([
-                                      simple_user.email,
-                                      'Partner Developer',
-                                      simple_user.teams.first.name,
-                                    ])
-      # With the same user, permissions should be in role order regardless of creation order
-      remaining_team = complex_user.teams - simple_user.teams - [additional_team]
-      expect(csv_response[4]).to eq([
-                                      complex_user.email,
-                                      'Partner Admin',
-                                      remaining_team.first.name,
-                                    ])
-      expect(csv_response[5]).to eq([
-                                      complex_user.email,
-                                      'Partner Developer',
-                                      simple_user.teams.first.name,
-                                    ])
-      expect(csv_response[6]).to eq([
-                                      complex_user.email,
-                                      'Partner Readonly',
-                                      additional_team.name,
-                                    ])
+      expect(csv_response).to eq(expected_table)
     end
+  end
+
+  def expected_table_for(first_user, second_user, third_user, shared_team)
+    admin_two_teams_names = two_teams_admin.teams.map(&:name).sort
+    remaining_team = complex_user.teams - simple_user.teams - [additional_team]
+    # Because we use `sequence(:email)` in the users factory,
+    # the users should always sort into the order we created them
+    [
+      MembershipCsv::MEMBERSHIPS_HEADER_ROW,
+      [
+        two_teams_admin.email,
+        'Partner Admin',
+        admin_two_teams_names.first,
+      ],
+      [
+        two_teams_admin.email,
+        'Partner Admin',
+        admin_two_teams_names.second,
+      ],
+      [
+        simple_user.email,
+        'Partner Developer',
+        simple_user.teams.first.name,
+      ],
+      # With the same user, permissions should be in role order regardless of creation order
+      [
+        complex_user.email,
+        'Partner Admin',
+        remaining_team.first.name,
+      ],
+      [
+        complex_user.email,
+        'Partner Developer',
+        simple_user.teams.first.name,
+      ],
+      [
+        complex_user.email,
+        'Partner Readonly',
+        additional_team.name,
+      ],
+    ]
   end
 end
