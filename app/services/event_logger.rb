@@ -17,7 +17,8 @@ class EventLogger
     @request = options[:request] || @controller.try(:request)
     @response = options[:response] || @controller.try(:response)
     @user = options[:user] || @controller.try(:current_user)
-    @session = options[:session] || @controller.try(:session)
+    @session = options[:session] || @controller.try(:session) ||
+               @request.try(:session) || {}
     @logger = options[:logger] || default_logger
     @options = options
   end
@@ -43,8 +44,6 @@ class EventLogger
   end
 
   def visit_token
-    return nil unless session
-
     session[:visit_token] ||= generate_uuid
   end
 

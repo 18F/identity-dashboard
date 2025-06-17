@@ -62,6 +62,36 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#visit_token' do
+    it 'returns the session visit_token' do
+      expect(log.visit_token).to eq('test_token')
+    end
+
+    context 'when the session visit token is not set' do
+      let(:log) { EventLogger.new(
+        user: current_user,
+        request: request,
+        session: nil,
+        logger: logger,
+      ) }
+
+      before do
+        allow(SecureRandom).to receive(:uuid).and_return('abcdef123456')
+      end
+
+      it 'generates a new visit token' do
+        expect(log.visit_token).to eq('abcdef123456')
+        expect(SecureRandom).to have_received(:uuid)
+      end
+
+      it 'only calls SecureRandom.uuid once' do
+        2.times { log.visit_token }
+
+        expect(SecureRandom).to have_received(:uuid).once
+      end
+    end
+  end
+
   describe '#record_save' do
     it 'logs record creation' do
       expect(logger).to receive(:info) do |data|
