@@ -1,6 +1,6 @@
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
-  # after_action :log_change, only: %i[update]
+  after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
