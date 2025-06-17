@@ -17,7 +17,8 @@ class EventLogger
     @request = options[:request] || @controller.try(:request)
     @response = options[:response] || @controller.try(:response)
     @user = options[:user] || @controller.try(:current_user)
-    @session = options[:session] || @controller.try(:session)
+    @session = options[:session] || @controller.try(:session) ||
+               @request.try(:session) || {}
     @logger = options[:logger] || default_logger
     @options = options
   end
@@ -63,7 +64,7 @@ class EventLogger
 
   def request_attributes
     attributes = {
-      user_ip: request.remote_ip,
+      user_ip: request.try(:remote_ip),
       hostname: request.host,
     }
 
