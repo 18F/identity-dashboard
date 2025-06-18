@@ -7,6 +7,6 @@ namespace :users do
   desc 'Clean up team memberships with incomplete info'
   task destroy_orphaned_memberships: :environment do
     logger = Logger.new(STDOUT)
-    UserTeam.destroy_orphaned_memberships(logger:)
+    Membership.destroy_orphaned_memberships(logger:)
   end
 end

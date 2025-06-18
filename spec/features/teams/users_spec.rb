@@ -1,20 +1,20 @@
 require 'rails_helper'
 
 describe 'users' do
-  let(:team_member_membership) { create(:user_team) }
+  let(:team_member_membership) { create(:membership) }
   let(:team_member) { team_member_membership.user }
-  let(:other_team_member_membership) { create(:user_team) }
+  let(:other_team_member_membership) { create(:membership) }
   let(:other_team_member) { other_team_member_membership.user }
   let(:team) { create(:team) }
-  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:) }
+  let(:partner_admin_membership) { create(:membership, :partner_admin, team:) }
   let(:partner_admin_team_member) { partner_admin_membership.user }
-  let(:readonly_membership) { create(:user_team, :partner_readonly, team:) }
+  let(:readonly_membership) { create(:membership, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
   let(:user) { create(:user) }
 
   before do
-    team.user_teams = [team_member_membership, other_team_member_membership]
+    team.memberships = [team_member_membership, other_team_member_membership]
     team.save!
   end
 
@@ -102,7 +102,7 @@ describe 'users' do
       fill_in 'Email', with: email_to_add
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
-      new_membership = UserTeam.find_by(user: User.find_by(email: email_to_add), team: team)
+      new_membership = Membership.find_by(user: User.find_by(email: email_to_add), team: team)
       expect(new_membership.role.name).to eq('partner_readonly')
     end
 
@@ -116,7 +116,7 @@ describe 'users' do
       fill_in 'Email', with: user.email
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
-      new_membership = UserTeam.find_by(user: User.find_by(email: user.email), team: team)
+      new_membership = Membership.find_by(user: User.find_by(email: user.email), team: team)
       expect(new_membership.role.name).to eq('partner_readonly')
     end
 
@@ -145,7 +145,7 @@ describe 'users' do
       fill_in 'Email', with: random_email
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
-      new_membership = UserTeam.find_by(user: User.find_by(email: random_email), team: empty_team)
+      new_membership = Membership.find_by(user: User.find_by(email: random_email), team: empty_team)
       expect(new_membership.role.name).to eq('partner_admin')
     end
   end
@@ -259,7 +259,7 @@ describe 'users' do
     end
 
     scenario 'lists users even with an old, bugged user removal' do
-      bad_membership = create(:user_team, team:)
+      bad_membership = create(:membership, team:)
       bad_membership.update_attribute(:user_id, nil)
       login_as partner_admin_team_member
       visit team_users_path(team)
@@ -315,11 +315,11 @@ describe 'users' do
         team_users = [partner_admin_team_member, readonly_team_member]
 
         user_to_change = team_users.sample
-        old_role = UserTeam.find_by(user: user_to_change, team: team).role
+        old_role = Membership.find_by(user: user_to_change, team: team).role
         new_role = (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
 
         user_to_not_change = (team_users - [user_to_change]).first
-        expected_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+        expected_unchanged_role = Membership.find_by(user: user_to_not_change, team: team).role
 
         visit team_users_path(team)
 
@@ -329,10 +329,10 @@ describe 'users' do
         choose new_role.friendly_name
         click_on 'Update'
         user_to_change.reload
-        actual_role = UserTeam.find_by(user: user_to_change, team: team).role
+        actual_role = Membership.find_by(user: user_to_change, team: team).role
         expect(actual_role).to eq(new_role)
         user_to_not_change.reload
-        actual_unchanged_role = UserTeam.find_by(user: user_to_not_change, team: team).role
+        actual_unchanged_role = Membership.find_by(user: user_to_not_change, team: team).role
         expect(actual_unchanged_role).to eq(expected_unchanged_role)
       end
     end

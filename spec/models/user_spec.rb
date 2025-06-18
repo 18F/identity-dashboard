@@ -29,9 +29,9 @@ describe User do
   describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
       team = create(:team)
-      user_team = create(:user_team)
-      user_team.destroy
-      deletion_history = user_team.user.user_deletion_history
+      membership = create(:membership)
+      membership.destroy
+      deletion_history = membership.user.user_deletion_history
       expect(deletion_history.count).to eq(1)
     end
   end
@@ -54,9 +54,9 @@ describe User do
   describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history for user' do
       team = create(:team)
-      user_team = create(:user_team)
-      user = user_team.user
-      user_team.destroy
+      membership = create(:membership)
+      user = membership.user
+      membership.destroy
       deletion_report = user.user_deletion_history_report
       expect(deletion_report.first[:user_id]).to eq(user.id)
     end
@@ -96,7 +96,7 @@ describe User do
   end
 
   describe '#scoped_teams' do
-    it 'returns collection of users user teams' do
+    it 'returns collection of users memberships' do
       team = create(:team)
       user.teams = [team]
       user.save
@@ -104,7 +104,7 @@ describe User do
       expect(user.scoped_teams).to eq([team])
     end
 
-    it 'returns all user teams for admins' do
+    it 'returns all memberships for admins' do
       2.times do
         create(:team)
       end
@@ -183,14 +183,14 @@ describe User do
     end
 
     it 'returns Partner Readonly if user belongs to teams without role defined' do
-      create(:user_team, user:)
-      create(:user_team, user:)
+      create(:membership, user:)
+      create(:membership, user:)
       expect(user.primary_role.name).to eq('partner_readonly')
     end
 
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
-      first_team = user.user_teams.first
+      first_team = user.memberships.first
       expected_role = Role.find_by(name: ['logingov_admin', 'partner_admin'].sample)
       first_team.role = expected_role
       first_team.save
@@ -228,7 +228,7 @@ describe User do
 
   describe '#destroy', :versioning do
     it 'deletes team memberships but not the teams' do
-      membership = create(:user_team)
+      membership = create(:membership)
       user = membership.user
       team = membership.team
       user.destroy

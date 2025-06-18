@@ -36,9 +36,9 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   # though it should work with any ActiveRecord::Model collection from PaperTrail::Version
   def self.decorate(scope)
     # The team membership changes need some decoration. The PaperTrail information on
-    # just the `UserTeam` join table itself isn't helpful to an end user.
+    # just the `Membership` join table itself isn't helpful to an end user.
     scope.map do |v|
-      v.item_type == 'UserTeam' ? TeamAuditEvent.from_membership_version(v) : v
+      v.item_type == 'Membership' ? TeamAuditEvent.from_membership_version(v) : v
     end
   end
 
@@ -50,25 +50,25 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
     end
 
     scope.
-      where(item_type: 'UserTeam').
+      where(item_type: 'Membership').
       where('object_changes @> ?', { group_id: [team_id] }.to_json)
       .or(
         # In theory, nothing in the current application can intentionally null out the group_id
         # without deleting the user, too, but let's check for that just to be safe.
         scope.
-          where(item_type: 'UserTeam').
+          where(item_type: 'Membership').
           where('object @> ?', { group_id: team_id }.to_json),
       )
   end
 
   def self.from_membership_version(version)
-    if version.item_type != 'UserTeam'
-      raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
+    if version.item_type != 'Membership'
+      raise ArgumentError.new("Version #{version.id} is not a Membership change")
     end
 
     object_changes = version.object_changes
 
-    # The ID column for the UserTeam table doesn't matter much here
+    # The ID column for the Membership table doesn't matter much here
     object_changes.delete('id')
 
     # Use the user ID as an identifier

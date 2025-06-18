@@ -3,9 +3,9 @@ require 'rails_helper'
 describe ServiceProviderPolicy do
   let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
-  let(:partner_admin) { create(:user_team, :partner_admin, team:).user }
-  let(:partner_developer) { create(:user_team, :partner_developer, team:).user }
-  let(:partner_readonly) { create(:user_team, :partner_readonly, team:).user }
+  let(:partner_admin) { create(:membership, :partner_admin, team:).user }
+  let(:partner_developer) { create(:membership, :partner_developer, team:).user }
+  let(:partner_readonly) { create(:membership, :partner_readonly, team:).user }
   let(:non_team_member) { create(:user) }
   let(:app) { create(:service_provider, team:) }
 
@@ -150,8 +150,8 @@ describe ServiceProviderPolicy do
   end
 
   permissions :destroy? do
-    let(:partner_developer_creator) { create(:user_team, :partner_developer, team:).user }
-    let(:partner_developer_noncreator) { create(:user_team, :partner_developer, team:).user }
+    let(:partner_developer_creator) { create(:membership, :partner_developer, team:).user }
+    let(:partner_developer_noncreator) { create(:membership, :partner_developer, team:).user }
     let(:object) { create(:service_provider, team: team, user: partner_developer_creator) }
 
     before do

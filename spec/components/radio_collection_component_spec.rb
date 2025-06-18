@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe RadioCollectionComponent, type: :component do
   include ActionView::TestCase::Behavior
 
-  let(:membership) { create(:user_team, role_name: Role::ACTIVE_ROLES_NAMES.keys.sample) }
-  let(:form) { SimpleForm::FormBuilder.new(:user_team, membership, view, {}) }
+  let(:membership) { create(:membership, role_name: Role::ACTIVE_ROLES_NAMES.keys.sample) }
+  let(:form) { SimpleForm::FormBuilder.new(:membership, membership, view, {}) }
   let(:random_id) { "id_#{rand(10..1000)}" }
   let(:inputs) { Role::ACTIVE_ROLES_NAMES.invert }
 
@@ -39,7 +39,7 @@ RSpec.describe RadioCollectionComponent, type: :component do
     list_items = render.css('li')
     expect(list_items.count).to eq(inputs.count)
     extended_descriptions = inputs.map do |(name, value)|
-      "#{name} #{I18n.t("user_teams.#{value}_description")}"
+      "#{name} #{I18n.t("memberships.#{value}_description")}"
     end
     expect(list_items.map(&:text)).to eq(extended_descriptions)
   end

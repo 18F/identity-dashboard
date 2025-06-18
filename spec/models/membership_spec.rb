@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserTeam, type: :model do
+RSpec.describe Membership, type: :model do
   describe '#user_id' do
     it {
       is_expected.to validate_uniqueness_of(:user_id).scoped_to(:group_id).
@@ -15,22 +15,22 @@ RSpec.describe UserTeam, type: :model do
       user = create(:user)
       team = create(:team)
 
-      expect { create(:user_team, user:, team:) }.to \
+      expect { create(:membership, user:, team:) }.to \
         change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks updates' do
-      user_team = create(:user_team)
+      membership = create(:membership)
       other_team = create(:team)
 
-      expect { user_team.update!(team: other_team) }.to \
+      expect { membership.update!(team: other_team) }.to \
         change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks deletion' do
-      user_team = create(:user_team)
+      membership = create(:membership)
 
-      expect { user_team.destroy }.to change { PaperTrail::Version.count }.by(1)
+      expect { membership.destroy }.to change { PaperTrail::Version.count }.by(1)
     end
   end
 
@@ -48,9 +48,9 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'with only valid memberships it logs nothing and deletes nothing' do
-      valid_membership1 = create(:user_team)
-      valid_membership2 = create(:user_team, [:partner_admin, :partner_readonly].sample)
-      UserTeam.destroy_orphaned_memberships(logger:)
+      valid_membership1 = create(:membership)
+      valid_membership2 = create(:membership, [:partner_admin, :partner_readonly].sample)
+      Membership.destroy_orphaned_memberships(logger:)
       valid_membership1.reload
       expect(valid_membership1).to be_valid
       valid_membership2.reload
@@ -59,11 +59,11 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'with a null user it logs deleting the membership while keeping related records' do
-      valid_membership = create(:user_team)
+      valid_membership = create(:membership)
       affected_team = valid_membership.team
-      invalidated_membership = create(:user_team, team: affected_team)
+      invalidated_membership = create(:membership, team: affected_team)
       invalidated_membership.update_column(:user_id, nil)
-      UserTeam.destroy_orphaned_memberships(logger:)
+      Membership.destroy_orphaned_memberships(logger:)
 
       expect(logger).to have_received(:warn).with(
         "Deleting team memberships #{[invalidated_membership.id]} missing user IDs",
@@ -77,14 +77,14 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'with a user ID that is not valid it deletes the membership while keeping the team' do
-      invalidated_membership = create(:user_team)
+      invalidated_membership = create(:membership)
       affected_team = invalidated_membership.team
       invalidated_membership.update_column(:user_id, User.last.id + rand(100.10000))
       expect do
         User.find(invalidated_membership.user_id)
       end.to raise_error(ActiveRecord::RecordNotFound)
 
-      UserTeam.destroy_orphaned_memberships
+      Membership.destroy_orphaned_memberships
 
       expect { invalidated_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
       affected_team.reload
@@ -92,14 +92,14 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'with a team ID that is not valid it deletes the membership while keeping the user' do
-      invalidated_membership = create(:user_team)
+      invalidated_membership = create(:membership)
       affected_user = invalidated_membership.user
       invalidated_membership.update_column(:group_id, Team.last.id + rand(100.10000))
       expect do
         Team.find(invalidated_membership.group_id)
       end.to raise_error(ActiveRecord::RecordNotFound)
 
-      UserTeam.destroy_orphaned_memberships
+      Membership.destroy_orphaned_memberships
 
       expect { invalidated_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
       affected_user.reload
@@ -107,11 +107,11 @@ RSpec.describe UserTeam, type: :model do
     end
 
     it 'deletes a membership with a null team while keeping related records' do
-      valid_membership = create(:user_team)
+      valid_membership = create(:membership)
       affected_user = valid_membership.user
-      invalidated_membership = create(:user_team, user: affected_user)
+      invalidated_membership = create(:membership, user: affected_user)
       invalidated_membership.update_column(:group_id, nil)
-      UserTeam.destroy_orphaned_memberships(logger:)
+      Membership.destroy_orphaned_memberships(logger:)
 
       expect(logger).to have_received(:warn).with(
         "Deleting team memberships #{[invalidated_membership.id]} missing team IDs",

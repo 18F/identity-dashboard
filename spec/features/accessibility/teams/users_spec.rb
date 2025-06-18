@@ -5,9 +5,9 @@ feature 'team users page', :js do
   let(:team) { create(:team) }
   let(:memberships) do
     [
-      create(:user_team, :partner_admin, team:),
-      create(:user_team, :partner_readonly, team:),
-      create(:user_team, :partner_developer, team:),
+      create(:membership, :partner_admin, team:),
+      create(:membership, :partner_readonly, team:),
+      create(:membership, :partner_developer, team:),
     ]
   end
 

@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = policy_scope(User).find_by(id: params[:id])
-    @user_team = @user && @user.user_teams.first
+    @membership = @user && @user.memberships.first
     populate_role_if_missing
     @has_no_teams = true if @user.teams.none?
   end
@@ -36,14 +36,14 @@ class UsersController < ApplicationController
   def update
     @user = policy_scope(User).find_by(id: params[:id])
 
-    role = Role.find_by(name: user_params.delete(:user_team)&.dig(:role_name))
+    role = Role.find_by(name: user_params.delete(:membership)&.dig(:role_name))
     user_params[:admin] = role.legacy_admin? if role
     user.transaction do
       user.update!(user_params)
-      user.user_teams.each do |team|
-        team.role = role
-        team.save!
-        log_change(team) if team.role_name_previously_changed?
+      user.memberships.each do |membership|
+        membership.role = role
+        membership.save!
+        log_change(membership) if membership.role_name_previously_changed?
       end
     end
     redirect_to users_url
@@ -70,16 +70,16 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    @user_params ||= params.require(:user).permit(:email, :admin, user_team: :role_name)
+    @user_params ||= params.require(:user).permit(:email, :admin, membership: :role_name)
   end
 
   def populate_role_if_missing
-    @user_team ||= @user.user_teams.build
-    @user_team.role = @user.primary_role
+    @membership ||= @user.memberships.build
+    @membership.role = @user.primary_role
   end
 
-  def log_change(team = false)
-    record = team || @user
+  def log_change(membership = false)
+    record = membership || @user
     return if action_name != 'destroy' && record.previous_changes.empty?
 
     log.record_save(action_name, record)

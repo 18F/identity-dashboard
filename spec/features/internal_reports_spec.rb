@@ -15,21 +15,21 @@ feature 'internal reports' do
   end
 
   describe 'with some users having multiple roles on different teams' do
-    let(:simple_user) { create(:user_team, :partner_developer).user }
-    let(:two_teams_admin) { create(:user_team, :partner_admin).user }
-    let(:complex_user) { create(:user_team, :partner_admin).user }
+    let(:simple_user) { create(:membership, :partner_developer).user }
+    let(:two_teams_admin) { create(:membership, :partner_admin).user }
+    let(:complex_user) { create(:membership, :partner_admin).user }
     let(:additional_team) { create(:team) }
 
     before do
-      create(:user_team,
+      create(:membership,
              user: two_teams_admin,
              team: simple_user.teams.first,
              role_name: 'partner_admin')
-      create(:user_team,
+      create(:membership,
              user: complex_user,
              team: additional_team,
              role_name: 'partner_readonly')
-      create(:user_team,
+      create(:membership,
              user: complex_user,
              team: simple_user.teams.first,
              role_name: 'partner_developer')

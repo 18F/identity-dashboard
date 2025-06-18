@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Team do
   let(:user) { create(:user) }
   let(:team) { create(:team) }
-  let(:user_team) { create(:user_team) }
+  let(:membership) { create(:membership) }
 
   describe 'Associations' do
     it { should have_many(:users) }
@@ -34,8 +34,8 @@ describe Team do
 
   describe '#user_deletion_history', versioning: true do
     it 'returns user deletion_history from paper_trail' do
-      user_team.destroy
-      deletion_history = user_team.team.user_deletion_history
+      membership.destroy
+      deletion_history = membership.team.user_deletion_history
       expect(deletion_history.count).to eq(1)
     end
   end
@@ -56,23 +56,23 @@ describe Team do
 
   describe '#user_deletion_history_report', versioning: true do
     it 'returns deletion history when no email is provided' do
-      user_id = user_team.user_id
-      user_team.destroy
-      deletion_report = user_team.team.user_deletion_history_report
+      user_id = membership.user_id
+      membership.destroy
+      deletion_report = membership.team.user_deletion_history_report
       expect(deletion_report.first[:user_id]).to eq(user_id)
     end
     it 'returns deletion history when email is provided' do
-      user_id = user_team.user_id
-      user_email = user_team.user.email
-      user_team.destroy
-      report = user_team.team.user_deletion_history_report(email: user_email)
+      user_id = membership.user_id
+      user_email = membership.user.email
+      membership.destroy
+      report = membership.team.user_deletion_history_report(email: user_email)
       expect(report.first[:user_id]).to eq(user_id)
     end
     it 'returns deletion history when limit is provided' do
-      user_id = user_team.user_id
-      user_email = user_team.user.email
-      user_team.destroy
-      report = user_team.team.user_deletion_history_report(limit: 1)
+      user_id = membership.user_id
+      user_email = membership.user.email
+      membership.destroy
+      report = membership.team.user_deletion_history_report(limit: 1)
       expect(report.count).to eq(1)
     end
   end
@@ -105,7 +105,7 @@ describe Team do
 
   describe '#destroy' do
     it 'deletes team memberships but not the users' do
-      membership = create(:user_team)
+      membership = create(:membership)
       team = membership.team
       user = membership.user
       team.destroy

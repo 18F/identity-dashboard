@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe Teams::UsersController do
   include Devise::Test::ControllerHelpers
-  let(:user) { user_team.user }
-  let(:team) { user_team.team }
-  let(:user_to_delete) { create(:user_team, team:).user }
+  let(:user) { membership.user }
+  let(:team) { membership.team }
+  let(:user_to_delete) { create(:membership, team:).user }
   let(:valid_email) { 'user1@gsa.gov' }
   let(:invalid_email) { 'invalid' }
   let(:logger_double) { instance_double(EventLogger) }
@@ -32,7 +32,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to change { UserTeam.count }.by(-1)
+      end.to change { Membership.count }.by(-1)
       expect(team.users).to_not include(user_to_delete)
     end
   end
@@ -42,7 +42,7 @@ describe Teams::UsersController do
       expect(team.users).to include(user_to_delete)
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
-      end.to_not(change { UserTeam.count })
+      end.to_not(change { Membership.count })
       expect(team.users.reload).to include(user_to_delete)
       expect(response).to be_unauthorized
     end
@@ -57,7 +57,7 @@ describe Teams::UsersController do
     end
 
     context 'with Partner Admin role' do
-      let(:user_team) { create(:user_team, :partner_admin) }
+      let(:membership) { create(:membership, :partner_admin) }
 
       describe '#index' do
         it 'returns OK with the expected template' do
@@ -88,13 +88,13 @@ describe Teams::UsersController do
       end
 
       describe '#update' do
-        let(:updatable_membership) { create(:user_team, :partner_developer, team:) }
+        let(:updatable_membership) { create(:membership, :partner_developer, team:) }
 
         it 'allows valid roles' do
           put :update, params: {
             team_id: team.id,
             id: updatable_membership.user.id,
-            user_team: { role_name: 'partner_readonly' },
+            membership: { role_name: 'partner_readonly' },
           }
           updatable_membership.reload
           expect(updatable_membership.role.name).to eq('partner_readonly')
@@ -104,7 +104,7 @@ describe Teams::UsersController do
           put :update, params: {
             team_id: team.id,
             id: updatable_membership.user.id,
-            user_team: { role_name: 'totally-fake-role' },
+            membership: { role_name: 'totally-fake-role' },
           }
           expect(response).to be_unauthorized
           updatable_membership.reload
@@ -116,31 +116,31 @@ describe Teams::UsersController do
           put :update, params: {
             team_id: team.id,
             id: updatable_membership.user.id,
-            user_team: { role_name: 'totally-fake-role' },
+            membership: { role_name: 'totally-fake-role' },
           }
           expect(response).to redirect_to(team_users_path(team))
         end
 
         it 'is unauthorized if the policy role list is empty' do
-          policy_double = UserTeamPolicy.new(user, updatable_membership)
+          policy_double = MembershipPolicy.new(user, updatable_membership)
           expect(policy_double).to receive(:roles_for_edit).and_return([]).at_least(:once)
-          allow(UserTeamPolicy).to receive(:new).and_return(policy_double)
+          allow(MembershipPolicy).to receive(:new).and_return(policy_double)
           put :update, params: {
             team_id: team.id,
             id: updatable_membership.user.id,
-            user_team: { role_name: Role.last.name },
+            membership: { role_name: Role.last.name },
           }
           expect(response).to be_unauthorized
         end
 
         context 'logging' do
-          let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
+          let(:updatable_membership) { create(:membership, :partner_readonly, team:) }
 
           it 'logs updates to member roles' do
             put :update, params: {
               team_id: team.id,
               id: updatable_membership.user.id,
-              user_team: { role_name: 'partner_developer' },
+              membership: { role_name: 'partner_developer' },
             }
 
             expect(logger_double).to have_received(:record_save).once do |op, record|
@@ -152,7 +152,7 @@ describe Teams::UsersController do
             put :update, params: {
               team_id: team.id,
               id: updatable_membership.user.id,
-              user_team: { role_name: 'partner_readonly' },
+              membership: { role_name: 'partner_readonly' },
             }
 
             expect(logger_double).to have_received(:record_save) do |op, record|
@@ -204,7 +204,7 @@ describe Teams::UsersController do
             post :destroy, params: { team_id: team.id, id: user_to_delete.id }
 
             expect(logger_double).to have_received(:record_save).once do |op, record|
-              expect(record.class.name).to eq('UserTeam')
+              expect(record.class.name).to eq('Membership')
             end
           end
         end
@@ -212,7 +212,7 @@ describe Teams::UsersController do
     end
 
     context 'with Partner Developer role' do
-      let(:user_team) { create(:user_team, :partner_developer) }
+      let(:membership) { create(:membership, :partner_developer) }
 
       describe '#index' do
         it 'returns OK with the expected template' do
@@ -252,8 +252,8 @@ describe Teams::UsersController do
     end
 
     context 'with Partner Readonly role' do
-      let(:user_team) { create(:user_team, :partner_readonly) }
-      let(:user_to_change) { create(:user_team, team:).user }
+      let(:membership) { create(:membership, :partner_readonly) }
+      let(:user_to_change) { create(:membership, team:).user }
 
       describe '#index' do
         it 'is not allowed' do
@@ -292,7 +292,7 @@ describe Teams::UsersController do
           post :update, params: {
             team_id: team.id,
             id: user_to_change.id,
-            user_team: { role_name: 'partner_readonly' },
+            membership: { role_name: 'partner_readonly' },
           }
           expect(response).to be_unauthorized
         end
@@ -311,7 +311,7 @@ describe Teams::UsersController do
     end
 
     context 'as login.gov admin' do
-      let(:user_team) { create(:user_team) }
+      let(:membership) { create(:membership) }
 
       before do
         user.admin = true

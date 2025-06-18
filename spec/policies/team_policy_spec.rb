@@ -6,9 +6,9 @@ describe TeamPolicy do
   let(:other_team) { build(:team) }
 
   context 'with RBAC on' do
-    let(:partner_admin_user) { create(:user_team, :partner_admin, team:).user }
-    let(:partner_developer_user) { create(:user_team, :partner_developer, team:).user }
-    let(:partner_readonly_user) { create(:user_team, :partner_readonly, team:).user }
+    let(:partner_admin_user) { create(:membership, :partner_admin, team:).user }
+    let(:partner_developer_user) { create(:membership, :partner_developer, team:).user }
+    let(:partner_readonly_user) { create(:membership, :partner_readonly, team:).user }
     let(:user_not_on_team) { build(:user) }
 
     before do
@@ -163,7 +163,7 @@ describe TeamPolicy do
   context 'without RBAC' do
     let(:gov_email_user) do
       user = build(:user)
-      user.user_teams.build(team:)
+      user.memberships.build(team:)
       user
     end
     let(:nongov_email_user) { build(:user, email: 'user@example.com') }
@@ -200,7 +200,7 @@ describe TeamPolicy do
       end
 
       it 'allows team members' do
-        nongov_email_user.user_teams.build(team:)
+        nongov_email_user.memberships.build(team:)
         expect(TeamPolicy).to permit(nongov_email_user, team)
       end
     end
@@ -213,7 +213,7 @@ describe TeamPolicy do
       end
 
       it 'allows team members' do
-        nongov_email_user.user_teams.build(team:)
+        nongov_email_user.memberships.build(team:)
         expect(TeamPolicy).to permit(nongov_email_user, team)
       end
     end
@@ -253,7 +253,7 @@ describe TeamPolicy do
         end
 
         it 'allowed if they are a member' do
-          nongov_email_user.user_teams.build(team:)
+          nongov_email_user.memberships.build(team:)
           expect(TeamPolicy).to permit(nongov_email_user, team)
         end
       end

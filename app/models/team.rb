@@ -7,8 +7,8 @@ class Team < ApplicationRecord
 
   has_many :service_providers, dependent: :nullify, foreign_key: 'group_id',
                                inverse_of: :team
-  has_many :user_teams, foreign_key: 'group_id', inverse_of: :team, dependent: :destroy
-  has_many :users, through: :user_teams, dependent: :destroy
+  has_many :memberships, foreign_key: 'group_id', inverse_of: :team, dependent: :destroy
+  has_many :users, through: :memberships, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 
@@ -20,7 +20,7 @@ class Team < ApplicationRecord
 
   def user_deletion_history
     PaperTrail::Version.
-      where(event: 'destroy', item_type: 'UserTeam').
+      where(event: 'destroy', item_type: 'Membership').
       where("object ->>'group_id' = CAST(? as varchar)", id)
   end
 
@@ -60,7 +60,7 @@ class Team < ApplicationRecord
   # Every team should have a partner admin, but regularly we'll want to create a team before we know
   # who the partner admin should be.
   def missing_a_partner_admin?
-    UserTeam.where(team: self).none? do |membership|
+    Membership.where(team: self).none? do |membership|
       # Every membership must have a valid user.
       # Until we clean up the data and add a db constraint, we should check that the user is not nil
       membership.role_name == 'partner_admin' && membership.user

@@ -57,7 +57,7 @@ RSpec.describe TeamAuditEvent do
     end
 
     it 'can handle role changes as well as other changes' do
-      user_membership = create(:user_team, :partner_admin)
+      user_membership = create(:membership, :partner_admin)
       team = user_membership.team
       user_membership.role = Role.find_by(name: 'partner_developer')
       user_membership.save!
@@ -96,7 +96,7 @@ RSpec.describe TeamAuditEvent do
     it 'looks up TeamUser event email addresses' do
       user = create(:user)
       entry = PaperTrail::Version.new(
-        item_type: 'UserTeam',
+        item_type: 'Membership',
         object_changes: { 'user_id' => [nil, user.id] },
       )
       results = TeamAuditEvent.decorate([entry])

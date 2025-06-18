@@ -11,8 +11,8 @@ describe PopulateRoles do
   let(:nongov_first_name) { nongov_account.split(',')[1] }
   let(:nongov_last_name)  { nongov_account.split(',')[2] }
 
-  let(:without_role_membership) { create(:user_team) }
-  let(:with_role_membership) { create(:user_team, :partner_developer) }
+  let(:without_role_membership) { create(:membership) }
+  let(:with_role_membership) { create(:membership, :partner_developer) }
   let(:logger) { instance_double(Logger) }
 
   subject { described_class.new(logger) }
@@ -31,12 +31,12 @@ describe PopulateRoles do
             last_name: gov_last_name,
             admin: false,
           )
-        user.user_teams << without_role_membership
+        user.memberships << without_role_membership
         subject.call
         user.reload
-        expect(user.user_teams.first.role_name).to eq('partner_admin')
+        expect(user.memberships.first.role_name).to eq('partner_admin')
         expect(logger).to have_received(:info)
-          .with('SUCCESS: All invalid UserTeams have been updated')
+          .with('SUCCESS: All invalid Memberships have been updated')
       end
     end
 
@@ -48,16 +48,16 @@ describe PopulateRoles do
             last_name: nongov_last_name,
             admin: false,
           )
-        user.user_teams << without_role_membership
+        user.memberships << without_role_membership
         subject.call
         user.reload
-        expect(user.user_teams.first.role_name).to eq('partner_developer')
+        expect(user.memberships.first.role_name).to eq('partner_developer')
         expect(logger).to have_received(:info)
-          .with('SUCCESS: All invalid UserTeams have been updated')
+          .with('SUCCESS: All invalid Memberships have been updated')
       end
     end
 
-    context 'when there are no invalid or nil User Teams' do
+    context 'when there are no invalid or nil Memberships' do
       it 'display a message and exit script' do
         user = User.create(
             email: nongov_email,
@@ -65,10 +65,10 @@ describe PopulateRoles do
             last_name: nongov_last_name,
             admin: false,
         )
-        user.user_teams << with_role_membership
+        user.memberships << with_role_membership
         subject.call
         expect(logger).to have_received(:info)
-          .with('INFO: All UserTeams already have valid roles.')
+          .with('INFO: All Memberships already have valid roles.')
       end
     end
   end
