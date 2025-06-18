@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe 'Service Provider API' do
+  before do
+    Rack::Attack.reset!
+  end
+
   context 'without API token' do
     it 'fails without authorization header' do
       app = create(:service_provider)
