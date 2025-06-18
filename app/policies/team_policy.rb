@@ -56,7 +56,7 @@ class TeamPolicy < BasePolicy
   private
 
   def membership
-    record && record.class != Class && UserTeam.find_by(team: record, user: user)
+    record && record.class != Class && Membership.find_by(team: record, user: user)
   end
 
   def in_team?

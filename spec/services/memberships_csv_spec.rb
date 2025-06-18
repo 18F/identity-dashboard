@@ -6,7 +6,7 @@ describe MembershipCsv do
 
     describe 'with legacy users that do not have a role yet' do
       let(:memberships) do
-        [build(:user_team)]
+        [build(:membership)]
       end
 
       it 'outputs a row with no role' do

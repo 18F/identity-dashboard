@@ -4,8 +4,8 @@ class User < ApplicationRecord
   has_paper_trail on: %i[create update destroy]
 
   devise :trackable, :timeoutable
-  has_many :user_teams, dependent: :destroy
-  has_many :teams, through: :user_teams
+  has_many :memberships, dependent: :destroy
+  has_many :teams, through: :memberships
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy
 
@@ -30,7 +30,7 @@ class User < ApplicationRecord
 
   def user_deletion_history
     PaperTrail::Version.
-      where(event: 'destroy', item_type: 'UserTeam').
+      where(event: 'destroy', item_type: 'Membership').
       where("object ->>'user_id' = CAST(? as varchar)", id)
   end
 
@@ -75,7 +75,7 @@ class User < ApplicationRecord
 
   def primary_role
     return Role::LOGINGOV_ADMIN if logingov_admin?
-    return user_teams.first.role if user_teams.first&.role.present?
+    return memberships.first.role if memberships.first&.role.present?
     return Role.find_by(name: 'partner_readonly') if teams.any?
 
     Role.find_by(name: 'partner_admin')

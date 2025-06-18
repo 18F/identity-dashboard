@@ -11,7 +11,7 @@
 <%= simple_form_for(@membership, url: team_user_path(@membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-top-3">
-    <legend><p id='rbac_description'><%= t('user_teams.rbac_description') %></p></legend>
+    <legend><p id='rbac_description'><%= t('memberships.rbac_description') %></p></legend>
     <%= render(RadioCollectionComponent.new(
       form: form,
       model_method: :role_name,

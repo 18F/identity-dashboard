@@ -80,7 +80,7 @@ describe TeamsController do
           created_at: 1.minute.ago,
           whodunnit: 'admin@login.gsa.gov',
           event: 'create',
-          item_type: 'UserTeam',
+          item_type: 'Membership',
         )
 
         expect(TeamAuditEvent).to receive(:by_team).

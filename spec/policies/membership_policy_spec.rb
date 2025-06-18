@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-describe UserTeamPolicy do
+describe MembershipPolicy do
   let(:team) { create(:team) }
-  let(:partner_admin_membership) { create(:user_team, :partner_admin, team:) }
-  let(:partner_developer_membership) { create(:user_team, :partner_developer, team:) }
-  let(:partner_readonly_membership) { create(:user_team, :partner_readonly, team:) }
+  let(:partner_admin_membership) { create(:membership, :partner_admin, team:) }
+  let(:partner_developer_membership) { create(:membership, :partner_developer, team:) }
+  let(:partner_readonly_membership) { create(:membership, :partner_readonly, team:) }
   let(:partner_admin) { partner_admin_membership.user }
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
   let(:logingov_admin) { build(:logingov_admin) }
   let(:other_user) { build(:restricted_ic) }
-  let(:without_role_membership) { create(:user_team) }
+  let(:without_role_membership) { create(:membership) }
 
   permissions :manage_team_users? do
     before do
@@ -46,17 +46,17 @@ describe UserTeamPolicy do
 
   permissions :create? do
     it 'allows Partner Admins' do
-      new_membership = partner_admin_membership.team.user_teams.build
+      new_membership = partner_admin_membership.team.memberships.build
       expect(described_class).to permit(partner_admin, new_membership)
     end
 
     it 'forbids Partner Developers' do
-      new_membership = partner_developer_membership.team.user_teams.build
+      new_membership = partner_developer_membership.team.memberships.build
       expect(described_class).to_not permit(partner_developer, new_membership)
     end
 
     it 'forbids Partner Readonly' do
-      new_membership = partner_readonly_membership.team.user_teams.build
+      new_membership = partner_readonly_membership.team.memberships.build
       expect(described_class).to_not permit(partner_readonly, new_membership)
     end
   end
@@ -67,7 +67,7 @@ describe UserTeamPolicy do
     end
 
     it 'allows Partner Admins' do
-      new_membership = team.user_teams.build
+      new_membership = team.memberships.build
       expect(described_class).to permit(partner_admin, new_membership)
     end
 
@@ -78,7 +78,7 @@ describe UserTeamPolicy do
     context 'with anyone else' do
       %i[partner_readonly partner_developer other_user].each do |role_name|
         it "forbids #{role_name}" do
-          new_membership = team.user_teams.build
+          new_membership = team.memberships.build
           expect(described_class).to_not permit(send(role_name), new_membership)
         end
       end
@@ -91,7 +91,7 @@ describe UserTeamPolicy do
     end
 
     it 'allows Partner Admins with some role names' do
-      new_membership = team.user_teams.build(role_name: ['partner_readonly',
+      new_membership = team.memberships.build(role_name: ['partner_readonly',
                                                          'partner_developer'].sample)
       expect(described_class).to permit(partner_admin, new_membership)
     end
@@ -101,13 +101,13 @@ describe UserTeamPolicy do
     end
 
     it 'forbids Partner Admins from picking inappropriate roles' do
-      elevated_membership = team.user_teams.build(role_name: ['partner_admin',
+      elevated_membership = team.memberships.build(role_name: ['partner_admin',
                                                               'logingov_admin'].sample)
       expect(described_class).to_not permit(partner_admin, elevated_membership)
     end
 
     it 'forbids Partner Admins from blanking out the role' do
-      blanked_membership = team.user_teams.build(role_name: nil)
+      blanked_membership = team.memberships.build(role_name: nil)
       expect(described_class).to_not permit(partner_admin, blanked_membership)
     end
   end
@@ -119,7 +119,7 @@ describe UserTeamPolicy do
 
     it 'allows login.gov admins to delete their own membership' do
       admin_team_membership = create(
-        :user_team,
+        :membership,
         user: logingov_admin,
         team: partner_admin_membership.team,
       )
@@ -127,7 +127,7 @@ describe UserTeamPolicy do
     end
 
     it 'allows Partner Admins on the same team' do
-      new_membership = partner_admin_membership.team.user_teams.build
+      new_membership = partner_admin_membership.team.memberships.build
       expect(described_class).to permit(partner_admin, new_membership)
     end
 
@@ -136,7 +136,7 @@ describe UserTeamPolicy do
     end
 
     it 'forbids Partner Developers on the same team' do
-      new_membership = partner_developer_membership.team.user_teams.build
+      new_membership = partner_developer_membership.team.memberships.build
       expect(described_class).to_not permit(partner_developer, new_membership)
     end
   end
@@ -161,7 +161,7 @@ describe UserTeamPolicy do
     end
 
     it 'is empty for memberships for teams the Partner Admin is not on' do
-      different_team_membership = build(:user_team)
+      different_team_membership = build(:membership)
       expect(described_class.new(partner_admin, different_team_membership).roles_for_edit).to eq([])
     end
 

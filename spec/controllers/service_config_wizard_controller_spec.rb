@@ -4,7 +4,7 @@ RSpec.describe ServiceConfigWizardController do
   let(:team) { create(:team, agency:) }
   let(:partner_admin) do
     user = create(:user, uuid: SecureRandom.uuid, admin: false)
-    create(:user_team, :partner_admin, user:, team:)
+    create(:membership, :partner_admin, user:, team:)
     user
   end
   let(:logingov_admin) { create(:user, :logingov_admin) }
@@ -649,7 +649,7 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'when a user without team write privieleges' do
-    let(:user) { create(:user_team, :partner_readonly, team:).user }
+    let(:user) { create(:membership, :partner_readonly, team:).user }
     let(:service_provider) { create(:service_provider, team:) }
 
     before do
@@ -672,7 +672,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'can save on a team with more permissions' do
-      create(:user_team, :partner_admin, user: user, team: create(:team))
+      create(:membership, :partner_admin, user: user, team: create(:team))
       WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }

@@ -37,7 +37,6 @@ RSpec.describe EventLogger do
     }
   end
   let(:sp) { create(:service_provider) }
-  let(:userteam) { create(:user_team) }
 
   subject(:log) do
     EventLogger.new(
@@ -144,10 +143,11 @@ RSpec.describe EventLogger do
         expect(obj['properties']['event_properties']).to include('team', 'team_user')
       end
 
-      userteam.role_name = 'partner_admin'
-      userteam.save
+      membership = create(:membership)
+      membership.role_name = 'partner_admin'
+      membership.save
 
-      log.record_save('update', userteam)
+      log.record_save('update', membership)
     end
   end
 

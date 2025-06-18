@@ -5,7 +5,7 @@ feature 'Service Config Wizard' do
   let(:logingov_admin) { create(:user, :logingov_admin, :with_teams) }
 
   # Currently must be Partner Admin or Partner Developer to create a service provider
-  let(:user_membership) { create(:user_team, [:partner_admin, :partner_developer].sample, team:) }
+  let(:user_membership) { create(:membership, [:partner_admin, :partner_developer].sample, team:) }
   let(:user) { user_membership.user }
 
   let(:custom_help_text) do
@@ -95,7 +95,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'displays and saves the correct default options while walking through the steps' do
-      create(:user_team, :partner_admin, user:)
+      create(:membership, :partner_admin, user:)
       team_to_pick = user.teams.sample
       # These are expected values, listed in the order the currently appear in the step forms
       # These are all required values that we'll fill in, or expected default values
@@ -511,7 +511,7 @@ feature 'Service Config Wizard' do
   end
 
   context 'when partner readonly' do
-    let(:user_membership) { create(:user_team, :partner_readonly, team:) }
+    let(:user_membership) { create(:membership, :partner_readonly, team:) }
     let(:user) { user_membership.user }
 
     it 'displays an unauthorized page' do

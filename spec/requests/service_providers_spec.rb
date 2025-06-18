@@ -4,7 +4,7 @@ describe 'Users::ServiceProviders' do
   let(:sp) { create(:service_provider, :with_team) }
   let(:user) { create(:user) }
   let(:logingov_admin) { create(:user, :logingov_admin) }
-  let(:partner_admin) { create(:user_team, :partner_admin, team: sp.team).user }
+  let(:partner_admin) { create(:membership, :partner_admin, team: sp.team).user }
   let(:help_text) do
     {
       sign_in: { en: '' },
@@ -23,7 +23,7 @@ describe 'Users::ServiceProviders' do
     end
 
     it 'disallows non owner from approving the app' do
-      user_on_the_team = create(:user_team, :partner_developer, team: sp.team).user
+      user_on_the_team = create(:membership, :partner_developer, team: sp.team).user
       login_as(user_on_the_team)
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }

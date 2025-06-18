@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Logo upload' do
-  let(:user) { create(:user_team, [:partner_admin, :partner_developer].sample).user }
+  let(:user) { create(:membership, [:partner_admin, :partner_developer].sample).user }
 
   context 'on create' do
     before do
