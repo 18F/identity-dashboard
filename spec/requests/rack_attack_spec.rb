@@ -72,7 +72,8 @@ RSpec.describe 'limiting suspicious requests' do
           expect(obj['properties']['event_properties']['matched']).to eq(
             'suspicious basic auth usage',
           )
-          expect(obj['properties']['event_properties'].keys).to include('start', 'finish', 'req_id')
+          expect(obj['properties']['event_properties'].keys).to include('start', 'finish',
+'req_id', 'ip', 'email')
         end
       end
     end

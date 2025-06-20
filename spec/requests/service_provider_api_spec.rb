@@ -30,7 +30,6 @@ describe 'Service Provider API' do
       app = create(:service_provider)
       get api_service_providers_path, headers: auth_header
       json = response.parsed_body
-      puts request.inspect
       expect(response).to have_http_status(:ok)
       expect(json[0]['issuer']).to eq(app.issuer)
     end
