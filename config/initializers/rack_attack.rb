@@ -105,6 +105,9 @@ ActiveSupport::Notifications.subscribe(
   'blocklist.rack_attack',
 ) do |name, start, finish, req_id, payload|
   request = payload[:request]
+  email = request.env['HTTP_AUTHORIZATION'].match(
+    /email="([a-zA-Z0-9_\-+\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,})/,
+    )
 
   EventLogger.new(request:).track_event(
     'blocklisted',
@@ -113,6 +116,8 @@ ActiveSupport::Notifications.subscribe(
       start: start,
       finish: finish,
       req_id: req_id,
+      ip: request.ip,
+      email: email ? email[1] : nil,
     },
   )
 end
