@@ -234,7 +234,7 @@ RSpec.describe ServiceConfigWizardController do
           end.to(change { WizardStep.count }.by(0))
           expect(response).to_not be_redirect
           actual_error = assigns[:model].errors[:certs].to_sentence
-          expected_error = I18n.t( 'service_provider_form.errors.certs.saml_no_cert' )
+          expected_error = I18n.t('service_provider_form.errors.certs.saml_no_cert')
           expect(actual_error).to eq(expected_error)
         end
 

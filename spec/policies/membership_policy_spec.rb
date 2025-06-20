@@ -92,7 +92,7 @@ describe MembershipPolicy do
 
     it 'allows Partner Admins with some role names' do
       new_membership = team.memberships.build(role_name: ['partner_readonly',
-                                                         'partner_developer'].sample)
+                                                          'partner_developer'].sample)
       expect(described_class).to permit(partner_admin, new_membership)
     end
 
@@ -102,7 +102,7 @@ describe MembershipPolicy do
 
     it 'forbids Partner Admins from picking inappropriate roles' do
       elevated_membership = team.memberships.build(role_name: ['partner_admin',
-                                                              'logingov_admin'].sample)
+                                                               'logingov_admin'].sample)
       expect(described_class).to_not permit(partner_admin, elevated_membership)
     end
 

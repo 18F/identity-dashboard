@@ -35,6 +35,7 @@ describe TeamsController do
 
       context 'the user is not a fed' do
         before { user.update(email: 'user@example.com') }
+
         it 'has an error response' do
           get :new
           expect(response).to have_http_status(:unauthorized)
@@ -204,6 +205,7 @@ describe TeamsController do
         expect(logger_double).to have_received(:record_save)
       end
     end
+
     context 'when the user is not an admin' do
       it 'has an error response' do
         delete :destroy, params: { id: org.id }
@@ -262,7 +264,8 @@ describe TeamsController do
             expect(org.users.count).to eq 3
             patch :update, params: {
               id: org.id,
-              team: { name: org.name, agency_id: org.agency_id, description: org.description } }
+              team: { name: org.name, agency_id: org.agency_id, description: org.description },
+            }
             expect(org.users.count).to eq 3
           end
         end
@@ -304,7 +307,8 @@ describe TeamsController do
               agency_id: org.agency_id,
               description: org.description,
             },
-          user_ids: "#{user.id} #{user1.id} #{user2.id}" }
+            user_ids: "#{user.id} #{user1.id} #{user2.id}",
+          }
           expect(org.users.count).to eq 3
         end
       end
@@ -318,7 +322,8 @@ describe TeamsController do
             name: org.name,
             agency_id: org.agency_id,
             description: org.description,
-          } }
+          },
+        }
         expect(response).to have_http_status(:unauthorized)
         expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
