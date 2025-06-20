@@ -96,6 +96,7 @@ ActiveSupport::Notifications.subscribe(
       start: start,
       finish: finish,
       req_id: req_id,
+      ip: request.ip,
       details: request.env['rack.attack.match_data'],
     },
   )

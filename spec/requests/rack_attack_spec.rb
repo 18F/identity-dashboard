@@ -46,7 +46,7 @@ RSpec.describe 'limiting suspicious requests' do
           expect(obj['name']).to eq('activity_throttled')
           expect(obj['properties']['event_properties']['matched']).to eq('auth/ip')
           expect(obj['properties']['event_properties'].keys).to include('start', 'finish',
-'req_id', 'details')
+'req_id', 'ip', 'details')
         end
       end
     end
