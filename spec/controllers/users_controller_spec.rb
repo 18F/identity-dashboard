@@ -125,7 +125,6 @@ describe UsersController do
           end
         end
       end
-
     end
 
     context 'when not a login.gov admin' do

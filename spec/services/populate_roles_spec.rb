@@ -60,10 +60,10 @@ describe PopulateRoles do
     context 'when there are no invalid or nil Memberships' do
       it 'display a message and exit script' do
         user = User.create(
-            email: nongov_email,
-            first_name: nongov_first_name,
-            last_name: nongov_last_name,
-            admin: false,
+          email: nongov_email,
+          first_name: nongov_first_name,
+          last_name: nongov_last_name,
+          admin: false,
         )
         user.memberships << with_role_membership
         subject.call

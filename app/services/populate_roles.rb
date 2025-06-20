@@ -5,7 +5,7 @@ include TeamHelper
 class PopulateRoles
   USAGE_WARNING = <<-WARN.strip.freeze
       WARNING: this will loop through all Memberships with invalid or nil roles and reset roles based on legacy permissions
-    WARN
+  WARN
 
   VALID_ROLENAMES = %w[partner_admin partner_developer partner_readonly logingov_admin]
 
@@ -35,7 +35,7 @@ class PopulateRoles
     @logger.info('SUCCESS: All invalid Memberships have been updated')
   end
 
-    private
+  private
 
   def get_user(membership)
     User.find(membership.user_id)
@@ -52,5 +52,4 @@ class PopulateRoles
     membership.role = Role.find_by(name: role)
     membership.save!
   end
-
 end

@@ -11,11 +11,11 @@
 #
 class Role < ApplicationRecord
   has_many :membership,
-    foreign_key: 'role_name',
-    primary_key: 'name',
-    inverse_of: :role,
-    # If we delete a role, don't delete the fact that the user who had that role belongs to a team
-    dependent: :nullify
+           foreign_key: 'role_name',
+           primary_key: 'name',
+           inverse_of: :role,
+           # If we delete a role, don't delete that users who had that role still belong to teams
+           dependent: :nullify
 
   ACTIVE_ROLES_NAMES = {
     logingov_admin: 'Login.gov Admin',

@@ -23,7 +23,7 @@ class TeamPolicy < BasePolicy
       return in_team? || user_has_login_admin_role?
     end
 
-    user_has_login_admin_role? || ( membership && membership.role_name == 'partner_admin')
+    user_has_login_admin_role? || (membership && membership.role_name == 'partner_admin')
   end
 
   def index?

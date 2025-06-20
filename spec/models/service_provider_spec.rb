@@ -269,7 +269,7 @@ describe ServiceProvider do
       bad_uri_sp = build(:service_provider, post_idv_follow_up_url: ' http://foo.com')
       malformed_uri_sp = build(:service_provider, post_idv_follow_up_url: 'super.foo.com:result')
       file_uri_sp = build(:service_provider,
-                           post_idv_follow_up_url: 'file:///usr/sbin/evil_script.sh')
+                          post_idv_follow_up_url: 'file:///usr/sbin/evil_script.sh')
 
       expect(valid_sp).to be_valid
       expect(valid_native_sp).to be_valid
@@ -398,6 +398,7 @@ describe ServiceProvider do
       before do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
+
       it { expect(new_sp).to be_pending }
       it { expect(new_sp).to_not be_live }
       it { expect(new_sp).to_not be_rejected }
@@ -407,6 +408,7 @@ describe ServiceProvider do
       before do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
       end
+
       it { expect(new_sp).to_not be_pending }
       it { expect(new_sp).to be_live }
       it { expect(new_sp).to_not be_rejected }
@@ -443,6 +445,7 @@ describe ServiceProvider do
 
   describe '#certificates' do
     subject(:sp) { build(:service_provider, certs:) }
+
     let(:certs) { nil }
 
     context 'with nil' do
@@ -476,6 +479,7 @@ describe ServiceProvider do
 
   describe '#remove_certificate' do
     subject(:sp) { build(:service_provider, certs:) }
+
     let(:certs) { nil }
 
     context 'when removing a serial that matches in the certs array' do
@@ -504,10 +508,12 @@ describe ServiceProvider do
       sp = build(:service_provider, identity_protocol: 'saml')
       expect(!sp.oidc?)
     end
+
     it 'returns true for OIDC private_key_jwt integrations' do
       sp = build(:service_provider, identity_protocol: 'openid_connect_private_key_jwt')
       expect(sp.oidc?)
     end
+
     it 'returns true for OIDC PKCE integrations' do
       sp = build(:service_provider, identity_protocol: 'openid_connect_pkce')
       expect(sp.oidc?)

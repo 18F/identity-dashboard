@@ -158,7 +158,6 @@ describe ServiceProviderPolicy do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
     end
 
-
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
     end
@@ -200,7 +199,6 @@ describe ServiceProviderPolicy do
         expect(described_class).to_not permit(partner_readonly, object)
         expect(described_class).to_not permit(partner_admin, object)
       end
-
     end
 
     describe 'user owner not in team' do
@@ -215,7 +213,6 @@ describe ServiceProviderPolicy do
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(non_team_member, app)
       end
-
     end
   end
 
@@ -234,6 +231,7 @@ describe ServiceProviderPolicy do
       before do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
+
       it_behaves_like 'allows login.gov admins only for `object`' do
         let(:object) { app }
       end

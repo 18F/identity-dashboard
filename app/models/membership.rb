@@ -2,10 +2,10 @@ class Membership < ApplicationRecord
   has_paper_trail on: %i[create update destroy]
 
   belongs_to :role,
-    foreign_key: 'role_name',
-    primary_key: 'name',
-    inverse_of: 'membership',
-    optional: true
+             foreign_key: 'role_name',
+             primary_key: 'name',
+             inverse_of: 'membership',
+             optional: true
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :memberships
 
