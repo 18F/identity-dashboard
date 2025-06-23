@@ -14,7 +14,7 @@ class Role < ApplicationRecord
            foreign_key: 'role_name',
            primary_key: 'name',
            inverse_of: :role,
-           # If we delete a role, don't delete that users who had that role still belong to teams
+           # If we delete a role, still keep the team memberships of users assigned that role
            dependent: :nullify
 
   ACTIVE_ROLES_NAMES = {

@@ -86,26 +86,42 @@ RSpec.describe TeamAuditEvent do
   end
 
   describe '.decorate' do
-    it 'does not make further DB queries by default' do
-      mocked_entry = instance_double(PaperTrail::Version)
-      expect(mocked_entry).to receive(:item_type).and_return('')
-      mock_scope = [mocked_entry]
-      TeamAuditEvent.decorate(mock_scope)
-    end
-
-    it 'allows old entries with the old table name' do
-      flunk
-    end
-
-    it 'looks up TeamUser event email addresses' do
+    it 'looks up TeamMembership event email addresses' do
       user = create(:user)
+      expected_changes = { 'user_id' => [nil, user.id] }
       entry = PaperTrail::Version.new(
         item_type: 'TeamMembership',
-        object_changes: { 'user_id' => [nil, user.id] },
+        object_changes: expected_changes,
       )
       results = TeamAuditEvent.decorate([entry])
       expect(results.count).to be(1)
+      expect(results[0]).to_not eq(entry)
+      expect(results[0].changes).to eq(expected_changes)
       expect(results[0].user_email).to eq(user.email)
+    end
+
+    it 'decorates entries with the old table name' do
+      user = create(:user)
+      expected_changes = { 'user_id' => [nil, user.id] }
+      entry = PaperTrail::Version.new(
+        item_type: 'UserTeam',
+        object_changes: expected_changes,
+      )
+      results = TeamAuditEvent.decorate([entry])
+      expect(results.count).to be(1)
+      expect(results[0]).to_not eq(entry)
+      expect(results[0].changes).to eq(expected_changes)
+      expect(results[0].user_email).to eq(user.email)
+    end
+
+    it 'does no decoration for non-team events' do
+      user = create(:user)
+      entry = PaperTrail::Version.new(
+        item_type: 'User',
+        object_changes: { 'user_id' => [nil, user.id] },
+      )
+      results = TeamAuditEvent.decorate([entry])
+      expect(results[0]).to be(entry)
     end
   end
 
