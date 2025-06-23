@@ -67,13 +67,13 @@ describe UsersController do
         it 'defaults to the login.gov admin role for login.gov admins' do
           editing_user = create(:user, :logingov_admin)
           get :edit, params: { id: editing_user.id }
-          expect(assigns['membership'].role_name).to eq(Role::LOGINGOV_ADMIN.name)
+          expect(assigns['team_membership'].role_name).to eq(Role::LOGINGOV_ADMIN.name)
         end
 
         it 'defaults to the partner admin role for non-login.gov admins' do
           editing_user.save!
           get :edit, params: { id: editing_user.id }
-          expect(assigns['membership'].role_name).to eq('partner_admin')
+          expect(assigns['team_membership'].role_name).to eq('partner_admin')
         end
       end
     end
@@ -98,14 +98,14 @@ describe UsersController do
 
       it 'assigns a new role to all teams' do
         user_to_edit = create(:user, :with_teams)
-        user_to_edit.memberships.each do |ut|
+        user_to_edit.team_memberships.each do |ut|
           expect(ut.role_name).to be_nil
         end
         patch :update, params: { id: user_to_edit, user: {
-          membership: { role_name: 'partner_admin' },
+          team_membership: { role_name: 'partner_admin' },
         } }
         user_to_edit.reload
-        user_to_edit.memberships.each do |ut|
+        user_to_edit.team_memberships.each do |ut|
           expect(ut.role_name).to eq('partner_admin')
         end
       end
@@ -113,15 +113,15 @@ describe UsersController do
       context 'logging' do
         let(:user_to_edit) { create(:user, :team_member) }
 
-        it 'logs updates to member roles only when roles are unchanged' do
+        it 'logs updates to team member roles only when roles are unchanged' do
           patch :update, params: { id: user_to_edit.id, user: {
-            membership: { role_name: 'partner_readonly' },
+            team_membership: { role_name: 'partner_readonly' },
           } }
           patch :update, params: { id: user_to_edit.id, user: {
-            membership: { role_name: 'partner_readonly' },
+            team_membership: { role_name: 'partner_readonly' },
           } }
           expect(logger_double).to have_received(:record_save).once do |op, record|
-            expect(record.class.name).to eq('Membership')
+            expect(record.class.name).to eq('TeamMembership')
           end
         end
       end

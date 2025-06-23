@@ -4,13 +4,13 @@
 #
 # Things this class does not do:
 #
-# The assignment of which user has which role currently exists in the Memberships table.
+# The assignment of which user has which role currently exists in the TeamMemberships table.
 #
 # The enforcement of permissions should occur through the relevant Pundit policy class for
 # the object the user is accessing.
 #
 class Role < ApplicationRecord
-  has_many :membership,
+  has_many :team_membership,
            foreign_key: 'role_name',
            primary_key: 'name',
            inverse_of: :role,

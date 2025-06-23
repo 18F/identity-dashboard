@@ -4,7 +4,7 @@ RSpec.describe ServiceConfigWizardController do
   let(:team) { create(:team, agency:) }
   let(:partner_admin) do
     user = create(:user, uuid: SecureRandom.uuid, admin: false)
-    create(:membership, :partner_admin, user:, team:)
+    create(:team_membership, :partner_admin, user:, team:)
     user
   end
   let(:logingov_admin) { create(:user, :logingov_admin) }
@@ -65,7 +65,7 @@ RSpec.describe ServiceConfigWizardController do
       end
     end
 
-    it 'will wipe all step data if the user cancels on the last step' do
+    it 'wipes all step data if the user cancels on the last step' do
       create(:wizard_step,
              user: logingov_admin,
              wizard_form_data: { help_text: { 'sign_in' => 'blank' } })
@@ -139,8 +139,9 @@ RSpec.describe ServiceConfigWizardController do
             friendly_name: "Friendly name name #{rand(1..1000)}",
             group_id: create(:team).id,
           } }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('settings') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step)) if next_step
@@ -155,8 +156,9 @@ RSpec.describe ServiceConfigWizardController do
             # Rails forms regularly put an initial, hidden, and blank entry for various inputs
             attribute_bundle: ['', 'email'],
           } }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -186,8 +188,9 @@ RSpec.describe ServiceConfigWizardController do
             id: 'issuer',
             wizard_step: { issuer: "test:sso:#{rand(1..1000)}" },
           }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('issuer') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -201,8 +204,9 @@ RSpec.describe ServiceConfigWizardController do
       it 'allows blank info' do
         expect do
           put :update, params: { id: 'logo_and_cert' }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_index = ServiceConfigWizardController::STEPS.index('logo_and_cert') + 1
         next_step = ServiceConfigWizardController::STEPS[next_index]
@@ -215,8 +219,9 @@ RSpec.describe ServiceConfigWizardController do
             logo_file: good_logo,
             cert: good_cert,
           } }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('logo_and_cert') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -231,7 +236,7 @@ RSpec.describe ServiceConfigWizardController do
           } }
           expect do
             put :update, params: { id: 'logo_and_cert', wizard_step: {} }
-          end.to(change { WizardStep.count }.by(0))
+          end.not_to(change { WizardStep.count })
           expect(response).to_not be_redirect
           actual_error = assigns[:model].errors[:certs].to_sentence
           expected_error = I18n.t('service_provider_form.errors.certs.saml_no_cert')
@@ -366,8 +371,9 @@ RSpec.describe ServiceConfigWizardController do
       it 'can post' do
         expect do
           put :update, params: { id: 'redirects', wizard_step: { active: false } }
+          test_failure_details = assigns['model'].errors.messages
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{assigns['model'].errors.messages}"
+                              "Not redirected to next step. Errors found: #{test_failure_details}"
         end.to(change { WizardStep.count }.by(1))
         next_step = ServiceConfigWizardController::STEPS[step_index('redirects') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -384,7 +390,7 @@ RSpec.describe ServiceConfigWizardController do
             assigns['service_provider'].errors.messages,
           )
           expect(response).to be_redirect,
-            "Not redirected to next step. Errors found: #{error_messages}"
+                              "Not redirected to next step. Errors found: #{error_messages}"
         end.to(change { ServiceProvider.count }.by(1))
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
@@ -428,12 +434,12 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     context 'and Production gate is enabled' do
-      let (:existing_service_provider) do
-        create( :service_provider,
-                :ready_to_activate_ial_1,
-                team: create(:team),
-                issuer: "issuer:string:#{rand(1...1000)}",
-                friendly_name: 'Friendly App')
+      let(:existing_service_provider) do
+        create(:service_provider,
+               :ready_to_activate_ial_1,
+               team: create(:team),
+               issuer: "issuer:string:#{rand(1...1000)}",
+               friendly_name: 'Friendly App')
       end
 
       before do
@@ -507,15 +513,15 @@ RSpec.describe ServiceConfigWizardController do
       # Slicing the PRESETS to skip the first entry (index 0)
       # because the first entry is the 'blank' entry that has no translation
       # and is easier to test separately
-      let(:non_blank_sign_in_preset) { HelpText::PRESETS['sign_in'][1..-1].sample }
-      let(:non_blank_sign_up_preset) { HelpText::PRESETS['sign_up'][1..-1].sample }
-      let(:non_blank_forgot_password_preset) { HelpText::PRESETS['forgot_password'][1..-1].sample }
-      let (:existing_service_provider) do
-        create( :service_provider,
-                :ready_to_activate_ial_1,
-                team: team,
-                issuer: "issuer:string:#{rand(1...1000)}",
-                friendly_name: 'Friendly App')
+      let(:non_blank_sign_in_preset) { HelpText::PRESETS['sign_in'][1..].sample }
+      let(:non_blank_sign_up_preset) { HelpText::PRESETS['sign_up'][1..].sample }
+      let(:non_blank_forgot_password_preset) { HelpText::PRESETS['forgot_password'][1..].sample }
+      let(:existing_service_provider) do
+        create(:service_provider,
+               :ready_to_activate_ial_1,
+               team: team,
+               issuer: "issuer:string:#{rand(1...1000)}",
+               friendly_name: 'Friendly App')
       end
 
       it 'can create a new app' do
@@ -623,12 +629,12 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     context 'and Production gate is enabled' do
-      let (:existing_service_provider) do
-        create( :service_provider,
-                :ready_to_activate_ial_1,
-                team: team,
-                issuer: "issuer:string:#{rand(1...1000)}",
-                friendly_name: 'Friendly App')
+      let(:existing_service_provider) do
+        create(:service_provider,
+               :ready_to_activate_ial_1,
+               team: team,
+               issuer: "issuer:string:#{rand(1...1000)}",
+               friendly_name: 'Friendly App')
       end
 
       before do
@@ -649,7 +655,7 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'when a user without team write privieleges' do
-    let(:user) { create(:membership, :partner_readonly, team:).user }
+    let(:user) { create(:team_membership, :partner_readonly, team:).user }
     let(:service_provider) { create(:service_provider, team:) }
 
     before do
@@ -672,7 +678,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'can save on a team with more permissions' do
-      create(:membership, :partner_admin, user: user, team: create(:team))
+      create(:team_membership, :partner_admin, user: user, team: create(:team))
       WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }

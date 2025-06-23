@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get 'users/none' => 'users#none'
   delete '/remove_unconfirmed_users' => 'unconfirmed_users#destroy'
   get '/env' => 'env#index'
-  get '/internal_reports/memberships' => 'internal_reports#memberships'
+  get '/internal_reports/team_memberships' => 'internal_reports#team_memberships'
 
   resources :users
   resources :banners, except: :destroy
@@ -48,5 +48,5 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   # preserve old Groups route
-  match '/groups/:id', to: redirect('/teams/%{id}'), via: :get
+  get '/groups/:id', to: redirect('/teams/%{id}')
 end

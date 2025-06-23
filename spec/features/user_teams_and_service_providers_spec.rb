@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Users can access service providers that belong to their membership' do
+feature 'Users can access service providers that belong to their team' do
   context 'user is not the creator of the service provider' do
     context 'Index' do
-      scenario 'users in the related membership can see the service provider' do
+      scenario 'users can see the service provider on the team' do
         team = create(:team)
         user1 = create(:user, teams: [team])
         not_a_member_team = create(:team)
@@ -22,7 +22,7 @@ feature 'Users can access service providers that belong to their membership' do
     end
 
     context 'Edit' do
-      scenario 'user can edit a service provider from their membership' do
+      scenario 'user can edit a service provider that belongs to a shared team' do
         team = create(:team)
         user1 = create(:user, teams: [team])
         user2 = create(:user)

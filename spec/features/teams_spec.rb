@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Membership CRUD' do
+feature 'TeamMembership CRUD' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
 
   def disable_rbac
@@ -49,9 +49,9 @@ feature 'Membership CRUD' do
   end
 
   context 'User already in a team' do
-    scenario 'User does show up in membership that they are assigned to' do
+    scenario 'User does show up in the team membership that they are assigned to' do
       team = create(:team)
-      user = create(:membership, :partner_developer, team:).user
+      user = create(:team_membership, :partner_developer, team:).user
 
       login_as(logingov_admin)
       visit edit_team_path(team)
@@ -80,7 +80,7 @@ feature 'Membership CRUD' do
       disable_rbac
     end
 
-    scenario 'User does show up in membership that they are assigned to' do
+    scenario 'User does show up in the team membership that they are assigned to' do
       user = create(:user)
       team = create(:team, users: [user])
 

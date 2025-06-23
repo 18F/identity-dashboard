@@ -3,10 +3,10 @@ require 'rails_helper'
 describe ServiceConfigPolicy do
   let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
-  let(:partner_admin) { create(:membership, :partner_admin, team:).user }
-  let(:partner_developer) { create(:membership, :partner_developer, team:).user }
-  let(:partner_readonly) { create(:membership, :partner_readonly, team:).user }
-  let(:non_team_member) { create(:restricted_ic) }
+  let(:partner_admin) { create(:team_membership, :partner_admin, team:).user }
+  let(:partner_developer) { create(:team_membership, :partner_developer, team:).user }
+  let(:partner_readonly) { create(:team_membership, :partner_readonly, team:).user }
+  let(:user_not_on_team) { create(:restricted_ic) }
   let(:object) { WizardStep.new }
 
   shared_examples_for 'allows all team members except Partner Readonly for `object`' do
@@ -15,7 +15,7 @@ describe ServiceConfigPolicy do
     end
 
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
+      expect(described_class).to_not permit(user_not_on_team, object)
     end
 
     it 'allows login.gov admin' do

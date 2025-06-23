@@ -23,7 +23,7 @@ class TeamPolicy < BasePolicy
       return in_team? || user_has_login_admin_role?
     end
 
-    user_has_login_admin_role? || (membership && membership.role_name == 'partner_admin')
+    user_has_login_admin_role? || (team_membership && team_membership.role_name == 'partner_admin')
   end
 
   def index?
@@ -55,8 +55,8 @@ class TeamPolicy < BasePolicy
 
   private
 
-  def membership
-    record && record.class != Class && Membership.find_by(team: record, user: user)
+  def team_membership
+    record && record.class != Class && TeamMembership.find_by(team: record, user: user)
   end
 
   def in_team?

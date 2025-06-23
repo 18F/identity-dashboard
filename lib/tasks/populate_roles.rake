@@ -1,4 +1,4 @@
-namespace :memberships do
+namespace :team_memberships do
   desc 'Update legacy permissions to roles'
   task populate_roles: :environment do
     logger = Logger.new(STDOUT)

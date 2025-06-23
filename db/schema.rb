@@ -89,16 +89,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_18_130346) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
-  create_table "memberships", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "group_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "role_name"
-    t.index ["group_id"], name: "index_memberships_on_group_id"
-    t.index ["user_id"], name: "index_memberships_on_user_id"
-  end
-
   create_table "roles", force: :cascade do |t|
     t.string "name", null: false
     t.string "friendly_name", null: false
@@ -157,6 +147,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_18_130346) do
     t.string "status", default: "pending"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "team_memberships", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "group_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "role_name"
+    t.index ["group_id"], name: "index_team_memberships_on_group_id"
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

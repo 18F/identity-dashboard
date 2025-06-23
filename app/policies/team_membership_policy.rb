@@ -1,4 +1,4 @@
-class MembershipPolicy < BasePolicy
+class TeamMembershipPolicy < BasePolicy
   # TODO: remove `manage_team_users?` after turning on IdentityConfig.store.access_controls_enabled
   # and removing the flag
   def manage_team_users?
@@ -63,7 +63,7 @@ class MembershipPolicy < BasePolicy
   private
 
   def team_membership
-    @team_membership ||= record.team&.memberships&.find_by(user:)
+    @team_membership ||= record.team&.team_memberships&.find_by(user:)
   end
 
   def role_name

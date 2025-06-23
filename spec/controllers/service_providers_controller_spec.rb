@@ -601,7 +601,7 @@ describe ServiceProvidersController do
 
       context 'when not a Login.gov admin' do
         before do
-          create(:membership, :partner_developer, user: user, team: sp.team)
+          create(:team_membership, :partner_developer, user: user, team: sp.team)
           sign_in user
         end
 
@@ -655,7 +655,7 @@ describe ServiceProvidersController do
 
       context 'with Partner user' do
         before do
-          create(:user_team, :partner_admin, user: user, team: sp.team)
+          create(:team_membership, :partner_admin, user: user, team: sp.team)
           sign_in(user)
           sp.ial = '1'
         end
@@ -705,7 +705,7 @@ describe ServiceProvidersController do
       allow(logger_double).to receive(:record_save)
       allow(EventLogger).to receive(:new).and_return(logger_double)
 
-      create(:membership, :partner_admin, user: user, team: sp.team)
+      create(:team_membership, :partner_admin, user: user, team: sp.team)
       sign_in user
     end
 

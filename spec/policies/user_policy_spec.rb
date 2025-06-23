@@ -26,12 +26,12 @@ describe UserPolicy do
     end
 
     it 'forbids non-admin for the class' do
-      partner_admin = build(:membership, :partner_admin).user
+      partner_admin = build(:team_membership, :partner_admin).user
       expect(UserPolicy).to_not permit(partner_admin, User)
     end
 
     it 'forbids partner admin to edit login.gov admin users even if they share a team' do
-      partner_admin = create(:membership, :partner_admin).user
+      partner_admin = create(:team_membership, :partner_admin).user
       logingov_admin.teams << partner_admin.teams.first
       expect(UserPolicy).to_not permit(partner_admin, logingov_admin)
     end

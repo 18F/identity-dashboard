@@ -3,10 +3,10 @@ require 'rails_helper'
 describe ServiceProviderPolicy do
   let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
-  let(:partner_admin) { create(:membership, :partner_admin, team:).user }
-  let(:partner_developer) { create(:membership, :partner_developer, team:).user }
-  let(:partner_readonly) { create(:membership, :partner_readonly, team:).user }
-  let(:non_team_member) { create(:user) }
+  let(:partner_admin) { create(:team_membership, :partner_admin, team:).user }
+  let(:partner_developer) { create(:team_membership, :partner_developer, team:).user }
+  let(:partner_readonly) { create(:team_membership, :partner_readonly, team:).user }
+  let(:user_not_on_team) { create(:user) }
   let(:app) { create(:service_provider, team:) }
 
   shared_examples_for 'allows all team members except Partner Readonly for `object`' do
@@ -15,7 +15,7 @@ describe ServiceProviderPolicy do
     end
 
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
+      expect(described_class).to_not permit(user_not_on_team, object)
     end
 
     it 'allows login.gov admin' do
@@ -49,7 +49,7 @@ describe ServiceProviderPolicy do
     end
 
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
+      expect(described_class).to_not permit(user_not_on_team, object)
     end
   end
 
@@ -70,20 +70,20 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_readonly, ServiceProvider)
     end
 
-    it 'allows non-team-member users' do
+    it 'allows users not on the a team' do
       # Policy scopes ensure they'll only see the service providers they have permissions for
-      expect(described_class).to permit(non_team_member, ServiceProvider)
+      expect(described_class).to permit(user_not_on_team, ServiceProvider)
     end
 
     it 'allows anywone without the RBAC flag' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      expect(described_class).to permit(non_team_member, ServiceProvider)
+      expect(described_class).to permit(user_not_on_team, ServiceProvider)
     end
   end
 
   permissions :show? do
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, app)
+      expect(described_class).to_not permit(user_not_on_team, app)
     end
 
     it 'allows Login Admin' do
@@ -104,15 +104,15 @@ describe ServiceProviderPolicy do
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(non_team_member, app)
+        expect(described_class).to permit(user_not_on_team, app)
       end
 
       it 'is ignored with RBAC oon' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(non_team_member, app)
+        expect(described_class).to_not permit(user_not_on_team, app)
       end
     end
   end
@@ -136,22 +136,22 @@ describe ServiceProviderPolicy do
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(non_team_member, app)
+        expect(described_class).to permit(user_not_on_team, app)
       end
 
       it 'is ignored with RBAC oon' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(non_team_member, app)
+        expect(described_class).to_not permit(user_not_on_team, app)
       end
     end
   end
 
   permissions :destroy? do
-    let(:partner_developer_creator) { create(:membership, :partner_developer, team:).user }
-    let(:partner_developer_noncreator) { create(:membership, :partner_developer, team:).user }
+    let(:partner_developer_creator) { create(:team_membership, :partner_developer, team:).user }
+    let(:partner_developer_noncreator) { create(:team_membership, :partner_developer, team:).user }
     let(:object) { create(:service_provider, team: team, user: partner_developer_creator) }
 
     before do
@@ -163,7 +163,7 @@ describe ServiceProviderPolicy do
     end
 
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(non_team_member, object)
+      expect(described_class).to_not permit(user_not_on_team, object)
     end
 
     it 'allows Login Admin' do
@@ -195,7 +195,7 @@ describe ServiceProviderPolicy do
       it 'forbids everyone else' do
         expect(described_class).to_not permit(partner_developer_creator, object)
         expect(described_class).to_not permit(partner_developer_noncreator, object)
-        expect(described_class).to_not permit(non_team_member, object)
+        expect(described_class).to_not permit(user_not_on_team, object)
         expect(described_class).to_not permit(partner_readonly, object)
         expect(described_class).to_not permit(partner_admin, object)
       end
@@ -203,15 +203,15 @@ describe ServiceProviderPolicy do
 
     describe 'user owner not in team' do
       it 'forbids with RBAC off' do
-        object.user = non_team_member
+        object.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to_not permit(non_team_member, app)
+        expect(described_class).to_not permit(user_not_on_team, app)
       end
 
       it 'is ignored with RBAC on' do
-        object.user = non_team_member
+        object.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(non_team_member, app)
+        expect(described_class).to_not permit(user_not_on_team, app)
       end
     end
   end
@@ -227,7 +227,7 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_readonly, app)
     end
 
-    context 'in a prod-like env' do
+    context 'when in a prod-like env' do
       before do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
@@ -245,15 +245,15 @@ describe ServiceProviderPolicy do
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(non_team_member, app)
+        expect(described_class).to permit(user_not_on_team, app)
       end
 
       it 'is ignored with RBAC on' do
-        app.user = non_team_member
+        app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(non_team_member, app)
+        expect(described_class).to_not permit(user_not_on_team, app)
       end
     end
   end

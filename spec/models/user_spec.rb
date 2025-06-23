@@ -26,12 +26,11 @@ describe User do
     end
   end
 
-  describe '#user_deletion_history', versioning: true do
+  describe '#user_deletion_history', :versioning do
     it 'returns user deletion_history from paper_trail' do
-      team = create(:team)
-      membership = create(:membership)
-      membership.destroy
-      deletion_history = membership.user.user_deletion_history
+      team_membership = create(:team_membership)
+      team_membership.destroy
+      deletion_history = team_membership.user.user_deletion_history
       expect(deletion_history.count).to eq(1)
     end
   end
@@ -51,12 +50,11 @@ describe User do
     end
   end
 
-  describe '#user_deletion_history_report', versioning: true do
+  describe '#user_deletion_history_report', :versioning do
     it 'returns deletion history for user' do
-      team = create(:team)
-      membership = create(:membership)
-      user = membership.user
-      membership.destroy
+      team_membership = create(:team_membership)
+      user = team_membership.user
+      team_membership.destroy
       deletion_report = user.user_deletion_history_report
       expect(deletion_report.first[:user_id]).to eq(user.id)
     end
@@ -96,18 +94,17 @@ describe User do
   end
 
   describe '#scoped_teams' do
-    it 'returns collection of users memberships' do
+    it "returns collection of users' team memberships" do
       team = create(:team)
+      _ignored_team = create(:team)
       user.teams = [team]
       user.save
 
       expect(user.scoped_teams).to eq([team])
     end
 
-    it 'returns all memberships for admins' do
-      2.times do
-        create(:team)
-      end
+    it 'returns all team memberships for admins' do
+      create_list(:team, 2)
       user = create(:user, :logingov_admin)
 
       expect(user.scoped_teams).to eq(Team.all)
@@ -140,7 +137,7 @@ describe User do
     end
   end
 
-  describe 'paper_trail', versioning: true do
+  describe 'paper_trail', :versioning do
     it { is_expected.to be_versioned }
 
     it 'tracks creation' do
@@ -183,14 +180,14 @@ describe User do
     end
 
     it 'returns Partner Readonly if user belongs to teams without role defined' do
-      create(:membership, user:)
-      create(:membership, user:)
+      create(:team_membership, user:)
+      create(:team_membership, user:)
       expect(user.primary_role.name).to eq('partner_readonly')
     end
 
     it 'otherwise returns the role from the first team' do
       user = create(:user, :with_teams)
-      first_team = user.memberships.first
+      first_team = user.team_memberships.first
       expected_role = Role.find_by(name: ['logingov_admin', 'partner_admin'].sample)
       first_team.role = expected_role
       first_team.save
@@ -228,9 +225,9 @@ describe User do
 
   describe '#destroy', :versioning do
     it 'deletes team memberships but not the teams' do
-      membership = create(:membership)
-      user = membership.user
-      team = membership.team
+      team_membership = create(:team_membership)
+      user = team_membership.user
+      team = team_membership.team
       user.destroy
 
       # `User#deleted?` comes from the `acts_as_paranoid` gem
@@ -243,7 +240,7 @@ describe User do
 
       team.reload
       expect(team).to be_valid
-      expect { membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { team_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

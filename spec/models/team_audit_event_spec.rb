@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TeamAuditEvent do
-  describe 'integration', versioning: true do
+  describe 'integration', :versioning do
     it 'can find creations and deletions' do
       PaperTrail.config.version_limit = nil
       team = create(:team)
@@ -57,28 +57,28 @@ RSpec.describe TeamAuditEvent do
     end
 
     it 'can handle role changes as well as other changes' do
-      user_membership = create(:membership, :partner_admin)
-      team = user_membership.team
-      user_membership.role = Role.find_by(name: 'partner_developer')
-      user_membership.save!
+      team_membership = create(:team_membership, :partner_admin)
+      team = team_membership.team
+      team_membership.role = Role.find_by(name: 'partner_developer')
+      team_membership.save!
       audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(team))
       object_changes = audit_events.map(&:object_changes)
 
       role_change = object_changes.first
       expect(role_change['role_name']).to eq(['partner_admin', 'partner_developer'])
-      expect(role_change['user_email']).to eq([user_membership.user.email, nil])
-      expect(role_change['user_id']).to eq([user_membership.user.id, nil])
+      expect(role_change['user_email']).to eq([team_membership.user.email, nil])
+      expect(role_change['user_id']).to eq([team_membership.user.id, nil])
       # No created_at timestamps should show for actions that are only edits
-      expect(role_change['created_at']).to eq(nil)
+      expect(role_change['created_at']).to be_nil
 
       user_addition = object_changes.second
       expect(user_addition['role_name']).to eq([nil, 'partner_admin'])
-      expect(user_addition['user_email']).to eq([nil, user_membership.user.email])
-      expect(user_addition['user_id']).to eq([nil, user_membership.user.id])
+      expect(user_addition['user_email']).to eq([nil, team_membership.user.email])
+      expect(user_addition['user_id']).to eq([nil, team_membership.user.id])
 
       # It's difficult to compare date strings without normalizing them first
       expect(user_addition['created_at'].first).to be_nil
-      expected_created_date = user_membership.user.created_at.to_datetime
+      expected_created_date = team_membership.user.created_at.to_datetime
       expect(DateTime.parse(user_addition['created_at'].last))
         .to be_within(2.seconds)
         .of(expected_created_date)
@@ -87,16 +87,20 @@ RSpec.describe TeamAuditEvent do
 
   describe '.decorate' do
     it 'does not make further DB queries by default' do
-      mocked_entry = double(PaperTrail::Version.new)
+      mocked_entry = instance_double(PaperTrail::Version)
       expect(mocked_entry).to receive(:item_type).and_return('')
       mock_scope = [mocked_entry]
       TeamAuditEvent.decorate(mock_scope)
     end
 
+    it 'allows old entries with the old table name' do
+      flunk
+    end
+
     it 'looks up TeamUser event email addresses' do
       user = create(:user)
       entry = PaperTrail::Version.new(
-        item_type: 'Membership',
+        item_type: 'TeamMembership',
         object_changes: { 'user_id' => [nil, user.id] },
       )
       results = TeamAuditEvent.decorate([entry])
@@ -106,7 +110,7 @@ RSpec.describe TeamAuditEvent do
   end
 
   describe '.by_team' do
-    it 'blocks membership with a supplied scope that might come from PaperTrail' do
+    it 'blocks team membership with a supplied scope that might come from PaperTrail' do
       permission_denied_scope = PaperTrail::Version.none
       expected_denial_sql = permission_denied_scope.to_sql
 
@@ -118,7 +122,7 @@ RSpec.describe TeamAuditEvent do
       expect(generated_sql).to include(expected_denial_sql)
     end
 
-    it 'permits membership through a supplied scope' do
+    it 'permits team membership through a supplied scope' do
       permission_allowed_scope = PaperTrail::Version.all
       expected_allowal_sql = permission_allowed_scope.to_sql
       denial_sql = PaperTrail::Version.none.to_sql

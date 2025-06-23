@@ -47,41 +47,41 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def show?
-    member_or_admin?
+    team_member_or_admin?
   end
 
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
 
-    user_has_login_admin_role? || user.memberships.any? do |membership|
+    user_has_login_admin_role? || user.team_memberships.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
         membership.role == Role.find_by(name: 'partner_admin')
     end
   end
 
   def edit?
-    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    user_has_login_admin_role? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def create?
     return true unless IdentityConfig.store.access_controls_enabled
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
 
-    user_has_login_admin_role? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def update?
-    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
+    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
-    user_has_login_admin_role? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def destroy?
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
-    return member_or_admin? unless IdentityConfig.store.access_controls_enabled
-    return false if !membership && !user_has_login_admin_role?
+    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
+    return false if !team_membership && !user_has_login_admin_role?
 
     user_has_login_admin_role? || partner_admin? || creator?
   end
@@ -95,7 +95,7 @@ class ServiceProviderPolicy < BasePolicy
   end
 
   def prod_request?
-    user_has_login_admin_role? || (membership && !partner_readonly?)
+    user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def edit_custom_help_text?
@@ -126,25 +126,25 @@ class ServiceProviderPolicy < BasePolicy
   private
 
   def partner_readonly?
-    membership.role == Role.find_by(name: 'partner_readonly')
+    team_membership.role == Role.find_by(name: 'partner_readonly')
   end
 
   def partner_admin?
-    membership.role == Role.find_by(name: 'partner_admin')
+    team_membership.role == Role.find_by(name: 'partner_admin')
   end
 
-  def member_or_admin?
+  def team_member_or_admin?
     return true if record.user == user && !IdentityConfig.store.access_controls_enabled
 
-    user_has_login_admin_role? || !!membership
+    user_has_login_admin_role? || !!team_membership
   end
 
   def creator?
     user.id == record.user_id
   end
 
-  def membership
+  def team_membership
     team = record.team
-    team && Membership.find_by(team:, user:)
+    team && TeamMembership.find_by(team:, user:)
   end
 end

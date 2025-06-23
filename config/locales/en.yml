@@ -72,7 +72,7 @@ en:
         confirm_subhead: If you remove this user
   users:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
-  memberships:
+  team_memberships:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
     logingov_admin_description: ''
     partner_admin_description: Can add and delete users and teams; grant and rescind permissions; create, edit and submit new and existing configs

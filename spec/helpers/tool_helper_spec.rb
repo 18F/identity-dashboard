@@ -35,5 +35,4 @@ describe TeamHelper do
       end
     end
   end
-
 end
