@@ -282,6 +282,12 @@ describe ServiceProviderPolicy do
     end
   end
 
+  permissions :prod_request? do
+    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+      let(:object) { app }
+    end
+  end
+
   describe '#permitted_attributes' do
     before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
 
