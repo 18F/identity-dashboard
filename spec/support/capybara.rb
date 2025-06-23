@@ -24,4 +24,3 @@ Capybara.asset_host = 'http://localhost:3001'
 Capybara.default_max_wait_time = 5
 
 Capybara.server = :puma, { Silent: true }
-

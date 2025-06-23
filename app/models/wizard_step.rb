@@ -124,26 +124,26 @@ class WizardStep < ApplicationRecord
   validates :issuer, presence: true, on: 'issuer'
 
   validates :issuer,
-    format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
-    on: 'issuer'
+            format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
+            on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
   validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with IdentityValidations::UriValidator,
-    attribute: :failure_to_proof_url,
-    on: 'redirects'
+                 attribute: :failure_to_proof_url,
+                 on: 'redirects'
   validates_with IdentityValidations::UriValidator,
-    attribute: :push_notification_url,
-    on: 'redirects'
+                 attribute: :push_notification_url,
+                 on: 'redirects'
   validates_with IdentityValidations::UriValidator,
-    attribute: :acs_url,
-    on: 'redirects'
+                 attribute: :acs_url,
+                 on: 'redirects'
   validates_with IdentityValidations::UriValidator,
-    attribute: :return_to_sp_url,
-    on: 'redirects'
+                 attribute: :return_to_sp_url,
+                 on: 'redirects'
   validates_with IdentityValidations::UriValidator,
-    attribute: :assertion_consumer_logout_service_url,
-    on: 'redirects'
+                 attribute: :assertion_consumer_logout_service_url,
+                 on: 'redirects'
 
   validates_with IdentityValidations::CertsAreX509Validator, on: 'logo_and_cert'
   #
@@ -175,15 +175,15 @@ class WizardStep < ApplicationRecord
         next if ['created_at', 'updated_at'].include? attribute_name
 
         hash[attribute_name] = case attribute_name
-          when 'logo'
-            'logo_name'
-          when 'user_id'
-            'service_provider_user_id'
-          when 'id'
-            'service_provider_id'
-          else
-            attribute_name
-          end
+                               when 'logo'
+                                 'logo_name'
+                               when 'user_id'
+                                 'service_provider_user_id'
+                               when 'id'
+                                 'service_provider_id'
+                               else
+                                 attribute_name
+                               end
       end
   end
 

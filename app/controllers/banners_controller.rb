@@ -45,7 +45,7 @@ class BannersController < ApplicationController
     @banner = policy_scope(Banner).find(params[:id])
   end
 
-    # Only allow a list of trusted parameters through.
+  # Only allow a list of trusted parameters through.
   def banner_params
     params.fetch(:banner, {}).permit(:message, :start_date, :end_date)
   end

@@ -107,7 +107,7 @@ ActiveSupport::Notifications.subscribe(
   request = payload[:request]
   email = request.env['HTTP_AUTHORIZATION'].match(
     /email="([a-zA-Z0-9_\-+\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,})/,
-    )
+  )
 
   EventLogger.new(request:).track_event(
     'blocklisted',

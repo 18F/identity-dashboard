@@ -1,4 +1,3 @@
-
 # If we do more work on this, it should be its own model instead of a column in Service Providers
 # This current iteration is an attempt to add some functionality without a the sizable refactor
 # required to create that new model

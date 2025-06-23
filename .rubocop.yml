@@ -503,3 +503,49 @@ Layout/AssignmentIndentation:
 
 Layout/SpaceAfterColon:
   Enabled: true
+
+Style/FrozenStringLiteralComment:
+  # Unneeded as of Ruby 3.4.x
+  Enabled: false
+
+Layout/IndentationConsistency:
+  Enabled: true
+
+Layout/ArgumentAlignment:
+  Enabled: true
+
+Layout/TrailingEmptyLines:
+  Enabled: true
+
+Layout/CommentIndentation:
+  Enabled: true
+
+Layout/HashAlignment:
+  Enabled: true
+
+Layout/EmptyLines:
+  Enabled: true
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+Layout/EndAlignment:
+  Enabled: true
+
+Layout/LeadingEmptyLines:
+  Enabled: true
+
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+
+Layout/SpaceInsideParens:
+  Enabled: true
+
+Layout/CaseIndentation:
+  Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
