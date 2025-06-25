@@ -2,13 +2,22 @@ require 'rails_helper'
 require 'time'
 
 RSpec.describe EventLogger do
+  subject(:log) do
+    EventLogger.new(
+      user: current_user,
+      request: request,
+      session: session,
+      logger: logger,
+    )
+  end
+
   let(:event_name) { 'Trackable Event' }
   let(:path) { 'fake_path' }
   let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
   let(:current_user) { create(:user, uuid:) }
   let(:session) { { visit_token: 'test_token' } }
   let(:logger) { object_double(Rails.logger) }
-  let(:time_now) { Time.zone.now() }
+  let(:time_now) { Time.zone.now }
   let(:log_attributes) do
     {
       properties: { path: },
@@ -37,16 +46,6 @@ RSpec.describe EventLogger do
     }
   end
   let(:sp) { create(:service_provider) }
-  let(:userteam) { create(:user_team) }
-
-  subject(:log) do
-    EventLogger.new(
-      user: current_user,
-      request: request,
-      session: session,
-      logger: logger,
-    )
-  end
 
   describe '#track_event' do
     it 'collects data and sends the event to the backend' do
@@ -144,10 +143,11 @@ RSpec.describe EventLogger do
         expect(obj['properties']['event_properties']).to include('team', 'team_user')
       end
 
-      userteam.role_name = 'partner_admin'
-      userteam.save
+      team_membership = create(:team_membership)
+      team_membership.role_name = 'partner_admin'
+      team_membership.save
 
-      log.record_save('update', userteam)
+      log.record_save('update', team_membership)
     end
   end
 

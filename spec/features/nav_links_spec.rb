@@ -6,7 +6,7 @@ feature 'Nav links' do
 
     before { login_as(logingov_admin) }
 
-    scenario 'should see manage user teams link' do
+    scenario 'should see manage team membership link' do
       visit service_providers_path
 
       expect(page).to have_content('Teams')
@@ -26,7 +26,7 @@ feature 'Nav links' do
   end
 
   context 'when not login.gov admin' do
-    scenario 'user should see manage user teams link' do
+    scenario 'user should see manage team membership link' do
       user = create(:user)
 
       login_as(user)

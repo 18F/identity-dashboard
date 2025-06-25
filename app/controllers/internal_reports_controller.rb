@@ -1,12 +1,12 @@
 class InternalReportsController < AuthenticatedController
   before_action :admin_only
 
-  def memberships
-    memberships = UserTeam.left_joins(:user, :role)
+  def team_memberships
+    team_memberships = TeamMembership.left_joins(:user, :role)
       .select(:id, :user_id, :group_id, :role_name, roles: [:friendly_name])
       .order('users.email', 'roles.id', :group_id)
 
-    render renderable: MembershipCsv.new(memberships)
+    render renderable: TeamMembershipCsv.new(team_memberships)
   end
 
   private

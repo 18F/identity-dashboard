@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_28_162701) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_18_130346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -149,14 +149,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_28_162701) do
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
-  create_table "user_groups", id: :serial, force: :cascade do |t|
+  create_table "team_memberships", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "group_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "role_name"
-    t.index ["group_id"], name: "index_user_groups_on_group_id"
-    t.index ["user_id"], name: "index_user_groups_on_user_id"
+    t.index ["group_id"], name: "index_team_memberships_on_group_id"
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

@@ -4,6 +4,8 @@
 # of both types of edits.
 class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id)
   EVENT_RENAMING = { 'create' => 'add', 'destroy' => 'remove' }.freeze
+  # Include previous names of the TeamMembership table so we can present old events
+  TEAM_MEMBERSHIP_EVENT_TYPES = ['TeamMembership', 'UserTeam'].freeze
 
   # TeamAuditEvent.by_team(team, scope: )
   #
@@ -21,13 +23,13 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   def self.by_team(team, scope: PaperTrail::Version.all)
     # PaperTrail has a default order, so we have to be consistently explicit about reordering
     newest_first_scope = scope.reorder(created_at: :desc)
-    membership_versions = TeamAuditEvent.membership_versions_by_team(
+    team_membership_versions = TeamAuditEvent.membership_versions_by_team(
       team,
       scope: newest_first_scope,
     )
     team_versions = newest_first_scope.where(item_type: 'Team', item_id: team.id)
 
-    membership_versions.or(team_versions).where(created_at: 1.year.ago..Time.zone.now)
+    team_membership_versions.or(team_versions).where(created_at: 1.year.ago..Time.zone.now)
   end
 
   # TeamAuditEvent.decorate(scope)
@@ -36,9 +38,14 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   # though it should work with any ActiveRecord::Model collection from PaperTrail::Version
   def self.decorate(scope)
     # The team membership changes need some decoration. The PaperTrail information on
-    # just the `UserTeam` join table itself isn't helpful to an end user.
+    # just the `TeamMembership` join table itself isn't helpful to an end user.
     scope.map do |v|
-      v.item_type == 'UserTeam' ? TeamAuditEvent.from_membership_version(v) : v
+      # Also include the table's previous name for old events
+      if TEAM_MEMBERSHIP_EVENT_TYPES.include?(v.item_type)
+        TeamAuditEvent.from_team_membership_version(v)
+      else
+        v
+      end
     end
   end
 
@@ -50,25 +57,25 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
     end
 
     scope.
-      where(item_type: 'UserTeam').
+      where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES).
       where('object_changes @> ?', { group_id: [team_id] }.to_json)
       .or(
         # In theory, nothing in the current application can intentionally null out the group_id
         # without deleting the user, too, but let's check for that just to be safe.
         scope.
-          where(item_type: 'UserTeam').
+          where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES).
           where('object @> ?', { group_id: team_id }.to_json),
       )
   end
 
-  def self.from_membership_version(version)
-    if version.item_type != 'UserTeam'
-      raise ArgumentError.new("Version #{version.id} is not a UserTeam change")
+  def self.from_team_membership_version(version)
+    if TEAM_MEMBERSHIP_EVENT_TYPES.exclude?(version.item_type)
+      raise ArgumentError, "Version #{version.id} is not a TeamMembership change"
     end
 
     object_changes = version.object_changes
 
-    # The ID column for the UserTeam table doesn't matter much here
+    # The ID column for the TeamMembership table doesn't matter much here
     object_changes.delete('id')
 
     # Use the user ID as an identifier

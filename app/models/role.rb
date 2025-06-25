@@ -4,18 +4,18 @@
 #
 # Things this class does not do:
 #
-# The assignment of which user has which role currently exists in the UserTeams table.
+# The assignment of which user has which role currently exists in the TeamMemberships table.
 #
 # The enforcement of permissions should occur through the relevant Pundit policy class for
 # the object the user is accessing.
 #
 class Role < ApplicationRecord
-  has_many :user_team,
-    foreign_key: 'role_name',
-    primary_key: 'name',
-    inverse_of: :role,
-    # If we delete a role, don't delete the fact that the user who had that role belongs to a team
-    dependent: :nullify
+  has_many :team_membership,
+           foreign_key: 'role_name',
+           primary_key: 'name',
+           inverse_of: :role,
+           # If we delete a role, still keep the team memberships of users assigned that role
+           dependent: :nullify
 
   ACTIVE_ROLES_NAMES = {
     logingov_admin: 'Login.gov Admin',

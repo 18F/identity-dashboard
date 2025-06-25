@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :user_team do
+  factory :team_membership do
     user
     team
 

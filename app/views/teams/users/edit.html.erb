@@ -8,16 +8,16 @@
   <% end %>
 </h1>
 
-<%= simple_form_for(@membership, url: team_user_path(@membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
+<%= simple_form_for(@team_membership, url: team_user_path(@team_membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-top-3">
-    <legend><p id='rbac_description'><%= t('user_teams.rbac_description') %></p></legend>
+    <legend><p id='rbac_description'><%= t('team_memberships.rbac_description') %></p></legend>
     <%= render(RadioCollectionComponent.new(
       form: form,
       model_method: :role_name,
       describedby: 'rbac_description',
       inputs: roles_for_options,
-      default: @membership.role&.name,
+      default: @team_membership.role&.name,
       disabled: false,
       additional_descriptions: true
     )) %>

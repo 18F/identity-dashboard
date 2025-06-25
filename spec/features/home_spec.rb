@@ -13,7 +13,7 @@ feature 'Home' do
 
     scenario 'you should be able to nav to system use page' do
       visit root_path
-      click_on (I18n.t('links.sign_in'))
+      click_on(I18n.t('links.sign_in'))
 
       expect(page).to have_content(I18n.t('home.system_use'))
       expect(page).to have_content(I18n.t('home.system_agree'))
@@ -39,7 +39,7 @@ feature 'Home' do
       api_auth_link = find_link 'Your API auth token'
       expect(api_auth_link['href']).to eq(auth_tokens_path)
       user_csv_link = find_link 'User permissions report'
-      expect(user_csv_link['href']).to eq(internal_reports_memberships_path(format: 'csv'))
+      expect(user_csv_link['href']).to eq(internal_reports_team_memberships_path(format: 'csv'))
     end
   end
 

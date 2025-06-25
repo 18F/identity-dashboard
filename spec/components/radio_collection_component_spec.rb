@@ -5,8 +5,10 @@ require 'rails_helper'
 RSpec.describe RadioCollectionComponent, type: :component do
   include ActionView::TestCase::Behavior
 
-  let(:membership) { create(:user_team, role_name: Role::ACTIVE_ROLES_NAMES.keys.sample) }
-  let(:form) { SimpleForm::FormBuilder.new(:user_team, membership, view, {}) }
+  let(:team_membership) do
+    create(:team_membership, role_name: Role::ACTIVE_ROLES_NAMES.keys.sample)
+  end
+  let(:form) { SimpleForm::FormBuilder.new(:team_membership, team_membership, view, {}) }
   let(:random_id) { "id_#{rand(10..1000)}" }
   let(:inputs) { Role::ACTIVE_ROLES_NAMES.invert }
 
@@ -25,7 +27,7 @@ RSpec.describe RadioCollectionComponent, type: :component do
     expect(radio_button_values.map(&:to_s)).to eq(inputs.values.map(&:to_s))
     selected_buttons = radio_buttons.css('[checked]')
     expect(selected_buttons.count).to be 1
-    expect(selected_buttons.attribute('value').to_s).to eq(membership.role_name)
+    expect(selected_buttons.attribute('value').to_s).to eq(team_membership.role_name)
   end
 
   it 'allows for additional descriptions' do
@@ -39,7 +41,7 @@ RSpec.describe RadioCollectionComponent, type: :component do
     list_items = render.css('li')
     expect(list_items.count).to eq(inputs.count)
     extended_descriptions = inputs.map do |(name, value)|
-      "#{name} #{I18n.t("user_teams.#{value}_description")}"
+      "#{name} #{I18n.t("team_memberships.#{value}_description")}"
     end
     expect(list_items.map(&:text)).to eq(extended_descriptions)
   end

@@ -44,11 +44,11 @@ en:
       new_app: Create a new app
       show: 'Service Provider: %{friendly_name}'
     teams:
-      edit: Edit user team
-      index: User teams
-      new: Create new user team
+      edit: Edit team membership
+      index: Team memberships
+      new: Create new team membership
       new_team: Create a new team
-      sub_index: Manage user teams
+      sub_index: Manage team memberships
       temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an application in this team. Only add an agency if you are prepared to migrate your users across applications."
     users:
       edit: Edit user
@@ -72,7 +72,7 @@ en:
         confirm_subhead: If you remove this user
   users:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
-  user_teams:
+  team_memberships:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
     logingov_admin_description: ''
     partner_admin_description: Can add and delete users and teams; grant and rescind permissions; create, edit and submit new and existing configs
@@ -118,7 +118,7 @@ en:
     service_providers: My service providers
     sign_in: Sign in with
     sign_out: Sign out
-    teams: Manage user teams
+    teams: Manage team memberships
     users: Manage users
   locale_map:
     en: English

@@ -33,9 +33,9 @@ feature 'Team pages', :js do
   end
 
   context 'as a user' do
-    let(:user_team_membership) { create(:user_team) }
-    let(:user) { user_team_membership.user }
-    let(:team) { user_team_membership.team }
+    let(:team_membership) { create(:team_membership) }
+    let(:user) { team_membership.user }
+    let(:team) { team_membership.team }
 
     context 'editing an existing team' do
       scenario 'view is accessible' do
@@ -126,7 +126,7 @@ feature 'Team pages', :js do
       end
 
       context 'as a Partner Admin' do
-        let(:user_team_membership) { create(:user_team, :partner_admin) }
+        let(:team_membership) { create(:team_membership, :partner_admin) }
 
         before do
           allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
@@ -147,14 +147,14 @@ feature 'Team pages', :js do
         describe 'adding users workflow' do
           describe 'add new user to team view' do
             it 'is accessible' do
-              visit team_path(user_team_membership.team)
+              visit team_path(team_membership.team)
               click_on 'Manage users'
               expect_page_to_have_no_accessibility_violations(page)
 
               click_on 'Add user'
 
               # Asserting this so we can rely on `new_team_user_path` for subsequent scenarios
-              expect(page).to have_current_path(new_team_user_path(user_team_membership.team))
+              expect(page).to have_current_path(new_team_user_path(team_membership.team))
 
               expect_page_to_have_no_accessibility_violations(page)
             end
@@ -162,7 +162,7 @@ feature 'Team pages', :js do
 
           describe 'adding a user' do
             before do
-              visit new_team_user_path(user_team_membership.team)
+              visit new_team_user_path(team_membership.team)
               fill_in 'Email', with: email
               click_on 'Add'
             end
@@ -197,11 +197,11 @@ feature 'Team pages', :js do
       end
 
       context 'as a Partner Readonly user' do
-        let(:user_team_membership) { create(:user_team, :partner_readonly) }
+        let(:team_membership) { create(:team_membership, :partner_readonly) }
 
         context 'the team page' do
           before do
-            visit team_path(user_team_membership.team)
+            visit team_path(team_membership.team)
           end
 
           it { expect_page_to_have_no_accessibility_violations(page) }
@@ -209,7 +209,7 @@ feature 'Team pages', :js do
 
         context 'adding a user' do
           before do
-            visit new_team_user_path(user_team_membership.team)
+            visit new_team_user_path(team_membership.team)
           end
 
           it 'is accessible even when unauthorized' do

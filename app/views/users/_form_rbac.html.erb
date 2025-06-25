@@ -12,13 +12,13 @@
       </div>
     </div>
   <% end %>
-  <%= form.fields_for @user_team do |ut_form| %>
+  <%= form.fields_for @team_membership do |ut_form| %>
     <%= render partial: 'components/radio_collection', locals: {
       form: ut_form,
       db_fieldname: :role_name,
       describedby: 'rbac_description',
       inputs: options_for_roles,
-      default: @user_team.role_name,
+      default: @team_membership.role_name,
       disabled: false
     } %>
   <% end %>

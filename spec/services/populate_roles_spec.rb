@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe PopulateRoles do
+  subject { described_class.new(logger) }
+
   let(:gov_account) { 'test@example.gov,Robert,Smith' }
   let(:gov_email)      { gov_account.split(',')[0] }
   let(:gov_first_name) { gov_account.split(',')[1] }
@@ -11,11 +13,9 @@ describe PopulateRoles do
   let(:nongov_first_name) { nongov_account.split(',')[1] }
   let(:nongov_last_name)  { nongov_account.split(',')[2] }
 
-  let(:without_role_membership) { create(:user_team) }
-  let(:with_role_membership) { create(:user_team, :partner_developer) }
+  let(:without_role_membership) { create(:team_membership) }
+  let(:with_role_membership) { create(:team_membership, :partner_developer) }
   let(:logger) { instance_double(Logger) }
-
-  subject { described_class.new(logger) }
 
   describe '#call' do
     before do
@@ -31,12 +31,12 @@ describe PopulateRoles do
             last_name: gov_last_name,
             admin: false,
           )
-        user.user_teams << without_role_membership
+        user.team_memberships << without_role_membership
         subject.call
         user.reload
-        expect(user.user_teams.first.role_name).to eq('partner_admin')
+        expect(user.team_memberships.first.role_name).to eq('partner_admin')
         expect(logger).to have_received(:info)
-          .with('SUCCESS: All invalid UserTeams have been updated')
+          .with('SUCCESS: All invalid TeamMemberships have been updated')
       end
     end
 
@@ -48,27 +48,27 @@ describe PopulateRoles do
             last_name: nongov_last_name,
             admin: false,
           )
-        user.user_teams << without_role_membership
+        user.team_memberships << without_role_membership
         subject.call
         user.reload
-        expect(user.user_teams.first.role_name).to eq('partner_developer')
+        expect(user.team_memberships.first.role_name).to eq('partner_developer')
         expect(logger).to have_received(:info)
-          .with('SUCCESS: All invalid UserTeams have been updated')
+          .with('SUCCESS: All invalid TeamMemberships have been updated')
       end
     end
 
-    context 'when there are no invalid or nil User Teams' do
+    context 'when there are no invalid or nil TeamMemberships' do
       it 'display a message and exit script' do
         user = User.create(
-            email: nongov_email,
-            first_name: nongov_first_name,
-            last_name: nongov_last_name,
-            admin: false,
+          email: nongov_email,
+          first_name: nongov_first_name,
+          last_name: nongov_last_name,
+          admin: false,
         )
-        user.user_teams << with_role_membership
+        user.team_memberships << with_role_membership
         subject.call
         expect(logger).to have_received(:info)
-          .with('INFO: All UserTeams already have valid roles.')
+          .with('INFO: All TeamMemberships already have valid roles.')
       end
     end
   end

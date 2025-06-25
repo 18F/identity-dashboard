@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Service Providers CRUD' do
   let(:team) { create(:team) }
   let(:user_membership) do
-    create(:user_team, role_name: [:partner_admin, :partner_developer].sample, team: team)
+    create(:team_membership, role_name: [:partner_admin, :partner_developer].sample, team: team)
   end
   let(:user) { user_membership.user }
   let(:logingov_admin) { create(:user, :logingov_admin) }
@@ -54,8 +54,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'cannot see or visit link to analytics path' do
-      user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
-      sp = create(:service_provider, team: user_team.team)
+      team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
+      sp = create(:service_provider, team: team_membership.team)
       visit service_providers_path
       expect(page).to_not have_content('Analytics')
       visit analytics_path(sp.id)
@@ -101,7 +101,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update service provider team' do
-      other_team_membershp = create(:user_team, :partner_admin, user:)
+      other_team_membershp = create(:team_membership, :partner_admin, user:)
       other_team = other_team_membershp.team
       service_provider = create(:service_provider, team:)
 
@@ -372,13 +372,12 @@ feature 'Service Providers CRUD' do
 
       # taken from service_providers.en.yml
       default_help_text_options = ['Leave blank',
-      "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
-      "Sign in to Login.gov with your #{agency} email.",
-      "Sign in to Login.gov with your #{agency} PIV/CAC.",
-      "Create a Login.gov account using your #{agency} email.",
-      'Create a Login.gov account using the same email provided on your application.',
-      'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.',
-      ]
+                                   "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
+                                   "Sign in to Login.gov with your #{agency} email.",
+                                   "Sign in to Login.gov with your #{agency} PIV/CAC.",
+                                   "Create a Login.gov account using your #{agency} email.",
+                                   'Create a Login.gov account using the same email provided on your application.',
+                                   'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.']
 
       visit new_service_provider_path
 
@@ -488,8 +487,8 @@ feature 'Service Providers CRUD' do
       end
 
       it 'redirects to edit service_config_wizard' do
-        user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
-        sp = create(:service_provider, team: user_team.team)
+        team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
+        sp = create(:service_provider, team: team_membership.team)
         visit edit_service_provider_path(id: sp)
 
         expect(page).to have_current_path(service_config_wizard_index_path(service_provider: sp.id))
@@ -562,7 +561,7 @@ feature 'Service Providers CRUD' do
       expect(page.find(:id, 'yaml')).to have_content("push_notification_url: #{url}")
     end
 
-    scenario 'can create service provider with user team' do
+    scenario 'can create service provider with team membership' do
       team = create(:team)
 
       visit new_service_provider_path
@@ -579,8 +578,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can see and visit link to analytics path' do
-      user_team = create(:user_team, :logingov_admin, user: user_to_log_in_as)
-      sp = create(:service_provider, team: user_team.team)
+      team_membership = create(:team_membership, :logingov_admin, user: user_to_log_in_as)
+      sp = create(:service_provider, team: team_membership.team)
       visit service_providers_path
       data_link = sp.friendly_name + ' data'
       expect(page).to have_content(data_link)
@@ -829,7 +828,7 @@ feature 'Service Providers CRUD' do
     describe 'with a production config' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
-      # TODO remove following when Zendesk form is fixed
+      # TODO: remove following when Zendesk form is fixed
       it 'displays the production call to action links' do
         prod_url = 'https://developers.login.gov/production'
         zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
@@ -856,9 +855,9 @@ feature 'Service Providers CRUD' do
   describe 'status indicator' do
     let(:app) do
       create(:service_provider,
-        status: ServiceProvider::STATUSES.sample,
-        prod_config: true,
-        team: team)
+             status: ServiceProvider::STATUSES.sample,
+             prod_config: true,
+             team: team)
     end
     let(:user_to_log_in_as) { logingov_admin }
 
