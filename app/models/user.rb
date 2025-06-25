@@ -86,7 +86,7 @@ class User < ApplicationRecord
   end
 
   def give_team_membership_for_team(team, role_name)
-    membership = user_teams.where(group_id: team.id).first
+    membership = team_memberships.where(group_id: team.id).first
     if membership.present? && membership.role.blank?
       membership.role = Role.find_by(name: role_name)
       membership.save
