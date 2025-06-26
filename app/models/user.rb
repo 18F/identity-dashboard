@@ -85,6 +85,14 @@ class User < ApplicationRecord
     AuthToken.for(self)
   end
 
+  def grant_team_membership(team, role_name)
+    membership = team_memberships.find_by(group_id: team.id)
+    return unless membership.present? && membership.role.blank?
+
+    membership.role = Role.find_by(name: role_name)
+    membership.save
+  end
+
   module DeprecateAdmin
     def self.deprecator
       @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')
