@@ -253,11 +253,11 @@ describe User do
     context 'when there is no membership for the team' do
       it 'does not set a role' do
         original_membership = teamless_user.team_memberships.find_by(group_id: team.id)
-        expect(original_membership).to be_nil 
+        expect(original_membership).to be_nil
 
         teamless_user.grant_team_membership(team, role_name)
         updated_membership = teamless_user.team_memberships.find_by(group_id: team.id)
-        expect(updated_membership).to be_nil 
+        expect(updated_membership).to be_nil
       end
     end
   end
