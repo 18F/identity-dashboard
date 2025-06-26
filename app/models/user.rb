@@ -85,8 +85,8 @@ class User < ApplicationRecord
     AuthToken.for(self)
   end
 
-  def give_team_membership_for_team(team, role_name)
-    membership = team_memberships.where(group_id: team.id).first
+  def grant_team_membership(team, role_name)
+    membership = team_memberships.find_by(group_id: team.id)
     return unless membership.present? && membership.role.blank?
 
     membership.role = Role.find_by(name: role_name)

@@ -28,7 +28,7 @@ class TeamsController < AuthenticatedController
     @team = Team.new(update_params_with_current_user)
 
     if @team.save
-      current_user.give_team_membership_for_team(@team, 'partner_admin')
+      current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = 'Success'
       redirect_to team_users_path(@team.id)
     else
