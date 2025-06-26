@@ -226,7 +226,7 @@ describe User do
   describe '#grant_team_membership' do
     let(:user) { create(:user, :with_teams) }
     let(:teamless_user) { create(:user) }
-    let(:team) { user.team_memberships.first }
+    let(:team) { user.team_memberships.first.team }
     let(:role_name) { 'partner_admin' }
 
     context 'when the user has a membership with no role' do
