@@ -149,9 +149,12 @@ describe TeamsController do
 
         it 'creates the team' do
           team = Team.find_by(name: 'unique name')
+          team_membership = TeamMembership.find_by(group_id: team.id,
+                                                   user_id: user.id)
 
           expect(team).to_not be_nil
           expect(team.users).to eq([user])
+          expect(team_membership.role).to eq(Role.find_by(name: 'partner_admin'))
         end
 
         it 'redirects' do
