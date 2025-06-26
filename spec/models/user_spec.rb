@@ -223,6 +223,45 @@ describe User do
     end
   end
 
+  describe '#grant_team_membership' do
+    let(:user) { create(:user, :with_teams) }
+    let(:teamless_user) { create(:user) }
+    let(:team) { user.team_memberships.first }
+    let(:role_name) { 'partner_admin' }
+
+    context 'when the user has a membership with no role' do
+      it 'assigns the specified role to the team membership' do
+        user.grant_team_membership(team, role_name)
+        membership = user.team_memberships.find_by(group_id: team.id)
+        expect(membership.role.name).to eq(role_name)
+      end
+    end
+
+    context 'when the user has a membership with role' do
+      it 'does not reassign the users role_name' do
+        original_membership = user.team_memberships.find_by(group_id: team.id)
+        original_membership.role = Role.find_by(name: 'partner_readonly')
+        original_membership.save
+        expect(original_membership.role.name).to eq('partner_readonly')
+
+        user.grant_team_membership(team, role_name)
+        updated_membership = user.team_memberships.find_by(group_id: team.id)
+        expect(updated_membership.role.name).to eq('partner_readonly')
+      end
+    end
+
+    context 'when there is no membership for the team' do
+      it 'does not set a role' do
+        original_membership = teamless_user.team_memberships.find_by(group_id: team.id)
+        expect(original_membership).to be_nil 
+
+        teamless_user.grant_team_membership(team, role_name)
+        updated_membership = teamless_user.team_memberships.find_by(group_id: team.id)
+        expect(updated_membership).to be_nil 
+      end
+    end
+  end
+
   describe '#destroy', :versioning do
     it 'deletes team memberships but not the teams' do
       team_membership = create(:team_membership)
