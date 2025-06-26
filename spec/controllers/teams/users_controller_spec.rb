@@ -7,6 +7,7 @@ describe Teams::UsersController do
   let(:user_to_delete) { create(:user_team, team:).user }
   let(:valid_email) { 'user1@gsa.gov' }
   let(:invalid_email) { 'invalid' }
+  let(:logger_double) { instance_double(EventLogger) }
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
@@ -50,6 +51,9 @@ describe Teams::UsersController do
   context 'when logged in' do
     before do
       sign_in user
+      allow(logger_double).to receive(:record_save)
+      allow(logger_double).to receive(:unauthorized_access_attempt)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
     context 'with Partner Admin role' do
@@ -73,6 +77,14 @@ describe Teams::UsersController do
 
       describe '#create' do
         it_behaves_like 'can create valid users'
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :create, params: { team_id: team.id, user: { email: valid_email } }
+
+            expect(logger_double).to have_received(:record_save).once
+          end
+        end
       end
 
       describe '#update' do
@@ -94,8 +106,7 @@ describe Teams::UsersController do
             id: updatable_membership.user.id,
             user_team: { role_name: 'totally-fake-role' },
           }
-          errors = assigns[:membership].errors.full_messages
-          expect(errors).to eq(['Role name is invalid'])
+          expect(response).to be_unauthorized
           updatable_membership.reload
           expect(updatable_membership.role.friendly_name).to eq('Partner Developer')
         end
@@ -110,14 +121,20 @@ describe Teams::UsersController do
           expect(response).to redirect_to(team_users_path(team))
         end
 
+        it 'is unauthorized if the policy role list is empty' do
+          policy_double = UserTeamPolicy.new(user, updatable_membership)
+          expect(policy_double).to receive(:roles_for_edit).and_return([]).at_least(:once)
+          allow(UserTeamPolicy).to receive(:new).and_return(policy_double)
+          put :update, params: {
+            team_id: team.id,
+            id: updatable_membership.user.id,
+            user_team: { role_name: Role.last.name },
+          }
+          expect(response).to be_unauthorized
+        end
+
         context 'logging' do
           let(:updatable_membership) { create(:user_team, :partner_readonly, team:) }
-          let(:logger_double) { instance_double(EventLogger) }
-
-          before do
-            allow(logger_double).to receive(:team_role_updated)
-            allow(EventLogger).to receive(:new).and_return(logger_double)
-          end
 
           it 'logs updates to member roles' do
             put :update, params: {
@@ -126,7 +143,9 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_developer' },
             }
 
-            expect(logger_double).to have_received(:team_role_updated)
+            expect(logger_double).to have_received(:record_save).once do |op, record|
+              expect(record.previous_changes).to include('role_name')
+            end
           end
 
           it 'does not log updates when roles are unchanged' do
@@ -136,7 +155,9 @@ describe Teams::UsersController do
               user_team: { role_name: 'partner_readonly' },
             }
 
-            expect(logger_double).to_not have_received(:team_role_updated)
+            expect(logger_double).to have_received(:record_save) do |op, record|
+              expect(record.previous_changes).to_not include('role_name')
+            end
           end
         end
       end
@@ -165,6 +186,7 @@ describe Teams::UsersController do
           # so it is acceptable to show "unauthorized" instead of a redirect
           expect(response).to be_unauthorized
           expect(response).to_not render_template(:remove_confirm)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -175,6 +197,16 @@ describe Teams::UsersController do
           let(:user_to_delete) { user }
 
           it_behaves_like 'cannot destroy user'
+        end
+
+        context 'logging' do
+          it 'calls log.record_save' do
+            post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+
+            expect(logger_double).to have_received(:record_save).once do |op, record|
+              expect(record.class.name).to eq('UserTeam')
+            end
+          end
         end
       end
     end
@@ -194,6 +226,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           get :new, params: { team_id: team.id }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -201,6 +234,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           post :create, params: { team_id: team.id, user: { email: valid_email } }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -208,6 +242,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }
           expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
 
@@ -218,6 +253,7 @@ describe Teams::UsersController do
 
     context 'with Partner Readonly role' do
       let(:user_team) { create(:user_team, :partner_readonly) }
+      let(:user_to_change) { create(:user_team, team:).user }
 
       describe '#index' do
         it 'is not allowed' do
@@ -233,9 +269,31 @@ describe Teams::UsersController do
         end
       end
 
+      describe '#edit' do
+        it 'is not allowed' do
+          get :edit, params: { team_id: team.id, id: user_to_change.id }
+          expect(response).to be_unauthorized
+        end
+      end
+
       describe '#create' do
         it 'is not allowed' do
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          post :create, params: {
+            team_id: team.id,
+            id: user_to_change.id,
+            user: { email: build(:user).email },
+          }
+          expect(response).to be_unauthorized
+        end
+      end
+
+      describe '#update' do
+        it 'is not allowed' do
+          post :update, params: {
+            team_id: team.id,
+            id: user_to_change.id,
+            user_team: { role_name: 'partner_readonly' },
+          }
           expect(response).to be_unauthorized
         end
       end

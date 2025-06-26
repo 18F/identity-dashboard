@@ -41,4 +41,25 @@ describe HomeController do
       end
     end
   end
+
+  describe '#system_use' do
+    context 'when the user is signed in' do
+      it 'has a redirect response' do
+        get :system_use
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when the user is not signed in' do
+      before do
+        allow(controller).to receive(:current_user).and_return(nil)
+        sign_out user
+      end
+
+      it 'has a success response' do
+        get :system_use
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
 end

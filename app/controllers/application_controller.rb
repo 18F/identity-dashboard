@@ -8,8 +8,8 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  rescue_from Pundit::NotAuthorizedError, with: :render_401
-  rescue_from ActionController::UnpermittedParameters, with: :render_401
+  rescue_from Pundit::NotAuthorizedError, with: :log_not_auth_and_render_401
+  rescue_from ActionController::UnpermittedParameters, with: :log_unperm_params_and_render_401
 
   def new_session_path(_scope)
     root_url
@@ -19,6 +19,16 @@ class ApplicationController < ActionController::Base
     # Not specifying the layout can cause problems when the `rescue_from` is triggered
     # from a controller that uses a different layout
     render layout: 'application', file: 'public/401.html', status: :unauthorized
+  end
+
+  def log_not_auth_and_render_401(exception)
+    log.unauthorized_access_attempt(exception)
+    render_401
+  end
+
+  def log_unperm_params_and_render_401(exception)
+    log.unpermitted_params_attempt(exception)
+    render_401
   end
 
   def user_for_paper_trail

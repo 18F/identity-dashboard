@@ -9,6 +9,7 @@ RSpec.describe 'CVE-2015-9284', type: :request do
     end
 
     it do
+      Rack::Attack.reset!
       post '/auth/logindotgov'
       expect(response).to redirect_to(%r{^/auth/failure})
     end

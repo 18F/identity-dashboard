@@ -57,6 +57,7 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#show' do
+    before { add_token_to_headers(user, token) }
     let(:sp) { create(:service_provider, :with_team) }
 
     before { get :show, params: { id: sp.id } }

@@ -1,37 +1,58 @@
 # frozen_string_literal: true
 
 # ABC_XYZ -- Keep it Alphabetical!
-# Security and analytics events are separated alphabetically
-# status should be 'SUCCESS', 'FAILURE', or HTTP status
 
 module LogEvents
   # Generic CrUD logger
-  def record_save(record)
+  def record_save(action, record)
+    return if !record
+
     model_name = record.class.name.downcase
-    op_name = record.previous_changes == {} ?
-      'deleted' :
-       record.created_at == record.updated_at ?
-        'created' :
-        'updated'
-    changes = record.previous_changes.filter do |k, v|
-      !k.match('updated_at')
+    changes = record.previous_changes.empty? ? record.as_json : {}
+
+    record.previous_changes.each_pair do |k, v|
+      if k != 'updated_at'
+        if !v.is_a? Array
+          changes[k] = v
+        else
+          changes[k] = {
+            old: v[0],
+            new: v[1],
+          }
+        end
+      end
     end
-    track_event("#{model_name}_#{op_name}", changes)
+    changes[:id] = record.id
+    changes.merge!(team_data record) if record.previous_changes[:role_name]
+    track_event("#{model_name}_#{action}", changes)
   end
 
-  # When a user clicks "Create an app"
-  def sp_config_created
-    track_event('sp_config_created')
+  def team_data(record)
+    {
+      team_user: User.find(record[:user_id]).email,
+      team: Team.find(record[:group_id]).name,
+    }
   end
 
-  def team_role_updated(membership:)
-    track_event('team_role_updated', {
-      team_user: membership.user.email,
-      team: membership.team.name,
-      role: {
-        new: membership.role_name,
-        old: membership.role_name_was,
-      },
-    })
+  def unauthorized_access_attempt(exception)
+    details = {
+      message: exception.message,
+      query: exception.query.to_s,
+      record: exception.record.is_a?(Class) ?
+        exception.record.name :
+        exception.record.class.name,
+      policy: exception.policy.class.name,
+    }
+
+    track_event('unauthorized_access_attempt', details)
+  end
+
+  def unpermitted_params_attempt(exception)
+    details = {
+      message: exception.message,
+      params: exception.params,
+    }
+
+    track_event('unpermitted_params_attempt', details)
   end
 end

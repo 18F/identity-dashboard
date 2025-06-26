@@ -79,4 +79,45 @@ class Rack::Attack
   #    {},   # headers
   #    ['']] # body
   # end
+  # self.blocklisted_responder = lambda do |req|
+  # end
+end
+
+# Logging
+ActiveSupport::Notifications.subscribe(
+  'throttle.rack_attack',
+) do |name, start, finish, req_id, payload|
+  request = payload[:request]
+
+  EventLogger.new(request:).track_event(
+    'activity_throttled',
+    {
+      matched: request.env['rack.attack.matched'],
+      start: start,
+      finish: finish,
+      req_id: req_id,
+      details: request.env['rack.attack.match_data'],
+    },
+  )
+end
+
+ActiveSupport::Notifications.subscribe(
+  'blocklist.rack_attack',
+) do |name, start, finish, req_id, payload|
+  request = payload[:request]
+  email = request.env['HTTP_AUTHORIZATION'].match(
+    /email="([a-zA-Z0-9_\-+\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,})/,
+    )
+
+  EventLogger.new(request:).track_event(
+    'blocklisted',
+    {
+      matched: request.env['rack.attack.matched'],
+      start: start,
+      finish: finish,
+      req_id: req_id,
+      ip: request.ip,
+      email: email ? email[1] : nil,
+    },
+  )
 end

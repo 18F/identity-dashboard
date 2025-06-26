@@ -481,19 +481,18 @@ feature 'Service Providers CRUD' do
         )
       end
 
-      it 'allows Partners to set initial IAL' do
+      it 'redirects to new service_config_wizard' do
         visit new_service_provider_path
 
-        expect(page.find('#service_provider_ial').disabled?).to be(false)
+        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
 
-      it 'does not allow Partners to edit IAL' do
-        existing_config = create(:service_provider,
-                               :ready_to_activate_ial_1,
-                               team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page.find('#service_provider_ial').disabled?).to be(true)
+      it 'redirects to edit service_config_wizard' do
+        user_team = create(:user_team, :partner_developer, user: user_to_log_in_as)
+        sp = create(:service_provider, team: user_team.team)
+        visit edit_service_provider_path(id: sp)
+
+        expect(page).to have_current_path(service_config_wizard_index_path(service_provider: sp.id))
       end
     end
     # rubocop:enable Layout/LineLength
@@ -648,23 +647,14 @@ feature 'Service Providers CRUD' do
       before do
         allow(IdentityConfig.store).to receive_messages(
           prod_like_env: true,
-          edit_button_uses_service_config_wizard: false,
+          service_config_wizard_enabled: true,
         )
       end
 
-      it 'allows Login.gov Admins to set initial IAL' do
+      it 'redirects to service_config_wizard' do
         visit new_service_provider_path
 
-        expect(page.find('#service_provider_ial').disabled?).to be(false)
-      end
-
-      it 'allows Login.gov Admins to edit IAL' do
-        existing_config = create(:service_provider,
-                               :ready_to_activate_ial_1,
-                               team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page.find('#service_provider_ial').disabled?).to be(false)
+        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
     end
   end

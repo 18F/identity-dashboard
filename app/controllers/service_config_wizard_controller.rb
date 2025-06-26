@@ -1,5 +1,6 @@
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
+  after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
@@ -140,10 +141,10 @@ class ServiceConfigWizardController < AuthenticatedController
       if text_params.present?
         HelpText.lookup(
           params: text_params,
-          service_provider: @service_provider || draft_service_provider,
+          service_provider: draft_service_provider,
         )
       else
-        HelpText.new(service_provider: @service_provider || draft_service_provider)
+        HelpText.new(service_provider: draft_service_provider)
       end
   end
 
@@ -268,22 +269,20 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def validate_and_save_service_provider
-    clear_formatting(@service_provider)
+    clear_formatting(draft_service_provider)
 
-    @service_provider.valid?
-    @service_provider.valid_saml_settings?
+    draft_service_provider.valid?
+    draft_service_provider.valid_saml_settings?
 
-    return save_service_provider(@service_provider) if @service_provider.errors.none?
+    return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
 
     flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 290"
   end
 
   def save_service_provider(service_provider)
-    is_new = service_provider[:id].nil?
     service_provider.save!
     flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
     publish_service_provider
-    log.sp_config_created if is_new
   end
 
   def publish_service_provider
@@ -323,7 +322,14 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def body_attributes
     {
-      service_provider: ServiceProviderSerializer.new(@service_provider),
+      service_provider: ServiceProviderSerializer.new(draft_service_provider),
     }
+  end
+
+  def log_change
+    return unless step == wizard_steps.last
+
+    action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
+    log.record_save(action, draft_service_provider) unless can_cancel?
   end
 end

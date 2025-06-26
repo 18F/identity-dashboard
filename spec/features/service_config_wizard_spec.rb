@@ -309,8 +309,8 @@ feature 'Service Config Wizard' do
 
       it 'allows Login.gov Admin to update IAL' do
         existing_config = create(:service_provider,
-                               :ready_to_activate_ial_1,
-                               team: logingov_admin.teams[0])
+                                 :ready_to_activate_ial_1,
+                                 team: logingov_admin.teams[0])
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path('authentication')
@@ -350,14 +350,14 @@ feature 'Service Config Wizard' do
 
         it 'wipes existing steps and starts fresh' do
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
-                                          team.id).count
+                                         team.id).count
           expect(saved_steps).to be(1)
 
           visit service_providers_path
           click_on 'Create a new app'
           expect(page).to have_current_path(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
-                                          team.id).count
+                                         team.id).count
           expect(saved_steps).to be(0)
         end
       end
@@ -373,6 +373,20 @@ feature 'Service Config Wizard' do
         visit new_service_config_wizard_path(step_name)
         expect(current_url).to eq(service_providers_url)
       end
+    end
+
+    # This test uses `:js` because JS tests are configured to use Chrome headless.
+    # Otherwise we'd be using a default webdriver that doesn't allow `send_keys`
+    it 'can tab through the page in the correct order', :js do
+      visit service_config_wizard_path(ServiceConfigWizardController::STEPS[1])
+      find('#wizard_step_app_name').send_keys(:tab)
+      expect(find('*:focus')).to eq(find('#wizard_step_friendly_name'))
+
+      # As long as the description field is last, this will work
+      find('#wizard_step_description').send_keys(:tab)
+      expect(find('*:focus').value).to eq('Next')
+      find('*:focus').send_keys(:tab)
+      expect(find('*:focus').text).to eq('Back')
     end
 
     context 'when on Redirects page' do
@@ -484,8 +498,8 @@ feature 'Service Config Wizard' do
 
       it 'does not allow Partners to edit IAL' do
         existing_config = create(:service_provider,
-                               :ready_to_activate_ial_1,
-                               team:)
+                                 :ready_to_activate_ial_1,
+                                 team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
         expect(page).to_not have_content('Unauthorized')

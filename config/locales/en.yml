@@ -55,6 +55,9 @@ en:
       index: Users
       new_user: Create a new user
       rbac: Permissions
+  simple_form:
+    error_notification:
+      default_message: <div class='usa-alert__body'><p class='usa-alert__text'>Please review the problems below:</p></div>
   teams:
     users:
       create:
@@ -102,6 +105,8 @@ en:
       view:
         title: View your application integrations
         body: Get a comprehensive overview of all your connected applications.
+    system_use: System use notification
+    system_agree: I agree
   links:
     aria:
       delete: Delete %{name}

@@ -18,6 +18,7 @@ RSpec.describe ServiceConfigWizardController do
       original_filename: 'alternative_filename.svg',
     )
   end
+  let(:logger_double) { instance_double(EventLogger) }
 
   def flag_in
     expect(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(true)
@@ -29,6 +30,12 @@ RSpec.describe ServiceConfigWizardController do
 
   def step_index(step_name)
     ServiceConfigWizardController::STEPS.index(step_name)
+  end
+
+  before do
+    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
   context 'as an login.gov admin' do
@@ -488,6 +495,12 @@ RSpec.describe ServiceConfigWizardController do
         has_serial = logo_and_cert_step.certificates.any? { |c| c.serial.to_s == '10' }
         expect(has_serial).to eq(true)
       end
+
+      it 'does not log wizard_step save' do
+        put :update, params: { id: 'logo_and_cert', wizard_step: {} }
+
+        expect(logger_double).to_not have_received(:record_save)
+      end
     end
 
     describe 'help_text' do
@@ -497,6 +510,13 @@ RSpec.describe ServiceConfigWizardController do
       let(:non_blank_sign_in_preset) { HelpText::PRESETS['sign_in'][1..-1].sample }
       let(:non_blank_sign_up_preset) { HelpText::PRESETS['sign_up'][1..-1].sample }
       let(:non_blank_forgot_password_preset) { HelpText::PRESETS['forgot_password'][1..-1].sample }
+      let (:existing_service_provider) do
+        create( :service_provider,
+                :ready_to_activate_ial_1,
+                team: team,
+                issuer: "issuer:string:#{rand(1...1000)}",
+                friendly_name: 'Friendly App')
+      end
 
       it 'can create a new app' do
         wizard_steps_ready_to_go.each(&:save!)
@@ -574,6 +594,32 @@ RSpec.describe ServiceConfigWizardController do
           end
         end
       end
+
+      it 'logs on Config create' do
+        wizard_steps_ready_to_go.each(&:save!)
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+
+        put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+
+        expect(logger_double).to have_received(:record_save) do |op, record|
+          expect(op).to eq('create')
+          expect(record.class.name).to eq('ServiceProvider')
+        end
+      end
+
+      it 'logs on Config update' do
+        put :create, params: { service_provider: existing_service_provider }
+        put :update, params: { id: 'help_text', wizard_step: { help_text: {
+          'sign_in' => { 'en' => HelpText::PRESETS['sign_in'][0] },
+          'sign_up' => { 'en' => non_blank_sign_up_preset },
+          'forgot_password' => { 'en' => non_blank_forgot_password_preset },
+        } } }
+
+        expect(logger_double).to have_received(:record_save) do |op, record|
+          expect(op).to eq('update')
+          expect(record.class.name).to eq('ServiceProvider')
+        end
+      end
     end
 
     context 'and Production gate is enabled' do
@@ -614,6 +660,7 @@ RSpec.describe ServiceConfigWizardController do
       service_provider = create(:service_provider, team:)
       put :create, params: { service_provider: service_provider.id }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
 
     it 'cannot save' do
@@ -621,6 +668,7 @@ RSpec.describe ServiceConfigWizardController do
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
 
     it 'can save on a team with more permissions' do
@@ -629,6 +677,7 @@ RSpec.describe ServiceConfigWizardController do
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)
+      expect(logger_double).to have_received(:unauthorized_access_attempt)
     end
   end
 

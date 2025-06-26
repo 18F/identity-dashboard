@@ -4,9 +4,14 @@ describe UsersController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
+  let(:logger_double) { instance_double(EventLogger) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
+    allow(logger_double).to receive(:team_data)
+    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:unauthorized_access_attempt)
+    allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
   describe '#new' do
@@ -23,6 +28,7 @@ describe UsersController do
       it 'has an error response' do
         get :new
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -41,6 +47,7 @@ describe UsersController do
       it 'has an error response' do
         get :index
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -75,6 +82,7 @@ describe UsersController do
       it 'has an error response' do
         get :edit, params: { id: 1 }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -104,12 +112,6 @@ describe UsersController do
 
       context 'logging' do
         let(:user_to_edit) { create(:user, :team_member) }
-        let(:logger_double) { instance_double(EventLogger) }
-
-        before do
-          allow(logger_double).to receive(:team_role_updated)
-          allow(EventLogger).to receive(:new).and_return(logger_double)
-        end
 
         it 'logs updates to member roles only when roles are unchanged' do
           patch :update, params: { id: user_to_edit.id, user: {
@@ -118,15 +120,19 @@ describe UsersController do
           patch :update, params: { id: user_to_edit.id, user: {
             user_team: { role_name: 'partner_readonly' },
           } }
-          expect(logger_double).to have_received(:team_role_updated).once
+          expect(logger_double).to have_received(:record_save).once do |op, record|
+            expect(record.class.name).to eq('UserTeam')
+          end
         end
       end
+
     end
 
     context 'when not a login.gov admin' do
       it 'has an error response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -148,12 +154,20 @@ describe UsersController do
           expect(response).to render_template(:new)
         end
       end
+
+      context 'logging' do
+        it 'calls log.record_save' do
+          patch :create, params: { user: { admin: true, email: 'example@example.com' } }
+          expect(logger_double).to have_received(:record_save).once
+        end
+      end
     end
 
     context 'when the user is not a login.gov admin' do
       it 'has an error response' do
         patch :create, params: { user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -171,12 +185,19 @@ describe UsersController do
       it 'has a redirect response' do
         expect(response).to have_http_status(:found)
       end
+
+      context 'logging' do
+        it 'calls log.record_save' do
+          expect(logger_double).to have_received(:record_save).once
+        end
+      end
     end
 
     context 'when not a login.gov admin' do
       it 'has an error response' do
         delete :destroy, params: { id: user_to_delete.id }
         expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end

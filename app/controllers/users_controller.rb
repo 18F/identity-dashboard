@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
   after_action :verify_policy_scoped
+  after_action :log_change, only: %i[create update destroy]
   helper_method :options_for_roles
   attr_reader :user
 
@@ -41,15 +42,15 @@ class UsersController < ApplicationController
       user.update!(user_params)
       user.user_teams.each do |team|
         team.role = role
-        log.team_role_updated(membership: team) if team.role_name_changed?
         team.save!
+        log_change(team) if team.role_name_previously_changed?
       end
     end
     redirect_to users_url
   end
 
   def destroy
-    user = policy_scope(User).find_by(id: params[:id])
+    @user = policy_scope(User).find_by(id: params[:id])
     return unless user.destroy
 
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
@@ -75,5 +76,12 @@ class UsersController < ApplicationController
   def populate_role_if_missing
     @user_team ||= @user.user_teams.build
     @user_team.role = @user.primary_role
+  end
+
+  def log_change(team = false)
+    record = team || @user
+    return if action_name != 'destroy' && record.previous_changes.empty?
+
+    log.record_save(action_name, record)
   end
 end

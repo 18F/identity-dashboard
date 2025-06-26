@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'users/none' => 'users#none'
   delete '/remove_unconfirmed_users' => 'unconfirmed_users#destroy'
   get '/env' => 'env#index'
+  get '/internal_reports/memberships' => 'internal_reports#memberships'
 
   resources :users
   resources :banners, except: :destroy
@@ -43,6 +44,7 @@ Rails.application.routes.draw do
   get '/api/service_providers' => 'api/service_providers#index'
   get '/api/service_providers/:id' => 'api/service_providers#show'
 
+  get '/system-use' => 'home#system_use'
   root to: 'home#index'
 
   # preserve old Groups route

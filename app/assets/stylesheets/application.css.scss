@@ -126,3 +126,7 @@
 .width-quarter {
   width: 25%;
 }
+
+*:not(p) + p.usa-error-message {
+  margin: 0;
+}
