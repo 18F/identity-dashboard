@@ -87,10 +87,10 @@ class User < ApplicationRecord
 
   def give_team_membership_for_team(team, role_name)
     membership = team_memberships.where(group_id: team.id).first
-    if membership.present? && membership.role.blank?
-      membership.role = Role.find_by(name: role_name)
-      membership.save
-    end
+    return unless membership.present? && membership.role.blank?
+
+    membership.role = Role.find_by(name: role_name)
+    membership.save
   end
 
   module DeprecateAdmin
