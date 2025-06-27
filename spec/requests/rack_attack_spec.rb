@@ -12,10 +12,10 @@ RSpec.describe 'limiting suspicious requests' do
   end
 
   context 'with an invalid token' do
+    let(:test_user) { build(:user) }
     let(:auth_header) do
-      user = build(:user)
       invalid_credentials = ActionController::HttpAuthentication::Token.encode_credentials(
-        SecureRandom.base64(54), email: user.email
+        SecureRandom.base64(54), email: test_user.email
       )
       { 'HTTP_AUTHORIZATION' => invalid_credentials }
     end
@@ -74,6 +74,7 @@ RSpec.describe 'limiting suspicious requests' do
           )
           expect(obj['properties']['event_properties'].keys).to include('start', 'finish',
 'req_id', 'ip', 'email')
+          expect(obj['properties']['event_properties']['email']).to eq(test_user.email)
         end
       end
     end
