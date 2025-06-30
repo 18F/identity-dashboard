@@ -236,7 +236,7 @@ RSpec.describe ServiceConfigWizardController do
           } }
           expect do
             put :update, params: { id: 'logo_and_cert', wizard_step: {} }
-          end.not_to(change { WizardStep.count })
+          end.to_not(change { WizardStep.count })
           expect(response).to_not be_redirect
           actual_error = assigns[:model].errors[:certs].to_sentence
           expected_error = I18n.t('service_provider_form.errors.certs.saml_no_cert')
@@ -400,7 +400,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'stays on this step when the service provider would be invalid' do
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
-        end.not_to(change { ServiceProvider.count })
+        end.to_not(change { ServiceProvider.count })
         error_messages = assigns['model'].errors.messages.merge(
           assigns['service_provider'].errors.messages,
         )
@@ -689,7 +689,7 @@ RSpec.describe ServiceConfigWizardController do
 
   context 'when not logged in' do
     it 'requires authentication without checking flag status' do
-      expect(IdentityConfig.store).not_to receive(:service_config_wizard_enabled)
+      expect(IdentityConfig.store).to_not receive(:service_config_wizard_enabled)
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(root_url)

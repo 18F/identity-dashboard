@@ -18,7 +18,7 @@ describe Team do
       create(:team, name:)
       duplicate = build(:team, name:)
 
-      expect(duplicate).not_to be_valid
+      expect(duplicate).to_not be_valid
     end
   end
 

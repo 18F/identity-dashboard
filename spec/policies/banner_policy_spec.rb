@@ -25,7 +25,7 @@ RSpec.describe BannerPolicy, type: :policy do
 
   permissions :manage_banners? do
     it 'denies users by default' do
-      expect(described_class).not_to permit(user, banner)
+      expect(described_class).to_not permit(user, banner)
     end
 
     it 'allows login.gov admins' do
@@ -35,7 +35,7 @@ RSpec.describe BannerPolicy, type: :policy do
 
   permissions :edit? do
     it 'denies users by default' do
-      expect(described_class).not_to permit(user, banner)
+      expect(described_class).to_not permit(user, banner)
     end
 
     it 'allows login.gov admins' do
@@ -43,7 +43,7 @@ RSpec.describe BannerPolicy, type: :policy do
     end
 
     it 'denies when banner was displayed in the past' do
-      expect(described_class).not_to permit(logingov_admin, ended_banner)
+      expect(described_class).to_not permit(logingov_admin, ended_banner)
     end
   end
 end

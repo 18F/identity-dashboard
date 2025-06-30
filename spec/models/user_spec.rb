@@ -119,7 +119,7 @@ describe User do
       expect(user).to be_valid
       user_with_same_email = User.new(email:)
       user_with_same_email.save
-      expect(user_with_same_email).not_to be_valid
+      expect(user_with_same_email).to_not be_valid
       user.destroy
       user_with_same_email.save
       expect(user_with_same_email).to be_valid

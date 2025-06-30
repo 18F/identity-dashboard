@@ -181,7 +181,7 @@ describe ServiceProvider do
         issuer: 'i-dont-care-about-your-rules even a little',
       )
 
-      expect(invalid_service_provider).not_to be_valid
+      expect(invalid_service_provider).to_not be_valid
     end
 
     it 'accepts an incorrectly formatted issuer on update' do
@@ -310,7 +310,7 @@ describe ServiceProvider do
       sp = build(:service_provider, ial: 2)
       expect(sp).to be_valid
       sp = build(:service_provider, ial: 3)
-      expect(sp).not_to be_valid
+      expect(sp).to_not be_valid
       sp = build(:service_provider, ial: nil)
       expect(sp).to be_valid
     end
