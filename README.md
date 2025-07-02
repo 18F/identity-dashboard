@@ -52,7 +52,17 @@ Branches should be completed and sent for review via Pull Request and merged int
 How do we conduct code review
 What are norms we want to enforce
 
-TBD
+For code reviewers 
+*Borrowed from [18F code review standards](https://guides.18f.org/engineering/our-approach/code-review/)*
+
+- Understand why the code is necessary (bug, user experience, refactoring)
+- Seek to understand the author's perspective.
+- Clearly communicate which ideas you feel strongly about and those you don't.
+- Identify ways to simplify the code while still solving the problem.
+- Offer alternative implementations, but assume the author already considered them. ("What do you think about such-and-such here?")
+- Sign off on the pull request with a :thumbsup: or "Ready to merge" comment.
+- Wait to merge the branch until it has passed Continuous Integration testing.
+- Use [Conventional Comments](https://conventionalcomments.org/) in order to clarify whether a comment is blocking or non-blocking for merging the PR.
 
 # Testing Standards
 When do we use feature tests / integration / regression / unit tests
