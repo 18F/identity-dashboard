@@ -1,58 +1,55 @@
-// // import { render } from "preact";
-// // import SingleReportWrapper from "../packages/reporting/src/components/single-report-wrapper";
-// // import { DailyAuthsReport } from "@18f/identity-reporting";
-// // import { Control } from "../packages/reporting/src/components/report-filter-controls";
+import { h, render } from "preact";
+import { DailyAuthsReport, AgenciesContextProvider, ReportFilterControls, ReportFilterContextProvider } from "@18f/identity-reporting";
 
-// // render(
-// //   <SingleReportWrapper
-// //     title="Daily Auths Report"
-// //     controls={[Control.IAL, Control.AGENCY]}
-// //     env="prod"
-// //     report={DailyAuthsReport} // The report component
-// //   />,
-// //   document.getElementById("app") as HTMLElement
-// // );
+const appDiv = document.getElementById('app');
+const start = appDiv?.getAttribute('data-start');
+const finish = appDiv?.getAttribute('data-finish');
+const ialRaw = appDiv?.getAttribute('data-ial');
+const agency = appDiv?.getAttribute('data-agency');
+const ial = ialRaw === "1" || ialRaw === "2" ? Number(ialRaw) : 1; // Ensure ial is 1 or 2, default to 1
 
-import { render } from "preact";
-import { useState } from "preact/hooks";
-import {
-  wrapSingleReport,
-  DailyAuthsReport,
-  FilterControl,
-  NewRoutes,
-} from "@18f/identity-reporting";
-
-const Reports = {
-  DailyAuths: wrapSingleReport(DailyAuthsReport, {
-    controls: [FilterControl.IAL],
-    defaultTimeRangeWeekOffset: 0, // Adjust as needed
-  }),
+console.log("Ingested from HTML: ", appDiv)
+// Set your desired default filter values here
+const contextProps = {
+  start: new Date(start),
+  finish: new Date(finish),
+  ial: ial,
+  env: 'local',
+  funnelMode: 'blanket',
+  scale: 'count',
+  byAgency: false,
+  extra: false,
+  timeBucket: undefined,
+  cumulative: true,
+  agency: agency,
 };
 
-// const App = () => {
-//   const [key, setKey] = useState(0);
+console.log("contextProps: ", contextProps)
 
-//   const refreshReport = () => setKey((prevKey) => prevKey + 1);
 
-//   return (
-// <Reports.DailyAuths path="/" />
-//   );
-// };
+enum Control {
+  IAL = "ial",
+  FUNNEL_MODE = "funnel_mode",
+  SCALE = "scale",
+  AGENCY = "agency",
+  BY_AGENCY = "by_agency",
+  TIME_BUCKET = "time_bucket",
+  CUMULATIVE = "cumulative",
+}
 
-// Render the App component into a specific DOM element
-console.log(DailyAuthsReport);
+// Build the controls array based on contextProps.extra
+const reportControls: Control[] = [];
+reportControls.push(Control.IAL)
+if (contextProps.extra) {
+  reportControls.push(Control.AGENCY, Control.BY_AGENCY);
+}
 
-render(<Reports.DailyAuths />, 
-  document.getElementById("app") as HTMLElement);
-
-// import { render } from "preact";
-// import { NewRoutes} from "@18f/identity-reporting";
-
-// const rootElement = document.getElementById("app");
-
-// if (!rootElement) {
-//   console.error("Root element with id 'app' not found.");
-// } else {
-//   console.log("Rendering NewRoutes...");
-//   render(<NewRoutes />, rootElement);
-// }
+render(
+  <AgenciesContextProvider>
+    <ReportFilterContextProvider {...contextProps}>
+      <ReportFilterControls controls={reportControls} />
+      <DailyAuthsReport />
+    </ReportFilterContextProvider>
+  </AgenciesContextProvider>,
+    document.getElementById("app")!
+);

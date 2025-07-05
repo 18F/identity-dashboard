@@ -60,10 +60,18 @@ function ReportFilterControls({ controls }: ReportFilterControlsProps): VNode {
 
     const formData = new FormData(form);
     Object.entries(overrideFormData).forEach(([key, value]) => formData.set(key, String(value)));
-    // console.log("Form Data:", Object.fromEntries(formData));
 
     setParameters(Object.fromEntries(formData) as Record<string, string>);
     event.preventDefault();
+
+    // --- NEW: Update URL and reload page so Rails sees new params ---
+    const params = new URLSearchParams(window.location.search);
+    for (const [key, value] of formData.entries()) {
+      params.set(key, value as string);
+    }
+    window.location.search = params.toString();
+    // window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+
   }
 
   function updateTimeRange(interval: CountableTimeInterval, offset: number) {

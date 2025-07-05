@@ -42,37 +42,20 @@ function process(report: DailyAuthsReportData): ProcessedResult[] {
   return report.results.map((r) => ({ ...r, date, agency: r.agency || "(No Agency)" }));
 }
 
-async function loadData(
+function loadData(
   start: Date,
   finish: Date,
   env: string,
   fetch = window.fetch
 ): Promise<ProcessedResult[]> {
-  console.log("loadData called with:", { start, finish, env });
-
-  const dates = utcDays(start, utcDay.offset(finish, 1), 1);
-  const reports = await Promise.all(
-    dates.map(async (date) => {
+  return Promise.all(
+    utcDays(start, utcDay.offset(finish, 1), 1).map((date) => {
       const path = reportPath({ reportName: "daily-auths-report", date, env });
-      try {
-        const response = await fetch(path, { mode: 'no-cors' });
-        const text = await response.text();
-        console.log(`Raw response body for ${date.toISOString()}:`, text);
-        
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          console.warn(`Failed to fetch data for ${date.toISOString()}:`, response.status);
-          return { results: [] };
-        }
-      } catch (error) {
-        console.error(`Error fetching data for ${date.toISOString()}:`, error);
-        return { results: [] };
-      }
+      return fetch(path).then((response) =>
+        response.status === 200 ? response.json() : { results: [] }
+      );
     })
-  );
-
-  return reports.flatMap((r) => process(r));
+  ).then((reports) => reports.flatMap((r) => process(r)));
 }
 
 export { ProcessedResult, loadData };
