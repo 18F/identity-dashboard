@@ -166,7 +166,7 @@ function ReportFilterControls({ controls }: ReportFilterControlsProps): VNode {
                 </div>
               </fieldset>
             )}
-            {(controls?.includes(Control.AGENCY) || agency) && (
+            {(controls?.includes(Control.AGENCY)) && (
               <fieldset className="usa-fieldset">
                 <legend className="usa-legend" id="agency-legend">
                   Agency

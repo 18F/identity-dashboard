@@ -17,14 +17,14 @@ class ReportsController < AuthenticatedController
   #
 
   def home
-    default_start = Time.zone.today.beginning_of_month.to_s
-    default_finish = Time.zone.today.end_of_month.to_s
+    default_start = Time.zone.today.beginning_of_week.to_s
+    default_finish = Time.zone.today.end_of_week.to_s
     default_ial = 1
     default_env = 'prod'
     default_funnel_mode = 'blanket'
     default_scale = 'count'
-    default_by_agency = nil
-    default_extra = nil
+    default_by_agency = false
+    default_extra = false
     default_time_bucket = nil
     default_cumulative = true
     default_agency = nil
