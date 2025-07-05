@@ -1,0 +1,15 @@
+
+<h1>Login-Wide Reporting Dashboard</h1>
+<p>Root path: "<%= request.base_url %>"</p>
+<p>Start Date: "<%= @start %>"</p>
+
+<div
+  id="app"
+  data-base-url="<%= request.base_url %>"
+  data-start="<%= @start %>"
+  data-finish="<%= @finish %>"
+  data-ial="<%= @ial %>"
+  data-agency="<%= @agency %>"
+></div>
+
+<%= javascript_include_tag 'reports', type: 'module', defer: true, 'data-turbo-track': 'reload' %>
