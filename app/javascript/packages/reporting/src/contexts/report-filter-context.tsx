@@ -107,6 +107,7 @@ function ReportFilterContextProvider({
 export default ReportFilterContextProvider;
 export {
   ReportFilterContext,
+  ReportFilterContextProviderProps,
   Scale,
   FunnelMode,
   TimeBucket,

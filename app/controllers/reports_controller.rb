@@ -23,21 +23,27 @@ class ReportsController < AuthenticatedController
     default_env = 'prod'
     default_funnel_mode = 'blanket'
     default_scale = 'count'
-    default_by_agency = false
+    default_by_agency = 'off'
     default_extra = false
     default_time_bucket = nil
     default_cumulative = true
     default_agency = nil
 
-    start_param      = params[:start]      || default_start
-    finish_param     = params[:finish]     || default_finish
-    ial_param        = params[:ial]        || default_ial
+    start_param      = params[:start] || default_start
+    finish_param     = params[:finish] || default_finish
+    ial_param        = params[:ial] || default_ial
     agency_param     = params[:agency] || default_agency
     env_param        = params[:env] || default_env
-    funnel_mode_param = params[:funnel_mode] || default_funnel_mode
-    scale_param      = params[:scale] || default_scale
-    by_agency_param  = params[:by_agency] || default_by_agency
-    extra_param      = params[:extra] || default_extra
+    funnel_mode_param = %w[step
+blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_mode
+    scale_param = %w[count percent].include?(params[:scale]) ? params[:scale] : default_scale
+
+    by_agency_param = params[:byAgency] || default_by_agency
+    extra_param = if params[:extra].present? && params[:extra] != 'false' && params[:extra] != '0'
+                    true
+                  else
+                    default_extra
+                  end
     time_bucket_param = params[:time_bucket] || default_time_bucket
     cumulative_param = params[:cumulative].nil? ? default_cumulative : params[:cumulative]
 
@@ -45,7 +51,6 @@ class ReportsController < AuthenticatedController
     if params[:start].blank? || params[:finish].blank?
       redirect_to reports_path(start: start_param, finish: finish_param) and return
     end
-
 
     @start = start_param
     @finish = finish_param

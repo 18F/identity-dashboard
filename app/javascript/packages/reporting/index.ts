@@ -2,7 +2,18 @@
 // export { Router, Link, route, getFullPath } from "./src/router";
 // export { default as createReportRoute } from "./src/routes/report-route";
 // export { Routes as NewRoutes } from "./src/routes/new-index";
-export { default as ReportFilterContextProvider } from "./src/contexts/report-filter-context";
+export {  ReportFilterContext,
+          ReportFilterContextProviderProps,
+          Scale,
+          FunnelMode,
+          TimeBucket,
+          DEFAULT_IAL,
+          DEFAULT_ENV,
+          DEFAULT_SCALE,
+          DEFAULT_FUNNEL_MODE,
+          default as ReportFilterContextProvider 
+  } from "./src/contexts/report-filter-context";
+
 export { AgenciesContextProvider } from "./src/contexts/agencies-context";
 
 
