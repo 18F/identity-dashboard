@@ -28,6 +28,9 @@
             <li class="usa-nav__primary-item">
               <%= navigation_link_to 'Teams', teams_path %>
             </li>
+            <li class="usa-nav__primary-item">
+              <%= navigation_link_to 'Analytics', reports_home_path %>
+            </li>
             <% if current_user.logingov_admin? %>
               <li class="usa-nav__primary-item">
                 <%= navigation_link_to 'Security Events', security_events_path %>
