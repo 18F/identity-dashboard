@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   get '/analytics/service_providers/:id' => 'analytics/service_providers#show', as: :analytics
   get '/reports/home' => 'reports#home', as: :reports_home
   # resources :reports, only: [:index, :show]
-  get '/local/daily-auths-report/:year/:date.daily-auths-report.json', to: 'reports#web_download_daily_auths_report'
+  get '/local/daily-auths-report/:year/:date.daily-auths-report.json', to: 'reports#stream_daily_auths_report'
 
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'
