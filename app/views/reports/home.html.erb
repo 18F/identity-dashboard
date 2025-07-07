@@ -1,10 +1,6 @@
 
 <h1>App <%= @friendly_name %> Analytics Dashboard</h1>
 
-<% @teams.each do |team| %>
-  <div><h2><%=  team&.agency&.name %></h2></div>
-<% end %>
-
 <div
   id="app"
   data-base-url="<%= request.base_url %>"

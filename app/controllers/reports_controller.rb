@@ -6,35 +6,8 @@ class ReportsController < AuthenticatedController
   include Portal::Constants
   include ActionController::Live
 
-  # GET /analytics
-  # GET /analytics.json
-  # GET /analytics.xml
-  #
-  # This action serves the analytics home page.
-  #
-  # @return [void]
-  #
-  # @example
-  #   GET /analytics
-  #
-  # before_action -> { authorize Team }, only: %i[index]
-  # before_action -> { authorize team }, only: %i[edit update destroy show]
-  # after_action :log_change, only: %i[create update destroy]
-
-  # def index
-  #   includes = %i[users service_providers agency]
-  #   @teams = current_user.teams.includes(*includes).all
-  # end
-
-  # def show
-  #   @audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
-  #     team,
-  #     scope: policy_scope(PaperTrail::Version),
-  #   ))
-  # end
-
   def home
-    @teams = current_user.teams.includes(:users, :service_providers, :agency)
+    # @teams = current_user.teams.includes(:users, :service_providers, :agency)
     # ...any other logic you need for show...
 
     default_start = Time.zone.today.beginning_of_week.to_s
