@@ -1,7 +1,7 @@
 require 'portal/constants'
 
 class ReportsController < AuthenticatedController
-  # before_action -> { authorize User, policy_class: AnalyticsPolicy }
+  # before_action -> { authorize User}
   include Portal::Constants
 
   # GET /analytics
@@ -15,8 +15,27 @@ class ReportsController < AuthenticatedController
   # @example
   #   GET /analytics
   #
+  # before_action -> { authorize Team }, only: %i[index]
+  # before_action -> { authorize team }, only: %i[edit update destroy show]
+  # after_action :log_change, only: %i[create update destroy]
+
+  # def index
+  #   includes = %i[users service_providers agency]
+  #   @teams = current_user.teams.includes(*includes).all
+  # end
+
+  # def show
+  #   @audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
+  #     team,
+  #     scope: policy_scope(PaperTrail::Version),
+  #   ))
+  # end
 
   def home
+
+    @teams = current_user.teams.includes(:users, :service_providers, :agency)
+    # ...any other logic you need for show...
+
     default_start = Time.zone.today.beginning_of_week.to_s
     default_finish = Time.zone.today.end_of_week.to_s
     default_ial = 1
@@ -47,11 +66,6 @@ blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_
     time_bucket_param = params[:time_bucket] || default_time_bucket
     cumulative_param = params[:cumulative].nil? ? default_cumulative : params[:cumulative]
 
-    # Redirect if params are missing
-    if params[:start].blank? || params[:finish].blank?
-      redirect_to reports_path(start: start_param, finish: finish_param) and return
-    end
-
     @start = start_param
     @finish = finish_param
     @ial = ial_param
@@ -74,6 +88,33 @@ blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_
 
     if File.exist?(file_path)
       send_file file_path, type: 'application/json', disposition: 'inline'
+    else
+      render plain: 'Not found', status: :not_found
+    end
+  end
+
+  # def service_provider
+  #   @service_provider ||= ServiceProvider.includes(:agency, logo_file_attachment: :blob).find(id)
+  # end
+
+  # def id
+  #   @id ||= params[:id]
+  # end
+
+
+  require 'net/http'
+  require 'uri'
+
+  def web_download_daily_auths_report
+    year = params[:year]
+    date = params[:date]
+    remote_url = "https://public-reporting-data.prod.login.gov/prod/daily-auths-report/#{year}/#{date}.daily-auths-report.json"
+
+    uri = URI.parse(remote_url)
+    response = Net::HTTP.get_response(uri)
+
+    if response.is_a?(Net::HTTPSuccess)
+      send_data response.body, type: 'application/json', disposition: 'inline'
     else
       render plain: 'Not found', status: :not_found
     end

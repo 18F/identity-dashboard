@@ -18,6 +18,10 @@ Rails.application.routes.draw do
   get '/teams/all' => 'teams#all'
   resources :teams
 
+  # resources :teams do
+  #   resources :reports, only: [:index, :show]
+  # end
+
   scope module: 'teams' do
     resources :teams do
       get '/users/:id/remove_confirm', to: 'users#remove_confirm', as: :remove_confirm
@@ -39,8 +43,9 @@ Rails.application.routes.draw do
   resources :security_events, only: %i[index show]
 
   get '/analytics/service_providers/:id' => 'analytics/service_providers#show', as: :analytics
-  get '/reports' => 'reports#home', as: :reports
-  get '/local/daily-auths-report/:year/:date.daily-auths-report.json', to: 'reports#download_daily_auths_report'
+  get '/reports/home' => 'reports#home', as: :reports_home
+  # resources :reports, only: [:index, :show]
+  get '/local/daily-auths-report/:year/:date.daily-auths-report.json', to: 'reports#web_download_daily_auths_report'
 
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'

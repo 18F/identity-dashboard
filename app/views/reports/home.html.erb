@@ -1,7 +1,9 @@
 
-<h1>Login-Wide Reporting Dashboard</h1>
-<p>Root path: "<%= request.base_url %>"</p>
-<p>Start Date: "<%= @start %>"</p>
+<h1>App <%= @friendly_name %> Analytics Dashboard</h1>
+
+<% @teams.each do |team| %>
+  <div><h2><%=  team&.agency&.name %></h2></div>
+<% end %>
 
 <div
   id="app"
@@ -10,6 +12,8 @@
   data-finish="<%= @finish %>"
   data-ial="<%= @ial %>"
   data-agency="<%= @agency %>"
+  data-extra="<%= @extra %>"
+  data-byAgency = "<%= @by_agency %>"
 ></div>
 
 <%= javascript_include_tag 'reports', type: 'module', defer: true, 'data-turbo-track': 'reload' %>
