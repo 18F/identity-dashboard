@@ -23,7 +23,7 @@ enum TimeBucket {
 }
 
 const DEFAULT_IAL = 1;
-const DEFAULT_ENV = "prod";
+const DEFAULT_ENV = "local";
 const DEFAULT_SCALE = Scale.COUNT;
 const DEFAULT_FUNNEL_MODE = FunnelMode.BLANKET;
 const DEFAULT_TIME_BUCKET = undefined;
@@ -33,6 +33,7 @@ interface ReportFilterContextValues {
   finish: Date;
   ial: 1 | 2;
   agency?: string;
+  issuer?: string;
   env: string;
   funnelMode: FunnelMode;
   scale: Scale;

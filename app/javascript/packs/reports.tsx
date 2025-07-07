@@ -14,6 +14,7 @@ const start = appDiv?.getAttribute('data-start');
 const finish = appDiv?.getAttribute('data-finish');
 const ialRaw = Number(appDiv?.getAttribute('data-ial'));
 const agency = appDiv?.getAttribute('data-agency');
+const issuer = appDiv?.getAttribute('data-issuer');
 const extraRaw = appDiv?.getAttribute('data-extra');
 const byAgencyRaw = appDiv?.getAttribute('data-byAgency');
 const funnelModeRaw = appDiv?.getAttribute('data-funnel-mode');
@@ -26,6 +27,7 @@ const byAgency = byAgencyRaw === "true" || byAgencyRaw === "on";
 // Use the FunnelMode and Scale types if available, otherwise fallback to string unions
 const funnelMode: FunnelMode = (funnelModeRaw as FunnelMode);
 const scale: Scale = (scaleRaw as Scale);
+const env = appDiv?.getAttribute('data-env');
 
 console.log("Ingested from HTML: ", appDiv);
 
@@ -33,7 +35,8 @@ const contextProps: ReportFilterContextProviderProps = {
   start: start ? new Date(start) : new Date(),
   finish: finish ? new Date(finish) : new Date(),
   ial : ial,
-  env: 'local',
+  issuer: issuer,
+  env: env,
   funnelMode: funnelMode,
   scale: scale,
   byAgency: byAgency,
@@ -74,6 +77,7 @@ function ReportsApp() {
       <ReportFilterContextProvider {...contextProps}>
         <ReportFilterControls controls={reportControls} />
         <DailyAuthsReport />
+        
       </ReportFilterContextProvider>
     </AgenciesContextProvider>
   );

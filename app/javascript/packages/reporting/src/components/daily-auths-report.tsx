@@ -236,7 +236,7 @@ function tabulateSum({ results }: { results: ProcessedResult[] }): TableData {
 function DailyAuthsReport(): VNode {
   const ref = useRef(null as HTMLDivElement | null);
   const width = useElementWidth(ref);
-  const { byAgency, start, finish, agency, ial, env, setParameters } =
+  const { byAgency, start, finish, agency, issuer, ial, env, setParameters } =
     useContext(ReportFilterContext);
     
   console.log("Calling loadData with:", { start, finish, env });
@@ -250,7 +250,7 @@ function DailyAuthsReport(): VNode {
   useAgencies(data);
 
   const filteredData = (data || []).filter(
-    (d) => (!ial || d.ial === ial) && (!agency || d.agency === agency)
+    (d) => (!ial || d.ial === ial) && (!agency || d.agency === agency) && (!issuer || d.issuer === issuer)
   );
 
   console.log("Filtered data:", filteredData);

@@ -40,7 +40,7 @@ class ReportsController < AuthenticatedController
     default_start = Time.zone.today.beginning_of_week.to_s
     default_finish = Time.zone.today.end_of_week.to_s
     default_ial = 1
-    default_env = 'prod'
+    default_env = 'local'
     default_funnel_mode = 'blanket'
     default_scale = 'count'
     default_by_agency = 'off'
@@ -48,12 +48,14 @@ class ReportsController < AuthenticatedController
     default_time_bucket = nil
     default_cumulative = true
     default_agency = nil
+    default_issuer = nil
 
     start_param      = params[:start] || default_start
     finish_param     = params[:finish] || default_finish
     ial_param        = params[:ial] || default_ial
     agency_param     = params[:agency] || default_agency
-    env_param        = params[:env] || default_env
+    issuer_param     = params[:issuer] || default_issuer
+    env_param        = default_env
     funnel_mode_param = %w[step
 blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_mode
     scale_param = %w[count percent].include?(params[:scale]) ? params[:scale] : default_scale
@@ -71,6 +73,7 @@ blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_
     @finish = finish_param
     @ial = ial_param
     @agency = agency_param
+    @issuer = issuer_param
     @env = env_param
     @funnel_mode = funnel_mode_param
     @scale = scale_param
