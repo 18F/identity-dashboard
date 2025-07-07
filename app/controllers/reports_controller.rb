@@ -18,7 +18,7 @@ class ReportsController < AuthenticatedController
     @ial = rp[:ial]
     @agency = rp[:agency]
     @issuer = rp[:issuer]
-    @env = rp[:env]
+    @env = 'dev'
     @funnel_mode = rp[:funnel_mode]
     @scale = rp[:scale]
     @by_agency = rp[:by_agency]
@@ -57,7 +57,7 @@ class ReportsController < AuthenticatedController
     end
   end
 
-  def stream_daily_auths_report
+  def stream_daily_auths_report_old
     year = params[:year]
     date = params[:date]
     remote_url = "https://public-reporting-data.prod.login.gov/prod/daily-auths-report/#{year}/#{date}.daily-auths-report.json"
@@ -80,6 +80,30 @@ class ReportsController < AuthenticatedController
   ensure
     response.stream.close
   end
-end
 
+  def stream_daily_auths_report
+    year = params[:year]
+    date = params[:date]
+    remote_url = "https://public-reporting-data.prod.login.gov/prod/daily-auths-report/#{year}/#{date}.daily-auths-report.json"
+
+    uri = URI.parse(remote_url)
+    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      request = Net::HTTP::Get.new(uri)
+      http.request(request) do |res|
+        if res.is_a?(Net::HTTPSuccess)
+          json = JSON.parse(res.body)
+
+          response.headers['Content-Type'] = 'application/json'
+          response.headers['Content-Disposition'] = 'inline'
+          response.stream.write JSON.generate(json)
+        else
+          render plain: 'Not found', status: :not_found
+        end
+      end
+    end
+  ensure
+    response.stream.close
+  end
+
+end
 
