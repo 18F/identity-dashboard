@@ -5,56 +5,28 @@ require 'uri'
 class ReportsController < AuthenticatedController
   include Portal::Constants
   include ActionController::Live
+  include ReportingParams
+
 
   def home
     # @teams = current_user.teams.includes(:users, :service_providers, :agency)
     # ...any other logic you need for show...
 
-    default_start = Time.zone.today.beginning_of_week.to_s
-    default_finish = Time.zone.today.end_of_week.to_s
-    default_ial = 1
-    default_env = 'local'
-    default_funnel_mode = 'blanket'
-    default_scale = 'count'
-    default_by_agency = 'off'
-    default_extra = false
-    default_time_bucket = nil
-    default_cumulative = true
-    default_agency = nil
-    default_issuer = nil
-
-    start_param      = params[:start] || default_start
-    finish_param     = params[:finish] || default_finish
-    ial_param        = params[:ial] || default_ial
-    agency_param     = params[:agency] || default_agency
-    issuer_param     = params[:issuer] || default_issuer
-    env_param        = default_env
-    funnel_mode_param = %w[step
-blanket].include?(params[:funnel_mode]) ? params[:funnel_mode] : default_funnel_mode
-    scale_param = %w[count percent].include?(params[:scale]) ? params[:scale] : default_scale
-
-    by_agency_param = params[:byAgency] || default_by_agency
-    extra_param = if params[:extra].present? && params[:extra] != 'false' && params[:extra] != '0'
-                    true
-                  else
-                    default_extra
-                  end
-    time_bucket_param = params[:time_bucket] || default_time_bucket
-    cumulative_param = params[:cumulative].nil? ? default_cumulative : params[:cumulative]
-
-    @start = start_param
-    @finish = finish_param
-    @ial = ial_param
-    @agency = agency_param
-    @issuer = issuer_param
-    @env = env_param
-    @funnel_mode = funnel_mode_param
-    @scale = scale_param
-    @by_agency = by_agency_param
-    @extra = extra_param
-    @time_bucket = time_bucket_param
-    @cumulative = cumulative_param
+    rp = reporting_params(params)
+    @start = rp[:start]
+    @finish = rp[:finish]
+    @ial = rp[:ial]
+    @agency = rp[:agency]
+    @issuer = rp[:issuer]
+    @env = rp[:env]
+    @funnel_mode = rp[:funnel_mode]
+    @scale = rp[:scale]
+    @by_agency = rp[:by_agency]
+    @extra = rp[:extra]
+    @time_bucket = rp[:time_bucket]
+    @cumulative = rp[:cumulative]
     @agency = 'Social Security Administration'
+
   end
 
   def download_daily_auths_report
