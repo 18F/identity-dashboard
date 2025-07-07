@@ -7,6 +7,8 @@ function domain(env: string): string {
   switch (env) {
     case "local":
       return "";
+    case "dev":
+      return "";
     case "prod":
     case "staging":
     case "dm":
