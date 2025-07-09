@@ -44,6 +44,8 @@ gem 'rack-timeout', require: false
 gem 'rack-attack', '~> 6.7'
 gem 'rails', '~> 7.2.0'
 gem 'redacted_struct'
+gem 'redis', '>= 3.2.0'
+gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.2-18f'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
 gem 'rouge'
