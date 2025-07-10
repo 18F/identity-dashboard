@@ -20,6 +20,8 @@ ENV POSTGRES_HOST localhost
 ENV POSTGRES_USERNAME postgres
 ENV POSTGRES_PASSWORD password
 ENV POSTGRES_SSLCERT /usr/local/share/aws/rds-combined-ca-bundle.pem
+ENV REDIS_THROTTLE_URL redis://redis:6379/1
+ENV REDIS_URL redis://redis:6379
 ENV NEW_RELIC_ENABLED false
 
 ENV DASHBOARD_API_TOKEN changeme

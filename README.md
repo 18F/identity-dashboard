@@ -9,7 +9,7 @@ These instructions assume [`identity-idp`](https://github.com/18F/identity-idp) 
 1. Make sure Postgres is running. For example, on macOS:
 
   ```
-  $ brew services start postgres
+  $ brew services start postgres && brew services start redis
   ```
 
 2. Set up the environment with:
