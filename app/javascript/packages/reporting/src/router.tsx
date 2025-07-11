@@ -12,7 +12,6 @@ interface RouterProps {
 
 const appElement = document.getElementById("app");
 const BASE_URL = appElement?.getAttribute("data-base-url") || "";
-console.log("Using BASE_URL from data attribute:", BASE_URL);
 
 export const getFullPath = (path = "", basePath = BASE_URL): string =>
   path.startsWith(basePath) ? path : basePath + path;
@@ -39,6 +38,5 @@ export function Router({ children }: RouterProps): VNode {
 
 export function route(path: string): boolean | undefined {
   const fullPath = getFullPath(path);
-  console.log("Routing to full path:", fullPath);
   return baseRoute(getFullPath(path));
 }

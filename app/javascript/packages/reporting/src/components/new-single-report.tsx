@@ -97,7 +97,6 @@ function createNewSingleReport(
     const cumulative = cumulativeParam ? cumulativeParam === "on" : true;
 
     const reportControls = controls || [];
-    console.log("start", startParam)
     if (extra) {
       reportControls.push(Control.AGENCY);
       reportControls.push(Control.BY_AGENCY);

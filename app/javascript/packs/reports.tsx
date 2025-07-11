@@ -29,8 +29,6 @@ const funnelMode: FunnelMode = (funnelModeRaw as FunnelMode);
 const scale: Scale = (scaleRaw as Scale);
 const env = appDiv?.getAttribute('data-env');
 
-console.log("Ingested from HTML: ", appDiv);
-
 const contextProps: ReportFilterContextProviderProps = {
   start: start ? new Date(start) : new Date(),
   finish: finish ? new Date(finish) : new Date(),
@@ -46,9 +44,6 @@ const contextProps: ReportFilterContextProviderProps = {
   agency,
 };
 
-console.log("contextProps: ", contextProps)
-
-
 enum Control {
   IAL = "ial",
   FUNNEL_MODE = "funnel_mode",
@@ -63,14 +58,10 @@ function ReportsApp() {
   // Get extra from context or state if you want it to be reactive
   // If you want to use context, use: const { extra } = useContext(ReportFilterContext);
   const extra = contextProps.extra;
-  console.log("extra", extra)
-  const reportControls: Control[] = [Control.IAL];
+  const reportControls: Control[] = [];
   if (contextProps.extra) {
-    console.log("extra true")
     reportControls.push(Control.AGENCY, Control.BY_AGENCY);
   }
-
-  console.log("reportControls:", reportControls)
 
   return (
     <AgenciesContextProvider>

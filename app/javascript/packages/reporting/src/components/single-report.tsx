@@ -122,10 +122,6 @@ function wrapSingleReport(
             timeBucket={timeBucket}
             cumulative={cumulative}
           >
-            {console.log("ReportFilterContextProvider props:", {
-              start,
-              finish,
-            })}
             <ReportFilterControls controls={reportControls} />
             <Report />
           </ReportFilterContextProvider>

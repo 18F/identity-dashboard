@@ -32,7 +32,6 @@ function plot({
   facetAgency?: boolean;
   width?: number;
 }): HTMLElement {
-  console.log("plot function called with:", { start, finish, data, agency, ial, facetAgency, width });
 
   return Plot.plot({
     height: facetAgency ? new Set((data || []).map((d) => d.agency)).size * 60 : undefined,
@@ -94,7 +93,6 @@ function ialLabel(ial: 1 | 2): string {
 }
 
 function tabulate({ results }: { results: ProcessedResult[] }): TableData {
-  console.log("tabulate called with results:", results);
   const days = Array.from(new Set(results.map((d) => d.date.valueOf())))
     .sort((a, b) => a - b)
     .map((d) => new Date(d));
@@ -145,8 +143,6 @@ function tabulate({ results }: { results: ProcessedResult[] }): TableData {
         )
     );
 
-  console.log("tabulate function output (header, body):", { header, body });
-
   return {
     header,
     body,
@@ -171,7 +167,6 @@ function tabulateSumByAgency({
     (d) => d.ial,
     (d) => yearMonthDayFormat(d.date)
   );
-  console.log("tabulate called with results:", results);  
   const header = ["Agency", "Identity", ...days.map(yearMonthDayFormat), "Total"];
 
   const body = Array.from(rolledup)
@@ -195,8 +190,6 @@ function tabulateSumByAgency({
       })
     );
 
-  console.log("tabulate function output (header, body):", { header, body });
-
   return {
     header,
     body,
@@ -213,8 +206,7 @@ function tabulateSum({ results }: { results: ProcessedResult[] }): TableData {
     (bin) => bin.reduce((sum, d) => sum + d.count, 0),
     (d) => d.ial,
     (d) => yearMonthDayFormat(d.date)
-  );
-  console.log("tabulate called with results:", results);
+  );  
   const header = ["Agency", "Identity", ...days.map(yearMonthDayFormat), "Total"];
 
   const body = Array.from(rolledup)
@@ -224,8 +216,6 @@ function tabulateSum({ results }: { results: ProcessedResult[] }): TableData {
 
       return ["(all)", ialLabel(ial), ...dayCounts, dayCounts.reduce((d, total) => d + total, 0)];
     });
-  
-  console.log("tabulate function output (header, body):", { header, body });
 
   return {
     header,
@@ -251,22 +241,16 @@ function DailyAuthsReport({ overrides = {} }: { overrides?: ReportFilterOverride
   } = overrides;
 
   const setParameters = context.setParameters;
-    
-  console.log("Calling loadData with:", { start, finish, env });
 
   const { data } = useQuery(`${start.valueOf()}-${finish.valueOf()}`, () =>
     loadData(start, finish, env)
   );
-  
-  console.log("Fetched data:", data);
 
   useAgencies(data);
 
   const filteredData = (data || []).filter(
     (d) => (!ial || d.ial === ial) && (!agency || d.agency === agency) && (!issuer || d.issuer === issuer)
   );
-
-  console.log("Filtered data:", filteredData);
 
   return (
     <div ref={ref}>

@@ -46,9 +46,6 @@ function ReportFilterControls({ controls }: ReportFilterControlsProps): VNode {
     setParameters,
   } = useContext(ReportFilterContext);
 
-  console.log("Context start date:", start);
-  console.log("Context finish date:", finish);
-  
   const { agencies } = useContext(AgenciesContext);
   const formRef = useRef(null as HTMLFormElement | null);
 

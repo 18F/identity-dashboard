@@ -14,10 +14,8 @@ const reportRoutes: ReportRoutes = {
 };
 
 export function Routes(): VNode {
-  console.log("Report Routes:", reportRoutes["/reports"]);
 
   const Component = reportRoutes["/reports"];
-  console.log("Executing Component for '/reports':", Component({ path: "/reports" }));
 
   return (
     <Router>
