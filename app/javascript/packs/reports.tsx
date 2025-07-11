@@ -76,8 +76,8 @@ function ReportsApp() {
     <AgenciesContextProvider>
       <ReportFilterContextProvider {...contextProps}>
         <ReportFilterControls controls={reportControls} />
-        <DailyAuthsReport />
-        
+        <h3> Authentication </h3>
+        <DailyAuthsReport overrides={{ ial: 1}} />      
       </ReportFilterContextProvider>
     </AgenciesContextProvider>
   );

@@ -2,17 +2,23 @@
 // export { Router, Link, route, getFullPath } from "./src/router";
 // export { default as createReportRoute } from "./src/routes/report-route";
 // export { Routes as NewRoutes } from "./src/routes/new-index";
-export {  ReportFilterContext,
-          ReportFilterContextProviderProps,
-          Scale,
-          FunnelMode,
-          TimeBucket,
-          DEFAULT_IAL,
-          DEFAULT_ENV,
-          DEFAULT_SCALE,
-          DEFAULT_FUNNEL_MODE,
-          default as ReportFilterContextProvider 
-  } from "./src/contexts/report-filter-context";
+export {
+  ReportFilterContext,
+  Scale,
+  FunnelMode,
+  TimeBucket,
+  DEFAULT_IAL,
+  DEFAULT_ENV,
+  DEFAULT_SCALE,
+  DEFAULT_FUNNEL_MODE,
+  default as ReportFilterContextProvider 
+} from "./src/contexts/report-filter-context";
+
+export type {
+  ReportFilterContextProviderProps,
+  ReportFilterOverrides,
+  ReportFilterContextValues,
+} from "./src/contexts/report-filter-context";
 
 export { AgenciesContextProvider } from "./src/contexts/agencies-context";
 
@@ -27,8 +33,8 @@ export {
   AccountDeletionsReport,
   DailyAuthsReport,
   wrapSingleReport,
-  FilterControl,
   newSingleReport,  
+  FilterControl,  
 } from "./src/components";
 
 // Optionally, export other reusable components or utilities

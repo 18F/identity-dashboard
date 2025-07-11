@@ -5,7 +5,7 @@ import * as Plot from "@observablehq/plot";
 import { useQuery } from "preact-fetching";
 import Markdown from "preact-markdown";
 import { ascending, group, rollup } from "d3-array";
-import { ReportFilterContext } from "../contexts/report-filter-context";
+import { ReportFilterContext, ReportFilterOverrides} from "../contexts/report-filter-context";
 import Table, { TableData } from "./table";
 import PlotComponent from "./plot";
 import { useAgencies } from "../contexts/agencies-context";
@@ -233,11 +233,24 @@ function tabulateSum({ results }: { results: ProcessedResult[] }): TableData {
   };
 }
 
-function DailyAuthsReport(): VNode {
+function DailyAuthsReport({ overrides = {} }: { overrides?: ReportFilterOverrides } = {}): VNode {
   const ref = useRef(null as HTMLDivElement | null);
   const width = useElementWidth(ref);
-  const { byAgency, start, finish, agency, issuer, ial, env, setParameters } =
-    useContext(ReportFilterContext);
+  const context = useContext(ReportFilterContext);
+
+  // Use overrides if provided, otherwise fall back to context values
+  const {
+    byAgency = context.byAgency,
+    start = context.start,
+    finish = context.finish,
+    agency = context.agency,
+    issuer = context.issuer,
+    ial = context.ial,
+    env = context.env,
+    // setParameters is not in overrides!
+  } = overrides;
+
+  const setParameters = context.setParameters;
     
   console.log("Calling loadData with:", { start, finish, env });
 

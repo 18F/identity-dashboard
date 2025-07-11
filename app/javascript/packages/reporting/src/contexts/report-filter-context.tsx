@@ -44,6 +44,9 @@ interface ReportFilterContextValues {
   setParameters: (params: Record<string, string>) => void;
 }
 
+type ReportFilterOverrides = Partial<ReportFilterContextProviderProps>;
+
+
 /**
  * preact-router does not parse "+" as spaces the way JS encodes them
  */
@@ -109,6 +112,7 @@ export default ReportFilterContextProvider;
 export {
   ReportFilterContext,
   ReportFilterContextProviderProps,
+  ReportFilterOverrides,
   Scale,
   FunnelMode,
   TimeBucket,
