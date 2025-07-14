@@ -1,2 +1,12 @@
 <h1>App <%= @friendly_name %> Analytics Dashboard</h1>
 <h2>Issuer: <code><%= @issuer %> </code> </h2>
+
+<div id="daily-auths-section">
+  <h3>Daily Authentication Report</h3>
+  
+  <div id="loading">Loading...</div>
+  <div id="report-results"></div>
+</div>
+
+<%= javascript_include_tag 'analytics_test', type: 'module'%>
+<%#  defer: true, 'data-turbo-track': 'reload'  %>
