@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   resources :security_events, only: %i[index show]
 
   get '/analytics/service_providers/:id' => 'analytics/service_providers#show', as: :analytics
+  get '/local/daily-auths-report/:year/:date.daily-auths-report.json', to: 'analytics/service_providers#stream_daily_auths_report'
 
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'
