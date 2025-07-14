@@ -3,12 +3,21 @@ class Analytics::ServiceProvidersController < ApplicationController
 
   def show
     @issuer = service_provider.issuer
-     @friendly_name = service_provider.friendly_name.capitalize
-    def stream_daily_auths_report
+    @friendly_name = service_provider.friendly_name.capitalize
+    session[:issuer] = service_provider.issuer
+  end
+
+  def stream_daily_auths_report
     year = params[:year]
     date = params[:date]
     issuer = session[:issuer]
-    remote_url = "https://public-reporting-data.prod.login.gov/prod/daily-auths-report/#{year}/#{date}.daily-auths-report.json"
+
+    if issuer.blank?
+      render plain: 'No issuer in session', status: :bad_request
+      return
+    end
+
+    remote_url = "#{IdentityConfig.store.reporting_baseurl}/#{IdentityConfig.store.reporting_daily_auths_dir}/#{year}/#{date}.#{IdentityConfig.store.reporting_daily_auths_file}"
 
     uri = URI.parse(remote_url)
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
@@ -16,20 +25,17 @@ class Analytics::ServiceProvidersController < ApplicationController
       http.request(request) do |res|
         if res.is_a?(Net::HTTPSuccess)
           json = JSON.parse(res.body)
-          if issuer.present?
-            json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
-          end
+          json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
           response.headers['Content-Type'] = 'application/json'
           response.headers['Content-Disposition'] = 'inline'
           response.stream.write JSON.generate(json)
         else
-          render plain: 'Not found', status: :not_found
+          render plain: 'Remote server error', status: :not_found
         end
       end
     end
   ensure
     response.stream.close
-
   end
 
   private
