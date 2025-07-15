@@ -18,7 +18,11 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
       return
     end
 
-    # Validate date format (ISO 8601: YYYY-MM-DD)
+    unless is_valid_issuer?(issuer)
+      render plain: 'Invalid issuer', status: :not_found
+      return
+    end
+
     unless is_valid_date?(date)
       render plain: 'Invalid date format. Expected ISO format (YYYY-MM-DD)', status: :bad_request
       return
@@ -29,7 +33,7 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
       return
     end
 
-    remote_url = "#{IdentityConfig.store.reporting_baseurl}/#{IdentityConfig.store.reporting_daily_auths_dir}/#{year}/#{date}.#{IdentityConfig.store.reporting_daily_auths_file}"
+    remote_url = "#{IdentityConfig.store.analytics_baseurl}/#{IdentityConfig.store.analytics_daily_auths_dir}/#{year}/#{date}.#{IdentityConfig.store.analytics_daily_auths_file}"
 
     uri = URI.parse(remote_url)
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
@@ -86,7 +90,6 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
   def is_valid_year?(year_string)
     return false if year_string.blank?
 
-    # Check if it matches year format (YYYY)
     return false unless year_string.match?(/^\d{4}$/)
 
     # Validate it's a valid year within acceptable range
@@ -98,9 +101,9 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
     year >= minimum_year && year <= current_year
   end
 
-    return if year >= earliest_year && year <= current_year
+  def is_valid_issuer?(issuer)
+    return false if issuer.blank?
 
-      false
-
+    ServiceProvider.exists?(issuer:)
   end
 end
