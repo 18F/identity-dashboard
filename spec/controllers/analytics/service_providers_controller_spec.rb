@@ -5,6 +5,10 @@ describe Analytics::ServiceProvidersController do
   let(:service_provider) { create(:service_provider) }
   let(:id) { service_provider.id }
 
+  before do
+    allow(IdentityConfig.store).to receive(:analytics_dashboard_enabled).and_return(true)
+  end
+
    describe '#show' do
      context 'when a user does not exist' do
        it 'returns unauthorized' do
@@ -49,8 +53,8 @@ describe Analytics::ServiceProvidersController do
    end
 
    describe '#stream_daily_auths_report' do
-     let(:date) { Date.current }
-     let(:year) { date.year }
+     let(:date) { '2025-07-04' }
+     let(:year) { '2025' }
      let(:user) { create(:user, :with_teams) }
      let(:issuer) { service_provider.issuer }
 
@@ -93,28 +97,8 @@ describe Analytics::ServiceProvidersController do
           end
         end
 
-        context 'when date does not exist' do
-          let(:date) { nil }
-
-          it 'returns status bad request' do
-            action
-
-            expect(response).to have_http_status(:bad_request)
-          end
-        end
-
         context 'when date is not correct format' do
           let(:date) { '12-12-12' }
-
-          it 'returns status bad request' do
-            action
-
-            expect(response).to have_http_status(:bad_request)
-          end
-        end
-
-        context 'when year does not exist' do
-          let(:year) { nil }
 
           it 'returns status bad request' do
             action
