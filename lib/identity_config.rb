@@ -47,6 +47,8 @@ class IdentityConfig
       config.add(:edit_button_uses_service_config_wizard, type: :boolean, allow_nil: true)
       config.add(:help_text_options_feature_enabled, type: :boolean)
       config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
+      config.add(:analytics_dashboard_enabled, type: :boolean, allow_nil: true)
+
     end
     @store = Identity::Hostdata.config
     # rubocop:enable Metrics/BlockLength

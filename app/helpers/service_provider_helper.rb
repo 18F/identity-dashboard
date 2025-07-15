@@ -91,7 +91,7 @@ module ServiceProviderHelper # :nodoc:
   end
 
   def show_analytics_column?
-    current_user.logingov_admin?
+    IdentityConfig.store.analytics_dashboard_enabled && current_user.logingov_admin?
   end
 
   def service_provider_policy
