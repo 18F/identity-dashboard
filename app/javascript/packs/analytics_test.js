@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
       resultsDiv.innerHTML = `<pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>`;
     })
     .catch(error => {
-      loadingDiv.style.display = 'none';
       resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
     });
 });
