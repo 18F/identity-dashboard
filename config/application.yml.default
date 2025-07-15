@@ -23,9 +23,10 @@ redis_pool_size: 5
 redis_url: redis://localhost:6379/0
 secret_key_base: changeme
 serve_static_files: 'false'
-reporting_baseurl: 'https://public-reporting-data.prod.login.gov/prod'
-reporting_daily_auths_dir: 'daily-auths-report'
-reporting_daily_auths_file: 'daily-auths-report.json'
+analytics_baseurl: 'https://public-reporting-data.prod.login.gov/prod'
+analytics_daily_auths_dir: 'daily-auths-report'
+analytics_daily_auths_file: 'daily-auths-report.json'
+analytics_earliest_year:  '2023'
 
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false
@@ -33,7 +34,8 @@ access_controls_enabled: true
 edit_button_uses_service_config_wizard: true
 help_text_options_feature_enabled: true
 service_config_wizard_enabled: true
-analytics_dashboard_enabled: false
+analytics_dashboard_enabled: true
+
 
 development:
   dashboard_api_token: test_token
