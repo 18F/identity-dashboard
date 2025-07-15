@@ -1,21 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
   const year = '2025';
   const date = '2025-06-14';
-  const loadingDiv = document.getElementById('loading');
   const resultsDiv = document.getElementById('report-results');
   
-  if (!loadingDiv || !resultsDiv) return; // Only run on analytics pages
+  if (!resultsDiv) return; // Only run on analytics pages
   
   // Make the request to stream_daily_auths_report
-  fetch(`/local/daily-auths-report/${year}/${date}.daily-auths-report.json`)
+  fetch(`/analytics/daily-auths-report/${year}/${date}.daily-auths-report.json`)
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return response.json();
     })
-    .then(data => {
-      loadingDiv.style.display = 'none';
+    .then(data => {      
       resultsDiv.innerHTML = `<pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>`;
     })
     .catch(error => {
