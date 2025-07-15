@@ -26,7 +26,7 @@ serve_static_files: 'false'
 analytics_baseurl: 'https://public-reporting-data.prod.login.gov/prod'
 analytics_daily_auths_dir: 'daily-auths-report'
 analytics_daily_auths_file: 'daily-auths-report.json'
-analytics_earliest_year:  '2023'
+analytics_minimum_year: 2023
 
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false

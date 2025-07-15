@@ -35,7 +35,7 @@ class IdentityConfig
       config.add(:analytics_baseurl, type: :string)
       config.add(:analytics_daily_auths_dir, type: :string)
       config.add(:analytics_daily_auths_file, type: :string)
-      config.add(:analytics_minimum_year, type: :string)
+      config.add(:analytics_minimum_year, type: :integer)
       config.add(:saml_sp_issuer, type: :string)
       config.add(:saml_sp_private_key, type: :string)
       config.add(:saml_sp_private_key_password, type: :string)

@@ -24,7 +24,7 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
       return
     end
 
-    unless is_valid_year?(date)
+    unless is_valid_year?(year)
       render plain: 'Invalid year format. Expected (YYYY)', status: :bad_request
       return
     end
@@ -89,11 +89,14 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
     # Check if it matches year format (YYYY)
     return false unless year_string.match?(/^\d{4}$/)
 
-    year = year_string.to_i
-    current_year = Date.current.year
-
     # Validate it's a valid year within acceptable range
-    earliest_year = IdentityConfig.store.analytics_earliest_year
+    year = year_string.to_i
+
+    current_year = Date.current.year
+    minimum_year = IdentityConfig.store.analytics_minimum_year
+
+    year >= minimum_year && year <= current_year
+  end
 
     return if year >= earliest_year && year <= current_year
 
