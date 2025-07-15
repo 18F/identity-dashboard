@@ -4,7 +4,7 @@ class AnalyticsPolicy < BasePolicy
   end
 
   def stream_daily_auths_report?
-      user.present?
+    user.present?
   end
 
   class Scope < BasePolicy::Scope
