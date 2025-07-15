@@ -1,5 +1,6 @@
 class Analytics::ServiceProvidersController < ApplicationController
   before_action -> { authorize User, policy_class: AnalyticsPolicy }
+  before_action :check_feature_flag
 
   def show
     @issuer = service_provider.issuer
@@ -39,6 +40,13 @@ class Analytics::ServiceProvidersController < ApplicationController
   end
 
   private
+
+  def check_feature_flag
+    return if IdentityConfig.store.analytics_dashboard_enabled
+
+    render plain: 'Disabled', status: :not_found
+
+  end
 
   def service_provider
     @service_provider ||= ServiceProvider.includes(
