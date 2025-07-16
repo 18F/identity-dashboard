@@ -23,7 +23,8 @@ en:
         app_name: App name
         assertion_consumer_logout_service_url: Assertion Consumer Logout Service URL
         attribute_bundle: Attribute bundle
-        before_start: Before you start
+        create_sandbox_application: Create an application in the sandbox environment
+        promote_to_production: Promote your application to production
         block_encryption: SAML Assertion Encryption
         cert_file: Choose a cert file
         prod_config: Portal configuration
