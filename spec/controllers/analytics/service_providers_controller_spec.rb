@@ -56,12 +56,11 @@ describe Analytics::ServiceProvidersController do
      let(:date) { '2025-07-04' }
      let(:year) { '2025' }
      let(:user) { create(:user, :with_teams) }
-     let(:issuer) { service_provider.issuer }
+      let(:id) { service_provider.id }
 
      let(:action) do
        get :stream_daily_auths_report,
-        params: { date:, year: },
-        session: { issuer: }
+        params: { id:, date:, year: }
      end
 
      context 'when a user does not exist' do
@@ -86,8 +85,8 @@ describe Analytics::ServiceProvidersController do
       context 'the user is a member of the service provider team' do
         let(:service_provider) { create(:service_provider, with_team_from_user: user) }
 
-        context 'when the service provider issuer is not saved correctly in the session' do
-          let(:issuer) { 'not-real-issuer' }
+        context 'when the service provider issuer does not exist' do
+          let(:id) { 'not-real-issuer' }
 
           it 'returns status not found' do
             action
@@ -187,7 +186,7 @@ describe Analytics::ServiceProvidersController do
                 {
                   'results' => [
                     {
-                      'issuer' => issuer,
+                      'issuer' => service_provider.issuer,
                       'count' => 70,
                     },
                   ],
@@ -198,7 +197,7 @@ describe Analytics::ServiceProvidersController do
                 action
 
                 expect(response).to have_http_status(:ok)
-                results = [{ 'count' => 70, 'issuer' => issuer }]
+                results = [{ 'count' => 70, 'issuer' => service_provider.issuer }]
                 expect(response.parsed_body).to eq({ 'results' => results })
               end
             end
