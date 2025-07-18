@@ -1,9 +1,9 @@
 <%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
 
-<h1>App <%= @friendly_name %> Analytics Dashboard</h1>
+<h1>App <%= @friendly_name %> Analytics Dashboard <%=@id%> </h1>
 <h2>Issuer: <code><%= @issuer %> </code> </h2>
 
-<div id="daily-auths-section">
+<div id="daily-auths-section" data-service-provider-id="<%= @id %>">
   <h3>Daily Authentication Report</h3>
   
   <div id="report-results"></div>
