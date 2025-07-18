@@ -119,10 +119,13 @@ describe Analytics::ServiceProvidersController do
         context 'when the service provider exists' do
           let(:status) { 200 }
           let(:body) { {}.to_json }
+          let(:analytics_base_url) { 'https://public-reporting-data.prod.login.gov' }
+          let(:analytics_url) do
+            "#{analytics_base_url}/prod/daily-auths-report/#{year}/#{date}.daily-auths-report.json"
+          end
 
           before do
-            stub_request(:get, 'https://public-reporting-data.prod.login.gov/prod/daily-auths-report/2025/2025-07-15.daily-auths-report.json').
-            to_return(status:, body:)
+            stub_request(:get, analytics_url).to_return(status:, body:)
           end
 
           context 'when the remote server returns an error' do
