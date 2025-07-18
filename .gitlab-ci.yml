@@ -164,6 +164,99 @@ build-ci-image:
       --destination "${ECR_REGISTRY}/dashboard/ci:${CI_COMMIT_SHA}"
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
+# Build a container image async, and don't block CI tests
+# Cache intermediate images for 1 week (168 hours)
+build-portal-image:
+  stage: review
+  needs: []
+  interruptible: true
+  variables:
+    BRANCH_TAGGING_STRING: ''
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/idp:main'
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_SHA
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
+      ${BRANCH_TAGGING_STRING}
+      --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
+      --cache-ttl=168h
+      --cache=true
+      --snapshot-mode=redo
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}"
+      --build-arg "https_proxy=${https_proxy}"
+      --build-arg "no_proxy=${no_proxy}"
+      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
+      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+      --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
+      --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
+      --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+
+
+review-app:
+  stage: review
+  allow_failure: true
+  needs:
+    - job: build-portal-image
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
+  extends: .deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
+    on_stop: stop-review-app
+    auto_stop_in: 2 days
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+
+stop-review-app:
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
+  script:
+    - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
+    - kubectl config use-context "$CONTEXT"
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG" -n argocd
+    - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
+  stage: review
+  image:
+    name: dtzar/helm-kubectl:latest
+  needs:
+    - job: review-app
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+
 lint:
   stage: test
   needs:
