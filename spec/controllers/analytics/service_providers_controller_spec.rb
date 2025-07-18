@@ -11,6 +11,7 @@ describe Analytics::ServiceProvidersController do
 
    describe '#show' do
      context 'when a user does not exist' do
+      # this is failing because when users are not logged in the portal redirects to the homepage 
        it 'returns unauthorized' do
          get :show, params: { id: }
          expect(response).to have_http_status(:unauthorized)
@@ -35,7 +36,7 @@ describe Analytics::ServiceProvidersController do
           let(:id) { 'not-real-sp' }
 
           it 'returns status not found' do
-            # this currently fails because we are not handling when a sp is not found
+            # this currently fails because invalid ids return unauthorized instead of not found. This matches the pattern in the base service_providers controller
             get :show, params: { id: }
             expect(response).to have_http_status(:not_found)
           end
@@ -62,7 +63,7 @@ describe Analytics::ServiceProvidersController do
        get :stream_daily_auths_report,
         params: { id:, date:, year: }
      end
-
+     # this is failing because when users are not logged in the portal redirects to the homepage
      context 'when a user does not exist' do
        it 'returns unauthorized' do
          action
