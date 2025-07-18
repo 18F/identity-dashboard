@@ -2,11 +2,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const year = '2025';
   const date = '2025-06-14';
   const resultsDiv = document.getElementById('report-results');
+  const section = document.getElementById('daily-auths-section');
+  const serviceProviderId = section.dataset.serviceProviderId;
   
   if (!resultsDiv) return; // Only run on analytics pages
   
   // Make the request to stream_daily_auths_report
-  fetch(`/analytics/daily-auths-report/${year}/${date}.daily-auths-report.json`)
+  const url = `/analytics/service_providers/${serviceProviderId}/stream_daily_auths_report?year=${year}&date=${date}`;
+  fetch(url)
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

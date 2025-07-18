@@ -1,22 +1,22 @@
-class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
+class Analytics::ServiceProvidersController < ServiceProvidersController # :nodoc:
+  skip_before_action :log_change
   before_action -> { authorize User, policy_class: AnalyticsPolicy }
+  before_action -> {
+    authorize service_provider, policy_class: AnalyticsPolicy
+  }, only: %i[show stream_daily_auths_report]
   before_action :check_feature_flag
 
   # analytics/service/providers/{id}
   def show
     @issuer = service_provider.issuer
     @friendly_name = service_provider.friendly_name.capitalize
+    @id = params[:id]
   end
 
   def stream_daily_auths_report
     year = params[:year]
     date = params[:date]
-    issuer = session[:issuer]
-
-    if issuer.blank?
-      render plain: 'No issuer in session', status: :bad_request
-      return
-    end
+    issuer = service_provider.issuer
 
     unless is_valid_issuer?(issuer)
       render plain: 'Invalid issuer', status: :not_found
@@ -63,17 +63,6 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
 
   end
 
-  def service_provider
-    @service_provider ||= ServiceProvider.includes(
-      :agency,
-      logo_file_attachment: :blob,
-    ).find(id)
-  end
-
-  def id
-    @id ||= params[:id]
-  end
-
   def is_valid_date?(date_string)
     return false if date_string.blank?
 
@@ -101,7 +90,7 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
     year >= minimum_year && year <= current_year
   end
 
-  def is_valid_issuer?(issuer)
+  def is_valid_issuer?(issuer) # Probably unnecessary need to check SP model and see if issuer is a required entry
     return false if issuer.blank?
 
     ServiceProvider.exists?(issuer:)
