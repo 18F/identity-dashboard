@@ -144,7 +144,7 @@ describe Analytics::ServiceProvidersController do
               context 'if the body is empty' do
                 it 'returns status 200' do
                   action
-
+                  # Now fails because checks are present and returns 404
                   expect(response).to have_http_status(:ok)
                   # this is failing because we are assuming there will always be a results key
                   # that may be fine, but wanted to add it as a test case to evaluate it
