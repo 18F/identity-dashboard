@@ -39,7 +39,7 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       request = Net::HTTP::Get.new(uri)
       http.request(request) do |res|
-        if res.is_a?(Net::HTTPSuccess)
+        if has_valid_json?(res)
           json = JSON.parse(res.body)
           json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
           response.headers['Content-Type'] = 'application/json'
@@ -61,6 +61,16 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
 
     render plain: 'Disabled', status: :not_found
 
+  end
+
+  def has_valid_json?(http_response)
+    false unless http_response.is_a?(Net::HTTPSuccess) && http_response.present?
+    begin
+      json = JSON.parse(http_response.body)
+      json.key?('results')
+    rescue JSON::ParserError
+      false
+    end
   end
 
   def is_valid_date?(date_string)
@@ -90,7 +100,8 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
     year >= minimum_year && year <= current_year
   end
 
-  def is_valid_issuer?(issuer) # Probably unnecessary need to check SP model and see if issuer is a required entry
+  # Probably unnecessary need to check SP model and see if issuer is a required entry
+  def is_valid_issuer?(issuer)
     return false if issuer.blank?
 
     ServiceProvider.exists?(issuer:)
