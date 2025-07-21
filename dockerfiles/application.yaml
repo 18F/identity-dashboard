@@ -1,3 +1,4 @@
+# I just need a change to be able to trigger CI
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
