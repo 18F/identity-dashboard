@@ -4,9 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const resultsDiv = document.getElementById('report-results');
   const section = document.getElementById('daily-auths-section');
   const serviceProviderId = section.dataset.serviceProviderId;
-  
-  if (!resultsDiv) return; // Only run on analytics pages
-  
+    
   // Make the request to stream_daily_auths_report
   const url = `/analytics/service_providers/${serviceProviderId}/stream_daily_auths_report?year=${year}&date=${date}`;
   fetch(url)
