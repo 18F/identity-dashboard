@@ -32,6 +32,7 @@ class IdentityConfig
 
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:access_controls_enabled, type: :boolean, allow_nil: true)
+      config.add(:api_token_required_enabled, type: :boolean)
       config.add(:edit_button_uses_service_config_wizard, type: :boolean, allow_nil: true)
       config.add(:help_text_options_feature_enabled, type: :boolean)
       config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)

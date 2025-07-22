@@ -20,44 +20,50 @@ describe Api::ServiceProvidersController do
   end
 
   describe '#index' do
-    before { add_token_to_headers(user, token) }
+    context 'with API token required enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:api_token_required_enabled).and_return(false)
+      end
+      context 'with valid API token' do
+        before { add_token_to_headers(user, token) }
 
-    it 'returns active, approved SPs' do
-      sp = create(:service_provider, :with_team, active: true, approved: true)
-      serialized_sp = ServiceProviderSerializer.new(sp).to_h
+        it 'returns active, approved SPs' do
+          sp = create(:service_provider, :with_team, active: true, approved: true)
+          serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
-      get :index
+          get :index
 
-      expect(response_from_json).to include serialized_sp.deep_symbolize_keys
-    end
+          expect(response_from_json).to include serialized_sp.deep_symbolize_keys
+        end
 
-    xit 'does not return un-approved SPs' do
-      sp = create(:service_provider, :with_team, active: true, approved: false)
-      serialized_sp = ServiceProviderSerializer.new(sp).to_h
+        xit 'does not return un-approved SPs' do
+          sp = create(:service_provider, :with_team, active: true, approved: false)
+          serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
-      get :index
+          get :index
 
-      expect(response_from_json).to_not include serialized_sp
-    end
+          expect(response_from_json).to_not include serialized_sp
+        end
 
-    it 'includes non-active SPs' do
-      sp = create(:service_provider, :with_team, active: false, approved: true)
-      serialized_sp = ServiceProviderSerializer.new(sp).to_h
+        it 'includes non-active SPs' do
+          sp = create(:service_provider, :with_team, active: false, approved: true)
+          serialized_sp = ServiceProviderSerializer.new(sp).to_h
 
-      get :index
-      expect(response_from_json).to include serialized_sp.deep_symbolize_keys
-    end
+          get :index
+          expect(response_from_json).to include serialized_sp.deep_symbolize_keys
+        end
 
-    it 'does not return the protocol attribute' do
-      sp = create(:service_provider, :with_team, active: true, approved: true)
+        it 'does not return the protocol attribute' do
+          sp = create(:service_provider, :with_team, active: true, approved: true)
 
-      get :index
-      expect(response_from_json.first.keys).to_not include :protocol
+          get :index
+          expect(response_from_json.first.keys).to_not include :protocol
+        end
+      end
     end
   end
 
   describe '#show' do
-    before { add_token_to_headers(user, token) }
     let(:sp) { create(:service_provider, :with_team) }
 
     before { get :show, params: { id: sp.id } }
