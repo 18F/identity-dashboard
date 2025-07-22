@@ -5,6 +5,8 @@ module Api
     private
 
     def authenticate_token
+      return unless IdentityConfig.store.api_token_required_enabled
+
       authenticate_or_request_with_http_token do |token, options|
         @user = User.find_by!(email: options[:email])
         auth_token = @user.auth_token if @user
