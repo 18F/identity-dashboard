@@ -33,7 +33,11 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
       return
     end
 
-    remote_url = "#{IdentityConfig.store.analytics_baseurl}/#{IdentityConfig.store.analytics_daily_auths_dir}/#{year}/#{date}.#{IdentityConfig.store.analytics_daily_auths_file}"
+    base_url = IdentityConfig.store.analytics_baseurl
+    directory = IdentityConfig.store.analytics_daily_auths_dir
+    file_name = IdentityConfig.store.analytics_daily_auths_file
+
+    remote_url = "#{base_url}/#{directory}/#{year}/#{date}.#{file_name}"
 
     uri = URI.parse(remote_url)
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
