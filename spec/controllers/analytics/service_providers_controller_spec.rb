@@ -11,7 +11,7 @@ describe Analytics::ServiceProvidersController do
 
    describe '#show' do
      context 'when a user does not exist' do
-      # this is failing because when users are not logged in the portal redirects to the homepage 
+      # Fails because when users are not logged in the portal redirects to the homepage
        it 'returns unauthorized' do
          get :show, params: { id: }
          expect(response).to have_http_status(:unauthorized)
@@ -36,7 +36,7 @@ describe Analytics::ServiceProvidersController do
           let(:id) { 'not-real-sp' }
 
           it 'returns status not found' do
-            # this currently fails because invalid ids return unauthorized instead of not found.
+            # Fails because invalid ids return unauthorized instead of not found.
             # This matches the pattern in the base service_providers controller
             get :show, params: { id: }
             expect(response).to have_http_status(:not_found)
@@ -65,7 +65,7 @@ describe Analytics::ServiceProvidersController do
         params: { id:, date:, year: }
      end
 
-     # this is failing because when users are not logged in the portal redirects to the homepage
+     # Fails because when users are not logged in the portal redirects to the homepage
      context 'when a user does not exist' do
        it 'returns unauthorized' do
          action
@@ -80,7 +80,6 @@ describe Analytics::ServiceProvidersController do
          it 'returns unauthorized' do
            action
 
-           # this currently fails because we are not handling when a user is not authorized
            expect(response).to have_http_status(:unauthorized)
          end
        end
@@ -94,7 +93,7 @@ describe Analytics::ServiceProvidersController do
           it 'returns status not found' do
             action
 
-            # this currently fails bc we are not handling when the issuer is not a real issuer
+            # Fails because response is 401 instead of 404
             expect(response).to have_http_status(:not_found)
           end
         end
@@ -146,9 +145,12 @@ describe Analytics::ServiceProvidersController do
               context 'if the body is empty' do
                 it 'returns status 200' do
                   action
-                  # Now fails because checks are present and returns 404
+                  # Fails because checks are present and returns 404
                   expect(response).to have_http_status(:ok)
-                  # this is failing because we are assuming there will always be a results key
+                  # This test fails at the line above, it
+                  # needs to be refactored if we want to test for empty json.
+                  # original comment: this is failing because we are
+                  # assuming there will always be a results key
                   # that may be fine, but wanted to add it as a test case to evaluate it
                   expect(response.parsed_body).to eq({ 'results' => [] })
                 end
