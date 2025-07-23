@@ -128,11 +128,14 @@ class WizardStep < ApplicationRecord
     on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
-  validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
+  # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
+  validates_with RedirectsValidator, 
+    attribute: :redirect_uris,
+    on: 'redirects'
   validates_with IdentityValidations::UriValidator,
     attribute: :failure_to_proof_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :push_notification_url,
     on: 'redirects'
   validates_with IdentityValidations::UriValidator,
