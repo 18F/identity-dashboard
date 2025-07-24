@@ -132,19 +132,22 @@ class WizardStep < ApplicationRecord
   validates_with RedirectsValidator, 
     attribute: :redirect_uris,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :failure_to_proof_url,
     on: 'redirects'
   validates_with RedirectsValidator,
     attribute: :push_notification_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :acs_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
+    attribute: :sp_initiated_login_url,
+    on: 'redirects'
+  validates_with RedirectsValidator,
     attribute: :return_to_sp_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :assertion_consumer_logout_service_url,
     on: 'redirects'
 
@@ -285,6 +288,10 @@ class WizardStep < ApplicationRecord
     return wizard_form_data['ial'] if step_name == 'authentication'
 
     get_step('authentication').ial
+  end
+
+  def production_ready?
+    get_step('settings').prod_config == true
   end
 
   def saml?

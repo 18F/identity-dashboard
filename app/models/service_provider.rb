@@ -109,6 +109,14 @@ class ServiceProvider < ApplicationRecord
     serial
   end
 
+  def production_ready?
+    attributes['prod_config']
+  end
+
+  def prod_localhost?(input)
+    !!(production_ready? && self[input].match(/localhost:/))
+  end
+
   def oidc?
     openid_connect_pkce? || openid_connect_private_key_jwt?
   end
@@ -131,6 +139,28 @@ class ServiceProvider < ApplicationRecord
       end
     end
     errors.empty?
+  end
+
+  def valid_localhost_uris?
+    saml_settings = %w[
+      acs_url
+      assertion_consumer_logout_service_url
+      sp_initiated_login_url
+      return_to_sp_url
+      push_notification_url
+      failure_to_proof_url
+    ]
+    oidc_settings = %w[
+      push_notification_url
+      failure_to_proof_url
+    ]
+
+    settings = saml? ? saml_settings : oidc_settings
+    settings.each do |attr|
+      if prod_localhost?(attr) && self.changes[attr] && self.changes[attr][0] != self.changes[attr][1]
+        errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
+      end
+    end
   end
 
   def pending_or_current_logo_data
