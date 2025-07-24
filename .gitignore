@@ -35,3 +35,13 @@ yarn-debug.log*
 /public/assets/*
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
