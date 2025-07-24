@@ -172,6 +172,7 @@ value: func.to_proc.call(@service_provider) })
 
     @service_provider.valid?
     @service_provider.valid_saml_settings?
+    @service_provider.valid_uris? if !user.logingov_admin?
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 

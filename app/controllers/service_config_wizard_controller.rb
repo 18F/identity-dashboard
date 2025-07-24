@@ -97,6 +97,10 @@ class ServiceConfigWizardController < AuthenticatedController
     @model.existing_service_provider?
   end
 
+  def production_ready?
+    @model.production_ready?
+  end
+
   def draft_service_provider
     @service_provider ||= begin
       all_wizard_data = WizardStep.all_step_data_for_user(current_user)
@@ -273,10 +277,16 @@ class ServiceConfigWizardController < AuthenticatedController
 
     draft_service_provider.valid?
     draft_service_provider.valid_saml_settings?
+    draft_service_provider.valid_localhost_uris? if !current_user.logingov_admin?
 
     return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
 
-    flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 290"
+    errors = "Error(s) found in these fields:<ul class='usa-list'>"
+    draft_service_provider.errors.each do |error|
+      errors += "<li>#{error.attribute.to_s}</li>"
+    end
+    flash[:error] = "#{errors}</ul>"
+    # flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 290"
   end
 
   def save_service_provider(service_provider)
