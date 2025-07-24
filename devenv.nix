@@ -12,9 +12,10 @@ in
 {
 
   packages = with pkgs; [
-    pkgs-unstable.chromedriver
     git
+    glab
     libyaml
+    pkgs-unstable.chromedriver
   ];
 
   languages = {
