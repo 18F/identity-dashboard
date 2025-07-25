@@ -289,9 +289,10 @@ class WizardStep < ApplicationRecord
 
     get_step('authentication').ial
   end
-
+  # prod_config is a Boolean in the DB, but is a string in the form
   def production_ready?
-    get_step('settings').prod_config == true
+    prod_config = get_step('settings').prod_config
+    prod_config == 'true' || prod_config == true
   end
 
   def saml?

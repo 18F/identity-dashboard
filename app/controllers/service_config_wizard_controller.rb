@@ -285,8 +285,12 @@ class ServiceConfigWizardController < AuthenticatedController
     draft_service_provider.errors.each do |error|
       errors += "<li>#{error.attribute.to_s}</li>"
     end
-    flash[:error] = "#{errors}</ul>"
-    # flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 290"
+    # this prevents cookie size error, it is an estimate
+    if errors.bytesize < 350
+      flash[:error] = "#{errors}</ul>"
+    else
+      flash[:error] = 'Please fix errors on multiple pages of the Config Wizard.'
+    end
   end
 
   def save_service_provider(service_provider)
