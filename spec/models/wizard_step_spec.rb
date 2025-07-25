@@ -352,17 +352,18 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "redirects"' do
-    describe 'non-admin user' do
-      let(:subject_user) { create(:user) }
-      before do
-        create(:wizard_step, user: subject_user, step_name: 'protocol', wizard_form_data: {
-          identity_protocol: 'oidc',
-        })
-      end
-      subject do
-        build(:wizard_step, user:first_user, step_name: 'redirects')
-      end
+    let(:subject_user) { create(:user) }
+    let(:admin_user) { create(:user, :logingov_admin) }
+    before do
+      create(:wizard_step, user: subject_user, step_name: 'protocol', wizard_form_data: {
+        identity_protocol: 'oidc',
+      })
+    end
+    subject do
+      build(:wizard_step, user:first_user, step_name: 'redirects')
+    end
 
+    describe '#valid?' do
       it 'validates good URLs' do
         subject.wizard_form_data = {
           push_notification_url: 'https://good.gov/',
@@ -372,6 +373,67 @@ RSpec.describe WizardStep, type: :model do
 
         expect(subject.valid?).to be_truthy
         expect(subject.errors).to be_blank
+      end
+
+      it 'validates nil for unrequired URLs' do
+        subject.wizard_form_data = {
+          failure_to_proof_url: 'https://test.good.gov',
+        }
+
+        expect(subject.valid?).to be_truthy
+        expect(subject.errors).to be_blank
+      end
+
+      describe 'production_ready' do
+        subject do
+          build(:wizard_step, user:admin_user, step_name: 'redirects')
+        end
+        before do
+          subject.get_step('settings').wizard_form_data = { prod_config: 'true' }
+        end
+
+        it 'allows logingov_admin to use localhost URLs' do
+          subject = build(:wizard_step, user:admin_user, step_name: 'redirects')
+          subject.wizard_form_data = {
+            push_notification_url: 'http://localhost:3001/',
+            failure_to_proof_url: 'https://localhost:3001',
+            redirect_uris: ['https://localhost:3001/somepath'],
+          }
+
+          expect(subject.valid?).to be_truthy
+          expect(subject.errors).to be_blank
+        end
+      end
+    end
+
+    describe '#invalid?' do
+      it 'fails with bad URLs' do
+        subject.wizard_form_data = {
+          push_notification_url: 'http//badgov/',
+          failure_to_proof_url: 'bad.gov',
+        }
+
+        expect(subject).to_not be_valid
+        expect(subject.errors[:push_notification_url]).to include('http//badgov/ is not a valid URI')
+        expect(subject.errors[:failure_to_proof_url]).to include('bad.gov is not a valid URI')
+        # TODO: add `redirect_uri` error reporting is broken. Add tests later.
+      end
+
+      describe 'production_ready' do
+        before do
+          subject.get_step('settings').wizard_form_data = { prod_config: 'true' }
+        end
+
+        it 'fails when a non-logingov_admin uses localhost' do
+          subject.wizard_form_data = {
+            push_notification_url: 'http://localhost:3001/',
+            failure_to_proof_url: 'https://localhost:3001',
+            redirect_uris: ['https://localhost:3001/somepath'],
+          }
+
+          expect(subject).to_not be_valid
+          expect(subject).errors[:push_notification_url].to include("'localhost' is not allowed on Production")
+        end
       end
     end
   end
