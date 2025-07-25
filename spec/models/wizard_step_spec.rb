@@ -10,6 +10,7 @@ RSpec.describe WizardStep, type: :model do
   let(:random_form_step) { WizardStep::STEPS[1..-1].sample }
 
   let(:first_user) { create(:user) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
 
   describe '#find_or_intialize' do
     context 'with nothing relevant in the database' do
@@ -346,6 +347,31 @@ RSpec.describe WizardStep, type: :model do
         expect(subject.logo_file.blob).to be_nil
         expect { subject.logo_name }.to raise_error(NoMethodError)
         expect { subject.remote_logo_key }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
+  context 'step "redirects"' do
+    describe 'non-admin user' do
+      let(:subject_user) { create(:user) }
+      before do
+        create(:wizard_step, user: subject_user, step_name: 'protocol', wizard_form_data: {
+          identity_protocol: 'oidc',
+        })
+      end
+      subject do
+        build(:wizard_step, user:first_user, step_name: 'redirects')
+      end
+
+      it 'validates good URLs' do
+        subject.wizard_form_data = {
+          push_notification_url: 'https://good.gov/',
+          failure_to_proof_url: 'https://good.gov',
+          redirect_uris: ['https://www.good.gov/'],
+        }
+
+        expect(subject.valid?).to be_truthy
+        expect(subject.errors).to be_blank
       end
     end
   end
