@@ -12,10 +12,10 @@ gem 'aws-sdk-s3', require: false
 gem 'browser'
 gem 'bundler'
 gem 'colorize'
-gem 'cssbundling-rails'
+gem 'cssbundling-rails', '>= 1.4.2'
 gem 'csv'
 gem 'devise', '~> 4.9.3'
-gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'dotenv-rails', '~> 3.0', '>= 3.0.0'
 gem 'enum_help'
 gem 'faraday'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v4.1.0'
@@ -27,13 +27,13 @@ gem 'jwt'
 gem 'kaminari'
 gem 'lru_redux'
 gem 'newrelic_rpm', '>= 6.14.0'
-gem 'nokogiri', '~> 1.18.4'
+gem 'nokogiri', '~> 1.18.9'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~>16'
 gem 'pg'
-gem 'propshaft'
+gem 'propshaft', '>= 1.2.0'
 gem 'pry-rails'
 gem 'puma', '>= 6.4.3'
 gem 'pundit', '>= 2.3.1'
@@ -42,7 +42,7 @@ gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
 gem 'rack-attack', '~> 6.7'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.0.0'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
@@ -72,11 +72,11 @@ end
 
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
-  gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
-  gem 'i18n-tasks', '>= 1.0.13'
+  gem 'factory_bot_rails', '~> 6.5', '>= 6.5.0'
+  gem 'i18n-tasks', '>= 1.0.15'
   gem 'pry-byebug'
   gem 'rspec_junit_formatter'
-  gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
+  gem 'rspec-rails', '~> 7.0', '>= 7.0.0'
   gem 'rubocop', '~> 1.66.0', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
