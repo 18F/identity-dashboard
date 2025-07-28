@@ -114,7 +114,17 @@ class ServiceProvider < ApplicationRecord
   end
 
   def prod_localhost?(input)
-    !!(production_ready? && self[input].match(/localhost:/))
+    return false if !production_ready?
+
+    is_localhost = false
+    self_input = self[input]
+    if self_input.is_a? Array
+      self_input.each do |value|
+        is_localhost = true if value.match(/localhost:/)
+      end
+    else
+      self_input.match(/localhost:/)
+    end
   end
 
   def oidc?
@@ -149,10 +159,12 @@ class ServiceProvider < ApplicationRecord
       return_to_sp_url
       push_notification_url
       failure_to_proof_url
+      redirect_uris
     ]
     oidc_settings = %w[
       push_notification_url
       failure_to_proof_url
+      redirect_uris
     ]
 
     settings = saml? ? saml_settings : oidc_settings
