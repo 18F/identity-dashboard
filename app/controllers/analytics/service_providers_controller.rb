@@ -112,6 +112,7 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
   def process_and_filter_json(json_body, issuer)
     json = JSON.parse(json_body)
     json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
+    json['results'] = json['results'].select { |entry| entry['ial'] == 1 }
     json
   end
 end
