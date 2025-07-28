@@ -44,11 +44,10 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
       request = Net::HTTP::Get.new(uri)
       http.request(request) do |res|
         if has_valid_json?(res)
-          json = JSON.parse(res.body)
-          json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
+          filtered_json = process_and_filter_json(res.body, issuer)
           response.headers['Content-Type'] = 'application/json'
           response.headers['Content-Disposition'] = 'inline'
-          response.stream.write JSON.generate(json)
+          response.stream.write JSON.generate(filtered_json)
         else
           render plain: 'Remote server error', status: :not_found
         end
@@ -64,7 +63,6 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
     return if IdentityConfig.store.analytics_dashboard_enabled
 
     render plain: 'Disabled', status: :not_found
-
   end
 
   def has_valid_json?(http_response)
@@ -109,5 +107,11 @@ class Analytics::ServiceProvidersController < ServiceProvidersController # :nodo
     return false if issuer.blank?
 
     ServiceProvider.exists?(issuer:)
+  end
+
+  def process_and_filter_json(json_body, issuer)
+    json = JSON.parse(json_body)
+    json['results'] = json['results'].select { |entry| entry['issuer'] == issuer }
+    json
   end
 end
