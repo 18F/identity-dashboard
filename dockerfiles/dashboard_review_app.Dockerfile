@@ -86,12 +86,9 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
 # Install Yarn
-#RUN curl -sSk https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-#RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-#RUN apt-get update && apt-get install -y yarn=1.22.5-1
-RUN curl -fsSLO --compressed "https://github.com/yarnpkg/yarn/releases/download/v$YARN_VERSION/yarn_1.22.19_all.deb" \
-  && dpkg --install "yarn_1.22.19_all.deb" \
-  && rm "yarn_1.22.19_all.deb" 
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install -y yarn=$YARN_VERSION-1
 
 RUN mkdir -p /usr/local/share/aws \
     && cd /usr/local/share/aws \
