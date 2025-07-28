@@ -354,13 +354,17 @@ RSpec.describe WizardStep, type: :model do
   context 'step "redirects"' do
     let(:subject_user) { create(:user) }
     let(:admin_user) { create(:user, :logingov_admin) }
-    before do
-      create(:wizard_step, user: subject_user, step_name: 'protocol', wizard_form_data: {
-        identity_protocol: 'oidc',
-      })
-    end
+    # before do
+    #   create(:wizard_step, user: subject_user, step_name: 'protocol', wizard_form_data: {
+    #     identity_protocol: 'oidc',
+    #   })
+    # end
     subject do
-      build(:wizard_step, user:first_user, step_name: 'redirects')
+      build(:wizard_step, user:first_user, step_name: 'redirects', wizard_form_data: {
+        push_notification_url: '',
+        failure_to_proof_url: '',
+        redirect_uris: '',
+      })
     end
 
     describe '#valid?' do
@@ -389,7 +393,9 @@ RSpec.describe WizardStep, type: :model do
           build(:wizard_step, user:admin_user, step_name: 'redirects')
         end
         before do
-          subject.get_step('settings').wizard_form_data = { prod_config: 'true' }
+          create(:wizard_step, user: admin_user, step_name: 'settings', wizard_form_data: {
+            prod_config: true,
+          })
         end
 
         it 'allows logingov_admin to use localhost URLs' do
@@ -400,6 +406,7 @@ RSpec.describe WizardStep, type: :model do
             redirect_uris: ['https://localhost:3001/somepath'],
           }
 
+          expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
           expect(subject.valid?).to be_truthy
           expect(subject.errors).to be_blank
         end
@@ -421,7 +428,9 @@ RSpec.describe WizardStep, type: :model do
 
       describe 'production_ready' do
         before do
-          subject.get_step('settings').wizard_form_data = { prod_config: 'true' }
+          create(:wizard_step, user: first_user, step_name: 'settings', wizard_form_data: {
+            prod_config: true,
+          })
         end
 
         it 'fails when a non-logingov_admin uses localhost' do
@@ -431,8 +440,9 @@ RSpec.describe WizardStep, type: :model do
             redirect_uris: ['https://localhost:3001/somepath'],
           }
 
+          expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
           expect(subject).to_not be_valid
-          expect(subject).errors[:push_notification_url].to include("'localhost' is not allowed on Production")
+          expect(subject.errors[:push_notification_url]).to include("'localhost' is not allowed on Production")
         end
       end
     end
