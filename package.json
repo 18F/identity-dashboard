@@ -1,7 +1,7 @@
 {
   "license": "CC0-1.0",
   "engines": {
-    "node": ">=18",
+    "node": ">=22",
     "npm": "6.x.x"
   },
   "scripts": {

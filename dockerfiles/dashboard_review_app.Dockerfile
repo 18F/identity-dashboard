@@ -11,10 +11,10 @@ ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV PIDFILE /tmp/server.pid
 ENV YARN_VERSION 1.22.19
-ENV NODE_VERSION 18.16.1
+ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.5.6
 
-ENV POSTGRES_SSLMODE prefer 
+ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_DB dashboard
 ENV POSTGRES_HOST localhost
 ENV POSTGRES_USERNAME postgres
@@ -124,7 +124,7 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development test'
-RUN bundle install 
+RUN bundle install
 RUN bundle binstubs --all
 
 COPY package.json $RAILS_ROOT/package.json
