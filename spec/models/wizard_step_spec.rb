@@ -356,7 +356,7 @@ RSpec.describe WizardStep, type: :model do
     let(:admin_user) { create(:user, :logingov_admin) }
 
     subject do
-      build(:wizard_step, user:first_user, step_name: 'redirects', wizard_form_data: {
+      build(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
         push_notification_url: '',
         failure_to_proof_url: '',
         redirect_uris: '',
@@ -386,7 +386,7 @@ RSpec.describe WizardStep, type: :model do
 
       describe 'production_ready' do
         subject do
-          build(:wizard_step, user:admin_user, step_name: 'redirects')
+          build(:wizard_step, user: admin_user, step_name: 'redirects')
         end
         before do
           create(:wizard_step, user: admin_user, step_name: 'settings', wizard_form_data: {
@@ -396,7 +396,7 @@ RSpec.describe WizardStep, type: :model do
 
         context 'admin_user' do
           subject do
-            build(:wizard_step, user:admin_user, step_name: 'redirects')
+            build(:wizard_step, user: admin_user, step_name: 'redirects')
           end
 
           it 'allows logingov_admin to use localhost URLs' do
@@ -454,7 +454,9 @@ RSpec.describe WizardStep, type: :model do
         }
 
         expect(subject).to_not be_valid
-        expect(subject.errors[:push_notification_url]).to include('http//badgov/ is not a valid URI')
+        expect(subject.errors[:push_notification_url]).to include(
+          'http//badgov/ is not a valid URI',
+        )
         expect(subject.errors[:failure_to_proof_url]).to include('bad.gov is not a valid URI')
         # TODO: add `redirect_uri` error reporting is broken. Add tests later.
       end
@@ -475,7 +477,9 @@ RSpec.describe WizardStep, type: :model do
 
           expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
           expect(subject).to_not be_valid
-          expect(subject.errors[:push_notification_url]).to include("'localhost' is not allowed on Production")
+          expect(subject.errors[:push_notification_url]).to include(
+            "'localhost' is not allowed on Production",
+          )
         end
 
         context 'existing localhost URLs' do
@@ -491,12 +495,14 @@ RSpec.describe WizardStep, type: :model do
             subject.wizard_form_data = {
               push_notification_url: 'http://localhost:3001/new_url',
               failure_to_proof_url: 'https://localhost:3001',
-              redirect_uris: ['https://good.gov']
+              redirect_uris: ['https://good.gov'],
             }
 
             expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
             expect(subject).to_not be_valid
-            expect(subject.errors[:push_notification_url]).to include("'localhost' is not allowed on Production")
+            expect(subject.errors[:push_notification_url]).to include(
+              "'localhost' is not allowed on Production",
+            )
             expect(subject.errors).to_not include(:failure_to_proof_url, :redirect_uris)
           end
         end

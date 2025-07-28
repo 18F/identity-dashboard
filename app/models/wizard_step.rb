@@ -129,7 +129,7 @@ class WizardStep < ApplicationRecord
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
   # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
-  validates_with RedirectsValidator, 
+  validates_with RedirectsValidator,
     attribute: :redirect_uris,
     on: 'redirects'
   validates_with RedirectsValidator,
@@ -289,6 +289,7 @@ class WizardStep < ApplicationRecord
 
     get_step('authentication').ial
   end
+
   # prod_config is a Boolean in the DB, but is a string in the form
   def production_ready?
     prod_config = get_step('settings').prod_config

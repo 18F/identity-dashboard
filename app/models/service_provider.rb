@@ -169,7 +169,8 @@ class ServiceProvider < ApplicationRecord
 
     settings = saml? ? saml_settings : oidc_settings
     settings.each do |attr|
-      if prod_localhost?(attr) && self.changes[attr] && self.changes[attr][0] != self.changes[attr][1]
+      changes = self.changes[attr]
+      if prod_localhost?(attr) && changes && changes[0] != changes[1]
         errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
       end
     end
