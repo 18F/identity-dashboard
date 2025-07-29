@@ -115,17 +115,9 @@ class ServiceProvider < ApplicationRecord
 
   def prod_localhost?(input)
     return false if !production_ready?
-
-    is_localhost = false
-    self_input = self[input]
-    if self_input.is_a? Array
-      self_input.each do |value|
-        is_localhost = true if value.match(/localhost:/)
-      end
-    else
-      is_localhost = true if self_input.match(/localhost:/)
+    Array(self[input]).any? do |value|
+      value.match?(/localhost:/)
     end
-    is_localhost
   end
 
   def oidc?
