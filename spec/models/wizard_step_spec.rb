@@ -384,6 +384,17 @@ RSpec.describe WizardStep, type: :model do
         expect(subject.errors).to be_blank
       end
 
+      it 'validates unchanged URLs' do
+        subject.wizard_form_data = {
+          push_notification_url: '',
+          failure_to_proof_url: '',
+          redirect_uris: '',
+        }
+
+        expect(subject.valid?).to be_truthy
+        expect(subject.errors).to be_blank
+      end
+
       describe 'production_ready' do
         subject do
           build(:wizard_step, user: admin_user, step_name: 'redirects')
@@ -459,6 +470,17 @@ RSpec.describe WizardStep, type: :model do
         )
         expect(subject.errors[:failure_to_proof_url]).to include('bad.gov is not a valid URI')
         # TODO: add `redirect_uri` error reporting is broken. Add tests later.
+      end
+
+      it 'fails with wildcards in URLs' do
+        subject.wizard_form_data = {
+          push_notification_url: 'https://*.good.gov',
+        }
+
+        expect(subject).to_not be_valid
+        expect(subject.errors[:push_notification_url]).to include(
+          'https://*.good.gov contains invalid wildcards(*)',
+        )
       end
 
       describe 'production_ready' do

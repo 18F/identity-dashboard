@@ -123,8 +123,9 @@ class ServiceProvider < ApplicationRecord
         is_localhost = true if value.match(/localhost:/)
       end
     else
-      self_input.match(/localhost:/)
+      is_localhost = true if self_input.match(/localhost:/)
     end
+    is_localhost
   end
 
   def oidc?
