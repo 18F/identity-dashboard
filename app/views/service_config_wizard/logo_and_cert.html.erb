@@ -17,16 +17,17 @@
           <%= form.file_field :logo_file,
                             class: 'input-file logo-input-file',
                             accept: sp_valid_logo_mime_types.join(',') %>
-          <p><%= I18n.t('service_provider_form.logo_input') %></p>
-          <%= form.label :logo_file,
-                          label: accessible_label(form, 'Choose a file', :logo_file),
-                          class: 'usa-button',
-                          id: 'logo-file-button' %>
+          <p class="usa-label"><%= I18n.t('service_provider_form.logo_input') %></p>
           <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id='logo-upload-error'>
             <% if form.object.errors[:logo_file].present? %>
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
           </p>
+          <%= form.label :logo_file,
+                          label: accessible_label(form, 'Choose a file', :logo_file),
+                          class: 'usa-button',
+                          id: 'logo-file-button' %>
+
           <%= content_tag :div,
                           "No new file selected",
                           class: 'logo-preview margin-top-4' %>
@@ -44,12 +45,12 @@
       </div>
       <div class="usa-input__container">
         <div class="lg-card margin-top-2">
-          <label class="usa-label margin-top-0" for="wizard_step_cert"><%= I18n.t('service_provider_form.cert_input') %></label>
+          <p class="usa-label"><%= I18n.t('service_provider_form.cert_input') %></p>
 
           <div class="clearfix">
-            <span class="<%= 'usa-error-message' if form.object.errors[:certs].present? %> js-pem-input-error-message">
+            <p class="<%= 'usa-error-message' if form.object.errors[:certs].present? %> js-pem-input-error-message">
               <%= form.object.errors[:certs].to_sentence.presence %>
-            </span>
+            </p>
             <%= form.file_field :cert, class: 'input-file js-pem-input' %>
             <label class="usa-button file-input-button" for="wizard_step_cert">
               <%= t('simple_form.labels.service_provider.cert_file') %>
