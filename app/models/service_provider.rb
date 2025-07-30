@@ -115,6 +115,7 @@ class ServiceProvider < ApplicationRecord
 
   def prod_localhost?(input)
     return false if !production_ready?
+
     Array(self[input]).any? do |value|
       value.match?(/localhost:/)
     end
