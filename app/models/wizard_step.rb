@@ -128,20 +128,26 @@ class WizardStep < ApplicationRecord
     on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
-  validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
+  validates_with RedirectsValidator,
+    attribute: :redirect_uris,
+    on: 'redirects'
+  validates_with RedirectsValidator,
     attribute: :failure_to_proof_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :push_notification_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :acs_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
+    attribute: :sp_initiated_login_url,
+    on: 'redirects'
+  validates_with RedirectsValidator,
     attribute: :return_to_sp_url,
     on: 'redirects'
-  validates_with IdentityValidations::UriValidator,
+  validates_with RedirectsValidator,
     attribute: :assertion_consumer_logout_service_url,
     on: 'redirects'
 
@@ -282,6 +288,12 @@ class WizardStep < ApplicationRecord
     return wizard_form_data['ial'] if step_name == 'authentication'
 
     get_step('authentication').ial
+  end
+
+  # prod_config is a Boolean in the DB, but is a string in the form
+  def production_ready?
+    prod_config = get_step('settings').prod_config
+    prod_config == 'true' || prod_config == true
   end
 
   def saml?

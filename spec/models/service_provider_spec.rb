@@ -503,6 +503,44 @@ describe ServiceProvider do
     end
   end
 
+  describe '#prod_localhost?' do
+    it 'returns false for sandbox integrations' do
+      sp = build(:service_provider, prod_config: false, failure_to_proof_url: 'fake_url')
+      expect(sp.prod_localhost?('failure_to_proof_url')).to be_falsey
+    end
+
+    context 'for production-ready integrations' do
+      let(:sp) { build(:service_provider, prod_config: true) }
+
+      it 'returns false when URL is not localhost' do
+        sp.failure_to_proof_url = 'https://good.gov'
+        expect(sp.prod_localhost?('failure_to_proof_url')).to be_falsey
+      end
+
+      it 'returns false when all redirect_uris are not localhost' do
+        sp.redirect_uris = [
+          'https://good.gov',
+          'https://tts.gov/good',
+        ]
+        expect(sp.prod_localhost?('redirect_uris')).to be_falsey
+      end
+
+      it 'returns true when URL is localhost' do
+        sp.failure_to_proof_url = 'http://localhost:0001'
+        expect(sp.prod_localhost?('failure_to_proof_url')).to be_truthy
+      end
+
+      it 'returns true when a redirect_uri is localhost' do
+        sp.redirect_uris = [
+          'https://good.gov',
+          'https://tts.gov/good',
+          'http://localhost:0001',
+        ]
+        expect(sp.prod_localhost?('redirect_uris')).to be_truthy
+      end
+    end
+  end
+
   describe '#oidc?' do
     it 'returns false for SAML integrations' do
       sp = build(:service_provider, identity_protocol: 'saml')

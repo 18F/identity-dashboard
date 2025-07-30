@@ -434,7 +434,9 @@ feature 'Service Config Wizard' do
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'hello')
         click_on 'Next'
         expect(page).to have_content(
-          "#{t('simple_form.labels.service_provider.failure_to_proof_url').capitalize} is invalid",
+          "#{
+            t('simple_form.labels.service_provider.failure_to_proof_url').capitalize
+          } hello is not a valid URI",
         )
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'https://test.gov')
