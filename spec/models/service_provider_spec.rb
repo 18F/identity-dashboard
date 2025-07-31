@@ -526,7 +526,7 @@ describe ServiceProvider do
       end
 
       it 'returns true when URL is localhost' do
-        sp.failure_to_proof_url = 'http://localhost:0001'
+        sp.failure_to_proof_url = 'http://localhost'
         expect(sp.prod_localhost?('failure_to_proof_url')).to be_truthy
       end
 

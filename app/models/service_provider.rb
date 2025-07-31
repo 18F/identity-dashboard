@@ -117,7 +117,7 @@ class ServiceProvider < ApplicationRecord
     return false if !production_ready?
 
     Array(self[input]).any? do |value|
-      value.match?(/localhost:/)
+      value.match?(/\/\/localhost/)
     end
   end
 
