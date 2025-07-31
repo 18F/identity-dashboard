@@ -69,7 +69,7 @@ en:
         button: Remove user
         confirm_title: Remove user
         confirm_html:
-          Are you sure you want to remove <span class="text-bold">%{email}?</span> from <span class="text-bold">%{team}</span>?
+          Are you sure you want to remove <span class="text-bold">%{email}</span> from <span class="text-bold">%{team}</span>?
           <br/><br/>
           If you remove this user, they will no longer be able to see applications associated with the team using this email address.
   users:
