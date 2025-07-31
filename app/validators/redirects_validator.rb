@@ -21,7 +21,8 @@ class RedirectsValidator < IdentityValidations::IdentityValidator
       # check if the attribute is changed
       if !attribute_unchanged
         # check if a nonadmin is using localhost on a prod_ready config
-        if validating_uri.uri.host.match(/(localhost|127\.0\.0)/) && record.production_ready? && !user.logingov_admin?
+        if validating_uri.uri.host&.match(/(localhost|127\.0\.0)/) &&
+           record.production_ready? && !user.logingov_admin?
           record.errors.add(attribute, "'localhost' is not allowed on Production")
         end
       end
