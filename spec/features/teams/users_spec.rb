@@ -274,26 +274,26 @@ describe 'users' do
       expect(page).to have_content(other_team_member.email)
     end
 
-    scenario 'delete button only present for any other team member (without RBAC)' do
+    scenario 'remove button only present for any other team member (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member
       visit team_users_path(team)
-      expect(find_all('a', text: 'Delete').count).to eq(1)
-      click_on 'Delete'
+      expect(find_all('a', text: 'Remove').count).to eq(1)
+      click_on 'Remove'
       expect(page).to have_current_path(team_remove_confirm_path(team.id, other_team_member.id))
     end
 
-    scenario 'delete button only present for another team member who is a Partner Admin' do
+    scenario 'remove button only present for another team member who is a Partner Admin' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as team_member
       visit team_users_path(team)
-      expect(find_all('a', text: 'Delete').count).to eq(0)
+      expect(find_all('a', text: 'Remove').count).to eq(0)
 
       login_as partner_admin_team_member
       visit team_users_path(team)
       # two users: `team_member` and `other_team_member`
-      expect(find_all('a', text: 'Delete').count).to eq(2)
-      find_all('a', text: 'Delete').first.click
+      expect(find_all('a', text: 'Remove').count).to eq(2)
+      find_all('a', text: 'Remove').first.click
       expect(page).to have_current_path(team_remove_confirm_path(team.id, team_member.id))
     end
 

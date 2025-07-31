@@ -1,14 +1,21 @@
-<h1 class="usa-display padding-bottom-2 border-underline"> <%= I18n.t('teams.users.remove.confirm_title', email: @user.email, team: @team.name) %></h1>
+<div class="grid-row">
+  <div class="grid-col-auto tablet:grid-col-7">
+    <h1 class="usa-display padding-bottom-2 border-underline"> <%= I18n.t('teams.users.remove.confirm_title')  %></h1>
 
-<h2><%= I18n.t('teams.users.remove.confirm_subhead') %></h2>
-<ul>
-  <li> <%= I18n.t('teams.users.remove.confirm') %></li>
-</ul>
+    <p class="usa-prose margin-bottom-0"> 
+      <%= t('teams.users.remove.confirm_html', email: @user.email, team: @team.name) %>
+    </p>
 
-<p class="border-underline padding-bottom-2 margin-top-4"> </p>
-  <%= button_to I18n.t('teams.users.remove.button'), team_user_path(@team.id, @user.id), :method => :delete, class: 'usa-button usa-button--danger' %>
-<br />
-<%= link_to I18n.t('forms.buttons.cancel'), team_users_path(@team.id),
-              class: 'usa-button usa-button--outline' %>
+    <div>
+      <%= button_to I18n.t('teams.users.remove.button'),
+        team_user_path(@team.id, @user.id),
+        :method => :delete,
+        class: "usa-button usa-button--danger margin-top-6 margin-bottom-2" %>
 
+    </div>
+    <span>
+      <%= link_to I18n.t('forms.buttons.cancel'), team_users_path(@team.id) %>
+    </span>
+  </div>
+</div>
 

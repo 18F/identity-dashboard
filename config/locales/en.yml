@@ -67,9 +67,11 @@ en:
       remove:
         success: Success! You have removed %{email} from the team.
         button: Remove user
-        confirm_title: Are you sure you want to remove user "%{email}?" from "%{team}"?
-        confirm: They will no longer be able to see applications associated with the team using this email address.
-        confirm_subhead: If you remove this user
+        confirm_title: Remove user
+        confirm_html:
+          Are you sure you want to remove <span class="text-bold">%{email}</span> from <span class="text-bold">%{team}</span>?
+          <br/><br/>
+          If you remove this user, they will no longer be able to see applications associated with the team using this email address.
   users:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
   team_memberships:
