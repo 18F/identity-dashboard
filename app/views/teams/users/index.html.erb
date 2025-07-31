@@ -40,7 +40,7 @@
                           class: 'usa-button--unstyled usa-link margin-right-1' %>
             <% end %>
             <% if policy(membership).remove_confirm? %>
-              <%= link_to 'Delete', team_remove_confirm_path(@team.id, membership.user.id),
+              <%= link_to 'Remove', team_remove_confirm_path(@team.id, membership.user.id),
                           form_class: 'display-inline',
                           method: :get,
                           class: 'usa-button--unstyled usa-link margin-right-1' %>
