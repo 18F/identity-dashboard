@@ -1,4 +1,5 @@
 require 'rails'
+require 'uri'
 
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
@@ -117,7 +118,7 @@ class ServiceProvider < ApplicationRecord
     return false if !production_ready?
 
     Array(self[input]).any? do |value|
-      value.match?(/\/\/localhost/)
+      URI(value).host.match?(/(localhost|127\.0\.0)/)
     end
   end
 
