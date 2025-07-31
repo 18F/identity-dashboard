@@ -1,6 +1,5 @@
 <tr>
   <td class="text-wrap"><%= app["issuer"] %></td>
   <td><%= deleted_at %></td>
-  <%# group_id is the legacy name for Team ID %>
-  <td><%= Team.find(app["group_id"]).agency&.name if app["group_id"] %></td>
+  <td><%= Agency.find(app["agency_id"]).name if app["agency_id"] %></td>
 </tr>
