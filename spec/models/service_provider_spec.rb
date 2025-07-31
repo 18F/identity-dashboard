@@ -526,8 +526,12 @@ describe ServiceProvider do
       end
 
       it 'returns true when URL is localhost' do
-        sp.failure_to_proof_url = 'http://localhost:0001'
+        sp.failure_to_proof_url = 'http://localhost'
+        sp.push_notification_url = 'http://127.0.0.1'
+        sp.redirect_uris = ['https://www.localhost/go']
         expect(sp.prod_localhost?('failure_to_proof_url')).to be_truthy
+        expect(sp.prod_localhost?('push_notification_url')).to be_truthy
+        expect(sp.prod_localhost?('redirect_uris')).to be_truthy
       end
 
       it 'returns true when a redirect_uri is localhost' do
