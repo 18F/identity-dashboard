@@ -57,6 +57,10 @@ module ServiceConfigWizardHelper
     IdentityConfig.store.service_config_wizard_enabled && current_user.logingov_admin?
   end
 
+  def prod_like_env?
+    IdentityConfig.store.prod_like_env
+  end
+
   def readonly_help_text?
     !service_provider_policy.edit_custom_help_text?
   end
