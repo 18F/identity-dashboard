@@ -39,9 +39,9 @@ class ServiceProvidersController < AuthenticatedController
     if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
       redirect_to service_config_wizard_index_path(service_provider: params[:id])
     end
-    @show_portal_config_field = true
+    @disable_portal_config_field = false
     if IdentityConfig.store.prod_like_env
-      @show_portal_config_field = false
+      @disable_portal_config_field = true
     end
 
   end
