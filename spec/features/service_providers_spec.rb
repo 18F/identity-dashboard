@@ -480,10 +480,11 @@ feature 'Service Providers CRUD' do
         )
       end
 
-      it 'redirects to new service_config_wizard' do
+      it 'does not redirects to new service_config_wizard' do
         visit new_service_provider_path
 
-        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
+        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
+        expect(page).to have_current_path(service_providers_path)
       end
 
       it 'redirects to edit service_config_wizard' do
@@ -659,7 +660,8 @@ feature 'Service Providers CRUD' do
       it 'redirects to service_config_wizard' do
         visit new_service_provider_path
 
-        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
+        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
+        expect(page).to have_current_path(service_providers_path)
       end
     end
   end
