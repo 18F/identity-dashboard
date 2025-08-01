@@ -13,9 +13,16 @@ describe EnvController do
   end
 
   describe '#index' do
-    it 'has a success response' do
+    it 'has a success response on lower envs' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
       get :index
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'has a 404 response on prod-like envs' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      get :index
+      expect(response).to have_http_status(404)
     end
   end
 end
