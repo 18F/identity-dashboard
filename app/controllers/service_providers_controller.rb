@@ -39,9 +39,9 @@ class ServiceProvidersController < AuthenticatedController
     if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
       redirect_to service_config_wizard_index_path(service_provider: params[:id])
     end
-    @disable_portal_config_field = false
+    @hide_portal_config_field = false
     if IdentityConfig.store.prod_like_env
-      @disable_portal_config_field = true
+      @hide_portal_config_field = true
     end
 
   end
@@ -179,7 +179,8 @@ value: func.to_proc.call(@service_provider) })
     @service_provider.valid?
     @service_provider.valid_saml_settings?
     @service_provider.valid_localhost_uris? if !current_user.logingov_admin?
-
+    @service_provider.valid_prod_config?
+    
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
     flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 139"

@@ -146,6 +146,12 @@ class ServiceProvider < ApplicationRecord
     errors.empty?
   end
 
+  def valid_prod_config?
+    if IdentityConfig.store.prod_like_env && !production_ready?
+      errors.add(:prod_config, 'can\t be a sandbox config')
+    end
+  end
+
   def valid_localhost_uris?
     saml_settings = %w[
       acs_url

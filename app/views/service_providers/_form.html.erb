@@ -1,7 +1,7 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
-
+<% if hide_portal_config_field? %>
   <legend class='usa-sr-only'>Portal Configuration</legend>
     <%= form.label :prod_config,
                   label: 'Portal Configuration',
@@ -9,7 +9,6 @@
     <%= form.collection_radio_buttons(:prod_config,
                                       { "Ready for Production" => true, "Sandbox" => false },
                                       :last, :first,
-                                      disabled: disable_portal_config_field
                                       item_wrapper_tag: :ul,
                                       item_wrapper_class: "usa-input-list") do |b| %>
       <li>
@@ -17,6 +16,7 @@
         <%=  b.label(class: "usa-radio__label")%>
       </li>
     <% end %>
+<% end %>
 
 
   <%= form.input :app_name,

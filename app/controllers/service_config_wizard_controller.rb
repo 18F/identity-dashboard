@@ -279,6 +279,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     draft_service_provider.valid?
     draft_service_provider.valid_saml_settings?
+    draft_service_provider.valid_prod_config?
     draft_service_provider.valid_localhost_uris? if !current_user.logingov_admin?
 
     return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?

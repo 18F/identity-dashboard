@@ -61,10 +61,6 @@ module ServiceConfigWizardHelper
     !service_provider_policy.edit_custom_help_text?
   end
 
-  def prod_like_env?
-    IdentityConfig.store.prod_like_env
-  end
-
   def help_text_options_available?
     feature_enabled = IdentityConfig.store.help_text_options_feature_enabled
     options_enabled = feature_enabled && !current_user.logingov_admin?
