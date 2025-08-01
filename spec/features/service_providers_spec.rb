@@ -650,6 +650,12 @@ feature 'Service Providers CRUD' do
         )
       end
 
+      it 'does not have Create New App button' do
+        visit service_providers_path
+
+        expect(page).to_not have_content('Create new app')
+      end
+
       it 'redirects to service_config_wizard' do
         visit new_service_provider_path
 
