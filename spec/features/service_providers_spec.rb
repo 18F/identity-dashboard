@@ -657,7 +657,7 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content('Create new app')
       end
 
-      it 'redirects to service_config_wizard' do
+      it 'does not redirect to service_config_wizard' do
         visit new_service_provider_path
 
         expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))

@@ -319,6 +319,12 @@ feature 'Service Config Wizard' do
         expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
       end
+
+      it 'does not redirect to service_config_wizard' do
+        visit new_service_config_wizard_path
+
+        expect(page).to have_current_path(service_providers_path)
+      end
     end
   end
 
