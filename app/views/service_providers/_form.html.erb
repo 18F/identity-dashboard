@@ -1,19 +1,22 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
+
+  <% if show_portal_config_field? %>
   <legend class='usa-sr-only'>Portal Configuration</legend>
-  <%= form.label :prod_config,
-                 label: 'Portal Configuration',
-                 class: 'usa-label' %>
-  <%= form.collection_radio_buttons(:prod_config,
-                                    { "Ready for Production" => true, "Sandbox" => false },
-                                    :last, :first,
-                                    item_wrapper_tag: :ul,
-                                    item_wrapper_class: "usa-input-list") do |b| %>
-    <li>
-      <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
-      <%=  b.label(class: "usa-radio__label")%>
-    </li>
+    <%= form.label :prod_config,
+                  label: 'Portal Configuration',
+                  class: 'usa-label' %>
+    <%= form.collection_radio_buttons(:prod_config,
+                                      { "Ready for Production" => true, "Sandbox" => false },
+                                      :last, :first,
+                                      item_wrapper_tag: :ul,
+                                      item_wrapper_class: "usa-input-list") do |b| %>
+      <li>
+        <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+        <%=  b.label(class: "usa-radio__label")%>
+      </li>
+    <% end %>
   <% end %>
 
   <%= form.input :app_name,
