@@ -297,8 +297,8 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def verify_environment_permissions
-    if IdentityConfig.store.prod_like_env
-      redirect_to service_providers_path
-    end
+    return unless IdentityConfig.store.prod_like_env
+
+    redirect_to service_providers_path
   end
 end
