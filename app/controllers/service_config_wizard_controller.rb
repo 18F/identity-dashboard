@@ -350,9 +350,6 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def verify_environment_permissions
-    Rails.logger.debug('******************')
-Rails.logger.debug("VERFIY?")
-Rails.logger.debug('******************')
     return unless IdentityConfig.store.prod_like_env
 
     redirect_to service_providers_path
