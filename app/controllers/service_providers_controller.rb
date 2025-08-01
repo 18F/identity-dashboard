@@ -37,9 +37,10 @@ class ServiceProvidersController < AuthenticatedController
 
   def edit
     @prod_like_env = IdentityConfig.store.prod_like_env
-    if IdentityConfig.store.service_config_wizard_enabled && @prod_like_env
+    return unless IdentityConfig.store.service_config_wizard_enabled && @prod_like_env
+
       redirect_to service_config_wizard_index_path(service_provider: params[:id])
-    end
+
   end
 
   def create
