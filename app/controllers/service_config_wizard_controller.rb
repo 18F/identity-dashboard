@@ -9,6 +9,8 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: %i[new create]
+  before_action :verify_environment_permissions, only: %i[new]
+
   after_action :verify_authorized
   after_action -> { flash.discard }, unless: -> { when_saving_config }
   # We get false positives from `verify_policy_scoped` if we never instantiate a model
@@ -345,5 +347,11 @@ class ServiceConfigWizardController < AuthenticatedController
 
     action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
     log.record_save(action, draft_service_provider) unless can_cancel?
+  end
+
+  def verify_environment_permissions
+    return unless IdentityConfig.store.prod_like_env
+
+    redirect_to service_providers_path
   end
 end
