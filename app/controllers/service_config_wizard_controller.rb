@@ -9,7 +9,7 @@ class ServiceConfigWizardController < AuthenticatedController
   before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: %i[new create]
-  before_action :verify_environment_permissions, only: %i[new create]
+  before_action :verify_environment_permissions, only: %i[new]
 
   after_action :verify_authorized
   after_action -> { flash.discard }, unless: -> { when_saving_config }
@@ -350,6 +350,9 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def verify_environment_permissions
+    Rails.logger.debug('******************')
+Rails.logger.debug("VERFIY?")
+Rails.logger.debug('******************')
     return unless IdentityConfig.store.prod_like_env
 
     redirect_to service_providers_path
