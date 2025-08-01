@@ -22,7 +22,7 @@ describe EnvController do
     it 'has a 404 response on prod-like envs' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       get :index
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end
