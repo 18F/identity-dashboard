@@ -61,6 +61,14 @@ FactoryBot.define do
       identity_protocol { :openid_connect_pkce }
     end
 
+    trait :with_prod_config do
+      prod_config { true }
+    end
+
+    trait :with_sandbox do
+      prod_config { false }
+    end
+
     trait :with_ial_2 do
       ial { 2 }
     end
