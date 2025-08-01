@@ -263,16 +263,14 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def build_service_provider_array(prod_apps, sandbox_apps)
-    [
-      {
-        type: 'Production',
-        apps: prod_apps,
-      },
-      {
-        type: 'Sandbox',
-        apps: sandbox_apps,
-      },
-    ]
+    prod_hash = { type: 'Production', apps: prod_apps }
+    sandbox_hash = { type: 'Sandbox', apps: sandbox_apps }
+
+    if IdentityConfig.store.prod_like_env
+      [prod_hash]
+    else
+      [prod_hash, sandbox_hash]
+    end
   end
 
   def deleted_service_providers
