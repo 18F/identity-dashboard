@@ -1,6 +1,7 @@
 class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
+  before_action :verify_environment_permissions, only: %i[new create]
 
   after_action :verify_authorized
   after_action :verify_policy_scoped,
@@ -27,7 +28,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def new
-    if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
+    if IdentityConfig.store.service_config_wizard_enabled
       redirect_to new_service_config_wizard_url
     end
     @service_provider = policy_scope(ServiceProvider).new
@@ -35,7 +36,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def edit
-    if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
+    if IdentityConfig.store.service_config_wizard_enabled
       redirect_to service_config_wizard_index_path(service_provider: params[:id])
     end
   end
@@ -293,5 +294,11 @@ value: func.to_proc.call(@service_provider) })
 
   def log_change
     log.record_save(action_name, service_provider)
+  end
+
+  def verify_environment_permissions
+    if IdentityConfig.store.prod_like_env
+      redirect_to service_providers_path
+    end
   end
 end
