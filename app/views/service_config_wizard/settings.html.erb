@@ -13,6 +13,7 @@
                          hint: I18n.t('service_provider_form.team_guided') %>
 
     <%= render(WizardFieldsetComponent.new(
+        disabled: prod_like_env?,
         form: form,
         param_name: 'prod_config',
         input_type: 'radio',
