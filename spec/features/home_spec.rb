@@ -58,38 +58,33 @@ feature 'Home' do
     end
   end
 
-  context 'a user who is a login_admin in prod_like_env' do
-    let(:logingov_admin) { create(:user, :logingov_admin) }
-
+  context 'prod_like_env' do
     before do
-      allow(IdentityConfig.store).to receive_messages(
-        prod_like_env: true,
-      )
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
     end
 
-    scenario 'should see create team button' do
-      login_as(logingov_admin)
-      visit root_path
+    context 'a user who is a login_admin in prod_like_env' do
+      let(:logingov_admin) { create(:user, :logingov_admin) }
 
-      expect(page).to have_content('Create your first team')
-    end
-  end
 
-  context 'a user who is not a login_admin in prod_like_env' do
-    before do
-      allow(IdentityConfig.store).to receive_messages(
-        prod_like_env: true,
-      )
+      scenario 'should see create team button' do
+        login_as(logingov_admin)
+        visit root_path
+
+        expect(page).to have_content('Create your first team')
+      end
     end
 
-    scenario 'should not see create team button' do
-      user = create(:user)
+    context 'a user who is not a login_admin in prod_like_env' do
+      scenario 'should not see create team button' do
+        user = create(:user)
 
-      login_as(user)
-      visit root_path
+        login_as(user)
+        visit root_path
 
-      expect(page).to_not have_content('Create a new team')
-      expect(page).to_not have_content('Create your first team')
+        expect(page).to_not have_content('Create a new team')
+        expect(page).to_not have_content('Create your first team')
+      end
     end
   end
 end
