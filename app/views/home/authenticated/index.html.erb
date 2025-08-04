@@ -6,14 +6,17 @@
 <% end %>
 
 <% if @teams.count > 0 %>
-  <%=
-    button_to(
-        t('headings.teams.new_team'),
-        new_team_path,
-        method: :get,
-        class: "usa-button margin-top-4 margin-bottom-4",
-        ) if allowlisted_user?(current_user)
-  %>
+  <% if IdentityConfig.store.prod_like_env && current_user.logingov_admin? ||
+    !IdentityConfig.store.prod_like_env %>
+    <%=
+      button_to(
+          t('headings.teams.new_team'),
+          new_team_path,
+          method: :get,
+          class: "usa-button margin-top-4 margin-bottom-4",
+          ) if allowlisted_user?(current_user)
+    %>
+  <% end %>
   <h1 class='margin-bottom-3'>My teams</h1>
   <p class='usa-intro'>You are a member of these teams and have access to these apps.</p>
   <%= render 'teams/teams_list' %>
