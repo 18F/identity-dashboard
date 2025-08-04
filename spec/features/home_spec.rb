@@ -60,6 +60,7 @@ feature 'Home' do
 
   context 'a user who is a login_admin in prod_like_env' do
     let(:logingov_admin) { create(:user, :logingov_admin) }
+
     before do
       allow(IdentityConfig.store).to receive_messages(
         prod_like_env: true,
