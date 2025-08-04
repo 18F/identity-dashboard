@@ -1,22 +1,36 @@
-<h1 class="usa-display">Hello</h1>
-<% if allowlisted_user?(current_user) %>
-  <p class='usa-intro'>Access your existing testing and production apps, create new apps, and manage teams with this portal.</p>
-<% elsif current_user.logingov_admin? %>
-  <p class='usa-intro'>Let's help our Partners integrate apps with Login.gov</p>
-<% end %>
+<div class="usa-prose usa-content">
+  <div class="margin-bottom-3 border-bottom-1px border-base-lighter">
+    <h1><%= t('headings.welcome') %></h1>
+  </div>
+  <p>The Partner Portal is your hub for managing your teams and your Login.gov integrations for testing and production. Review our <a href="https://developers.login.gov/">developer documentation</a> for more details. 
 
-<% if @teams.count > 0 %>
-  <%=
-    button_to(
-        t('headings.teams.new_team'),
-        new_team_path,
-        method: :get,
-        class: "usa-button margin-top-4 margin-bottom-4",
-        ) if allowlisted_user?(current_user)
-  %>
-  <h1 class='margin-bottom-3'>My teams</h1>
-  <p class='usa-intro'>You are a member of these teams and have access to these apps.</p>
-  <%= render 'teams/teams_list' %>
-<% else %>
-  <%= render "teams/no_teams" %>
-<% end %>
+  <ol>
+    <li>View and manage your team on the <a href="/teams">My teams</a> page. An Admin must first create a team, and add members, before an application is configured.</li>
+    <li>Configure an application in the sandbox environment and test your configurations. Review our <a href="#home-register-checklist-accordion">checklist</a> to make sure you have all the necessary information.</li>
+    <li>Once your application is ready, create a new application and request a promotion to production. You must have a signed Inter-Agency Agreement (IAA) to go live.</li>
+  </ol>
+  <div class="margin-y-6">
+    <a href="/service_providers" class="usa-button margin-bottom-1">View applications</a> <a href="/teams" class="usa-button usa-button--outline">View teams</a>
+  </div>
+  <div id="home-register-checklist-accordion" class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3 maxw-tablet">
+    <button class="usa-accordion__button padding-y-1" aria-expanded="false" aria-controls="home-register-checklist">
+      <h2 class="font-body-md text-normal line-height-sans-1">Information you need to register your application</h2>
+    </button>
+    <div id="home-register-checklist" class="usa-accordion__content">
+      <ul class="usa-list list-style-checkbox">
+        <li>Inter-agency agreement application name</li>
+        <li>Public-face, friendly application name</li>
+        <li>Implementation protocols (SAML or Open ID Connect)</li>
+        <li>Service level as either Authentication only or Identity Verification</li>
+        <li>Data you need to keep and collect and other <a href="https://developers.login.gov/attributes/">user attributes</a></li>
+        <li><a href="https://developers.login.gov/oidc/authorization/">Authentication assurance</a> levels</li>
+        <li>Agency logo file</li>
+        <li>A public/private key pair and the <a href="https://developers.login.gov/testing/#creating-a-public-certificate">public certificate</a> to validate your website and application’s authenticity</li>
+        <li>Content for the “sign up”, “sign in”, and “forgot password” language if you do not want to use the pre-selected options. Custom “Help” text is optional.</li>
+      </ul>
+    </div>
+
+  </div>
+  <p>If you have any questions, submit a support ticket through the <a href="https://zendesk.login.gov/">partner support help desk</a>.</p>
+</div>
+<%= javascript_include_tag 'anchor_accordion' %>
