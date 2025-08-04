@@ -28,7 +28,7 @@ class AttributeBundleValidator < ActiveModel::Validator
   ALL_ATTRIBUTES = Hash[
     *(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).
       collect { |v| [v, v] }.
-      flatten
+      flatten,
   ].freeze
 
   def validate(record)
