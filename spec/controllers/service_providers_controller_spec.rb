@@ -649,33 +649,35 @@ describe ServiceProvidersController do
     end
 
     describe 'Production gate is enabled' do
+      let(:prod_app) { create(:service_provider, :with_ial_1, :with_prod_config, team:) }
+
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
       context 'with Partner user' do
         before do
-          create(:team_membership, :partner_admin, user: user, team: sp.team)
+          create(:team_membership, :partner_admin, user: user, team: prod_app.team)
           sign_in(user)
-          sp.ial = '1'
+          prod_app.ial = '1'
         end
 
         it 'does not allow updates to IAL' do
           put :update, params: {
-            id: sp.id,
-            service_provider: { issuer: sp.issuer, ial: '2' },
+            id: prod_app.id,
+            service_provider: { issuer: prod_app.issuer, ial: '2' },
           }
-          sp.reload
-          expect(sp.ial).to eq(1)
+          prod_app.reload
+          expect(prod_app.ial).to eq(1)
           expect(logger_double).to have_received(:unpermitted_params_attempt)
         end
 
         it 'logs changes' do
           put :update, params: {
-            id: sp.id,
+            id: prod_app.id,
             service_provider: { description: "logging test #{rand(1...1000) }" },
           }
-          sp.reload
+          prod_app.reload
           expect(logger_double).to have_received(:record_save) do |op, record|
             expect(op).to eq('update')
             expect(record.class.name).to eq('ServiceProvider')
@@ -690,11 +692,11 @@ describe ServiceProvidersController do
 
         it 'allows updates to IAL' do
           put :update, params: {
-            id: sp.id,
-            service_provider: { issuer: sp.issuer, ial: 2 },
+            id: prod_app.id,
+            service_provider: { issuer: prod_app.issuer, ial: 2 },
           }
-          sp.reload
-          expect(sp.ial).to eq(2)
+          prod_app.reload
+          expect(prod_app.ial).to eq(2)
         end
       end
     end
