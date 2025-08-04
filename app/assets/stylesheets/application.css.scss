@@ -130,3 +130,14 @@
 *:not(p) + p.usa-error-message {
   margin: 0;
 }
+
+.list-style-checkbox {
+  & li {
+    padding-left: 1ex;
+
+    &::marker {
+      font-size: larger;
+      content: '☐';
+    }
+  }
+}
