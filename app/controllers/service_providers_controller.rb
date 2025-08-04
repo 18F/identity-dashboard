@@ -36,9 +36,11 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def edit
-    if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
+    @prod_like_env = IdentityConfig.store.prod_like_env
+    return unless IdentityConfig.store.service_config_wizard_enabled && @prod_like_env
+
       redirect_to service_config_wizard_index_path(service_provider: params[:id])
-    end
+
   end
 
   def create
@@ -173,6 +175,7 @@ value: func.to_proc.call(@service_provider) })
 
     @service_provider.valid?
     @service_provider.valid_saml_settings?
+    @service_provider.valid_prod_config?
     @service_provider.valid_localhost_uris? if !current_user.logingov_admin?
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?

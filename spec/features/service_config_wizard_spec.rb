@@ -517,6 +517,31 @@ feature 'Service Config Wizard' do
         expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
       end
+
+      it 'does not show prod_config field' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate,
+                                 :with_prod_config,
+                                 team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path('settings')
+        expect(page).to_not have_css('#wizard_step_prod_config_false')
+        expect(page).to_not have_css('#wizard_step_prod_config_true')
+      end
+
+      it 'does not allow sandbox configs' do
+        existing_config = create(:service_provider,
+                                 :ready_to_activate,
+                                 team:)
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        visit service_config_wizard_path(WizardStep::STEPS.last)
+        click_on 'Update app'
+
+        expect(page).to have_content('Error(s) found in these fields:')
+        expect(page).to have_content('prod_config')
+      end
     end
   end
 

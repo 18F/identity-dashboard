@@ -434,25 +434,26 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     context 'and Production gate is enabled' do
-      let(:existing_service_provider) do
+      let(:prod_service_provider) do
         create(:service_provider,
                :ready_to_activate_ial_1,
                team: create(:team),
-               issuer: "issuer:string:#{rand(1...1000)}",
+               prod_config: true,
+               issuer: 'issuer:string:#{rand(1...1000)}',
                friendly_name: 'Friendly App')
       end
 
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
-        put :create, params: { service_provider: existing_service_provider }
+        put :create, params: { service_provider: prod_service_provider }
       end
 
       it 'allows Login.gov Admins to update IAL on existing configs' do
-        initial_ial = existing_service_provider.reload.attributes['ial']
+        initial_ial = prod_service_provider.reload.attributes['ial']
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
         put :update, params: { id: 'authentication', wizard_step: { ial: 2 } }
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
-        updated_ial = existing_service_provider.reload.attributes['ial']
+        updated_ial = prod_service_provider.reload.attributes['ial']
         expect(updated_ial).to_not eq(initial_ial)
       end
     end
