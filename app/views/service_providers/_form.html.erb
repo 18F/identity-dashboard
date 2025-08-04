@@ -1,7 +1,7 @@
 <%= form.error_notification %>
 <fieldset class='usa-fieldset'>
 
-<% if prod_like_env? %>
+<% if !prod_like_env? %>
   <legend class='usa-sr-only'>Portal Configuration</legend>
     <%= form.label :prod_config,
                   label: 'Portal Configuration',
