@@ -133,10 +133,10 @@
 
 .list-style-checkbox {
   & li {
-    padding-left: 1ex;
+    padding-left: 0.5em;
 
     &::marker {
-      font-size: larger;
+      font-size: 1.2em;
       content: '☐';
     }
   }

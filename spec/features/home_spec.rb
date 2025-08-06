@@ -35,6 +35,7 @@ feature 'Home' do
     end
 
     scenario 'should see admin nav menu items' do
+      expect(page).to have_button('Admin')
       click_on 'Admin'
       api_auth_link = find_link 'Your API auth token'
       expect(api_auth_link['href']).to eq(auth_tokens_path)
@@ -44,17 +45,25 @@ feature 'Home' do
   end
 
   context 'a user who is not an admin' do
-    scenario 'should see manage teams and not see manage users' do
-      user = create(:user)
+    let(:user) { create(:user) }
 
+    before do
       login_as(user)
       visit root_path
+    end
 
-      expect(page).to have_content('Teams')
-      expect(page).to_not have_content('Users')
-      expect(page).to_not have_content('Admin')
-      expect(page).to_not have_content('API auth')
-      expect(page).to_not have_content('permissions report')
+    scenario 'should see manage teams and not see manage users' do
+      expect(page).to_not have_button('Admin')
+      expect(page).to have_content(I18n.t('headings.welcome'))
+    end
+
+    scenario 'can click on checklist accordion', :js do
+      expect(page).to have_css('.usa-accordion > button[aria-expanded="false"]')
+      expect(page).to_not have_content('Data you need')
+      click_on 'checklist'
+      expect(page).to have_css('.usa-accordion > button[aria-expanded="true"]')
+      expect(page).to_not have_css('.usa-accordion > button[aria-expanded="false"]')
+      expect(page).to have_content('Data you need')
     end
   end
 
