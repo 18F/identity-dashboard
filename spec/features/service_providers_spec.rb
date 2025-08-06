@@ -704,7 +704,7 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to_not have_content('Success')
-      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
+      expect(page).to have_content('Error(s) found in these fields:')
     end
 
     scenario 'user updates service provider but service provider updater fails' do
@@ -720,7 +720,7 @@ feature 'Service Providers CRUD' do
       check 'last_name'
       click_on 'Update'
 
-      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
+      expect(page).to have_content('Error(s) found in these fields:')
     end
 
     context 'when managing certificates' do

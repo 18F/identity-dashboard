@@ -197,7 +197,7 @@ class ServiceProvider < ApplicationRecord
       if err.attribute == :prod_config
         error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
       else
-        error_msg += "<li>#{I18n.t("config.#{err.attribute}")}</li>"
+        error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
       end
     end
     # this prevents cookie size error, it is an estimate
