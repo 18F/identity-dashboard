@@ -10,7 +10,8 @@
     <li>Once your application is ready, create a new application and request a promotion to production. You must have a signed Inter-Agency Agreement (IAA) to go live.</li>
   </ol>
   <div class="margin-y-6">
-    <a href="/service_providers" class="usa-button margin-bottom-1">View applications</a> <a href="/teams" class="usa-button usa-button--outline">View teams</a>
+    <%= link_to t('headings.service_providers.index'), service_providers_path, class: 'usa-button margin-bottom-1' %>
+    <%= link_to t('headings.teams.index'), teams_path, class: 'usa-button usa-button--outline' %>
   </div>
   <div id="home-register-checklist-accordion" class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3 maxw-tablet">
     <button class="usa-accordion__button padding-y-1" aria-expanded="false" aria-controls="home-register-checklist">

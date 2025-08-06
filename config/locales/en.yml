@@ -39,17 +39,14 @@ en:
     welcome: Welcome to the Login.gov Partner Portal
     service_providers:
       edit: Edit service provider
-      index: All service providers
+      index: View applications
       main: My service providers
       new: Create a new service provider
       new_app: Create a new app
       show: 'Service Provider: %{friendly_name}'
     teams:
-      edit: Edit team membership
-      index: Team memberships
-      new: Create new team membership
+      index: View teams
       new_team: Create a new team
-      sub_index: Manage team memberships
       temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an application in this team. Only add an agency if you are prepared to migrate your users across applications."
     users:
       edit: Edit user
