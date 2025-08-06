@@ -4,6 +4,29 @@ en:
     attributes:
       wizard_step:
         group_id: "Team"
+  config:
+    acs_url: Assertion consumer service URL
+    app_name: App name
+    assertion_consumer_logout_service_url: Assertion consumer logout service URL
+    attribute_bundle: Attribute bundle
+    block_encryption: SAML assertion encryption
+    cert: Public Certificate
+    default_aal: Default Authentication Assurance Level (AAL)
+    description: Description
+    failure_to_proof_url: Failure to proof URL
+    friendly_name: Friendly name
+    group_id: Team
+    help_text: Help Text
+    ial: Level of service (IAL)
+    identity_protocol: Identity protocol
+    issuer: Issuer
+    logo_file: Logo
+    prod_config: Portal configuration
+    push_notification_url: Push notification URL
+    redirect_uris: Redirect URIs
+    return_to_sp_url: Return to app URL
+    signed_response_message_requested: Signed response message requested
+    sp_initiated_login_url: SP initiated Login URL
   errors:
     not_authorized: You are not authorized to perform this action.
   footer:

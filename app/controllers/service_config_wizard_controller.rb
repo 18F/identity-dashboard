@@ -284,16 +284,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
     return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
 
-    errors = "Error(s) found in these fields:<ul class='usa-list'>"
-    draft_service_provider.errors.each do |error|
-      errors += "<li>#{error.attribute.to_s}</li>"
-    end
-    # this prevents cookie size error, it is an estimate
-    if errors.bytesize < 350
-      flash[:error] = "#{errors}</ul>"
-    else
-      flash[:error] = 'Please fix errors on multiple pages of the Config Wizard.'
-    end
+    flash[:error] = draft_service_provider.compile_errors
   end
 
   def save_service_provider(service_provider)
