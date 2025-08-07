@@ -6,7 +6,11 @@
         <%# TODO: remove `measure-3` when Wizard is live %>
         <div class="usa-alert measure-3 usa-alert--<%= alert_name %>" >
           <div class="usa-alert__body">
-            <p class="usa-alert__text"><%= sanitize(msg) %></p>
+            <% if !msg.match('</') %>
+              <p class="usa-alert__text"><%= sanitize(msg) %></p>
+            <% else %>
+              <%= sanitize(msg) %>
+            <% end %>
           </div>
         </div>
       <% end %>

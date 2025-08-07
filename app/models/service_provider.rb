@@ -192,7 +192,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def compile_errors
-    error_msg = "Error(s) found in these fields:<ul class='usa-list'>"
+    error_msg = "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     errors.each do |err|
       if err.attribute == :prod_config
         error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
