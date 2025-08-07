@@ -62,6 +62,21 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Unauthorized')
     end
 
+    scenario 'partner cannot change config to prod-ready with localhost URLs' do
+      service_provider = create(:service_provider,
+                                :ready_to_activate,
+                                :with_sandbox,
+                                :with_localhost,
+                                team:)
+
+      visit edit_service_provider_path(service_provider)
+      choose 'Ready for Production'
+      click_on 'Update'
+
+      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page).to have_content(I18n.t('service_provider_form.title.push_notification_url'))
+    end
+
     scenario 'saml fields are shown on sp show page when saml is selected' do
       service_provider = create(:service_provider, :saml, team:)
 

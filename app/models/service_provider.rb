@@ -175,7 +175,7 @@ class ServiceProvider < ApplicationRecord
     settings.each do |attr|
       changes = self.changes[attr]
       if prod_localhost?(attr)
-        if long_form && changed_to_prod
+        if long_form && changed_to_prod && errors.where(:prod_config).empty?
           errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
         end
         if changes && changes[0] != changes[1]
