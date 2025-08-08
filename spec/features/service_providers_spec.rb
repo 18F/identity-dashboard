@@ -64,7 +64,8 @@ feature 'Service Providers CRUD' do
 
     scenario 'partner cannot change config to prod-ready with localhost URLs' do
       service_provider = create(:service_provider,
-                                :ready_to_activate,
+                                :ready_to_activate_ial_2,
+                                :with_oidc_jwt,
                                 :with_sandbox,
                                 :with_localhost,
                                 team:)
@@ -74,7 +75,15 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
-      expect(page).to have_content(I18n.t('service_provider_form.title.push_notification_url'))
+
+      choose 'Ready for Production'
+      fill_in 'service_provider_push_notification_url', with: 'http://localhost:0'
+      fill_in 'service_provider_failure_to_proof_url', with: 'http://localhost:0'
+      click_on 'Update'
+
+      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page.body).to include("<li>#{I18n.t('service_provider_form.title.push_notification_url')}")
+      expect(page.body).to include("<li>#{I18n.t('service_provider_form.title.failure_to_proof_url')}")
     end
 
     scenario 'saml fields are shown on sp show page when saml is selected' do

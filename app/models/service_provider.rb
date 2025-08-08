@@ -153,7 +153,8 @@ class ServiceProvider < ApplicationRecord
 
   end
 
-  def valid_localhost_uris?(long_form = false)
+  # in the case of Long Form, :long_form should be passed in for extra checks.
+  def valid_localhost_uris?(form_kind = :wizard)
     saml_settings = %w[
       acs_url
       assertion_consumer_logout_service_url
@@ -175,7 +176,7 @@ class ServiceProvider < ApplicationRecord
     settings.each do |attr|
       changes = self.changes[attr]
       if prod_localhost?(attr)
-        if long_form && changed_to_prod && errors.where(:prod_config).empty?
+        if form_kind == :long_form && changed_to_prod && errors.where(:prod_config).empty?
           errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
         end
         if changes && changes[0] != changes[1]
