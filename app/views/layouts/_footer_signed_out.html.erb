@@ -1,0 +1,75 @@
+<div class="usa-identifier">
+  <section class="usa-identifier__section usa-identifier__section--masthead"
+    aria-label="<%= t('footer.labels.identifier') %>">
+    <div class="usa-identifier__container">
+      <div class="usa-identifier__logos">
+        <a href="https://www.gsa.gov" class="usa-identifier__logo">
+          <img class="usa-identifier__logo-img" src="<%= asset_path 'gsa-logo.svg' %>"
+            alt="<%= t('footer.labels.gsa_link_logo') %>" />
+        </a>
+      </div>
+      <div class="usa-identifier__identity" aria-label="<%= t('footer.labels.description') %>">
+        <p class="usa-identifier__identity-domain">Login.gov</p>
+        <p class="usa-identifier__identity-disclaimer">
+          <%= t('footer.disclaimer_html') %>
+        </p>
+      </div>
+    </div>
+  </section>
+  <nav class="usa-identifier__section usa-identifier__section--required-links"
+    aria-label="<%= t('footer.labels.links') %>">
+    <div class="usa-identifier__container">
+      <ul class="usa-identifier__required-links-list">
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov" class="usa-identifier__required-link">
+            <%= t('footer.about_agency') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov/website-information/accessibility-aids" class="usa-identifier__required-link">
+            <%= t('footer.accessibility') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov/reference/freedom-of-information-act-foia"
+            class="usa-identifier__required-link usa-link">
+            <%= t('footer.foia') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov/reference/civil-rights-programs/the-no-fear-act"
+            class="usa-identifier__required-link usa-link">
+            <%= t('footer.no_fear_act') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsaig.gov/" class="usa-identifier__required-link usa-link">
+            <%= t('footer.ig') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov/reference/reports/budget-performance"
+            class="usa-identifier__required-link usa-link">
+            <%= t('footer.performance') %>
+          </a>
+        </li>
+        <li class="usa-identifier__required-links-item">
+          <a href="https://www.gsa.gov/website-information/website-policies"
+            class="usa-identifier__required-link usa-link">
+            <%= t('footer.privacy') %>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <section class="usa-identifier__section usa-identifier__section--usagov">
+    <div class="usa-identifier__container">
+      <div class="usa-identifier__usagov-description">
+        <%= t('footer.usa_gov.text') %>
+      </div>
+      <a href="https://www.usa.gov/" class="usa-link">
+        <%= t('footer.usa_gov.link') %>
+      </a>
+    </div>
+  </section>
+</div>

@@ -63,6 +63,50 @@
 
 .footer {
   background-color: $theme-color-primary-lighter;
+
+  &__signed-in {
+    font-size: .75rem;
+
+    @include at-media('desktop') {
+      display: flex;
+      justify-content: space-between;
+
+      & > * {
+        flex-grow: 1;
+      }
+    }
+
+    a {
+      @include u-padding-y(1);
+      text-decoration: none;
+      &,
+      &:visited {
+        color: color($theme-link-reverse-color);
+      }
+
+      &:hover {
+        color: color($theme-link-reverse-hover-color);
+      }
+
+      @include at-media('desktop') {
+        @include u-padding-y(0);
+      }
+    }
+
+    img {
+      vertical-align: bottom;
+    }
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @include at-media('desktop') {
+      @include u-margin-y(0);
+    }
+  }
 }
 
 .system-status {
