@@ -62,6 +62,34 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Unauthorized')
     end
 
+    scenario 'partner cannot change config to prod-ready with localhost URLs' do
+      service_provider = create(:service_provider,
+                                :ready_to_activate_ial_2,
+                                :with_oidc_jwt,
+                                :with_sandbox,
+                                :with_localhost,
+                                team:)
+
+      visit edit_service_provider_path(service_provider)
+      choose 'Ready for Production'
+      click_on 'Update'
+
+      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+
+      choose 'Ready for Production'
+      fill_in 'service_provider_push_notification_url', with: 'http://localhost:0'
+      fill_in 'service_provider_failure_to_proof_url', with: 'http://localhost:0'
+      click_on 'Update'
+
+      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page.body).to include(
+        "<li>#{I18n.t('service_provider_form.title.push_notification_url')}",
+      )
+      expect(page.body).to include(
+        "<li>#{I18n.t('service_provider_form.title.failure_to_proof_url')}",
+      )
+    end
+
     scenario 'saml fields are shown on sp show page when saml is selected' do
       service_provider = create(:service_provider, :saml, team:)
 
@@ -704,7 +732,7 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to_not have_content('Success')
-      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
+      expect(page).to have_content('Error(s) found in these fields:')
     end
 
     scenario 'user updates service provider but service provider updater fails' do
@@ -720,7 +748,7 @@ feature 'Service Providers CRUD' do
       check 'last_name'
       click_on 'Update'
 
-      expect(page).to have_content(I18n.t('notices.service_providers_refresh_failed'))
+      expect(page).to have_content('Error(s) found in these fields:')
     end
 
     context 'when managing certificates' do

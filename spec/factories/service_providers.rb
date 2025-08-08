@@ -93,6 +93,10 @@ FactoryBot.define do
       email_nameid_format_allowed { true }
     end
 
+    trait :with_localhost do
+      push_notification_url { 'http://localhost:1' }
+    end
+
     transient do
       with_team_from_user { nil }
       after(:build) do |service_provider, context|

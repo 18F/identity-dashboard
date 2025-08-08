@@ -153,7 +153,8 @@ class ServiceProvider < ApplicationRecord
 
   end
 
-  def valid_localhost_uris?
+  # in the case of Long Form, :long_form should be passed in for extra checks.
+  def valid_localhost_uris?(form_kind = :wizard)
     saml_settings = %w[
       acs_url
       assertion_consumer_logout_service_url
@@ -170,10 +171,17 @@ class ServiceProvider < ApplicationRecord
     ]
 
     settings = saml? ? saml_settings : oidc_settings
+    prod_config_changed = self.changes['prod_config']
+    changed_to_prod = prod_config_changed && prod_config_changed[1]
     settings.each do |attr|
       changes = self.changes[attr]
-      if prod_localhost?(attr) && changes && changes[0] != changes[1]
-        errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
+      if prod_localhost?(attr)
+        if form_kind == :long_form && changed_to_prod && errors.where(:prod_config).empty?
+          errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
+        end
+        if changes && changes[0] != changes[1]
+          errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
+        end
       end
     end
   end
@@ -182,6 +190,24 @@ class ServiceProvider < ApplicationRecord
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
     logo_file.blob.download if logo_file.blob
+  end
+
+  def compile_errors
+    error_msg =
+      "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
+    errors.each do |err|
+      if err.attribute == :prod_config
+        error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
+      else
+        error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
+      end
+    end
+    # this prevents cookie size error, it is an estimate
+    if error_msg.bytesize < 350
+      "#{error_msg}</ul>"
+    else
+      'Please fix errors on multiple fields.'
+    end
   end
 
   private

@@ -176,11 +176,11 @@ value: func.to_proc.call(@service_provider) })
     @service_provider.valid?
     @service_provider.valid_saml_settings?
     @service_provider.valid_prod_config?
-    @service_provider.valid_localhost_uris? if !current_user.logingov_admin?
+    @service_provider.valid_localhost_uris?(:long_form) if !current_user.logingov_admin?
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
-    flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 139"
+    flash[:error] = @service_provider.compile_errors
     render initial_action
   end
 

@@ -418,7 +418,7 @@ describe ServiceProvidersController do
             service_provider: sp_logo_params,
           }
           expect(flash['error']).to_not be_blank
-          expect(flash['error']).to include('Ref: 139')
+          expect(flash['error']).to include(I18n.t 'service_provider_form.title.logo_file')
         end
 
         it 'does not fail if not updating the file' do

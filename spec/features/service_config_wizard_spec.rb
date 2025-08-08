@@ -540,7 +540,7 @@ feature 'Service Config Wizard' do
         click_on 'Update app'
 
         expect(page).to have_content('Error(s) found in these fields:')
-        expect(page).to have_content('prod_config')
+        expect(page).to have_content('Portal Config cannot be Production')
       end
     end
   end
