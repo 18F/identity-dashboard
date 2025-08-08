@@ -35,6 +35,7 @@ feature 'Home' do
     end
 
     scenario 'should see admin nav menu items' do
+      expect(page).to have_button('Admin')
       click_on 'Admin'
       api_auth_link = find_link 'Your API auth token'
       expect(api_auth_link['href']).to eq(auth_tokens_path)
@@ -44,47 +45,25 @@ feature 'Home' do
   end
 
   context 'a user who is not an admin' do
-    scenario 'should see manage teams and not see manage users' do
-      user = create(:user)
+    let(:user) { create(:user) }
 
+    before do
       login_as(user)
       visit root_path
-
-      expect(page).to have_content('Teams')
-      expect(page).to_not have_content('Users')
-      expect(page).to_not have_content('Admin')
-      expect(page).to_not have_content('API auth')
-      expect(page).to_not have_content('permissions report')
-    end
-  end
-
-  context 'prod_like_env' do
-    before do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
     end
 
-    context 'a user who is a login_admin in prod_like_env' do
-      let(:logingov_admin) { create(:user, :logingov_admin) }
-
-
-      scenario 'should see create team button' do
-        login_as(logingov_admin)
-        visit root_path
-
-        expect(page).to have_content('Create your first team')
-      end
+    scenario 'should see manage teams and not see manage users' do
+      expect(page).to_not have_button('Admin')
+      expect(page).to have_content(I18n.t('headings.welcome'))
     end
 
-    context 'a user who is not a login_admin in prod_like_env' do
-      scenario 'should not see create team button' do
-        user = create(:user)
-
-        login_as(user)
-        visit root_path
-
-        expect(page).to_not have_content('Create a new team')
-        expect(page).to_not have_content('Create your first team')
-      end
+    scenario 'can click on checklist accordion', :js do
+      expect(page).to have_css('.usa-accordion > button[aria-expanded="false"]')
+      expect(page).to_not have_content('Data you need')
+      click_on 'checklist'
+      expect(page).to have_css('.usa-accordion > button[aria-expanded="true"]')
+      expect(page).to_not have_css('.usa-accordion > button[aria-expanded="false"]')
+      expect(page).to have_content('Data you need')
     end
   end
 end

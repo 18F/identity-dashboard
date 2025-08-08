@@ -148,41 +148,73 @@ feature 'TeamMembership CRUD' do
     expect(page).to have_content('updated team')
   end
 
-  scenario 'Index' do
-    org1 = create(:team)
-    org2 = create(:team)
-    team = create(:team)
-    sp = create(:service_provider, team:)
+  describe 'Index' do
+    scenario 'as logingov_admin' do
+      org1 = create(:team)
+      org2 = create(:team)
+      team = create(:team)
+      sp = create(:service_provider, team:)
 
-    login_as(logingov_admin)
-    visit teams_all_path
+      login_as(logingov_admin)
+      visit teams_all_path
 
-    expect(page).to have_content(org1.name)
-    expect(page).to have_content(org2.name)
-    expect(page).to have_content(org1.agency.name)
-    expect(page).to have_content(org2.agency.name)
-    expect(page).to have_content(org1.description)
-    expect(page).to have_content(org2.description)
-    expect(page).to have_content(sp.friendly_name)
-  end
+      expect(page).to have_content(org1.name)
+      expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.agency.name)
+      expect(page).to have_content(org2.agency.name)
+      expect(page).to have_content(org1.description)
+      expect(page).to have_content(org2.description)
+      expect(page).to have_content(sp.friendly_name)
+    end
 
-  scenario 'Index (without RBAC)' do
-    disable_rbac
-    org1 = create(:team)
-    org2 = create(:team)
-    team = create(:team)
-    sp = create(:service_provider, team:)
+    scenario 'without RBAC' do
+      disable_rbac
+      org1 = create(:team)
+      org2 = create(:team)
+      team = create(:team)
+      sp = create(:service_provider, team:)
 
-    login_as(logingov_admin)
-    visit teams_all_path
+      login_as(logingov_admin)
+      visit teams_all_path
 
-    expect(page).to have_content(org1.name)
-    expect(page).to have_content(org2.name)
-    expect(page).to have_content(org1.agency.name)
-    expect(page).to have_content(org2.agency.name)
-    expect(page).to have_content(org1.description)
-    expect(page).to have_content(org2.description)
-    expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_content(org1.name)
+      expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.agency.name)
+      expect(page).to have_content(org2.agency.name)
+      expect(page).to have_content(org1.description)
+      expect(page).to have_content(org2.description)
+      expect(page).to have_content(sp.friendly_name)
+    end
+
+    context 'in a prod_like_env' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      context 'a user who is a login_admin' do
+        let(:logingov_admin) { create(:user, :logingov_admin) }
+
+
+        scenario 'should see create team button' do
+          login_as(logingov_admin)
+          visit teams_path
+
+          expect(page).to have_content('Create your first team')
+        end
+      end
+
+      context 'a user who is not a login_admin' do
+        scenario 'should not see create team button' do
+          user = create(:user)
+
+          login_as(user)
+          visit teams_path
+
+          expect(page).to_not have_content('Create a new team')
+          expect(page).to_not have_content('Create your first team')
+        end
+      end
+    end
   end
 
   describe 'show' do
