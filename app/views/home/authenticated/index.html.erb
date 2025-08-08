@@ -9,10 +9,11 @@
     <li>Configure an application in the sandbox environment and test your configurations. Review our <a href="#home-register-checklist-accordion">checklist</a> to make sure you have all the necessary information.</li>
     <li>Once your application is ready, create a new application and request a promotion to production. You must have a signed Inter-Agency Agreement (IAA) to go live.</li>
   </ol>
-  <div class="margin-y-6">
+  <div class="margin-top-6 margin-bottom-3 padding-bottom-6 maxw-tablet border-bottom-1px border-base-lighter">
     <%= link_to t('headings.service_providers.index'), service_providers_path, class: 'usa-button margin-bottom-1' %>
     <%= link_to t('headings.teams.index'), teams_path, class: 'usa-button usa-button--outline' %>
   </div>
+
   <div id="home-register-checklist-accordion" class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3 maxw-tablet">
     <button class="usa-accordion__button padding-y-1" aria-expanded="false" aria-controls="home-register-checklist">
       <h2 class="font-body-md text-normal line-height-sans-1">Information you need to register your application</h2>
@@ -24,7 +25,7 @@
         <li>Implementation protocols (SAML or Open ID Connect)</li>
         <li>Service level as either Authentication only or Identity Verification</li>
         <li>Data you need to keep and collect and other <a href="https://developers.login.gov/attributes/">user attributes</a></li>
-        <li><a href="https://developers.login.gov/oidc/authorization/">Authentication assurance</a> levels</li>
+        <li><a href="https://developers.login.gov/oidc/authorization/#aal_values">Authentication assurance</a> levels</li>
         <li>Agency logo file</li>
         <li>A public/private key pair and the <a href="https://developers.login.gov/testing/#creating-a-public-certificate">public certificate</a> to validate your website and application’s authenticity</li>
         <li>Content for the “sign up”, “sign in”, and “forgot password” language if you do not want to use the pre-selected options. Custom “Help” text is optional.</li>
