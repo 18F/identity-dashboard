@@ -131,14 +131,7 @@
         <% end %>
       </div>
     </main>
-
-    <% if user_signed_in? %>
-      <div class="grid-container usa-footer__return-to-top">
-        <a href="#">Return to top</a>
-      </div>
-    <% end %>
     <%= render 'layouts/footer' %>
-
     <%= javascript_include_tag 'application.js' %>
     <%= javascript_include_tag 'main.js' %>
   </body>

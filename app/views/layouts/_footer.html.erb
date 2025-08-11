@@ -1,4 +1,9 @@
 <footer class="footer">
+  <% if user_signed_in? %>
+    <div class="grid-container usa-footer__return-to-top">
+      <a href="#">Return to top</a>
+    </div>
+  <% end %>
   <%= render 'layouts/footer_navigation' %>
   <%= render "layouts/footer_signed_#{user_signed_in? ? 'in' : 'out'}" %>
 </footer>
