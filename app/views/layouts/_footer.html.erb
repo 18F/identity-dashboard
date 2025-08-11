@@ -1,7 +1,9 @@
 <footer class="footer">
   <% if user_signed_in? %>
-    <div class="grid-container usa-footer__return-to-top">
-      <a href="#">Return to top</a>
+    <div class="usa-footer__return-to-top">
+      <div class="grid-container">
+        <a href="#">Return to top</a>
+      </div>
     </div>
   <% end %>
   <%= render 'layouts/footer_navigation' %>
