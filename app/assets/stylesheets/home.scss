@@ -77,7 +77,8 @@
     }
 
     a {
-      @include u-padding-y(1);
+      @include u-margin-top(2);
+      @include u-margin-x(1);
       text-decoration: none;
       &,
       &:visited {
@@ -86,10 +87,6 @@
 
       &:hover {
         color: color($theme-link-reverse-hover-color);
-      }
-
-      @include at-media('desktop') {
-        @include u-padding-y(0);
       }
     }
 
@@ -105,6 +102,7 @@
 
     @include at-media('desktop') {
       @include u-margin-y(0);
+      justify-content: end;
     }
   }
 }
