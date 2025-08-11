@@ -64,6 +64,15 @@
 .footer {
   background-color: $theme-color-primary-lighter;
 
+  &-navigation__section {
+    @include u-margin-top(2);
+    @include u-margin-bottom(3);
+
+    @include at-media('tablet') {
+      @include u-margin-top(3);
+    }
+  }
+
   &__signed-in {
     font-size: .75rem;
 
@@ -110,12 +119,13 @@
 .system-status {
   @include u-border-top(1px, 'primary-light');
   @include u-padding-top(2);
-  @include u-margin-top(1);
+  @include u-margin-top(2);
   display: flex;
   align-items: center;
 
   @include at-media('tablet') {
     border-top: none;
+    @include u-margin-top(1);
   }
 
   &::before {

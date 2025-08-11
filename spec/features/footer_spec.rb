@@ -25,7 +25,7 @@ feature 'Footer' do
   end
 
   context 'links section' do
-    let(:section) { footer.find('.usa-identifier') }
+    let(:section) { footer.find('.footer__signed-in') }
 
     scenario 'should include GSA link' do
       gsa_link = section.find('[href="https://www.gsa.gov"]')
@@ -40,19 +40,19 @@ feature 'Footer' do
       expect(docs_link.tag_name).to eq('a')
       expect(docs_link).to have_content('Developer Guide')
     end
-    scenario 'should include GSA link' do
+    scenario 'should include Contact link' do
       gsa_link = section.find('[href="https://developers.login.gov/support/#contacting-partner-support"]')
 
       expect(gsa_link.tag_name).to eq('a')
       expect(gsa_link).to have_content('Contact')
     end
-    scenario 'should include GSA link' do
+    scenario 'should include Privacy & security link' do
       gsa_link = section.find('[href="https://www.login.gov/policy/"]')
 
       expect(gsa_link.tag_name).to eq('a')
       expect(gsa_link).to have_content('Privacy & security')
     end
-    scenario 'should include GSA link' do
+    scenario 'should include Accessibility link' do
       gsa_link = section.find('[href="https://www.login.gov/accessibility/"]')
 
       expect(gsa_link.tag_name).to eq('a')
