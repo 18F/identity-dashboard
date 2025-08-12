@@ -12,8 +12,10 @@ if Rails.env.development?
   User.find_or_create_by email: 'admin@gsa.gov' do |user|
     user.first_name = 'Addy'
     user.last_name = 'Ministrator'
-    user.admin = true
+    user.admin = true # TODO: delete legacy admin property
+    TeamMembership.create_logingov_admin!(user)
   end
 end
 
 Role.initialize_roles if Rails.env.test?
+Team.initialize_teams if Rails.env.test?

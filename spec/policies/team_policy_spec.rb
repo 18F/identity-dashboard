@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
   let(:other_team) { build(:team) }
 
@@ -179,7 +179,10 @@ describe TeamPolicy do
         end
 
         context 'if they are admins' do
-          before { nongov_email_user.update(admin: true) }
+          before do
+            nongov_email_user.update(admin: true) # TODO: delete use of legacy admin property
+            create(:team_membership, :logingov_admin, user: nongov_email_user)
+          end
 
           it 'are allowed to create teams' do
             expect(TeamPolicy).to permit(nongov_email_user)
@@ -224,7 +227,8 @@ describe TeamPolicy do
       end
 
       it 'allows nongov emails if they are logingov admins' do
-        nongov_email_user.admin = true
+        nongov_email_user.admin = true # TODO: delete legacy admin property
+        create(:team_membership, :logingov_admin, user: nongov_email_user)
         expect(TeamPolicy).to permit(nongov_email_user)
       end
 

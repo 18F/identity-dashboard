@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ToolPolicy do
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:team_user) { build(:user) }
   let(:other_user) { build(:user) }
   let(:team) { build(:team) }

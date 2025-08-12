@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe BannerPolicy, type: :policy do
   let(:user) { User.new }
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:banner) { build(:banner) }
   let(:ended_banner) do
     build(

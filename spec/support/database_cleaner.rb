@@ -10,6 +10,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    Team.initialize_teams { |_noop| }
     DatabaseCleaner.start
   end
 

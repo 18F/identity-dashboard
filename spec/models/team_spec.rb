@@ -22,6 +22,58 @@ describe Team do
     end
   end
 
+  describe '.initialize_teams' do
+    let(:logger) { object_double(Rails.logger) }
+
+    before do
+      allow(logger).to receive(:info).with(any_args)
+    end
+
+    context 'without the team in place' do
+      before do
+        Team.find_by(name: Team::INTERNAL_TEAM_ATTRIBUTES[:name])&.destroy
+      end
+      it 'initializes the Logingov team' do
+        expect do
+          Team.initialize_teams { |message| logger.info message }
+        end.to change { Team.count }.by 1
+
+        last_team = Team.last
+        Team::INTERNAL_TEAM_ATTRIBUTES.keys.each do |key|
+          expect(last_team[key]).to eq Team::INTERNAL_TEAM_ATTRIBUTES[key]
+        end
+        expect(logger).to have_received(:info).with "Created internal team ID " \
+          "'#{last_team.id}' with attributes '#{Team::INTERNAL_TEAM_ATTRIBUTES}'"
+      end
+
+      it 'uses the default logger with logger passed' do
+        allow(Rails.logger).to receive(:info)
+        expect do
+          Team.initialize_teams
+        end.to change { Team.count }.by 1
+
+        last_team = Team.last
+        Team::INTERNAL_TEAM_ATTRIBUTES.keys.each do |key|
+          expect(last_team[key]).to eq Team::INTERNAL_TEAM_ATTRIBUTES[key]
+          expect(Rails.logger).to have_received(:info).with "Created internal team ID " \
+            "'#{last_team.id}' with attributes '#{Team::INTERNAL_TEAM_ATTRIBUTES}'"
+        end
+      end
+    end
+
+    it 'does not initialize if the team name already exists' do
+      unless Team.find_by name: Team::INTERNAL_TEAM_ATTRIBUTES[:name]
+        create(:team, name: Team::INTERNAL_TEAM_ATTRIBUTES[:name])
+      end
+
+      expect do
+        Team.initialize_teams { |message| logger.info message }
+      end.to_not change { Team.count }
+
+      expect(logger).to_not have_received(:info)
+    end
+  end
+
   describe '.sorted' do
     it 'returns users in alpha ordered by email' do
       b_user = create(:user, email: 'b@example.com')

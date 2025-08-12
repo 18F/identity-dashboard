@@ -33,7 +33,7 @@ describe Teams::UsersController do
       expect do
         post :destroy, params: { team_id: team.id, id: user_to_delete.id }
       end.to change { TeamMembership.count }.by(-1)
-      expect(team.users).to_not include(user_to_delete)
+      expect(team.users.reload).to_not include(user_to_delete)
     end
   end
 
@@ -311,11 +311,12 @@ describe Teams::UsersController do
     end
 
     context 'as login.gov admin' do
-      let(:team_membership) { create(:team_membership) }
+      let(:team_membership) do
+        create(:team_membership, :logingov_admin, role: Role::LOGINGOV_ADMIN)
+      end
 
       before do
-        user.admin = true
-        user.save!
+        user.update_attribute :admin, true # TODO: delete legacy admin property
       end
 
       describe '#remove_confirm' do

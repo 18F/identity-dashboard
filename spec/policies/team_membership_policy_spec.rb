@@ -8,7 +8,7 @@ describe TeamMembershipPolicy do
   let(:partner_admin) { partner_admin_membership.user }
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 

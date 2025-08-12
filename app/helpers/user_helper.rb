@@ -4,7 +4,7 @@ module UserHelper
   end
 
   def can_delete_unconfirmed_users?(current_user, users)
-    current_user.admin? && users.any? { |user| user.unconfirmed? }
+    UserPolicy.new(current_user, User).manage_users? && users.any? { |user| user.unconfirmed? }
   end
 
   def sign_in_icon(user)

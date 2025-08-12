@@ -67,8 +67,9 @@ describe MakeAdmin do
           email: email,
           first_name: first_name,
           last_name: last_name,
-          admin: true,
+          admin: true, # TODO: delete legacy admin property
         )
+        TeamMembership.create_logingov_admin!(user)
 
         subject.call
 

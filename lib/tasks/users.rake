@@ -9,4 +9,10 @@ namespace :users do
     logger = Logger.new(STDOUT)
     TeamMembership.destroy_orphaned_memberships(logger:)
   end
+
+  desc 'Migrate old Login.gov Admin data representation to new Login.gov Admin data representation'
+  task migrate_logingov_admins: :environment do
+    logger = Logger.new(STDOUT)
+    TeamMembership.migrate_logingov_admins(logger:)
+  end
 end

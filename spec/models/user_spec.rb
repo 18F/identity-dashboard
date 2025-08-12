@@ -175,7 +175,7 @@ describe User do
     end
 
     it 'returns "Login.gov Admin" if the admin boolean is set' do
-      user = build(:user, admin: true)
+      user = create(:user, :logingov_admin)
       expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
     end
 

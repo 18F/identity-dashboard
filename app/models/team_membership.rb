@@ -27,6 +27,27 @@ class TeamMembership < ApplicationRecord
     data_for_deleted_teams.destroy_all
   end
 
+  def self.migrate_logingov_admins(logger: nil)
+    users_to_migrate = User.where(admin: true)
+    users_to_migrate.each do |user|
+      new_membership = transaction do
+        create_logingov_admin!(user)
+        self.last
+      end
+
+      if logger
+        logger.info "Created membership #{new_membership.id} for " \
+          "user #{user.email} on team #{team_id}"
+      end
+    end
+  end
+
+  def self.create_logingov_admin!(user)
+    raise ActiveRecord::RecordNotFound unless Team.internal_team
+
+    create!(user: user, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
+  end
+
   def role_exists_if_present
     return unless role_name
 
