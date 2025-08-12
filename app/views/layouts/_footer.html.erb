@@ -7,6 +7,6 @@
     </div>
   <% end %>
   <%= render 'layouts/footer_navigation' %>
-  <%= render "layouts/footer_signed_#{user_signed_in? ? 'in' : 'out'}" %>
+  <%= render rendered_layout %>
 </footer>
 
