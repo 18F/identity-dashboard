@@ -560,7 +560,7 @@ feature 'Service Config Wizard' do
 
         expect(page).to have_content('Error(s) found in these fields:')
         expect(page.body).to include(
-          "<li>#{I18n.t('service_provider_form.title.prod_config')}"
+          "<li>#{I18n.t('service_provider_form.title.prod_config')}",
         )
       end
 
@@ -579,7 +579,7 @@ feature 'Service Config Wizard' do
           click_on 'Next'
 
           expect(page).to have_content(
-            "Push notification url 'localhost' is not allowed on Production"
+            "Push notification url 'localhost' is not allowed on Production",
           )
         end
 
