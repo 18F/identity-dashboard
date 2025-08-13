@@ -487,6 +487,24 @@ feature 'Service Config Wizard' do
       end
     end
 
+    it 'does not allow promote to prod with existing localhost URLs' do
+      existing_config = create(:service_provider,
+                               :ready_to_activate,
+                               :with_sandbox,
+                               :with_localhost,
+                               team:)
+
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+      visit service_config_wizard_path('settings')
+      choose I18n.t'simple_form.labels.service_provider.production'
+      click_on 'Next'
+      visit service_config_wizard_path(WizardStep::STEPS.last)
+      click_on 'Update app'
+
+      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+    end
+
     describe 'and Production gate is enabled' do
       before do
         allow(IdentityConfig.store).to receive_messages(
@@ -533,6 +551,7 @@ feature 'Service Config Wizard' do
       it 'does not allow sandbox configs' do
         existing_config = create(:service_provider,
                                  :ready_to_activate,
+                                 :with_sandbox,
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
@@ -540,7 +559,45 @@ feature 'Service Config Wizard' do
         click_on 'Update app'
 
         expect(page).to have_content('Error(s) found in these fields:')
-        expect(page).to have_content('Portal Config cannot be Production')
+        expect(page.body).to include(
+          "<li>#{I18n.t('service_provider_form.title.prod_config')}"
+        )
+      end
+
+      context 'localhost URLs' do
+        it 'are not allowed to be added' do
+          existing_config = create(:service_provider,
+                             :ready_to_activate_ial_2,
+                             :with_oidc_jwt,
+                             :with_prod_config,
+                             team:)
+
+          visit service_provider_path(existing_config)
+          click_on 'Edit'
+          visit service_config_wizard_path('redirects');
+          fill_in 'wizard_step_push_notification_url', with: 'http://localhost:0000'
+          click_on 'Next'
+
+          expect(page).to have_content(
+            "Push notification url 'localhost' is not allowed on Production"
+          )
+        end
+
+        it 'are allowed to remain' do
+          existing_config = create(:service_provider,
+                             :ready_to_activate_ial_2,
+                             :with_oidc_jwt,
+                             :with_prod_config,
+                             :with_localhost,
+                             team:)
+
+          visit service_provider_path(existing_config)
+          click_on 'Edit'
+          visit service_config_wizard_path(WizardStep::STEPS.last);
+          click_on 'Update app'
+
+          expect(page).to_not have_content('Error(s) found in these fields:')
+        end
       end
     end
   end
