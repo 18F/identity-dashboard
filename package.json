@@ -1,8 +1,8 @@
 {
   "license": "CC0-1.0",
   "engines": {
-    "node": ">=18",
-    "npm": "6.x.x"
+    "node": ">=22",
+    "npm": "10.x.x"
   },
   "scripts": {
     "lint": "eslint . --ignore-pattern public --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage",
