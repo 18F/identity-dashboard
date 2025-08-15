@@ -10,7 +10,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    Team.initialize_teams { |_noop| }
+    Team.initialize_teams { |_ignored_logging| }
     DatabaseCleaner.start
   end
 
