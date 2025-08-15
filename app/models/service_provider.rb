@@ -149,12 +149,11 @@ class ServiceProvider < ApplicationRecord
   def valid_prod_config?
     return unless IdentityConfig.store.prod_like_env && !production_ready?
 
-      errors.add(:prod_config, 'can\t be a sandbox config')
-
+    errors.add(:prod_config, 'can\t be a sandbox config')
   end
 
   # in the case of Long Form, :long_form should be passed in for extra checks.
-  def valid_localhost_uris?(form_kind = :wizard)
+  def valid_localhost_uris?
     saml_settings = %w[
       acs_url
       assertion_consumer_logout_service_url
@@ -176,7 +175,7 @@ class ServiceProvider < ApplicationRecord
     settings.each do |attr|
       changes = self.changes[attr]
       if prod_localhost?(attr)
-        if form_kind == :long_form && changed_to_prod && errors.where(:prod_config).empty?
+        if changed_to_prod && errors.where(:prod_config).empty?
           errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
         end
         if changes && changes[0] != changes[1]
@@ -196,7 +195,7 @@ class ServiceProvider < ApplicationRecord
     error_msg =
       "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     errors.each do |err|
-      if err.attribute == :prod_config
+      if err.attribute == :prod_config && production_ready?
         error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
       else
         error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
