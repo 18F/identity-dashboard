@@ -27,7 +27,7 @@ class TeamMembership < ApplicationRecord
     data_for_deleted_teams.destroy_all
   end
 
-  def self.migrate_logingov_admins(logger: nil)
+  def self.migrate_logingov_admins(logger: nil, &block)
     users_to_migrate = User.where(admin: true)
     users_to_migrate.each do |user|
       new_membership = transaction do
@@ -35,10 +35,10 @@ class TeamMembership < ApplicationRecord
         self.last
       end
 
-      if logger
-        logger.info "Created membership #{new_membership.id} for " \
-          "user #{user.email} on team #{team_id}"
-      end
+      logger = block_given? ? block : ->(event_log) { Rails.logger.info event_log }
+
+      logger.call "Created membership #{new_membership.id} for " \
+          "user #{user.email} on team #{new_membership.team.id}"
     end
   end
 

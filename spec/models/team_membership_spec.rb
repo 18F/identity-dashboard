@@ -123,4 +123,51 @@ RSpec.describe TeamMembership do
       expect(valid_team_membership.user).to eq(affected_user)
     end
   end
+
+  describe '.migrate_logingov_admins' do
+    it 'creates the memberships and logs them' do
+      allow(Rails.logger).to receive(:info)
+      users_to_migrate = create_list(:user, 2, admin: true)
+      users_to_migrate.each do |user|
+        expect(user.teams).to be_blank
+        expect(user.team_memberships).to be_blank
+      end
+
+      TeamMembership.migrate_logingov_admins
+
+      expected_team_id = Team.internal_team.id
+      users_to_migrate.each do |migrated_user|
+        expect(migrated_user.reload.teams).to eq [Team.internal_team]
+        membership_result = TeamMembership.find_by(team: Team.internal_team, user: migrated_user)
+        expect(migrated_user.team_memberships).to eq [membership_result]
+        expect(membership_result.role).to eq Role::LOGINGOV_ADMIN
+        expect(Rails.logger).to have_received(:info).with(
+          "Created membership #{membership_result.id} for user #{migrated_user.email} " \
+          "on team #{expected_team_id}",
+        )
+      end
+    end
+
+    it 'allows for alternate logging' do
+      logger = object_double(Rails.logger)
+      allow(logger).to receive(:info)
+
+      users_to_migrate = create_list(:user, 2, admin: true)
+      users_to_migrate.each do |user|
+        expect(user.teams).to be_blank
+        expect(user.team_memberships).to be_blank
+      end
+
+      TeamMembership.migrate_logingov_admins { |log_info| logger.info log_info }
+
+      expected_team_id = Team.internal_team.id
+      users_to_migrate.each do |migrated_user|
+        membership_result = TeamMembership.find_by(team: Team.internal_team, user: migrated_user)
+        expect(logger).to have_received(:info).with(
+          "Created membership #{membership_result.id} for user #{migrated_user.email} " \
+          "on team #{expected_team_id}",
+        )
+      end
+    end
+  end
 end
