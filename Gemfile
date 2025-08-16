@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'active_model_serializers', '>= 0.10.14'
-gem 'acts_as_paranoid'
+gem 'acts_as_paranoid', '>= 0.10.3'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
 gem 'autoprefixer-rails', '~> 10.1'
@@ -42,7 +42,7 @@ gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
 gem 'rack-attack', '~> 6.7'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 7.2.2', '>= 7.2.2.2'
 gem 'redacted_struct'
 gem 'responders', '~> 3.1', '>= 3.1.1'
 gem 'rest-client', '~> 2.1'
