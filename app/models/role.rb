@@ -28,14 +28,4 @@ class Role < ApplicationRecord
   def legacy_admin?
     name == 'logingov_admin'
   end
-
-  def self.initialize_roles(&block)
-    logger = block_given? ? block : ->(event_log) { Rails.logger.info event_log }
-    Role::ACTIVE_ROLES_NAMES.each do |name, friendly_name|
-      unless Role.find_by(name:)
-        Role.create(name:, friendly_name:)
-        logger.call "#{name} added to roles as #{friendly_name}"
-      end
-    end
-  end
 end

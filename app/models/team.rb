@@ -14,28 +14,8 @@ class Team < ApplicationRecord
 
   after_update :update_service_providers
 
-  INTERNAL_TEAM_ATTRIBUTES = {
-    name: 'Login.gov Internal Team',
-    description: 'This team is for Login.gov teammembers. ' \
-      'Do not add people who are not working on Login.gov to this team.',
-    agency_id: 9, # This is defined as GSA in `config/agencies.yaml`
-  }.freeze
-
   def self.internal_team
-    @internal_team ||= Team.find_by(name: INTERNAL_TEAM_ATTRIBUTES[:name])
-  end
-
-  def self.initialize_teams(&block)
-    return if @internal_team = Team.find_by(name: INTERNAL_TEAM_ATTRIBUTES[:name])
-
-    logger = block_given? ? block : ->(event_log) { Rails.logger.info event_log }
-    Agency.find_or_create_by(
-      id: INTERNAL_TEAM_ATTRIBUTES[:agency_id],
-      name: 'General Services Administration',
-    )
-    attributes = INTERNAL_TEAM_ATTRIBUTES.dup
-    team = Team.create(attributes)
-    logger.call("Created internal team ID '#{team.id}' with attributes '#{attributes}'")
+    Team.find_by(name: Seeders::Teams::INTERNAL_TEAM_NAME)
   end
 
   def to_s

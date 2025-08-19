@@ -10,7 +10,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    Team.initialize_teams { |_ignored_logging| }
+    Seeders::Teams.new(logger: Seeders::Teams::NULL_LOGGER).seed
     DatabaseCleaner.start
   end
 

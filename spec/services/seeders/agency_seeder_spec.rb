@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe AgencySeeder do
+RSpec.describe Seeders::AgencySeeder do
   let(:agency_configs) { Rails.application.config.agencies }
 
-  subject(:agency_seeder) { AgencySeeder.new(agency_configs) }
+  subject(:agency_seeder) { Seeders::AgencySeeder.new(agency_configs) }
 
   before do
     Agency.delete_all
