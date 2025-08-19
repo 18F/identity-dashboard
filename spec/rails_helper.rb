@@ -13,13 +13,14 @@ Rails.root.glob('spec/support/**/*.rb').each { |file| require file }
 RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
   config.infer_spec_type_from_file_location!
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
 
   config.include ViewComponent::TestHelpers, type: :component
   config.include Warden::Test::Helpers
   config.include ActiveSupport::Testing::TimeHelpers
 
   config.before(:suite) do
+    Rails.application.load_seed
     Warden.test_mode!
   end
 
