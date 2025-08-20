@@ -7,6 +7,7 @@
 @forward 'home';
 @forward 'service_config_wizard';
 @forward 'step-indicator';
+@forward 'footer';
 
 @mixin text-wrap-mixin {
   word-break: break-all;
