@@ -14,8 +14,12 @@ class Team < ApplicationRecord
 
   after_update :update_service_providers
 
+  INTERNAL_TEAM_NAME = 'Login.gov Internal Team'.freeze
+  INTERNAL_TEAM_DESCRIPTION = 'This team is for Login.gov teammembers. ' \
+    'Do not add people who are not working on Login.gov to this team.'.freeze
+
   def self.internal_team
-    Team.find_by(name: Seeders::Teams::INTERNAL_TEAM_NAME)
+    Team.find_by(name: Team::INTERNAL_TEAM_NAME)
   end
 
   def to_s

@@ -3,8 +3,7 @@ class Seeders::AbstractSeeder
 
   DEFAULT_LOGGER = Rails.logger
 
-  def initialize(logger: nil)
+  def initialize(logger: DEFAULT_LOGGER)
     @logger = logger
-    @logger ||= DEFAULT_LOGGER
   end
 end

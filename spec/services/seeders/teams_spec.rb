@@ -9,7 +9,7 @@ RSpec.describe Seeders::Teams do
 
   context 'without the team in place' do
     before do
-      Team.find_by(name: described_class::INTERNAL_TEAM_NAME)&.destroy
+      Team.find_by(name: Team::INTERNAL_TEAM_NAME)&.destroy!
     end
     it 'initializes the Logingov team' do
       expect do
@@ -17,14 +17,15 @@ RSpec.describe Seeders::Teams do
       end.to change { Team.count }.by 1
 
       last_team = Team.last
-      expect(last_team.name).to eq described_class::INTERNAL_TEAM_NAME
-      expect(last_team.description).to eq described_class::DESCRIPTION
-      expect(last_team.agency_id).to eq described_class::AGENCY_ID
+      internal_agency_data = Seeders::AgencySeeder.internal_agency_data
+      expect(last_team.name).to eq Team::INTERNAL_TEAM_NAME
+      expect(last_team.description).to eq Team::INTERNAL_TEAM_DESCRIPTION
+      expect(last_team.agency.name).to eq internal_agency_data[:name]
 
       expected_attributes = {
-        name: described_class::INTERNAL_TEAM_NAME,
-        description: described_class::DESCRIPTION,
-        agency_id: described_class::AGENCY_ID,
+        name: Team::INTERNAL_TEAM_NAME,
+        description: Team::INTERNAL_TEAM_DESCRIPTION,
+        agency_id: internal_agency_data[:id],
       }
       expect(logger).to have_received(:info).with "Created internal team ID " \
         "'#{last_team.id}' with attributes '#{expected_attributes}'"
@@ -32,9 +33,7 @@ RSpec.describe Seeders::Teams do
   end
 
   it 'does not initialize if the team name already exists' do
-    unless Team.find_by name: described_class::INTERNAL_TEAM_NAME
-      create(:team, name: described_class::INTERNAL_TEAM_NAME)
-    end
+    Team.find_by! name: Team::INTERNAL_TEAM_NAME
 
     expect do
       described_class.new.seed

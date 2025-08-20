@@ -37,4 +37,15 @@ class Seeders::AgencySeeder
       )
     end
   end
+
+  def seed_test
+    Agency.find_or_create_by(self.class.internal_agency_data)
+  end
+
+  def self.internal_agency_data
+    (id, details) = Rails.application.config.agencies.find do |key, agency|
+      agency['name'] == 'General Services Administration'
+    end
+    { id: id, name: details['name'] }
+  end
 end
