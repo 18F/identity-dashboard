@@ -14,6 +14,10 @@ class Team < ApplicationRecord
 
   after_update :update_service_providers
 
+  def self.internal_team
+    Team.find_by(name: Seeders::Teams::INTERNAL_TEAM_NAME)
+  end
+
   def to_s
     name
   end

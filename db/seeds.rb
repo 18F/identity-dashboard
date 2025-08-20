@@ -6,7 +6,7 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-AgencySeeder.new.run! unless Rails.env.test?
+Seeders::AgencySeeder.new.run! unless Rails.env.test?
 
 if Rails.env.development?
   User.find_or_create_by email: 'admin@gsa.gov' do |user|
@@ -16,4 +16,5 @@ if Rails.env.development?
   end
 end
 
-Role.initialize_roles if Rails.env.test?
+Seeders::Roles.new.seed
+Seeders::Teams.new.seed
