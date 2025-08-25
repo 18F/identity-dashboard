@@ -1,4 +1,4 @@
-class Seeders::Teams < Seeders::AbstractSeeder
+class Seeders::Teams < Seeders::BaseSeeder
   def seed
     return if Team.internal_team
 

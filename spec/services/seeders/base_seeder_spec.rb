@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Seeders::AbstractSeeder do
+RSpec.describe Seeders::BaseSeeder do
   it 'uses the default logger when no logger passed' do
     test_string = "random string #{rand(1..1000)}"
     expect(Rails.logger).to receive(:info).with(test_string)
