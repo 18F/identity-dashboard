@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   end
   get '/auth/logindotgov/callback' => 'users/omniauth#callback'
   get 'users/none' => 'users#none'
-  delete '/remove_unconfirmed_users' => 'unconfirmed_users#destroy'
+  delete '/delete_unconfirmed_users' => 'unconfirmed_users#destroy'
   get '/env' => 'env#index'
   get '/internal_reports/team_memberships' => 'internal_reports#team_memberships'
 

@@ -53,7 +53,7 @@ feature 'login.gov admin manages users' do
 
     visit users_path
 
-    click_on t('forms.buttons.remove_unconfirmed_users')
+    click_on t('forms.buttons.delete_unconfirmed_users')
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
