@@ -1,3 +1,3 @@
 server: bundle exec rails server --port ${PORT:-3001}
-js: yarn build --watch
-css: yarn build:css --watch
+js: npm run build -- --watch
+css: npm run build:css -- --watch
