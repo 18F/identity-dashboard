@@ -1,4 +1,4 @@
-class AgencySeeder
+class Seeders::AgencySeeder
   attr_reader :agency_configs
 
   def initialize(agency_configs = Rails.application.config.agencies)
@@ -36,5 +36,16 @@ class AgencySeeder
         agency_configs.map { |agency_id, values| { id: agency_id, name: values['name'] } },
       )
     end
+  end
+
+  def seed_test
+    Agency.find_or_create_by(self.class.internal_agency_data)
+  end
+
+  def self.internal_agency_data
+    (id, details) = Rails.application.config.agencies.find do |key, agency|
+      agency['name'] == 'General Services Administration'
+    end
+    { id: id, name: details['name'] }
   end
 end
