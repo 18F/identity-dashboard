@@ -679,17 +679,17 @@ feature 'Service Providers CRUD' do
         )
       end
 
-      it 'does not have Create New App button' do
+      it 'has Create a New App button' do
         visit service_providers_path
 
-        expect(page).to_not have_content('Create new app')
+        expect(page).to have_button('Create a new app')
       end
 
-      it 'does not redirect to service_config_wizard' do
+      it 'redirects to service_config_wizard' do
         visit new_service_provider_path
 
-        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
-        expect(page).to have_current_path(service_providers_path)
+        expect(page).to_not have_current_path(service_providers_path)
+        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
     end
   end

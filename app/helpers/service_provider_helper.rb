@@ -199,6 +199,10 @@ module ServiceProviderHelper
     end
   end
 
+  def allow_new_config?
+    !IdentityConfig.store.prod_like_env || current_user.logingov_admin?
+  end
+
   def edit_button_goes_to_wizard?
     IdentityConfig.store.service_config_wizard_enabled &&
       (IdentityConfig.store.edit_button_uses_service_config_wizard ||

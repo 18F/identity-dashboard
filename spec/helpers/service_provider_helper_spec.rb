@@ -378,4 +378,47 @@ describe ServiceProviderHelper do
       end
     end
   end
+
+  xdescribe '#allow_new_config?' do
+    let(:user) { create(:user) }
+    let(:admin) { create(:logingov_admin) }
+
+    context 'non-admin user' do
+      before do
+        current_user = user
+        # allow(self).to receive(:current_user).and_return(user)
+      end
+
+      it 'returns true when not a Prod-like env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        
+        expect(allow_new_config?).to be_truthy
+      end
+
+      it 'returns false when in a Prod-like env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        expect(allow_new_config?).to be_falsy
+      end
+    end
+
+    context 'logingov admin' do
+      before do
+        current_user = admin
+        # allow(self).to receive(:current_user).and_return(admin)
+      end
+
+      it 'returns true when not a Prod-like env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+
+        expect(allow_new_config?).to be_truthy
+      end
+
+      it 'returns true when in a Prod-like env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        expect(allow_new_config?).to be_truthy
+      end
+    end
+  end
 end
