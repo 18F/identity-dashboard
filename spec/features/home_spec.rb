@@ -19,6 +19,20 @@ feature 'Home' do
       expect(page).to have_content(I18n.t('home.system_agree'))
       expect(page).to have_css('[action="/auth/logindotgov"]')
     end
+
+    scenario 'page should have sandbox logo in non-prod-like environments' do
+      visit root_path
+
+      expect(page.find('.usa-logo__img')['src']).to have_content(/LG-PP-Sandbox-[a-z 0-9]*.svg/)
+    end
+
+    scenario 'page should have production logo in prod-like environments' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit root_path
+
+      expect(page.find('.usa-logo__img')['src']).to have_content(/LG-PP-Production-[a-z 0-9]*.svg/)
+    end
+
   end
 
   context 'when login.gov admin' do
