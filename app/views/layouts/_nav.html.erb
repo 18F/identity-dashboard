@@ -4,8 +4,8 @@
     <div class="usa-navbar">
       <div class="usa-logo margin-top-2 margin-bottom-1">
         <a href="/" title="Home" aria-label="Home">
-          <%= image_tag 'logo.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' %>
-          <em class="usa-logo__text"><%= Rails.application.config.app_name %></em>
+          <%= image_tag 'LG-PP-Sandbox.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' unless IdentityConfig.store.prod_like_env %>
+          <%= image_tag 'LG-PP-Production.svg', alt: 'Login.gov', role: 'img', class: 'usa-logo__img' if IdentityConfig.store.prod_like_env %>
         </a>
       </div>
       <% if user_signed_in? %>
