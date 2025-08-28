@@ -320,10 +320,11 @@ feature 'Service Config Wizard' do
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
       end
 
-      it 'does not redirect to service_config_wizard' do
+      it 'redirects to service_config_wizard' do
         visit new_service_config_wizard_path
 
-        expect(page).to have_current_path(service_providers_path)
+        expect(page).to_not have_current_path(service_providers_path)
+        expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
     end
   end
@@ -511,6 +512,13 @@ feature 'Service Config Wizard' do
           prod_like_env: true,
           edit_button_uses_service_config_wizard: true,
         )
+      end
+
+      it 'does not allow new configs' do
+        visit service_config_wizard_path('new')
+
+        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS.first))
+        expect(page).to have_current_path(service_providers_path)
       end
 
       it 'allows Partners to set initial IAL' do

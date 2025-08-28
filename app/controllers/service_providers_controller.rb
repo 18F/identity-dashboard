@@ -298,7 +298,7 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def verify_environment_permissions
-    return unless IdentityConfig.store.prod_like_env
+    return unless IdentityConfig.store.prod_like_env && !current_user.logingov_admin?
 
     redirect_to service_providers_path
   end
