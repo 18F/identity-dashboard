@@ -514,6 +514,13 @@ feature 'Service Config Wizard' do
         )
       end
 
+      it 'does not allow new configs' do
+        visit service_config_wizard_path('new')
+
+        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS.first))
+        expect(page).to have_current_path(service_providers_path)
+      end
+
       it 'allows Partners to set initial IAL' do
         visit service_config_wizard_path('settings')
         select(team.name, from: 'Team')

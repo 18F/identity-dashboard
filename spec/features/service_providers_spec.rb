@@ -508,7 +508,7 @@ feature 'Service Providers CRUD' do
         )
       end
 
-      it 'does not redirects to new service_config_wizard' do
+      it 'does not redirect to new service_config_wizard' do
         visit new_service_provider_path
 
         expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
