@@ -158,11 +158,7 @@ Devise.setup do |config|
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.
-  config.timeout_in = 15.minutes
-
-  if Rails.env == 'development' || !IdentityConfig.store.prod_like_env
-    config.timeout_in = 8.hours
-  end
+  config.timeout_in = IdentityConfig.store.devise_timeout_minutes.minutes || 15.minutes
 
   # ==> Configuration for :lockable
   # Defines which strategy will be used to lock an account.
