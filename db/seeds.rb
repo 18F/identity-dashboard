@@ -8,12 +8,8 @@
 
 Rails.env.test? ? Seeders::AgencySeeder.new.seed_test : Seeders::AgencySeeder.new.run!
 
-if Rails.env.development?
-  User.find_or_create_by email: 'admin@gsa.gov' do |user|
-    user.first_name = 'Addy'
-    user.last_name = 'Ministrator'
-    user.admin = true
-  end
+if Rails.env.development? || ENV['KUBERNETES_REVIEW_APP']
+  MakeAdmin.new('admin@gsa.gov,Addy,Ministrator').call
 end
 
 Seeders::Roles.new.seed
