@@ -298,7 +298,7 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def verify_environment_permissions
-    return if policy(ServiceProvider.new).has_environment_permissions?
+    return if policy(ServiceProvider.new).new?
 
     redirect_to service_providers_path
   end

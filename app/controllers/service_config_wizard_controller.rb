@@ -342,7 +342,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def verify_environment_permissions
-    return if policy(ServiceProvider.new).has_environment_permissions?
+    return if policy(ServiceProvider.new).new?
 
     redirect_to service_providers_path
   end

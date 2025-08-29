@@ -52,6 +52,8 @@ class ServiceProviderPolicy < BasePolicy
 
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
+    return true if user_has_login_admin_role?
+    return false if IdentityConfig.store.prod_like_env
 
     user_has_login_admin_role? || user.team_memberships.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
@@ -113,10 +115,6 @@ class ServiceProviderPolicy < BasePolicy
 
   def see_status?
     user_has_login_admin_role?
-  end
-
-  def has_environment_permissions?
-    !IdentityConfig.store.prod_like_env || user_has_login_admin_role?
   end
 
   class Scope < BasePolicy::Scope
