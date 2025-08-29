@@ -115,6 +115,10 @@ class ServiceProviderPolicy < BasePolicy
     user_has_login_admin_role?
   end
 
+  def has_environment_permissions?
+    !IdentityConfig.store.prod_like_env || user_has_login_admin_role?
+  end
+
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?
