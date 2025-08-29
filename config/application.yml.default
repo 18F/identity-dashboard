@@ -9,6 +9,7 @@ aws_region: us-west-2
 aws_logo_bucket: changeme
 certificate_expiration_warning_period: '60'
 db_pool: '5'
+devise_timeout_minutes: '15'
 dp_reaping_frequency: '10'
 event_log_filename: 'events.log'
 newrelic_license_key: changeme
@@ -26,6 +27,7 @@ service_config_wizard_enabled: true
 
 development:
   dashboard_api_token: test_token
+  devise_timeout_minutes: '480'
   idp_sp_url: 'http://localhost:3000/api/service_provider'
   idp_url: http://localhost:3000
   mailer_domain: 'https://dashboard.login.gov'

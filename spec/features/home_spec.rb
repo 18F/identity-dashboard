@@ -86,5 +86,9 @@ feature 'Home' do
         expect(page).to_not have_content('Create your first team')
       end
     end
+
+    scenario 'is logged out after Devise timeout' do
+      expect(user.timedout?(IdentityConfig.store.devise_timeout_minutes.minutes.ago)).to be_truthy
+    end
   end
 end
