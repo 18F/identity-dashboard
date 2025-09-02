@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProvidersController do
-  let(:user) { create(:user, :with_teams) }
+  let(:user) { create(:user, :with_teams_dev) }
   let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:agency) { create(:agency, name: 'GSA') }
   let(:team) { create(:team, agency:) }

@@ -1,4 +1,4 @@
-<% if allow_new_config? %>
+<% if policy(ServiceProvider.new).new? %>
   <%= button_to(
     t('headings.service_providers.new_app'),
     IdentityConfig.store.service_config_wizard_enabled ? new_service_config_wizard_path : new_service_provider_path,

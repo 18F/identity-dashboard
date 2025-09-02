@@ -52,6 +52,8 @@ class ServiceProviderPolicy < BasePolicy
 
   def new?
     return true unless IdentityConfig.store.access_controls_enabled
+    return true if user_has_login_admin_role?
+    return false if IdentityConfig.store.prod_like_env
 
     user_has_login_admin_role? || user.team_memberships.any? do |membership|
       membership.role == Role.find_by(name: 'partner_developer') ||
