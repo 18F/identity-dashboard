@@ -76,19 +76,21 @@ feature 'Home' do
     end
 
     context 'a user who is not a login_admin in prod_like_env' do
-      scenario 'should not see create team button' do
-        user = create(:user)
-
+      let(:user) { create(:user) }
+      before do
         login_as(user)
+      end
+
+      scenario 'should not see create team button' do
         visit root_path
 
         expect(page).to_not have_content('Create a new team')
         expect(page).to_not have_content('Create your first team')
       end
-    end
 
-    scenario 'is logged out after Devise timeout' do
-      expect(user.timedout?(IdentityConfig.store.devise_timeout_minutes.minutes.ago)).to be_truthy
+      scenario 'is logged out after Devise timeout' do
+        expect(user.timedout?(IdentityConfig.store.devise_timeout_minutes.minutes.ago)).to be_truthy
+      end
     end
   end
 end
