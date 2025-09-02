@@ -77,6 +77,7 @@ feature 'Home' do
 
     context 'a user who is not a login_admin in prod_like_env' do
       let(:user) { create(:user) }
+
       before do
         login_as(user)
       end
