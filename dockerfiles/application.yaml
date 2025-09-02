@@ -403,7 +403,7 @@ spec:
                     agency_id: 2
                     logo: '18f.svg'
                     certs:
-                      - 'identity_dashboard_cert'
+                      - 'dashboard_sandbox_review_cert'
                     return_to_sp_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/'
                     redirect_uris:
                       - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
