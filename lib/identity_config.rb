@@ -13,6 +13,7 @@ class IdentityConfig
       config.add(:aws_region, type: :string)
       config.add(:aws_logo_bucket, type: :string)
       config.add(:db_pool, type: :integer)
+      config.add(:devise_timeout_minutes, type: :integer)
       config.add(:dp_reaping_frequency, type: :integer)
       config.add(:certificate_expiration_warning_period, type: :integer)
       config.add(:dashboard_api_token, type: :string)
