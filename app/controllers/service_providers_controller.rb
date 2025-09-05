@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request, migrate]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
 
@@ -143,6 +143,10 @@ value: func.to_proc.call(@service_provider) })
         "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
       redirect_to action: 'show', id: @service_provider.id
+  end
+
+  def migrate
+    @service_providers = deleted_service_providers
   end
 
   private

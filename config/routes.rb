@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'
+  get '/service_providers/migrate' => 'service_providers#migrate'
   post '/service_providers/publish' => 'service_providers#publish'
   post '/service_providers/prod_request' => 'service_providers#prod_request'
   resources :service_providers
