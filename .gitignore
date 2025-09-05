@@ -30,9 +30,10 @@ yarn-debug.log*
 /config/master.key
 
 # Ignore the idp-config dir if it has been checked out
+# Testing an arbitrary change
 /identity-idp-config/
 
 /public/assets/*
 /app/assets/builds/*
 !/app/assets/builds/.keep
-#Testing an arbitrary change
+ 
