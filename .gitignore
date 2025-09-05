@@ -35,3 +35,4 @@ yarn-debug.log*
 /public/assets/*
 /app/assets/builds/*
 !/app/assets/builds/.keep
+#Testing an arbitrary change
