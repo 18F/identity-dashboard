@@ -100,6 +100,10 @@ class ServiceProviderPolicy < BasePolicy
     user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
+  def migrate?
+    user_has_login_admin_role? && !IdentityConfig.store.prod_like_env
+  end
+
   def edit_custom_help_text?
     user_has_login_admin_role?
   end
