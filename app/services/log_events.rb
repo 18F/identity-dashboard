@@ -7,6 +7,9 @@
 # ABC_XYZ -- Keep it Alphabetical!
 module LogEvents
   # Generic CrUD logger
+  #
+  # @param [String] action The controller action context for this save
+  # @param [ApplicationRecord] record The record to be saved
   def record_save(action, record)
     return if !record
 
@@ -30,6 +33,7 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
+  # @param [#user_id,#group_id] record A record that belongs to a user and a team
   def team_data(record)
     {
       team_user: User.find(record[:user_id]).email,
@@ -37,6 +41,7 @@ module LogEvents
     }
   end
 
+  # @param [Pundit::NotAuthorizedError] exception
   def unauthorized_access_attempt(exception)
     details = {
       message: exception.message,
@@ -50,6 +55,7 @@ module LogEvents
     track_event('unauthorized_access_attempt', details)
   end
 
+  # @param [ActionController::UnpermittedParameters] exception
   def unpermitted_params_attempt(exception)
     details = {
       message: exception.message,
