@@ -36,3 +36,6 @@ run:
 	foreman start -p $(PORT)
 
 .PHONY: setup all lint lint_database_schema_files run test check
+
+docs:
+	bin/yardoc
