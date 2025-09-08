@@ -82,6 +82,7 @@ group :development, :test do
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
+  gem 'yard', require: false
 end
 
 group :test do

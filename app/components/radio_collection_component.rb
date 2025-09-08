@@ -11,7 +11,7 @@ class RadioCollectionComponent < ViewComponent::Base
   # @option options [Boolean] :disabled whether this field is disabled
   # @option options [Boolean,nil] :additional_descriptions whether to pull additional descriptions
   #    for each radio option. This will look for I18n key formatted like
-  #    "#{form_object_class_pluralized_with_underscores}.#{input_value}_description"
+  #    "#\\{form_object_class_pluralized_with_underscores}.#\\{input_value}_description"
   def initialize(form:, describedby:, model_method:, inputs:, **options)
     @form = form
     @describedby = describedby

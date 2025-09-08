@@ -628,6 +628,7 @@ GEM
       railties (>= 3.0.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.37)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -715,6 +716,7 @@ DEPENDENCIES
   webmock
   websocket-driver (= 0.7.3)
   wicked (~> 2.0)
+  yard
 
 RUBY VERSION
    ruby 3.4.5p51

@@ -50,6 +50,7 @@ class EventLogger
   #   If blank, `Time.current` will be evaluated.
   # @option options [String, nil] :id
   #   A unique identifier. If omitted, `SecureRandom.uuid` will be evaluated.
+  # @return [Boolean] true on log event success
   def track_event(name, properties = {}, options = {})
     data = {
       visit_id: visit_token,
@@ -70,6 +71,8 @@ class EventLogger
     log_event(data)
   end
 
+  # Return the current visit token or generate and assign a new one
+  # @return [String]
   def visit_token
     session[:visit_token] ||= generate_uuid
   end

@@ -10,6 +10,7 @@ module LogEvents
   #
   # @param [String] action The controller action context for this save
   # @param [ApplicationRecord] record The record to be saved
+  # @return (see EventLogger#track_event)
   def record_save(action, record)
     return if !record
 
@@ -34,6 +35,8 @@ module LogEvents
   end
 
   # @param [#user_id,#group_id] record A record that belongs to a user and a team
+  # @return [Hash{Symbol => ApplicationRecord}]
+  #   the keys `:team_user` and `:team` with the appropriate record
   def team_data(record)
     {
       team_user: User.find(record[:user_id]).email,
@@ -42,6 +45,7 @@ module LogEvents
   end
 
   # @param [Pundit::NotAuthorizedError] exception
+  # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
     details = {
       message: exception.message,
@@ -56,6 +60,7 @@ module LogEvents
   end
 
   # @param [ActionController::UnpermittedParameters] exception
+  # @return (see EventLogger#track_event)
   def unpermitted_params_attempt(exception)
     details = {
       message: exception.message,
