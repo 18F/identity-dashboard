@@ -34,16 +34,6 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
-  # @param [#user_id,#group_id] record A record that belongs to a user and a team
-  # @return [Hash{Symbol => ApplicationRecord}]
-  #   the keys `:team_user` and `:team` with the appropriate record
-  def team_data(record)
-    {
-      team_user: User.find(record[:user_id]).email,
-      team: Team.find(record[:group_id]).name,
-    }
-  end
-
   # @param [Pundit::NotAuthorizedError] exception
   # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
@@ -68,5 +58,17 @@ module LogEvents
     }
 
     track_event('unpermitted_params_attempt', details)
+  end
+
+  private
+
+  # @param [#user_id,#group_id] record A record that belongs to a user and a team
+  # @return [Hash{Symbol => ApplicationRecord}]
+  #   the keys `:team_user` and `:team` with the appropriate record
+  def team_data(record)
+    {
+      team_user: User.find(record[:user_id]).email,
+      team: Team.find(record[:group_id]).name,
+    }
   end
 end

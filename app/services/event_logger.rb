@@ -71,13 +71,13 @@ class EventLogger
     log_event(data)
   end
 
+  private
+
   # Return the current visit token or generate and assign a new one
   # @return [String]
   def visit_token
     session[:visit_token] ||= generate_uuid
   end
-
-  private
 
   def browser_attributes
     {
