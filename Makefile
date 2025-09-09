@@ -15,11 +15,11 @@ check: lint test
 
 lint: lint_log_events lint_log_events_sorted
 	@echo "--- rubocop ---"
-	ifdef JUNIT_OUTPUT
-		bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
-	else
-		bundle exec rubocop --parallel
-	endif
+ifdef JUNIT_OUTPUT
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+else
+	bundle exec rubocop --parallel
+endif
 	@echo "--- eslint ---"
 	npm run lint
 
