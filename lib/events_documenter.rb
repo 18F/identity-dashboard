@@ -2,14 +2,13 @@
 # frozen_string_literal: true
 
 require 'yard'
-require 'json'
 require 'optparse'
 require 'stringio'
 require 'active_support/core_ext/object/blank'
 require_relative './identity_config'
 
 # Parses YARD output for AnalyticsEvents methods
-class AnalyticsEventsDocumenter
+class EventsDocumenter
   DEFAULT_DATABASE_PATH = '.yardoc'
   PREVIOUS_EVENT_NAME_TAG = :'identity.idp.previous_event_name'
 
@@ -28,7 +27,6 @@ class AnalyticsEventsDocumenter
     exit_status = 0
     output = StringIO.new
     check = false
-    json = false
     help = false
     require_extra_params = true
     class_name = 'AnalyticsEvents'
@@ -36,10 +34,6 @@ class AnalyticsEventsDocumenter
     parser = OptionParser.new do |opts|
       opts.on('--check', 'Checks that all params are documented, will exit 1 if missing') do
         check = true
-      end
-
-      opts.on('--json') do
-        json = true
       end
 
       opts.on('--skip-extra-params') do
@@ -63,7 +57,7 @@ class AnalyticsEventsDocumenter
       require_extra_params: require_extra_params,
     )
 
-    if help || (!check && !json)
+    if help || !check
       output.puts parser
     elsif check
       missing_documentation = documenter.missing_documentation
@@ -73,8 +67,6 @@ class AnalyticsEventsDocumenter
       else
         output.puts "All #{class_name} methods are documented! 🚀"
       end
-    elsif json
-      output.puts JSON.pretty_generate(documenter.as_json)
     end
 
     [output.string.presence, exit_status]
@@ -98,18 +90,11 @@ class AnalyticsEventsDocumenter
       error_prefix = "#{method_object.file}:#{method_object.line} #{method_object.name}"
       errors = []
 
-      param_names = method_object.parameters.map { |p| p.first }
-      _splat_params, other_params = param_names.partition { |p| p.start_with?('**') }
-      keyword_params, other_params = other_params.partition { |p| p.end_with?(':') }
-      if other_params.present?
-        errors << "#{error_prefix} unexpected positional parameters #{other_params.inspect}"
-      end
-
-      keyword_param_names = keyword_params.map { |p| p.chomp(':') }
+      param_names = param_names_for(method_object)
+      trailing_param = method_object.parameters.last&.first
       documented_params = method_object.tags('param').map(&:name)
-      missing_attributes = keyword_param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
-
-      if !extract_event_name(method_object)
+      missing_attributes = param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
+      unless extract_event_name(method_object) || method_object.visibility.to_s == 'private'
         errors << "#{error_prefix} event name not detected in track_event"
       end
 
@@ -117,7 +102,7 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} #{attribute} (undocumented)"
       end
 
-      if require_extra_params? && param_names.size > 0 && param_names.last != '**extra'
+      if require_extra_params? && param_names.size > 0 && trailing_param != '**extra'
         errors << "#{error_prefix} missing **extra"
       end
 
@@ -144,40 +129,6 @@ class AnalyticsEventsDocumenter
   end
   # rubocop:enable Metrics/BlockLength
 
-  # @return [{ events: Array<Hash>}]
-  def as_json
-    events_json_summary = analytics_methods.map do |method_object|
-      attributes = method_object.tags('param').map do |tag|
-        next if tag.name == 'extra'
-
-        {
-          name: tag.name,
-          types: tag.types,
-          description: tag.text.presence,
-        }
-      end.compact + method_object.tags('option').map do |tag|
-        {
-          name: tag.pair.name.tr(%('"), ''),
-          types: tag.pair.types,
-          description: tag.pair.text.presence,
-        }
-      end
-
-      {
-        event_name: extract_event_name(method_object),
-        previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
-        description: method_description(method_object),
-        attributes: attributes,
-        method_name: method_object.name,
-        source_line: method_object.line,
-        source_file: method_object.file,
-        source_sha: IdentityConfig::GIT_SHA,
-      }
-    end
-
-    { events: events_json_summary }
-  end
-
   # Strips Rubocop directives from description text
   # @return [String, nil]
   def method_description(method_object)
@@ -185,6 +136,13 @@ class AnalyticsEventsDocumenter
   end
 
   private
+
+  def param_names_for(method_object)
+    param_names = method_object.parameters.map { |p| p.first }
+    _splat_params, param_names = param_names.partition { |p| p.start_with?('**') }
+
+    param_names.map { |p| p.chomp(':') }
+  end
 
   # Naive attempt to pull tracked event string or symbol from source code
   def extract_event_name(method_object)
@@ -216,7 +174,7 @@ end
 # rubocop:disable Rails/Output
 # rubocop:disable Rails/Exit
 if $PROGRAM_NAME == __FILE__
-  output, status = AnalyticsEventsDocumenter.run(ARGV)
+  output, status = EventsDocumenter.run(ARGV)
   puts output
   exit status
 end

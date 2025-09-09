@@ -13,13 +13,13 @@ setup:
 
 check: lint test
 
-lint:
+lint: lint_log_events lint_log_events_sorted
 	@echo "--- rubocop ---"
-ifdef JUNIT_OUTPUT
-	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
-else
-	bundle exec rubocop --parallel
-endif
+	ifdef JUNIT_OUTPUT
+		bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
+	else
+		bundle exec rubocop --parallel
+	endif
 	@echo "--- eslint ---"
 	npm run lint
 
@@ -37,5 +37,13 @@ run:
 
 .PHONY: setup all lint lint_database_schema_files run test check
 
-docs:
-	bin/yardoc
+doc:
+	bin/yardoc \
+		--fail-on-warning
+
+lint_log_events: doc ## Checks that all methods on `LogEvents` are documented
+	bundle exec ruby lib/events_documenter.rb --class-name="LogEvents" --check --skip-extra-params 
+
+lint_log_events_sorted:
+	(grep '^  def ' app/services/log_events.rb | LC_COLLATE='C.UTF-8' sort -c) || \
+		(echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
