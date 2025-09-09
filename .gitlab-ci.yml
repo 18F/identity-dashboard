@@ -177,7 +177,6 @@ lint:
     - *bundle_install
     - *npm_install
     - make lint
-    - make docs
   artifacts:
     expire_in: 31d
     when: always
