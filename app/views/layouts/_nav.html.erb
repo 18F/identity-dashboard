@@ -3,7 +3,7 @@
   <div class="usa-nav-container">
     <div class="usa-navbar">
       <div class="usa-logo margin-top-2 margin-bottom-1">
-        <a href="/" title="Home" aria-label="Home">
+        <a href="/" aria-label="<%= IdentityConfig.store.prod_like_env ? 'Login.gov Parner Portal Production' : 'Login.gov Parner Portal Sandbox' %>">
           <%= image_tag 'LG-PP-Sandbox.svg', alt: 'Login.gov Parner Portal Sandbox', role: 'img', class: 'usa-logo__img' unless IdentityConfig.store.prod_like_env %>
           <%= image_tag 'LG-PP-Production.svg', alt: 'Login.gov Parner Portal Production', role: 'img', class: 'usa-logo__img' if IdentityConfig.store.prod_like_env %>
         </a>
