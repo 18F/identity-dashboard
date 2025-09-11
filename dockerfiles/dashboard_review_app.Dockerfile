@@ -1,4 +1,4 @@
-FROM ruby:3.4.1-slim
+FROM ruby:3.4.5-slim
 
 # Set environment variables
 ENV RAILS_ROOT /dashboard
@@ -10,11 +10,11 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV PIDFILE /tmp/server.pid
-ENV YARN_VERSION 1.22.19
+ENV YARN_VERSION 1.22.22
 ENV NODE_VERSION 22.12.0
-ENV BUNDLER_VERSION 2.5.6
+ENV BUNDLER_VERSION 2.6.9
 
-ENV POSTGRES_SSLMODE prefer 
+ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_DB dashboard
 ENV POSTGRES_HOST localhost
 ENV POSTGRES_USERNAME postgres
@@ -42,22 +42,11 @@ RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
     echo 'path-exclude=/usr/share/lintian/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
     echo 'path-exclude=/usr/share/linda/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc
 
-# Create a new user and set up the working directory
-RUN addgroup --gid 1000 app && \
-    adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
-    mkdir -p $RAILS_ROOT && \
-    mkdir -p $BUNDLE_PATH && \
-    mkdir -p $RAILS_ROOT/tmp/pids && \
-    mkdir -p $RAILS_ROOT/log
-
-# Setup timezone data
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
     git-core \
+    gnupg \
     curl \
     zlib1g-dev \
     build-essential \
@@ -69,7 +58,6 @@ RUN apt-get update && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     unzip && \
@@ -88,11 +76,24 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=$YARN_VERSION-1
+RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=$YARN_VERSION-1
 
 RUN mkdir -p /usr/local/share/aws \
     && cd /usr/local/share/aws \
     && curl -fsSLk https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem --output rds-combined-ca-bundle.pem
+
+# Create a new user and set up the working directory
+RUN addgroup --gid 1000 app && \
+    adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
+    mkdir -p $RAILS_ROOT && \
+    mkdir -p $BUNDLE_PATH && \
+    mkdir -p $RAILS_ROOT/tmp/pids && \
+    mkdir -p $RAILS_ROOT/log
+
+# Setup timezone data
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 
 WORKDIR $RAILS_ROOT
 
@@ -124,7 +125,7 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development test'
-RUN bundle install 
+RUN bundle install
 RUN bundle binstubs --all
 
 COPY package.json $RAILS_ROOT/package.json
