@@ -20,6 +20,8 @@ class UserSession
       /(#{Regexp.escape(tld)})\Z/.match?(email)
     end.empty?
 
-    @user = User.create(email:)
+    unless IdentityConfig.store.prod_like_env
+      @user = User.create(email:)
+    end
   end
 end

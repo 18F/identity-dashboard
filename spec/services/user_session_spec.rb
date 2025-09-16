@@ -37,5 +37,23 @@ describe UserSession do
         expect(subject).to eq(nil)
       end
     end
+
+    context 'when the user does not exist and does have a allowlisted email' do
+      it 'returns nil' do
+        auth_hash['email'] = 'test@gsa.gov'
+        expect(subject.email).to eq(auth_hash['email'])
+      end
+    end
+
+    context 'in a prod_like_env' do 
+      before do
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
+      end
+
+      it 'does not create a user for a new user login' do
+        auth_hash['email'] = 'test@gsa.gov'
+        expect(subject).to eq(nil)
+      end
+    end
   end
 end
