@@ -3,35 +3,25 @@
 <%= form_with scope: :validation do |form| %>
   <div class="usa-form--large">
     <fieldset class="usa-fieldset">
-
-      <% form.label :team_search,
-                    label: 'Search by',
-                    class: 'usa-label' %>
-      <% form.collection_radio_buttons(:team_search,
+      <legend class="usa-label usa-input-required">Search by</legend>
+      <%= form.collection_radio_buttons(:team_search,
                                        { "Teams" => true, "Issuers" => false},
-                                       :last, :first,
-                                       item_wrapper_tag: :ul,
-                                       item_wrapper_class: "usa-input-list") do |b| %>
-        <li>
+                                       :last, :first) do |b| %>
+        <div class="usa-radio">                                       
           <%= b.radio_button(class: "usa-radio__input") %>
           <%= b.label(class: "usa-radio__label") %>
-        </li>
+        </div>
       <% end %>
-      <div>
-        <%= form.label :auth_url, "STOP!", class: "usa-label usa_textarea" %>
-        <%= form.text_area :auth_url, value: @request&.auth_url, class: "block col-12 optional usa-textarea", required: true
-        %>
-        <div class="usa-hint">Paste the entire URL of the auth request, which you can capture using your <a href="https://en.wikipedia.org/wiki/Web_development_tools" target="_blank">browser's web developer tools</a>. If you are using a <code>POST</code> instead of a <code>GET</code> request, or if the signature is included in the SAML itself, you can also just paste the contents of the SAMLRequest parameter.</div>
-      </div>
-      <div>
-        <%= form.label :cert, "Public Certificate (optional)", class: "usa-label usa_textarea optional usa-input-optional" %>
-        <%= form.text_area :cert, value: @request&.cert_body, class: "block col-12 optional usa-textarea" %>
-        <div class="usa-hint">Paste your application's public certificate (in PEM format).</div>
-      </div>
     </fieldset>
+    <%= form.label :migrate_criteria,
+                   "List of issuers/teams",
+                   class: "usa-label" %>
+    <%= form.text_area :migrate_criteria,
+                       class: "block col-12 usa-textarea",
+                       required: true %>
 
     <div class="margin-top-2">
-      <%= form.submit 'Validate', :class => "usa-button" %>
+      <%= form.submit 'Extract configs', :class => "usa-button" %>
     </div>
   </div>
 <% end %>
