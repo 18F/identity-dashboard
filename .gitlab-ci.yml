@@ -18,11 +18,11 @@ default:
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
-.yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_install: &npm_install
+  - npm ci --cache=.npm-cache
 
-.yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_production_install: &npm_production_install
+  - npm ci --omit=dev --cache=.npm-cache
 
 .build_cache:
   - &ruby_cache
@@ -33,20 +33,20 @@ default:
       - vendor/ruby
     policy: pull
 
-  - &yarn_cache
+  - &npm_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
-  - &yarn_production_cache
+  - &npm_production_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
   - &assets_cache
@@ -77,17 +77,16 @@ install:
   stage: build
   variables:
     RAILS_ENV: test
-    SKIP_YARN_INSTALL: 'true'
   cache:
     - <<: *ruby_cache
       policy: pull-push
-    - <<: *yarn_cache
+    - <<: *npm_cache
       policy: pull-push
     - <<: *assets_cache
       policy: push
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
@@ -170,13 +169,13 @@ lint:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   variables:
     JUNIT_OUTPUT: 'true'
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make lint
   artifacts:
     expire_in: 31d
@@ -215,7 +214,7 @@ accessibility-specs:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   variables:
     AWS_ACCESS_KEY_ID: test
@@ -237,7 +236,7 @@ accessibility-specs:
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
     - bundle exec rspec --pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
@@ -255,7 +254,7 @@ other-specs:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   variables:
     AWS_ACCESS_KEY_ID: test
@@ -278,7 +277,7 @@ other-specs:
   script:
     - mkdir coverage
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - cp config/application.yml.default config/application.yml
     - bundle exec rake db:setup
     - bundle exec rspec --exclude-pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
