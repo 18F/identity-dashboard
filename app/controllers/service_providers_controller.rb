@@ -146,7 +146,11 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def migrate
-    @service_providers = deleted_service_providers
+    all
+  end
+
+  def extract
+    # do stuff with issuers and teams.
   end
 
   private
