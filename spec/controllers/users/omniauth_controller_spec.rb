@@ -73,7 +73,7 @@ describe Users::OmniauthController do
       end
     end
 
-    context 'in a prod_like_env' do 
+    context 'in a prod_like_env' do
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
         subject.request.env['omniauth.auth'] = omniauth_hash
