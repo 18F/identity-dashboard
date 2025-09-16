@@ -1,8 +1,8 @@
 {
   "license": "CC0-1.0",
   "engines": {
-    "node": ">=18",
-    "npm": "6.x.x"
+    "node": ">=22",
+    "npm": ">=10.0 <12"
   },
   "scripts": {
     "lint": "eslint . --ignore-pattern public --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage",
@@ -30,7 +30,6 @@
     "eslint": "^8.18.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-mocha": "^10.0.5",
-    "jsdom": "^20.0.0"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+    "jsdom": "^26.1.0"
+  }
 }
