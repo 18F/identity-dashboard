@@ -16,8 +16,10 @@
         <%=  b.label(class: "usa-radio__label")%>
       </li>
     <% end %>
+<% else %>
+    <%= form.hidden_field :prod_config, 
+                          value: true %>
 <% end %>
-
 
   <%= form.input :app_name,
                  input_html: { class: 'usa-input' },
