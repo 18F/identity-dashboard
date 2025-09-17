@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request, migrate]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request migrate]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
 
@@ -150,7 +150,17 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def extract
-    # do stuff with issuers and teams.
+    params['validation'] => {
+      team_search:,
+      migrate_criteria:,
+      ticket:, }
+    criteria = migrate_criteria.split(/,\s*|\s+/)
+
+    configs = team_search ?
+      ServiceProvider.where(group_id: criteria) :
+      ServiceProvider.where(issuer: criteria)
+
+
   end
 
   private
@@ -176,6 +186,11 @@ value: func.to_proc.call(@service_provider) })
 
   def localized_help_text
     @localized_help_text ||= parsed_help_text.to_localized_h
+  end
+
+  def migration
+    # TODO: fix this before merging
+    @service_provider ||= policy_scope(ServiceProvider).find_by(user_id: current_user.id)[0]
   end
 
   def validate_and_save_service_provider(initial_action)
