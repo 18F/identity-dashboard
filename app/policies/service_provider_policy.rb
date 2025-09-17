@@ -104,6 +104,10 @@ class ServiceProviderPolicy < BasePolicy
     user_has_login_admin_role? && !IdentityConfig.store.prod_like_env
   end
 
+  def extract?
+    migrate?
+  end
+
   def edit_custom_help_text?
     user_has_login_admin_role?
   end
