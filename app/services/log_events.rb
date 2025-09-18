@@ -34,6 +34,10 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
+  def extraction_request(action, extracts_params)
+    track_event("extract_#{action}", extracts_params)
+  end
+
   # @param [Pundit::NotAuthorizedError] exception
   # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)

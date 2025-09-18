@@ -188,11 +188,6 @@ value: func.to_proc.call(@service_provider) })
     @localized_help_text ||= parsed_help_text.to_localized_h
   end
 
-  def migration
-    # TODO: fix this before merging
-    @service_provider ||= policy_scope(ServiceProvider).find_by(user_id: current_user.id)[0]
-  end
-
   def validate_and_save_service_provider(initial_action)
     clear_formatting(@service_provider)
 
