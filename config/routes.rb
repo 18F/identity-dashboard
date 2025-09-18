@@ -27,13 +27,11 @@ Rails.application.routes.draw do
 
   get '/tools/saml_request' => 'tools#saml_request'
   post '/tools/saml_request' => 'tools#validate_saml_request'
+  get '/extracts' => 'extracts#index'
+  post '/extracts' => 'extracts#create'
 
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'
-  # should these move to /;tools?
-  resources :extracts
-  # get '/service_providers/migrate' => 'service_providers#migrate'
-  # post '/service_providers/migrate' => 'service_providers#extract'
   post '/service_providers/publish' => 'service_providers#publish'
   post '/service_providers/prod_request' => 'service_providers#prod_request'
   resources :service_providers
