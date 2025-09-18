@@ -1,5 +1,5 @@
 class ServiceProvidersController < AuthenticatedController
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request migrate]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request extract]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
 
@@ -145,16 +145,16 @@ value: func.to_proc.call(@service_provider) })
       redirect_to action: 'show', id: @service_provider.id
   end
 
-  def migrate
+  def extract
     all
   end
 
   def extract
     params['validation'] => {
       team_search:,
-      migrate_criteria:,
+      extract_criteria:,
       ticket:, }
-    criteria = migrate_criteria.split(/,\s*|\s+/)
+    criteria = extract_criteria.split(/,\s*|\s+/)
 
     configs = team_search ?
       ServiceProvider.where(group_id: criteria) :
