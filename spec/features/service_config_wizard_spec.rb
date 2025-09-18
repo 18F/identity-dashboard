@@ -368,6 +368,7 @@ feature 'Service Config Wizard' do
         end
         click_on 'Create app' # details page
         expect(page).to_not have_content('Error(s) found in these fields')
+        expect(page).to have_content("Details for \"#{test_name}\"")
       end
     end
   end
