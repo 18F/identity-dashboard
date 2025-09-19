@@ -8,8 +8,10 @@ RSpec.describe EventsDocumenter do
       @database_dir = database_dir
 
       YARD::Registry.clear
+      # Test to make sure custom tags work okay. Currently, IdP uses these and the portal doesn't.
+      # I can imagine the portal wanting to copy IdP's use case in the near future.
       YARD::Tags::Library.define_tag(
-        'Previous Event Name', described_class::PREVIOUS_EVENT_NAME_TAG
+        'Previous Event Name', :'identity.idp.previous_event_name'
       )
       YARD.parse_string(source_code)
       YARD::Registry.save(false, database_dir)

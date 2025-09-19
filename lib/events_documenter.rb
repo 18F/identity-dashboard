@@ -10,7 +10,6 @@ require_relative './identity_config'
 # Parses YARD output for AnalyticsEvents methods
 class EventsDocumenter
   DEFAULT_DATABASE_PATH = '.yardoc'
-  PREVIOUS_EVENT_NAME_TAG = :'identity.idp.previous_event_name'
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
