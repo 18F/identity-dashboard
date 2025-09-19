@@ -1,10 +1,10 @@
 class ExtractPolicy < BasePolicy
   attr_reader :user, :extract
 
-  PARAMS = [:ticket, :team_search, :criteria_file, :extract_list].freeze
-  
+  PARAMS = %i[ticket search_by criteria_file criteria_list].freeze
+
   def permitted_attributes
-    PARAMS  
+    PARAMS
   end
 
   def index?
@@ -15,7 +15,7 @@ class ExtractPolicy < BasePolicy
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if is_admin_sandbox?
+      scope if is_admin_sandbox?
     end
   end
 

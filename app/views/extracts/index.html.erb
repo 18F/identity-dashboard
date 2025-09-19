@@ -12,10 +12,10 @@
     <legend class="usa-label required usa-input-required">
       Search by<abbr class="text-secondary-dark" title="required">*</abbr>
     </legend>
-    <%= form.collection_radio_buttons(:team_search,
-                                     { "Teams" => true, "Issuers" => false },
+    <%= form.collection_radio_buttons(:search_by,
+                                     { "Teams" => 'teams', "Issuers" => 'issuers' },
                                      :last, :first,
-                                     checked: true,
+                                     checked: 'teams',
                                      required: true) do |b| %>
       <div class="usa-radio">                                       
         <%= b.radio_button(class: "usa-radio__input") %>
@@ -25,16 +25,16 @@
   </fieldset>
   <fieldset class="usa-form-group usa-fieldset">
     <label class="usa-label optional" id="criteria-input-label">Teams or issuers file</label>
-      <span class="<%= 'usa-error-message' if @extract.errors[:criteria_file].present? %> js-bundle-input-error-message">
-        <%= @extract.errors[:criteria_file].to_sentence.presence %>
-      </span>
     <%= form.file_field :criteria_file,
                         class: "usa-file-input",
                         id: "criteria-input-file",
                         aria: { describedby: "criteria-input-label"},
                         accept: "text/plain" %>
+    <span class="<%= 'usa-error-message' if @extract.errors[:criteria_file].present? %> js-bundle-input-error-message">
+      Criteria file <%= @extract.errors[:criteria_file].to_sentence.presence %>
+    </span>
   </fieldset>
-  <%= form.input :extract_list,
+  <%= form.input :criteria_list,
                  as: :usa_textarea,
                  class: 'block col-12 usa-textarea',
                  label_html: { class: 'usa-label' },
