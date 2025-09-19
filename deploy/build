@@ -22,7 +22,7 @@ bundle config set --local path $BUNDLE_DIR
 bundle config set --local without 'deploy development test'
 
 bundle install --jobs 4
-yarn install --cache-folder .cache/yarn
+npm ci --omit=dev --cache .npm-cache
 bundle exec rake assets:precompile
 
 set +x
