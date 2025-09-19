@@ -8,40 +8,54 @@ class ExtractsController < AuthenticatedController
   end
 
   def create
+    @extract ||= Extract.new
+
     extracts_params.to_h => {
       ticket:,
-      team_search:,
-      extract_list:,
+      search_by:,
+      criteria_list:,
     }
-    list_criteria = extract_list.split(/,\s*|\s+/)
+    list_criteria = criteria_list.split(/,\s*|\s+/)
     file = extracts_params[:criteria_file]
     file_criteria = file ? file.read.split(/,\s*|\s+/) : []
     criteria = [].union list_criteria, file_criteria
 
-    configs = team_search == 'true' ?
+    configs = search_by == 'teams' ?
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
 
-    @team_search = team_search
+    @search_by = search_by
     @successes = configs
     @failures = find_failures criteria, configs
 
-    if configs.empty?
+    if is_valid?
+      if configs.empty?
       flash[:error] = 'No ServiceProvider rows were returned.'
-    elsif @failures.length > 0
-      flash[:notice] = "Some criteria were invalid. Please check the results."
+      elsif @failures.length > 0
+        flash[:notice] = 'Some criteria were invalid. Please check the results.'
+      end
+      render 'results'
+    else
+      render 'index'
     end
-
-    render 'results'
   end
 
   private
 
+  def extracts_params
+    params.require(:extract).permit(
+      :ticket,
+      :search_by,
+      :criteria_file,
+      :criteria_list,
+    )
+  end
+
   def find_failures(criteria, configs)
-    failures = [] 
+    failures = []
     criteria.each do |criterion|
       failures.push criterion unless configs.find do |config|
-        @team_search == 'true' ?
+        @search_by == 'teams' ?
           config.group_id.to_s == criterion :
           config.issuer == criterion
       end
@@ -49,16 +63,23 @@ class ExtractsController < AuthenticatedController
     failures
   end
 
-  def extracts_params
-    params.require(:extract).permit(
-      :ticket,
-      :team_search,
-      :criteria_file,
-      :extract_list,
-    )
-  end
-
   def log_request
     log.extraction_request(action_name, extracts_params)
+  end
+
+  def is_valid?
+    ep = extracts_params
+    if ep[:ticket].empty?
+      @extract.errors.add(:ticket, 'Ticket number is required') 
+    end
+    if ep[:search_by] == 'teams' || ep[:search_by] == 'issuers'
+      @extract.errors.add(:search_by, 'must be selected')
+    end
+    if !ep[:criteria_file] && ep[:criteria_list].empty?
+      @extract.errors.add(:criteria_file, 'or Criteria list must contain criteria')
+      @extract.errors.add(:criteria_list, 'or Criteria file must contain criteria')
+    end
+
+    @extract.errors.empty?
   end
 end

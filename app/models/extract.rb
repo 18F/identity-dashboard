@@ -2,7 +2,7 @@ class Extract
   include ActiveModel::API
   include ActiveModel::Validations
 
-  attr_accessor :ticket, :team_search, :criteria_file, :extract_list, :successes, :failures
+  attr_accessor :ticket, :team_search, :criteria_file, :criteria_list, :successes, :failures
 
   # do activeRecord validation syntax stuff here
   validates :ticket, presence: true
