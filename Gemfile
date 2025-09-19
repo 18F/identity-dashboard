@@ -75,6 +75,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'
+  gem 'redcarpet', require: false # currently used for documentation only
   gem 'rspec_junit_formatter'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
   gem 'rubocop', '~> 1.66.0', require: false
@@ -82,6 +83,7 @@ group :development, :test do
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
+  gem 'yard', require: false
 end
 
 group :test do

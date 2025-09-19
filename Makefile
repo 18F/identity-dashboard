@@ -13,7 +13,7 @@ setup:
 
 check: lint test
 
-lint:
+lint: lint_log_events lint_log_events_sorted
 	@echo "--- rubocop ---"
 ifdef JUNIT_OUTPUT
 	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
@@ -36,3 +36,14 @@ run:
 	foreman start -p $(PORT)
 
 .PHONY: setup all lint lint_database_schema_files run test check
+
+doc:
+	bin/yardoc \
+		--fail-on-warning
+
+lint_log_events: doc ## Checks that all methods on `LogEvents` are documented
+	bundle exec ruby lib/events_documenter.rb --class-name="LogEvents" --check --skip-extra-params 
+
+lint_log_events_sorted:
+	(awk '/^  def/; /^  private/ {exit}' app/services/log_events.rb | LC_COLLATE='C.UTF-8' sort -c) || \
+		(echo '\033[1;31mError: methods in log_events.rb are not sorted alphabetically\033[0m' && exit 1)
