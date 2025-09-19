@@ -1,0 +1,14 @@
+<h1>Config Extraction Results</h1>
+<p class="usa-prose">Results saved to</p>
+<h2><%= "#{@failures.length} #{@team_search == 'true' ? 'teams' : 'issuers' }" %> missing</h2>
+<ul class="usa-list">
+<% @failures.each do |f| %>
+  <li><%= f %></li>
+<% end %>
+</ul>
+<h2><%= @successes.length %> ServiceProvider rows found</h2>
+<ul class="usa-list">
+<% @successes.each do |s| %>
+  <li><%= s.issuer %>(team <%= s.group_id %>)</li>
+<% end %>
+</ul>
