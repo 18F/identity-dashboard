@@ -231,7 +231,7 @@ class WizardStep < ApplicationRecord
   end
 
   # @return [Array<ServiceProviderCertificate>]
-  # @throw [NameError] if this step doesn't have certs
+  # @raise [NameError] if this step doesn't have certs
   def certificates
     @certificates ||= Array(certs).map do |cert|
       ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
