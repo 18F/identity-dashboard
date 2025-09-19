@@ -22,15 +22,15 @@ class ExtractsController < AuthenticatedController
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
 
-    if configs.empty?
-      flash[:error] = 'No ServiceProvider rows were returned.'
-    elsif configs.length != criteria.length
-      flash[:notice] = "Some issuers were invalid. Please check the results."
-    end
-
     @team_search = team_search
     @successes = configs
     @failures = find_failures criteria, configs
+
+    if configs.empty?
+      flash[:error] = 'No ServiceProvider rows were returned.'
+    elsif @failures.length > 0
+      flash[:notice] = "Some criteria were invalid. Please check the results."
+    end
 
     render 'results'
   end
