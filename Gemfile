@@ -95,7 +95,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
-  gem 'simplecov-cobertura'
+  gem 'simplecov-cobertura', '>= 3.0.0'
   gem 'sinatra', '~> 4.1.0'
   gem 'timecop'
   gem 'webmock'
