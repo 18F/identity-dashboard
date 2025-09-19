@@ -13,8 +13,9 @@ class ExtractsController < AuthenticatedController
       team_search:,
       extract_list:,
     }
-    list_criteria = extract_list.split(/,\s*|\s+/) unless extract_list.strip.empty?
-    file_criteria = []
+    list_criteria = extract_list.split(/,\s*|\s+/)
+    file = extracts_params[:criteria_file]
+    file_criteria = file ? file.read.split(/,\s*|\s+/) : []
     criteria = [].union list_criteria, file_criteria
 
     configs = team_search == 'true' ?
@@ -41,7 +42,7 @@ class ExtractsController < AuthenticatedController
     criteria.each do |criterion|
       failures.push criterion unless configs.find do |config|
         @team_search == 'true' ?
-          config.group_id == criterion :
+          config.group_id.to_s == criterion :
           config.issuer == criterion
       end
     end

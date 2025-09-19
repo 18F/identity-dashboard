@@ -7,8 +7,8 @@
 <% end %>
 </ul>
 <h2><%= @successes.length %> ServiceProvider rows found</h2>
-<ul class="usa-list">
+<ul class="usa-list font-family-mono">
 <% @successes.each do |s| %>
-  <li><%= s.issuer %>(team <%= s.group_id %>)</li>
+  <li>team <%= s.group_id %> | <%= s.issuer %></li>
 <% end %>
 </ul>
