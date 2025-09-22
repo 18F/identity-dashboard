@@ -17,8 +17,10 @@ class ExtractsController < AuthenticatedController
     @criteria_list = ep[:criteria_list] || ''
 
     list_criteria = @criteria_list.split(/,\s*|\s+/)
-    @file = extracts_params[:criteria_file]
-    @file_criteria = @file ? @file.read.split(/,\s*|\s+/) : []
+    @criteria_file = extracts_params[:criteria_file]
+    @file_criteria = @criteria_file ?
+      @criteria_file.read.split(/,\s*|\s+/) :
+      []
     criteria = [].union list_criteria, @file_criteria
 
     configs = @search_by == 'teams' ?
@@ -70,7 +72,7 @@ class ExtractsController < AuthenticatedController
     if @search_by != 'teams' && @search_by != 'issuers'
       @extract.errors.add(:search_by, 'must be selected')
     end
-    if !@criteria_file && @criteria_list&.empty?
+    if @file_criteria.empty? && @criteria_list&.empty?
       @extract.errors.add(:criteria_file, 'or Criteria list must contain criteria')
       @extract.errors.add(:criteria_list, 'or Criteria file must contain criteria')
     end
