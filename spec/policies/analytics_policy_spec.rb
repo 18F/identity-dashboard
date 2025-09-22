@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AnalyticsPolicy, type: :policy do
   let(:user) { User.new }
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
 
   permissions :show? do
     it 'denies users by default' do
