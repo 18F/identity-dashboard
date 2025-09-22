@@ -13,12 +13,6 @@ class ExtractPolicy < BasePolicy
 
   alias create? index?
 
-  class Scope < BasePolicy::Scope
-    def resolve
-      scope if is_admin_sandbox?
-    end
-  end
-
   private
 
   def is_admin_sandbox?

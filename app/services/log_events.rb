@@ -44,7 +44,6 @@ module LogEvents
   # @param [Pundit::NotAuthorizedError] exception
   # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
-    binding.pry
     details = {
       message: exception.message,
       query: exception.query.to_s,
