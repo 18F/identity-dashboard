@@ -28,14 +28,13 @@ class ExtractsController < AuthenticatedController
     @successes = configs
     @failures = find_failures criteria, configs
 
-    if is_valid?
-      if configs.empty?
-      flash[:error] = 'No ServiceProvider rows were returned.'
-      elsif @failures.length > 0
+    if is_valid? && !configs.empty?
+      if @failures.length > 0
         flash[:notice] = 'Some criteria were invalid. Please check the results.'
       end
       render 'results'
     else
+      flash[:error] = 'No ServiceProvider rows were returned' if configs.empty?
       render 'index'
     end
   end
@@ -72,7 +71,7 @@ class ExtractsController < AuthenticatedController
     if ep[:ticket].empty?
       @extract.errors.add(:ticket, 'Ticket number is required') 
     end
-    if ep[:search_by] == 'teams' || ep[:search_by] == 'issuers'
+    if ep[:search_by] != 'teams' && ep[:search_by] != 'issuers'
       @extract.errors.add(:search_by, 'must be selected')
     end
     if !ep[:criteria_file] && ep[:criteria_list].empty?
