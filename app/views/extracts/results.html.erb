@@ -1,6 +1,6 @@
 <h1>Config Extraction Results</h1>
-<p class="usa-prose">Results saved to</p>
-<h2><%= "#{@failures.length} #{@team_search == 'true' ? 'teams' : 'issuers' }" %> missing</h2>
+<p class="usa-prose">Results saved to /tmp/config_extract_<%= @ticket %></p>
+<h2><%= "#{@failures.length} #{@search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>
 <ul class="usa-list">
 <% @failures.each do |f| %>
   <li><%= f %></li>

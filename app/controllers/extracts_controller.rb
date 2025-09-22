@@ -24,6 +24,7 @@ class ExtractsController < AuthenticatedController
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
 
+    @ticket = ticket
     @search_by = search_by
     @successes = configs
     @failures = find_failures criteria, configs
