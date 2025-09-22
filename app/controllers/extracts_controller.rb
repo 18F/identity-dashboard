@@ -30,8 +30,9 @@ class ExtractsController < AuthenticatedController
 
     if is_valid? && !configs.empty?
       if @failures.length > 0
-        flash[:notice] = 'Some criteria were invalid. Please check the results.'
+        flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
+      save_to_file
       render 'results'
     else
       flash[:error] = 'No ServiceProvider rows were returned' if configs.empty?
@@ -62,10 +63,6 @@ class ExtractsController < AuthenticatedController
     failures
   end
 
-  def log_request
-    log.extraction_request(action_name, extracts_params)
-  end
-
   def is_valid?
     ep = extracts_params
     if ep[:ticket].empty?
@@ -80,5 +77,21 @@ class ExtractsController < AuthenticatedController
     end
 
     @extract.errors.empty?
+  end
+
+  def save_to_file
+    save_file = "/tmp/config_extract_#{extracts_params[:ticket]}"
+    begin
+      File.open(save_file, 'w') do |f|
+        f.print @successes.to_json
+      end
+      flash[:success] = "Extracted configs written to #{save_file}"
+    rescue => e
+      flash[:error] = "There was a problem writing to #{save_file}: #{e}"
+    end
+  end
+
+  def log_request
+    log.extraction_request(action_name, extracts_params)
   end
 end
