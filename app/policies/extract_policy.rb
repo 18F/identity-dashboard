@@ -1,12 +1,6 @@
 class ExtractPolicy < BasePolicy
   attr_reader :user, :extract
 
-  PARAMS = %i[ticket search_by criteria_file criteria_list].freeze
-
-  def permitted_attributes
-    PARAMS
-  end
-
   def index?
     is_admin_sandbox?
   end

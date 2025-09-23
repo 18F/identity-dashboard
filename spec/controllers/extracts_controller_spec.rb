@@ -17,6 +17,7 @@ describe ExtractsController do
   before do
     allow(logger_double).to receive(:extraction_request)
     allow(logger_double).to receive(:unauthorized_access_attempt)
+    allow(logger_double).to receive(:unpermitted_params_attempt)
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
@@ -38,6 +39,7 @@ describe ExtractsController do
       it 'does not have GET access' do
         get :index
         expect(response).to be_unauthorized
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
 
@@ -45,6 +47,7 @@ describe ExtractsController do
       it 'does not have POST access' do
         post :create, params: params1
         expect(response).to be_unauthorized
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end
@@ -97,6 +100,16 @@ describe ExtractsController do
         expect(assigns[:failures]).to include('fake:issuer')
       end
 
+      it 'flashes an error when there are no results' do
+        post :create, params: { extract: {
+          ticket: '0',
+          search_by: 'issuers',
+          criteria_list: 'fake:issuer',
+        } }
+
+        expect(flash[:error]).to eq('No ServiceProvider rows were returned')
+      end
+
       it 'concatenates a file and input data' do
         File.open('/tmp/config_extract_test', 'w') do |f|
           f.print sp2[:group_id]
@@ -115,7 +128,18 @@ describe ExtractsController do
       it 'will #save_to_file' do
         post :create, params: params1
 
-        expect(File.read "/tmp/config_extract_#{assigns[:ticket]}").to eq([sp1].to_json)
+        expect(File.read "/tmp/config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
+      end
+
+      it 'logs extraneous params' do
+        post :create, params: { extract: {
+          ticket: '0',
+          search_by: 'teams',
+          criteria_list: sp1[:group_id],
+          disallowed_param: 'I am malicious',
+        } }
+
+        expect(logger_double).to have_received(:unpermitted_params_attempt)
       end
 
       it 'logs extract requests' do

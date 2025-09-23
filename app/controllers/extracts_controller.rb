@@ -5,32 +5,22 @@ class ExtractsController < AuthenticatedController
   after_action -> { flash.discard }
 
   def index
-    @extract ||= Extract.new
+    @extract ||= Extract.new({})
   end
 
   def create
-    @extract ||= Extract.new
+    @extract = Extract.new(extracts_params)
 
-    ep = extracts_params
-    @ticket = ep[:ticket] || ''
-    @search_by = ep[:search_by] || ''
-    @criteria_list = ep[:criteria_list] || ''
+    criteria = [].union @extract.list_criteria, @extract.file_criteria
 
-    list_criteria = @criteria_list.split(/,\s*|\s+/)
-    @criteria_file = extracts_params[:criteria_file]
-    @file_criteria = @criteria_file ?
-      @criteria_file.read.split(/,\s*|\s+/) :
-      []
-    criteria = [].union list_criteria, @file_criteria
-
-    configs = @search_by == 'teams' ?
+    configs = @extract.search_by == 'teams' ?
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
 
     @successes = configs
     @failures = find_failures criteria, configs
 
-    if is_valid? && !configs.empty?
+    if @extract.valid? && !configs.empty?
       if @failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
@@ -58,7 +48,7 @@ class ExtractsController < AuthenticatedController
     failures = []
     criteria.each do |criterion|
       failures.push criterion unless configs.find do |config|
-        @search_by == 'teams' ?
+        @extract.search_by == 'teams' ?
           config.group_id.to_s == criterion :
           config.issuer == criterion
       end
@@ -66,22 +56,8 @@ class ExtractsController < AuthenticatedController
     failures
   end
 
-  def is_valid?
-    ep = extracts_params
-    @extract.errors.add(:ticket, 'number is required') if @ticket&.empty?
-    if @search_by != 'teams' && @search_by != 'issuers'
-      @extract.errors.add(:search_by, 'must be selected')
-    end
-    if @file_criteria.empty? && @criteria_list&.empty?
-      @extract.errors.add(:criteria_file, 'or Criteria list must contain criteria')
-      @extract.errors.add(:criteria_list, 'or Criteria file must contain criteria')
-    end
-
-    @extract.errors.empty?
-  end
-
   def save_to_file
-    save_file = "/tmp/config_extract_#{extracts_params[:ticket]}"
+    save_file = "/tmp/config_extract_#{@extract.ticket}"
     begin
       File.open(save_file, 'w') do |f|
         f.print @successes.to_json
