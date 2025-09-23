@@ -5,22 +5,28 @@ class ExtractsController < AuthenticatedController
   after_action -> { flash.discard }
 
   def index
-    @extract ||= Extract.new({})
+    @extract ||= Extract.new
   end
 
   def create
-    @extract = Extract.new(extracts_params)
+    ep = extracts_params
+    @extract = Extract.new(
+      ticket: ep[:ticket],
+      search_by: ep[:search_by],
+      criteria_list: ep[:criteria_list],
+      criteria_file: ep[:criteria_file],
+    )
 
-    criteria = [].union @extract.list_criteria, @extract.file_criteria
+    criteria = @extract.list_criteria.union @extract.file_criteria
 
-    configs = @extract.search_by == 'teams' ?
+    configs = extract_by_team? ?
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
 
     @successes = configs
-    @failures = find_failures criteria, configs
+    @failures = failures criteria, configs
 
-    if @extract.valid? && !configs.empty?
+    if @extract.valid? && configs.present?
       if @failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
@@ -35,6 +41,10 @@ class ExtractsController < AuthenticatedController
 
   private
 
+  def extract_by_team?
+    @extract.search_by == 'teams'
+  end
+
   def extracts_params
     params.require(:extract).permit(
       :ticket,
@@ -44,16 +54,14 @@ class ExtractsController < AuthenticatedController
     )
   end
 
-  def find_failures(criteria, configs)
-    failures = []
-    criteria.each do |criterion|
-      failures.push criterion unless configs.find do |config|
-        @extract.search_by == 'teams' ?
+  def failures(criteria, configs)
+    criteria.reject do |criterion|
+      configs.find do |config|
+        extract_by_team? ?
           config.group_id.to_s == criterion :
           config.issuer == criterion
       end
     end
-    failures
   end
 
   def save_to_file

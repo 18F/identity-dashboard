@@ -30,9 +30,11 @@
                         id: "criteria-input-file",
                         aria: { describedby: "criteria-input-label"},
                         accept: "text/plain" %>
-    <span class="<%= 'usa-error-message' if @extract.errors[:criteria_file].present? %> js-bundle-input-error-message">
-      <%= "Criteria file #{@extract.errors[:criteria_file].to_sentence.presence}" if @extract.errors[:criteria_file].present? %>
-    </span>
+    <% if @extract.errors[:criteria_file].present? %>
+      <span class="usa-error-message js-bundle-input-error-message">
+        Criteria file <%= @extract.errors[:criteria_file].to_sentence.presence %>
+      </span>
+    <% end %>
   </fieldset>
   <%= form.input :criteria_list,
                  as: :usa_textarea,

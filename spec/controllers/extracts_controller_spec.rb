@@ -67,7 +67,9 @@ describe ExtractsController do
     context '#create' do
       it 'includes errors when required params are missing' do
         post :create, params: { extract: {
+          ticket: '',
           search_by: '',
+          criteria_list: '',
         } }
 
         expect(assigns[:extract].errors).to include(
