@@ -32,7 +32,6 @@ feature 'Home' do
 
       expect(page.find('.usa-logo__img')['src']).to have_content(/LG-PP-Production-[a-z 0-9]*.svg/)
     end
-
   end
 
   context 'when login.gov admin' do

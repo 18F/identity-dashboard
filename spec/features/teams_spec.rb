@@ -194,7 +194,6 @@ feature 'TeamMembership CRUD' do
       context 'a user who is a login_admin' do
         let(:logingov_admin) { create(:user, :logingov_admin) }
 
-
         scenario 'should see create team button' do
           login_as(logingov_admin)
           visit teams_path

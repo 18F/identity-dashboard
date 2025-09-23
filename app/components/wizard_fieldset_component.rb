@@ -23,7 +23,7 @@ class WizardFieldsetComponent < ViewComponent::Base
   # @option options [Symbol,String] :label_key if the label translation for the field should be
   #           different from `model_method`
   # @option options [String] :default to pre-select an option
-  def initialize(form:, input_type:, param_name:, inputs: nil, **options) # rubocop:disable Lint/MissingSuper
+  def initialize(form:, input_type:, param_name:, inputs: nil, **options)
     unless INPUT_TYPES.include? input_type
       raise ArgumentError, "#{self.class}: invalid `input_type` '#{input_type}"
     end

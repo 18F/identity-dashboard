@@ -21,7 +21,6 @@ RSpec.describe ServiceProviderSerializer do
   end
 
   describe '#as_json' do
-
     subject(:as_json) { serializer.as_json }
 
     it 'serializes attributes' do

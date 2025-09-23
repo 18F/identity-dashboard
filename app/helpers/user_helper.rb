@@ -17,8 +17,7 @@ module UserHelper
   def title(user)
     return unless !user.uuid? && user.unconfirmed?
 
-      "Sign-in deadline: #{deadline(user)}"
-
+    "Sign-in deadline: #{deadline(user)}"
   end
 
   def caption(user)

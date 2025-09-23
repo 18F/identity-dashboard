@@ -83,7 +83,6 @@ class ZendeskRequest
   end
 
   def build_zendesk_ticket(custom_fields)
-
     custom_fields << portal_url_value
     custom_fields << ial_value
 
@@ -147,6 +146,5 @@ class ZendeskRequest
       end
       { success: false, errors: [] }
     end
-
   end
 end

@@ -107,7 +107,7 @@ ActiveSupport::Notifications.subscribe(
   request = payload[:request]
   email = ActionController::HttpAuthentication::Token.token_params_from(
           request.env['HTTP_AUTHORIZATION'],
-          ).to_h['email']
+        ).to_h['email']
 
   EventLogger.new(request:).track_event(
     'blocklisted',

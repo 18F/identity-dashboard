@@ -8,7 +8,6 @@ module DeployStatusCheckerHelper
     }.as_json
   end
 
-  # rubocop:disable Layout/LineLength
   def stub_deploy_status
     stub_request(:get, %r{https://secure\.login\.gov/api/deploy\.json}).
       to_return(body: stub_status_json.to_json)
@@ -28,6 +27,5 @@ module DeployStatusCheckerHelper
       to_timeout
     stub_request(:get, %r{https://qa-.*\.cloud\.gov/api/deploy\.json}).
       to_timeout
-  end
-  # rubocop:enable Layout/LineLength
 end
+  end

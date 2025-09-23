@@ -33,4 +33,3 @@ class FakeRequest
     { 'REQUEST_METHOD' => 'GET' }
   end
 end
-

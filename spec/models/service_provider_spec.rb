@@ -219,7 +219,6 @@ describe ServiceProvider do
       end
     end
 
-
     it 'provides an error message when issuer is formatted incorrectly' do
       invalid_service_provider = build(
         :service_provider,

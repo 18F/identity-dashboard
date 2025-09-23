@@ -171,7 +171,6 @@ class EventsDocumenter
 end
 
 # rubocop:disable Rails/Output
-# rubocop:disable Rails/Exit
 if $PROGRAM_NAME == __FILE__
   output, status = EventsDocumenter.run(ARGV)
   puts output
