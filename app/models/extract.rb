@@ -2,7 +2,8 @@ class Extract
   include ActiveModel::API
   include ActiveModel::Validations
 
-  attr_accessor :ticket, :search_by, :criteria_file, :file_criteria, :criteria_list, :list_criteria, :successes, :failures
+  attr_accessor :ticket, :search_by, :criteria_file, :file_criteria,
+    :criteria_list, :list_criteria, :successes, :failures
 
   validates :ticket, presence: true
   validates :search_by, inclusion: { in: ['teams', 'issuers'] }
@@ -31,6 +32,6 @@ class Extract
       errors.add(:criteria_list, 'or Criteria File are required.')
       return false
     end
-    return true
+    true
   end
 end
