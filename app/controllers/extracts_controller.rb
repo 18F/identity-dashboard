@@ -17,8 +17,6 @@ class ExtractsController < AuthenticatedController
       criteria_file: ep[:criteria_file],
     )
 
-    criteria = @extract.list_criteria.union @extract.file_criteria
-
     configs = extract_by_team? ?
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
@@ -40,6 +38,10 @@ class ExtractsController < AuthenticatedController
   end
 
   private
+
+  def criteria
+    @criteria ||= @extract.list_criteria.union @extract.file_criteria
+  end
 
   def extract_by_team?
     @extract.search_by == 'teams'
