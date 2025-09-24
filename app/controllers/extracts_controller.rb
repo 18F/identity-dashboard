@@ -45,7 +45,7 @@ class ExtractsController < AuthenticatedController
       File.open(@extract.filename, 'w') do |f|
         f.print @extract.successes.to_json
       end
-      flash[:success] = "Extracted configs saved"
+      flash[:success] = 'Extracted configs saved'
     rescue => err
       flash[:error] = "There was a problem writing to file: #{err}"
     end

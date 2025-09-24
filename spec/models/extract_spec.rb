@@ -138,7 +138,7 @@ describe Extract do
       } )
 
       expect(extract.criteria).to eq(
-        %w[list:issuer issuer:one issuer:two issuer:three]
+        %w[list:issuer issuer:one issuer:two issuer:three],
       )
     end
   end

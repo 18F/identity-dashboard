@@ -99,8 +99,9 @@ describe ExtractsController do
 
       it 'will #save_to_file' do
         post :create, params: params1
+        filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
 
-        expect(File.read "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
+        expect(File.read filename).to eq([sp1].to_json)
         expect(response).to render_template 'results'
       end
 

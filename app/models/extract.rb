@@ -36,7 +36,7 @@ class Extract
   end
 
   def filename
-    "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/,'')}"
+    "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
   def successes
