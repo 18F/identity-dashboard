@@ -157,11 +157,13 @@ describe TeamsController do
           expect(team_membership.role).to eq(Role.find_by(name: 'partner_admin'))
         end
 
+        # rubocop:disable Layout/LineLength
         it 'assigns a UUID to the team' do
           team = Team.find_by(name: 'unique name')
           expect(team.uuid).to_not be_nil
           expect(team.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
         end
+        # rubocop:enable Layout/LineLength
 
         it 'redirects' do
           team = Team.find_by(name: 'unique name')
@@ -177,6 +179,7 @@ describe TeamsController do
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
 
+      # rubocop:disable Layout/LineLength
       context 'when it creates successfully' do
         it 'has a redirect response' do
           post :create, params: { team: { name: 'unique name', agency_id: agency.id } }
@@ -189,6 +192,7 @@ describe TeamsController do
           expect(response).to redirect_to(team_users_path(team))
         end
       end
+      # rubocop:enable Layout/LineLength
 
       context 'when it fails to create' do
         it 'renders #new' do
