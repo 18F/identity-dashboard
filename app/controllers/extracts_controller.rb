@@ -9,12 +9,11 @@ class ExtractsController < AuthenticatedController
   end
 
   def create
-    ep = extracts_params
     @extract = Extract.new(
-      ticket: ep[:ticket],
-      search_by: ep[:search_by],
-      criteria_list: ep[:criteria_list],
-      criteria_file: ep[:criteria_file],
+      ticket: extracts_params[:ticket],
+      search_by: extracts_params[:search_by],
+      criteria_list: extracts_params[:criteria_list],
+      criteria_file: extracts_params[:criteria_file],
     )
 
     configs = extract_by_team? ?
