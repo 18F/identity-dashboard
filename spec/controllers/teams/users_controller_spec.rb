@@ -316,7 +316,7 @@ describe Teams::UsersController do
       before do
         user.admin = true
         user.save!
-        TeamMembership.build_logingov_admin(user).save!
+        TeamMembership.find_or_build_logingov_admin(user).save!
       end
 
       describe '#remove_confirm' do

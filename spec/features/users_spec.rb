@@ -130,4 +130,28 @@ feature 'login.gov admin manages users' do
     click_on 'Update'
     expect(user_to_edit.reload).to_not be_logingov_admin
   end
+
+  scenario 'can demote a legacy Login.gov admin and make them a Login.gov admin again' do
+    legacy_admin_user = create(:user, admin: true)
+    visit edit_user_path(legacy_admin_user)
+    choose 'Partner Admin'
+    click_on 'Update'
+    expect(page).to have_http_status(:ok)
+    expect(legacy_admin_user.reload).to_not be_logingov_admin
+    expect(legacy_admin_user.admin).to be_falsey
+    visit edit_user_path(legacy_admin_user)
+    choose 'Login.gov Admin'
+    click_on 'Update'
+    expect(page).to have_http_status(:ok)
+    expect(legacy_admin_user.reload).to be_logingov_admin
+    expect(legacy_admin_user.teams).to include(Team.internal_team)
+
+    # Promoting to Admin should be idempotent
+    visit edit_user_path(legacy_admin_user)
+    choose 'Login.gov Admin'
+    click_on 'Update'
+    expect(page).to have_http_status(:ok)
+    expect(legacy_admin_user.reload).to be_logingov_admin
+    expect(legacy_admin_user.teams).to include(Team.internal_team)
+  end
 end

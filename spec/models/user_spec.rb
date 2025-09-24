@@ -178,7 +178,7 @@ describe User do
 
     it 'returns "Login.gov Admin" if applicable' do
       user = create(:user, :with_teams)
-      TeamMembership.build_logingov_admin(user).save!
+      TeamMembership.find_or_build_logingov_admin(user).save!
       expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
     end
 
