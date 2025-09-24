@@ -86,7 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_24_124408) do
     t.string "name", null: false
     t.text "description", default: ""
     t.integer "agency_id"
-    t.string "uuid", default: "d0843cb7-5e47-472d-bcf0-86f8bd613dd6"
+    t.string "uuid"
     t.index ["name"], name: "index_groups_on_name", unique: true
     t.index ["uuid"], name: "index_groups_on_uuid", unique: true
   end

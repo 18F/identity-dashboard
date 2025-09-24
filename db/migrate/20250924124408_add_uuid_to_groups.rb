@@ -5,8 +5,6 @@ class AddUuidToGroups < ActiveRecord::Migration[7.2]
     add_column :groups, :uuid, :string
     add_index :groups, :uuid, unique: true
 
-    change_column_default :groups, :uuid, from: nil, to: SecureRandom.uuid
-
     # Update existing records with random UUIDs
     Team.all.each do |team| 
       team.update(uuid: SecureRandom.uuid)
