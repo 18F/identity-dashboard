@@ -199,7 +199,7 @@ feature 'TeamMembership CRUD' do
           login_as(logingov_admin)
           visit teams_path
 
-          expect(page).to have_content('Create your first team')
+          expect(page).to have_button('Create a new team')
         end
       end
 
