@@ -15,7 +15,7 @@ describe TeamHelper do
     end
 
     it 'returns true if user is a login.gov admin' do
-      user = build(:user, :logingov_admin)
+      user = create(:user, :logingov_admin)
 
       expect(can_edit_teams?(user)).to eq(true)
     end

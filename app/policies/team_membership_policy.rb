@@ -10,11 +10,11 @@ class TeamMembershipPolicy < BasePolicy
   end
 
   def index?
-    user_has_login_admin_role? || (team_membership && role_name != 'partner_readonly')
+    user_has_login_admin_role? || team_membership && current_user_role_on_team != 'partner_readonly'
   end
 
   def create?
-    user_has_login_admin_role? || role_name == 'partner_admin'
+    user_has_login_admin_role? || not_internal_team? && current_user_role_on_team == 'partner_admin'
   end
 
   def edit?
@@ -24,7 +24,7 @@ class TeamMembershipPolicy < BasePolicy
   def update?
     return false unless edit?
 
-    true if roles_for_edit.include?(record.role)
+    true if user_has_login_admin_role? || roles_for_edit.include?(record.role)
   end
 
   def new?
@@ -66,7 +66,11 @@ class TeamMembershipPolicy < BasePolicy
     @team_membership ||= record.team&.team_memberships&.find_by(user:)
   end
 
-  def role_name
+  def current_user_role_on_team
     team_membership&.role&.name
+  end
+
+  def not_internal_team?
+    team_membership && team_membership.team != Team.internal_team
   end
 end

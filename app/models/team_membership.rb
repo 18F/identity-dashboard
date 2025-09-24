@@ -13,6 +13,12 @@ class TeamMembership < ApplicationRecord
                                     message: 'This user is already a member of the team.' }
   validate :role_exists_if_present
 
+  def self.build_logingov_admin(user)
+    raise ActiveRecord::RecordNotFound unless Team.internal_team
+
+    build(user: user, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
+  end
+
   def self.destroy_orphaned_memberships(logger: nil)
     data_for_deleted_users = TeamMembership.where.missing(:user)
     if data_for_deleted_users.any?

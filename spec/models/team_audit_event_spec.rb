@@ -6,7 +6,7 @@ RSpec.describe TeamAuditEvent do
       PaperTrail.config.version_limit = nil
       team = create(:team)
       wrong_team = create(:team)
-      added_admin_user = create(:user, admin: true)
+      added_admin_user = create(:user, :logingov_admin)
       added_and_removed_user = create(:user)
       added_and_destroyed_user = create(:user)
       wrong_user = create(:user)
