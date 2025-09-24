@@ -34,9 +34,10 @@ class Extract
   private
 
   def file_and_or_list
-    if list_criteria.empty? && file_criteria.empty?
+    return unless list_criteria.empty? && file_criteria.empty?
+
       errors.add(:criteria_file, 'or Criteria List are required.')
       errors.add(:criteria_list, 'or Criteria File are required.')
-    end
+
   end
 end

@@ -30,7 +30,7 @@ describe Extract do
     it 'should add errors when file and list criteria are excluded' do
       test_extract = build(:extract, {
         ticket: '0',
-        search_by:'teams',
+        search_by: 'teams',
         criteria_list: '',
       } )
 
@@ -51,7 +51,7 @@ describe Extract do
     end
 
     it 'should return an array of the issuer strings in the criteria_file' do
-      extract = build(:extract, { 
+      extract = build(:extract, {
         ticket: '0',
         search_by: 'issuers',
         criteria_file: issuer_file,
@@ -82,7 +82,7 @@ describe Extract do
         4',
       )
 
-      expect(extract.list_criteria).to eq(['1', '2', '3', '4'])
+      expect(extract.list_criteria).to eq(%w[1 2 3 4])
     end
   end
 end
