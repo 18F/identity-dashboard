@@ -26,7 +26,6 @@ class TeamsController < AuthenticatedController
 
   def create
     @team = Team.new(update_params_with_current_user)
-    @team.uuid = SecureRandom.uuid
 
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
