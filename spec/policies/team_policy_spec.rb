@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:team) { create(:team) }
   let(:other_team) { build(:team) }
 
