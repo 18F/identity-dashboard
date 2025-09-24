@@ -1,7 +1,7 @@
 <h1>Config Extraction Results</h1>
 <p class="usa-prose">Results file: /tmp/config_extract_<%= @extract.ticket %></p>
 
-<% if @failures.presence? %>
+<% if @failures.present? %>
   <h2><%= "#{@failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>
   <ul class="usa-list">
     <% @failures.each do |f| %>
