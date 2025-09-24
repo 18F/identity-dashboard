@@ -157,6 +157,12 @@ describe TeamsController do
           expect(team_membership.role).to eq(Role.find_by(name: 'partner_admin'))
         end
 
+        it 'assigns a UUID to the team' do
+          team = Team.find_by(name: 'unique name')
+          expect(team.uuid).to_not be_nil
+          expect(team.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
+        end
+
         it 'redirects' do
           team = Team.find_by(name: 'unique name')
           expect(response).to redirect_to(team_users_path(team))
@@ -178,6 +184,7 @@ describe TeamsController do
           team = Team.find_by(name: 'unique name')
 
           expect(team).to_not be_nil
+          expect(team.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
           expect(team.users).to eq([])
           expect(response).to redirect_to(team_users_path(team))
         end

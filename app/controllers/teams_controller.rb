@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
@@ -26,7 +28,8 @@ class TeamsController < AuthenticatedController
 
   def create
     @team = Team.new(update_params_with_current_user)
-
+    @team.uuid = SecureRandom.uuid
+    
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = 'Success'
