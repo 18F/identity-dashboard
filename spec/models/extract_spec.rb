@@ -95,15 +95,15 @@ describe Extract do
     end
   end
 
-  describe '#file_criteria' do
-    it 'should return an empty array when there is no file uploaded' do
+  describe '#criteria' do
+    it 'should return an empty array when there is no criteria uploaded' do
       extract = build(:extract, {
         ticket: '0',
         search_by: 'teams',
-        criteria_list: '1',
+        criteria_list: '',
       } )
 
-      expect(extract.file_criteria).to eq([])
+      expect(extract.criteria).to eq([])
     end
 
     it 'should return an array of the issuer strings in the criteria_file' do
@@ -113,32 +113,33 @@ describe Extract do
         criteria_file: issuer_file,
       } )
 
-      expect(extract.file_criteria).to eq(
-        ['issuer:one', 'issuer:two', 'issuer:three'],
+      expect(extract.criteria).to eq(
+        %w[issuer:one issuer:two issuer:three],
       )
-    end
-  end
-
-  describe '#list_criteria' do
-    it 'should return an empty array when there is no file uploaded' do
-      extract = Extract.new(
-        ticket: '0',
-        search_by: 'issuers',
-        criteria_file: issuer_file,
-      )
-
-      expect(extract.list_criteria).to eq([])
     end
 
     it 'should return an array of the team ids in the criteria_list' do
-      extract = Extract.new(
+      extract = build(:extract, {
         ticket: '0',
         search_by: 'teams',
         criteria_list: '1,  2 3
         4',
-      )
+      } )
 
-      expect(extract.list_criteria).to eq(%w[1 2 3 4])
+      expect(extract.criteria).to eq(%w[1 2 3 4])
+    end
+
+    it 'should concat file and list inputs into an array' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: 'list:issuer',
+        criteria_file: issuer_file,
+      } )
+
+      expect(extract.criteria).to eq(
+        %w[list:issuer issuer:one issuer:two issuer:three]
+      )
     end
   end
 

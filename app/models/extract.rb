@@ -15,6 +15,16 @@ class Extract
     @criteria_file = criteria_file
   end
 
+  def criteria
+    list_criteria = criteria_list.empty? ?
+      [] :
+      criteria_list.split(/,\s*|\s+/)
+    file_criteria ||= criteria_file ?
+      criteria_file.read.split(/,\s*|\s+/) :
+      []
+    @criteria ||= list_criteria.union(file_criteria)
+  end
+
   def failures
     criteria.reject do |criterion|
       successes.find do |config|
@@ -29,18 +39,6 @@ class Extract
     "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/,'')}"
   end
 
-  def file_criteria
-    @file_criteria ||= criteria_file ?
-      criteria_file.read.split(/,\s*|\s+/) :
-      []
-  end
-
-  def list_criteria
-    @list_criteria ||= criteria_list.empty? ?
-    [] :
-    criteria_list.split(/,\s*|\s+/)
-  end
-
   def successes
     @successes ||= extract_by_team? ?
       ServiceProvider.where(group_id: criteria) :
@@ -53,16 +51,12 @@ class Extract
 
   private
 
-  def criteria
-    @criteria ||= list_criteria.union(file_criteria)
-  end
-
   def extract_by_team?
     search_by == 'teams'
   end
 
   def file_and_or_list
-    return unless list_criteria.empty? && file_criteria.empty?
+    return unless criteria.empty?
 
       errors.add(:criteria_file, 'or Criteria List are required.')
       errors.add(:criteria_list, 'or Criteria File are required.')
