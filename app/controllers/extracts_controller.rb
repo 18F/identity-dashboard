@@ -16,13 +16,13 @@ class ExtractsController < AuthenticatedController
       criteria_file: extracts_params[:criteria_file],
     )
 
-    if @extract.valid? && @extract.configs.present?
+    if @extract.valid? && @extract.successes.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
       return render 'results'
-    elsif @extract.errors.empty? && @extract.configs.empty?
+    elsif @extract.errors.empty? && @extract.successes.empty?
       flash[:error] = 'No ServiceProvider rows were returned'
     end
 
@@ -41,9 +41,8 @@ class ExtractsController < AuthenticatedController
   end
 
   def save_to_file
-    @save_file = "#{Dir.tmpdir}/config_extract_#{@extract.ticket}"
     begin
-      File.open(@save_file, 'w') do |f|
+      File.open(@extract.filename, 'w') do |f|
         f.print @extract.successes.to_json
       end
       flash[:success] = "Extracted configs saved"

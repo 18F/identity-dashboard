@@ -1,5 +1,5 @@
 <h1>Config Extraction Results</h1>
-<p class="usa-prose">Results file: <%= @save_file %></p>
+<p class="usa-prose">Results file: <%= @extract.filename %></p>
 
 <% if @extract.failures.present? %>
   <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>

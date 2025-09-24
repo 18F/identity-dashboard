@@ -23,7 +23,7 @@ describe ExtractsController do
 
   after do
     begin
-      File.open("#{Dir.tmpdir}config_extract_#{params1[:extract][:ticket]}") do |f|
+      File.open("#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}") do |f|
         File.delete f
       end
     rescue Errno::ENOENT
@@ -65,44 +65,17 @@ describe ExtractsController do
     end
 
     context '#create' do
-      it 'includes errors when required params are missing' do
+      it 'remains on the form when required params are missing' do
         post :create, params: { extract: {
           ticket: '',
           search_by: '',
           criteria_list: '',
         } }
 
-        expect(assigns[:extract].errors).to include(
-          :ticket,
-          :search_by,
-          :criteria_file,
-          :criteria_list,
-        )
+        expect(response).to render_template 'index'
       end
 
-      it 'distinguishes between valid and invalid teams' do
-        post :create, params: { extract: {
-          ticket: '0',
-          search_by: 'teams',
-          criteria_list: "#{sp1.group_id},999",
-        } }
-
-        expect(assigns[:successes]).to include(sp1)
-        expect(assigns[:failures]).to include('999')
-      end
-
-      it 'distinguishes between valid and invalid issuers' do
-        post :create, params: { extract: {
-          ticket: '0',
-          search_by: 'issuers',
-          criteria_list: "#{sp1.issuer} fake:issuer",
-        } }
-
-        expect(assigns[:successes]).to include(sp1)
-        expect(assigns[:failures]).to include('fake:issuer')
-      end
-
-      it 'flashes an error when there are no results' do
+      it 'flashes an error and stays on the form when there are no results' do
         post :create, params: { extract: {
           ticket: '0',
           search_by: 'issuers',
@@ -110,27 +83,25 @@ describe ExtractsController do
         } }
 
         expect(flash[:error]).to eq('No ServiceProvider rows were returned')
+        expect(response).to render_template 'index'
       end
 
-      it 'concatenates a file and input data' do
-        File.open("#{Dir.tmpdir}config_extract_test", 'w') do |f|
-          f.print sp2[:group_id]
-        end
-        test_params = params1
-        test_params[:extract][:criteria_file] = Rack::Test::UploadedFile.new(
-          "#{Dir.tmpdir}config_extract_test",
-          'text/plain',
-        )
-        post :create, params: test_params
+      it 'flashes a warning when only some criteria are invalid' do
+        post :create, params: { extract: {
+          ticket: '0',
+          search_by: 'issuers',
+          criteria_list: "#{sp1.issuer}, fake:issuer",
+        } }
 
-        expect(assigns[:successes]).to include(sp1, sp2)
-        expect(assigns[:failures]).to eq([])
+        expect(flash[:warning]).to eq('Some criteria were invalid. Please check the results.')
+        expect(response).to render_template 'results'
       end
 
       it 'will #save_to_file' do
         post :create, params: params1
 
-        expect(File.read "#{Dir.tmpdir}config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
+        expect(File.read "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
+        expect(response).to render_template 'results'
       end
 
       it 'logs extraneous params' do
@@ -144,7 +115,7 @@ describe ExtractsController do
         expect(logger_double).to have_received(:unpermitted_params_attempt)
       end
 
-      it 'logs extract requests' do
+      it '#log_request' do
         post :create, params: params1
 
         expect(logger_double).to have_received(:extraction_request) do |op, ex_params|

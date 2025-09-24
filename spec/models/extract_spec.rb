@@ -5,11 +5,6 @@ describe Extract do
   let(:issuer_file) { fixture_file_upload('issuers.txt', 'text/plain') }
   let(:sp1) { create(:service_provider, :ready_to_activate ) }
   let(:sp2) { create(:service_provider, :ready_to_activate ) }
-  let(:params1) do
-    { extract: {
-      ticket: '1', search_by: 'teams', criteria_list: sp1.group_id
-    } }
-  end
 
   describe 'Validations' do
     it { should validate_presence_of(:ticket) }
@@ -35,36 +30,26 @@ describe Extract do
     end
 
     it 'should add errors when file and list criteria are excluded' do
-      test_extract = build(:extract, {
+      extract = build(:extract, {
         ticket: '0',
         search_by: 'teams',
         criteria_list: '',
       } )
 
-      expect(test_extract).to_not be_valid
-      expect(test_extract.errors).to include(:criteria_list, :criteria_file)
+      expect(extract).to_not be_valid
+      expect(extract.errors).to include(:criteria_list, :criteria_file)
     end
   end
 
-  describe '#successes' do
-    it 'should return existing SPs by team ID' do
+  describe '#filename' do
+    it 'should sanitize ticket string' do
       extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: sp1.group_id.to_s,
-      } )
-
-      expect(extract.successes).to eq([sp1])
-    end
-
-    it 'should return existing SPs by issuer string' do
-      extract = build(:extract, {
-        ticket: '0',
+        ticket: 'rm -fr /',
         search_by: 'issuers',
-        criteria_list: sp2.issuer,
+        criteria_list: sp1.issuer,
       } )
 
-      expect(extract.successes).to eq([sp2])
+      expect(extract.filename).to eq("#{Dir.tmpdir}/config_extract_rmfr")
     end
   end
 
@@ -154,6 +139,28 @@ describe Extract do
       )
 
       expect(extract.list_criteria).to eq(%w[1 2 3 4])
+    end
+  end
+
+  describe '#successes' do
+    it 'should return existing SPs by team ID' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: sp1.group_id.to_s,
+      } )
+
+      expect(extract.successes).to eq([sp1])
+    end
+
+    it 'should return existing SPs by issuer string' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: sp2.issuer,
+      } )
+
+      expect(extract.successes).to eq([sp2])
     end
   end
 end

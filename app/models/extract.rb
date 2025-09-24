@@ -3,7 +3,6 @@ class Extract
   include ActiveModel::Validations
 
   attr_accessor :ticket, :search_by, :criteria_file, :criteria_list
-  # attr_reader :successes, :failures
 
   validates :ticket, presence: true
   validates :search_by, inclusion: { in: ['teams', 'issuers'] }
@@ -24,6 +23,10 @@ class Extract
           config.issuer == criterion
       end
     end
+  end
+
+  def filename
+    "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/,'')}"
   end
 
   def file_criteria
