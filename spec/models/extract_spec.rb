@@ -3,6 +3,13 @@ require 'rails_helper'
 describe Extract do
   let(:user) { create(:user, :logingov_admin) }
   let(:issuer_file) { fixture_file_upload('issuers.txt', 'text/plain') }
+  let(:sp1) { create(:service_provider, :ready_to_activate ) }
+  let(:sp2) { create(:service_provider, :ready_to_activate ) }
+  let(:params1) do
+    { extract: {
+      ticket: '1', search_by: 'teams', criteria_list: sp1.group_id
+    } }
+  end
 
   describe 'Validations' do
     it { should validate_presence_of(:ticket) }
@@ -36,6 +43,70 @@ describe Extract do
 
       expect(test_extract).to_not be_valid
       expect(test_extract.errors).to include(:criteria_list, :criteria_file)
+    end
+  end
+
+  describe '#successes' do
+    it 'should return existing SPs by team ID' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: sp1.group_id.to_s,
+      } )
+
+      expect(extract.successes).to eq([sp1])
+    end
+
+    it 'should return existing SPs by issuer string' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: sp2.issuer,
+      } )
+
+      expect(extract.successes).to eq([sp2])
+    end
+  end
+
+  describe '#failures' do
+    it 'should return team IDs missing a team or SP' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: '0, 9999999',
+      } )
+
+      expect(extract.failures).to eq(['0', '9999999'])
+    end
+
+    it 'should return team IDs missing SP even if others are successful' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: "#{sp1.group_id} 0",
+      } )
+
+      expect(extract.failures).to eq(['0'])
+    end
+
+    it 'should return issuers not associated with an SP' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: 'fake:issuer:0 fake:issuer:1',
+      } )
+
+      expect(extract.failures).to eq(['fake:issuer:0', 'fake:issuer:1'])
+    end
+
+    it 'should return issuers without SP even if others are successful' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: "#{sp2.issuer} fake:issuer:0",
+      } )
+
+      expect(extract.failures).to eq(['fake:issuer:0'])
     end
   end
 

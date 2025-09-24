@@ -16,20 +16,13 @@ class ExtractsController < AuthenticatedController
       criteria_file: extracts_params[:criteria_file],
     )
 
-    configs = extract_by_team? ?
-      ServiceProvider.where(group_id: criteria) :
-      ServiceProvider.where(issuer: criteria)
-
-    @successes = configs
-    @failures = failures criteria, configs
-
-    if @extract.valid? && configs.present?
-      if @failures.length > 0
+    if @extract.valid? && @extract.configs.present?
+      if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
       return render 'results'
-    elsif @extract.errors.empty? && configs.empty?
+    elsif @extract.errors.empty? && @extract.configs.empty?
       flash[:error] = 'No ServiceProvider rows were returned'
     end
 
@@ -37,14 +30,6 @@ class ExtractsController < AuthenticatedController
   end
 
   private
-
-  def criteria
-    @criteria ||= @extract.list_criteria.union @extract.file_criteria
-  end
-
-  def extract_by_team?
-    @extract.search_by == 'teams'
-  end
 
   def extracts_params
     params.require(:extract).permit(
@@ -55,25 +40,15 @@ class ExtractsController < AuthenticatedController
     )
   end
 
-  def failures(criteria, configs)
-    criteria.reject do |criterion|
-      configs.find do |config|
-        extract_by_team? ?
-          config.group_id.to_s == criterion :
-          config.issuer == criterion
-      end
-    end
-  end
-
   def save_to_file
-    save_file = "/tmp/config_extract_#{@extract.ticket}"
+    @save_file = "#{Dir.tmpdir}/config_extract_#{@extract.ticket}"
     begin
-      File.open(save_file, 'w') do |f|
-        f.print @successes.to_json
+      File.open(@save_file, 'w') do |f|
+        f.print @extract.successes.to_json
       end
-      flash[:success] = "Extracted configs written to #{save_file}"
+      flash[:success] = "Extracted configs saved"
     rescue => err
-      flash[:error] = "There was a problem writing to #{save_file}: #{err}"
+      flash[:error] = "There was a problem writing to file: #{err}"
     end
   end
 

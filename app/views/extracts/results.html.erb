@@ -1,18 +1,18 @@
 <h1>Config Extraction Results</h1>
-<p class="usa-prose">Results file: /tmp/config_extract_<%= @extract.ticket %></p>
+<p class="usa-prose">Results file: <%= @save_file %></p>
 
-<% if @failures.present? %>
-  <h2><%= "#{@failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>
+<% if @extract.failures.present? %>
+  <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>
   <ul class="usa-list">
-    <% @failures.each do |f| %>
+    <% @extract.failures.each do |f| %>
       <li><%= f %></li>
     <% end %>
   </ul>
 <% end %>
 
-<h2><%= @successes.length %> ServiceProvider rows found</h2>
+<h2><%= @extract.successes.length %> ServiceProvider rows found</h2>
 <ul class="usa-list font-family-mono">
-  <% @successes.each do |s| %>
+  <% @extract.successes.each do |s| %>
     <li>team <%= s.group_id %> | <%= s.issuer %></li>
   <% end %>
 </ul>

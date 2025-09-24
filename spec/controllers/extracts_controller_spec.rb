@@ -23,7 +23,7 @@ describe ExtractsController do
 
   after do
     begin
-      File.open("/tmp/config_extract_#{params1[:extract][:ticket]}") do |f|
+      File.open("#{Dir.tmpdir}config_extract_#{params1[:extract][:ticket]}") do |f|
         File.delete f
       end
     rescue Errno::ENOENT
@@ -113,12 +113,12 @@ describe ExtractsController do
       end
 
       it 'concatenates a file and input data' do
-        File.open('/tmp/config_extract_test', 'w') do |f|
+        File.open("#{Dir.tmpdir}config_extract_test", 'w') do |f|
           f.print sp2[:group_id]
         end
         test_params = params1
         test_params[:extract][:criteria_file] = Rack::Test::UploadedFile.new(
-          '/tmp/config_extract_test',
+          "#{Dir.tmpdir}config_extract_test",
           'text/plain',
         )
         post :create, params: test_params
@@ -130,7 +130,7 @@ describe ExtractsController do
       it 'will #save_to_file' do
         post :create, params: params1
 
-        expect(File.read "/tmp/config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
+        expect(File.read "#{Dir.tmpdir}config_extract_#{params1[:extract][:ticket]}").to eq([sp1].to_json)
       end
 
       it 'logs extraneous params' do
