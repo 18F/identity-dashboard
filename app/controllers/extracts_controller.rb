@@ -40,6 +40,7 @@ class ExtractsController < AuthenticatedController
     )
   end
 
+  # @return [String]
   def save_to_file
     begin
       File.open(@extract.filename, 'w') do |f|
