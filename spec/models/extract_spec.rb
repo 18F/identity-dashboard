@@ -11,25 +11,29 @@ describe Extract do
 
     it { should validate_inclusion_of(:search_by).in_array(%w[teams issuers]) }
 
-    it 'should validate that file or list criteria are included' do
-      with_list = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: '1 ,2',
-      } )
+    it 'should not have errors when file_criteria are valid' do
       with_file = build(:extract, {
         ticket: '1',
         search_by: 'issuers',
         criteria_file: issuer_file,
       } )
 
-      expect(with_list).to be_valid
       expect(with_file).to be_valid
-      expect(with_list.errors).to be_empty
       expect(with_file.errors).to be_empty
     end
 
-    it 'should add errors when file and list criteria are excluded' do
+    it 'should not have errors when list_criteria are valid' do
+      with_list = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: '1 ,2',
+      } )
+
+      expect(with_list).to be_valid
+      expect(with_list.errors).to be_empty
+    end
+
+    it 'should return errors when file and list criteria are excluded' do
       extract = build(:extract, {
         ticket: '0',
         search_by: 'teams',
