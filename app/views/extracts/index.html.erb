@@ -1,0 +1,49 @@
+<h1 class="usa-display">Config Extraction Tool</h1>
+
+<%= simple_form_for(@extract) do |form| %>
+  <%= form.error_notification %>
+  <%= form.input :ticket,
+                  class: 'usa-input',
+                  label_html: { class: 'usa-input-required' },
+                  label: 'Ticket number',
+                  required: true,
+                  hint: t('extracts.ticket_description') %>
+  <fieldset class="usa-fieldset margin-top-4">
+    <legend class="usa-label required usa-input-required">
+      Search by<abbr class="text-secondary-dark" title="required">*</abbr>
+    </legend>
+    <%= form.collection_radio_buttons(:search_by,
+                                     { "Teams" => 'teams', "Issuers" => 'issuers' },
+                                     :last, :first,
+                                     checked: 'teams') do |b| %>
+      <div class="usa-radio">
+        <%= b.radio_button(class: "usa-radio__input", id: "search_by")%>
+        <%= b.label(class: "usa-radio__label") %>
+      </div>
+    <% end %>
+  </fieldset>
+  <fieldset class="usa-form-group usa-fieldset">
+    <label class="usa-label optional" id="criteria-input-label">Teams or issuers file</label>
+    <p class="usa-hint"><%= t('extracts.file_description') %></p>
+    <%= form.file_field :criteria_file,
+                        class: "usa-file-input",
+                        id: "criteria-input-file",
+                        aria: { describedby: "criteria-input-label"},
+                        accept: "text/plain" %>
+    <% if @extract.errors[:criteria_file].present? %>
+      <span class="usa-error-message js-bundle-input-error-message">
+        Criteria file <%= @extract.errors[:criteria_file].to_sentence.presence %>
+      </span>
+    <% end %>
+  </fieldset>
+  <%= form.input :criteria_list,
+                 as: :usa_textarea,
+                 class: 'block col-12 usa-textarea',
+                 label_html: { class: 'usa-label' },
+                 label: 'List of teams or issuers',
+                 hint: t('extracts.list_description') %>
+
+  <div class="margin-top-2">
+    <%= form.submit 'Extract configs', :class => "usa-button" %>
+  </div>
+<% end %>
