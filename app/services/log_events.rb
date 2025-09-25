@@ -6,6 +6,13 @@
 #
 # ABC_XYZ -- Keep it Alphabetical!
 module LogEvents
+  # @param [String] action The controller action context for this request
+  # @param [ActionController::Parameters] extracts_params All parameters for Extract
+  # @return (see EventLogger#track_event)
+  def extraction_request(action, extracts_params)
+    track_event("extract_#{action}", extracts_params)
+  end
+
   # Generic CrUD logger
   #
   # @param [String] action The controller action context for this save
