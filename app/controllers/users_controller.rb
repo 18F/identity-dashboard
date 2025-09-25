@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   private
 
   def authorize_and_make_admin(user)
-    admin_membership = TeamMembership.build_logingov_admin(user)
+    admin_membership = TeamMembership.find_or_build_logingov_admin(user)
     authorize admin_membership
     user.transaction do
       admin_membership.save!
@@ -80,7 +80,7 @@ class UsersController < ApplicationController
   end
 
   def remove_admin(user)
-    admin_membership = TeamMembership.find_by(team: Team.internal_team, user: user)
+    admin_membership = TeamMembership.find_or_build_logingov_admin(user)
     authorize admin_membership
     admin_membership.transaction do
       admin_membership.destroy!
