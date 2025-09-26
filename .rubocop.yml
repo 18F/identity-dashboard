@@ -196,6 +196,14 @@ Layout/LineLength:
   - https
   Exclude:
     - 'config/routes.rb'
+  
+Layout/MultilineArrayBraceLayout:
+  Enabled: true
+  EnforcedStyle: symmetrical
+
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+  EnforcedStyle: symmetrical
 
 Layout/MultilineOperationIndentation:
   EnforcedStyle: aligned

@@ -26,7 +26,8 @@ class ZendeskRequest
     4417940288916 => { label: 'application_url',
       placeholder: 'https://yourapp.gov/',
       input_type: 'text' },
-    14323206118676 => { label: 'audience',
+    14323206118676 => {
+      label: 'audience',
       placeholder: nil,
       input_type: 'select',
       options: [
@@ -86,7 +87,7 @@ class ZendeskRequest
     custom_fields << portal_url_value
     custom_fields << ial_value
 
-    ticket_data = {
+    {
       request:  {
         requester: {
           name: "#{@requestor.first_name} #{@requestor.last_name}",
