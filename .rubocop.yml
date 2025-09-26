@@ -1105,6 +1105,12 @@ Security/YAMLLoad:
   Enabled: true
   SafeAutoCorrect: false
 
+Style/Alias:
+  Enabled: true
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
 Style/AndOr:
   Description: Use &&/|| instead of and/or.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
@@ -1112,6 +1118,73 @@ Style/AndOr:
   SupportedStyles:
   - always
   - conditionals
+
+Style/ArrayJoin:
+  Enabled: true
+
+Style/Attr:
+  Enabled: true
+
+Style/BarePercentLiterals:
+  Enabled: true
+  EnforcedStyle: bare_percent
+
+Style/BeginBlock:
+  Enabled: true
+
+Style/BlockComments:
+  Enabled: true
+
+Style/BlockDelimiters:
+  Enabled: true
+
+Style/CharacterLiteral:
+  Enabled: true
+
+Style/ClassCheck:
+  Enabled: true
+  EnforcedStyle: is_a?
+
+Style/ClassMethods:
+  Enabled: true
+
+Style/CollectionMethods:
+  Enabled: true
+
+Style/ColonMethodCall:
+  Enabled: true
+
+Style/ColonMethodDefinition:
+  Enabled: true
+
+Style/CommandLiteral:
+  Enabled: true
+  EnforcedStyle: mixed
+  AllowInnerBackticks: false
+
+Style/CommentedKeyword:
+  Enabled: true
+
+Style/DefWithParentheses:
+  Enabled: true
+
+Style/Dir:
+  Enabled: true
+
+Style/DirEmpty:
+  Enabled: true
+
+Style/EachForSimpleLoop:
+  Enabled: true
+
+Style/EachWithObject:
+  Enabled: true
+
+Style/EmptyBlockParameter:
+  Enabled: true
+
+Style/EmptyCaseCondition:
+  Enabled: true
 
 # Warn on empty else statements
 # empty - warn only on empty else
@@ -1123,6 +1196,43 @@ Style/EmptyElse:
     - empty
     - nil
     - both
+
+Style/EmptyLambdaParameter:
+  Enabled: true
+
+Style/Encoding:
+  Enabled: true
+
+Style/EndBlock:
+  Enabled: true
+  AutoCorrect: true
+
+Style/EvalWithLocation:
+  Enabled: true
+
+Style/ExactRegexpMatch:
+  Enabled: true
+
+Style/For:
+  Enabled: true
+  EnforcedStyle: each
+
+Style/GlobalVars:
+  Enabled: true
+  AllowedVariables: []
+
+Style/HashExcept:
+  Enabled: true
+
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: consistent
+
+Style/IdenticalConditionalBranches:
+  Enabled: true
+
+Style/IfInsideElse:
+  Enabled: true
 
 Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
@@ -1183,14 +1293,8 @@ Style/TrailingCommaInHashLiteral:
     - consistent_comma
     - no_comma
 
-Style/HashExcept:
-  Enabled: true
-
 Style/NilLambda:
   Enabled: true
-
-Style/ArgumentsForwarding:
-  Enabled: false
 
 Style/ClassEqualityComparison:
   Enabled: true
@@ -1214,11 +1318,6 @@ Style/RedundantRegexpCharacterClass:
   Enabled: true
 
 Style/RedundantRegexpEscape:
-  Enabled: true
-
-
-
-Style/BlockDelimiters:
   Enabled: true
 
 Layout/LeadingCommentSpace:
@@ -1252,13 +1351,6 @@ Layout/EmptyLineAfterGuardClause:
 Style/RedundantReturn:
   Enabled: true
 
-Style/HashSyntax:
-  Enabled: true
-  EnforcedShorthandSyntax: consistent
-
-Style/DefWithParentheses:
-  Enabled: true
-
 Style/MethodCallWithoutArgsParentheses:
   AllowedMethods: []
   Enabled: true
@@ -1282,7 +1374,4 @@ Style/TrailingMethodEndStatement:
   Enabled: true
 
 Style/NegatedUnless:
-  Enabled: true
-
-Style/Alias:
   Enabled: true

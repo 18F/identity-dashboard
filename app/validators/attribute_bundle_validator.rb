@@ -27,7 +27,7 @@ class AttributeBundleValidator < ActiveModel::Validator
 
   ALL_ATTRIBUTES = Hash[
     *(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).
-      collect { |v| [v, v] }.
+      map { |v| [v, v] }.
       flatten,
   ].freeze
 
