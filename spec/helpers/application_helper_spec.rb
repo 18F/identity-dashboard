@@ -27,6 +27,5 @@ RSpec.describe ApplicationHelper do
         expect(result).to eq link
       end
     end
-
   end
 end

@@ -91,7 +91,6 @@ describe ZendeskRequest do
       sp.save
       ial = zendesk_request.ial_value
       expect(ial).to eq({ id: ZendeskRequest::ZENDESK_IAL_VALUE_ID, value: 'ial1' })
-
     end
     it 'has an ial_value of 2' do
       sp.ial = 2
@@ -103,7 +102,6 @@ describe ZendeskRequest do
 
   describe 'create_ticket' do
     it 'gets the ticket id on success' do
-
       stubs.post('/api/v2/requests.json', custom_fields.to_json) do |env|
         [
           201,

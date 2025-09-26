@@ -22,7 +22,6 @@ class UserSession
 
     return if IdentityConfig.store.prod_like_env
 
-      @user = User.create(email:)
-
+    @user = User.create(email:)
   end
 end

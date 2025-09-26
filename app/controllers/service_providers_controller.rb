@@ -39,8 +39,7 @@ class ServiceProvidersController < AuthenticatedController
     @prod_like_env = IdentityConfig.store.prod_like_env
     return unless IdentityConfig.store.service_config_wizard_enabled && @prod_like_env
 
-      redirect_to service_config_wizard_index_path(service_provider: params[:id])
-
+    redirect_to service_config_wizard_index_path(service_provider: params[:id])
   end
 
   def create
@@ -142,7 +141,7 @@ value: func.to_proc.call(@service_provider) })
       flash[:error] =
         "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
     end
-      redirect_to action: 'show', id: @service_provider.id
+    redirect_to action: 'show', id: @service_provider.id
   end
 
   private

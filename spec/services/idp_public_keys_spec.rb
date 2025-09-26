@@ -21,7 +21,6 @@ RSpec.describe IdpPublicKeys do
       }.to_json)
   end
 
-
   describe '.all' do
     before do
       allow(Rails).to receive_message_chain(:configuration, :oidc, :[]).
@@ -39,7 +38,6 @@ RSpec.describe IdpPublicKeys do
   end
 
   subject(:loader) { IdpPublicKeys.new(idp_url: 'http://idp.example.com') }
-
 
   describe '#load_all' do
     it 'loads from the IDP' do

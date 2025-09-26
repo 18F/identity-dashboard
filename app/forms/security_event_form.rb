@@ -33,7 +33,6 @@ class SecurityEventForm
     )
   end
 
-  # rubocop:disable Metrics/MethodLength
   def payload
     @payload ||= begin
       payload = nil
@@ -53,7 +52,6 @@ class SecurityEventForm
       {}
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def event_type
     (payload['events'] || {}).keys.first

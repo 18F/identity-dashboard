@@ -18,7 +18,6 @@ RSpec.describe Banner, type: :model do
     expect(new_banner.valid?).to be(true)
   end
 
-
   it 'is vaild if the start date is specified and the end date is not' do
     new_banner.start_date = Time.zone.now + [-1, 0, 1].sample.day
     new_banner.end_date = nil

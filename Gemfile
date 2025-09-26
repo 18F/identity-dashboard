@@ -78,7 +78,7 @@ group :development, :test do
   gem 'redcarpet', require: false # currently used for documentation only
   gem 'rspec_junit_formatter'
   gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
-  gem 'rubocop', '~> 1.66.0', require: false
+  gem 'rubocop', '~> 1.75.0', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false

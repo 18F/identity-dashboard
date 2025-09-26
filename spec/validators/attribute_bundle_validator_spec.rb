@@ -45,7 +45,6 @@ RSpec.describe AttributeBundleValidator, type: 'model' do
     end
   end
 
-
   it 'validates OIDC at IAL 1 correctly' do
     oidc_sp_ial1 = BundleTestRecord.new.tap do |model|
       model.saml = false

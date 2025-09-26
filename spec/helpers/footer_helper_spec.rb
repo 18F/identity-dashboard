@@ -25,4 +25,3 @@ RSpec.describe FooterHelper do
     end
   end
 end
-

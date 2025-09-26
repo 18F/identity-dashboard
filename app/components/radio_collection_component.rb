@@ -36,7 +36,6 @@ class RadioCollectionComponent < ViewComponent::Base
 
   # The use of `html_safe` should be good here because all other strings are either
   # defined statically or sanitized.
-  # rubocop:disable Rails/OutputSafety
   def label_with_extra_description(input)
     label = input.label(class: 'usa-radio__label strong') do
       "<strong>#{sanitize input.text}</strong>".html_safe
@@ -44,5 +43,4 @@ class RadioCollectionComponent < ViewComponent::Base
     description = sanitize I18n.t("#{form.object.class.to_s.tableize}.#{input.value}_description")
     "#{label} #{description}".html_safe
   end
-  # rubocop:enable Rails/OutputSafety
 end

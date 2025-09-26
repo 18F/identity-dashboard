@@ -112,7 +112,6 @@ feature 'Security events pages', :js do
           expect_page_to_have_no_accessibility_violations(page)
         end
       end
-
     end
 
     context 'not logged in user' do

@@ -3,7 +3,7 @@ class Analytics::ServiceProvidersController < ApplicationController
 
   def show
     @issuer = service_provider.issuer
-     @friendly_name = service_provider.friendly_name.capitalize
+    @friendly_name = service_provider.friendly_name.capitalize
   end
 
   private
@@ -17,4 +17,3 @@ logo_file_attachment: :blob).find(id)
     @id ||= params[:id]
   end
 end
-
