@@ -26,11 +26,11 @@ describe PopulateRoles do
     context 'when the user has gov email address' do
       it 'updates role name to partner_admin' do
         user = User.create(
-            email: gov_email,
-            first_name: gov_first_name,
-            last_name: gov_last_name,
-            admin: false,
-          )
+          email: gov_email,
+          first_name: gov_first_name,
+          last_name: gov_last_name,
+          admin: false,
+        )
         user.team_memberships << without_role_membership
         subject.call
         user.reload
@@ -43,11 +43,11 @@ describe PopulateRoles do
     context 'when the user does not have a gov email address' do
       it 'updates role name to partner_developer' do
         user = User.create(
-            email: nongov_email,
-            first_name: nongov_first_name,
-            last_name: nongov_last_name,
-            admin: false,
-          )
+          email: nongov_email,
+          first_name: nongov_first_name,
+          last_name: nongov_last_name,
+          admin: false,
+        )
         user.team_memberships << without_role_membership
         subject.call
         user.reload

@@ -354,12 +354,12 @@ describe ServiceProvider do
 
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
-          :service_provider,
+        :service_provider,
           help_text: {
             'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
             'forgot_password': {}
           },
-        )
+      )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end
 

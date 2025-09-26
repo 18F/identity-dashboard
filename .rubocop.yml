@@ -59,6 +59,15 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - 'config/routes.rb'
 
+
+Layout/AccessModifierIndentation:
+  Enabled: true
+  EnforcedStyle: indent
+  IndentationWidth: null
+
+Layout/ArrayAlignment:
+  Enabled: true
+
 Layout/AssignmentIndentation:
   Enabled: true
 
@@ -66,6 +75,22 @@ Layout/ClosingParenthesisIndentation:
   Enabled: true
 
 Layout/CommentIndentation:
+  Enabled: true
+
+Layout/ConditionPosition:
+  Enabled: true
+
+Layout/DefEndAlignment:
+  Enabled: true
+  AutoCorrect: true
+  Severity: warning
+
+Layout/EmptyComment:
+  Enabled: true
+  AllowBorderComment: true
+  AllowMarginComment: true
+
+Layout/EmptyLineAfterMagicComment:
   Enabled: true
 
 Layout/EmptyLines:
@@ -109,6 +134,11 @@ Layout/ExtraSpacing:
   AllowForAlignment: true
   # When true, forces the alignment of = in assignments on consecutive lines.
   ForceEqualSignAlignment: false
+
+Layout/FirstArgumentIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+  IndentationWidth: null
 
 # Checks the indentation of the first element in an array literal.
 Layout/FirstArrayElementIndentation:
@@ -478,9 +508,6 @@ Layout/SpaceAroundOperators:
   Enabled: true
 
 Layout/MultilineMethodCallIndentation:
-  Enabled: false
-
-Layout/FirstArgumentIndentation:
   Enabled: false
 
 Style/WordArray:
