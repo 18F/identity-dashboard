@@ -596,8 +596,6 @@ GEM
       net-ssh (>= 2.8.0)
       ostruct
     stringio (3.1.7)
-    strong_migrations (2.5.0)
-      activerecord (>= 7.1)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
     thor (1.4.0)
@@ -725,7 +723,6 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
   simplecov-cobertura
   sinatra (~> 4.1.0)
-  strong_migrations
   timecop
   uglifier
   view_component (~> 3.21)
