@@ -329,7 +329,23 @@ Layout/TrailingEmptyLines:
 Lint/AmbiguousAssignment:
   Enabled: true
 
+Lint/AmbiguousOperator:
+  Enabled: true
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: true
+
+Lint/AssignmentInCondition:
+  Enabled: true
+  AllowSafeAssignment: true
+
+Lint/BigDecimalNew:
+  Enabled: true
+
 Lint/BinaryOperatorWithIdenticalOperands:
+  Enabled: true
+
+Lint/BooleanSymbol:
   Enabled: true
 
 Lint/ConstantDefinitionInBlock:
