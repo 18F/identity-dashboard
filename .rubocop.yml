@@ -104,10 +104,17 @@ Layout/DefEndAlignment:
   AutoCorrect: true
   Severity: warning
 
+Layout/DotPosition:
+  EnforcedStyle: leading
+  Enabled: false
+
 Layout/EmptyComment:
   Enabled: true
   AllowBorderComment: true
   AllowMarginComment: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
 
 Layout/EmptyLineAfterMagicComment:
   Enabled: true
@@ -202,6 +209,9 @@ Layout/IndentationWidth:
   Enabled: true
 
 Layout/InitialIndentation:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
   Enabled: true
 
 Layout/LeadingEmptyLines:
@@ -1089,6 +1099,9 @@ RSpec/LeakyConstantDeclaration:
 RSpec/MissingExpectationTargetMethod:
   Enabled: true
 
+RSpec/MultipleExpectations:
+  Enabled: false
+
 RSpec/RedundantPredicateMatcher:
   Enabled: true
 
@@ -1229,6 +1242,9 @@ Style/For:
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []
+
+Style/GuardClause:
+  Enabled: true
   
 Style/HashExcept:
   Enabled: true
@@ -1236,6 +1252,9 @@ Style/HashExcept:
 Style/HashSyntax:
   Enabled: true
   EnforcedShorthandSyntax: consistent
+
+Style/HashTransformKeys:
+  Enabled: true
 
 Style/IdenticalConditionalBranches:
   Enabled: true
@@ -1302,6 +1321,9 @@ Style/MultilineMemoization:
   EnforcedStyle: keyword
 
 Style/MultilineWhenThen:
+  Enabled: true
+
+Style/NegatedUnless:
   Enabled: true
 
 Style/NegatedWhile:
@@ -1403,6 +1425,9 @@ Style/RedundantRegexpConstructor:
 Style/RedundantSort:
   Enabled: true
 
+Style/RedundantReturn:
+  Enabled: true
+
 Style/RedundantSortBy:
   Enabled: true
 
@@ -1445,6 +1470,9 @@ Style/StderrPuts:
 Style/StringChars:
   Enabled: true
 
+Style/Strip:
+  Enabled: true
+
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
@@ -1453,6 +1481,18 @@ Style/StringLiterals:
   - single_quotes
   - double_quotes
   ConsistentQuotesInMultiline: true
+
+Style/SymbolLiteral:
+  Enabled: true
+
+Style/TrailingBodyOnClass:
+  Enabled: true
+
+Style/TrailingBodyOnMethodDefinition:
+  Enabled: true
+
+Style/TrailingBodyOnModule:
+  Enabled: true
 
 Style/TrailingCommaInArguments:
   # If `comma`, the cop requires a comma after the last argument, but only for
@@ -1476,6 +1516,9 @@ Style/TrailingCommaInArrayLiteral:
     - consistent_comma
     - no_comma
 
+Style/TrailingCommaInBlockArgs:
+  Enabled: true
+
 Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in an array or
   # hash, but only when each item is on its own line.
@@ -1487,48 +1530,30 @@ Style/TrailingCommaInHashLiteral:
     - consistent_comma
     - no_comma
 
-Layout/LeadingCommentSpace:
+Style/TrailingMethodEndStatement:
   Enabled: true
 
-Style/HashTransformKeys:
+Style/UnlessElse:
+  Enabled: true
+
+Style/UnpackFirst:
+  Enabled: true
+
+Style/VariableInterpolation:
+  Enabled: true
+
+Style/WhenThen:
+  Enabled: true
+
+Style/WhileUntilDo:
   Enabled: true
 
 Style/WordArray:
   MinSize: 3
 
+Style/YodaCondition:
+  Enabled: true
+  EnforcedStyle: forbid_for_all_comparison_operators
+
 Style/SymbolArray:
   MinSize: 3
-
-RSpec/MultipleExpectations:
-  Enabled: false
-
-Layout/DotPosition:
-  EnforcedStyle: leading
-  Enabled: false
-
-Style/GuardClause:
-  Enabled: true
-
-Layout/EmptyLineAfterGuardClause:
-  Enabled: true
-
-Style/RedundantReturn:
-  Enabled: true
-
-Style/TrailingBodyOnClass:
-  Enabled: true
-
-Style/TrailingBodyOnMethodDefinition:
-  Enabled: true
-
-Style/TrailingBodyOnModule:
-  Enabled: true
-
-Style/TrailingCommaInBlockArgs:
-  Enabled: true
-
-Style/TrailingMethodEndStatement:
-  Enabled: true
-
-Style/NegatedUnless:
-  Enabled: true
