@@ -16,9 +16,9 @@ class UserSession
   def unregistered_government_user
     allowed_tlds = IdentityConfig.store.auto_account_creation_tlds.split(',')
 
-    return if allowed_tlds.filter do |tld|
+    return if allowed_tlds.none? do |tld|
       /(#{Regexp.escape(tld)})\Z/.match?(email)
-    end.empty?
+    end
 
     return if IdentityConfig.store.prod_like_env
 

@@ -81,6 +81,9 @@ Layout/ArrayAlignment:
 Layout/AssignmentIndentation:
   Enabled: true
 
+Layout/BeginEndAlignment:
+  Enabled: true
+
 Layout/BlockAlignment:
   Enabled: true
 
@@ -227,6 +230,9 @@ Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
 
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
 Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
@@ -234,7 +240,7 @@ Layout/MultilineMethodCallIndentation:
 Layout/MultilineMethodDefinitionBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
-
+  
 Layout/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
@@ -1145,6 +1151,9 @@ Style/ClassCheck:
   Enabled: true
   EnforcedStyle: is_a?
 
+Style/ClassEqualityComparison:
+  Enabled: true
+
 Style/ClassMethods:
   Enabled: true
 
@@ -1220,7 +1229,7 @@ Style/For:
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []
-
+  
 Style/HashExcept:
   Enabled: true
 
@@ -1239,6 +1248,98 @@ Style/IfUnlessModifier:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
   Enabled: true
 
+Style/IfUnlessModifierOfIfUnless:
+  Enabled: true
+
+Style/IfWithSemicolon:
+  Enabled: true
+
+Style/InfiniteLoop:
+  Enabled: true
+
+Style/InPatternThen:
+  Enabled: true
+
+Style/KeywordParametersOrder:
+  Enabled: true
+
+Style/LambdaCall:
+  Enabled: true
+  EnforcedStyle: call
+
+Style/LineEndConcatenation:
+  Enabled: true
+  SafeAutoCorrect: false
+
+Style/MethodCallWithoutArgsParentheses:
+  AllowedMethods: []
+  Enabled: true
+
+Style/MethodDefParentheses:
+  Enabled: true
+
+Style/MissingRespondToMissing:
+  Enabled: true
+
+Style/MixinGrouping:
+  Enabled: true
+  EnforcedStyle: separated
+
+Style/MixinUsage:
+  Enabled: true
+
+Style/MultilineIfModifier:
+  Enabled: true
+
+Style/MultilineIfThen:
+  Enabled: true
+
+Style/MultilineInPatternThen:
+  Enabled: true
+
+Style/MultilineMemoization:
+  Enabled: true
+  EnforcedStyle: keyword
+
+Style/MultilineWhenThen:
+  Enabled: true
+
+Style/NegatedWhile:
+  Enabled: true
+
+Style/NestedModifier:
+  Enabled: true
+
+Style/NestedTernaryOperator:
+  Enabled: true
+
+Style/NilComparison:
+  Enabled: true
+  EnforcedStyle: predicate
+
+Style/NilLambda:
+  Enabled: true
+
+Style/NonNilCheck:
+  Enabled: true
+  IncludeSemanticChanges: false
+
+Style/Not:
+  Enabled: true
+
+Style/NumericLiteralPrefix:
+  Enabled: true
+  EnforcedOctalStyle: zero_with_o
+
+Style/OneLineConditional:
+  Enabled: true
+
+Style/OptionalArguments:
+  Enabled: true
+
+Style/OrAssignment:
+  Enabled: true
+
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key
   # Override individual delimiters (even with default specified) by specifying
@@ -1250,6 +1351,99 @@ Style/PercentLiteralDelimiters:
     '%r': '{}'
     '%w': '[]'
     '%W': '[]'
+
+Style/Proc:
+  Enabled: true
+
+Style/RandomWithOffset:
+  Enabled: true
+
+Style/RedundantAssignment:
+  Enabled: true
+
+Style/RedundantCondition:
+  Enabled: true
+
+Style/RedundantConditional:
+  Enabled: true
+
+Style/RedundantException:
+  Enabled: true
+
+Style/RedundantFetchBlock:
+  Enabled: true
+
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+
+Style/RedundantFilterChain:
+  Enabled: true
+
+Style/RedundantFreeze:
+  Enabled: true
+
+Style/RedundantHeredocDelimiterQuotes:
+  Enabled: true
+
+Style/RedundantInterpolation:
+  Enabled: true
+
+Style/RedundantLineContinuation:
+  Enabled: true
+
+Style/RedundantParentheses:
+  Enabled: true
+
+Style/RedundantPercentQ:
+  Enabled: true
+
+Style/RedundantRegexpConstructor:
+  Enabled: true
+
+Style/RedundantSort:
+  Enabled: true
+
+Style/RedundantSortBy:
+  Enabled: true
+
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Enabled: true
+
+Style/RescueModifier:
+  Enabled: true
+
+Style/SafeNavigation:
+  Enabled: true
+  ConvertCodeThatCanStartToReturnNil: false
+  AllowedMethods:
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
+
+Style/Sample:
+  Enabled: true
+
+Style/SelfAssignment:
+  Enabled: true
+
+Style/Semicolon:
+  Enabled: true
+  AllowAsExpressionSeparator: false
+
+Style/StabbyLambdaParentheses:
+  Enabled: true
+  EnforcedStyle: require_parentheses
+
+Style/StderrPuts:
+  Enabled: true
+
+Style/StringChars:
+  Enabled: true
 
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
@@ -1293,33 +1487,6 @@ Style/TrailingCommaInHashLiteral:
     - consistent_comma
     - no_comma
 
-Style/NilLambda:
-  Enabled: true
-
-Style/ClassEqualityComparison:
-  Enabled: true
-
-Layout/BeginEndAlignment:
-  Enabled: true
-
-Style/KeywordParametersOrder:
-  Enabled: true
-
-Style/RedundantAssignment:
-  Enabled: true
-
-Style/RedundantFetchBlock:
-  Enabled: true
-
-Style/RedundantFileExtensionInRequire:
-  Enabled: true
-
-Style/RedundantRegexpCharacterClass:
-  Enabled: true
-
-Style/RedundantRegexpEscape:
-  Enabled: true
-
 Layout/LeadingCommentSpace:
   Enabled: true
 
@@ -1331,9 +1498,6 @@ Style/WordArray:
 
 Style/SymbolArray:
   MinSize: 3
-
-Layout/MultilineMethodCallBraceLayout:
-  Enabled: true
 
 RSpec/MultipleExpectations:
   Enabled: false
@@ -1349,13 +1513,6 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: true
 
 Style/RedundantReturn:
-  Enabled: true
-
-Style/MethodCallWithoutArgsParentheses:
-  AllowedMethods: []
-  Enabled: true
-
-Style/MethodDefParentheses:
   Enabled: true
 
 Style/TrailingBodyOnClass:

@@ -188,7 +188,7 @@ class ServiceProvider < ApplicationRecord
   def pending_or_current_logo_data
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
-    logo_file.blob.download if logo_file.blob
+    logo_file&.blob&.download
   end
 
   def compile_errors

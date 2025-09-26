@@ -320,10 +320,8 @@ class ServiceConfigWizardController < AuthenticatedController
       v.try(:strip!) if string_attributes.include?(k)
     end
 
-    if service_provider.redirect_uris
-      service_provider.redirect_uris.each do |uri|
-        uri.try(:strip!)
-      end
+    service_provider&.redirect_uris&.each do |uri|
+      uri.try(:strip!)
     end
     service_provider
   end

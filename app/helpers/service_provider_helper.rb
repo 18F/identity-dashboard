@@ -56,7 +56,7 @@ module ServiceProviderHelper
 
   def yamlized_sp(service_provider)
     key_from_issuer = service_provider.issuer
-    yamlable_json = { "#{key_from_issuer}" => config_hash(service_provider) }
+    yamlable_json = { key_from_issuer => config_hash(service_provider) }
     yamlable_json.to_yaml.delete('\"')
   end
 
