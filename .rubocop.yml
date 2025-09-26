@@ -612,6 +612,10 @@ Lint/UselessSetterCall:
 Lint/UselessTimes:
   Enabled: true
 
+Lint/Void:
+  Enabled: true
+  CheckForMethodsWithNoSideEffects: false
+
 Lint/TopLevelReturnWithArgument:
   Enabled: true
 
@@ -625,6 +629,44 @@ Metrics/ModuleLength:
   Enabled: true
   Exclude:
   - spec/**/*
+
+Migration/DepartmentName:
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+Naming/BlockParameterName:
+  Enabled: true
+  MinNameLength: 1
+  AllowNamesEndingInNumbers: true
+  AllowedNames: []
+  ForbiddenNames: []
+
+Naming/ClassAndModuleCamelCase:
+  Enabled: true
+
+Naming/ConstantName:
+  Enabled: true
+
+Naming/HeredocDelimiterCase:
+  Enabled: true
+  EnforcedStyle: uppercase
+
+Naming/MethodParameterName:
+  MinNameLength: 2
+
+Naming/PredicateName:
+  Enabled: true
+  AllowedMethods:
+    - is_a?
+  ForbiddenPrefixes:
+    # overriding to allow "has_"
+    - is_
+    - have_
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: err
 
 Rails/HttpPositionalArguments:
   Description: 'Use keyword arguments instead of positional arguments in http method calls.'
@@ -735,9 +777,6 @@ Style/ClassEqualityComparison:
 Layout/BeginEndAlignment:
   Enabled: true
 
-Naming/BinaryOperatorParameterName:
-  Enabled: true
-
 Style/KeywordParametersOrder:
   Enabled: true
 
@@ -841,9 +880,6 @@ Style/TrailingMethodEndStatement:
 
 Rails/Output:
   Enabled: true
-
-Naming/RescuedExceptionsVariableName:
-  PreferredName: err
 
 Rails/ActionOrder:
   Enabled: true

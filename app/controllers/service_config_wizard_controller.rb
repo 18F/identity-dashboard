@@ -60,12 +60,12 @@ class ServiceConfigWizardController < AuthenticatedController
       remove_certificates
       attach_logo_file if logo_file_param
     end
-    clean_redirect_uris if is_step_with_param('redirect_uris')
-    validate_ial if is_step_with_param('ial')
+    clean_redirect_uris if step_with_param?('redirect_uris')
+    validate_ial if step_with_param?('ial')
     unless skippable && params[:wizard_step].blank?
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
-    if is_valid? && @model.save
+    if valid? && @model.save
       return save_to_service_provider if step == wizard_steps.last
 
       skip_step
@@ -88,9 +88,9 @@ class ServiceConfigWizardController < AuthenticatedController
     redirect_to finish_wizard_path if can_cancel?
   end
 
-  def is_valid?
+  def valid?
     @model.valid?
-    @model.saml_settings_present? if is_step('redirects')
+    @model.saml_settings_present? if step?('redirects')
 
     @model.errors.empty?
   end
@@ -175,11 +175,11 @@ class ServiceConfigWizardController < AuthenticatedController
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
 
-  def is_step(step_name)
+  def step?(step_name)
     step == step_name
   end
 
-  def is_step_with_param(param_name)
+  def step_with_param?(param_name)
     step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
   end
 
