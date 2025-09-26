@@ -205,6 +205,14 @@ Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
 
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
+Layout/MultilineMethodDefinitionBraceLayout:
+  Enabled: true
+  EnforcedStyle: symmetrical
+
 Layout/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
@@ -240,7 +248,78 @@ Layout/ParameterAlignment:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/RescueEnsureAlignment:
+  Enabled: true
+
 Layout/SpaceAfterColon:
+  Enabled: true
+
+Layout/SpaceAfterMethodName:
+  Enabled: true
+
+Layout/SpaceAfterNot:
+  Enabled: true
+
+Layout/SpaceAfterSemicolon:
+  Enabled: true
+
+Layout/SpaceAroundBlockParameters:
+  Enabled: true
+  EnforcedStyleInsidePipes: no_space
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+  EnforcedStyle: space
+
+Layout/SpaceAroundKeyword:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+  EnforcedStyleForExponentOperator: space
+  AllowForAlignment: false
+
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: space
+
+Layout/SpaceBeforeComma:
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: true
+  AllowForAlignment: true
+
+Layout/SpaceBeforeSemicolon:
+  Enabled: true
+
+Layout/SpaceInLambdaLiteral:
+  Enabled: true
+  EnforcedStyle: require_no_space
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+Layout/SpaceInsideParens:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/TrailingWhitespace:
   Enabled: true
 
 Layout/TrailingEmptyLines:
@@ -328,12 +407,6 @@ Lint/SelfAssignment:
   Enabled: true
 
 Lint/UnreachableCode:
-  Enabled: true
-
-Layout/SpaceBeforeComma:
-  Enabled: true
-
-Layout/SpaceBeforeComment:
   Enabled: true
 
 Lint/TopLevelReturnWithArgument:
@@ -512,12 +585,6 @@ Layout/BlockEndNewline:
 Layout/MultilineBlockLayout:
   Enabled: true
 
-Layout/SpaceAroundOperators:
-  Enabled: true
-
-Layout/MultilineMethodCallIndentation:
-  Enabled: false
-
 Style/WordArray:
   MinSize: 3
 
@@ -525,9 +592,6 @@ Style/SymbolArray:
   MinSize: 3
 
 Layout/MultilineMethodCallBraceLayout:
-  Enabled: true
-
-Layout/SpaceInsideHashLiteralBraces:
   Enabled: true
 
 RSpec/MultipleExpectations:
@@ -582,18 +646,6 @@ Naming/RescuedExceptionsVariableName:
   PreferredName: err
 
 Rails/ActionOrder:
-  Enabled: true
-
-Layout/SpaceAroundEqualsInParameterDefault:
-  Enabled: true
-
-Layout/SpaceInsideBlockBraces:
-  Enabled: true
-
-Layout/SpaceAfterComma:
-  Enabled: true
-
-Layout/TrailingWhitespace:
   Enabled: true
 
 Style/NegatedUnless:

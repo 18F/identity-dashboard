@@ -8,8 +8,8 @@ class SecurityEventsController < ApplicationController
 
   def index
     @security_events = current_user.security_events.
-                       order('issued_at DESC').
-                       page(params[:page])
+      order('issued_at DESC').
+      page(params[:page])
 
     assign_pagination
   end
@@ -22,8 +22,8 @@ class SecurityEventsController < ApplicationController
     end
 
     @security_events = scope.
-                       order('issued_at DESC').
-                       page(params[:page])
+      order('issued_at DESC').
+      page(params[:page])
 
     assign_pagination
   end

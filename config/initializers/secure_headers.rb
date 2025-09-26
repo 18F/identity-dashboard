@@ -6,7 +6,7 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
-  form_action =  ["'self'", '*.identitysandbox.gov']
+  form_action = ["'self'", '*.identitysandbox.gov']
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?

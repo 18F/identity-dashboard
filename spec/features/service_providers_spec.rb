@@ -71,7 +71,7 @@ feature 'Service Providers CRUD' do
                                 team:)
 
       visit edit_service_provider_path(service_provider)
-      choose I18n.t'simple_form.labels.service_provider.production'
+      choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Update'
 
       expect(page).to have_content('Portal Config cannot be Production with localhost URLs')

@@ -277,9 +277,9 @@ value: func.to_proc.call(@service_provider) })
 
   def deleted_service_providers
     dsp = policy_scope(PaperTrail::Version).where(item_type: 'ServiceProvider').
-                       where(event: 'destroy').
-                       where('created_at > ?', 12.months.ago).
-                       order(created_at: :desc)
+      where(event: 'destroy').
+      where('created_at > ?', 12.months.ago).
+      order(created_at: :desc)
     # ensure that we associate an agency if possible
     dsp.each do |sp|
       if !sp.object['agency_id'] && sp.object['group_id']

@@ -83,7 +83,7 @@ class WizardStep < ApplicationRecord
         hash[field_name] = step_name
       end
     end.
-  freeze
+    freeze
 
   belongs_to :user
 

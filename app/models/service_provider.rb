@@ -37,7 +37,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   before_save :sanitize_help_text_content
-  after_initialize -> (record) { record.status = 'live' },
+  after_initialize ->(record) { record.status = 'live' },
     unless: -> { IdentityConfig.store.prod_like_env }
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
