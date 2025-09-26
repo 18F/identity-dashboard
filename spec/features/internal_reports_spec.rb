@@ -40,18 +40,13 @@ feature 'internal reports' do
       visit internal_reports_team_memberships_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
-      expected_table = expected_table_for(
-        two_teams_admin,
-        simple_user,
-        complex_user,
-        additional_team,
-      )
+
       expect(csv_response.length).to eq(8)
       expect(csv_response).to eq(expected_table)
     end
   end
 
-  def expected_table_for(first_user, second_user, third_user, shared_team)
+  def expected_table
     admin_two_teams_names = two_teams_admin.teams.map(&:name).sort
     remaining_team = complex_user.teams - simple_user.teams - [additional_team]
     # Because we use `sequence(:email)` in the users factory,

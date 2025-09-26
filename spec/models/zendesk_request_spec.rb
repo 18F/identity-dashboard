@@ -102,7 +102,7 @@ describe ZendeskRequest do
 
   describe 'create_ticket' do
     it 'gets the ticket id on success' do
-      stubs.post('/api/v2/requests.json', custom_fields.to_json) do |env|
+      stubs.post('/api/v2/requests.json', custom_fields.to_json) do |_env|
         [
           201,
           { 'Content-Type' => 'application/json' },
@@ -118,7 +118,7 @@ describe ZendeskRequest do
     end
 
     it 'generates errors on failure' do
-      stubs.post('/api/v2/requests.json', custom_fields.to_json) do |env|
+      stubs.post('/api/v2/requests.json', custom_fields.to_json) do |_env|
         [
           422,
           { 'Content-Type' => 'application/json' },

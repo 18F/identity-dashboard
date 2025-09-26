@@ -463,6 +463,33 @@ Lint/MissingCopEnableDirective:
 Lint/MixedRegexpCaptureTypes:
   Enabled: true
 
+Lint/MultipleComparison:
+  Enabled: true
+
+Lint/NestedMethodDefinition:
+  Enabled: true
+
+Lint/NestedPercentLiteral:
+  Enabled: true
+
+Lint/NextWithoutAccumulator:
+  Enabled: true
+
+Lint/NonDeterministicRequireOrder:
+  Enabled: true
+
+Lint/NonLocalExitFromIterator:
+  Enabled: true
+
+Lint/NumberedParameterAssignment:
+  Enabled: true
+
+Lint/OrAssignmentToConstant:
+  Enabled: true
+
+Lint/OrderedMagicComments:
+  Enabled: true
+
 Lint/OutOfRangeRegexpRef:
   Enabled: true
 
@@ -473,6 +500,15 @@ Lint/PercentStringArray:
   Enabled: true
   Exclude:
     - 'config/initializers/secure_headers.rb'
+
+Lint/PercentSymbolArray:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/RandOne:
+  Enabled: true
 
 Lint/RedundantCopDisableDirective:
   Enabled: true
@@ -489,11 +525,47 @@ Lint/RedundantSplatExpansion:
 Lint/RedundantStringCoercion:
   Enabled: true
 
+Lint/RedundantWithIndex:
+  Enabled: true
+
+Lint/RedundantWithObject:
+  Enabled: true
+
+Lint/RegexpAsCondition:
+  Enabled: true
+
 Lint/RequireParentheses:
+  Enabled: true
+
+Lint/RequireRelativeSelfPath:
+  Enabled: true
+
+Lint/RescueException:
   Enabled: true
 
 Lint/RescueType:
   Enabled: true
+
+Lint/ReturnInVoidContext:
+  Enabled: true
+
+Lint/SafeNavigationChain:
+  Enabled: true
+  AllowedMethods:
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
+
+Lint/SafeNavigationConsistency:
+  Enabled: true
+  AllowedMethods:
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 Lint/SafeNavigationWithEmpty:
   Enabled: true
@@ -501,8 +573,29 @@ Lint/SafeNavigationWithEmpty:
 Lint/SelfAssignment:
   Enabled: true
 
+Lint/ShadowedArgument:
+  Enabled: true
+  IgnoreImplicitReferences: false
+
+Lint/Syntax:
+  Enabled: true
+
+Lint/UnderscorePrefixedVariableName:
+  Enabled: true
+
+Lint/UnifiedInteger:
+  Enabled: true
+
 Lint/UnreachableCode:
   Enabled: true
+
+Lint/UnusedBlockArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: true
+
+Lint/UnusedMethodArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: false
 
 Lint/TopLevelReturnWithArgument:
   Enabled: true
