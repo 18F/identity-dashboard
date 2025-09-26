@@ -55,6 +55,6 @@ class AttributeBundleValidator < ActiveModel::Validator
   private
 
   def contains_invalid_attribute?(attribute_bundle)
-    attribute_bundle.any? { |att| !ALL_ATTRIBUTES.keys.include?(att) }
+    attribute_bundle.any? { |att| !ALL_ATTRIBUTES.key?(att) }
   end
 end
