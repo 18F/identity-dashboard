@@ -74,6 +74,9 @@ Layout/ArrayAlignment:
 Layout/AssignmentIndentation:
   Enabled: true
 
+Layout/BlockEndNewline:
+  Enabled: true
+
 Layout/ClosingParenthesisIndentation:
   Enabled: true
 
@@ -203,6 +206,9 @@ Layout/LineLength:
 Layout/MultilineArrayBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
+
+Layout/MultilineBlockLayout:
+  Enabled: true
 
 Layout/MultilineHashBraceLayout:
   Enabled: true
@@ -781,21 +787,261 @@ Performance/UnfreezeString:
 Performance/UriDefaultParser:
   Enabled: true
 
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: true
+
+Rails/ActionControllerTestCase:
+  Enabled: true
+
+Rails/ActionOrder:
+  Enabled: false
+
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+Rails/ActiveSupportOnLoad:
+  Enabled: true
+
+Rails/AddColumnIndex:
+  Enabled: true
+
+Rails/AfterCommitOverride:
+  Enabled: true
+
+Rails/AttributeDefaultBlockValue:
+  Enabled: true
+
+Rails/ApplicationMailer:
+  Enabled: false
+
+Rails/Blank:
+  Enabled: false
+
+Rails/CompactBlank:
+  Enabled: false
+
+Rails/DangerousColumnNames:
+  Enabled: true
+
+Rails/Date:
+  Enabled: true
+
+Rails/Delegate:
+  Enabled: false
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: false
+
+Rails/DotSeparatedKeys:
+  Enabled: false
+
+Rails/DuplicateAssociation:
+  Enabled: true
+
+Rails/DurationArithmetic:
+  Enabled: false
+
+Rails/DuplicateScope:
+  Enabled: false
+
+Rails/DynamicFindBy:
+  Exclude:
+    - spec/features/**/*.rb
+
+Rails/EagerEvaluationLogMessage:
+  Enabled: true
+
+Rails/EnumSyntax:
+  Enabled: true
+
+Rails/EnvLocal:
+  Enabled: true
+
+# Disabling this can cause confusing errors and disabling it should be avoided
+Rails/Exit:
+  Enabled: true
+
+Rails/ExpandedDateRange:
+  Enabled: true
+
+Rails/FilePath:
+  Enabled: false
+
+Rails/FindById:
+  Enabled: true
+
+Rails/FreezeTime:
+  Enabled: true
+
 Rails/HttpPositionalArguments:
-  Description: 'Use keyword arguments instead of positional arguments in http method calls.'
+  Description: Use keyword arguments instead of positional arguments in http method calls.
   Enabled: true
   Include:
-    - 'spec/**/*'
-    - 'test/**/*'
+    - spec/**/*
+    - test/**/*
+
+Rails/I18nLazyLookup:
+  Enabled: false
+
+Rails/I18nLocaleAssignment:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/IgnoredColumnsAssignment:
+  Enabled: false
+
+Rails/Inquiry:
+  Enabled: true
+
+Rails/MailerName:
+  Enabled: true
+
+Rails/MatchRoute:
+  Enabled: true
+
+Rails/MigrationClassName:
+  Enabled: true
+
+Rails/NegateInclude:
+  Enabled: false
+
+Rails/Output:
+  Enabled: true
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - db/**/*.rb
+    - lib/**/*.rb
+    - spec/**/*.rb # in addition to default
+
+Rails/Pluck:
+  Enabled: false
+
+Rails/PluckInWhere:
+  Enabled: true
+
+Rails/Present:
+  Enabled: false
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: true
+
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+
+Rails/RedundantTravelBack:
+  Enabled: true
+
+Rails/RelativeDateConstant:
+  Enabled: false
+
+Rails/RenderInline:
+  Enabled: true
+
+Rails/RenderPlainText:
+  Enabled: true
+
+Rails/ResponseParsedBody:
+  Enabled: false
+
+Rails/RootJoinChain:
+  Enabled: true
+
+Rails/RootPathnameMethods:
+  Enabled: false
+
+Rails/RootPublicPath:
+  Enabled: true
+
+Rails/SelectMap:
+  Enabled: true
+
+Rails/ShortI18n:
+  Enabled: true
+
+Rails/SkipsModelValidations:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+
+Rails/StripHeredoc:
+  Enabled: false
+
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Enabled: true
 
 Rails/TimeZone:
-  # The value `strict` means that `Time` should be used with `zone`.
-  # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
+  Description: Checks the correct usage of time zone aware methods.
+  StyleGuide: https://github.com/bbatsov/rails-style-guide#time
   Enabled: true
   EnforcedStyle: strict
   SupportedStyles:
     - strict
     - flexible
+
+Rails/TimeZoneAssignment:
+  Enabled: true
+
+Rails/ToFormattedS:
+  Enabled: false
+
+Rails/ToSWithArgument:
+  Enabled: false
+
+Rails/TopLevelHashWithIndifferentAccess:
+  Enabled: true
+
+Rails/TransactionExitStatement:
+  Enabled: true
+
+Rails/UnusedIgnoredColumns:
+  Enabled: true
+
+Rails/UnusedRenderContent:
+  Enabled: true
+
+Rails/WhereEquals:
+  Enabled: true
+
+Rails/WhereExists:
+  Enabled: true
+
+Rails/WhereMissing:
+  Enabled: true
+
+Rails/WhereNot:
+  Enabled: false
+
+Rails/WhereNotWithMultipleConditions:
+  Enabled: true
+
+Rails/WhereRange:
+  Enabled: false
+
+RSpec/NotToNot:
+  Enabled: true
+  EnforcedStyle: to_not
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: true
+
+RSpec/MissingExpectationTargetMethod:
+  Enabled: true
+
+RSpec/RedundantPredicateMatcher:
+  Enabled: true
+
+## This will require a manual spec update
+# RSpec/ContextWording:
+#   Prefixes:
+#     - when
+#     - with
+#     - without
 
 Style/AndOr:
   Description: Use &&/|| instead of and/or.
@@ -911,17 +1157,6 @@ Style/RedundantRegexpEscape:
 Capybara/NegationMatcher:
   EnforcedStyle: not_to
 
-RSpec/NotToNot:
-  Enabled: true
-  EnforcedStyle: to_not
-
-## This is the default setting
-# RSpec/ContextWording:
-#   Prefixes:
-#     - when
-#     - with
-#     - without
-
 Style/BlockDelimiters:
   Enabled: true
 
@@ -929,12 +1164,6 @@ Layout/LeadingCommentSpace:
   Enabled: true
 
 Style/HashTransformKeys:
-  Enabled: true
-
-Layout/BlockEndNewline:
-  Enabled: true
-
-Layout/MultilineBlockLayout:
   Enabled: true
 
 Style/WordArray:
@@ -991,12 +1220,6 @@ Style/TrailingCommaInBlockArgs:
 Style/TrailingMethodEndStatement:
   Enabled: true
 
-Rails/Output:
-  Enabled: true
-
-Rails/ActionOrder:
-  Enabled: true
-
 Style/NegatedUnless:
   Enabled: true
 
@@ -1023,9 +1246,6 @@ Rails/InverseOf:
   Enabled: true
 
 Style/Alias:
-  Enabled: true
-
-Rails/ResponseParsedBody:
   Enabled: true
 
 RSpecRails/HttpStatus:
@@ -1056,9 +1276,6 @@ RSpec/ExpectChange:
 
 Capybara/SpecificFinders:
   Enabled: false
-
-Rails/Date:
-  Enabled: true
 
 Security/Eval:
   Enabled: true

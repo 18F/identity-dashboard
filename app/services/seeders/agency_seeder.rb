@@ -32,7 +32,7 @@ class Seeders::AgencySeeder
       end
 
       # Update everything to match the YAML config
-      Agency.upsert_all(
+      Agency.upsert_all( # rubocop:disable Rails/SkipsModelValidations
         agency_configs.map { |agency_id, values| { id: agency_id, name: values['name'] } },
       )
     end

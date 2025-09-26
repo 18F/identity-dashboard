@@ -36,9 +36,9 @@ class ServiceProvider < ApplicationRecord
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 
-  before_save :sanitize_help_text_content
   after_initialize ->(record) { record.status = 'live' },
     unless: -> { IdentityConfig.store.prod_like_env }
+  before_save :sanitize_help_text_content
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p
