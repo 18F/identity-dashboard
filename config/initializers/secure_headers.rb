@@ -50,3 +50,4 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
+# rubocop:enable Metrics/BlockLength

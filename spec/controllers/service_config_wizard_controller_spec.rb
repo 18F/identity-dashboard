@@ -439,7 +439,7 @@ RSpec.describe ServiceConfigWizardController do
                :ready_to_activate_ial_1,
                team: create(:team),
                prod_config: true,
-               issuer: 'issuer:string:#{rand(1...1000)}',
+               issuer: "issuer:string:#{rand(1...1000)}",
                friendly_name: 'Friendly App')
       end
 
