@@ -50,7 +50,7 @@ describe Users::OmniauthController do
 
     context 'when a user exists but is on no team and not allowed to create teams' do
       it 'redirects to the empty user path' do
-        user = create(:user, email:)
+        create(:user, email:)
         session[:requested_url] = service_providers_url
 
         expect(subject).to_not receive(:sign_in)

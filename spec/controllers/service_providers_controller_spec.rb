@@ -508,7 +508,6 @@ describe ServiceProvidersController do
         id: sp.id,
         service_provider: { issuer: sp.issuer, help_text: init_help_params },
       }
-      provider = ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },

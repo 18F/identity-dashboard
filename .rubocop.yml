@@ -597,13 +597,25 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AllowUnusedKeywordArguments: false
 
+Lint/UriEscapeUnescape:
+  Enabled: true
+
+Lint/UriRegexp:
+  Enabled: true
+
+Lint/UselessAssignment:
+  Enabled: true
+
+Lint/UselessSetterCall:
+  Enabled: true
+
+Lint/UselessTimes:
+  Enabled: true
+
 Lint/TopLevelReturnWithArgument:
   Enabled: true
 
 Lint/TrailingCommaInAttributeDeclaration:
-  Enabled: true
-
-Lint/UselessTimes:
   Enabled: true
 
 Metrics/ModuleLength:

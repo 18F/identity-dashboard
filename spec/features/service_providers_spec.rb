@@ -618,7 +618,6 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can enable prompt=login for a service provider' do
-      user_to_log_in_as = logingov_admin
       sp = create(:service_provider, :with_team)
 
       visit edit_service_provider_path(sp)
