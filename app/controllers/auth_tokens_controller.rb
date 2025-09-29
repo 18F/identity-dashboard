@@ -14,7 +14,7 @@ class AuthTokensController < AuthenticatedController
   # POST /auth_tokens
   def create
     @auth_token = AuthToken.new_for_user(current_user)
-    AuthTokenAuditor.new.in_controller(self, @auth_token)
+    AuthTokenAuditor.new.in_controller(self)
 
     if @auth_token.save
       render 'index'

@@ -8,7 +8,7 @@ class AuthTokenAuditor
     @logger ||= Rails.logger
   end
 
-  def in_controller(controller, _record = nil)
+  def in_controller(controller)
     email = controller.current_user.email
     url = controller.request.url
     method = "#{controller.class}##{controller.action_name}"
