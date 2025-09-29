@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = policy_scope(User).find_by(id: params[:id])
-    @team_membership = @user && @user.team_memberships.first
+    @team_membership = @user&.team_memberships&.first
     populate_role_if_missing
     @has_no_teams = true if @user.teams.none?
   end

@@ -36,7 +36,7 @@ RSpec.describe BannerHelper do
     let(:banner_old) do
       build(:banner,
       start_date: Time.zone.today - 1.month,
-      end_date: Time.zone.today + 1.day )
+      end_date: Time.zone.today + 1.day)
     end
     # Past messages
     let(:banner_past) do

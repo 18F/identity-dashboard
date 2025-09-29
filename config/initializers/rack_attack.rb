@@ -86,7 +86,7 @@ end
 # Logging
 ActiveSupport::Notifications.subscribe(
   'throttle.rack_attack',
-) do |name, start, finish, req_id, payload|
+) do |_name, start, finish, req_id, payload|
   request = payload[:request]
 
   EventLogger.new(request:).track_event(
@@ -103,11 +103,11 @@ end
 
 ActiveSupport::Notifications.subscribe(
   'blocklist.rack_attack',
-) do |name, start, finish, req_id, payload|
+) do |_name, start, finish, req_id, payload|
   request = payload[:request]
   email = ActionController::HttpAuthentication::Token.token_params_from(
-          request.env['HTTP_AUTHORIZATION'],
-        ).to_h['email']
+    request.env['HTTP_AUTHORIZATION'],
+  ).to_h['email']
 
   EventLogger.new(request:).track_event(
     'blocklisted',

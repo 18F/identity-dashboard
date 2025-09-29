@@ -52,7 +52,7 @@ class LogoValidator < ActiveModel::Validator
   def logo_file_ext_matches_type
     filename = record.logo_file.blob.filename.to_s
 
-    file_ext = Regexp.new(/#{SP_MIME_EXT_MAPPINGS[record.logo_file.content_type]}$/i)
+    file_ext = /#{SP_MIME_EXT_MAPPINGS[record.logo_file.content_type]}$/i
 
     return if filename.match(file_ext)
 
@@ -67,14 +67,18 @@ class LogoValidator < ActiveModel::Validator
 
     svg = ValidatingSvg.new(record.pending_or_current_logo_data)
 
-    record.errors.add(:logo_file, I18n.t(
-      'service_provider_form.errors.logo_file.no_viewbox',
-      filename: record.logo_file.filename,
-    )) unless svg.has_viewbox?
+    unless svg.has_viewbox?
+      record.errors.add(:logo_file, I18n.t(
+        'service_provider_form.errors.logo_file.no_viewbox',
+        filename: record.logo_file.filename,
+      ))
+    end
+
+    return unless svg.has_script_tag?
 
     record.errors.add(:logo_file, I18n.t(
       'service_provider_form.errors.logo_file.has_script_tag',
       filename: record.logo_file.filename,
-    )) if svg.has_script_tag?
+    ))
   end
 end

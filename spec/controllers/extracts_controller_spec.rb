@@ -5,8 +5,8 @@ describe ExtractsController do
 
   let(:partner) { create(:user) }
   let(:admin) { create(:user, :logingov_admin) }
-  let(:sp1) { create(:service_provider, :ready_to_activate ) }
-  let(:sp2) { create(:service_provider, :ready_to_activate ) }
+  let(:sp1) { create(:service_provider, :ready_to_activate) }
+  let(:sp2) { create(:service_provider, :ready_to_activate) }
   let(:params1) do
     { extract: {
       ticket: '1', search_by: 'teams', criteria_list: sp1.group_id

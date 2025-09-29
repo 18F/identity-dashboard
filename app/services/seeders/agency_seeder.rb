@@ -32,7 +32,7 @@ class Seeders::AgencySeeder
       end
 
       # Update everything to match the YAML config
-      Agency.upsert_all(
+      Agency.upsert_all( # rubocop:disable Rails/SkipsModelValidations
         agency_configs.map { |agency_id, values| { id: agency_id, name: values['name'] } },
       )
     end
@@ -43,7 +43,7 @@ class Seeders::AgencySeeder
   end
 
   def self.internal_agency_data
-    (id, details) = Rails.application.config.agencies.find do |key, agency|
+    (id, details) = Rails.application.config.agencies.find do |_key, agency|
       agency['name'] == 'General Services Administration'
     end
     { id: id, name: details['name'] }

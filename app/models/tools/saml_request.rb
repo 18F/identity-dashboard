@@ -128,7 +128,7 @@ module Tools
     end
 
     def url_params(url)
-      CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [ k.to_sym, v[0] ] }
+      CGI.parse(url.split('?')[1..].join('?')).to_h { |k, v| [k.to_sym, v[0]] }
     end
   end
 end

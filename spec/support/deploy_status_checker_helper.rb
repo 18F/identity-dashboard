@@ -27,5 +27,5 @@ module DeployStatusCheckerHelper
       to_timeout
     stub_request(:get, %r{https://qa-.*\.cloud\.gov/api/deploy\.json}).
       to_timeout
-end
   end
+end

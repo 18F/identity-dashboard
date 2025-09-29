@@ -354,12 +354,12 @@ describe ServiceProvider do
 
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
-          :service_provider,
+        :service_provider,
           help_text: {
             'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
             'forgot_password': {}
           },
-        )
+      )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end
 
@@ -478,7 +478,7 @@ describe ServiceProvider do
     end
 
     context 'with multiple certs' do
-      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'wraps them as ServiceProviderCertificates' do
         wrapped = certs.map do |cert|
@@ -496,7 +496,7 @@ describe ServiceProvider do
     let(:certs) { nil }
 
     context 'when removing a serial that matches in the certs array' do
-      let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'removes that cert' do
         expect { sp.remove_certificate(200) }.
@@ -508,7 +508,7 @@ describe ServiceProvider do
     end
 
     context 'when removing a serial that does not exist' do
-      let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+      let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'does not remove anything' do
         expect { sp.remove_certificate(100) }.to_not(change { sp.certificates.size })

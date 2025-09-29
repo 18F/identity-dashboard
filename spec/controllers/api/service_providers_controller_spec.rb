@@ -54,7 +54,7 @@ describe Api::ServiceProvidersController do
         end
 
         it 'does not return the protocol attribute' do
-          sp = create(:service_provider, :with_team, active: true, approved: true)
+          create(:service_provider, :with_team, active: true, approved: true)
 
           get :index
           expect(response_from_json.first.keys).to_not include :protocol

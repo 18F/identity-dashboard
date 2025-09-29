@@ -542,7 +542,7 @@ feature 'Service Config Wizard' do
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('settings')
-      choose I18n.t'simple_form.labels.service_provider.production'
+      choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Next'
       visit service_config_wizard_path(WizardStep::STEPS.last)
       click_on 'Update app'
@@ -626,7 +626,7 @@ feature 'Service Config Wizard' do
 
           visit service_provider_path(existing_config)
           click_on 'Edit'
-          visit service_config_wizard_path('redirects');
+          visit service_config_wizard_path('redirects')
           fill_in 'wizard_step_push_notification_url', with: 'http://localhost:0000'
           click_on 'Next'
 
@@ -645,7 +645,7 @@ feature 'Service Config Wizard' do
 
           visit service_provider_path(existing_config)
           click_on 'Edit'
-          visit service_config_wizard_path(WizardStep::STEPS.last);
+          visit service_config_wizard_path(WizardStep::STEPS.last)
           click_on 'Update app'
 
           expect(page).to_not have_content('Error(s) found in these fields:')

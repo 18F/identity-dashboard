@@ -202,7 +202,7 @@ RSpec.describe WizardStep, type: :model do
       end
 
       context 'with multiple certs' do
-        let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+        let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
         it 'wraps them as ServiceProviderCertificates' do
           wrapped = certs.map do |cert|
@@ -259,7 +259,7 @@ RSpec.describe WizardStep, type: :model do
       let(:certs) { nil }
 
       context 'when removing a serial that matches in the certs array' do
-        let(:certs) { [ build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
+        let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
         it 'removes that cert' do
           expect { subject.remove_certificate(200) }.
@@ -271,7 +271,7 @@ RSpec.describe WizardStep, type: :model do
       end
 
       context 'when removing a serial that does not exist' do
-        let(:certs) { [ build_pem(serial: 200), build_pem(serial: 300)] }
+        let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
 
         it 'does not remove anything' do
           expect { subject.remove_certificate(100) }.to_not(change { subject.certificates.size })
@@ -537,7 +537,7 @@ RSpec.describe WizardStep, type: :model do
 
     it 'concatenates all the latest steps for a user' do
       created_steps = WizardStep::STEPS.map do |step_name|
-        create(:wizard_step, step_name: step_name, user: subject_user )
+        create(:wizard_step, step_name: step_name, user: subject_user)
       end
       ignored_user = create(:user)
       extra_step = create(:wizard_step, step_name: 'issuer', user: ignored_user, wizard_form_data: {

@@ -36,9 +36,9 @@ class ServiceProvider < ApplicationRecord
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 
-  before_save :sanitize_help_text_content
-  after_initialize -> (record) { record.status = 'live' },
+  after_initialize ->(record) { record.status = 'live' },
     unless: -> { IdentityConfig.store.prod_like_env }
+  before_save :sanitize_help_text_content
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p
@@ -188,7 +188,7 @@ class ServiceProvider < ApplicationRecord
   def pending_or_current_logo_data
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
-    logo_file.blob.download if logo_file.blob
+    logo_file&.blob&.download
   end
 
   def compile_errors

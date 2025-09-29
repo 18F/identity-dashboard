@@ -48,11 +48,7 @@ class ServiceProviderSerializer < ActiveModel::Serializer
   end
 
   def pkce
-    if object.openid_connect_pkce?
-      true
-    else
-      false
-    end
+    object.openid_connect_pkce? || false
   end
 
   def protocol

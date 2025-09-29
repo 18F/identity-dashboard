@@ -459,9 +459,9 @@ describe ServiceProvidersController do
 
     it 'adds new certs uploaded to the certs array' do
       file = Rack::Test::UploadedFile.new(
-               StringIO.new(build_pem(serial: 10)),
+        StringIO.new(build_pem(serial: 10)),
                original_filename: 'my-cert.crt',
-             )
+      )
 
       put :update, params: {
         id: sp.id,
@@ -476,9 +476,9 @@ describe ServiceProvidersController do
 
     it 'errors when cert data is not PEM encoded' do
       file = Rack::Test::UploadedFile.new(
-               StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
+        StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
                original_filename: 'my-cert.der',
-             )
+      )
 
       expect do
         put :update, params: {
@@ -508,7 +508,6 @@ describe ServiceProvidersController do
         id: sp.id,
         service_provider: { issuer: sp.issuer, help_text: init_help_params },
       }
-      provider = ServiceProvider.find_by(issuer: sp.issuer)
 
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },

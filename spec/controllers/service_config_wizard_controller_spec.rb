@@ -439,7 +439,7 @@ RSpec.describe ServiceConfigWizardController do
                :ready_to_activate_ial_1,
                team: create(:team),
                prod_config: true,
-               issuer: 'issuer:string:#{rand(1...1000)}',
+               issuer: "issuer:string:#{rand(1...1000)}",
                friendly_name: 'Friendly App')
       end
 
@@ -489,9 +489,9 @@ RSpec.describe ServiceConfigWizardController do
     describe 'logo and cert' do
       it 'adds new certs uploaded to the certs array' do
         file = Rack::Test::UploadedFile.new(
-                 StringIO.new(build_pem(serial: 10)),
+          StringIO.new(build_pem(serial: 10)),
                  original_filename: 'my-cert.crt',
-               )
+        )
 
         put :update,
             params: {

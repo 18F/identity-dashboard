@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'securerandom'
 
 # `Logger` is a class in the standard library, so we need a custom name

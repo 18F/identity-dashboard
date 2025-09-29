@@ -7,15 +7,15 @@ class ZendeskRequest
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
-    4418412738836 => -> (record) { record.agency.name.parameterize.underscore }, # Agency
-    4417492827796 => -> (record) { record.app_name }, # Application Name
-    5064895580308 => -> (record) { record.description }, # Ticket Description
-    23180053076628 => -> (record) { record.issuer }, # Issuer
-    20697165967508 => -> (record) { record.logo.present? }, # Logo attestation
-    4417169610388 => -> (record) {
+    4418412738836 => ->(record) { record.agency.name.parameterize.underscore }, # Agency
+    4417492827796 => ->(record) { record.app_name }, # Application Name
+    5064895580308 => ->(record) { record.description }, # Ticket Description
+    23180053076628 => ->(record) { record.issuer }, # Issuer
+    20697165967508 => ->(record) { record.logo.present? }, # Logo attestation
+    4417169610388 => ->(_record) {
       IdentityConfig.store.prod_like_env ? 'integration_change' : 'new_integration'
     }, # Request type
-    4418367585684 => -> (record) { 'on' }, # Ready to move to production attestation
+    4418367585684 => ->(_record) { 'on' }, # Ready to move to production attestation
   }
 
   # This is separete because the host isn't available in the model
@@ -26,7 +26,8 @@ class ZendeskRequest
     4417940288916 => { label: 'application_url',
       placeholder: 'https://yourapp.gov/',
       input_type: 'text' },
-    14323206118676 => { label: 'audience',
+    14323206118676 => {
+      label: 'audience',
       placeholder: nil,
       input_type: 'select',
       options: [
@@ -86,7 +87,7 @@ class ZendeskRequest
     custom_fields << portal_url_value
     custom_fields << ial_value
 
-    ticket_data = {
+    {
       request:  {
         requester: {
           name: "#{@requestor.first_name} #{@requestor.last_name}",
@@ -137,7 +138,7 @@ class ZendeskRequest
       { success: true, ticket_id: ticket_id }
     else
       errors = response.dig('details', 'base')
-      if (errors)
+      if errors
         parsed_errors = []
         errors.each do |e|
           parsed_errors.push(e['description'])

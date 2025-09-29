@@ -120,7 +120,7 @@ describe UsersController do
           patch :update, params: { id: user_to_edit.id, user: {
             team_membership: { role_name: 'partner_readonly' },
           } }
-          expect(logger_double).to have_received(:record_save).once do |op, record|
+          expect(logger_double).to have_received(:record_save).once do |_op, record|
             expect(record.class.name).to eq('TeamMembership')
           end
         end

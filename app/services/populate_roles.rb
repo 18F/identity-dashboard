@@ -1,8 +1,9 @@
 # PopulateRole designed to be invoked from a rake task
 # as such, uses puts() instead of logger
-include TeamHelper
 
 class PopulateRoles
+  include TeamHelper
+
   USAGE_WARNING = <<-WARN.strip.freeze
       WARNING: this will loop through all TeamMemberships with invalid or nil roles and reset roles based on legacy permissions
   WARN

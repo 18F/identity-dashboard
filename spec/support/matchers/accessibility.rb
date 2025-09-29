@@ -18,7 +18,7 @@ RSpec::Matchers.define :have_valid_idrefs do
     invalid_idref_messages.blank?
   end
 
-  failure_message do |page|
+  failure_message do |_page|
     <<~STR
       Found #{invalid_idref_messages.count} elements with invalid ID reference links:
 
@@ -94,7 +94,7 @@ RSpec::Matchers.define :have_valid_markup do
 
   match { |_page| page_markup_syntax_errors.blank? }
 
-  failure_message do |page|
+  failure_message do |_page|
     <<~STR
       Expected page to have valid markup. Found syntax errors:
 

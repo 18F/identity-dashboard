@@ -83,7 +83,7 @@ class WizardStep < ApplicationRecord
         hash[field_name] = step_name
       end
     end.
-  freeze
+    freeze
 
   belongs_to :user
 
@@ -313,7 +313,7 @@ class WizardStep < ApplicationRecord
     return false unless step_name == 'logo_and_cert'
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
-    logo_file.blob.download if logo_file.blob
+    logo_file&.blob&.download
   end
 
   def existing_service_provider?

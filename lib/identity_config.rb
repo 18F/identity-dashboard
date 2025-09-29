@@ -39,5 +39,6 @@ class IdentityConfig
       config.add(:service_config_wizard_enabled, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
+    # rubocop:enable Metrics/BlockLength
   end
 end

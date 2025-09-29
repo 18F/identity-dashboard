@@ -69,11 +69,11 @@ RSpec.describe EventLogger do
     context 'when the session visit token is not set' do
       let(:log) do
         EventLogger.new(
-        user: current_user,
-        request: request,
-        session: nil,
-        logger: logger,
-      )
+          user: current_user,
+          request: request,
+          session: nil,
+          logger: logger,
+        )
       end
 
       before do

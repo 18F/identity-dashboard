@@ -12,9 +12,8 @@ describe 'Service Provider API' do
 
     context 'without API token' do
       it 'fails without authorization header' do
-        app = create(:service_provider)
         get api_service_providers_path
-        json = response.parsed_body
+
         expect(response).to have_http_status(:unauthorized)
       end
     end

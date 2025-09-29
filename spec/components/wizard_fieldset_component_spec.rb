@@ -19,7 +19,7 @@ RSpec.describe WizardFieldsetComponent, type: :component do
     expect(render.text).to include('SAML')
 
     # Need to compare like with like or otherwise this test may fail for unimportant reasons
-    expected_html = '<p class="usa-hint">' + \
+    expected_html = '<p class="usa-hint">' +
                     t('service_provider_form.identity_protocol_html') +
                     '</p>'
     expected_html = Nokogiri.parse(expected_html).children
@@ -35,11 +35,11 @@ RSpec.describe WizardFieldsetComponent, type: :component do
     expect(render.text).to include('SAML')
 
     # Need to compare like with like or otherwise this test may fail for unimportant reasons
-    default_html = '<p class="usa-hint">' + \
+    default_html = '<p class="usa-hint">' +
                    t('service_provider_form.identity_protocol_html') +
                    '</p>'
     default_html = Nokogiri.parse(default_html).children
-    override_html = '<p class="usa-hint">' + \
+    override_html = '<p class="usa-hint">' +
                     t('service_provider_form.certificate') +
                     '</p>'
     override_html = Nokogiri.parse(override_html).children

@@ -8,7 +8,7 @@ describe ExtractPolicy do
       ticket: '0',
       search_by: 'issuers',
       criteria_list: 'fake:issuer',
-    } )
+    })
   end
 
   permissions :index? do
