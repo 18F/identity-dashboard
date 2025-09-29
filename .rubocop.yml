@@ -167,7 +167,6 @@ Layout/ExtraSpacing:
 Layout/FirstArgumentIndentation:
   Enabled: true
   EnforcedStyle: consistent
-  IndentationWidth: null
 
 # Checks the indentation of the first element in an array literal.
 Layout/FirstArrayElementIndentation:
