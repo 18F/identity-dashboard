@@ -97,11 +97,13 @@ describe ExtractsController do
         expect(response).to render_template 'results'
       end
 
-      it 'will #save_to_file' do
+      it 'will #save_to_file with Team UUIDs' do
         post :create, params: params1
         filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
 
-        expect(File.read filename).to eq([sp1].to_json)
+        expected_data = sp1.attributes
+        expected_data['team_uuid'] = sp1.team.uuid if sp1.team.respond_to? :uuid
+        expect(File.read filename).to eq([expected_data].to_json)
         expect(response).to render_template 'results'
       end
 

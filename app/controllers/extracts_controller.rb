@@ -44,7 +44,12 @@ class ExtractsController < AuthenticatedController # :nodoc:
   def save_to_file
     begin
       File.open(@extract.filename, 'w') do |f|
-        f.print @extract.successes.to_json
+        data = @extract.successes.map do |sp|
+          attributes = sp.attributes
+          attributes['team_uuid'] = sp.team.uuid if sp.team.respond_to? :uuid
+          attributes
+        end
+        f.print data.to_json
       end
       flash[:success] = 'Extracted configs saved'
     rescue => err
