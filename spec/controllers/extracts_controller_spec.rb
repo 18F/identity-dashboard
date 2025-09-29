@@ -102,7 +102,7 @@ describe ExtractsController do
         filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
 
         expected_data = sp1.attributes
-        expected_data['team_uuid'] = sp1.team.uuid if sp1.team.respond_to? :uuid
+        expected_data['team_uuid'] = sp1.team.uuid
         expect(File.read filename).to eq([expected_data].to_json)
         expect(response).to render_template 'results'
       end
