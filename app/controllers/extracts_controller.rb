@@ -46,7 +46,7 @@ class ExtractsController < AuthenticatedController # :nodoc:
       File.open(@extract.filename, 'w') do |f|
         data = @extract.successes.map do |sp|
           attributes = sp.attributes
-          attributes['team_uuid'] = sp.team.uuid if sp.team.respond_to? :uuid
+          attributes['team_uuid'] = sp.team.uuid
           attributes
         end
         f.print data.to_json

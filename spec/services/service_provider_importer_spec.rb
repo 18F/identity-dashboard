@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ExtractImporter do
+describe ServiceProviderImporter do
   context 'with new, reasonable data' do
     let(:good_file){ File.join(file_fixture_path, 'extract_sample.json') }
 
@@ -9,6 +9,9 @@ describe ExtractImporter do
     before do
       create(:user, :logingov_admin) # a ServiceProvider must have a User
       create(:team) # a ServiceProvider must have a Team
+
+      # An agency with this ID is required by the fixture data. Might as well use the prod value
+      create(:agency, id: 130, name: 'Public Defender Service for the District of Columbia')
     end
 
     # Happy path integration test
@@ -27,6 +30,20 @@ describe ExtractImporter do
         '2024-10-18-helptext',
       ]
       expected_user = Team.internal_team.users.first
+      expected_team_uuids = [
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        # In the fixture, this is missing a uuid, so should fall back to internal team
+        Team.internal_team.uuid,
+        '963bcc0a-2bd7-4762-8f59-a326e141970f',
+        '963bcc0a-2bd7-4762-8f59-a326e141970f',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '963bcc0a-2bd7-4762-8f59-a326e141970f',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+      ]
 
       expect { importer.run }.to change { ServiceProvider.count }.by expected_issuers.count
 
@@ -36,10 +53,10 @@ describe ExtractImporter do
       expect(importer.models.map(&:persisted?)).to be_all
       expect(importer.models.map(&:issuer).sort).to eq(expected_issuers.sort)
       saved_models = ServiceProvider.last(expected_issuers.count)
-      saved_models.each do |model|
+      saved_models.each_with_index do |model, index|
         expect(importer.models).to include(model)
         expect(model.user).to eq(expected_user)
-        expect(model.team).to eq(Team.internal_team)
+        expect(model.team).to eq(Team.find_by(uuid: expected_team_uuids[index]))
       end
     end
 
