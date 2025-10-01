@@ -463,7 +463,7 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'when a partner admin' do
-    let(:wizard_service_provider) { build(:service_provider, :ready_to_activate, team:) }
+    let(:wizard_service_provider) { build(:service_provider, :ready_to_activate_consistent, team:) }
 
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
