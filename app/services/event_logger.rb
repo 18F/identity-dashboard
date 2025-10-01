@@ -6,40 +6,31 @@ require 'securerandom'
 class EventLogger
   include LogEvents
 
-  attr_reader :request, :response, :controller, :user, :options, :session
+  attr_reader :request, :response, :user, :session
 
-  # @option options [ApplicationController,nil] :controller
-  #   The controller active when the event to log occurred
-  # @option options [ActionDispatch::Request, Rack::Request, nil] :request
-  #   If blank, `EventLogger` will try to pull a request from the `:controller` option.
+  # @request  [ActionDispatch::Request, Rack::Request, nil]
   #   When {#track_event} gets called, `EventLogger` will try to include
   #   browser information from the request.
-  # @option options [ActionDispatch::Response, Rack::Response, nil] :response
-  #   If blank, `EventLogger` will try to pull a response from the `:controller` option
-  # @option options [User,nil] :user
-  #   If blank, `EventLogger` will try to send `#current_user` to the `:controller` option
-  # @option options [#[],nil] :session
+  # @response [ActionDispatch::Response, Rack::Response, nil]
+  # @user options [User,nil]
+  # @session
   #   A Hash-like object. Exact class can vary by environment because different environments can use
   #   different session store types.
-  #   If blank, `EventLongger` will try to get the session from
-  #   the `:controller` option or the `:request` option
-  # @option options [ActiveSupport::Logger,nil] :logger A destination to log events.
+  #   If blank, `EventLogger` will try to get the session from the `:request` option
+  # @logger A destination to log events.
   #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
   #   the value of `IdentityConfig.store.event_log_filename`
-  def initialize(**options)
+  def initialize(request: nil, response: nil, user: nil, session: nil, logger: nil)
     default_logger = ActiveSupport::Logger.new(
       Rails.root.join('log', IdentityConfig.store.event_log_filename),
     )
     default_logger.formatter = Rails.logger.formatter
 
-    @controller = options[:controller]
-    @request = options[:request] || @controller.try(:request)
-    @response = options[:response] || @controller.try(:response)
-    @user = options[:user] || @controller.try(:current_user)
-    @session = options[:session] || @controller.try(:session) ||
-               @request.try(:session) || {}
-    @logger = options[:logger] || default_logger
-    @options = options
+    @request = request
+    @response = response
+    @user = user
+    @session = session || @request.try(:session) || {}
+    @logger = logger || default_logger
   end
 
   # Log a specific event
@@ -47,12 +38,8 @@ class EventLogger
   # @param [Hash, nil] properties Arbitrary, optional properties that can be added to the event.
   #   These will show up in the logged event as properties -> event_properties -> <key,value pairs>.
   #   Properties with null values will be omitted.
-  # @option options [Time, nil] :time
-  #   If blank, `Time.current` will be evaluated.
-  # @option options [String, nil] :id
-  #   A unique identifier. If omitted, `SecureRandom.uuid` will be evaluated.
   # @return [Boolean] true on log event success
-  def track_event(name, properties = {}, options = {})
+  def track_event(name, properties = {})
     data = {
       visit_id: visit_token,
       user_id: user.try(:uuid),
@@ -62,8 +49,8 @@ class EventLogger
         event_properties: properties.compact,
         path: request&.path,
       }.compact,
-      time: options[:time] || Time.current,
-      event_id: options[:id] || generate_uuid,
+      time: Time.current,
+      event_id: generate_uuid,
       status: response.try(:status),
     }.compact
 
