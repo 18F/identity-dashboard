@@ -47,6 +47,8 @@ class ExtractsController < AuthenticatedController # :nodoc:
         data = @extract.successes.map do |sp|
           attributes = sp.attributes
           attributes['team_uuid'] = sp.team.uuid
+          # This is not portable between environments.
+          attributes.delete 'remote_logo_key'
           attributes
         end
         f.print data.to_json

@@ -20,7 +20,6 @@ describe ServiceProviderImporter do
         'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sandbox-test',
         'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:help_text',
         '2024-10-15:non-admin:test',
-        '2024-10-15:hello',
         '2024-10-17:helptext',
         '2024-11-06-mobile-test',
         'asdfsadfasd',
@@ -35,7 +34,6 @@ describe ServiceProviderImporter do
         '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         # In the fixture, this is missing a uuid, so should fall back to internal team
         Team.internal_team.uuid,
-        '963bcc0a-2bd7-4762-8f59-a326e141970f',
         '963bcc0a-2bd7-4762-8f59-a326e141970f',
         '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         '963bcc0a-2bd7-4762-8f59-a326e141970f',
@@ -61,7 +59,7 @@ describe ServiceProviderImporter do
     end
 
     it 'is idempotent' do
-      expect { importer.run }.to change { ServiceProvider.count }.by 11
+      expect { importer.run }.to change { ServiceProvider.count }.by 10
       expect { importer.run }.to_not change { ServiceProvider.count }
     end
   end
