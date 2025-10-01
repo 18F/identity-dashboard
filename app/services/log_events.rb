@@ -43,6 +43,14 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
+  def sp_created(changes:)
+    track_event('portal_sp_created', changes:)
+  end
+
+  def sp_updated(changes:)
+    track_event('portal_sp_updated', changes:)
+  end
+
   # @param [Pundit::NotAuthorizedError] exception
   # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
