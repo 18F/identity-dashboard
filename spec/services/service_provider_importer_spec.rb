@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ServiceProviderImporter do
   context 'with new, reasonable data' do
-    let(:good_file){ File.join(file_fixture_path, 'extract_sample.json') }
+    let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
 
     subject(:importer) { described_class.new(good_file) }
 
