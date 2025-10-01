@@ -1,5 +1,6 @@
 module Api
   class ApiController < ApplicationController # :nodoc:
+    prepend_before_action :skip_session_load
     before_action :authenticate_token
 
     private
