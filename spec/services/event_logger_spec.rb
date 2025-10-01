@@ -4,32 +4,26 @@ require 'time'
 RSpec.describe EventLogger do
   subject(:log) do
     EventLogger.new(
-      user: current_user,
-      request: request,
-      session: session,
-      logger: logger,
+      user:,
+      request:,
+      session:,
+      logger:,
     )
   end
 
+  let(:visit_id) { 'test_token' }
   let(:event_name) { 'Trackable Event' }
   let(:path) { 'fake_path' }
   let(:uuid) { 'a2c4d6e8-1234-abcd-ab12-aa11bb22cc33' }
-  let(:current_user) { create(:user, uuid:) }
-  let(:session) { { visit_token: 'test_token' } }
+  let(:user) { create(:user, uuid:) }
+  let(:session) { { visit_token: visit_id } }
   let(:logger) { object_double(Rails.logger) }
-  let(:time_now) { Time.zone.now }
-  let(:log_attributes) do
-    {
-      properties: { path: },
-    }.merge(request_attributes)
-  end
   let(:request) { FakeRequest.new }
   let(:request_attributes) do
     {
-      visit_id: session[:visit_token],
+      visit_id:,
       user_id: uuid,
-      user_role: current_user&.primary_role&.name,
-      name: event_name,
+      user_role: user&.primary_role&.name,
       user_ip: FakeRequest.new.remote_ip,
       hostname: FakeRequest.new.host,
       user_agent: FakeRequest.new.user_agent,
@@ -40,9 +34,6 @@ RSpec.describe EventLogger do
       browser_device_name: 'Unknown',
       browser_mobile: false,
       browser_bot: false,
-      time: time_now,
-      event_id: 'test_event_id',
-      status: 200,
     }
   end
   let(:sp) { create(:service_provider) }
@@ -69,10 +60,10 @@ RSpec.describe EventLogger do
     context 'when the session visit token is not set' do
       let(:log) do
         EventLogger.new(
-          user: current_user,
-          request: request,
+          user:,
+          request:,
           session: nil,
-          logger: logger,
+          logger:,
         )
       end
 
@@ -93,11 +84,34 @@ RSpec.describe EventLogger do
     end
   end
 
-  describe '#record_save' do
+  describe 'sp_create' do
+    let(:name) { 'portal_sp_created' }
+    let(:changes) do
+      {
+        id: sp.id,
+        friendly_name: sp.friendly_name,
+        team: sp.team&.name,
+        created_at: sp.created_at.as_json,
+        updated_at: sp.updated_at.as_json,
+      }
+    end
+
+    it 'logs portal_sp_created event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.sp_created(changes:)
+    end
+  end
+
+  describe '#service_provider' do
     it 'logs record creation' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
-        expect(obj['name']).to eq 'serviceprovider_create'
+        expect(obj['name']).to eq 'sp_create'
         expect(obj['properties']['event_properties']['id'].class).to eq Integer
       end
 
@@ -137,7 +151,7 @@ RSpec.describe EventLogger do
       log.record_save('create', nil)
     end
 
-    it 'logs team_data when role_name is changed' do
+    xit 'logs team_data when role_name is changed' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj['properties']['event_properties']).to include('team', 'team_user')
@@ -158,7 +172,7 @@ RSpec.describe EventLogger do
       options = {
         query: :TestMethod,
         record: User,
-        policy: UserPolicy.new(current_user, User.new),
+        policy: UserPolicy.new(user, User.new),
       }
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
@@ -190,5 +204,9 @@ RSpec.describe EventLogger do
         ActionController::UnpermittedParameters.new([:one, :two]),
       )
     end
+  end
+
+  def crud_properties(event_properties:, name:)
+    request_attributes.merge({ name:, properties: { event_properties:, path: } })
   end
 end

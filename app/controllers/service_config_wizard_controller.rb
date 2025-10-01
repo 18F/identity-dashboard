@@ -1,5 +1,7 @@
 class ServiceConfigWizardController < AuthenticatedController # :nodoc:
   include ::Wicked::Wizard
+  include ModelChanges
+
   after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
@@ -335,8 +337,17 @@ class ServiceConfigWizardController < AuthenticatedController # :nodoc:
   def log_change
     return unless step == wizard_steps.last
 
-    action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
-    log.record_save(action, draft_service_provider) unless can_cancel?
+    if create?
+      log.sp_created(changes: changes_to_log(draft_service_provider))
+    else
+      log.sp_updated(changes: changes_to_log(draft_service_provider))
+    end
+    # action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
+    # log.record_save(action, draft_service_provider) unless can_cancel?
+  end
+
+  def create?
+    draft_service_provider.previous_changes['id'].present?
   end
 
   def verify_environment_permissions
