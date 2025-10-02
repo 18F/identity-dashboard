@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Role, type: :model do
-  it 'knows which roles are legacy admin' do
-    expect(Role::LOGINGOV_ADMIN).to be_legacy_admin
-    other_roles = Role::ACTIVE_ROLES_NAMES.except(:logingov_admin)
-    other_roles.each do |other_role|
-      expect(Role.find_by(name: other_role)).to_not be_legacy_admin
-    end
+  it 'knows which role is the site admin role' do
+    active_roles = Role::ACTIVE_ROLES_NAMES.map { |name| Role.find_by(name:) }
+    expect(active_roles[0]).to eq(Role::LOGINGOV_ADMIN)
+  end
+
+  it 'has no duplicate active roles' do
+    active_roles = Role::ACTIVE_ROLES_NAMES.map { |name| Role.find_by(name:) }
+    expect(active_roles.uniq.map(&:friendly_name)).to eq(Role::ACTIVE_ROLES_NAMES.values)
   end
 end

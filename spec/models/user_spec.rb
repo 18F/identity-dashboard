@@ -147,7 +147,9 @@ describe User do
     it 'tracks updates' do
       user = create(:user)
 
-      expect { user.update!(admin: true) }.to change { PaperTrail::Version.count }.by(1)
+      expect do
+        user.update!(email: "random#{rand 1..1000}@gsa.gov")
+      end.to change { PaperTrail::Version.count }.by(1)
     end
 
     it 'tracks deletion' do
@@ -174,8 +176,9 @@ describe User do
       expect(user.primary_role.friendly_name).to eq('Partner Admin')
     end
 
-    it 'returns "Login.gov Admin" if the admin boolean is set' do
-      user = build(:user, admin: true)
+    it 'returns "Login.gov Admin" if applicable' do
+      user = create(:user, :with_teams)
+      TeamMembership.find_or_build_logingov_admin(user).save!
       expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
     end
 

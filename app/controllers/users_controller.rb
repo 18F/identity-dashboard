@@ -37,9 +37,10 @@ class UsersController < ApplicationController
     @user = policy_scope(User).find_by(id: params[:id])
 
     role = Role.find_by(name: user_params.delete(:team_membership)&.dig(:role_name))
-    user_params[:admin] = role.legacy_admin? if role
+    authorize_and_make_admin(@user) if role && role == Role::LOGINGOV_ADMIN
     user.transaction do
       user.update!(user_params)
+      remove_admin(user) if user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
       user.team_memberships.each do |membership|
         membership.role = role
         membership.save!
@@ -68,6 +69,24 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def authorize_and_make_admin(user)
+    admin_membership = TeamMembership.find_or_build_logingov_admin(user)
+    authorize admin_membership
+    user.transaction do
+      admin_membership.save!
+      user.update!(admin: true) # TODO: delete legacy admin property
+    end
+  end
+
+  def remove_admin(user)
+    admin_membership = TeamMembership.find_or_build_logingov_admin(user)
+    authorize admin_membership
+    admin_membership.transaction do
+      admin_membership.destroy!
+      user.update!(admin: false) # TODO: delete legacy admin property
+    end
+  end
 
   def user_params
     @user_params ||= params.require(:user).permit(:email, :admin, team_membership: :role_name)

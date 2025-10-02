@@ -83,6 +83,11 @@
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'User permissions report', internal_reports_team_memberships_path(format: 'csv') %>
                   </li>
+                  <% if !IdentityConfig.store.prod_like_env %>
+                    <li class="usa-nav__submenu-item">
+                      <%= link_to 'Config extraction', extracts_path %>
+                    </li>
+                  <% end %>
                 </ul>
               </li>
             <% end %>

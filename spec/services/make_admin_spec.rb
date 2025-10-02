@@ -32,7 +32,7 @@ describe MakeAdmin do
         )
 
         expect(user).to_not be_nil
-        expect(user.logingov_admin?).to eq(true)
+        expect(user.logingov_admin?).to be_truthy
       end
     end
 
@@ -53,7 +53,7 @@ describe MakeAdmin do
 
         user.reload
 
-        expect(user.logingov_admin?).to eq(true)
+        expect(user.logingov_admin?).to be_truthy
       end
     end
 
@@ -63,12 +63,7 @@ describe MakeAdmin do
           "INFO: User \"#{email}\" already has Login.gov admin privileges.",
         )
 
-        user = User.create(
-          email: email,
-          first_name: first_name,
-          last_name: last_name,
-          admin: true,
-        )
+        user = create(:logingov_admin, email:)
 
         subject.call
 

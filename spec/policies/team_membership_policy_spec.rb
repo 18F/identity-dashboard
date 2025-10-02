@@ -8,13 +8,13 @@ describe TeamMembershipPolicy do
   let(:partner_admin) { partner_admin_membership.user }
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
-  let(:logingov_admin) { build(:logingov_admin) }
+  let(:logingov_admin) { create(:logingov_admin) }
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 
   permissions :manage_team_users? do
     before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).at_most(1).and_return(false)
+      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     end
 
     it 'allows a team member to manage team users' do
@@ -50,6 +50,26 @@ describe TeamMembershipPolicy do
       expect(described_class).to permit(partner_admin, new_team_membership)
     end
 
+    it 'forbids Partner Admins who are not team members' do
+      other_team = create(:team)
+      new_team_membership = other_team.team_memberships.build
+      expect(described_class).to_not permit(partner_admin, new_team_membership)
+    end
+
+    context 'for the internal team' do
+      let(:team) { Team.internal_team }
+      let(:new_membership) { team.team_memberships.build }
+
+      it 'allows Login Admins' do
+        expect(described_class).to permit(logingov_admin, new_membership)
+      end
+
+      it 'forbids other internal team members' do
+        other_member = create(:team_membership, :partner_admin, team:).user
+        expect(described_class).to_not permit(other_member, new_membership)
+      end
+    end
+
     it 'forbids Partner Developers' do
       new_team_membership = partner_developer_membership.team.team_memberships.build
       expect(described_class).to_not permit(partner_developer, new_team_membership)
@@ -73,6 +93,20 @@ describe TeamMembershipPolicy do
 
     it 'forbids Partner Admins for own memberships' do
       expect(described_class).to_not permit(partner_admin, partner_admin_membership)
+    end
+
+    context 'for the internal team' do
+      let(:team) { Team.internal_team }
+      let(:new_membership) { team.team_memberships.build }
+
+      it 'allows Login Admins' do
+        expect(described_class).to permit(logingov_admin, new_membership)
+      end
+
+      it 'forbids other internal team members' do
+        other_member = create(:team_membership, :partner_admin, team:).user
+        expect(described_class).to_not permit(other_member, new_membership)
+      end
     end
 
     context 'with anyone else' do

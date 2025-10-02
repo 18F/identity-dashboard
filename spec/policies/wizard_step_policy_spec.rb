@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe WizardStepPolicy do
-  let(:logingov_admin) { build(:user, :logingov_admin) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:user) { build(:user) }
   let(:step_for_user) { build(:wizard_step, user:) }
 

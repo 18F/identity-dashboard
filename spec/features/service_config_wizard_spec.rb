@@ -326,6 +326,50 @@ feature 'Service Config Wizard' do
         expect(page).to_not have_current_path(service_providers_path)
         expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
+
+      it 'allows creation of an application' do
+        app_name = "name#{rand(1..1000)}"
+        test_name = "Test name #{rand(1..1000)}"
+        issuer_name = "test:config:#{rand(1...1000)}"
+        help_text = {
+          'sign_in' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
+          'sign_up' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
+          'forgot_password' => { 'en' => 'hello', 'es' => 'hola', 'fr' => 'bonjour', 'zh' => '你好' },
+        }
+        visit new_service_config_wizard_path
+        click_on 'Next' # Skip the intro page
+        current_step = find('.step-indicator__step--current')
+        expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+        fill_in('App name', with: app_name)
+        fill_in('Friendly name', with: test_name)
+        team_to_pick = logingov_admin.teams.sample
+        select(team_to_pick.name, from: 'Team')
+        click_on 'Next'
+        current_step = find('.step-indicator__step--current')
+        expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
+        click_on 'Back'
+        current_step = find('.step-indicator__step--current')
+        expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
+        expect(find('#wizard_step_friendly_name').value).to eq(test_name)
+        click_on 'Next' # /protocol
+        click_on 'Next' # /authentication
+        click_on 'Next' # /issuer
+        fill_in('Issuer', with: issuer_name)
+        click_on 'Next' # /logo_and_cert
+        click_on 'Next' # /redirects
+        click_on 'Next' # /help_text
+        HelpText::CONTEXTS.each do |context|
+          HelpText::LOCALES.each do |locale|
+            fill_in(
+              "wizard_step_help_text_#{context}_#{locale}",
+              with: help_text[context][locale],
+            )
+          end
+        end
+        click_on 'Create app' # details page
+        expect(page).to_not have_content('Error(s) found in these fields')
+        expect(page).to have_content("Details for \"#{test_name}\"")
+      end
     end
   end
 

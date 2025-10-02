@@ -5,6 +5,9 @@ FactoryBot.define do
 
     trait :logingov_admin do
       role_name { 'logingov_admin' }
+      team do
+        Team.internal_team || association(:team, name: Team::INTERNAL_TEAM_NAME)
+      end
     end
 
     trait :partner_admin do

@@ -7,6 +7,24 @@ class EventLogger
 
   attr_reader :request, :response, :controller, :user, :options, :session
 
+  # @option options [ApplicationController,nil] :controller
+  #   The controller active when the event to log occurred
+  # @option options [ActionDispatch::Request, Rack::Request, nil] :request
+  #   If blank, `EventLogger` will try to pull a request from the `:controller` option.
+  #   When {#track_event} gets called, `EventLogger` will try to include
+  #   browser information from the request.
+  # @option options [ActionDispatch::Response, Rack::Response, nil] :response
+  #   If blank, `EventLogger` will try to pull a response from the `:controller` option
+  # @option options [User,nil] :user
+  #   If blank, `EventLogger` will try to send `#current_user` to the `:controller` option
+  # @option options [#[],nil] :session
+  #   A Hash-like object. Exact class can vary by environment because different environments can use
+  #   different session store types.
+  #   If blank, `EventLongger` will try to get the session from
+  #   the `:controller` option or the `:request` option
+  # @option options [ActiveSupport::Logger,nil] :logger A destination to log events.
+  #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
+  #   the value of `IdentityConfig.store.event_log_filename`
   def initialize(**options)
     default_logger = ActiveSupport::Logger.new(
       Rails.root.join('log', IdentityConfig.store.event_log_filename),
@@ -23,6 +41,16 @@ class EventLogger
     @options = options
   end
 
+  # Log a specific event
+  # @param [#to_s] name The name of the event to track
+  # @param [Hash, nil] properties Arbitrary, optional properties that can be added to the event.
+  #   These will show up in the logged event as properties -> event_properties -> <key,value pairs>.
+  #   Properties with null values will be omitted.
+  # @option options [Time, nil] :time
+  #   If blank, `Time.current` will be evaluated.
+  # @option options [String, nil] :id
+  #   A unique identifier. If omitted, `SecureRandom.uuid` will be evaluated.
+  # @return [Boolean] true on log event success
   def track_event(name, properties = {}, options = {})
     data = {
       visit_id: visit_token,
@@ -43,6 +71,8 @@ class EventLogger
     log_event(data)
   end
 
+  # Return the current visit token or generate and assign a new one
+  # @return [String]
   def visit_token
     session[:visit_token] ||= generate_uuid
   end

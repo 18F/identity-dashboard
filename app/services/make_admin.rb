@@ -47,6 +47,7 @@ class MakeAdmin
     admin.last_name  = last_name
     admin.admin      = true
     admin.save!
+    TeamMembership.find_or_build_logingov_admin(admin).save!
   end
 end
 # rubocop:enable Rails/Output

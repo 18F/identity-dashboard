@@ -72,12 +72,18 @@ TBD
 
 # Linting / Rubocop
 When do we delete code, cleaning up old feature flags
-Linters and settings we have setup
-
 TBD
 
+## Linting
 
-## License
+We lint
+* Ruby using Rubocop rules. These rules are currently under active development.
+* JavaScript using ESLint. We use [the ESLint plugin from IdP](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin) as well as some rules to ensure we don't error on upstream dependencies that use variant linting rules or minified compiled assets.
+* YARD docs to ensure they have no warnings and also we enforce that the `LogEvents` class has YARD documentation for all its methods
+
+You can see the YARD docs for yourself by running `bin/yard` and then opening [doc/yard/index.html] in a browser. Doing so should show you this README with links to documented classes. Currently, we aren't including YARD doc generation in our build process and then committing them, though this may change later.
+
+# License
 
 [The project is in the public domain](LICENSE.md), and all contributions will also be released in the public domain. By submitting a pull request, you are agreeing to waive all rights to your contribution under the terms of the [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/).
 

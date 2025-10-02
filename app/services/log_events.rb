@@ -6,7 +6,18 @@
 #
 # ABC_XYZ -- Keep it Alphabetical!
 module LogEvents
+  # @param [String] action The controller action context for this request
+  # @param [ActionController::Parameters] extracts_params All parameters for Extract
+  # @return (see EventLogger#track_event)
+  def extraction_request(action, extracts_params)
+    track_event("extract_#{action}", extracts_params)
+  end
+
   # Generic CrUD logger
+  #
+  # @param [String] action The controller action context for this save
+  # @param [ApplicationRecord] record The record to be saved
+  # @return (see EventLogger#track_event)
   def record_save(action, record)
     return if !record
 
@@ -30,13 +41,8 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
-  def team_data(record)
-    {
-      team_user: User.find(record[:user_id]).email,
-      team: Team.find(record[:group_id]).name,
-    }
-  end
-
+  # @param [Pundit::NotAuthorizedError] exception
+  # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
     details = {
       message: exception.message,
@@ -50,6 +56,8 @@ module LogEvents
     track_event('unauthorized_access_attempt', details)
   end
 
+  # @param [ActionController::UnpermittedParameters] exception
+  # @return (see EventLogger#track_event)
   def unpermitted_params_attempt(exception)
     details = {
       message: exception.message,
@@ -57,5 +65,17 @@ module LogEvents
     }
 
     track_event('unpermitted_params_attempt', details)
+  end
+
+  private
+
+  # @param [#user_id,#group_id] record A record that belongs to a user and a team
+  # @return [Hash{Symbol => ApplicationRecord}]
+  #   the keys `:team_user` and `:team` with the appropriate record
+  def team_data(record)
+    {
+      team_user: User.find(record[:user_id]).email,
+      team: Team.find(record[:group_id]).name,
+    }
   end
 end

@@ -13,10 +13,11 @@ class Teams::UsersController < AuthenticatedController
 
   def index
     authorize current_team_membership if IdentityConfig.store.access_controls_enabled
-    @team_memberships = team.team_memberships.where
+    @team_memberships = team && team.team_memberships.where
       .associated(:user, :team)
       .includes(:user)
       .order('users.email')
+    @team_memberships ||= []
   end
 
   def new
@@ -149,7 +150,7 @@ class Teams::UsersController < AuthenticatedController
     if team
       @current_team_membership = policy_scope(team.team_memberships).find_by(user: current_user)
     end
-    @current_team_membership ||= policy_scope(TeamMembership).new
+    @current_team_membership ||= policy_scope(TeamMembership).build(team:)
   end
 
   def team_membership

@@ -607,8 +607,8 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can see and visit link to analytics path' do
-      team_membership = create(:team_membership, :logingov_admin, user: user_to_log_in_as)
-      sp = create(:service_provider, team: team_membership.team)
+      team = user_to_log_in_as.teams.first
+      sp = create(:service_provider, team:)
       visit service_providers_path
       data_link = sp.friendly_name + ' data'
       expect(page).to have_content(data_link)

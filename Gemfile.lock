@@ -487,6 +487,7 @@ GEM
       erb
       psych (>= 4.0.0)
     redacted_struct (2.0.0)
+    redcarpet (3.6.1)
     regexp_parser (2.11.2)
     reline (0.6.2)
       io-console (~> 0.5)
@@ -628,6 +629,7 @@ GEM
       railties (>= 3.0.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.37)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -689,6 +691,7 @@ DEPENDENCIES
   rails-controller-testing (>= 1.0.5)
   rails_serve_static_assets
   redacted_struct
+  redcarpet
   responders (~> 3.1, >= 3.1.1)
   rest-client (~> 2.1)
   rouge
@@ -715,6 +718,7 @@ DEPENDENCIES
   webmock
   websocket-driver (= 0.7.3)
   wicked (~> 2.0)
+  yard
 
 RUBY VERSION
    ruby 3.4.5p51

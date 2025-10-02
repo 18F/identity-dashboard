@@ -46,7 +46,7 @@ feature 'internal reports' do
         complex_user,
         additional_team,
       )
-      expect(csv_response.length).to eq(7)
+      expect(csv_response.length).to eq(8)
       expect(csv_response).to eq(expected_table)
     end
   end
@@ -88,6 +88,11 @@ feature 'internal reports' do
         complex_user.email,
         'Partner Readonly',
         additional_team.name,
+      ],
+      [
+        logingov_admin.email,
+        'Login.gov Admin',
+        Team.internal_team.name,
       ],
     ]
   end
