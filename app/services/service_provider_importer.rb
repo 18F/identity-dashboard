@@ -1,17 +1,22 @@
 class ServiceProviderImporter
   attr_reader :file_name, :data, :models
+  attr_accessor :dry_run
 
   def initialize(file_name)
     @file_name = file_name
   end
 
   def run
-    validate_file
-    normalize_data
+    validate_file unless data
+    normalize_data unless models
     return errors if errors_any?
 
-    check_for_conflicts
-    save
+    save unless dry_run
+    errors
+  end
+
+  def errors_any?
+    errors.values.any? { |error| error.any? }
   end
 
   private
@@ -59,15 +64,8 @@ class ServiceProviderImporter
   def errors
     models.each_with_object({}) do |model, error_list|
       model.valid?
-      error_list[model.id] = model.errors
+      error_list[model.issuer] = model.errors if model.errors.any?
     end
-  end
-
-  def errors_any?
-    errors.values.any? { |error| error.any? }
-  end
-
-  def check_for_conflicts
   end
 
   def save
