@@ -1,15 +1,18 @@
 require 'rails_helper'
 
 describe ServiceProviderImporter do
-  context 'with new, reasonable data' do
-    let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
+  let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
 
+  before do
+    # Ensure at least one logingov_admin user exists
+    # This is currently used by the importer as a fall-back user
+    create(:user, :logingov_admin)
+  end
+
+  context 'with new, reasonable data' do
     subject(:importer) { described_class.new(good_file) }
 
     before do
-      create(:user, :logingov_admin) # a ServiceProvider must have a User
-      create(:team) # a ServiceProvider must have a Team
-
       # An agency with this ID is required by the fixture data. Might as well use the prod value
       create(:agency, id: 130, name: 'Public Defender Service for the District of Columbia')
     end
@@ -61,6 +64,33 @@ describe ServiceProviderImporter do
     it 'is idempotent' do
       expect { importer.run }.to change { ServiceProvider.count }.by 10
       expect { importer.run }.to_not change { ServiceProvider.count }
+    end
+
+    it 'can do a dry run' do
+      importer.dry_run = true
+      expect { importer.run }.to_not change { ServiceProvider.count }
+    end
+  end
+
+  context 'with a conflicting entry in the database' do
+    let(:duplicate_issuer) { '2025-01-13:fields:test' }
+
+    before do
+      create(:service_provider, issuer: duplicate_issuer)
+    end
+
+    subject(:importer) { described_class.new(good_file) }
+
+    it 'saves nothing' do
+      expect { importer.run }.to_not change { ServiceProvider.count }
+      expect(importer.models.map(&:persisted?)).to be_none
+    end
+
+    it 'has an error only for the conflicting entry' do
+      errors = importer.run
+      expect(errors[duplicate_issuer].full_messages).to eq(['Issuer has already been taken'])
+      errors.delete duplicate_issuer
+      expect(errors.values.map(&:any?)).to be_none
     end
   end
 
