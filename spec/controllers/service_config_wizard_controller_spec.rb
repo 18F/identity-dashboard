@@ -463,7 +463,7 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   context 'when a partner admin' do
-    let(:wizard_service_provider) { build(:service_provider, :ready_to_activate_consistent, team:) }
+    let(:wizard_service_provider) { build(:service_provider, :consistent, team:) }
 
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
@@ -595,17 +595,20 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     describe 'logging' do
+      before do
+        allow(logger_double).to receive(:sp_created)
+        allow(logger_double).to receive(:sp_updated)
+      end
+      let(:data) { build(:wizard_step, step_name: 'help_text').wizard_form_data }
+
       context 'on config create' do
         before do
-          allow(logger_double).to receive(:sp_created)
-          allow(logger_double).to receive(:sp_updated)
           wizard_steps_ready_to_go.each(&:save!)
         end
 
         context 'on any wizard_step except help_text' do
           WizardStep::STEPS.excluding('help_text').each do |step|
             it "does not log on step #{step}" do
-              data = build(:wizard_step, step_name: 'help_text').wizard_form_data
               put :update, params: { id: step, wizard_step: data }
               expect(logger_double).to_not have_received(:sp_created)
               expect(logger_double).to_not have_received(:sp_updated)
@@ -615,14 +618,40 @@ RSpec.describe ServiceConfigWizardController do
 
         context 'on help_text step' do
           it 'logs sp_created' do
-            data = build(:wizard_step, step_name: 'help_text')
-            put :update, params: { id: 'help_text', wizard_step: data.wizard_form_data }
+            put :update, params: { id: 'help_text', wizard_step: data }
 
             service_provider = ServiceProvider.find_by!(
               issuer: wizard_service_provider.issuer,
             )
+
             expect(logger_double).to have_received(:sp_created).with(
-              { changes: changes(service_provider) },
+              { changes: changes(service_provider:) },
+            )
+          end
+        end
+      end
+
+      context 'on config update' do
+        let(:help_text) do
+          {
+            'forgot_password' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
+            'sign_in' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
+            'sign_up' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
+          }
+        end
+        let(:service_provider) { create(:service_provider, :consistent, team:, help_text:) }
+
+        context 'on help_text step' do
+          it 'logs sp_updated' do
+            put :create, params: { service_provider: }
+
+            put :update, params: { id: 'protocol', wizard_step: {
+              identity_protocol: 'openid_connect_pkce',
+            } }
+            put :update, params: { id: 'help_text', wizard_step: { help_text: } }
+
+            expect(logger_double).to have_received(:sp_updated).with(
+              { changes: changes(service_provider:) },
             )
           end
         end
@@ -697,7 +726,7 @@ RSpec.describe ServiceConfigWizardController do
     end
   end
 
-  def changes(service_provider)
+  def changes(service_provider:)
     {
       'id' => service_provider.id,
       'active' => { new: false, old: true },
