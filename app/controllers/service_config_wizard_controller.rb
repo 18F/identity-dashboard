@@ -42,7 +42,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider_id = params[:service_provider]
 
     # No existing config specified, so fall back on default behavior
-    return new unless service_provider_id
+    return new unless service_provider_id.present?
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
     authorize service_provider, :edit?
