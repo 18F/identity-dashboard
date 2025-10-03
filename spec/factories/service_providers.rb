@@ -14,7 +14,7 @@ FactoryBot.define do
       }
     end
 
-    trait :ready_to_activate_consistent do
+    trait :consistent do
       sequence(:app_name) { |n| "App Name #{n}" }
       with_team
       ial { 2 }
