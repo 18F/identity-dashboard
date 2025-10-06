@@ -37,7 +37,7 @@ run:
 
 .PHONY: setup all lint lint_database_schema_files run test check
 
-doc:
+docs:
 	bin/yardoc \
 		--fail-on-warning
 

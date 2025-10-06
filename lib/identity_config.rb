@@ -1,4 +1,5 @@
-class IdentityConfig # :nodoc:
+# Application config store
+class IdentityConfig
   class << self
     attr_reader :store
   end

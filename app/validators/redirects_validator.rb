@@ -1,4 +1,5 @@
-class RedirectsValidator < IdentityValidations::IdentityValidator # :nodoc:
+# Validator for URI redirects
+class RedirectsValidator < IdentityValidations::IdentityValidator
   def validate(record)
     self.attribute ||= :redirect_uris
     uris = get_attribute(record)

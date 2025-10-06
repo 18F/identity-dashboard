@@ -1,4 +1,5 @@
-class SamlCertsPresentValidator < ActiveModel::Validator # :nodoc:
+# Validator for SAML certificates
+class SamlCertsPresentValidator < ActiveModel::Validator
   def validate(record)
     return unless record.saml?
     return unless record.certs.blank?

@@ -1,4 +1,5 @@
-class ServiceProviderUpdater # :nodoc:
+# Service for saving ServiceProvider updates
+class ServiceProviderUpdater
   def self.post_update(body = nil)
     resp = conn.post { |req| req.body = Zlib.gzip(body.to_json) if body.present? }
 
