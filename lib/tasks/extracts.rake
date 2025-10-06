@@ -19,9 +19,9 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     print_errors(errors)
 
     unless errors.any? || ARGV.include?('--dry-run')
-      puts "Press enter to continue or 'n' or 'ctrl-c' to cancel"
+      puts "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
       input = STDIN.gets.strip
-      exit 1 if /^n/i.match?(input)
+      exit 1 unless /^y/i.match?(input)
 
       importer.dry_run = false
       errors = importer.run
