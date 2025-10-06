@@ -47,9 +47,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
     authorize service_provider, :edit?
 
-    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
-    # TODO: what if the service provider is somehow invalid?
-    steps.each(&:save)
+    WizardStep.populate_data(service_provider, current_user)
 
     # Skip the intro when editing an existing config
     redirect_to service_config_wizard_path(STEPS[1])
@@ -343,8 +341,6 @@ class ServiceConfigWizardController < AuthenticatedController
     else
       log.sp_updated(changes: changes_to_log(draft_service_provider))
     end
-    # action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
-    # log.record_save(action, draft_service_provider) unless can_cancel?
   end
 
   def create?

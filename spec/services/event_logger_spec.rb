@@ -84,7 +84,7 @@ RSpec.describe EventLogger do
     end
   end
 
-  describe 'sp_create' do
+  describe '#sp_created' do
     let(:name) { 'portal_sp_created' }
     let(:changes) do
       {
@@ -107,50 +107,45 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#sp_updated' do
+    let(:name) { 'portal_sp_updated' }
+    let(:changes) do
+      {
+        id: sp.id,
+        friendly_name: sp.friendly_name,
+        team: sp.team&.name,
+        created_at: sp.created_at.as_json,
+        updated_at: sp.updated_at.as_json,
+      }
+    end
+
+    it 'logs portal_sp_updated event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.sp_updated(changes:)
+    end
+  end
+
+  describe '#sp_destroyed' do
+    let(:name) { 'portal_sp_destroyed' }
+    let(:changes) { sp.to_json }
+
+    it 'logs portal_sp_updated event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.sp_destroyed(changes:)
+    end
+  end
+
   describe '#service_provider' do
-    it 'logs record creation' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj['name']).to eq 'sp_create'
-        expect(obj['properties']['event_properties']['id'].class).to eq Integer
-      end
-
-      log.record_save('create', sp)
-    end
-
-    it 'logs record update' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj['name']).to eq 'serviceprovider_update'
-        expect(obj['properties']['event_properties']['description']).to include('old', 'new')
-        expect(obj['properties']['event_properties']).to_not include('updated_at')
-      end
-
-      sp.description = 'Updated description'
-      sp.save
-
-      log.record_save('update', sp)
-    end
-
-    it 'logs record deletion' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj['name']).to eq 'serviceprovider_delete'
-        expect(obj['properties']['event_properties']['id'].class).to eq Integer
-      end
-
-      ServiceProvider.delete(sp.id)
-      sp.save
-
-      log.record_save('delete', sp)
-    end
-
-    it 'does not attempt to log a nil record' do
-      expect(logger).to_not receive(:info)
-
-      log.record_save('create', nil)
-    end
-
     xit 'logs team_data when role_name is changed' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)

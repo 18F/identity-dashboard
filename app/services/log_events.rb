@@ -51,6 +51,10 @@ module LogEvents
     track_event('portal_sp_updated', changes:)
   end
 
+  def sp_destroyed(changes:)
+    track_event('portal_sp_destroyed', changes:)
+  end
+
   # @param [Pundit::NotAuthorizedError] exception
   # @return (see EventLogger#track_event)
   def unauthorized_access_attempt(exception)
