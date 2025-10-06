@@ -47,12 +47,24 @@ module LogEvents
     track_event('portal_sp_created', changes:)
   end
 
+  def sp_destroyed(changes:)
+    track_event('portal_sp_destroyed', changes:)
+  end
+
   def sp_updated(changes:)
     track_event('portal_sp_updated', changes:)
   end
 
-  def sp_destroyed(changes:)
-    track_event('portal_sp_destroyed', changes:)
+  def team_created(changes:)
+    track_event('portal_team_created', changes:)
+  end
+
+  def team_destroyed(changes:)
+    track_event('portal_team_destroyed', changes:)
+  end
+
+  def team_updated(changes:)
+    track_event('portal_team_updated', changes:)
   end
 
   # @param [Pundit::NotAuthorizedError] exception

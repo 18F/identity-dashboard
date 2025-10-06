@@ -145,6 +145,59 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#team_created' do
+    let(:team) { create(:team) }
+    let(:name) { 'portal_team_created' }
+    let(:changes) { team.to_json }
+
+    it 'logs portal_team_created event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_created(changes:)
+    end
+  end
+
+  describe '#team_updated' do
+    let(:team) { create(:team) }
+    let(:name) { 'portal_team_updated' }
+    let(:changes) do
+      {
+        'name' => { old: team.name, new: 'New Team Name' },
+        'id' => team.id,
+      }
+    end
+
+    it 'logs portal_team_updated event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_updated(changes:)
+    end
+  end
+
+  describe '#team_destroyed' do
+    let(:team) { create(:team) }
+    let(:name) { 'portal_team_destroyed' }
+    let(:changes) { team.to_json }
+
+    it 'logs portal_team_destroyed event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_destroyed(changes:)
+    end
+  end
+
   describe '#service_provider' do
     xit 'logs team_data when role_name is changed' do
       expect(logger).to receive(:info) do |data|
