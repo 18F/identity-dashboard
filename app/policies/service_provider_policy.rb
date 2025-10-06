@@ -1,4 +1,4 @@
-class ServiceProviderPolicy < BasePolicy
+class ServiceProviderPolicy < BasePolicy # :nodoc: all
   attr_reader :user, :record
 
   BASE_PARAMS = [

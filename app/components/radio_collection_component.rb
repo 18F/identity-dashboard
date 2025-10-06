@@ -1,4 +1,4 @@
-class RadioCollectionComponent < ViewComponent::Base
+class RadioCollectionComponent < ViewComponent::Base # :nodoc:
   attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled
 
   # @param form [SimpleForm]

@@ -1,4 +1,4 @@
-class Teams::UsersController < AuthenticatedController
+class Teams::UsersController < AuthenticatedController # :nodoc:
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 

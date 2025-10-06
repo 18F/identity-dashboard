@@ -1,4 +1,4 @@
-class LogoValidator < ActiveModel::Validator
+class LogoValidator < ActiveModel::Validator # :nodoc:
   attr_reader :record
 
   MAX_LOGO_SIZE = 50.kilobytes

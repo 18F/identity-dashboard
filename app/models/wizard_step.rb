@@ -1,4 +1,4 @@
-class WizardStep < ApplicationRecord
+class WizardStep < ApplicationRecord # :nodoc: all
   class Definition
     attr_reader :fields
     def initialize(fields = {})

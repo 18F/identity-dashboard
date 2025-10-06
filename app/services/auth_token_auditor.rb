@@ -1,4 +1,4 @@
-class AuthTokenAuditor
+class AuthTokenAuditor # :nodoc:
   EVENT_TAG = self.to_s.underscore.upcase
 
   attr_reader :logger

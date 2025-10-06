@@ -1,6 +1,5 @@
 # PopulateRole designed to be invoked from a rake task
 # as such, uses puts() instead of logger
-
 class PopulateRoles
   include TeamHelper
 

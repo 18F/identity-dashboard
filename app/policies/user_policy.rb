@@ -1,4 +1,4 @@
-class UserPolicy < BasePolicy
+class UserPolicy < BasePolicy # :nodoc: all
   attr_reader :user
 
   def manage_users?

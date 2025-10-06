@@ -1,4 +1,4 @@
-class Seeders::AgencySeeder
+class Seeders::AgencySeeder # :nodoc:
   attr_reader :agency_configs
 
   def initialize(agency_configs = Rails.application.config.agencies)

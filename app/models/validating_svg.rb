@@ -1,4 +1,4 @@
-class ValidatingSvg
+class ValidatingSvg # :nodoc:
   attr_reader :svg
 
   def initialize(string_buffer)

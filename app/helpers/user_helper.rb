@@ -1,4 +1,4 @@
-module UserHelper
+module UserHelper # :nodoc:
   def deadline(user)
     (user.created_at + 14.days).strftime('%m/%d/%Y')
   end

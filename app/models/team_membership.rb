@@ -1,4 +1,4 @@
-class TeamMembership < ApplicationRecord
+class TeamMembership < ApplicationRecord # :nodoc:
   has_paper_trail on: %i[create update destroy]
 
   belongs_to :role,

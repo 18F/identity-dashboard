@@ -1,4 +1,4 @@
-class BannerPolicy < BasePolicy
+class BannerPolicy < BasePolicy # :nodoc: all
   def manage_banners?
     user_has_login_admin_role?
   end

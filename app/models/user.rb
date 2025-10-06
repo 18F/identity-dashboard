@@ -1,4 +1,4 @@
-class User < ApplicationRecord
+class User < ApplicationRecord # :nodoc: all
   acts_as_paranoid
 
   has_paper_trail on: %i[create update destroy]

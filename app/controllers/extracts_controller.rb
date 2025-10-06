@@ -1,4 +1,4 @@
-class ExtractsController < AuthenticatedController
+class ExtractsController < AuthenticatedController # :nodoc:
   before_action -> { authorize Extract }
 
   before_action :log_request, only: %i[create]

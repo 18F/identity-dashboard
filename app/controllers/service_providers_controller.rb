@@ -1,4 +1,4 @@
-class ServiceProvidersController < AuthenticatedController
+class ServiceProvidersController < AuthenticatedController # :nodoc:
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]

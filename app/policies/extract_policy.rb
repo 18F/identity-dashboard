@@ -1,4 +1,4 @@
-class ExtractPolicy < BasePolicy
+class ExtractPolicy < BasePolicy # :nodoc:
   attr_reader :user, :extract
 
   def index?

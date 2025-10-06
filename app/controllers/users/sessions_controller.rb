@@ -1,5 +1,5 @@
 module Users
-  class SessionsController < Devise::SessionsController
+  class SessionsController < Devise::SessionsController # :nodoc:
     include ::ActionView::Helpers::DateHelper
 
     def destroy

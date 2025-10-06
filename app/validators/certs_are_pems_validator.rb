@@ -1,4 +1,4 @@
-class CertsArePemsValidator < ActiveModel::Validator
+class CertsArePemsValidator < ActiveModel::Validator # :nodoc:
   def validate(record)
     Array(record.certs).each do |cert|
       next if cert.blank?

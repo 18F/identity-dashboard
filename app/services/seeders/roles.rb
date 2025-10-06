@@ -1,4 +1,4 @@
-class Seeders::Roles < Seeders::BaseSeeder
+class Seeders::Roles < Seeders::BaseSeeder # :nodoc:
   def seed
     Role::ACTIVE_ROLES_NAMES.each do |name, friendly_name|
       unless Role.find_by(name:)

@@ -1,4 +1,4 @@
-class WizardStepPolicy < BasePolicy
+class WizardStepPolicy < BasePolicy # :nodoc: all
   PARAMS = [
     :acs_url,
     :active,

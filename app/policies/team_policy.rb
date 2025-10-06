@@ -1,4 +1,4 @@
-class TeamPolicy < BasePolicy
+class TeamPolicy < BasePolicy # :nodoc: all
   include TeamHelper
 
   def all?

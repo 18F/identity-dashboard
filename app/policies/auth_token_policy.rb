@@ -1,4 +1,4 @@
-class AuthTokenPolicy < BasePolicy
+class AuthTokenPolicy < BasePolicy # :nodoc: all
   def index?
     user_has_login_admin_role?
   end

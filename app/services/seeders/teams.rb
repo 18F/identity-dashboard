@@ -1,4 +1,4 @@
-class Seeders::Teams < Seeders::BaseSeeder
+class Seeders::Teams < Seeders::BaseSeeder # :nodoc:
   def seed
     return if Team.internal_team
 
