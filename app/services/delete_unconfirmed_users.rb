@@ -1,4 +1,5 @@
-class DeleteUnconfirmedUsers # :nodoc:
+# Service for deleting all unconfirmed Users
+class DeleteUnconfirmedUsers
   def self.call
     count = User.where(last_sign_in_at: nil).
       where('created_at < ?', 14.days.ago).

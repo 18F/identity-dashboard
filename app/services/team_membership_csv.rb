@@ -1,4 +1,5 @@
-class TeamMembershipCsv # :nodoc:
+# Service for creating and rendering TeamMembership CSVs
+class TeamMembershipCsv
   HEADER_ROW = ['User email', 'Role', 'Team']
   attr_reader :team_memberships
 
