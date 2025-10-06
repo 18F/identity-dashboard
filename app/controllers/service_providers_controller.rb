@@ -1,4 +1,6 @@
 class ServiceProvidersController < AuthenticatedController # :nodoc:
+  include ModelChanges
+
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
@@ -293,7 +295,17 @@ value: func.to_proc.call(@service_provider) })
   helper_method :service_provider
 
   def log_change
-    log.record_save(action_name, service_provider)
+    if action_name == 'create'
+      log.sp_created(changes:)
+    elsif action_name == 'destroy'
+      log.sp_destroyed(changes:)
+    else
+      log.sp_updated(changes:)
+    end
+  end
+
+  def changes
+    changes_to_log(service_provider)
   end
 
   def verify_environment_permissions
