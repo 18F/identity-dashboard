@@ -1,6 +1,6 @@
 # PopulateRole designed to be invoked from a rake task
 # as such, uses puts() instead of logger
-class PopulateRole
+class PopulateRoles
   include TeamHelper
 
   USAGE_WARNING = <<-WARN.strip.freeze
