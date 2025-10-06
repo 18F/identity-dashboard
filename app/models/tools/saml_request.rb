@@ -1,5 +1,5 @@
 module Tools
-  class SamlRequest
+  class SamlRequest # :nodoc:
     attr_reader :auth_url, :cert_body
     attr_accessor :errors
 

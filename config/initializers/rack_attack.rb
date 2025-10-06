@@ -1,4 +1,4 @@
-class Rack::Attack
+class Rack::Attack # :nodoc:
   ### Configure Cache ###
 
   # If you don't want to use Rails.cache (Rack::Attack's default), then

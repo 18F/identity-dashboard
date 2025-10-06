@@ -1,4 +1,4 @@
-class TeamMembershipCsv
+class TeamMembershipCsv # :nodoc:
   HEADER_ROW = ['User email', 'Role', 'Team']
   attr_reader :team_memberships
 

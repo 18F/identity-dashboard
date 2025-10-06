@@ -1195,6 +1195,9 @@ Style/Dir:
 Style/DirEmpty:
   Enabled: true
 
+Style/Documentation:
+  Enabled: true
+
 Style/EachForSimpleLoop:
   Enabled: true
 

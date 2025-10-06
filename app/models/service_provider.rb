@@ -1,7 +1,7 @@
 require 'rails'
 require 'uri'
 
-class ServiceProvider < ApplicationRecord
+class ServiceProvider < ApplicationRecord # :nodoc:
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
   include IdentityValidations::ServiceProviderValidation

@@ -1,4 +1,4 @@
-class ServiceConfigPolicy < BasePolicy
+class ServiceConfigPolicy < BasePolicy # :nodoc:
   def initialize(user, _placeholder)
     @user = user
   end

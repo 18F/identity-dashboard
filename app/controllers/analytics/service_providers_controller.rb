@@ -1,4 +1,4 @@
-class Analytics::ServiceProvidersController < ApplicationController
+class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
   before_action -> { authorize User, policy_class: AnalyticsPolicy }
 
   def show

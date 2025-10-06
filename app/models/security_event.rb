@@ -1,3 +1,3 @@
-class SecurityEvent < ApplicationRecord
+class SecurityEvent < ApplicationRecord # :nodoc:
   belongs_to :user
 end

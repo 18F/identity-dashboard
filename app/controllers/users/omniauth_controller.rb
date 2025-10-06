@@ -1,5 +1,5 @@
 module Users
-  class OmniauthController < ApplicationController
+  class OmniauthController < ApplicationController # :nodoc:
     include TeamHelper
 
     def callback

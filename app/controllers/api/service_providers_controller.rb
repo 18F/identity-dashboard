@@ -1,5 +1,5 @@
 module Api
-  class ServiceProvidersController < ApiController
+  class ServiceProvidersController < ApiController # :nodoc:
     def index
       render json: serialized_service_providers(approved_service_providers)
     end

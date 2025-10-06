@@ -1,4 +1,4 @@
-class Extract
+class Extract # :nodoc:
   include ActiveModel::Model
 
   attr_accessor :ticket, :search_by, :criteria_file, :criteria_list

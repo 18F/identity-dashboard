@@ -1,6 +1,6 @@
 require 'rails'
 
-class ZendeskRequest
+class ZendeskRequest # :nodoc:
   ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
   ZENDESK_POST_PATH = '/api/v2/requests.json'
 

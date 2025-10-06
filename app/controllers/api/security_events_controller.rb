@@ -1,5 +1,5 @@
 module Api
-  class SecurityEventsController < ApplicationController
+  class SecurityEventsController < ApplicationController # :nodoc:
     skip_forgery_protection
 
     def create

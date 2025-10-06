@@ -1,4 +1,4 @@
-module BannerHelper
+module BannerHelper # :nodoc:
   def sort_banners_by_timing(banners)
     upcoming = []
     past = []

@@ -1,4 +1,4 @@
-class InternalReportsController < AuthenticatedController
+class InternalReportsController < AuthenticatedController # :nodoc:
   before_action :admin_only
 
   def team_memberships

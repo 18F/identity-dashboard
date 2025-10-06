@@ -1,4 +1,4 @@
-class AnalyticsPolicy < BasePolicy
+class AnalyticsPolicy < BasePolicy # :nodoc: all
   def show?
     user_has_login_admin_role?
   end

@@ -1,4 +1,4 @@
-class ServiceProviderSerializer < ActiveModel::Serializer
+class ServiceProviderSerializer < ActiveModel::Serializer # :nodoc:
   attributes(
     :acs_url,
     :active,
