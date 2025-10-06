@@ -571,7 +571,7 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
-  describe '.steps_from_service_provider' do
+  describe '.generate_steps' do
     let(:valid_data_to_hide) do
       {
         active: true,
@@ -594,7 +594,7 @@ RSpec.describe WizardStep, type: :model do
     end
 
     it 'puts all attributes into a step' do
-      wizard_steps = WizardStep.steps_from_service_provider(
+      wizard_steps = WizardStep.generate_steps(
         all_attributes_service_provider,
         ui_user,
       )

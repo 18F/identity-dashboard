@@ -42,7 +42,7 @@ RSpec.describe ServiceConfigWizardController do
       # be the authoritative factory for what we need in a service provider. By calling that factory
       # with `build``, we get its defaults without saving it to the database. Done this way, we can
       # test that the controller can create a reasonable service_provider that isn't already saved.
-      WizardStep.steps_from_service_provider(
+      WizardStep.generate_steps(
         build(:service_provider, :ready_to_activate, team:),
         logingov_admin,
       )
@@ -467,7 +467,7 @@ RSpec.describe ServiceConfigWizardController do
 
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail
-      WizardStep.steps_from_service_provider(
+      WizardStep.generate_steps(
         wizard_service_provider,
         partner_admin,
       )
@@ -643,7 +643,8 @@ RSpec.describe ServiceConfigWizardController do
 
         context 'on help_text step' do
           it 'logs sp_updated' do
-            put :create, params: { service_provider: }
+            # this creates the wizard object
+            WizardStep.populate_data(service_provider, partner_admin)
 
             put :update, params: { id: 'protocol', wizard_step: {
               identity_protocol: 'openid_connect_pkce',
@@ -700,7 +701,7 @@ RSpec.describe ServiceConfigWizardController do
     end
 
     it 'cannot save' do
-      WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
+      WizardStep.generate_steps(service_provider, user).each(&:save!)
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)
@@ -709,7 +710,7 @@ RSpec.describe ServiceConfigWizardController do
 
     it 'can save on a team with more permissions' do
       create(:team_membership, :partner_admin, user: user, team: create(:team))
-      WizardStep.steps_from_service_provider(service_provider, user).each(&:save!)
+      WizardStep.generate_steps(service_provider, user).each(&:save!)
       default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
       put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
       expect(response).to have_http_status(:unauthorized)

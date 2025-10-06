@@ -196,7 +196,11 @@ class WizardStep < ApplicationRecord
       end
   end
 
-  def self.steps_from_service_provider(service_provider, user)
+  def self.populate_data(service_provider, user)
+    generate_steps(service_provider, user).each(&:save)
+  end
+
+  def self.generate_steps(service_provider, user)
     steps = STEP_DATA.keys.each_with_object(Hash.new) do |step_name, hash|
       hash[step_name] = find_or_initialize_by(step_name:, user:)
     end
