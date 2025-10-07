@@ -172,10 +172,10 @@ describe TeamsController do
 
         it 'logs' do
           changes = {
-            'agency_id' => { old: nil, new: agency.id },
+            'agency_id' => { 'old' => nil, 'new' => agency.id },
             'id' => team.id,
-            'name' => { old: nil, new: team.name },
-            'uuid' => { old: nil, new: team.uuid },
+            'name' => { 'old' => nil, 'new' => team.name },
+            'uuid' => { 'old' => nil, 'new' => team.uuid },
           }
 
           expect(logger_double).to have_received(:team_created).with(
@@ -280,7 +280,7 @@ describe TeamsController do
 
         it 'logs' do
           changes = {
-            'description' => { old: 'original description', new: description },
+            'description' => { 'old' => 'original description', 'new' => description },
             'id' => team.id,
           }
           expect(logger_double).to have_received(:team_updated).with(

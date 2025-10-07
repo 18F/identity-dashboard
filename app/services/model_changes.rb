@@ -6,8 +6,8 @@ module ModelChanges
       next if k == 'updated_at'
 
       changes[k] = {
-        old: v[0],
-        new: v[1],
+        'old' => v[0],
+        'new' => v[1],
       }
     end
 

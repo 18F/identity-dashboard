@@ -678,8 +678,8 @@ describe ServiceProvidersController do
           let(:changes) do
             {
               'description' => {
-                new: description,
-                old: prod_app.description,
+                'new' => description,
+                'old' => prod_app.description,
               },
               'id' => prod_app.id,
             }
@@ -804,12 +804,12 @@ describe ServiceProvidersController do
   def changes(service_provider:)
     {
       'id' => service_provider.id,
-      'created_at' => { new: service_provider.created_at, old: nil },
-      'friendly_name' => { new: service_provider.friendly_name, old: nil },
-      'group_id' => { new: service_provider.group_id, old: nil },
-      'issuer' => { new: service_provider.issuer, old: nil },
-      'status' => { new: service_provider.status, old: 'pending' },
-      'user_id' => { new: user.id, old: nil },
+      'created_at' => { 'new' => service_provider.created_at, 'old' => nil },
+      'friendly_name' => { 'new' => service_provider.friendly_name, 'old' => nil },
+      'group_id' => { 'new' => service_provider.group_id, 'old' => nil },
+      'issuer' => { 'new' => service_provider.issuer, 'old' => nil },
+      'status' => { 'new' => service_provider.status, 'old' => 'pending' },
+      'user_id' => { 'new' => user.id, 'old' => nil },
     }
   end
 end
