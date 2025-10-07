@@ -91,6 +91,9 @@ class TeamsController < AuthenticatedController # :nodoc:
   end
 
   def log_change
+    # TODO: Log error if @team is not valid
+    return unless @team.present?
+
     if action_name == 'create'
       log.team_created(changes:)
     elsif action_name == 'destroy'
