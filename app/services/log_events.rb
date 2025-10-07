@@ -73,6 +73,12 @@ module LogEvents
     track_event('portal_team_destroyed', changes:)
   end
 
+  # Log when a team membership changes
+  # @param [Hash] changes The changes to log
+  def team_membership_updated(changes:)
+    track_event('portal_team_membership_updated', changes:)
+  end
+
   # Log when a team is updated
   # @param [Hash] changes The changes to log
   def team_updated(changes:)
@@ -103,6 +109,18 @@ module LogEvents
     }
 
     track_event('unpermitted_params_attempt', details)
+  end
+
+  # Log when a user is created
+  # @param [Hash] changes The changes to log
+  def user_created(changes:)
+    track_event('portal_user_created', changes:)
+  end
+
+  # Log when a user is destroyed
+  # @param [Hash] changes The changes to log
+  def user_destroyed(changes:)
+    track_event('portal_user_destroyed', changes:)
   end
 
   private
