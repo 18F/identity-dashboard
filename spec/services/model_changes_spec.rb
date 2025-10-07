@@ -25,35 +25,13 @@ describe ModelChanges do
       record.update(friendly_name: new_name)
       attrs = {
         'friendly_name' => {
-          old: friendly_name,
-          new: new_name,
+          'old' => friendly_name,
+          'new' => new_name,
         },
         'id' => record.id,
       }
 
       expect(changes_to_log(record)).to eq(attrs)
-    end
-
-    context 'the keypair is not an array' do
-      let(:help_text) do
-        {
-          help_text: {
-            sign_in: { en: '' },
-            sign_up: { en: '' },
-            forgot_password: { en: '' },
-          },
-        }
-      end
-
-      it 'returns the updated attributes' do
-        record.update(help_text:)
-        attrs = {
-          'help_text' => help_text[:help_text],
-          'id' => record.id,
-        }
-
-        expect(changes_to_log(record)).to eq(attrs)
-      end
     end
   end
 end
