@@ -8,16 +8,16 @@ class EventLogger
 
   attr_reader :request, :response, :user, :session
 
-  # @request  [ActionDispatch::Request, Rack::Request, nil]
+  # @param request [ActionDispatch::Request, Rack::Request, nil]
   #   When {#track_event} gets called, `EventLogger` will try to include
   #   browser information from the request.
-  # @response [ActionDispatch::Response, Rack::Response, nil]
-  # @user options [User,nil]
-  # @session
+  # @param response [ActionDispatch::Response, Rack::Response, nil]
+  # @param user [User,nil]
+  # @param session
   #   A Hash-like object. Exact class can vary by environment because different environments can use
   #   different session store types.
   #   If blank, `EventLogger` will try to get the session from the `:request` option
-  # @logger A destination to log events.
+  # @param logger A destination to log events.
   #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
   #   the value of `IdentityConfig.store.event_log_filename`
   def initialize(request: nil, response: nil, user: nil, session: nil, logger: nil)

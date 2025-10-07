@@ -198,6 +198,38 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#user_created' do
+    let(:new_user) { create(:user) }
+    let(:name) { 'portal_user_created' }
+    let(:changes) { new_user.to_json }
+
+    it 'logs portal_team_destroyed event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.user_created(changes:)
+    end
+  end
+
+  describe '#user_destroyed' do
+    let(:deleted_user) { create(:user) }
+    let(:name) { 'portal_user_destroyed' }
+    let(:changes) { deleted_user.to_json }
+
+    it 'logs portal_user_destroyed event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.user_destroyed(changes:)
+    end
+  end
+
   describe '#service_provider' do
     xit 'logs team_data when role_name is changed' do
       expect(logger).to receive(:info) do |data|

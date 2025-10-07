@@ -43,26 +43,38 @@ module LogEvents
     track_event("#{model_name}_#{action}", changes)
   end
 
+  # Log when a service provider is created
+  # @param changes [Hash] The changes to log
   def sp_created(changes:)
     track_event('portal_sp_created', changes:)
   end
 
+  # Log when a service provider is destroyed
+  # @param [Hash] changes The changes to log
   def sp_destroyed(changes:)
     track_event('portal_sp_destroyed', changes:)
   end
 
+  # Log when a service provider is updated
+  # @param [Hash] changes The changes to log
   def sp_updated(changes:)
     track_event('portal_sp_updated', changes:)
   end
 
+  # Log when a team is created
+  # @param [Hash] changes The changes to log
   def team_created(changes:)
     track_event('portal_team_created', changes:)
   end
 
+  # Log when a team is destroyed
+  # @param [Hash] changes The changes to log
   def team_destroyed(changes:)
     track_event('portal_team_destroyed', changes:)
   end
 
+  # Log when a team is updated
+  # @param [Hash] changes The changes to log
   def team_updated(changes:)
     track_event('portal_team_updated', changes:)
   end
