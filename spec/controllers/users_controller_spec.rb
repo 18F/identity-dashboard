@@ -9,7 +9,7 @@ describe UsersController do
   before do
     allow(controller).to receive(:current_user).and_return(user)
     allow(logger_double).to receive(:team_data)
-    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:user_created)
     allow(logger_double).to receive(:unauthorized_access_attempt)
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
@@ -91,6 +91,8 @@ describe UsersController do
     context 'when the user is a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
 
+      before { allow(logger_double).to receive(:team_membership_updated) }
+
       it 'has a redirect response' do
         patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
         expect(response).to have_http_status(:found)
@@ -111,17 +113,44 @@ describe UsersController do
       end
 
       context 'logging' do
-        let(:user_to_edit) { create(:user, :team_member) }
+        let(:updated_user) { create(:user, :team_member) }
+        let(:new_role) { 'partner_readonly' }
 
-        it 'logs updates to team member roles only when roles are unchanged' do
-          patch :update, params: { id: user_to_edit.id, user: {
+        it 'logs updates to team member roles only' do
+          expect(logger_double).to_not receive(:user_created)
+          expect(logger_double).to_not receive(:user_destroyed)
+
+          patch :update, params: { id: updated_user.id, user: {
             team_membership: { role_name: 'partner_readonly' },
           } }
-          patch :update, params: { id: user_to_edit.id, user: {
-            team_membership: { role_name: 'partner_readonly' },
-          } }
-          expect(logger_double).to have_received(:record_save).once do |_op, record|
-            expect(record.class.name).to eq('TeamMembership')
+          updated_user.reload
+
+          changes = {
+            'role_name' => {
+              'old' => nil,
+              'new' => new_role,
+            },
+              'id' => updated_user.team_memberships.first.id,
+              'team_user' => updated_user.email,
+              'team' => updated_user.team_memberships.first.team.name,
+          }
+
+          expect(logger_double).to have_received(:team_membership_updated).with(changes:)
+        end
+
+        context 'when the update is run with with no changes to membership' do
+          let(:updated_user) { create(:user, :logingov_admin) }
+
+          it 'does not log the update' do
+            expect(logger_double).to_not receive(:user_created)
+            expect(logger_double).to_not receive(:user_destroyed)
+
+            patch :update, params: { id: updated_user.id, user: {
+              team_membership: { role_name: updated_user.primary_role.name },
+            } }
+
+            updated_user.reload
+            expect(logger_double).to_not have_received(:team_membership_updated)
           end
         end
       end
@@ -148,16 +177,31 @@ describe UsersController do
       end
 
       context 'when the user is invalid' do
-        it "renders the 'new' view" do
+        it 'renders the #new view' do
           patch :create, params: { user: { admin: true, email: user.email } }
           expect(response).to render_template(:new)
         end
       end
 
       context 'logging' do
-        it 'calls log.record_save' do
+        it 'calls log.user_created' do
           patch :create, params: { user: { admin: true, email: 'example@example.com' } }
-          expect(logger_double).to have_received(:record_save).once
+          user = User.find_by(email: 'example@example.com')
+          changes = {
+            'id' => user.id,
+            'email' => {
+              'old' => nil,
+              'new' => 'example@example.com',
+            },
+            'admin' => {
+              'old' => false,
+              'new' => true,
+            },
+          }
+
+          expect(logger_double).to have_received(:user_created).with(
+            changes: hash_including(changes),
+          )
         end
       end
     end
@@ -178,6 +222,7 @@ describe UsersController do
       let(:user) { create(:user, :logingov_admin) }
 
       before do
+        allow(logger_double).to receive(:user_destroyed)
         delete :destroy, params: { id: user_to_delete.id }
       end
 
@@ -187,7 +232,9 @@ describe UsersController do
 
       context 'logging' do
         it 'calls log.record_save' do
-          expect(logger_double).to have_received(:record_save).once
+          expect(logger_double).to have_received(:user_destroyed).with(
+            changes: user_to_delete.reload.as_json,
+          )
         end
       end
     end
