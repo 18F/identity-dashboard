@@ -1,5 +1,5 @@
 module Api
-  class SecurityEventsController < ApplicationController
+  class SecurityEventsController < ApplicationController # :nodoc:
     prepend_before_action :skip_session_load
     skip_forgery_protection
 
