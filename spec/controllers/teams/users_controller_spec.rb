@@ -51,7 +51,6 @@ describe Teams::UsersController do
   context 'when logged in' do
     before do
       sign_in user
-      allow(logger_double).to receive(:record_save)
       allow(logger_double).to receive(:unauthorized_access_attempt)
       allow(EventLogger).to receive(:new).and_return(logger_double)
     end
@@ -76,19 +75,29 @@ describe Teams::UsersController do
       end
 
       describe '#create' do
+        before { allow(logger_double).to receive(:team_membership_created) }
         it_behaves_like 'can create valid users'
 
         context 'logging' do
-          it 'calls log.record_save' do
+          it 'calls log.team_membership_created' do
             post :create, params: { team_id: team.id, user: { email: valid_email } }
+            membership = TeamMembership.find_by(user: User.find_by(email: valid_email), team:)
+            changes = membership.attributes.except('created_at', 'updated_at').merge(
+              'team_user' => membership.user.email,
+              'team' => membership.team.name,
+            )
 
-            expect(logger_double).to have_received(:record_save).once
+            expect(logger_double).to have_received(:team_membership_created).with(
+              changes: hash_including(changes),
+            )
           end
         end
       end
 
       describe '#update' do
         let(:updatable_team_membership) { create(:team_membership, :partner_developer, team:) }
+
+        before { allow(logger_double).to receive(:team_membership_updated) }
 
         it 'allows valid roles' do
           put :update, params: {
@@ -109,6 +118,8 @@ describe Teams::UsersController do
           expect(response).to be_unauthorized
           updatable_team_membership.reload
           expect(updatable_team_membership.role.friendly_name).to eq('Partner Developer')
+
+          expect(logger_double).to_not have_received(:team_membership_updated)
         end
 
         it 'redirects without RBAC flag' do
@@ -119,6 +130,7 @@ describe Teams::UsersController do
             team_membership: { role_name: 'totally-fake-role' },
           }
           expect(response).to redirect_to(team_users_path(team))
+          expect(logger_double).to_not have_received(:team_membership_updated)
         end
 
         it 'is unauthorized if the policy role list is empty' do
@@ -131,6 +143,7 @@ describe Teams::UsersController do
             team_membership: { role_name: Role.last.name },
           }
           expect(response).to be_unauthorized
+          expect(logger_double).to_not have_received(:team_membership_updated)
         end
 
         context 'logging' do
@@ -143,9 +156,16 @@ describe Teams::UsersController do
               team_membership: { role_name: 'partner_developer' },
             }
 
-            expect(logger_double).to have_received(:record_save).once do |_op, record|
-              expect(record.previous_changes).to include('role_name')
-            end
+            changes = {
+              'role_name' => { 'old' => 'partner_readonly', 'new' => 'partner_developer' },
+              'id' => updatable_team_membership.id,
+              'team_user' => updatable_team_membership.user.email,
+              'team' => updatable_team_membership.team.name,
+            }
+
+            expect(logger_double).to have_received(:team_membership_updated).with(
+              changes:,
+            )
           end
 
           it 'does not log updates when roles are unchanged' do
@@ -155,9 +175,7 @@ describe Teams::UsersController do
               team_membership: { role_name: 'partner_readonly' },
             }
 
-            expect(logger_double).to have_received(:record_save) do |_op, record|
-              expect(record.previous_changes).to_not include('role_name')
-            end
+            expect(logger_double).to_not have_received(:team_membership_updated)
           end
         end
       end
@@ -191,21 +209,33 @@ describe Teams::UsersController do
       end
 
       describe '#destroy' do
+        before { allow(logger_double).to receive(:team_membership_destroyed) }
         it_behaves_like 'destroys user'
 
-        context 'for self' do
+        context 'when a user attempts to destroy themselves' do
           let(:user_to_delete) { user }
 
           it_behaves_like 'cannot destroy user'
+
+          it 'does not log an event' do
+            post :destroy, params: { team_id: team.id, id: user_to_delete.id }
+            expect(logger_double).to_not have_received(:team_membership_destroyed)
+          end
         end
 
         context 'logging' do
-          it 'calls log.record_save' do
+          it 'calls log.team_membership_destroyed' do
+            team_membership = TeamMembership.find_by(user: user_to_delete, team:)
             post :destroy, params: { team_id: team.id, id: user_to_delete.id }
 
-            expect(logger_double).to have_received(:record_save).once do |_op, record|
-              expect(record.class.name).to eq('TeamMembership')
-            end
+            changes = team_membership.attributes.except('created_at', 'updated_at').merge(
+              'team_user' => user_to_delete.email,
+              'team' => team_membership.team.name,
+            )
+
+            expect(logger_double).to have_received(:team_membership_destroyed).with(
+              changes: hash_including(changes),
+            )
           end
         end
       end
@@ -336,6 +366,7 @@ describe Teams::UsersController do
       end
 
       describe '#destroy' do
+        before { allow(logger_double).to receive(:team_membership_destroyed) }
         it_behaves_like 'destroys user'
 
         context 'for self' do

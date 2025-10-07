@@ -161,6 +161,54 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#team_membership_created' do
+    let(:team_membership) { create(:team_membership) }
+    let(:name) { 'portal_team_membership_created' }
+
+    let(:changes) do
+      {
+        'role_name' => { 'old' => 'old_role', 'new' => 'new_role' },
+        'id' => team_membership.id,
+        'team_user' => team_membership.user.email,
+        'team' => team_membership.team.name,
+      }
+    end
+
+    it 'logs portal_team_created event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_membership_created(changes:)
+    end
+  end
+
+  describe '#team_membership_destroyed' do
+    let(:team_membership) { create(:team_membership) }
+    let(:name) { 'portal_team_membership_destroyed' }
+
+    let(:changes) do
+      {
+        'role_name' => { 'old' => 'old_role', 'new' => 'new_role' },
+        'id' => team_membership.id,
+        'team_user' => team_membership.user.email,
+        'team' => team_membership.team.name,
+      }
+    end
+
+    it 'logs portal_team_created event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_membership_destroyed(changes:)
+    end
+  end
+
   describe '#team_membership_updated' do
     let(:team_membership) { create(:team_membership) }
     let(:name) { 'portal_team_membership_updated' }
@@ -250,21 +298,6 @@ RSpec.describe EventLogger do
       end
 
       log.user_destroyed(changes:)
-    end
-  end
-
-  describe '#service_provider' do
-    xit 'logs team_data when role_name is changed' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj['properties']['event_properties']).to include('team', 'team_user')
-      end
-
-      team_membership = create(:team_membership)
-      team_membership.role_name = 'partner_admin'
-      team_membership.save
-
-      log.record_save('update', team_membership)
     end
   end
 

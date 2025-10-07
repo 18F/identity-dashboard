@@ -15,34 +15,6 @@ module LogEvents
     track_event("extract_#{action}", extracts_params)
   end
 
-  # Generic CrUD logger
-  #
-  # @param [String] action The controller action context for this save
-  # @param [ApplicationRecord] record The record to be saved
-  # @return (see EventLogger#track_event)
-  def record_save(action, record)
-    return if !record
-
-    model_name = record.class.name.downcase
-    changes = record.previous_changes.empty? ? record.as_json : {}
-
-    record.previous_changes.each_pair do |k, v|
-      if k != 'updated_at'
-        if !v.is_a? Array
-          changes[k] = v
-        else
-          changes[k] = {
-            old: v[0],
-            new: v[1],
-          }
-        end
-      end
-    end
-    changes[:id] = record.id
-    changes.merge!(team_data record) if record.previous_changes[:role_name]
-    track_event("#{model_name}_#{action}", changes)
-  end
-
   # Log when a service provider is created
   # @param changes [Hash] The changes to log
   def sp_created(changes:)
@@ -71,6 +43,18 @@ module LogEvents
   # @param [Hash] changes The changes to log
   def team_destroyed(changes:)
     track_event('portal_team_destroyed', changes:)
+  end
+
+  # Log when a team membership is created
+  # @param [Hash] changes The changes to log
+  def team_membership_created(changes:)
+    track_event('portal_team_membership_created', changes:)
+  end
+
+  # Log when a team membership is destroyed
+  # @param [Hash] changes The changes to log
+  def team_membership_destroyed(changes:)
+    track_event('portal_team_membership_destroyed', changes:)
   end
 
   # Log when a team membership changes

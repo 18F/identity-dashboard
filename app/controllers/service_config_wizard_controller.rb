@@ -335,6 +335,8 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def log_change
     return unless step == wizard_steps.last
+    # TODO: Log error if draft_service_provider is not valid
+    return unless draft_service_provider.present?
 
     if create?
       log.sp_created(changes: changes_to_log(draft_service_provider))

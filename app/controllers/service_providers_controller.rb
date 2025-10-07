@@ -297,6 +297,9 @@ value: func.to_proc.call(@service_provider) })
   helper_method :service_provider
 
   def log_change
+    # TODO: Log error if service_provider is not valid
+    return unless service_provider.present?
+
     if action_name == 'create'
       log.sp_created(changes:)
     elsif action_name == 'destroy'

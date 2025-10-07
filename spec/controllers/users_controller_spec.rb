@@ -231,7 +231,7 @@ describe UsersController do
       end
 
       context 'logging' do
-        it 'calls log.record_save' do
+        it 'calls log.user_destroyed' do
           expect(logger_double).to have_received(:user_destroyed).with(
             changes: user_to_delete.reload.as_json,
           )
