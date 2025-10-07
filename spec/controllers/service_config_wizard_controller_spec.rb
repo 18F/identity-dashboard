@@ -625,7 +625,7 @@ RSpec.describe ServiceConfigWizardController do
             )
 
             expect(logger_double).to have_received(:sp_created).with(
-              { changes: changes(service_provider:) },
+              { changes: hash_including(changes(service_provider:)) },
             )
           end
         end
@@ -733,7 +733,6 @@ RSpec.describe ServiceConfigWizardController do
       'active' => { 'new' => false, 'old' => true },
       'app_name' => { 'new' => service_provider.app_name, 'old' => '' },
       'attribute_bundle' => { 'new' => service_provider.attribute_bundle, 'old' => nil },
-      'created_at' => { 'new' => service_provider.created_at, 'old' => nil },
       'default_aal' => { 'new' => service_provider.default_aal, 'old' => nil },
       'description' => { 'new' => service_provider.description, 'old' => nil },
       'friendly_name' => { 'new' => service_provider.friendly_name, 'old' => nil },

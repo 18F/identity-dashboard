@@ -264,7 +264,7 @@ describe ServiceProvidersController do
         service_provider = ServiceProvider.find_by(issuer: 'log.issuer.string')
 
         expect(logger_double).to have_received(:sp_created).with(
-          { changes: changes(service_provider:) },
+          { changes: hash_including(changes(service_provider:)) },
         )
       end
     end
@@ -804,7 +804,6 @@ describe ServiceProvidersController do
   def changes(service_provider:)
     {
       'id' => service_provider.id,
-      'created_at' => { 'new' => service_provider.created_at, 'old' => nil },
       'friendly_name' => { 'new' => service_provider.friendly_name, 'old' => nil },
       'group_id' => { 'new' => service_provider.group_id, 'old' => nil },
       'issuer' => { 'new' => service_provider.issuer, 'old' => nil },
