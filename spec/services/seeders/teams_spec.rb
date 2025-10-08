@@ -26,6 +26,7 @@ RSpec.describe Seeders::Teams do
         name: Team::INTERNAL_TEAM_NAME,
         description: Team::INTERNAL_TEAM_DESCRIPTION,
         agency_id: internal_agency_data[:id],
+        uuid: 'e5b7ca57-aabd-857f-9d9a-a59a46116e93',
       }
       expect(logger).to have_received(:info).with "Created internal team ID " \
         "'#{last_team.id}' with attributes '#{expected_attributes}'"

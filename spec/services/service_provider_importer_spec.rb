@@ -38,8 +38,8 @@ describe ServiceProviderImporter do
         # In the fixture, this is missing a uuid, so should fall back to internal team
         Team.internal_team.uuid,
         '963bcc0a-2bd7-4762-8f59-a326e141970f',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         '963bcc0a-2bd7-4762-8f59-a326e141970f',
+        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
         '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
@@ -69,6 +69,17 @@ describe ServiceProviderImporter do
     it 'can do a dry run' do
       importer.dry_run = true
       expect { importer.run }.to_not change { ServiceProvider.count }
+    end
+
+    it 'will not honor DB IDs' do
+      data_from_file = JSON.parse(File.read(File.join(file_fixture_path, 'extract_with_id.json')))
+      conflicting_id = data_from_file.first['id']
+      create(:service_provider, id: conflicting_id)
+
+      expect { importer.run }.to change { ServiceProvider.count }.by 10
+      issuer_from_file = data_from_file.first['issuer']
+      saved_sp = ServiceProvider.find_by issuer: issuer_from_file
+      expect(saved_sp.id).to_not eq(conflicting_id)
     end
   end
 
