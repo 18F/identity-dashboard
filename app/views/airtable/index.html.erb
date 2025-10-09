@@ -1,16 +1,14 @@
 <%
 	client_id = IdentityConfig.store.airtable_oauth_client_id
-	code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(session[:airtable_code_verifier])).gsub(/=/, '')
+	code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(Rails.cache.read("#{current_user.uuid}.airtable_code_verifier"))).gsub(/=/, '')
 %>
 
-<% if session[:airtable_token].blank? %>
+<% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
 
 <a href="https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=<%= client_id %>&redirect_uri=http://localhost:3001/airtable/oauth/redirect&scope=data.records:read&state=<%= session[:airtable_state] %>&code_challenge_method=S256&code_challenge=<%= code_challenge %>"> Airtable Oauth </a>
 
 <% else %>
 
-Token: <%= session[:airtable_token] %>
-
-<%= link_to 'Clear Token', airtable_oauth_clear_token_path %>
+Token: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %>
 
 <% end %>
