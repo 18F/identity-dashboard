@@ -1,4 +1,5 @@
-class UserSession # :nodoc:
+# Service for UserSession
+class UserSession
   attr_reader :user, :email
 
   def initialize(info)

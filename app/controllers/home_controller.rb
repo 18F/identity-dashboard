@@ -1,5 +1,5 @@
 require 'portal/constants'
-# Controller for the Home page
+# Controller for the Home pages (logged-in and out)
 class HomeController < ApplicationController
   def index
     @canonical_url = !user_signed_in? ? request.base_url.gsub('portal', 'dashboard') : nil

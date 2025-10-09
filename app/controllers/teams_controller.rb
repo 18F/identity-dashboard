@@ -1,4 +1,5 @@
-class TeamsController < AuthenticatedController # :nodoc:
+# Controller for Teams pages
+class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
   after_action :log_change, only: %i[create update destroy]

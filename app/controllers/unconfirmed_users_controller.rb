@@ -1,4 +1,5 @@
-class UnconfirmedUsersController < ApplicationController # :nodoc:
+# Controller for UnconfirmedUsers action
+class UnconfirmedUsersController < ApplicationController
   before_action -> { authorize(User, :manage_users?) }
 
   def destroy
