@@ -1,4 +1,4 @@
-# Controller for Analytics dashboard
+# Controller for Analytics dashboard page
 class Analytics::ServiceProvidersController < ApplicationController
   before_action -> { authorize User, policy_class: AnalyticsPolicy }
   # analtyics/service/providers/{id}

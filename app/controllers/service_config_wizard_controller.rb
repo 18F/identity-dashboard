@@ -1,4 +1,5 @@
-class ServiceConfigWizardController < AuthenticatedController # :nodoc:
+# Controller for ServiceConfigWizard (Guided Flow)
+class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
