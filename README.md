@@ -65,20 +65,24 @@ For code reviewers
 - Use [Conventional Comments](https://conventionalcomments.org/) in order to clarify whether a comment is blocking or non-blocking for merging the PR.
 
 # Testing Standards
-When do we use feature tests / integration / regression / unit tests
-What do we always want to test
+*When do we use feature tests / integration / regression / unit tests*
 
-TBD
 
-# Linting / Rubocop
-When do we delete code, cleaning up old feature flags
-TBD
+We primarily write tests in rpsec using additional tools like capybara for specific purposes like accessibility.
 
-## Linting
+## Test Coverage
+To check test coverage with RSPEC:
+`COVERAGE=true bundle exec rspec {my_spec_file}`
 
-We lint
+
+# Linting
+
+## We lint with Rubocop
+
 * Ruby using Rubocop rules. These rules are currently under active development.
 * JavaScript using ESLint. We use [the ESLint plugin from IdP](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin) as well as some rules to ensure we don't error on upstream dependencies that use variant linting rules or minified compiled assets.
+
+# Documentation
 * YARD docs to ensure they have no warnings and also we enforce that the `LogEvents` class has YARD documentation for all its methods
 
 You can see the YARD docs for yourself by running `bin/yard` and then opening [doc/yard/index.html] in a browser. Doing so should show you this README with links to documented classes. Currently, we aren't including YARD doc generation in our build process and then committing them, though this may change later.
