@@ -21,6 +21,7 @@ require_relative '../lib/portal/constants'
 Bundler.require(*Rails.groups)
 
 module IdentityDashboard
+  # Main Application
   class Application < Rails::Application
     IdentityConfig.build_store(app_root: Rails.root, rails_env: Rails.env)
 
