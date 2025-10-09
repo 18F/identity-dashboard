@@ -1,4 +1,5 @@
-class BasePolicy # :nodoc: all
+# Permission policy base
+class BasePolicy
   attr_reader :user, :record
 
   def initialize(user, record)
@@ -38,6 +39,7 @@ class BasePolicy # :nodoc: all
     Pundit.policy_scope!(user, record.class)
   end
 
+  # Policy scope for base
   class Scope
     attr_reader :user, :scope
 

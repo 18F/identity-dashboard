@@ -1,4 +1,5 @@
-class ExtractsController < AuthenticatedController # :nodoc:
+# Controller for ServiceProvider Extraction tool page
+class ExtractsController < AuthenticatedController
   before_action -> { authorize Extract }
 
   before_action :log_request, only: %i[create]

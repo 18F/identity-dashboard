@@ -1,4 +1,5 @@
-class User < ApplicationRecord # :nodoc: all
+# Model for User
+class User < ApplicationRecord
   acts_as_paranoid
 
   has_paper_trail on: %i[create update destroy]
@@ -95,6 +96,7 @@ class User < ApplicationRecord # :nodoc: all
     membership.save
   end
 
+  # Deprecation for Legacy Admin User
   module DeprecateAdmin
     def self.deprecator
       @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')

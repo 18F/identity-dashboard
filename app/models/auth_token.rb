@@ -1,4 +1,5 @@
-class AuthToken < ApplicationRecord # :nodoc:
+# Model for AuthToken
+class AuthToken < ApplicationRecord
   belongs_to :user
 
   has_paper_trail ignore: [:token, :encrypted_token]

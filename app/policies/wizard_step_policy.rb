@@ -1,4 +1,5 @@
-class WizardStepPolicy < BasePolicy # :nodoc: all
+# Permission policy for WizardStep (steps of Guided Flow)
+class WizardStepPolicy < BasePolicy
   PARAMS = [
     :acs_url,
     :active,
@@ -46,6 +47,7 @@ class WizardStepPolicy < BasePolicy # :nodoc: all
       (user_has_login_admin_role? || record.user == user)
   end
 
+  # WizardStep policy scope
   class Scope < BasePolicy::Scope
     def resolve
       scope.where(user:)

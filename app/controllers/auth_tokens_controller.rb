@@ -1,4 +1,5 @@
-class AuthTokensController < AuthenticatedController # :nodoc:
+# Controller for AuthTokens page
+class AuthTokensController < AuthenticatedController
   before_action -> { authorize AuthToken }
   before_action :set_auth_token
   after_action :verify_authorized

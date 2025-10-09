@@ -1,4 +1,5 @@
-class BannerPolicy < BasePolicy # :nodoc: all
+# Permission policy for Banners
+class BannerPolicy < BasePolicy
   def manage_banners?
     user_has_login_admin_role?
   end
@@ -9,6 +10,7 @@ class BannerPolicy < BasePolicy # :nodoc: all
     user_has_login_admin_role?
   end
 
+  # Policy scope for Banners
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve

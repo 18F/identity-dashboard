@@ -1,4 +1,5 @@
-class SecurityEventsController < ApplicationController # :nodoc:
+# Controller for SecurityEvents page
+class SecurityEventsController < ApplicationController
   before_action -> { authorize SecurityEvent, :manage_security_events? }, only: %i[index all search]
   before_action -> { authorize security_event, :manage_security_events? }, only: %i[show]
 

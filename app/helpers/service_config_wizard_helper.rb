@@ -1,4 +1,5 @@
-module ServiceConfigWizardHelper # :nodoc:
+# Helper for ServiceConfigWizard (Guided Flow) view
+module ServiceConfigWizardHelper
   def wizard_form(&block)
     simple_form_for(@model, url: service_config_wizard_path, method: :put, html: {
       autocomplete: 'off',

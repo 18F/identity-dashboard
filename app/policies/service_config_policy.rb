@@ -1,4 +1,5 @@
-class ServiceConfigPolicy < BasePolicy # :nodoc:
+# Permission policy for ServiceConfigWizard (Guided Flow)
+class ServiceConfigPolicy < BasePolicy
   def initialize(user, _placeholder)
     @user = user
   end

@@ -1,4 +1,5 @@
-module ToolHelper # :nodoc:
+# Helper for Tool view
+module ToolHelper
   def can_view_request_details?(sp)
     tool_policy(sp).can_view_request_details?
   end

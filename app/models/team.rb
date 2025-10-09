@@ -1,4 +1,5 @@
-class Team < ApplicationRecord # :nodoc:
+# Model for Team
+class Team < ApplicationRecord
   self.table_name = :groups
 
   has_paper_trail on: %i[create update destroy]

@@ -1,4 +1,5 @@
-class ApplicationController < ActionController::Base # :nodoc:
+# Controller for the Application base
+class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   before_action :set_cache_headers

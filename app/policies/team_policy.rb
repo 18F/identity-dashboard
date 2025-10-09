@@ -1,4 +1,5 @@
-class TeamPolicy < BasePolicy # :nodoc: all
+# Permission policy for Teams
+class TeamPolicy < BasePolicy
   include TeamHelper
 
   def all?
@@ -45,6 +46,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
 
   alias update? edit?
 
+  # Team policy scope
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?

@@ -1,4 +1,5 @@
-class Extract # :nodoc:
+# Model for ServiceProvider Extraction tool
+class Extract
   include ActiveModel::Model
 
   attr_accessor :ticket, :search_by, :criteria_file, :criteria_list

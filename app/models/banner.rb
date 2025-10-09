@@ -1,4 +1,5 @@
-class Banner < ApplicationRecord # :nodoc:
+# Model for Banner
+class Banner < ApplicationRecord
   validates :message, presence: true
   validates :end_date,
     comparison: { greater_than: :start_date, message: 'must be after start date' },
