@@ -1,4 +1,5 @@
-class TeamMembershipPolicy < BasePolicy # :nodoc: all
+# Permission policy for TeamMembership
+class TeamMembershipPolicy < BasePolicy
   # TODO: remove `manage_team_users?` after turning on IdentityConfig.store.access_controls_enabled
   # and removing the flag
   def manage_team_users?
@@ -52,6 +53,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
     Role.where.not(name: [:logingov_admin, :partner_admin])
   end
 
+  # Policy scope for TeamMembership
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?

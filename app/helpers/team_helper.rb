@@ -1,4 +1,5 @@
-module TeamHelper # :nodoc:
+# Helper for Team view
+module TeamHelper
   ALLOWLISTED_DOMAINS = %w[.mil .gov .fed.us].freeze
 
   def can_edit_teams?(user)

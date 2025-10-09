@@ -1,6 +1,7 @@
-class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
+# Controller for Analytics dashboard
+class Analytics::ServiceProvidersController < ApplicationController
   before_action -> { authorize User, policy_class: AnalyticsPolicy }
-
+  # analtyics/service/providers/{id}
   def show
     @issuer = service_provider.issuer
     @friendly_name = service_provider.friendly_name.capitalize

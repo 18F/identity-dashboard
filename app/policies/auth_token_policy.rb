@@ -1,4 +1,5 @@
-class AuthTokenPolicy < BasePolicy # :nodoc: all
+# Permission policy for AuthTokens
+class AuthTokenPolicy < BasePolicy
   def index?
     user_has_login_admin_role?
   end
@@ -7,6 +8,7 @@ class AuthTokenPolicy < BasePolicy # :nodoc: all
   alias new? index?
   alias create? index?
 
+  # Policy scope for AuthTokens
   class Scope < BasePolicy::Scope
     def resolve
       user_has_login_admin_role? ? scope.where(user:) : scope.none

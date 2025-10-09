@@ -1,4 +1,6 @@
-class WizardStep < ApplicationRecord # :nodoc: all
+# Model for WizardStep (Guided Flow page)
+class WizardStep < ApplicationRecord
+  # Definition of individual WizardStep
   class Definition
     attr_reader :fields
     def initialize(fields = {})

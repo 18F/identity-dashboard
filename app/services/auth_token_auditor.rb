@@ -1,4 +1,5 @@
-class AuthTokenAuditor # :nodoc:
+# Service for keeping an audit of auth token usage
+class AuthTokenAuditor
   EVENT_TAG = self.to_s.underscore.upcase
 
   attr_reader :logger

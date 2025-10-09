@@ -1,4 +1,5 @@
-class ExtractPolicy < BasePolicy # :nodoc:
+# Permission policy for config Extract tool
+class ExtractPolicy < BasePolicy
   attr_reader :user, :extract
 
   def index?

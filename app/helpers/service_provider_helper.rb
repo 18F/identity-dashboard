@@ -1,4 +1,5 @@
-module ServiceProviderHelper # :nodoc:
+# Helper for ServiceProvider view
+module ServiceProviderHelper
   SP_PROTECTED_ATTRIBUTES = %w[
     issuer
     id

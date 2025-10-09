@@ -1,5 +1,6 @@
 module Api
-  class ApiController < ApplicationController # :nodoc:
+  # Controller for API authenticaion
+  class ApiController < ApplicationController
     before_action :authenticate_token
 
     private
