@@ -2,6 +2,7 @@
 
 require 'securerandom'
 
+# Service for logging events
 # `Logger` is a class in the standard library, so we need a custom name
 class EventLogger
   include LogEvents

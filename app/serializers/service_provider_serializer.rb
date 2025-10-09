@@ -1,4 +1,4 @@
-# Serializer to structure ServiceProvider data 
+# Serializer to structure ServiceProvider data
 class ServiceProviderSerializer < ActiveModel::Serializer
   attributes(
     :acs_url,

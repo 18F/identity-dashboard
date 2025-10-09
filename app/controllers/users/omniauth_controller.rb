@@ -1,5 +1,6 @@
 module Users
-  class OmniauthController < ApplicationController # :nodoc:
+  # Controller for Login.gov authentication via Omniauth
+  class OmniauthController < ApplicationController
     include TeamHelper
 
     def callback
