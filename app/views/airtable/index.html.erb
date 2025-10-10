@@ -1,14 +1,21 @@
-<%
-	client_id = IdentityConfig.store.airtable_oauth_client_id
-	code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(Rails.cache.read("#{current_user.uuid}.airtable_code_verifier"))).gsub(/=/, '')
-%>
-
 <% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
+  
+  <%= link_to "Generate Token", "https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=#{IdentityConfig.store.airtable_oauth_client_id}&redirect_uri=#{@redirect_uri}=#{session[:airtable_state]}&code_challenge_method=S256&code_challenge=#{@code_challenge}", class: 'usa-button usa-button--outline' %>
 
-<a href="https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=<%= client_id %>&redirect_uri=http://localhost:3001/airtable/oauth/redirect&scope=data.records:read&state=<%= session[:airtable_state] %>&code_challenge_method=S256&code_challenge=<%= code_challenge %>"> Airtable Oauth </a>
-
+<% else %>
+  <p>
+  	<%= label_tag :airtable_oauth_token, "Token:" %>
+  </p>
+  <p>
+  	<%= text_area_tag :airtable_oauth_token, Rails.cache.read("#{current_user.uuid}.airtable_oauth_token"), rows: 6, cols: 60, disabled: true %>
+  </p>
+  <p>
+  	<%= label_tag :airtable_oauth_token_expiration, "Expires At:" %>
+  </p>
+  <p>
+    <%= text_area_tag :airtable_oauth_token_expiration, Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration"), rows: 1, cols: 60, disabled: true %>
+  </p>
+  <p>
+  <%= link_to "Refresh Token", airtable_oauth_refresh_token_path, class: 'usa-button usa-button--outline' %>
+  <%= link_to "Reset Token", airtable_oauth_reset_token_path, class: 'usa-button usa-button--outline' %>
 <% end %>
-
-<br>
-Token: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %> <br>
-Expires: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration") %>
