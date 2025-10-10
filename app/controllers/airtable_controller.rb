@@ -1,6 +1,5 @@
 class AirtableController < AuthenticatedController
-  # before_action -> { authorize AuthToken }
-  # after_action :verify_authorized
+  before_action -> { authorize Airtable }
 
   def index
     airtable_api = Airtable.new(current_user.uuid)
@@ -26,7 +25,7 @@ class AirtableController < AuthenticatedController
     redirect_to airtable_path
   end
 
-  def reset_token
+  def clear_token
     Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token")
     Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token_expiration")
     Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token")
