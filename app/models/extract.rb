@@ -33,6 +33,7 @@ class Extract # :nodoc:
     criteria.reject do |criterion|
       successes.find do |config|
         extract_by_team? ?
+          #config value no longer has group_id or issuer - below code needs to change
           config.group_id.to_s == criterion :
           config.issuer == criterion
       end
@@ -47,14 +48,12 @@ class Extract # :nodoc:
   # @return [Array<Hash{Team,Array<ServiceProvider>}>]
   def successes
     @successes = []
-    criteria.each_with_index do |crit, index|
-      @successes.push({})
-      @successes[index]['team'] = extract_by_team? ?
+    criteria.each do |crit|
+      team_data = extract_by_team? ?
         Team.find(crit.to_i) : 
         Team.find(ServiceProvider.where(issuer: crit).select(:group_id))
-      binding.pry
-      @successes[index]['issuers'] = 
-        ServiceProvider.where(group_id: @successes[index]['team'].id)
+      service_providers_data =  ServiceProvider.where(group_id: team_data.id)
+      @successes.push({ team: team_data, service_providers: service_providers_data })
     end
   end 
 
