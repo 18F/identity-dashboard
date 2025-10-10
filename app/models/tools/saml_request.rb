@@ -1,5 +1,5 @@
 module Tools
-  # Model for the SAML Request tool
+  # The SAML Request tool decodes and validates a SAML auth URI
   class SamlRequest
     attr_reader :auth_url, :cert_body
     attr_accessor :errors
