@@ -1,4 +1,4 @@
-# MakeAdmin designed to be invoked from a rake task
+# MakeAdmin designed to be invoked from a rake task.
 # as such, uses puts() instead of logger
 # rubocop:disable Rails/Output
 class MakeAdmin

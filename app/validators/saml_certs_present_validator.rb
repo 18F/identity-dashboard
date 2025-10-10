@@ -1,4 +1,4 @@
-# Validator for SAML certificates
+# Validates for the presence of a public cert on SAML configurations
 class SamlCertsPresentValidator < ActiveModel::Validator
   def validate(record)
     return unless record.saml?

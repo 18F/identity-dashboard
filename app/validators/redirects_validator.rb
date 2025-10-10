@@ -1,4 +1,8 @@
-# Validator for URI redirects
+# Validates URI redirects partners propose for a ServiceProvider.
+#
+# Only `logingov_admin` is allowed to use `localhost` on a prod-ready config,
+# unless that value is unchanged. The latter rule allows partners to add
+# URIs while keeping an existing `localhost` that was applied by an admin.
 class RedirectsValidator < IdentityValidations::IdentityValidator
   def validate(record)
     self.attribute ||= :redirect_uris

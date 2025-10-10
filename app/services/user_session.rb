@@ -1,4 +1,4 @@
-# Service for UserSession
+# Start and validate initial user session
 class UserSession
   attr_reader :user, :email
 

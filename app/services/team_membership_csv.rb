@@ -1,4 +1,6 @@
-# Service for creating and rendering TeamMembership CSVs
+# Creates and renders a CSV of TeamMemebership data
+#
+# This is a security requirement, for auditability.
 class TeamMembershipCsv
   HEADER_ROW = ['User email', 'Role', 'Team']
   attr_reader :team_memberships

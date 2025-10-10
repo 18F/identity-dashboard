@@ -1,4 +1,4 @@
-# Model for AuthToken
+# AuthToken for a given user grants access to the API
 class AuthToken < ApplicationRecord
   belongs_to :user
 

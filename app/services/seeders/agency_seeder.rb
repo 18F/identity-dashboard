@@ -1,4 +1,4 @@
-# Seeder for Agencies
+# Agencies are static and should contain all Federal agencies
 class Seeders::AgencySeeder
   attr_reader :agency_configs
 

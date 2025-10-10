@@ -1,4 +1,4 @@
-# Validator for Users
+# Validates the existence of a given user email address
 class UserValidator < ActiveModel::Validator
   def validate(record)
     return unless User.exists?(email: record.email)

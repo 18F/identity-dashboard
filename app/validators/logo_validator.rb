@@ -1,4 +1,4 @@
-# Validator for partner logo uploads
+# Validates partner logo file uploads
 class LogoValidator < ActiveModel::Validator
   attr_reader :record
 
