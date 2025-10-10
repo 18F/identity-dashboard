@@ -1,4 +1,4 @@
-# Model for Banner
+# Banner messages are persistent across all pages of the Portal.
 class Banner < ApplicationRecord
   validates :message, presence: true
   validates :end_date,

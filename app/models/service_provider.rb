@@ -1,7 +1,9 @@
 require 'rails'
 require 'uri'
 
-# Model for ServiceProvider (config|app)
+# The ServiceProvider, sometimes called "config" or "app", is the central
+# object of the Portal. These configurations are required in order to 
+# create a Login.gov integration.
 class ServiceProvider < ApplicationRecord
   # Do not define validations in this model.
   # See https://github.com/18F/identity-validations
