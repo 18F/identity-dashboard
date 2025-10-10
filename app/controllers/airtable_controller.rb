@@ -4,6 +4,9 @@ class AirtableController < AuthenticatedController
       SecureRandom.alphanumeric(50)
     end
     session[:airtable_state] = SecureRandom.uuid
+
+    airtable_api = Airtable.new(current_user.uuid)
+    airtable_api.refreshToken if airtable_api.needsRefreshedToken?
   end
 
   def issuer_lookup 

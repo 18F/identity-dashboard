@@ -6,7 +6,7 @@ class Airtable # :nodoc:
 
   def initialize(user_uuid)
     @user_uuid = user_uuid
-    @conn ||= Faraday.new(headers: self.tokenBearerAuthorizationHeader)
+    @conn ||= Faraday.new(headers: generateHeaders)
   end
 
   def getMatchingRecords(issuer)
@@ -44,9 +44,6 @@ class Airtable # :nodoc:
   end
 
   def requestToken(code)
-    @conn.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    @conn.headers['Authorization'] = tokenBasicAuthorizationHeader
-
     request_data = { code: code,
                      redirect_uri: REDIRECT_URI,
                      grant_type: 'authorization_code',
@@ -60,34 +57,13 @@ class Airtable # :nodoc:
     saveToken(response)
   end
 
-  private
-
-  def tokenBearerAuthorizationHeader
-    # if Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration").present? &&
-    #    Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration") > Time.now
-      { 'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
-    # else 
-    #   refreshToken
-    # end
-  end
-
-  def tokenBasicAuthorizationHeader
-    auth_string = Base64.urlsafe_encode64("#{IdentityConfig.store.airtable_oauth_client_id}:#{IdentityConfig.store.airtable_oauth_client_secret}")
-    "Basic #{auth_string}"
-  end
-
-  def saveToken(response)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration", DateTime.now + response['expires_in'].seconds)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration", DateTime.now + response['refresh_expires_in'].seconds)
+  def needsRefreshedToken?
+    Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration").present? &&
+      Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration") < DateTime.now
   end
 
   def refreshToken
-    @conn.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    @conn.headers['Authorization'] = tokenBasicAuthorizationHeader
-
-    request_data = { refresh_token: 'oaa27QqGxYkFfQpVW.v1.refresh.eyJ1c2VySWQiOiJ1c3JCSnlUS0U0N3c2TGZYNCIsInJlZnJlc2hFeHBpcmF0aW9uVGltZSI6IjIwMjUtMTItMDhUMTY6MjA6NDYuMDAwWiIsIm9hdXRoQXBwbGljYXRpb25JZCI6Im9hcGV6clJ4OENqcEFWR2xSIiwic2VjcmV0IjoiMTY5Yzc2MTllOWMwY2RlNWViNmJjMTMxNDVkY2U4MDY0ZWEyOWM4MWQxYzk2MTVhZjRhYWMxMTRiN2I5OGVhYSJ9.f406a70ffc01dfc1949816857c08d26d2dc797cf46d2b3aed88cad41c316c1e4',
+    request_data = { refresh_token: Rails.cache.read("#{@user_uuid}.airtable_oauth_refresh_token"),
                      redirect_uri: REDIRECT_URI,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
@@ -96,6 +72,34 @@ class Airtable # :nodoc:
     refresh_response = JSON.parse(refresh_resp.body)
 
     saveToken(refresh_response)
+  end
+
+  private
+
+  def generateHeaders
+    unless needsRefreshedToken?
+      tokenBearerAuthorizationHeader
+    else 
+      tokenBasicAuthorizationHeader
+    end
+  end
+
+  def tokenBearerAuthorizationHeader
+      { 'Content-Type' => 'application/x-www-form-urlencoded',
+        'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
+  end
+
+  def tokenBasicAuthorizationHeader
+    auth_string = Base64.urlsafe_encode64("#{IdentityConfig.store.airtable_oauth_client_id}:#{IdentityConfig.store.airtable_oauth_client_secret}")
+    { 'Content-Type' => 'application/x-www-form-urlencoded',
+      'Authorization' => "Basic #{auth_string}" }
+  end
+
+  def saveToken(response)
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration", DateTime.now + response['expires_in'].seconds)
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration", DateTime.now + response['refresh_expires_in'].seconds)
   end
 
 end
