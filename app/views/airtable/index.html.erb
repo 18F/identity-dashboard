@@ -7,8 +7,8 @@
 
 <a href="https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=<%= client_id %>&redirect_uri=http://localhost:3001/airtable/oauth/redirect&scope=data.records:read&state=<%= session[:airtable_state] %>&code_challenge_method=S256&code_challenge=<%= code_challenge %>"> Airtable Oauth </a>
 
-<% else %>
-
-Token: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %>
-
 <% end %>
+
+<br>
+Token: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %> <br>
+Expires: <%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration") %>
