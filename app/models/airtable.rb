@@ -9,17 +9,22 @@ class Airtable # :nodoc:
     @conn ||= Faraday.new(headers: generateHeaders)
   end
 
-  def getMatchingRecords(issuer)
+  def getMatchingRecords(issuers)
     all_records_uri = 'https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk'
 
-    @conn ||= Faraday.new(url: all_records_uri, headers: headers)
+    @conn ||= Faraday.new(url: all_records_uri)
 
     resp = @conn.get(all_records_uri)
     response = JSON.parse(resp.body)
 
-    response['records'].find do |r|
-      r['fields']['Issuer String'] == issuer
+    matched_records = []
+    response['records'].each do |r|
+      matched_records.push(r) if issuers.any? do |issuer|
+        r['fields']['Issuer String'].include?(issuer)
+      end
     end
+
+    matched_records
   end
 
   def getAdminIds(record)
@@ -30,7 +35,12 @@ class Airtable # :nodoc:
     ids
   end
 
-  def getAdminEmails(admin_ids)
+  def getAdminEmailsForRecord(record)
+    admin_ids = []
+    record['fields']['Partner Portal Admin'].each do |admin_id|
+      admin_ids.push(admin_id)
+    end
+
     admin_emails = []
     admin_ids.each do |admin_id|
       user_record_uri = "https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk/#{admin_id}"
@@ -38,9 +48,13 @@ class Airtable # :nodoc:
       user_resp = @conn.get(user_record_uri)
       user_response = JSON.parse(user_resp.body)
 
-      admin_emails.push(user_response['fields']['Email'])
+      admin_emails.push(user_response['fields']['Email'].downcase)
     end
     admin_emails
+  end
+
+  def isNewPartnerAdminInAirtable?(email, record)
+    getAdminEmailsForRecord(record).include?(email.downcase)
   end
 
   def requestToken(code)
@@ -77,29 +91,32 @@ class Airtable # :nodoc:
   private
 
   def generateHeaders
-    unless needsRefreshedToken?
-      tokenBearerAuthorizationHeader
-    else 
+    if needsRefreshedToken?
       tokenBasicAuthorizationHeader
+    else
+      tokenBearerAuthorizationHeader
     end
   end
 
   def tokenBearerAuthorizationHeader
-      { 'Content-Type' => 'application/x-www-form-urlencoded',
-        'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
+    { 'Content-Type' => 'application/x-www-form-urlencoded',
+      'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
   end
 
   def tokenBasicAuthorizationHeader
-    auth_string = Base64.urlsafe_encode64("#{IdentityConfig.store.airtable_oauth_client_id}:#{IdentityConfig.store.airtable_oauth_client_secret}")
+    client_id = IdentityConfig.store.airtable_oauth_client_id
+    client_secret = IdentityConfig.store.airtable_oauth_client_secret
+    auth_string = Base64.urlsafe_encode64("#{client_id}:#{client_secret}")
     { 'Content-Type' => 'application/x-www-form-urlencoded',
       'Authorization' => "Basic #{auth_string}" }
   end
 
   def saveToken(response)
     Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration", DateTime.now + response['expires_in'].seconds)
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
+      DateTime.now + response['expires_in'].seconds)
     Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration", DateTime.now + response['refresh_expires_in'].seconds)
+    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
+      DateTime.now + response['refresh_expires_in'].seconds)
   end
-
 end
