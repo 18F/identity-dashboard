@@ -41,7 +41,7 @@ docs:
 	bin/yardoc \
 		--fail-on-warning
 
-lint_log_events: doc ## Checks that all methods on `LogEvents` are documented
+lint_log_events: docs ## Checks that all methods on `LogEvents` are documented
 	bundle exec ruby lib/events_documenter.rb --class-name="LogEvents" --check --skip-extra-params 
 
 lint_log_events_sorted:
