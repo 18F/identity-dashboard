@@ -1,4 +1,5 @@
-# Model for User
+# User is an individual who can be added to a Team (with a Role) and
+# can interact with the Portal.
 class User < ApplicationRecord
   acts_as_paranoid
 

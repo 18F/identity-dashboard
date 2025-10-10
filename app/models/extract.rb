@@ -1,4 +1,5 @@
-# Model for ServiceProvider Extraction tool
+# The Extract tool is used for migrating ServiceProvider data from `int`
+# to `prod`.
 class Extract
   include ActiveModel::Model
 

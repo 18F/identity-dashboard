@@ -1,4 +1,7 @@
-# Model for Team
+# A Team is a collection of Users in a given Agency, and the ServiceProviders
+# they are working on and have access to.
+#
+# If you are looking for User Roles on a Team, you want `TeamMemebership`.
 class Team < ApplicationRecord
   self.table_name = :groups
 

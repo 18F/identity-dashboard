@@ -1,4 +1,5 @@
-# Model for WizardStep (Guided Flow page)
+# A WizardStep is one page of the Guided Flow for creating or editing
+# a ServiceProvider.
 class WizardStep < ApplicationRecord
   # Definition of individual WizardStep
   class Definition
