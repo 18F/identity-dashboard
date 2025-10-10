@@ -44,12 +44,19 @@ class Extract # :nodoc:
     "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
-  # @return [Array<ServiceProvider>]
+  # @return [Array<Hash{Team,Array<ServiceProvider>}>]
   def successes
-    @successes ||= extract_by_team? ?
-      ServiceProvider.where(group_id: criteria) :
-      ServiceProvider.where(issuer: criteria)
-  end
+    @successes = []
+    criteria.each_with_index do |crit, index|
+      @successes.push({})
+      @successes[index]['team'] = extract_by_team? ?
+        Team.find(crit.to_i) : 
+        Team.find(ServiceProvider.where(issuer: crit).select(:group_id))
+      binding.pry
+      @successes[index]['issuers'] = 
+        ServiceProvider.where(group_id: @successes[index]['team'].id)
+    end
+  end 
 
   def valid?
     super
