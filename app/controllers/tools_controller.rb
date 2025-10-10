@@ -1,5 +1,4 @@
-# Controller for Tools pages
-class ToolsController < AuthenticatedController
+class ToolsController < AuthenticatedController # :nodoc:
   require 'saml_idp'
 
   def saml_request

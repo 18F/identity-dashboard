@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Service for caching browser data
-class BrowserCache
+class BrowserCache # :nodoc:
   @cache = LruRedux::Cache.new(1_000)
   DEFAULT_BROWSER = Browser.new(nil)
   USER_AGENT_SIZE = Browser.user_agent_size_limit - 1

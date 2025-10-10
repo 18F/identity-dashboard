@@ -1,4 +1,4 @@
-# Controller for ServiceProvider Extraction tool page
+# Controller for ServiceProvider Extract tool page
 class ExtractsController < AuthenticatedController
   before_action -> { authorize Extract }
 

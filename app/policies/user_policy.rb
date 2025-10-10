@@ -1,5 +1,4 @@
-# Permission policy for User
-class UserPolicy < BasePolicy
+class UserPolicy < BasePolicy # :nodoc:
   attr_reader :user
 
   def manage_users?

@@ -1,5 +1,4 @@
-# Seeder base
-class Seeders::BaseSeeder
+class Seeders::BaseSeeder # :nodoc:
   attr_reader :logger
 
   DEFAULT_LOGGER = Rails.logger

@@ -1,5 +1,4 @@
-# Permission policy for Tools
-class ToolPolicy < BasePolicy
+class ToolPolicy < BasePolicy # :nodoc:
   attr_reader :user, :record
 
   def can_view_request_details?
