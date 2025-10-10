@@ -69,6 +69,7 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
       @user = team_membership.user
       render :edit
     else
+      verify_partner_admin if team_membership.role_name == 'partner_admin'
       redirect_to team_users_path(team)
     end
   end
@@ -167,5 +168,23 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
 
   def log_change
     log.record_save(action_name, team_membership)
+  end
+
+  def verify_partner_admin
+    airtable_api = Airtable.new(current_user.uuid)
+    airtable_api.refreshToken if airtable_api.needsRefreshedToken?
+    issuers = []
+    ServiceProvider.where(team: self.team).each do |sp|
+      issuers.push(sp.issuer)
+    end
+
+    airtable_api.getMatchingRecords(issuers).each do |record|
+      unless airtable_api.isNewPartnerAdminInAirtable?(
+        user.email, record
+      )
+        flash[:error] =
+          "User #{user.email} is not a Partner Admin in Airtable"
+      end
+    end
   end
 end
