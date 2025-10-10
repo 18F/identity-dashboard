@@ -10,14 +10,13 @@ class Airtable # :nodoc:
   end
 
   def get_matching_records(issuers)
-    all_records_uri = 'https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk'
+    all_records_uri = 'https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk?maxRecords=1000'
 
     @conn.headers = token_bearer_authorization_header
     @conn ||= Faraday.new(url: all_records_uri)
 
     resp = @conn.get(all_records_uri)
     response = JSON.parse(resp.body)
-
     matched_records = []
     response['records'].each do |r|
       matched_records.push(r) if issuers.any? do |issuer|
@@ -77,6 +76,7 @@ class Airtable # :nodoc:
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
+    @conn.headers = token_basic_authorization_header
     refresh_resp = @conn.post(TOKEN_URI) { |req| req.body = encoded_request_data }
     refresh_response = JSON.parse(refresh_resp.body)
 
