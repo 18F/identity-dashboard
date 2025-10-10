@@ -57,4 +57,5 @@ Rails.application.routes.draw do
   get '/airtable/get_partner_admins_for_issuer' => 'airtable#issuer_lookup'
   get '/airtable/oauth/redirect' => 'airtable#oauth_redirect'
   get '/airtable/oauth/refresh_token' => 'airtable#refresh_token'
+  get '/airtable/oauth/reset_token' => 'airtable#reset_token'
 end

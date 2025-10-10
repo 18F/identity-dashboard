@@ -12,6 +12,7 @@ class Airtable # :nodoc:
   def getMatchingRecords(issuers)
     all_records_uri = 'https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk'
 
+    @conn.headers = tokenBearerAuthorizationHeader
     @conn ||= Faraday.new(url: all_records_uri)
 
     resp = @conn.get(all_records_uri)
@@ -45,6 +46,7 @@ class Airtable # :nodoc:
     admin_ids.each do |admin_id|
       user_record_uri = "https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk/#{admin_id}"
 
+      @conn.headers = tokenBearerAuthorizationHeader
       user_resp = @conn.get(user_record_uri)
       user_response = JSON.parse(user_resp.body)
 
@@ -91,11 +93,8 @@ class Airtable # :nodoc:
   private
 
   def generateHeaders
-    if needsRefreshedToken?
-      tokenBasicAuthorizationHeader
-    else
-      tokenBearerAuthorizationHeader
-    end
+    refreshToken if needsRefreshedToken?
+    tokenBasicAuthorizationHeader
   end
 
   def tokenBearerAuthorizationHeader
