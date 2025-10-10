@@ -1,4 +1,4 @@
-# Controller for UnconfirmedUsers action
+# Controller for UnconfirmedUsers action on /users
 class UnconfirmedUsersController < ApplicationController
   before_action -> { authorize(User, :manage_users?) }
 

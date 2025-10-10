@@ -1,4 +1,4 @@
-# Controller for Users pages
+# Controller for admin-only Users pages
 class UsersController < ApplicationController
   before_action -> { authorize User, :manage_users? }, except: %i[none]
   before_action -> { authorize User }, only: [:none]

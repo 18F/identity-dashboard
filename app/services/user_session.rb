@@ -1,5 +1,4 @@
-# Start and validate initial user session
-class UserSession
+class UserSession # :nodoc:
   attr_reader :user, :email
 
   def initialize(info)

@@ -1,5 +1,3 @@
-# Seeder for Teams
-#
 # The Internal Team is used to define who can be a `logingov_admin`.
 class Seeders::Teams < Seeders::BaseSeeder
   def seed

@@ -1,5 +1,4 @@
-# Permission policy for ServiceProviders
-class ServiceProviderPolicy < BasePolicy
+class ServiceProviderPolicy < BasePolicy # :nodoc: all
   attr_reader :user, :record
 
   BASE_PARAMS = [
@@ -118,7 +117,6 @@ class ServiceProviderPolicy < BasePolicy
     user_has_login_admin_role?
   end
 
-  # Policy scope for ServiceProviders
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?

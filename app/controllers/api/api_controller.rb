@@ -1,5 +1,5 @@
 module Api
-  # Controller for API authenticaion
+  # Controller for API authenticaion with token
   class ApiController < ApplicationController
     before_action :authenticate_token
 

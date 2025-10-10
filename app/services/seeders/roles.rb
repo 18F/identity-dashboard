@@ -1,4 +1,4 @@
-# Ensures all valid roles are present in the Role table
+# Ensures all hardcoded roles are present in the Role table
 class Seeders::Roles < Seeders::BaseSeeder
   def seed
     Role::ACTIVE_ROLES_NAMES.each do |name, friendly_name|

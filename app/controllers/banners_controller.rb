@@ -1,4 +1,4 @@
-# Controller for Banners pages
+# Controller for admin-only Banner management pages
 class BannersController < ApplicationController
   before_action -> { authorize Banner, :manage_banners? }
   before_action :set_banner, only: %i[show edit update]
