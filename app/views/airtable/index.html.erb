@@ -1,6 +1,6 @@
 <% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
   
-  <%= link_to "Generate Token", "https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=#{IdentityConfig.store.airtable_oauth_client_id}&redirect_uri=#{@redirect_uri}=#{session[:airtable_state]}&code_challenge_method=S256&code_challenge=#{@code_challenge}", class: 'usa-button usa-button--outline' %>
+  <%= link_to "Generate Token", @oauth_url, class: 'usa-button usa-button--outline' %>
 
 <% else %>
   <p>

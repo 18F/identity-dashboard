@@ -32,6 +32,16 @@ class Teams::UsersController < AuthenticatedController
       return
     end
 
+    airtable_api = Airtable.new(current_user.uuid)
+    unless airtable_api.has_token?
+      @remove_partner_admin = true
+      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+
+      base_url = "#{request.protocol}#{request.host_with_port}"
+      @oauth_url = airtable_api.generate_oauth_url(base_url)
+
+    end
+
     authorize team_membership
     @user = team_membership.user
   end
@@ -60,9 +70,9 @@ class Teams::UsersController < AuthenticatedController
 
   def update
     unless IdentityConfig.store.access_controls_enabled
-      redirect_to(action: :index, team_id: team)
-      return
+      redirect_to(action: :index, team_id: team) and return
     end
+
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
     team_membership.save
@@ -108,7 +118,11 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    policy(team_membership).roles_for_edit.map { |r| [r.friendly_name, r.name] }
+    roles = policy(team_membership).roles_for_edit
+    unless Airtable.new(current_user.uuid).has_token?
+      roles = roles.reject { |role| role.name == 'partner_admin' }
+    end
+    roles.map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?
@@ -173,13 +187,13 @@ class Teams::UsersController < AuthenticatedController
 
   def verify_partner_admin
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refreshToken if airtable_api.needsRefreshedToken?
+    airtable_api.refresh_token if airtable_api.needs_refreshed_token?
     issuers = []
     ServiceProvider.where(team: self.team).each do |sp|
       issuers.push(sp.issuer)
     end
 
-    airtable_api.getMatchingRecords(issuers).each do |record|
+    airtable_api.get_matching_records(issuers).each do |record|
       unless airtable_api.isNewPartnerAdminInAirtable?(
         user.email, record
       )
