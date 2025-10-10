@@ -59,6 +59,7 @@ class Airtable # :nodoc:
 
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
+    @conn.headers = token_basic_authorization_header
     resp = @conn.post(TOKEN_URI) { |req| req.body = encoded_request_data }
     response = JSON.parse(resp.body)
 
