@@ -1,30 +1,27 @@
 class AirtableController < AuthenticatedController
+  # before_action -> { authorize AuthToken }
+  # after_action :verify_authorized
+
   def index
-    code_verifier = Rails.cache.fetch("#{current_user.uuid}.airtable_code_verifier",
-expires_in: 10.minutes) do
-      SecureRandom.alphanumeric(50)
-    end
-    session[:airtable_state] = SecureRandom.uuid
-    @code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(code_verifier)).delete('=')
+    airtable_api = Airtable.new(current_user.uuid)
+    airtable_api.refresh_token if airtable_api.needs_refreshed_token?
 
     base_url = "#{request.protocol}#{request.host_with_port}"
-    @redirect_uri = "#{base_url}/airtable/oauth/redirect&scope=data.records:read&state"
-    airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refreshToken if airtable_api.needsRefreshedToken?
+    @oauth_url = airtable_api.generate_oauth_url(base_url)
   end
 
   def oauth_redirect
-    return unless session[:airtable_state] == params[:state]
+    return unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
 
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.requestToken(params[:code])
+    airtable_api.request_token(params[:code])
 
     redirect_to airtable_path
   end
 
   def refresh_token
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refreshToken
+    airtable_api.refresh_token
 
     redirect_to airtable_path
   end
