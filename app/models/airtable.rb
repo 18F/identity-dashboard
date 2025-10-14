@@ -1,7 +1,11 @@
 class Airtable # :nodoc:
   include ActiveModel::Model
 
-  TOKEN_URI = 'https://airtable.com/oauth2/v1/token'
+  BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
+  BASE_API_URI = 'https://api.airtable.com/v0'
+  APP_ID = 'appCPBIq0sFQUZUSY'
+  TABLE_ID = 'tbl8XAxD4G5uBEPMk'
+
   REDIRECT_URI = 'http://localhost:3001/airtable/oauth/redirect'
 
   def initialize(user_uuid)
@@ -10,7 +14,7 @@ class Airtable # :nodoc:
   end
 
   def get_matching_records(issuers, offset = nil, matched_records = nil)
-    all_records_uri = "https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk?offset=#{offset}"
+    all_records_uri = "#{BASE_API_URI}/#{APP_ID}/#{TABLE_ID}?offset=#{offset}"
 
     @conn.headers = token_bearer_authorization_header
     @conn ||= Faraday.new(url: all_records_uri)
@@ -37,7 +41,7 @@ class Airtable # :nodoc:
 
     admin_emails = []
     admin_ids.each do |admin_id|
-      user_record_uri = "https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk/#{admin_id}"
+      user_record_uri = "#{BASE_API_URI}/#{APP_ID}/#{TABLE_ID}/#{admin_id}"
 
       @conn.headers = token_bearer_authorization_header
       user_resp = @conn.get(user_record_uri)
@@ -61,7 +65,7 @@ class Airtable # :nodoc:
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
     @conn.headers = token_basic_authorization_header
-    resp = @conn.post(TOKEN_URI) { |req| req.body = encoded_request_data }
+    resp = @conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
     response = JSON.parse(resp.body)
 
     save_token(response)
@@ -79,7 +83,7 @@ class Airtable # :nodoc:
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
     @conn.headers = token_basic_authorization_header
-    refresh_resp = @conn.post(TOKEN_URI) { |req| req.body = encoded_request_data }
+    refresh_resp = @conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
     refresh_response = JSON.parse(refresh_resp.body)
 
     save_token(refresh_response)
@@ -102,7 +106,7 @@ class Airtable # :nodoc:
     redirect_uri = "#{base_url}/airtable/oauth/redirect&scope=data.records:read"
 
     client_id = IdentityConfig.store.airtable_oauth_client_id
-    "https://airtable.com/oauth2/v1/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
+    "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
   end
 
   private
