@@ -39,3 +39,13 @@ yarn-debug.log*
 # We're not currently checking in YARD docs. We may want revisit this later
 /doc/yard
 /.yardoc
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
