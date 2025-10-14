@@ -11,7 +11,7 @@ class AirtableController < AuthenticatedController
 
   def oauth_redirect
     unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
-      flash[:error] = "State does not match, blocking token request."
+      flash[:error] = 'State does not match, blocking token request.'
       redirect_to airtable_path and return
     end
 
