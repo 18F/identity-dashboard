@@ -9,20 +9,22 @@ class Airtable # :nodoc:
     @conn ||= Faraday.new
   end
 
-  def get_matching_records(issuers)
-    all_records_uri = 'https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk?maxRecords=1000'
+  def get_matching_records(issuers, offset = nil, matched_records = nil)
+    all_records_uri = "https://api.airtable.com/v0/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk?offset=#{offset}"
 
     @conn.headers = token_bearer_authorization_header
     @conn ||= Faraday.new(url: all_records_uri)
 
     resp = @conn.get(all_records_uri)
     response = JSON.parse(resp.body)
-    matched_records = []
+    matched_records ||= []
     response['records'].each do |r|
       matched_records.push(r) if issuers.any? do |issuer|
         r['fields']['Issuer String'].include?(issuer)
       end
     end
+
+    get_matching_records(issuers, response['offset'], matched_records) if response['offset']
 
     matched_records
   end
