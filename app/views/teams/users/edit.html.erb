@@ -25,7 +25,11 @@
       additional_descriptions: true
     )) %>
   </fieldset>
-  <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
+  <% if @needs_to_confirm_partner_admin %>
+    <%= form.button :submit, 'Confirm Partner Admin', name: "confirm_partner_admin", :class => "usa-button float-left" %>
+  <% else %>
+    <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
+  <% end %>
   <%= link_to t('forms.buttons.cancel'), team_users_path(@team),
               class: 'usa-button usa-button--outline float-left' %>
 <% end %>

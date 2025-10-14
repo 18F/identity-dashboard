@@ -33,13 +33,14 @@ class Teams::UsersController < AuthenticatedController
     end
 
     airtable_api = Airtable.new(current_user.uuid)
-    unless airtable_api.has_token?
+    if airtable_api.has_token?
+      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
+    else
       @remove_partner_admin = true
       airtable_api.refresh_token if airtable_api.needs_refreshed_token?
 
       base_url = "#{request.protocol}#{request.host_with_port}"
       @oauth_url = airtable_api.generate_oauth_url(base_url)
-
     end
 
     authorize team_membership
@@ -75,14 +76,23 @@ class Teams::UsersController < AuthenticatedController
 
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
+    Rails.logger.debug('******************')
+    Rails.logger.debug(params[:confirm_partner_admin].blank?)
+    Rails.logger.debug('******************')
+    if team_membership.role_name == 'partner_admin' && !is_verified_partner_admin? && params[:confirm_partner_admin].blank?
+      flash[:error] =
+        "User #{team_membership.user.email} is not a Partner Admin in Airtable. Please verify with the
+           appropriate Account Manager that this user should be given the Partner Admin role."
+
+      redirect_to edit_team_user_path(team, team_membership.user,
+need_to_confirm_role: true) and return
+    end
     team_membership.save
     if team_membership.errors.any?
       @user = team_membership.user
       render :edit
-    else
-      verify_partner_admin if team_membership.role_name == 'partner_admin'
-      redirect_to team_users_path(team)
     end
+    redirect_to team_users_path(team)
   end
 
   def remove_confirm
@@ -185,7 +195,7 @@ class Teams::UsersController < AuthenticatedController
     log.record_save(action_name, team_membership)
   end
 
-  def verify_partner_admin
+  def is_verified_partner_admin?
     airtable_api = Airtable.new(current_user.uuid)
     airtable_api.refresh_token if airtable_api.needs_refreshed_token?
     issuers = []
@@ -197,9 +207,10 @@ class Teams::UsersController < AuthenticatedController
       unless airtable_api.isNewPartnerAdminInAirtable?(
         user.email, record
       )
-        flash[:error] =
-          "User #{user.email} is not a Partner Admin in Airtable"
+        return false
       end
     end
+
+    true
   end
 end
