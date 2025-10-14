@@ -10,7 +10,10 @@ class AirtableController < AuthenticatedController
   end
 
   def oauth_redirect
-    return unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
+    unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
+      flash[:error] = "State does not match, blocking token request."
+      redirect_to airtable_path and return
+    end
 
     airtable_api = Airtable.new(current_user.uuid)
     airtable_api.request_token(params[:code])
