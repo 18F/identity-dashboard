@@ -5,6 +5,8 @@ devenv-test:
     - export CACHEDIR="$(pwd)/.nix-cache"
     # If the cache directory exists, add it as an extra substituter in the Nix configuration
     - if [ -d "$CACHEDIR" ]; then echo "extra-substituters = file://$CACHEDIR?priority=10&trusted=true" >>/etc/nix/nix.conf ; fi
+    # Install findutils which is used for cache management.
+    - nix profile --extra-experimental-features nix-command --extra-experimental-features flakes install nixpkgs#findutils
     # Remove orphaned narinfo files if they exist.
     - |
       if [ -d "$CACHEDIR" ]; then
