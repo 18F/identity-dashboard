@@ -16,7 +16,8 @@ class ExtractsController < AuthenticatedController # :nodoc:
       criteria_file: extracts_params[:criteria_file],
     )
 
-    if @extract.valid? && @extract.successes.present?
+    # question - do we want to assign these to variables? 
+    if @extract.valid? && @extract.teams.present? && @extract.service_providers.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
@@ -41,10 +42,11 @@ class ExtractsController < AuthenticatedController # :nodoc:
   end
 
   # @return [String]
+  #json output be a hash of two arrays (teams, service_providers)
   def save_to_file
     begin
       File.open(@extract.filename, 'w') do |f|
-        f.print @extract.successes.to_json
+        f.print {teams: @extract.teams, service_providers: @extract.service_providers}.to_json
       end
       flash[:success] = 'Extracted configs saved'
     rescue => err

@@ -31,11 +31,14 @@ class Extract # :nodoc:
   # @return [Array<String>]
   def failures
     criteria.reject do |criterion|
-      successes.find do |config|
-        extract_by_team? ?
-          #config value no longer has group_id or issuer - below code needs to change
-          config.group_id.to_s == criterion :
-          config.issuer == criterion
+      if extract_by_team?
+        team.find do |config|
+          config.id.to_s == criterion
+        end
+      else
+        service_providers.find do |config|
+         config.issuer == criterion
+        end
       end
     end
   end
@@ -46,16 +49,26 @@ class Extract # :nodoc:
   end
 
   # @return [Array<Hash{Team,Array<ServiceProvider>}>]
-  def successes
-    @successes = []
+  #TODO: confirm we are rescuing from active record not found errors
+  def teams
+    @teams = []
     criteria.each do |crit|
       team_data = extract_by_team? ?
         Team.find(crit.to_i) : 
         Team.find(ServiceProvider.where(issuer: crit).select(:group_id))
-      service_providers_data =  ServiceProvider.where(group_id: team_data.id)
-      @successes.push({ team: team_data, service_providers: service_providers_data })
+      @team.push(team_data)
     end
-  end 
+  end
+
+  def service_providers
+    @service_providers = []
+    criteria.each do |crit|
+      service_providers_data = extract_by_team? ?
+        ServiceProvider.where(group_id: crit) :
+        ServiceProvider.where(issuer: crit)
+      @service_providers.push(service_providers_data)
+    end
+  end
 
   def valid?
     super
