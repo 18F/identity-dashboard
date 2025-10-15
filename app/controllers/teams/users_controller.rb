@@ -204,7 +204,7 @@ class Teams::UsersController < AuthenticatedController
     end
 
     airtable_api.get_matching_records(issuers).each do |record|
-      unless airtable_api.isNewPartnerAdminInAirtable?(
+      unless airtable_api.new_partner_admin_in_airtable?(
         user.email, record
       )
         return false

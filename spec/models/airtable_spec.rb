@@ -29,7 +29,10 @@ RSpec.describe Airtable, type: :model do
       }.to_json
 
       # Include the missing headers in the request stub
-      stub_request(:get, "https://api.airtable.com/v0/#{Airtable::APP_ID}/#{Airtable::TABLE_ID}?offset=")
+      app_id = IdentityConfig.store.airtable_app_id
+      table_id = IdentityConfig.store.airtable_table_id
+
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
         .with(headers: {
           'Authorization' => "Bearer #{user_token}",
           'Content-Type' => 'application/x-www-form-urlencoded',
@@ -46,31 +49,31 @@ RSpec.describe Airtable, type: :model do
     end
   end
 
-  describe '#get_admin_emails_for_record' do
-    before do
-      allow(airtable).to receive(:token_bearer_authorization_header).and_return({})
-      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record)
-        .and_return([sample_email.downcase])
-    end
-
-    it 'returns admin emails for a given record' do
-      expect(airtable.get_admin_emails_for_record(sample_record)).to include(sample_email.downcase)
-    end
-  end
-
-  describe '#isNewPartnerAdminInAirtable?' do
-    before do
-      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record)
-        .and_return([sample_email.downcase])
+  describe '#new_partner_admin_in_airtable?' do
+    let(:sample_record) do
+      { 'id' => "rec#{SecureRandom.hex(10)}",
+        'createdTime' => Time.zone.now,
+        'fields' => { 'Issuer String' => 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:example:issuer',
+                      'Applications' => ["rec#{SecureRandom.hex(10)}"],
+                      'Partner Portal Admin Assigned' => true,
+                      'Portal Team' => 'Portal Team',
+                      'Partner Portal Admin' => ["rec#{SecureRandom.hex(10)}"],
+                      'Name (from Partner Portal Admin)' => ['Users Name'],
+                      'Team ID' => 'TeamID',
+                      'Ready for Migration' => true,
+                      'Assigned Phase' => 'Phase 1',
+                      'Partner Agreement (from Applications)' => ["rec#{SecureRandom.hex(10)}"],
+                      'Partner Portal Admin Email' => [sample_email] } }
     end
 
     it 'returns true if the email is an admin' do
-      expect(airtable.isNewPartnerAdminInAirtable?(sample_email, sample_record)).to eq(true)
+      expect(airtable.new_partner_admin_in_airtable?(sample_email, sample_record))
+        .to eq(true)
     end
 
     it 'returns false if the email is not an admin' do
-      expect(airtable.isNewPartnerAdminInAirtable?('not_admin@example.com',
-sample_record)).to eq(false)
+      expect(airtable.new_partner_admin_in_airtable?('not_admin@example.com', sample_record))
+        .to eq(false)
     end
   end
 

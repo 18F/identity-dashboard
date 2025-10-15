@@ -6,8 +6,6 @@ class Airtable
 
   BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
   BASE_API_URI = 'https://api.airtable.com/v0'
-  APP_ID = 'appCPBIq0sFQUZUSY'
-  TABLE_ID = 'tbl8XAxD4G5uBEPMk'
 
   def initialize(user_uuid)
     @user_uuid = user_uuid
@@ -15,7 +13,9 @@ class Airtable
   end
 
   def get_matching_records(issuers, offset = nil, matched_records = nil)
-    all_records_uri = "#{BASE_API_URI}/#{APP_ID}/#{TABLE_ID}?offset=#{offset}"
+    app_id = IdentityConfig.store.airtable_app_id
+    table_id = IdentityConfig.store.airtable_table_id
+    all_records_uri = "#{BASE_API_URI}/#{app_id}/#{table_id}?offset=#{offset}"
 
     @conn.headers = token_bearer_authorization_header
     @conn ||= Faraday.new(url: all_records_uri)
@@ -34,27 +34,8 @@ class Airtable
     matched_records
   end
 
-  def get_admin_emails_for_record(record)
-    admin_ids = []
-    record['fields']['Partner Portal Admin'].each do |admin_id|
-      admin_ids.push(admin_id)
-    end
-
-    admin_emails = []
-    admin_ids.each do |admin_id|
-      user_record_uri = "#{BASE_API_URI}/#{APP_ID}/#{TABLE_ID}/#{admin_id}"
-
-      @conn.headers = token_bearer_authorization_header
-      user_resp = @conn.get(user_record_uri)
-      user_response = JSON.parse(user_resp.body)
-
-      admin_emails.push(user_response['fields']['Email'].downcase)
-    end
-    admin_emails
-  end
-
-  def isNewPartnerAdminInAirtable?(email, record)
-    get_admin_emails_for_record(record).include?(email.downcase)
+  def new_partner_admin_in_airtable?(email, record)
+    record['fields']['Partner Portal Admin Email'].include?(email)
   end
 
   def request_token(code, redirect_uri)

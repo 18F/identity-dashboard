@@ -3,8 +3,6 @@ class AirtableController < AuthenticatedController
   before_action -> { authorize Airtable }
 
   def index
-    airtable_api = Airtable.new(current_user.uuid)
-
     if airtable_api.needs_refreshed_token?
       airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
     end
@@ -19,16 +17,12 @@ class AirtableController < AuthenticatedController
       redirect_to airtable_path and return
     end
 
-    airtable_api = Airtable.new(current_user.uuid)
-
     airtable_api.request_token(params[:code], airtable_api.build_redirect_uri(request))
 
     redirect_to airtable_path
   end
 
   def refresh_token
-    airtable_api = Airtable.new(current_user.uuid)
-
     airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
 
     redirect_to airtable_path
@@ -41,5 +35,11 @@ class AirtableController < AuthenticatedController
     Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token_expiration")
 
     redirect_to airtable_path
+  end
+
+  private
+
+  def airtable_api
+    Airtable.new(current_user.uuid)
   end
 end

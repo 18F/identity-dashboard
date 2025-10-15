@@ -8,8 +8,10 @@ class IdentityConfig
     # rubocop:disable Metrics/BlockLength
     Identity::Hostdata.load_config!(app_root:, rails_env:) do |config|
       config.add(:admin_email, type: :string)
+      config.add(:airtable_app_id, type: :string)
       config.add(:airtable_oauth_client_id, type: :string)
       config.add(:airtable_oauth_client_secret, type: :string)
+      config.add(:airtable_table_id, type: :string)
       config.add(:asset_host, type: :string)
       config.add(:assets_version, type: :string)
       config.add(:auto_account_creation_tlds, type: :string)
