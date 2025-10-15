@@ -15,15 +15,15 @@ class ExtractsController < AuthenticatedController # :nodoc:
       criteria_list: extracts_params[:criteria_list],
       criteria_file: extracts_params[:criteria_file],
     )
+  
 
-    # question - do we want to assign these to variables? 
     if @extract.valid? && @extract.teams.present? && @extract.service_providers.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
       return render 'results'
-    elsif @extract.errors.empty? && @extract.successes.empty?
+    elsif @extract.errors.empty? && @extract.teams.empty?
       flash[:error] = 'No ServiceProvider rows were returned'
     end
 
@@ -44,9 +44,10 @@ class ExtractsController < AuthenticatedController # :nodoc:
   # @return [String]
   #json output be a hash of two arrays (teams, service_providers)
   def save_to_file
+    data = {teams: @extract.teams, service_providers: @extract.service_providers}
     begin
       File.open(@extract.filename, 'w') do |f|
-        f.print {teams: @extract.teams, service_providers: @extract.service_providers}.to_json
+        f.print data.to_json
       end
       flash[:success] = 'Extracted configs saved'
     rescue => err

@@ -32,8 +32,8 @@ class Extract # :nodoc:
   def failures
     criteria.reject do |criterion|
       if extract_by_team?
-        team.find do |config|
-          config.id.to_s == criterion
+        teams.find do |config|
+          config == criterion
         end
       else
         service_providers.find do |config|
@@ -56,7 +56,7 @@ class Extract # :nodoc:
       team_data = extract_by_team? ?
         Team.find(crit.to_i) : 
         Team.find(ServiceProvider.where(issuer: crit).select(:group_id))
-      @team.push(team_data)
+      @teams.push(team_data)
     end
   end
 
@@ -65,8 +65,8 @@ class Extract # :nodoc:
     criteria.each do |crit|
       service_providers_data = extract_by_team? ?
         ServiceProvider.where(group_id: crit) :
-        ServiceProvider.where(issuer: crit)
-      @service_providers.push(service_providers_data)
+        ServiceProvider.find_by(issuer: crit)
+      @service_providers.concat(service_providers_data)
     end
   end
 
