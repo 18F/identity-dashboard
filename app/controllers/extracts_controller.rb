@@ -16,8 +16,7 @@ class ExtractsController < AuthenticatedController # :nodoc:
       criteria_file: extracts_params[:criteria_file],
     )
   
-
-    if @extract.valid? && @extract.teams.present? && @extract.service_providers.present?
+    if @extract.valid? && @extract.teams.present? || @extract.service_providers.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end

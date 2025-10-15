@@ -31,14 +31,10 @@ class Extract # :nodoc:
   # @return [Array<String>]
   def failures
     criteria.reject do |criterion|
-      if extract_by_team?
-        teams.find do |config|
-          config == criterion
-        end
-      else
-        service_providers.find do |config|
-         config.issuer == criterion
-        end
+      service_providers.find do |config|
+        extract_by_team? ?
+        config.group_id.to_s == criterion : 
+        config.issuer == criterion
       end
     end
   end
@@ -48,26 +44,20 @@ class Extract # :nodoc:
     "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
-  # @return [Array<Hash{Team,Array<ServiceProvider>}>]
-  #TODO: confirm we are rescuing from active record not found errors
+  # @return [Array<Team>]
   def teams
-    @teams = []
-    criteria.each do |crit|
-      team_data = extract_by_team? ?
+    @teams = criteria.map do |crit|
+      extract_by_team? ?
         Team.find(crit.to_i) : 
-        Team.find(ServiceProvider.where(issuer: crit).select(:group_id))
-      @teams.push(team_data)
+        Team.find(ServiceProvider.find(issuer: crit).select(:group_id))
     end
   end
 
+  # @return [Array<ServiceProvider>]
   def service_providers
-    @service_providers = []
-    criteria.each do |crit|
-      service_providers_data = extract_by_team? ?
-        ServiceProvider.where(group_id: crit) :
-        ServiceProvider.find_by(issuer: crit)
-      @service_providers.concat(service_providers_data)
-    end
+    @service_providers ||= extract_by_team? ?
+      ServiceProvider.where(group_id: criteria) :
+      ServiceProvider.where(issuer: criteria)
   end
 
   def valid?

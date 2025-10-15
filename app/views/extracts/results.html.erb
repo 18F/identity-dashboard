@@ -2,7 +2,8 @@
 <p class="usa-prose">Results file: <%= @extract.filename %></p>
 
 <% if @extract.failures.present? %>
-  <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %> missing</h2>
+  <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %>  is invalid </h2>
+   <% binding.pry %>
   <ul class="usa-list">
     <% @extract.failures.each do |f| %>
       <li><%= f %></li>
@@ -13,7 +14,6 @@
 <h2><%= @extract.service_providers.length %> ServiceProvider rows found</h2>
 <ul class="usa-list font-family-mono">
   <% @extract.service_providers.each do |sp| %>
-    <% binding.pry %>
     <li>service provider <%= sp.group_id %> | <%= sp.issuer %></li>
   <% end %>
 </ul>
