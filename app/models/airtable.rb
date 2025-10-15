@@ -6,8 +6,6 @@ class Airtable # :nodoc:
   APP_ID = 'appCPBIq0sFQUZUSY'
   TABLE_ID = 'tbl8XAxD4G5uBEPMk'
 
-  REDIRECT_URI = 'http://localhost:3001/airtable/oauth/redirect'
-
   def initialize(user_uuid)
     @user_uuid = user_uuid
     @conn ||= Faraday.new
@@ -56,9 +54,9 @@ class Airtable # :nodoc:
     get_admin_emails_for_record(record).include?(email.downcase)
   end
 
-  def request_token(code)
+  def request_token(code, redirect_uri)
     request_data = { code: code,
-                     redirect_uri: REDIRECT_URI,
+                     redirect_uri: redirect_uri,
                      grant_type: 'authorization_code',
                      code_verifier: Rails.cache.read("#{@user_uuid}.airtable_code_verifier") }
 

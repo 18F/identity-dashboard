@@ -76,9 +76,6 @@ class Teams::UsersController < AuthenticatedController
 
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
-    Rails.logger.debug('******************')
-    Rails.logger.debug(params[:confirm_partner_admin].blank?)
-    Rails.logger.debug('******************')
     if team_membership.role_name == 'partner_admin' && !is_verified_partner_admin? && params[:confirm_partner_admin].blank?
       flash[:error] =
         "User #{team_membership.user.email} is not a Partner Admin in Airtable. Please verify with the

@@ -16,7 +16,10 @@ class AirtableController < AuthenticatedController
     end
 
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.request_token(params[:code])
+
+    base_url = "#{request.protocol}#{request.host_with_port}"
+    redirect_uri = "#{base_url}/airtable/oauth/redirect"
+    airtable_api.request_token(params[:code], redirect_uri)
 
     redirect_to airtable_path
   end
