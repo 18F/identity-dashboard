@@ -2,8 +2,7 @@
 <p class="usa-prose">Results file: <%= @extract.filename %></p>
 
 <% if @extract.failures.present? %>
-  <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %>  is invalid </h2>
-   <% binding.pry %>
+  <h2><%= "#{@extract.failures.length} #{@extract.search_by == 'teams' ? 'teams' : 'issuers' }" %>  were invalid </h2>
   <ul class="usa-list">
     <% @extract.failures.each do |f| %>
       <li><%= f %></li>
