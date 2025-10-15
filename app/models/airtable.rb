@@ -93,9 +93,10 @@ class Airtable
       response_type: 'code',
       client_id: client_id,
       redirect_uri: redirect_uri,
+      scope: 'data.records:read',
       state: airtable_state,
       code_challenge_method: 'S256',
-      code_challenge: code_challenge
+      code_challenge: code_challenge,
     }
 
     url = "#{BASE_TOKEN_URI}/authorize?" + URI.encode_www_form(query_params)
