@@ -11,7 +11,7 @@
 <%= simple_form_for(@team_membership, url: team_user_path(@team_membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-top-3">
-    <% if @remove_partner_admin && @team_membership.role == "logingov_admin" %>
+    <% if @remove_partner_admin %>
       <p>In order to give <strong>Partner Admin</strong> role, you must first connect with <%= link_to "Airtable", @oauth_url %> with OAuth.</p>
     <% end %>
     <legend><p id='rbac_description'><%= t('team_memberships.rbac_description') %></p></legend>
