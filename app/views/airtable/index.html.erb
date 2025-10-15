@@ -5,19 +5,12 @@
   <%= link_to "Connect with Airtable", @oauth_url, class: 'usa-button usa-button--outline' %>
 
 <% else %>
-  <p>
-  	<%= label_tag :airtable_oauth_token, "Token:" %>
-  </p>
-  <p>
-  	<%= text_area_tag :airtable_oauth_token, Rails.cache.read("#{current_user.uuid}.airtable_oauth_token"), rows: 6, cols: 60, disabled: true %>
-  </p>
-  <p>
-  	<%= label_tag :airtable_oauth_token_expiration, "Expires At:" %>
-  </p>
-  <p>
-    <%= text_area_tag :airtable_oauth_token_expiration, Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration"), rows: 1, cols: 60, disabled: true %>
-  </p>
-  <p>
+  <dl class="usa-definitions">
+    <dt>Token:</dt>
+    <dd class="token"><%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %></dd>
+    <dt>Expires At:</dt>
+    <dd><%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration") %></dd>
+  </dl>
   <%= link_to "Refresh Token", airtable_oauth_refresh_token_path, class: 'usa-button usa-button--outline' %>
   <%= link_to "Clear Token", airtable_oauth_clear_token_path, class: 'usa-button usa-button--outline' %>
 <% end %>
