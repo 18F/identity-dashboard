@@ -49,7 +49,8 @@ RSpec.describe Airtable, type: :model do
   describe '#get_admin_emails_for_record' do
     before do
       allow(airtable).to receive(:token_bearer_authorization_header).and_return({})
-      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record).and_return([sample_email.downcase])
+      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record)
+        .and_return([sample_email.downcase])
     end
 
     it 'returns admin emails for a given record' do
@@ -59,7 +60,8 @@ RSpec.describe Airtable, type: :model do
 
   describe '#isNewPartnerAdminInAirtable?' do
     before do
-      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record).and_return([sample_email.downcase])
+      allow(airtable).to receive(:get_admin_emails_for_record).with(sample_record)
+        .and_return([sample_email.downcase])
     end
 
     it 'returns true if the email is an admin' do
@@ -85,7 +87,7 @@ sample_record)).to eq(false)
             'code' => code,
             'redirect_uri' => redirect_uri,
             'grant_type' => 'authorization_code',
-            'code_verifier' => anything, # Stubbing since it's generated and unique each time
+            'code_verifier' => anything,
           },
           headers: {
             'Content-Type' => 'application/x-www-form-urlencoded',
@@ -96,7 +98,8 @@ sample_record)).to eq(false)
         )
         .to_return(status: 200, body: token_response, headers: {})
 
-      allow(airtable).to receive(:token_basic_authorization_header).and_return({ 'Authorization' => 'Basic mock_auth' })
+      allow(airtable).to receive(:token_basic_authorization_header)
+        .and_return({ 'Authorization' => 'Basic mock_auth' })
     end
 
     it 'requests and saves the token' do
@@ -111,11 +114,12 @@ sample_record)).to eq(false)
     let(:airtable) { Airtable.new(user_uuid) }
 
     before do
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token_expiration").and_return(expiration_time)
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token_expiration")
+        .and_return(expiration_time)
     end
 
     context 'when the token has expired' do
-      let(:expiration_time) { DateTime.now - 1 } # Expired time in the past
+      let(:expiration_time) { DateTime.now - 1 }
 
       it 'returns true' do
         expect(airtable.needs_refreshed_token?).to eq(true)
@@ -150,8 +154,10 @@ sample_record)).to eq(false)
     end
 
     before do
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_refresh_token").and_return('refresh_token')
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token").and_return('old_access_token')
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_refresh_token")
+        .and_return('refresh_token')
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
+        .and_return('old_access_token')
 
       stub_request(:post, 'https://airtable.com/oauth2/v1/token')
         .with(
@@ -169,7 +175,8 @@ sample_record)).to eq(false)
         )
         .to_return(status: 200, body: token_response, headers: {})
 
-      allow(airtable).to receive(:token_basic_authorization_header).and_return({ 'Authorization' => 'Basic mock_auth' })
+      allow(airtable).to receive(:token_basic_authorization_header)
+        .and_return({ 'Authorization' => 'Basic mock_auth' })
 
       allow(airtable).to receive(:save_token).and_call_original
     end
@@ -182,7 +189,8 @@ sample_record)).to eq(false)
 
   describe '#has_token?' do
     it 'checks if a token exists' do
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token").and_return('token')
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
+        .and_return('token')
       expect(airtable.has_token?).to eq(true)
     end
   end

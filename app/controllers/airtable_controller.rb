@@ -1,3 +1,4 @@
+# AirtableContoller helps the user manage their Airtable API tokens
 class AirtableController < AuthenticatedController
   before_action -> { authorize Airtable }
 

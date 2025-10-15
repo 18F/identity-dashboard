@@ -76,13 +76,16 @@ class Teams::UsersController < AuthenticatedController
 
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
-    if team_membership.role_name == 'partner_admin' && !is_verified_partner_admin? && params[:confirm_partner_admin].blank?
+    if team_membership.role_name == 'partner_admin' &&
+       !verified_partner_admin? &&
+       params[:confirm_partner_admin].blank?
       flash[:error] =
-        "User #{team_membership.user.email} is not a Partner Admin in Airtable. Please verify with the
-           appropriate Account Manager that this user should be given the Partner Admin role."
+        "User #{team_membership.user.email} is not a Partner Admin in Airtable.
+          Please verify with the appropriate Account Manager that this user should
+          be given the Partner Admin role."
 
       redirect_to edit_team_user_path(team, team_membership.user,
-need_to_confirm_role: true) and return
+                                      need_to_confirm_role: true) and return
     end
     team_membership.save
     if team_membership.errors.any?
@@ -192,7 +195,7 @@ need_to_confirm_role: true) and return
     log.record_save(action_name, team_membership)
   end
 
-  def is_verified_partner_admin?
+  def verified_partner_admin?
     airtable_api = Airtable.new(current_user.uuid)
     airtable_api.refresh_token if airtable_api.needs_refreshed_token?
     issuers = []

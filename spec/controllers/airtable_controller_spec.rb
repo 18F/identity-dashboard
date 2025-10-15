@@ -17,7 +17,8 @@ RSpec.describe AirtableController, type: :controller do
 
       it 'refreshes the token and generates the oauth url' do
         expect_any_instance_of(Airtable).to receive(:refresh_token)
-        expect_any_instance_of(Airtable).to receive(:generate_oauth_url).and_return('mock_oauth_url')
+        expect_any_instance_of(Airtable).to receive(:generate_oauth_url)
+          .and_return('mock_oauth_url')
 
         get :index
 
@@ -32,7 +33,8 @@ RSpec.describe AirtableController, type: :controller do
 
       it 'does not refresh the token and generates the oauth url' do
         expect_any_instance_of(Airtable).to_not receive(:refresh_token)
-        expect_any_instance_of(Airtable).to receive(:generate_oauth_url).and_return('mock_oauth_url')
+        expect_any_instance_of(Airtable).to receive(:generate_oauth_url)
+          .and_return('mock_oauth_url')
 
         get :index
 
@@ -46,11 +48,13 @@ RSpec.describe AirtableController, type: :controller do
 
     context 'when the state matches' do
       before do
-        allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state").and_return('valid_state')
+        allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state")
+          .and_return('valid_state')
       end
 
       it 'requests the token' do
-        expect_any_instance_of(Airtable).to receive(:request_token).with('authorization_code', 'http://test.host/airtable/oauth/redirect')
+        expect_any_instance_of(Airtable).to receive(:request_token)
+          .with('authorization_code', 'http://test.host/airtable/oauth/redirect')
 
         get :oauth_redirect, params: { state: 'valid_state', code: 'authorization_code' }
         expect(response).to redirect_to(airtable_path)
@@ -59,7 +63,8 @@ RSpec.describe AirtableController, type: :controller do
 
     context 'when the state does not match' do
       before do
-        allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state").and_return('invalid_state')
+        allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state")
+          .and_return('invalid_state')
       end
 
       it 'does not request the token and sets an error flash message' do
@@ -82,10 +87,14 @@ RSpec.describe AirtableController, type: :controller do
 
   describe 'GET #clear_token' do
     it 'clears the appropriate tokens' do
-      expect(Rails.cache).to receive(:delete).with("#{logingov_admin.uuid}.airtable_oauth_token")
-      expect(Rails.cache).to receive(:delete).with("#{logingov_admin.uuid}.airtable_oauth_token_expiration")
-      expect(Rails.cache).to receive(:delete).with("#{logingov_admin.uuid}.airtable_oauth_refresh_token")
-      expect(Rails.cache).to receive(:delete).with("#{logingov_admin.uuid}.airtable_oauth_refresh_token_expiration")
+      expect(Rails.cache).to receive(:delete)
+        .with("#{logingov_admin.uuid}.airtable_oauth_token")
+      expect(Rails.cache).to receive(:delete)
+        .with("#{logingov_admin.uuid}.airtable_oauth_token_expiration")
+      expect(Rails.cache).to receive(:delete)
+        .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token")
+      expect(Rails.cache).to receive(:delete)
+        .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token_expiration")
 
       get :clear_token
       expect(response).to redirect_to(airtable_path)

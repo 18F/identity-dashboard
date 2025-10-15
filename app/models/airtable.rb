@@ -1,4 +1,7 @@
-class Airtable # :nodoc:
+# The Airtable model handles the OAuth connection with Airtable
+# as well as sending requests to the Airtable API and managing
+# the returned data
+class Airtable
   include ActiveModel::Model
 
   BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
@@ -104,7 +107,12 @@ class Airtable # :nodoc:
     redirect_uri = "#{base_url}/airtable/oauth/redirect&scope=data.records:read"
 
     client_id = IdentityConfig.store.airtable_oauth_client_id
-    "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
+    "#{BASE_TOKEN_URI}/authorize?response_type=code&
+                                               client_id=#{client_id}&
+                                               redirect_uri=#{redirect_uri}&
+                                               state=#{airtable_state}&
+                                               code_challenge_method=S256&
+                                               code_challenge=#{code_challenge}"
   end
 
   def build_redirect_uri(request)
