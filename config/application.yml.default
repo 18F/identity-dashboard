@@ -2,8 +2,10 @@
 # in any particular environment
 
 admin_email: 'partners@login.gov'
+airtable_app_id: ''
 airtable_oauth_client_id: ''
 airtable_oauth_client_secret: ''
+airtable_table_id: ''
 asset_host: ''
 assets_version: '1.0'
 auto_account_creation_tlds: '.gov,.mil'
