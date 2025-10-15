@@ -50,7 +50,7 @@ RSpec.describe AirtableController, type: :controller do
       end
 
       it 'requests the token' do
-        expect_any_instance_of(Airtable).to receive(:request_token).with('authorization_code')
+        expect_any_instance_of(Airtable).to receive(:request_token).with('authorization_code', 'http://test.host/airtable/oauth/redirect')
 
         get :oauth_redirect, params: { state: 'valid_state', code: 'authorization_code' }
         expect(response).to redirect_to(airtable_path)

@@ -3,7 +3,10 @@ class AirtableController < AuthenticatedController
 
   def index
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+
+    if airtable_api.needs_refreshed_token?
+      airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
+    end
 
     base_url = "#{request.protocol}#{request.host_with_port}"
     @oauth_url = airtable_api.generate_oauth_url(base_url)
@@ -17,16 +20,15 @@ class AirtableController < AuthenticatedController
 
     airtable_api = Airtable.new(current_user.uuid)
 
-    base_url = "#{request.protocol}#{request.host_with_port}"
-    redirect_uri = "#{base_url}/airtable/oauth/redirect"
-    airtable_api.request_token(params[:code], redirect_uri)
+    airtable_api.request_token(params[:code], airtable_api.build_redirect_uri(request))
 
     redirect_to airtable_path
   end
 
   def refresh_token
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refresh_token
+
+    airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
 
     redirect_to airtable_path
   end

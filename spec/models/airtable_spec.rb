@@ -74,6 +74,7 @@ sample_record)).to eq(false)
 
   describe '#request_token' do
     let(:code) { SecureRandom.hex(12) }
+    let(:redirect_uri) { 'https://example.com' }
 
     before do
       Rails.cache.clear
@@ -82,7 +83,7 @@ sample_record)).to eq(false)
         .with(
           body: {
             'code' => code,
-            'redirect_uri' => Airtable::REDIRECT_URI,
+            'redirect_uri' => redirect_uri,
             'grant_type' => 'authorization_code',
             'code_verifier' => anything, # Stubbing since it's generated and unique each time
           },
@@ -99,7 +100,7 @@ sample_record)).to eq(false)
     end
 
     it 'requests and saves the token' do
-      expect { airtable.request_token(code) }.to change {
+      expect { airtable.request_token(code, redirect_uri) }.to change {
         Rails.cache.read("#{user_uuid}.airtable_oauth_token")
       }.from(nil).to('mock_access_token')
     end
@@ -157,7 +158,7 @@ sample_record)).to eq(false)
           body: {
             'refresh_token' => 'refresh_token',
             'grant_type' => 'refresh_token',
-            'redirect_uri' => Airtable::REDIRECT_URI,
+            'redirect_uri' => 'https://example.com',
           },
           headers: {
             'Content-Type' => 'application/x-www-form-urlencoded',
@@ -174,7 +175,7 @@ sample_record)).to eq(false)
     end
 
     it 'refreshes the token and calls save_token' do
-      airtable.refresh_token
+      airtable.refresh_token('https://example.com')
       expect(airtable).to have_received(:save_token)
     end
   end
@@ -193,6 +194,19 @@ sample_record)).to eq(false)
       expect(oauth_url).to include('authorize')
       expect(oauth_url).to include('client_id=')
       expect(oauth_url).to include('redirect_uri=')
+    end
+  end
+
+  describe '#build_redirect_uri' do
+    it 'generates the correct redirect URI' do
+      request = double('Request')
+      allow(request).to receive(:protocol).and_return('http://')
+      allow(request).to receive(:host_with_port).and_return('localhost:3000')
+
+      expected_uri = 'http://localhost:3000/airtable/oauth/redirect'
+      redirect_uri = airtable.build_redirect_uri(request)
+
+      expect(redirect_uri).to eq(expected_uri)
     end
   end
 end

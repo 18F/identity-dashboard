@@ -74,9 +74,9 @@ class Airtable # :nodoc:
       Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration") < DateTime.now
   end
 
-  def refresh_token
+  def refresh_token(redirect_uri)
     request_data = { refresh_token: Rails.cache.read("#{@user_uuid}.airtable_oauth_refresh_token"),
-                     redirect_uri: REDIRECT_URI,
+                     redirect_uri: redirect_uri,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
@@ -107,12 +107,12 @@ class Airtable # :nodoc:
     "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
   end
 
-  private
-
-  def headers
-    refresh_token if needs_refreshed_token?
-    token_basic_authorization_header
+  def build_redirect_uri(request)
+    base_url = "#{request.protocol}#{request.host_with_port}"
+    "#{base_url}/airtable/oauth/redirect"
   end
+
+  private
 
   def token_bearer_authorization_header
     { 'Content-Type' => 'application/x-www-form-urlencoded',
