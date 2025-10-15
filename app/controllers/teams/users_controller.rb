@@ -76,9 +76,8 @@ class Teams::UsersController < AuthenticatedController
 
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
-    if team_membership.role_name == 'partner_admin' &&
-       !verified_partner_admin? &&
-       params[:confirm_partner_admin].blank?
+
+    if partner_admin_confirmation_needed?(team_membership)
       flash[:error] =
         "User #{team_membership.user.email} is not a Partner Admin in Airtable.
           Please verify with the appropriate Account Manager that this user should
@@ -212,5 +211,13 @@ class Teams::UsersController < AuthenticatedController
     end
 
     true
+  end
+
+  def partner_admin_confirmation_needed?(team_membership)
+    if team_membership.role_name == 'partner_admin'
+      return false if params[:confirm_partner_admin].present?
+      return true if !verified_partner_admin?
+    end
+    false
   end
 end
