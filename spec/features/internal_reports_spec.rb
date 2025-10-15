@@ -4,13 +4,13 @@ feature 'internal reports' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
 
   it 'responds with an error when not logged in' do
-    visit internal_reports_team_memberships_path(format: 'csv')
+    visit internal_reports_issuer_memberships_path(format: 'csv')
     expect(body).to eq('You need to sign in or sign up before continuing.')
   end
 
   it 'responds with an error when not a logingov admin' do
     login_as create(:user)
-    visit internal_reports_team_memberships_path(format: 'csv')
+    visit internal_reports_issuer_memberships_path(format: 'csv')
     expect(page).to have_http_status(:not_found)
   end
 
@@ -37,7 +37,7 @@ feature 'internal reports' do
 
     it 'can generate a CSV showing everything sorted' do
       login_as logingov_admin
-      visit internal_reports_team_memberships_path(format: 'csv')
+      visit internal_reports_issuer_memberships_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
 
@@ -52,7 +52,7 @@ feature 'internal reports' do
     # Because we use `sequence(:email)` in the users factory,
     # the users should always sort into the order we created them
     [
-      TeamMembershipCsv::HEADER_ROW,
+      IssuerMembershipCsv::HEADER_ROW,
       [
         two_teams_admin.email,
         'Partner Admin',
