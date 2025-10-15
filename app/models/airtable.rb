@@ -23,9 +23,9 @@ class Airtable
     resp = @conn.get(all_records_uri)
     response = JSON.parse(resp.body)
     matched_records ||= []
-    response['records'].each do |r|
-      matched_records.push(r) if issuers.any? do |issuer|
-        r['fields']['Issuer String'].include?(issuer)
+    issuers.each do |issuer|
+      response['records'].select do |r|
+        matched_records.push(r) if r['fields']['Issuer String'].include?(issuer)
       end
     end
 

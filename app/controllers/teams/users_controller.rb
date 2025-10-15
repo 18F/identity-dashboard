@@ -196,7 +196,8 @@ class Teams::UsersController < AuthenticatedController
 
   def verified_partner_admin?
     airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+    redirect_uri = airtable_api.build_redirect_uri(request)
+    airtable_api.refresh_token(redirect_uri) if airtable_api.needs_refreshed_token?
     issuers = []
     ServiceProvider.where(team: self.team).each do |sp|
       issuers.push(sp.issuer)
