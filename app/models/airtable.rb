@@ -89,17 +89,9 @@ class Airtable
 
     client_id = IdentityConfig.store.airtable_oauth_client_id
 
-    query_params = {
-      response_type: 'code',
-      client_id: client_id,
-      redirect_uri: redirect_uri,
-      scope: 'data.records:read',
-      state: airtable_state,
-      code_challenge_method: 'S256',
-      code_challenge: code_challenge,
-    }
-
-    "#{BASE_TOKEN_URI}/authorize?" + URI.encode_www_form(query_params)
+    # rubocop:disable Layout/LineLength
+    "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
+    # rubocop:enable Layout/LineLength
   end
 
   def build_redirect_uri(request)
