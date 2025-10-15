@@ -1,6 +1,6 @@
 require 'portal/constants'
-
-class HomeController < ApplicationController # :nodoc:
+# Controller for the Home pages (logged-in and out)
+class HomeController < ApplicationController
   def index
     @canonical_url = !user_signed_in? ? request.base_url.gsub('portal', 'dashboard') : nil
     render :index and return unless user_signed_in?

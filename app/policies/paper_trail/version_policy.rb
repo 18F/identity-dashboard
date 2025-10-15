@@ -1,5 +1,7 @@
-class PaperTrail::VersionPolicy < BasePolicy # :nodoc:
-  class Scope < BasePolicy::Scope # :nodoc:
+# Permission policy for PaperTrail logs
+class PaperTrail::VersionPolicy < BasePolicy
+  # Policy scope for Papertrail logs
+  class Scope < BasePolicy::Scope
     def resolve
       user_has_login_admin_role? ? scope : scope.none
     end

@@ -1,4 +1,6 @@
-class Extract # :nodoc:
+# The Extract tool is used for migrating ServiceProvider data from `int`
+# to `prod`.
+class Extract
   include ActiveModel::Model
 
   attr_accessor :ticket, :search_by, :criteria_file, :criteria_list

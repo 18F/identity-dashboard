@@ -1,4 +1,5 @@
-class Seeders::Teams < Seeders::BaseSeeder # :nodoc:
+# The Internal Team is used to define who can be a `logingov_admin`.
+class Seeders::Teams < Seeders::BaseSeeder
   def seed
     return if Team.internal_team
 

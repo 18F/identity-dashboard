@@ -1,4 +1,4 @@
-class UserPolicy < BasePolicy # :nodoc: all
+class UserPolicy < BasePolicy # :nodoc:
   attr_reader :user
 
   def manage_users?
@@ -9,6 +9,7 @@ class UserPolicy < BasePolicy # :nodoc: all
     true
   end
 
+  # User policy scope
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user_has_login_admin_role?

@@ -1,4 +1,5 @@
-class Rack::Attack # :nodoc:
+# Rack middleware config for blocking and throttling
+class Rack::Attack
   ### Configure Cache ###
 
   # If you don't want to use Rails.cache (Rack::Attack's default), then

@@ -1,4 +1,5 @@
-class Teams::UsersController < AuthenticatedController # :nodoc:
+# Controls Team Users pages, where partners update the users for a given team
+class Teams::UsersController < AuthenticatedController
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 

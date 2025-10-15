@@ -1,4 +1,5 @@
-class UserValidator < ActiveModel::Validator # :nodoc:
+# Validates the existence of a given user email address
+class UserValidator < ActiveModel::Validator
   def validate(record)
     return unless User.exists?(email: record.email)
 

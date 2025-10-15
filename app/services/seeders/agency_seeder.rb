@@ -1,4 +1,5 @@
-class Seeders::AgencySeeder # :nodoc:
+# Agencies are static and should contain all Federal agencies
+class Seeders::AgencySeeder
   attr_reader :agency_configs
 
   def initialize(agency_configs = Rails.application.config.agencies)

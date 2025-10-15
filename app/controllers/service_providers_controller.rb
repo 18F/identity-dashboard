@@ -1,4 +1,6 @@
-class ServiceProvidersController < AuthenticatedController # :nodoc:
+# Controller for ServiceProviders pages
+# Pages include the legacy Long Form, and newer Guided Flow for #new/edit
+class ServiceProvidersController < AuthenticatedController
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
