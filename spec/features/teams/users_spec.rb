@@ -368,7 +368,7 @@ describe 'users' do
           expect(input_item_strings[index]).to include(role.friendly_name)
         end
         expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
-        expect(page).to_not have_content('Partner Admin')
+        expect(page).to_not have_content('Can add and delete users and teams')
       end
     end
   end
