@@ -215,8 +215,8 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def partner_admin_confirmation_needed?
-    return false unless IdentityConfig.store.prod_like_env 
-      
+    return false unless IdentityConfig.store.prod_like_env
+
     if team_membership.role_name == 'partner_admin'
       return false if params[:confirm_partner_admin].present?
       return true if !verified_partner_admin?
