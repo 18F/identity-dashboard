@@ -33,7 +33,7 @@ class Extract # :nodoc:
     criteria.reject do |criterion|
       service_providers.find do |config|
         extract_by_team? ?
-        config.group_id.to_s == criterion : 
+        config.group_id.to_s == criterion :
         config.issuer == criterion
       end
     end
@@ -46,13 +46,10 @@ class Extract # :nodoc:
 
   # @return [Array<Team>]
   def teams
-    @teams = criteria.filter_map do |crit|
-      extract_by_team? ?
-        Team.find(crit.to_i) : 
-        Team.find(ServiceProvider.find(issuer: crit).select(:group_id))
-    rescue ActiveRecord::RecordNotFound
-      next
-    end
+    sp_group_ids = service_providers.map(&:group_id)
+    @teams ||= extract_by_team? ?
+        Team.where(id: criteria) :
+        Team.where(id: sp_group_ids)
   end
 
   # @return [Array<ServiceProvider>]
@@ -60,8 +57,6 @@ class Extract # :nodoc:
     @service_providers ||= extract_by_team? ?
       ServiceProvider.where(group_id: criteria) :
       ServiceProvider.where(issuer: criteria)
-  rescue ActiveRecord::RecordNotFound
-    @service_providers
   end
 
   def valid?

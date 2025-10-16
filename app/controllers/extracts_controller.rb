@@ -15,15 +15,17 @@ class ExtractsController < AuthenticatedController # :nodoc:
       criteria_list: extracts_params[:criteria_list],
       criteria_file: extracts_params[:criteria_file],
     )
-  
-    if @extract.valid? && @extract.teams.present? || @extract.service_providers.present?
+
+    if @extract.valid? && @extract.service_providers.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
       return render 'results'
-    elsif @extract.errors.empty? && @extract.teams.empty?
+    elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider rows were returned'
+    elsif @extract.errors.empty? && @extract.teams.empty?
+      flash[:error] = 'No Team rows were returned'
     end
 
     render 'index'
@@ -41,9 +43,9 @@ class ExtractsController < AuthenticatedController # :nodoc:
   end
 
   # @return [String]
-  #json output be a hash of two arrays (teams, service_providers)
+  # json output be a hash of two arrays (teams, service_providers)
   def save_to_file
-    data = {teams: @extract.teams, service_providers: @extract.service_providers}
+    data = { teams: @extract.teams, service_providers: @extract.service_providers }
     begin
       File.open(@extract.filename, 'w') do |f|
         f.print data.to_json

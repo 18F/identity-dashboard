@@ -5,7 +5,8 @@ describe ExtractsController do
 
   let(:partner) { create(:user) }
   let(:admin) { create(:user, :logingov_admin) }
-  let(:sp1) { create(:service_provider, :ready_to_activate) }
+  let(:team) { create(:team) }
+  let(:sp1) { create(:service_provider, :ready_to_activate, team:) }
   let(:sp2) { create(:service_provider, :ready_to_activate) }
   let(:params1) do
     { extract: {
@@ -101,7 +102,7 @@ describe ExtractsController do
         post :create, params: params1
         filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
 
-        expect(File.read filename).to eq([sp1].to_json)
+        expect(File.read filename).to eq({ teams: [team], service_providers: [sp1] }.to_json)
         expect(response).to render_template 'results'
       end
 
