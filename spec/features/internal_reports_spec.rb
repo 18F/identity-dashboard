@@ -19,17 +19,18 @@ feature 'internal reports' do
     let(:two_teams_admin) { create(:team_membership, :partner_admin).user }
     let(:complex_user) { create(:team_membership, :partner_admin).user }
     let(:additional_team) { create(:team) }
+    # Report showing all issuers requires ServiceProviders
+    let(:sp0) { create(:service_provider, team: simple_user.teams.first) }
+    let(:sp1) { create(:service_provider, team: simple_user.teams.first) }
+    let(:sp2) { create(:service_provider, team: additional_team) }
+    let(:sp3) { create(:service_provider, team: additional_team) }
 
     before do
-      # Report showing all issuers requires ServiceProviders
-      create(:service_provider,
-             team: simple_user.teams.first)
-      create(:service_provider,
-             team: simple_user.teams.first)
-      create(:service_provider,
-             team: additional_team)
-      create(:service_provider,
-             team: additional_team)
+      # ensure ServiceProviders are created for each test
+      sp0.issuer
+      sp1.issuer
+      sp2.issuer
+      sp3.issuer
       # Report shows TeamMembership for each issuer
       create(:team_membership,
              user: two_teams_admin,
@@ -51,53 +52,76 @@ feature 'internal reports' do
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
 
-      expect(csv_response.length).to eq(9)
+      expect(csv_response.length).to eq(10)
       expect(csv_response).to eq(expected_table)
     end
   end
 
   def expected_table
-    admin_two_teams_names = two_teams_admin.teams.map(&:name).sort
-    remaining_team = complex_user.teams - simple_user.teams - [additional_team]
-    # Because we use `sequence(:email)` in the users factory,
-    # the users should always sort into the order we created them
     [
-      IssuerMembershipCsv::HEADER_ROW,
+      ['Issuer', 'Team', 'Team UUID', 'User email', 'Role'],
       [
-        two_teams_admin.email,
-        'Partner Admin',
-        admin_two_teams_names.first,
-      ],
-      [
-        two_teams_admin.email,
-        'Partner Admin',
-        admin_two_teams_names.second,
-      ],
-      [
+        sp0.issuer,
+        simple_user.teams.first.name,
+        simple_user.teams.first.uuid,
         simple_user.email,
         'Partner Developer',
+      ],
+      [
+        sp0.issuer,
         simple_user.teams.first.name,
-      ],
-      # With the same user, permissions should be in role order regardless of creation order
-      [
-        complex_user.email,
+        simple_user.teams.first.uuid,
+        two_teams_admin.email,
         'Partner Admin',
-        remaining_team.first.name,
       ],
       [
+        sp0.issuer,
+        simple_user.teams.first.name,
+        simple_user.teams.first.uuid,
         complex_user.email,
         'Partner Developer',
+      ],
+      [
+        sp1.issuer,
         simple_user.teams.first.name,
+        simple_user.teams.first.uuid,
+        simple_user.email,
+        'Partner Developer',
       ],
       [
+        sp1.issuer,
+        simple_user.teams.first.name,
+        simple_user.teams.first.uuid,
+        two_teams_admin.email,
+        'Partner Admin',
+      ],
+      [
+        sp1.issuer,
+        simple_user.teams.first.name,
+        simple_user.teams.first.uuid,
         complex_user.email,
-        'Partner Readonly',
-        additional_team.name,
+        'Partner Developer',
       ],
       [
+        sp2.issuer,
+        additional_team.name,
+        additional_team.uuid,
+        two_teams_admin.email,
+        'Partner Readonly',
+      ],
+      [
+        sp3.issuer,
+        additional_team.name,
+        additional_team.uuid,
+        two_teams_admin.email,
+        'Partner Readonly',
+      ],
+      [
+        'N/A',
+        Team.internal_team.name,
+        Team.internal_team.uuid,
         logingov_admin.email,
         'Login.gov Admin',
-        Team.internal_team.name,
       ],
     ]
   end

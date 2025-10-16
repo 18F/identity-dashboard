@@ -8,7 +8,7 @@ class InternalReportsController < AuthenticatedController
       .select(:id, :issuer, :group_id, :name, team: [:uuid])
       .where.not(group_id: nil)
     team_membership = TeamMembership.left_joins(:user, :role)
-      .select(:id, :user_id, :email, :group_id, :role_name, roles: [:friendly_name])
+      .select(:id, :user_id, :email, :group_id, roles: [:friendly_name])
     memberships = []
     sp_teams.each do |spt|
       spt_membership = team_membership.where(group_id: spt.group_id)
@@ -23,12 +23,28 @@ class InternalReportsController < AuthenticatedController
       end
     end
 
-    render renderable: UserPermissionsCsv.new(memberships)
+    render renderable: UserPermissionsCsv.new(memberships.union(internal_team_roles))
   end
 
   private
 
   def admin_only
     raise AbstractController::ActionNotFound unless current_user.logingov_admin?
+  end
+  # We need to include `logingov_admin` roles in our report
+  def internal_team_roles
+    internal_memberships = TeamMembership.left_joins(:team, :user, :role)
+      .select(:email, role: [:friendly_name], team: [:uuid, :name])
+      .where(group_id: Team.internal_team.id)
+
+    internal_memberships.map do |membership|
+      {
+        issuer: 'N/A',
+        team_uuid: membership.uuid,
+        team_name: membership.name,
+        user_email: membership.email,
+        role: membership.friendly_name,
+      }
+    end
   end
 end
