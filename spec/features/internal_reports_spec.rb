@@ -4,13 +4,13 @@ feature 'internal reports' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
 
   it 'responds with an error when not logged in' do
-    visit internal_reports_issuer_memberships_path(format: 'csv')
+    visit internal_reports_user_permissions_path(format: 'csv')
     expect(body).to eq('You need to sign in or sign up before continuing.')
   end
 
   it 'responds with an error when not a logingov admin' do
     login_as create(:user)
-    visit internal_reports_issuer_memberships_path(format: 'csv')
+    visit internal_reports_user_permissions_path(format: 'csv')
     expect(page).to have_http_status(:not_found)
   end
 
@@ -21,12 +21,22 @@ feature 'internal reports' do
     let(:additional_team) { create(:team) }
 
     before do
+      # Report showing all issuers requires ServiceProviders
+      create(:service_provider,
+             team: simple_user.teams.first)
+      create(:service_provider,
+             team: simple_user.teams.first)
+      create(:service_provider,
+             team: additional_team)
+      create(:service_provider,
+             team: additional_team)
+      # Report shows TeamMembership for each issuer
       create(:team_membership,
              user: two_teams_admin,
              team: simple_user.teams.first,
              role_name: 'partner_admin')
       create(:team_membership,
-             user: complex_user,
+             user: two_teams_admin,
              team: additional_team,
              role_name: 'partner_readonly')
       create(:team_membership,
@@ -37,11 +47,11 @@ feature 'internal reports' do
 
     it 'can generate a CSV showing everything sorted' do
       login_as logingov_admin
-      visit internal_reports_issuer_memberships_path(format: 'csv')
+      visit internal_reports_user_permissions_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
 
-      expect(csv_response.length).to eq(8)
+      expect(csv_response.length).to eq(9)
       expect(csv_response).to eq(expected_table)
     end
   end

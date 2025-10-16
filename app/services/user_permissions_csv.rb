@@ -1,16 +1,16 @@
 # Creates and renders a CSV of per-issuer TeamMembership data
 #
 # This is a security requirement, for auditability.
-class IssuerMembershipCsv
+class UserPermissionsCsv
   HEADER_ROW = ['Issuer', 'Team', 'Team UUID', 'User email', 'Role']
-  attr_reader :issuer_memberships
+  attr_reader :user_permissions
 
-  def initialize(issuer_memberships)
-    @issuer_memberships = issuer_memberships
+  def initialize(user_permissions)
+    @user_permissions = user_permissions
   end
 
   def render_in(view_context)
-    view_context.render body: team_membership_csv
+    view_context.render body: user_permissions_csv
   end
 
   def format
@@ -19,10 +19,10 @@ class IssuerMembershipCsv
 
   private
 
-  def team_membership_csv
+  def user_permissions_csv
     CSV.generate do |csv|
       csv << HEADER_ROW
-      issuer_memberships.each do |membership|
+      user_permissions.each do |membership|
         csv << [
           membership[:issuer],
           membership[:team_name],

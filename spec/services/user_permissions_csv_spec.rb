@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-describe IssuerMembershipCsv do
+describe UserPermissionsCsv do
   describe 'when rendering' do
     let(:view_stub) { instance_double ActionView::Base }
 
     describe 'with legacy users that do not have a role yet' do
-      let(:issuer_memberships) do
-        [build(:team_membership)]
+      let(:user_permissions) do
+        [build(:user_permissions)]
       end
 
       it 'outputs a row with no role' do
-        subject = described_class.new(issuer_memberships)
+        subject = described_class.new(user_permissions)
         expect(view_stub).to receive(:render) do |data|
           csv_response = CSV.parse(data[:body])
           expect(csv_response.length).to eq(2)
