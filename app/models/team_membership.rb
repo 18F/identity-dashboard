@@ -1,4 +1,8 @@
-class TeamMembership < ApplicationRecord # :nodoc:
+# TeamMembership connects a single User, Team, and Role.
+#
+# This is the only record of the Role for that User/Team combination.
+# Users and Teams are associated with each other through their own models.
+class TeamMembership < ApplicationRecord
   has_paper_trail on: %i[create update destroy]
 
   belongs_to :role,

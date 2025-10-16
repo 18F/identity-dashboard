@@ -1,4 +1,5 @@
-class CertsArePemsValidator < ActiveModel::Validator # :nodoc:
+# Validates that a given certificate is in PEM format
+class CertsArePemsValidator < ActiveModel::Validator
   def validate(record)
     Array(record.certs).each do |cert|
       next if cert.blank?

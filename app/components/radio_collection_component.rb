@@ -1,4 +1,5 @@
-class RadioCollectionComponent < ViewComponent::Base # :nodoc:
+# A radio button input collection component for SimpleForm
+class RadioCollectionComponent < ViewComponent::Base
   attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled
 
   # @param form [SimpleForm]

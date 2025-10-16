@@ -1,4 +1,5 @@
-class Teams::UsersController < AuthenticatedController # :nodoc:
+# Controls Team Users pages, where partners update the users for a given team
+class Teams::UsersController < AuthenticatedController
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 
@@ -31,6 +32,17 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
       return
     end
 
+    airtable_api = Airtable.new(current_user.uuid)
+    if airtable_api.has_token?
+      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
+    else
+      @remove_partner_admin = true
+      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+
+      base_url = "#{request.protocol}#{request.host_with_port}"
+      @oauth_url = airtable_api.generate_oauth_url(base_url)
+    end
+
     authorize team_membership
     @user = team_membership.user
   end
@@ -59,18 +71,27 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
 
   def update
     unless IdentityConfig.store.access_controls_enabled
-      redirect_to(action: :index, team_id: team)
-      return
+      redirect_to(action: :index, team_id: team) and return
     end
+
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
+
+    if partner_admin_confirmation_needed?
+      flash[:error] =
+        "User #{team_membership.user.email} is not a Partner Admin in Airtable.
+          Please verify with the appropriate Account Manager that this user should
+          be given the Partner Admin role."
+
+      redirect_to edit_team_user_path(team, team_membership.user,
+                                      need_to_confirm_role: true) and return
+    end
     team_membership.save
     if team_membership.errors.any?
       @user = team_membership.user
       render :edit
-    else
-      redirect_to team_users_path(team)
     end
+    redirect_to team_users_path(team)
   end
 
   def remove_confirm
@@ -106,7 +127,11 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
   end
 
   def roles_for_options
-    policy(team_membership).roles_for_edit.map { |r| [r.friendly_name, r.name] }
+    roles = policy(team_membership).roles_for_edit
+    unless Airtable.new(current_user.uuid).has_token?
+      roles = roles.reject { |role| role.name == 'partner_admin' }
+    end
+    roles.map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?
@@ -167,5 +192,37 @@ class Teams::UsersController < AuthenticatedController # :nodoc:
 
   def log_change
     log.record_save(action_name, team_membership)
+  end
+
+  def verified_partner_admin?
+    airtable_api = Airtable.new(current_user.uuid)
+    redirect_uri = airtable_api.build_redirect_uri(request)
+    airtable_api.refresh_token(redirect_uri) if airtable_api.needs_refreshed_token?
+    issuers = []
+    ServiceProvider.where(team: self.team).each do |sp|
+      issuers.push(sp.issuer)
+    end
+
+    airtable_api.get_matching_records(issuers).each do |record|
+      unless airtable_api.new_partner_admin_in_airtable?(
+        user.email, record
+      )
+        return false
+      end
+    end
+
+    true
+  end
+
+  def partner_admin_confirmation_needed?
+    return false unless IdentityConfig.store.prod_like_env
+
+    return true if team.service_providers.empty?
+
+    if team_membership.role_name == 'partner_admin'
+      return false if params[:confirm_partner_admin].present?
+      return true if !verified_partner_admin?
+    end
+    false
   end
 end

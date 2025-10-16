@@ -1,6 +1,7 @@
 require 'rails'
 
-class ZendeskRequest # :nodoc:
+# Zendesk ticket Request to deploy config to Production
+class ZendeskRequest
   ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
   ZENDESK_POST_PATH = '/api/v2/requests.json'
 

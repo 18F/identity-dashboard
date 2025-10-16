@@ -1,4 +1,8 @@
-class Team < ApplicationRecord # :nodoc:
+# A Team is a collection of Users in a given Agency, and the ServiceProviders
+# they are working on and have access to.
+#
+# If you are looking for User Roles on a Team, you want `TeamMembership`.
+class Team < ApplicationRecord
   self.table_name = :groups
 
   has_paper_trail on: %i[create update destroy]

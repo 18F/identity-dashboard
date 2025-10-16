@@ -1,4 +1,6 @@
-class InternalReportsController < AuthenticatedController # :nodoc:
+# The InternalReports page is used for verifying TeamMemberships and is a
+# security requirement
+class InternalReportsController < AuthenticatedController
   before_action :admin_only
 
   def team_memberships

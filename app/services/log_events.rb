@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Events that will trigger a log
+#
 # If you add or update calls to `track_event`, also update the documentation for events.
 # Currently, that documentation is at:
 # https://docs.google.com/spreadsheets/d/1LN9fBnYCYMgJeHlxXwdt47OE0xdIHpI0eoXEimmv7Ak/edit

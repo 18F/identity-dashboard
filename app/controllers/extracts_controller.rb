@@ -1,4 +1,5 @@
-class ExtractsController < AuthenticatedController # :nodoc:
+# Controller for ServiceProvider Extract tool page
+class ExtractsController < AuthenticatedController
   before_action -> { authorize Extract }
 
   before_action :log_request, only: %i[create]
@@ -45,9 +46,16 @@ class ExtractsController < AuthenticatedController # :nodoc:
   # @return [String]
   # json output be a hash of two arrays (teams, service_providers)
   def save_to_file
-    data = { teams: @extract.teams, service_providers: @extract.service_providers }
     begin
       File.open(@extract.filename, 'w') do |f|
+        sp_data = @extract.service_providers.map do |sp|
+          attributes = sp.attributes
+          attributes['team_uuid'] = sp.team.uuid
+          # This is not portable between environments.
+          attributes.delete 'remote_logo_key'
+          attributes
+        end
+        data = { teams: @extract.teams, service_providers: sp_data }
         f.print data.to_json
       end
       flash[:success] = 'Extracted configs saved'
