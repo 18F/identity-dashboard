@@ -117,7 +117,7 @@ feature 'internal reports' do
         'Partner Readonly',
       ],
       [
-        'N/A',
+        '',
         Team.internal_team.name,
         Team.internal_team.uuid,
         logingov_admin.email,

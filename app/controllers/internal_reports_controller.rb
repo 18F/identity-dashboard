@@ -3,6 +3,12 @@
 class InternalReportsController < AuthenticatedController
   before_action :admin_only
 
+  # @return [Array<Hash>]
+  #   * :issuer [String] ServiceProvider instance issuer
+  #   * :team_uuid [UUID] Team instance UUID
+  #   * :team_name [String] Team instance Id
+  #   * :user_email [String] User instance email address
+  #   * :role [String] TeamMembership instance Role friendly_name
   def user_permissions
     sp_teams = ServiceProvider.left_joins(:team)
       .select(:id, :issuer, :group_id, :name, team: [:uuid])
@@ -32,14 +38,16 @@ class InternalReportsController < AuthenticatedController
     raise AbstractController::ActionNotFound unless current_user.logingov_admin?
   end
   # We need to include `logingov_admin` roles in our report
+  # @return [Array<Hash>] of the same shape as `user_permissions`
   def internal_team_roles
     internal_memberships = TeamMembership.left_joins(:team, :user, :role)
       .select(:email, role: [:friendly_name], team: [:uuid, :name])
       .where(group_id: Team.internal_team.id)
-
+    # Issuer is not particularly relevant for the Internal Team, and
+    # we don't have any at the moment.
     internal_memberships.map do |membership|
       {
-        issuer: 'N/A',
+        issuer: '',
         team_uuid: membership.uuid,
         team_name: membership.name,
         user_email: membership.email,
