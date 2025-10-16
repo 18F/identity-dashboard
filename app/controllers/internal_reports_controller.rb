@@ -37,6 +37,7 @@ class InternalReportsController < AuthenticatedController
   def admin_only
     raise AbstractController::ActionNotFound unless current_user.logingov_admin?
   end
+
   # We need to include `logingov_admin` roles in our report
   # @return [Array<Hash>] of the same shape as `user_permissions`
   def internal_team_roles
