@@ -24,9 +24,7 @@ class ExtractsController < AuthenticatedController
       save_to_file
       return render 'results'
     elsif @extract.errors.empty? && @extract.service_providers.empty?
-      flash[:error] = 'No ServiceProvider rows were returned'
-    elsif @extract.errors.empty? && @extract.teams.empty?
-      flash[:error] = 'No Team rows were returned'
+      flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
 
     render 'index'

@@ -48,17 +48,14 @@ class Extract
 
   # @return [Array<Team>]
   def teams
-    sp_group_ids = service_providers.map(&:group_id)
-    @teams ||= extract_by_team? ?
-        Team.where(id: criteria) :
-        Team.where(id: sp_group_ids)
+    @teams ||= service_providers.present? ? service_providers.map(&:team) : []
   end
 
   # @return [Array<ServiceProvider>]
   def service_providers
     @service_providers ||= extract_by_team? ?
-      ServiceProvider.where(group_id: criteria) :
-      ServiceProvider.where(issuer: criteria)
+      ServiceProvider.joins(:team).where(group_id: criteria) :
+      ServiceProvider.joins(:team).where(issuer: criteria)
   end
 
   def valid?

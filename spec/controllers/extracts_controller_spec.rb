@@ -83,8 +83,7 @@ describe ExtractsController do
           criteria_list: 'fake:issuer',
         } }
 
-        expect(flash[:error]).to eq('No Team rows were returned')
-        expect(flash[:error]).to eq('No ServiceProvider rows were returned')
+        expect(flash[:error]).to eq('No ServiceProvider or Team rows were returned')
         expect(response).to render_template 'index'
       end
 

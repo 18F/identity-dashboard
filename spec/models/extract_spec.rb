@@ -153,7 +153,7 @@ describe Extract do
       extract = build(:extract, {
         ticket: '0',
         search_by: 'teams',
-        criteria_list: team.id.to_s,
+        criteria_list: sp1.group_id.to_s,
       })
 
       expect(extract.teams).to eq([team])
