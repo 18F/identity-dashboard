@@ -84,8 +84,23 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#extraction_request' do
+    let(:name) { 'partner_portal_extract_test_action' }
+    let(:event_properties) { { param1: 'value1' } }
+
+    it 'logs extract action events' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties:, name:)
+          .deep_stringify_keys)
+      end
+
+      log.extraction_request('test_action', event_properties)
+    end
+  end
+
   describe '#sp_created' do
-    let(:name) { 'portal_sp_created' }
+    let(:name) { 'partner_portal_sp_created' }
     let(:changes) do
       {
         id: sp.id,
@@ -96,7 +111,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_sp_created event' do
+    it 'logs partner_portal_sp_created event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -108,7 +123,7 @@ RSpec.describe EventLogger do
   end
 
   describe '#sp_updated' do
-    let(:name) { 'portal_sp_updated' }
+    let(:name) { 'partner_portal_sp_updated' }
     let(:changes) do
       {
         id: sp.id,
@@ -119,7 +134,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_sp_updated event' do
+    it 'logs partner_portal_sp_updated event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -131,10 +146,10 @@ RSpec.describe EventLogger do
   end
 
   describe '#sp_destroyed' do
-    let(:name) { 'portal_sp_destroyed' }
+    let(:name) { 'partner_portal_sp_destroyed' }
     let(:changes) { sp.to_json }
 
-    it 'logs portal_sp_updated event' do
+    it 'logs partner_portal_sp_updated event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -147,10 +162,10 @@ RSpec.describe EventLogger do
 
   describe '#team_created' do
     let(:team) { create(:team) }
-    let(:name) { 'portal_team_created' }
+    let(:name) { 'partner_portal_team_created' }
     let(:changes) { team.to_json }
 
-    it 'logs portal_team_created event' do
+    it 'logs partner_portal_team_created event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -161,9 +176,25 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#team_destroyed' do
+    let(:team) { create(:team) }
+    let(:name) { 'partner_portal_team_destroyed' }
+    let(:changes) { team.to_json }
+
+    it 'logs partner_portal_team_destroyed event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.team_destroyed(changes:)
+    end
+  end
+
   describe '#team_membership_created' do
     let(:team_membership) { create(:team_membership) }
-    let(:name) { 'portal_team_membership_created' }
+    let(:name) { 'partner_portal_team_membership_created' }
 
     let(:changes) do
       {
@@ -174,7 +205,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_team_created event' do
+    it 'logs partner_portal_team_created event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -187,7 +218,7 @@ RSpec.describe EventLogger do
 
   describe '#team_membership_destroyed' do
     let(:team_membership) { create(:team_membership) }
-    let(:name) { 'portal_team_membership_destroyed' }
+    let(:name) { 'partner_portal_team_membership_destroyed' }
 
     let(:changes) do
       {
@@ -198,7 +229,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_team_created event' do
+    it 'logs partner_portal_team_created event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -211,7 +242,7 @@ RSpec.describe EventLogger do
 
   describe '#team_membership_updated' do
     let(:team_membership) { create(:team_membership) }
-    let(:name) { 'portal_team_membership_updated' }
+    let(:name) { 'partner_portal_team_membership_updated' }
     let(:changes) do
       {
         'role_name' => { 'old' => 'old_role', 'new' => 'new_role' },
@@ -221,7 +252,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_team_updated event' do
+    it 'logs partner_portal_team_updated event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -234,7 +265,7 @@ RSpec.describe EventLogger do
 
   describe '#team_updated' do
     let(:team) { create(:team) }
-    let(:name) { 'portal_team_updated' }
+    let(:name) { 'partner_portal_team_updated' }
     let(:changes) do
       {
         'name' => { 'old' => team.name, 'new' => 'New Team Name' },
@@ -242,7 +273,7 @@ RSpec.describe EventLogger do
       }
     end
 
-    it 'logs portal_team_updated event' do
+    it 'logs partner_portal_team_updated event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -253,28 +284,12 @@ RSpec.describe EventLogger do
     end
   end
 
-  describe '#team_destroyed' do
-    let(:team) { create(:team) }
-    let(:name) { 'portal_team_destroyed' }
-    let(:changes) { team.to_json }
-
-    it 'logs portal_team_destroyed event' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
-          .deep_stringify_keys)
-      end
-
-      log.team_destroyed(changes:)
-    end
-  end
-
   describe '#user_created' do
     let(:new_user) { create(:user) }
-    let(:name) { 'portal_user_created' }
+    let(:name) { 'partner_portal_user_created' }
     let(:changes) { new_user.to_json }
 
-    it 'logs portal_team_destroyed event' do
+    it 'logs partner_portal_team_destroyed event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -287,10 +302,10 @@ RSpec.describe EventLogger do
 
   describe '#user_destroyed' do
     let(:deleted_user) { create(:user) }
-    let(:name) { 'portal_user_destroyed' }
+    let(:name) { 'partner_portal_user_destroyed' }
     let(:changes) { deleted_user.to_json }
 
-    it 'logs portal_user_destroyed event' do
+    it 'logs partner_portal_user_destroyed event' do
       expect(logger).to receive(:info) do |data|
         obj = JSON.parse(data)
         expect(obj).to include(crud_properties(event_properties: { changes: }, name:)
@@ -318,7 +333,7 @@ RSpec.describe EventLogger do
           'record' => 'User',
           'policy' => 'UserPolicy',
         })
-        expect(obj['name']).to eq('unauthorized_access_attempt')
+        expect(obj['name']).to eq('partner_portal_unauthorized_access_attempt')
       end
 
       log.unauthorized_access_attempt(
@@ -333,7 +348,7 @@ RSpec.describe EventLogger do
           'message' => 'found unpermitted parameters: :one, :two',
           'params' => ['one', 'two'],
         })
-        expect(obj['name']).to eq('unpermitted_params_attempt')
+        expect(obj['name']).to eq('partner_portal_unpermitted_params_attempt')
       end
 
       log.unpermitted_params_attempt(
