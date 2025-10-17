@@ -8,7 +8,6 @@ describe UsersController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
-    allow(logger_double).to receive(:team_data)
     allow(logger_double).to receive(:user_created)
     allow(logger_double).to receive(:unauthorized_access_attempt)
     allow(EventLogger).to receive(:new).and_return(logger_double)
