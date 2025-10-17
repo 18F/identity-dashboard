@@ -1,6 +1,8 @@
 # Creates and renders a CSV of per-issuer TeamMembership data
 #
-# This is a security requirement, for auditability.
+# This mimics the format in the [Partnerships CRM Airtable](
+# https://airtable.com/appCPBIq0sFQUZUSY/tbl8XAxD4G5uBEPMk/viw4RRFq5OHG9PALS?blocks=bipdcitNNhTQelnMu
+# ) (Partner Portal Admins Confirmed tab) and  is a security requirement, for auditability.
 class UserPermissionsCsv
   HEADER_ROW = ['Issuer', 'Team', 'Team UUID', 'User email', 'Role']
   attr_reader :user_permissions

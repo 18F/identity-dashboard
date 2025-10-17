@@ -3,39 +3,55 @@
 class InternalReportsController < AuthenticatedController
   before_action :admin_only
 
-  # @return [Array<Hash>]
+  # Return hash shape is
+  #
   #   * :issuer [String] ServiceProvider instance issuer
   #   * :team_uuid [UUID] Team instance UUID
   #   * :team_name [String] Team instance Id
   #   * :user_email [String] User instance email address
   #   * :role [String] TeamMembership instance Role friendly_name
+  # @return [Array<Hash>]
   def user_permissions
-    sp_teams = ServiceProvider.left_joins(:team)
-      .select(:id, :issuer, :group_id, :name, team: [:uuid])
-      .where.not(group_id: nil)
-    team_membership = TeamMembership.left_joins(:user, :role)
-      .select(:id, :user_id, :email, :group_id, roles: [:friendly_name])
     memberships = []
-    sp_teams.each do |spt|
-      spt_membership = team_membership.where(group_id: spt.group_id)
-      spt_membership.each do |sptm|
+
+    service_provider_teams.each do |spt|
+      spt_membership = team_memberships.where(group_id: spt.group_id)
+      spt_membership.each do |spt_m|
         memberships.push({
           issuer: spt.issuer,
           team_uuid: spt.uuid,
           team_name: spt.name,
-          user_email: sptm.email,
-          role: sptm.friendly_name,
+          user_email: spt_m.email,
+          role: spt_m.friendly_name,
         })
       end
     end
 
-    render renderable: UserPermissionsCsv.new(memberships.union(internal_team_roles))
+    render renderable: UserPermissionsCsv.new(
+      memberships.union(internal_team_roles),
+    )
   end
 
   private
 
+  # @return [ActionNotFound, nil] raises error if not logingov_admin
   def admin_only
     raise AbstractController::ActionNotFound unless current_user.logingov_admin?
+  end
+
+  # @return [Array<ServiceProvider, Team>] Joins ServiceProvider issuer with
+  # Team group_id, name, and uuid
+  def service_provider_teams
+    @service_provider_teams ||= ServiceProvider.left_joins(:team)
+      .select(:id, :issuer, :group_id, :name, team: [:uuid])
+      .where.not(group_id: nil)
+  end
+
+  # @return [Array<TeamMembership, User, Role>] Joins TeamMembership group_id
+  # with User email and Role friendly_name
+  def team_memberships
+    @team_memberships ||= TeamMembership.left_joins(:user, :role)
+      .select(:id, :email, :group_id, roles: [:friendly_name])
   end
 
   # We need to include `logingov_admin` roles in our report
