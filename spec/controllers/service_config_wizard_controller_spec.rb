@@ -633,26 +633,53 @@ RSpec.describe ServiceConfigWizardController do
 
       context 'on config update' do
         let(:help_text) do
-          {
-            'forgot_password' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-            'sign_in' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-            'sign_up' => { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-          }
+          wizard_service_provider.help_text
         end
-        let(:service_provider) { create(:service_provider, :consistent, team:, help_text:) }
+
+        before do
+          wizard_service_provider.save!
+        end
+
+        context 'on any wizard_step except help_text' do
+          WizardStep::STEPS.excluding('help_text').each do |step|
+            before do
+              # make sure there is an edit in place
+              put :update, params: { id: 'protocol', wizard_step: {
+                identity_protocol: 'openid_connect_private_key_jwt',
+              } }
+            end
+            it "does not log on step #{step}" do
+              put :update, params: { id: step, wizard_step: data }
+              expect(logger_double).to_not have_received(:sp_created)
+              expect(logger_double).to_not have_received(:sp_updated)
+            end
+          end
+        end
 
         context 'on help_text step' do
-          xit 'logs sp_updated' do
+          it 'logs sp_updated' do
             # this creates the wizard object
-            WizardStep.populate_data(service_provider, partner_admin)
+            WizardStep.populate_data(wizard_service_provider, partner_admin)
 
             put :update, params: { id: 'protocol', wizard_step: {
-              identity_protocol: 'openid_connect_pkce',
+              identity_protocol: 'openid_connect_private_key_jwt',
             } }
-            put :update, params: { id: 'help_text', wizard_step: { help_text: } }
+
+            put :update, params: {
+              id: 'help_text',
+              wizard_step: { help_text: },
+            }
+
+            expected_log = {
+              'id' => wizard_service_provider.id,
+              'identity_protocol' => {
+                'old' => 'openid_connect_pkce',
+                'new' => 'openid_connect_private_key_jwt',
+              },
+            }
 
             expect(logger_double).to have_received(:sp_updated).with(
-              { changes: changes(service_provider:) },
+              { changes: expected_log },
             )
           end
         end
