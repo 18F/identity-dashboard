@@ -5,7 +5,7 @@ class AirtableController < AuthenticatedController
   def index
     @airtable_api = airtable_api
     if @airtable_api.needs_refreshed_token?
-      @airtable_api.refresh_token(@airtable_api.build_redirect_uri(request))
+      @airtable_api.refresh_oauth_token(@airtable_api.build_redirect_uri(request))
     end
 
     base_url = "#{request.protocol}#{request.host_with_port}"
@@ -24,7 +24,7 @@ class AirtableController < AuthenticatedController
   end
 
   def refresh_token
-    airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
+    airtable_api.refresh_oauth_token(airtable_api.build_redirect_uri(request))
 
     redirect_to airtable_path
   end
