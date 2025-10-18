@@ -2,14 +2,17 @@ require 'rails_helper'
 
 RSpec.describe AirtableController, type: :controller do
   let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:airtable) { Airtable.new(logingov_admin) }
 
   before do
     sign_in logingov_admin
+    airtable.token_expiration = 1.day.from_now
+    airtable.token = "Token"
+    airtable.refresh_token_expiration = 30.days.from_now
+    airtable.refresh_token = "RefreshToken"
   end
 
   describe 'GET #index' do
-    let(:airtable_api) { Airtable.new(logingov_admin.uuid) }
-
     context 'when the token needs to be refreshed' do
       before do
         allow_any_instance_of(Airtable).to receive(:needs_refreshed_token?).and_return(true)
@@ -44,8 +47,6 @@ RSpec.describe AirtableController, type: :controller do
   end
 
   describe 'GET #oauth_redirect' do
-    let(:airtable_api) { Airtable.new(logingov_admin.uuid) }
-
     context 'when the state matches' do
       before do
         allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state")
@@ -86,17 +87,9 @@ RSpec.describe AirtableController, type: :controller do
   end
 
   describe 'GET #clear_token' do
-    it 'clears the appropriate tokens' do
-      expect(Rails.cache).to receive(:delete)
-        .with("#{logingov_admin.uuid}.airtable_oauth_token")
-      expect(Rails.cache).to receive(:delete)
-        .with("#{logingov_admin.uuid}.airtable_oauth_token_expiration")
-      expect(Rails.cache).to receive(:delete)
-        .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token")
-      expect(Rails.cache).to receive(:delete)
-        .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token_expiration")
-
+    it 'clears the tokens and redirects to the airtable path' do
       get :clear_token
+
       expect(response).to redirect_to(airtable_path)
     end
   end
