@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :teams, through: :team_memberships
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy
+  has_one :airtable
 
   validates :email, format: { with: Devise.email_regexp }
 

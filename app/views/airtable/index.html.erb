@@ -1,15 +1,15 @@
 <h1>Airtable Connection</h1>
 
-<% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
+<% if @airtable_api.token.blank? %>
   
   <%= link_to "Connect with Airtable", @oauth_url, class: 'usa-button usa-button--outline' %>
 
 <% else %>
   <dl class="usa-definitions">
     <dt>Token:</dt>
-    <dd class="token"><%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token") %></dd>
+    <dd class="token"><%= @airtable_api.token %></dd>
     <dt>Expires At:</dt>
-    <dd><%= Rails.cache.read("#{current_user.uuid}.airtable_oauth_token_expiration") %></dd>
+    <dd><%= @airtable_api.token_expiration %></dd>
   </dl>
   <%= link_to "Refresh Token", airtable_oauth_refresh_token_path, class: 'usa-button usa-button--outline' %>
   <%= link_to "Clear Token", airtable_oauth_clear_token_path, class: 'usa-button usa-button--outline' %>

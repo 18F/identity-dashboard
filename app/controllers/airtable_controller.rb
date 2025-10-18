@@ -3,16 +3,17 @@ class AirtableController < AuthenticatedController
   before_action -> { authorize Airtable }
 
   def index
-    if airtable_api.needs_refreshed_token?
-      airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
+    @airtable_api = airtable_api
+    if @airtable_api.needs_refreshed_token?
+      @airtable_api.refresh_token(@airtable_api.build_redirect_uri(request))
     end
 
     base_url = "#{request.protocol}#{request.host_with_port}"
-    @oauth_url = airtable_api.generate_oauth_url(base_url)
+    @oauth_url = @airtable_api.generate_oauth_url(base_url)
   end
 
   def oauth_redirect
-    unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
+    unless airtable_api.state == params[:state]
       flash[:error] = 'State does not match, blocking token request.'
       redirect_to airtable_path and return
     end
@@ -29,10 +30,7 @@ class AirtableController < AuthenticatedController
   end
 
   def clear_token
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token_expiration")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token_expiration")
+    airtable_api.delete
 
     redirect_to airtable_path
   end
@@ -40,6 +38,7 @@ class AirtableController < AuthenticatedController
   private
 
   def airtable_api
-    Airtable.new(current_user.uuid)
+    airtable = Airtable.find_by(user: current_user) ||
+      Airtable.new(current_user)
   end
 end
