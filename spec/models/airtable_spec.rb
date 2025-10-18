@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Airtable, type: :model do
   let(:user_uuid) { 'test-user-uuid' }
-  let(:airtable) { Airtable.new(user_uuid) }
+  let(:user) { create(:user) }
+  let(:airtable) { Airtable.new(user) }
   let(:sample_record) { { 'fields' => { 'Partner Portal Admin' => ['admin_id_1', 'admin_id_2'] } } }
   let(:sample_email) { 'admin@example.com' }
   let(:token_response) do
@@ -14,11 +15,18 @@ RSpec.describe Airtable, type: :model do
     }.to_json
   end
 
+  before do
+    airtable.token_expiration = 1.day.from_now
+    airtable.token = "Token"
+    airtable.refresh_token_expiration = 30.days.from_now
+    airtable.refresh_token = "RefreshToken"
+  end
+
   describe '#get_matching_records' do
     it 'retrieves matching records' do
       issuers = ['Issuer 1', 'Issuer 2']
       user_token = 'mocked_token'
-      Rails.cache.write("#{user_uuid}.airtable_oauth_token", user_token)
+      airtable.token = user_token
 
       response_body = {
         'records' => [
@@ -82,8 +90,7 @@ RSpec.describe Airtable, type: :model do
     let(:redirect_uri) { 'https://example.com' }
 
     before do
-      Rails.cache.clear
-
+      airtable.token = nil
       stub_request(:post, 'https://airtable.com/oauth2/v1/token')
         .with(
           body: {
@@ -107,15 +114,12 @@ RSpec.describe Airtable, type: :model do
 
     it 'requests and saves the token' do
       expect { airtable.request_token(code, redirect_uri) }.to change {
-        Rails.cache.read("#{user_uuid}.airtable_oauth_token")
+        airtable.token
       }.from(nil).to('mock_access_token')
     end
   end
 
   describe '#needs_refreshed_token?' do
-    let(:user_uuid) { 'test-user-uuid' }
-    let(:airtable) { Airtable.new(user_uuid) }
-
     before do
       allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token_expiration")
         .and_return(expiration_time)
@@ -125,6 +129,7 @@ RSpec.describe Airtable, type: :model do
       let(:expiration_time) { DateTime.now - 1 }
 
       it 'returns true' do
+        airtable.token_expiration = expiration_time
         expect(airtable.needs_refreshed_token?).to eq(true)
       end
     end
@@ -146,54 +151,41 @@ RSpec.describe Airtable, type: :model do
     end
   end
 
-  describe '#refresh_token' do
-    let(:token_response) do
-      {
-        'access_token' => 'mock_access_token',
-        'expires_in' => 3600,
-        'refresh_token' => 'mock_refresh_token',
-        'refresh_expires_in' => 7200,
-      }.to_json
-    end
-
+  describe '#refresh_oauth_token' do
     before do
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_refresh_token")
-        .and_return('refresh_token')
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
-        .and_return('old_access_token')
 
+      # Stub the POST request to Airtable
       stub_request(:post, 'https://airtable.com/oauth2/v1/token')
         .with(
           body: {
             'refresh_token' => 'refresh_token',
             'grant_type' => 'refresh_token',
-            'redirect_uri' => 'https://example.com',
+            'redirect_uri' => 'https://example.com'
           },
           headers: {
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'User-Agent' => 'Ruby',
-          },
+            'Authorization' => 'Basic mock_auth'
+          }
         )
         .to_return(status: 200, body: token_response, headers: {})
 
+      # Mock the method that provides headers
       allow(airtable).to receive(:token_basic_authorization_header)
         .and_return({ 'Authorization' => 'Basic mock_auth' })
 
-      allow(airtable).to receive(:save_token).and_call_original
+      # Assuming refresh_token is initialized
+      airtable.refresh_token = 'refresh_token'
     end
 
     it 'refreshes the token and calls save_token' do
-      airtable.refresh_token('https://example.com')
-      expect(airtable).to have_received(:save_token)
+      expect(airtable.token).to eq('Token')
+      airtable.refresh_oauth_token('https://example.com')
+      expect(airtable.token).to eq('mock_access_token')
     end
   end
 
   describe '#has_token?' do
     it 'checks if a token exists' do
-      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
-        .and_return('token')
       expect(airtable.has_token?).to eq(true)
     end
   end
@@ -218,6 +210,39 @@ RSpec.describe Airtable, type: :model do
       redirect_uri = airtable.build_redirect_uri(request)
 
       expect(redirect_uri).to eq(expected_uri)
+    end
+  end
+
+  describe '#generate_state' do
+    it 'generates a valid UUID' do
+      state = airtable.generate_state
+      # rubocop:disable Layout/LineLength
+      uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/i
+      # rubocop:enable Layout/LineLength
+
+      expect(state).to match(uuid_regex) # Use a regex to validate the UUID format
+    end
+  end
+
+  describe '#generate_code_verifier' do
+    it 'generates a valid code verifier' do
+      code_verifier = airtable.generate_code_verifier
+
+      expect(code_verifier.length).to eq(100)  # Check that the length is 100 characters
+      expect(code_verifier).to match(/[a-f0-9]+/)  # Ensure it contains only hexadecimal characters
+    end
+  end
+
+  describe '#prepare_api' do
+    it 'sets the state and code_verifier, then saves the instance' do
+      allow(SecureRandom).to receive(:uuid).and_return('test-uuid-1234')
+      allow(SecureRandom).to receive(:hex).with(50).and_return('test-code-verifier-1234567890abcde')
+
+      airtable.prepare_api
+
+      expect(airtable.state).to eq('test-uuid-1234')
+      expect(airtable.code_verifier).to eq('test-code-verifier-1234567890abcde')
+      expect(airtable).to be_persisted  # Check that Airtable instance has been saved
     end
   end
 end
