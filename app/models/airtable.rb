@@ -62,8 +62,8 @@ class Airtable < ApplicationRecord
       self.token_expiration < DateTime.now
   end
 
-  def refresh_token(redirect_uri)
-    request_data = { refresh_token: Rself.refresh_token,
+  def refresh_oauth_token(redirect_uri)
+    request_data = { refresh_token: self.refresh_token,
                      redirect_uri: redirect_uri,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
