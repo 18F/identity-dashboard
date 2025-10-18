@@ -1,15 +1,18 @@
 # The Airtable model handles the OAuth connection with Airtable
 # as well as sending requests to the Airtable API and managing
 # the returned data
-class Airtable
-  include ActiveModel::Model
+class Airtable < ApplicationRecord
+
+  belongs_to :user
 
   BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
   BASE_API_URI = 'https://api.airtable.com/v0'
 
-  def initialize(user_uuid)
-    @user_uuid = user_uuid
-    @conn ||= Faraday.new
+  def initialize(user)
+    super()
+
+    self.user = user
+    prepare_api
   end
 
   def get_matching_records(issuers, offset = nil, matched_records = nil)
@@ -17,10 +20,10 @@ class Airtable
     table_id = IdentityConfig.store.airtable_table_id
     all_records_uri = "#{BASE_API_URI}/#{app_id}/#{table_id}?offset=#{offset}"
 
-    @conn.headers = token_bearer_authorization_header
-    @conn ||= Faraday.new(url: all_records_uri)
+    conn = Faraday.new(url: all_records_uri)
+    conn.headers = token_bearer_authorization_header
 
-    resp = @conn.get(all_records_uri)
+    resp = conn.get(all_records_uri)
     response = JSON.parse(resp.body)
     matched_records ||= []
     issuers.each do |issuer|
@@ -42,55 +45,49 @@ class Airtable
     request_data = { code: code,
                      redirect_uri: redirect_uri,
                      grant_type: 'authorization_code',
-                     code_verifier: Rails.cache.read("#{@user_uuid}.airtable_code_verifier") }
+                     code_verifier: self.code_verifier }
 
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
-    @conn.headers = token_basic_authorization_header
-    resp = @conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
+    conn = Faraday.new
+    conn.headers = token_basic_authorization_header
+    resp = conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
     response = JSON.parse(resp.body)
 
     save_token(response)
   end
 
   def needs_refreshed_token?
-    Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration").present? &&
-      Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration") < DateTime.now
+    self.token_expiration.present? &&
+      self.token_expiration < DateTime.now
   end
 
   def refresh_token(redirect_uri)
-    request_data = { refresh_token: Rails.cache.read("#{@user_uuid}.airtable_oauth_refresh_token"),
+    request_data = { refresh_token: Rself.refresh_token,
                      redirect_uri: redirect_uri,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
-    @conn.headers = token_basic_authorization_header
-    refresh_resp = @conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
+    conn = Faraday.new
+    conn.headers = token_basic_authorization_header
+    refresh_resp = conn.post("#{BASE_TOKEN_URI}/token") { |req| req.body = encoded_request_data }
     refresh_response = JSON.parse(refresh_resp.body)
 
     save_token(refresh_response)
   end
 
   def has_token?
-    Rails.cache.read("#{@user_uuid}.airtable_oauth_token").present?
+    self.token.present?
   end
 
   def generate_oauth_url(base_url)
-    code_verifier = Rails.cache.fetch("#{@user_uuid}.airtable_code_verifier",
-      expires_in: 10.minutes) do
-      SecureRandom.alphanumeric(50)
-    end
-    airtable_state = Rails.cache.fetch("#{@user_uuid}.airtable_state",
-      expires_in: 10.minutes) do
-      SecureRandom.uuid
-    end
-    code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(code_verifier)).delete('=')
+    code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(self.code_verifier)).delete('=')
     redirect_uri = "#{base_url}/airtable/oauth/redirect&scope=data.records:read"
 
     client_id = IdentityConfig.store.airtable_oauth_client_id
 
     # rubocop:disable Layout/LineLength
-    "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{airtable_state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
+    "#{BASE_TOKEN_URI}/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{self.state}&code_challenge_method=S256&code_challenge=#{code_challenge}"
     # rubocop:enable Layout/LineLength
   end
 
@@ -99,11 +96,25 @@ class Airtable
     "#{base_url}/airtable/oauth/redirect"
   end
 
+  def generate_state
+    SecureRandom.uuid
+  end
+
+  def generate_code_verifier
+    SecureRandom.hex(50)
+  end
+
+  def prepare_api
+    self.state = generate_state
+    self.code_verifier = generate_code_verifier
+    save!
+  end
+
   private
 
   def token_bearer_authorization_header
     { 'Content-Type' => 'application/x-www-form-urlencoded',
-      'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
+      'Authorization' => "Bearer #{self.token}" }
   end
 
   def token_basic_authorization_header
@@ -115,11 +126,17 @@ class Airtable
   end
 
   def save_token(response)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
-      DateTime.now + response['expires_in'].seconds)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
-      DateTime.now + response['refresh_expires_in'].seconds)
+    self.token = response['access_token']
+    self.token_expiration = DateTime.now + response['expires_in'].seconds
+    self.refresh_token = response['refresh_token']
+    self.refresh_token_expiration = DateTime.now + response['refresh_expires_in'].seconds
+
+    save
+    # Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
+    # Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
+    #   DateTime.now + response['expires_in'].seconds)
+    # Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
+    # Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
+    #   DateTime.now + response['refresh_expires_in'].seconds)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_24_124408) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_17_233047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_24_124408) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["name"], name: "index_agencies_on_name", unique: true
+  end
+
+  create_table "airtables", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "token"
+    t.datetime "token_expiration"
+    t.string "refresh_token"
+    t.datetime "refresh_token_expiration"
+    t.string "state"
+    t.string "code_verifier"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "auth_tokens", force: :cascade do |t|
