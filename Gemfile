@@ -12,17 +12,17 @@ gem 'aws-sdk-s3', require: false
 gem 'browser'
 gem 'bundler'
 gem 'colorize'
-gem 'cssbundling-rails'
+gem 'cssbundling-rails', '>= 1.4.2'
 gem 'csv'
 gem 'devise', '~> 4.9.3'
-gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'dotenv-rails', '~> 3.0', '>= 3.0.0'
 gem 'enum_help'
-gem 'faraday'
+gem 'faraday', '>= 2.12.1'
 gem 'identity-hostdata', git: 'https://github.com/18F/identity-hostdata.git', tag: 'v4.1.0'
 gem 'identity-logging', git: 'https://github.com/18f/identity-logging.git', tag: 'v0.1.0'
 gem 'identity_validations', git: 'https://github.com/18f/identity-validations.git', tag: 'v0.9.0'
 gem 'jsbundling-rails', '>= 1.2.2'
-gem 'json-jwt', '>= 1.15.3'
+gem 'json-jwt', '>= 1.17.0'
 gem 'jwt'
 gem 'kaminari'
 gem 'lru_redux'
@@ -33,7 +33,7 @@ gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_go
 gem 'omniauth-rails_csrf_protection'
 gem 'paper_trail', '~>16'
 gem 'pg'
-gem 'propshaft'
+gem 'propshaft', '>= 1.2.0'
 gem 'pry-rails'
 gem 'puma', '>= 6.4.3'
 gem 'pundit', '>= 2.3.1'
@@ -42,9 +42,9 @@ gem 'rack-timeout', require: false
 # If you update the rails version, please change the targeted
 # version in .rubocop.yml
 gem 'rack-attack', '~> 6.7'
-gem 'rails', '~> 7.2.2'
+gem 'rails', '~> 8.0.0'
 gem 'redacted_struct'
-gem 'responders', '~> 3.1', '>= 3.1.1'
+gem 'responders', '~> 3.2', '>= 3.2.0'
 gem 'rest-client', '~> 2.1'
 gem 'rouge'
 gem 'ruby_regex'
@@ -72,16 +72,16 @@ end
 
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
-  gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
-  gem 'i18n-tasks', '>= 1.0.13'
+  gem 'factory_bot_rails', '~> 6.5', '>= 6.5.0'
+  gem 'i18n-tasks', '>= 1.0.15'
   gem 'pry-byebug'
   gem 'redcarpet', require: false # currently used for documentation only
   gem 'rspec_junit_formatter'
-  gem 'rspec-rails', '~> 6.0', '>= 6.0.0'
+  gem 'rspec-rails', '~> 7.0', '>= 7.0.0'
   gem 'rubocop', '~> 1.75.0', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', '>= 2.9', require: false
+  gem 'rubocop-rails', '>= 2.28.0', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
   gem 'yard', require: false
@@ -97,7 +97,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
   gem 'simplecov-cobertura'
-  gem 'sinatra', '~> 4.1.0'
+  gem 'sinatra', '~> 4.2.0'
   gem 'timecop'
   gem 'webmock'
   gem 'websocket-driver', '= 0.7.3'
