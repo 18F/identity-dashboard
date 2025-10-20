@@ -39,10 +39,13 @@ class Airtable
   end
 
   def request_token(code, redirect_uri)
+    code_verifier = REDIS_POOL.with do |redis|
+      redis.get("#{@user_uuid}.airtable_code_verifier")
+    end
     request_data = { code: code,
                      redirect_uri: redirect_uri,
                      grant_type: 'authorization_code',
-                     code_verifier: Rails.cache.read("#{@user_uuid}.airtable_code_verifier") }
+                     code_verifier: code_verifier }
 
     encoded_request_data = Faraday::Utils.build_query(request_data)
 
@@ -54,12 +57,19 @@ class Airtable
   end
 
   def needs_refreshed_token?
-    Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration").present? &&
-      Rails.cache.read("#{@user_uuid}.airtable_oauth_token_expiration") < DateTime.now
+    token_exists = REDIS_POOL.with do |redis|
+      redis.exists("#{@user_uuid}.airtable_oauth_token")
+    end
+
+    token_exists
   end
 
   def refresh_token(redirect_uri)
-    request_data = { refresh_token: Rails.cache.read("#{@user_uuid}.airtable_oauth_refresh_token"),
+    refresh_token = REDIS_POOL.with do |redis|
+      redis.exists("#{@user_uuid}.airtable_oauth_refresh_token")
+    end
+
+    request_data = { refresh_token: refresh_token,
                      redirect_uri: redirect_uri,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
@@ -72,17 +82,19 @@ class Airtable
   end
 
   def has_token?
-    Rails.cache.read("#{@user_uuid}.airtable_oauth_token").present?
+    token_exists = REDIS_POOL.with do |redis|
+      redis.exists("#{@user_uuid}.airtable_oauth_token")
+    end
+
+    token_exists
   end
 
   def generate_oauth_url(base_url)
-    code_verifier = Rails.cache.fetch("#{@user_uuid}.airtable_code_verifier",
-      expires_in: 10.minutes) do
-      SecureRandom.alphanumeric(50)
-    end
-    airtable_state = Rails.cache.fetch("#{@user_uuid}.airtable_state",
-      expires_in: 10.minutes) do
-      SecureRandom.uuid
+    code_verifier, airtable_state = REDIS_POOL.with do |redis|
+      redis.setex("#{@user_uuid}.airtable_code_verifier", 10.minutes, SecureRandom.alphanumeric(50))
+      redis.setex("#{@user_uuid}.airtable_state", 10.minutes, SecureRandom.uuid)
+
+      [redis.get("#{@user_uuid}.airtable_code_verifier"), redis.get("#{@user_uuid}.airtable_state")]
     end
     code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(code_verifier)).delete('=')
     redirect_uri = "#{base_url}/airtable/oauth/redirect&scope=data.records:read"
@@ -102,8 +114,11 @@ class Airtable
   private
 
   def token_bearer_authorization_header
+    auth_string = REDIS_POOL.with do |redis|
+      redis.exists("#{@user_uuid}.airtable_oauth_token")
+    end
     { 'Content-Type' => 'application/x-www-form-urlencoded',
-      'Authorization' => "Bearer #{Rails.cache.read("#{@user_uuid}.airtable_oauth_token")}" }
+      'Authorization' => "Bearer #{auth_string}" }
   end
 
   def token_basic_authorization_header
@@ -115,11 +130,14 @@ class Airtable
   end
 
   def save_token(response)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
-      DateTime.now + response['expires_in'].seconds)
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
-    Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
-      DateTime.now + response['refresh_expires_in'].seconds)
+    # REDIS_POOL.with do |redis|
+    #   redis.setex("#{@user_uuid}.airtable_oauth_token",
+    #                response['expires_in'].seconds,
+    #                response['access_token'])
+
+    #   redis.setex("#{@user_uuid}.airtable_oauth_refresh_token",
+    #                response['refresh_expires_in'].seconds,
+    #                response['refresh_token'])
+    # end
   end
 end
