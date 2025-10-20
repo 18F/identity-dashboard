@@ -40,8 +40,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   before_save :sanitize_help_text_content
-  after_save ->(record) { record.status = 'live' },
-    unless: -> { IdentityConfig.store.prod_like_env }
+  before_save :set_status
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p
@@ -213,6 +212,12 @@ class ServiceProvider < ApplicationRecord
   end
 
   private
+
+  def set_status
+    return if IdentityConfig.store.prod_like_env || self.status != 'pending'
+    
+    self.status = 'live'
+  end
 
   def attachment_changes_string_buffer
     attachable = attachment_changes['logo_file'].attachable

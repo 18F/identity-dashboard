@@ -415,6 +415,9 @@ describe ServiceProvider do
       it { expect(new_sp).to be_pending }
       it { expect(new_sp).to_not be_live }
       it { expect(new_sp).to_not be_rejected }
+      it 'should not have "moved_to_prod" status' do
+        expect(new_sp.status).to_not eq('moved_to_prod')
+      end
     end
 
     context 'not in prod-like env' do
@@ -422,9 +425,12 @@ describe ServiceProvider do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
       end
 
-      it { expect(new_sp).to_not be_pending }
-      it { expect(new_sp).to be_live }
+      it { expect(new_sp).to be_pending }
+      it { expect(new_sp).to_not be_live }
       it { expect(new_sp).to_not be_rejected }
+      it 'should not have "moved_to_prod" status' do
+        expect(new_sp.status).to_not eq('moved_to_prod')
+      end
     end
   end
 
