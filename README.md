@@ -68,18 +68,21 @@ For code reviewers
 *When do we use feature tests / integration / regression / unit tests*
 
 
-We primarily write tests in rpsec using additional tools like capybara for specific purposes like accessibility.
+We primarily write tests in rpsec using additional tools like capybara for feature tests.
 
 ## Test Coverage
 To check test coverage with RSPEC:
 `COVERAGE=true bundle exec rspec {my_spec_file}`
 
+ Note that when running this command your coverage file will show that all other files don't have coverage.
+
 
 # Linting
 
-## We lint with Rubocop
+## We lint with Rubocop and ESLint
 
 * Ruby using Rubocop rules. These rules are currently under active development.
+
 * JavaScript using ESLint. We use [the ESLint plugin from IdP](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin) as well as some rules to ensure we don't error on upstream dependencies that use variant linting rules or minified compiled assets.
 
 # Documentation
