@@ -300,6 +300,30 @@ describe Teams::UsersController do
       end
 
       describe '#edit' do
+        before do
+          token_response =
+            {
+              'access_token' => 'mock_access_token',
+              'expires_in' => 3600,
+              'refresh_token' => 'mock_refresh_token',
+              'refresh_expires_in' => 7200,
+            }.to_json
+
+          stub_request(:post, 'https://airtable.com/oauth2/v1/token').
+            with(
+              body: { 'grant_type' => 'refresh_token',
+'redirect_uri' => 'http://test.host/airtable/oauth/redirect', 'refresh_token' => nil },
+              headers: {
+                'Accept' => '*/*',
+             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+             'Authorization' => 'Basic Og==',
+             'Content-Type' => 'application/x-www-form-urlencoded',
+             'User-Agent' => 'Ruby',
+              },
+            ).
+            to_return(status: 200, body: token_response, headers: {})
+        end
+
         it 'is not allowed' do
           get :edit, params: { team_id: team.id, id: user_to_change.id }
           expect(response).to be_unauthorized
