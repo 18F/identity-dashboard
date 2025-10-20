@@ -6,6 +6,7 @@ en:
     read_process: Read production configuration process
     submit_request: Submit a request
     two_weeks: Please allow two weeks for integration launch or change requests.
+  moved_to_prod_html: This configuration has been moved to the <a href="https://portal.login.gov">production Partner Portal</a> and can no longer be edited here.
   service_provider_form:
     wizard_steps:
       intro: Getting Started
