@@ -131,11 +131,5 @@ class Airtable < ApplicationRecord
     self.refresh_token_expiration = DateTime.now + response['refresh_expires_in'].seconds
 
     save
-    # Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
-    # Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
-    #   DateTime.now + response['expires_in'].seconds)
-    # Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
-    # Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
-    #   DateTime.now + response['refresh_expires_in'].seconds)
   end
 end
