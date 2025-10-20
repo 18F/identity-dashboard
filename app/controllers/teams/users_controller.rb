@@ -34,7 +34,7 @@ class Teams::UsersController < AuthenticatedController
     end
 
     airtable_api = Airtable.find_by(user: current_user) ||
-      Airtable.new(current_user)
+                   Airtable.new(current_user)
 
     if airtable_api.has_token?
       @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
@@ -220,7 +220,7 @@ class Teams::UsersController < AuthenticatedController
 
   def verified_partner_admin?
     airtable_api = Airtable.find_by(user: current_user) ||
-      Airtable.new(current_user)
+                   Airtable.new(current_user)
 
     redirect_uri = airtable_api.build_redirect_uri(request)
     airtable_api.refresh_oauth_token(redirect_uri) if airtable_api.needs_refreshed_token?

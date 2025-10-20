@@ -17,9 +17,9 @@ RSpec.describe Airtable, type: :model do
 
   before do
     airtable.token_expiration = 1.day.from_now
-    airtable.token = "Token"
+    airtable.token = 'Token'
     airtable.refresh_token_expiration = 30.days.from_now
-    airtable.refresh_token = "RefreshToken"
+    airtable.refresh_token = 'RefreshToken'
   end
 
   describe '#get_matching_records' do
@@ -153,19 +153,18 @@ RSpec.describe Airtable, type: :model do
 
   describe '#refresh_oauth_token' do
     before do
-
       # Stub the POST request to Airtable
       stub_request(:post, 'https://airtable.com/oauth2/v1/token')
         .with(
           body: {
             'refresh_token' => 'refresh_token',
             'grant_type' => 'refresh_token',
-            'redirect_uri' => 'https://example.com'
+            'redirect_uri' => 'https://example.com',
           },
           headers: {
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'Authorization' => 'Basic mock_auth'
-          }
+            'Authorization' => 'Basic mock_auth',
+          },
         )
         .to_return(status: 200, body: token_response, headers: {})
 
@@ -216,10 +215,7 @@ RSpec.describe Airtable, type: :model do
   describe '#generate_state' do
     it 'generates a valid UUID' do
       state = airtable.generate_state
-      # rubocop:disable Layout/LineLength
       uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/i
-      # rubocop:enable Layout/LineLength
-
       expect(state).to match(uuid_regex) # Use a regex to validate the UUID format
     end
   end
@@ -228,8 +224,8 @@ RSpec.describe Airtable, type: :model do
     it 'generates a valid code verifier' do
       code_verifier = airtable.generate_code_verifier
 
-      expect(code_verifier.length).to eq(100)  # Check that the length is 100 characters
-      expect(code_verifier).to match(/[a-f0-9]+/)  # Ensure it contains only hexadecimal characters
+      expect(code_verifier.length).to eq(100) # Check that the length is 100 characters
+      expect(code_verifier).to match(/[a-f0-9]+/) # Ensure it contains only hexadecimal characters
     end
   end
 
@@ -242,7 +238,7 @@ RSpec.describe Airtable, type: :model do
 
       expect(airtable.state).to eq('test-uuid-1234')
       expect(airtable.code_verifier).to eq('test-code-verifier-1234567890abcde')
-      expect(airtable).to be_persisted  # Check that Airtable instance has been saved
+      expect(airtable).to be_persisted # Check that Airtable instance has been saved
     end
   end
 end

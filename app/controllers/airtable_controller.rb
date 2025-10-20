@@ -38,7 +38,7 @@ class AirtableController < AuthenticatedController
   private
 
   def airtable_api
-    airtable = Airtable.find_by(user: current_user) ||
+    Airtable.find_by(user: current_user) ||
       Airtable.new(current_user)
   end
 end

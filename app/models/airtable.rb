@@ -2,7 +2,6 @@
 # as well as sending requests to the Airtable API and managing
 # the returned data
 class Airtable < ApplicationRecord
-
   belongs_to :user
 
   BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
@@ -58,7 +57,7 @@ class Airtable < ApplicationRecord
   end
 
   def needs_refreshed_token?
-    self.token_expiration.present? &&
+    self.token_expiration.blank? ||
       self.token_expiration < DateTime.now
   end
 
