@@ -1,6 +1,8 @@
 # Controller for ServiceConfigWizard (Guided Flow)
 class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
+  include ModelChanges
+
   after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
@@ -40,14 +42,12 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider_id = params[:service_provider]
 
     # No existing config specified, so fall back on default behavior
-    return new unless service_provider_id
+    return new unless service_provider_id.present?
 
     service_provider = policy_scope(ServiceProvider).find(service_provider_id)
     authorize service_provider, :edit?
 
-    steps = WizardStep.steps_from_service_provider(service_provider, current_user)
-    # TODO: what if the service provider is somehow invalid?
-    steps.each(&:save)
+    WizardStep.populate_data(service_provider, current_user)
 
     # Skip the intro when editing an existing config
     redirect_to service_config_wizard_path(STEPS[1])
@@ -335,9 +335,18 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def log_change
     return unless step == wizard_steps.last
+    # TODO: Log error if draft_service_provider is not valid
+    return unless draft_service_provider.present?
 
-    action = draft_service_provider.previous_changes['id'] ? 'create' : 'update'
-    log.record_save(action, draft_service_provider) unless can_cancel?
+    if create?
+      log.sp_created(changes: changes_to_log(draft_service_provider))
+    else
+      log.sp_updated(changes: changes_to_log(draft_service_provider))
+    end
+  end
+
+  def create?
+    draft_service_provider.previous_changes['id'].present?
   end
 
   def verify_environment_permissions

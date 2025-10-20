@@ -21,7 +21,8 @@ describe ServiceProvidersController do
   let(:logger_double) { instance_double(EventLogger) }
 
   before do
-    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:sp_created)
+    allow(logger_double).to receive(:sp_updated)
     allow(logger_double).to receive(:unauthorized_access_attempt)
     allow(logger_double).to receive(:unpermitted_params_attempt)
     allow(EventLogger).to receive(:new).and_return(logger_double)
@@ -252,18 +253,19 @@ describe ServiceProvidersController do
       end
     end
 
-    context 'logging' do
-      it 'changes are recorded' do
+    describe 'logging' do
+      it 'logs the creation' do
         post :create, params: { service_provider: {
           issuer: 'log.issuer.string',
-          group_id: user.teams.first.id,
-          friendly_name: 'Log',
+        group_id: user.teams.first.id,
+        friendly_name: 'Log',
         } }
 
-        expect(logger_double).to have_received(:record_save) do |op, record|
-          expect(op).to eq('create')
-          expect(record.class.name).to eq('ServiceProvider')
-        end
+        service_provider = ServiceProvider.find_by(issuer: 'log.issuer.string')
+
+        expect(logger_double).to have_received(:sp_created).with(
+          { changes: hash_including(changes(service_provider:)) },
+        )
       end
     end
   end
@@ -671,15 +673,25 @@ describe ServiceProvidersController do
           expect(logger_double).to have_received(:unpermitted_params_attempt)
         end
 
-        it 'logs changes' do
-          put :update, params: {
-            id: prod_app.id,
-            service_provider: { description: "logging test #{rand(1...1000) }" },
-          }
-          prod_app.reload
-          expect(logger_double).to have_received(:record_save) do |op, record|
-            expect(op).to eq('update')
-            expect(record.class.name).to eq('ServiceProvider')
+        describe 'logging' do
+          let(:description) { "logging test #{rand(1...1000) }" }
+          let(:changes) do
+            {
+              'description' => {
+                'new' => description,
+                'old' => prod_app.description,
+              },
+              'id' => prod_app.id,
+            }
+          end
+
+          it 'logs changes' do
+            put :update, params: {
+              id: prod_app.id,
+              service_provider: { description: },
+            }
+
+            expect(logger_double).to have_received(:sp_updated).with({ changes: })
           end
         end
       end
@@ -703,8 +715,7 @@ describe ServiceProvidersController do
 
   describe '#destroy' do
     before do
-      allow(logger_double).to receive(:record_save)
-      allow(EventLogger).to receive(:new).and_return(logger_double)
+      allow(logger_double).to receive(:sp_destroyed)
 
       create(:team_membership, :partner_admin, user: user, team: sp.team)
       sign_in user
@@ -713,10 +724,12 @@ describe ServiceProvidersController do
     it 'logs delete events' do
       delete :destroy, params: { id: sp.id }
 
-      expect(logger_double).to have_received(:record_save) do |op, record|
-        expect(op).to eq('destroy')
-        expect(record.class.name).to eq('ServiceProvider')
-      end
+      # timestamp granularity is different between DB and Ruby
+      changes = sp.attributes.except('updated_at', 'created_at')
+
+      expect(logger_double).to have_received(:sp_destroyed).with(
+        { changes: hash_including(changes) },
+      )
     end
   end
 
@@ -786,5 +799,16 @@ describe ServiceProvidersController do
         end
       end
     end
+  end
+
+  def changes(service_provider:)
+    {
+      'id' => service_provider.id,
+      'friendly_name' => { 'new' => service_provider.friendly_name, 'old' => nil },
+      'group_id' => { 'new' => service_provider.group_id, 'old' => nil },
+      'issuer' => { 'new' => service_provider.issuer, 'old' => nil },
+      'status' => { 'new' => service_provider.status, 'old' => 'pending' },
+      'user_id' => { 'new' => user.id, 'old' => nil },
+    }
   end
 end

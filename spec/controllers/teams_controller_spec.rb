@@ -4,7 +4,7 @@ describe TeamsController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:org) { create(:team) }
+  let(:team) { create(:team) }
   let(:agency) { create(:agency) }
   let(:logger_double) { instance_double(EventLogger) }
 
@@ -12,7 +12,8 @@ describe TeamsController do
     allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
     allow(EventLogger).to receive(:new).and_return(logger_double)
-    allow(logger_double).to receive(:record_save)
+    allow(logger_double).to receive(:team_created)
+    allow(logger_double).to receive(:team_updated)
     allow(logger_double).to receive(:unauthorized_access_attempt)
     sign_in user
   end
@@ -71,7 +72,7 @@ describe TeamsController do
       let(:user) { create(:user, :logingov_admin) }
 
       it 'shows the team template' do
-        get :show, params: { id: org.id }
+        get :show, params: { id: team.id }
         expect(response).to render_template(:show)
       end
 
@@ -86,11 +87,11 @@ describe TeamsController do
 
         expect(TeamAuditEvent).to receive(:by_team).
           with(
-            org,
+            team,
             scope: PaperTrail::VersionPolicy::Scope.new(user, PaperTrail::Version).resolve,
           ).and_return([test_version])
 
-        get :show, params: { id: org.id }
+        get :show, params: { id: team.id }
 
         expect(assigns[:audit_events][0].whodunnit).to eq(test_version.whodunnit)
         expect(assigns[:audit_events][0].created_at).to eq(test_version.created_at)
@@ -99,11 +100,11 @@ describe TeamsController do
 
     context 'when a team member not login.gov admin' do
       before do
-        org.users << user
+        team.users << user
       end
 
       it 'shows the team template' do
-        get :show, params: { id: org.id }
+        get :show, params: { id: team.id }
         expect(response).to render_template(:show)
       end
 
@@ -112,10 +113,10 @@ describe TeamsController do
         no_versions_sql = no_versions.to_sql
 
         expect(TeamAuditEvent).to receive(:by_team).with(
-          org,
+          team,
           scope: have_attributes(to_sql: a_string_starting_with(no_versions_sql)),
         ).and_return(no_versions)
-        get :show, params: { id: org.id }
+        get :show, params: { id: team.id }
         expect(assigns[:audit_events]).to eq([])
       end
     end
@@ -143,12 +144,13 @@ describe TeamsController do
       end
 
       context 'has a government email address' do
+        let(:team) { Team.find_by(name: 'unique name') }
+
         before do
           post :create, params: { team: { name: name, agency_id: agency.id } }
         end
 
         it 'creates the team' do
-          team = Team.find_by(name: 'unique name')
           team_membership = TeamMembership.find_by(group_id: team.id,
                                                    user_id: user.id)
 
@@ -159,19 +161,26 @@ describe TeamsController do
 
         # rubocop:disable Layout/LineLength
         it 'assigns a UUID to the team' do
-          team = Team.find_by(name: 'unique name')
           expect(team.uuid).to_not be_nil
           expect(team.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
         end
         # rubocop:enable Layout/LineLength
 
         it 'redirects' do
-          team = Team.find_by(name: 'unique name')
           expect(response).to redirect_to(team_users_path(team))
         end
 
         it 'logs' do
-          expect(logger_double).to have_received(:record_save)
+          changes = {
+            'agency_id' => { 'old' => nil, 'new' => agency.id },
+            'id' => team.id,
+            'name' => { 'old' => nil, 'new' => team.name },
+            'uuid' => { 'old' => nil, 'new' => team.uuid },
+          }
+
+          expect(logger_double).to have_received(:team_created).with(
+            changes: hash_including(changes),
+          )
         end
       end
     end
@@ -208,7 +217,8 @@ describe TeamsController do
       let(:user) { create(:user, :logingov_admin) }
 
       before do
-        delete :destroy, params: { id: org.id }
+        allow(logger_double).to receive(:team_destroyed)
+        delete :destroy, params: { id: team.id }
       end
 
       it 'has a redirect response' do
@@ -216,13 +226,16 @@ describe TeamsController do
       end
 
       it 'logs' do
-        expect(logger_double).to have_received(:record_save)
+        changes = team.attributes.except('updated_at', 'created_at')
+        expect(logger_double).to have_received(:team_destroyed).with(
+          changes: hash_including(changes),
+        )
       end
     end
 
     context 'when the user is not an admin' do
       it 'has an error response' do
-        delete :destroy, params: { id: org.id }
+        delete :destroy, params: { id: team.id }
         expect(response).to have_http_status(:unauthorized)
         expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
@@ -234,18 +247,18 @@ describe TeamsController do
       let(:user) { create(:user, :logingov_admin) }
 
       it 'shows the edit template' do
-        get :edit, params: { id: org.id }
+        get :edit, params: { id: team.id }
         expect(response).to render_template(:edit)
       end
     end
 
     context 'when not an admin but a team member' do
       before do
-        org.users << user
+        team.users << user
       end
 
       it 'shows the edit template' do
-        get :edit, params: { id: org.id }
+        get :edit, params: { id: team.id }
         expect(response).to render_template(:edit)
       end
     end
@@ -254,33 +267,42 @@ describe TeamsController do
   describe '#update' do
     context 'when login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
+      let(:team) { create(:team, description: 'original description') }
+      let(:description) { 'a new description' }
 
       context 'when the update is successful' do
+        before do
+          patch :update, params: { id: team.id, team: { name: team.name, description: } }
+        end
         it 'has a redirect response' do
-          patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
           expect(response).to have_http_status(:found)
         end
 
         it 'logs' do
-          patch :update, params: { id: org.id, team: { name: org.name }, new_user: { email: '' } }
-          expect(logger_double).to have_received(:record_save)
+          changes = {
+            'description' => { 'old' => 'original description', 'new' => description },
+            'id' => team.id,
+          }
+          expect(logger_double).to have_received(:team_updated).with(
+            changes:,
+          )
         end
 
         context 'when no update is made' do
-          let(:user1)  { create(:team_member, teams: [org]) }
-          let(:user2)  { create(:team_member, teams: [org]) }
+          let(:user1)  { create(:team_member, teams: [team]) }
+          let(:user2)  { create(:team_member, teams: [team]) }
 
           before do
-            org.update(users: [user, user1, user2])
+            team.update(users: [user, user1, user2])
           end
 
           it 'has the same number of users after' do
-            expect(org.users.count).to eq 3
+            expect(team.users.count).to eq 3
             patch :update, params: {
-              id: org.id,
-              team: { name: org.name, agency_id: org.agency_id, description: org.description },
+              id: team.id,
+              team: { name: team.name, agency_id: team.agency_id, description: team.description },
             }
-            expect(org.users.count).to eq 3
+            expect(team.users.count).to eq 3
           end
         end
       end
@@ -292,7 +314,7 @@ describe TeamsController do
 
         it 'renders the edit action' do
           patch :update, params: {
-            id: org.id, team: { name: org.name }, new_user: { email: '' }
+            id: team.id, team: { name: team.name }, new_user: { email: '' }
           }
           expect(response).to render_template(:edit)
         end
@@ -301,29 +323,29 @@ describe TeamsController do
 
     context 'when user is not login.gov admin but a member of the team' do
       before do
-        org.users << user
+        team.users << user
       end
 
       context 'when no update is made' do
-        let(:user1)  { create(:team_member, teams: [org]) }
-        let(:user2)  { create(:team_member, teams: [org]) }
+        let(:user1)  { create(:team_member, teams: [team]) }
+        let(:user2)  { create(:team_member, teams: [team]) }
 
         before do
-          org.update(users: [user, user1, user2])
+          team.update(users: [user, user1, user2])
         end
 
         it 'has the same number of users after' do
-          expect(org.users.count).to eq 3
+          expect(team.users.count).to eq 3
           patch :update, params: {
-            id: org.id,
+            id: team.id,
             team: {
-              name: org.name,
-              agency_id: org.agency_id,
-              description: org.description,
+              name: team.name,
+              agency_id: team.agency_id,
+              description: team.description,
             },
             user_ids: "#{user.id} #{user1.id} #{user2.id}",
           }
-          expect(org.users.count).to eq 3
+          expect(team.users.count).to eq 3
         end
       end
     end
@@ -331,11 +353,11 @@ describe TeamsController do
     context 'when user is neither a login.gov admin nor a team member' do
       it 'has an unauthorized response' do
         patch :update, params: {
-          id: org.id,
+          id: team.id,
           team: {
-            name: org.name,
-            agency_id: org.agency_id,
-            description: org.description,
+            name: team.name,
+            agency_id: team.agency_id,
+            description: team.description,
           },
         }
         expect(response).to have_http_status(:unauthorized)
