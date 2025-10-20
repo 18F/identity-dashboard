@@ -33,10 +33,10 @@ class Extract
   # @return [Array<String>]
   def failures
     criteria.reject do |criterion|
-      successes.find do |config|
+      service_providers.find do |config|
         extract_by_team? ?
-          config.group_id.to_s == criterion :
-          config.issuer == criterion
+        config.group_id.to_s == criterion :
+        config.issuer == criterion
       end
     end
   end
@@ -46,11 +46,16 @@ class Extract
     "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
+  # @return [Array<Team>]
+  def teams
+    @teams ||= service_providers.map(&:team) || []
+  end
+
   # @return [Array<ServiceProvider>]
-  def successes
-    @successes ||= extract_by_team? ?
-      ServiceProvider.where(group_id: criteria) :
-      ServiceProvider.where(issuer: criteria)
+  def service_providers
+    @service_providers ||= extract_by_team? ?
+      ServiceProvider.joins(:team).where(group_id: criteria) :
+      ServiceProvider.joins(:team).where(issuer: criteria)
   end
 
   def valid?

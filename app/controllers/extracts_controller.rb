@@ -17,14 +17,14 @@ class ExtractsController < AuthenticatedController
       criteria_file: extracts_params[:criteria_file],
     )
 
-    if @extract.valid? && @extract.successes.present?
+    if @extract.valid? && @extract.service_providers.present?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
       return render 'results'
-    elsif @extract.errors.empty? && @extract.successes.empty?
-      flash[:error] = 'No ServiceProvider rows were returned'
+    elsif @extract.errors.empty? && @extract.service_providers.empty?
+      flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
 
     render 'index'
@@ -42,16 +42,18 @@ class ExtractsController < AuthenticatedController
   end
 
   # @return [String]
+  # json output be a hash of two arrays (teams, service_providers)
   def save_to_file
     begin
       File.open(@extract.filename, 'w') do |f|
-        data = @extract.successes.map do |sp|
+        sp_data = @extract.service_providers.map do |sp|
           attributes = sp.attributes
           attributes['team_uuid'] = sp.team.uuid
           # This is not portable between environments.
           attributes.delete 'remote_logo_key'
           attributes
         end
+        data = { teams: @extract.teams, service_providers: sp_data }
         f.print data.to_json
       end
       flash[:success] = 'Extracted configs saved'
