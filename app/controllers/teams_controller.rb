@@ -1,5 +1,5 @@
 # Controller for Teams pages. Team Users has its own controller.
-class TeamsController < AuthenticatedController # :nodoc:
+class TeamsController < AuthenticatedController
   include ModelChanges
 
   before_action -> { authorize Team }, only: %i[index create new all]

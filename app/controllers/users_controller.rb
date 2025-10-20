@@ -1,5 +1,5 @@
 # Controller for admin-only Users pages
-class UsersController < ApplicationController # :nodoc:
+class UsersController < ApplicationController
   include ModelChanges
 
   before_action -> { authorize User, :manage_users? }, except: %i[none]
