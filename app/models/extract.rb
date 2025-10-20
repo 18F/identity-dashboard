@@ -48,7 +48,7 @@ class Extract
 
   # @return [Array<Team>]
   def teams
-    @teams ||= service_providers.present? ? service_providers.map(&:team) : []
+    @teams ||= service_providers.map(&:team) || []
   end
 
   # @return [Array<ServiceProvider>]
