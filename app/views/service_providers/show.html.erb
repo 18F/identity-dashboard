@@ -1,8 +1,11 @@
 <%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
 
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
+<% if moved_to_prod? %>
+  <%= render partial: 'moved_to_prod_notice' %>
+<% end %>
 
-<% if service_provider.prod_config? %>
+<% if service_provider.prod_config? && !moved_to_prod? %>
   <%= render partial: 'prod_config_call_to_action' %>
 <% end %>
 
@@ -211,16 +214,18 @@
   <%= render 'service_provider_yaml' %>
 <% end %>
 
-<% if edit_button_goes_to_wizard? %>
-  <%= button_to t('forms.buttons.edit_service_provider'),
-    service_config_wizard_index_path(service_provider:),
-    class: 'usa-button float-left',
-    method: :post %>
- <% else %>
-  <%= button_to t('forms.buttons.edit_service_provider'),
-    edit_service_provider_path(service_provider),
-    class: 'usa-button float-left',
-    method: :get %>
+<% if !moved_to_prod? %>
+  <% if edit_button_goes_to_wizard? %>
+    <%= button_to t('forms.buttons.edit_service_provider'),
+      service_config_wizard_index_path(service_provider:),
+      class: 'usa-button float-left',
+      method: :post %>
+   <% else %>
+    <%= button_to t('forms.buttons.edit_service_provider'),
+      edit_service_provider_path(service_provider),
+      class: 'usa-button float-left',
+      method: :get %>
+  <% end %>
 <% end %>
 <%= button_to t('forms.buttons.delete_service_provider'),
   service_provider_path(service_provider),

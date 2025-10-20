@@ -12,7 +12,7 @@ class ServiceProvidersController < AuthenticatedController
                except: :publish # `#publish` is currently an API call only, so no DB scope required
   before_action :log_change, only: %i[destroy]
 
-  helper_method :parsed_help_text, :localized_help_text
+  helper_method :parsed_help_text, :localized_help_text, :service_provider, :moved_to_prod?
 
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
@@ -158,6 +158,10 @@ value: func.to_proc.call(@service_provider) })
     @service_provider || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
+  def moved_to_prod? 
+    !IdentityConfig.store.prod_like_env && service_provider.status == 'moved_to_prod'
+  end
+
   def parsed_help_text
     if params.has_key?(:service_provider)
       text_params = permitted_attributes(service_provider)[:help_text]
@@ -293,8 +297,6 @@ value: func.to_proc.call(@service_provider) })
 
     dsp
   end
-
-  helper_method :service_provider
 
   def log_change
     # TODO: Log error if service_provider is not valid
