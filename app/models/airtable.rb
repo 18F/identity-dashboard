@@ -57,19 +57,20 @@ class Airtable
   end
 
   def needs_refreshed_token?
-    token_exists = REDIS_POOL.with do |redis|
-      redis.exists("#{@user_uuid}.airtable_oauth_token")
+    token_ttl, refresh_token_ttl = REDIS_POOL.with do |redis|
+      [redis.TTL("#{@user_uuid}.airtable_oauth_token"),
+        redis.TTL("#{@user_uuid}.airtable_oauth_refresh_token")]
     end
 
-    token_exists
+    token_ttl < 0 && refresh_token_ttl > 0
   end
 
   def refresh_token(redirect_uri)
-    refresh_token = REDIS_POOL.with do |redis|
-      redis.exists("#{@user_uuid}.airtable_oauth_refresh_token")
+    refresh_t = REDIS_POOL.with do |redis|
+      redis.get("#{@user_uuid}.airtable_oauth_refresh_token")
     end
 
-    request_data = { refresh_token: refresh_token,
+    request_data = { refresh_token: refresh_t,
                      redirect_uri: redirect_uri,
                      grant_type: 'refresh_token' }
     encoded_request_data = Faraday::Utils.build_query(request_data)
@@ -130,14 +131,15 @@ class Airtable
   end
 
   def save_token(response)
-    # REDIS_POOL.with do |redis|
-    #   redis.setex("#{@user_uuid}.airtable_oauth_token",
-    #                response['expires_in'].seconds,
-    #                response['access_token'])
+    return unless response['access_token'].present?
+    REDIS_POOL.with do |redis|
+      redis.setex("#{@user_uuid}.airtable_oauth_token",
+                   response['expires_in'].seconds,
+                   response['access_token'])
 
-    #   redis.setex("#{@user_uuid}.airtable_oauth_refresh_token",
-    #                response['refresh_expires_in'].seconds,
-    #                response['refresh_token'])
-    # end
+      redis.setex("#{@user_uuid}.airtable_oauth_refresh_token",
+                   response['refresh_expires_in'].seconds,
+                   response['refresh_token'])
+    end
   end
 end
