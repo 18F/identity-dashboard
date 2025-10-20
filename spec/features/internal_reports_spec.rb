@@ -53,6 +53,8 @@ feature 'internal reports' do
       csv_response = CSV.parse(body)
 
       expect(csv_response.length).to eq(10)
+      puts csv_response
+      puts expected_table
       expected_table.each_with_index do |row, index|
         expect(csv_response[index]).to eq(row)
       end
