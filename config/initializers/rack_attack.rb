@@ -9,7 +9,12 @@ class Rack::Attack
   # safelisting). It must implement .increment and .write like
   # ActiveSupport::Cache::Store
 
-  # Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+  Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
+    namespace: 'rack-attack',
+    redis: REDIS_POOL,
+    expires_in: 2.weeks.to_i,
+    pool: false,
+  )
 
   ### Throttle Spammy Clients ###
 

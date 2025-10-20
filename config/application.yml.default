@@ -19,6 +19,8 @@ event_log_filename: 'events.log'
 newrelic_license_key: changeme
 prod_like_env: false
 rack_timeout_service_timeout_seconds: '15'
+redis_pool_size: 5
+redis_url: redis://localhost:6379/10
 secret_key_base: changeme
 serve_static_files: 'false'
 
