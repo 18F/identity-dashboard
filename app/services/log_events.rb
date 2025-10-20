@@ -12,35 +12,61 @@ module LogEvents
   # @param [ActionController::Parameters] extracts_params All parameters for Extract
   # @return (see EventLogger#track_event)
   def extraction_request(action, extracts_params)
-    track_event("extract_#{action}", extracts_params)
+    track_event("partner_portal_extract_#{action}", extracts_params)
   end
 
-  # Generic CrUD logger
-  #
-  # @param [String] action The controller action context for this save
-  # @param [ApplicationRecord] record The record to be saved
-  # @return (see EventLogger#track_event)
-  def record_save(action, record)
-    return if !record
+  # Log when a service provider is created
+  # @param changes [Hash] The changes to log
+  def sp_created(changes:)
+    track_event('partner_portal_sp_created', changes:)
+  end
 
-    model_name = record.class.name.downcase
-    changes = record.previous_changes.empty? ? record.as_json : {}
+  # Log when a service provider is destroyed
+  # @param [Hash] changes The changes to log
+  def sp_destroyed(changes:)
+    track_event('partner_portal_sp_destroyed', changes:)
+  end
 
-    record.previous_changes.each_pair do |k, v|
-      if k != 'updated_at'
-        if !v.is_a? Array
-          changes[k] = v
-        else
-          changes[k] = {
-            old: v[0],
-            new: v[1],
-          }
-        end
-      end
-    end
-    changes[:id] = record.id
-    changes.merge!(team_data record) if record.previous_changes[:role_name]
-    track_event("#{model_name}_#{action}", changes)
+  # Log when a service provider is updated
+  # @param [Hash] changes The changes to log
+  def sp_updated(changes:)
+    track_event('partner_portal_sp_updated', changes:)
+  end
+
+  # Log when a team is created
+  # @param [Hash] changes The changes to log
+  def team_created(changes:)
+    track_event('partner_portal_team_created', changes:)
+  end
+
+  # Log when a team is destroyed
+  # @param [Hash] changes The changes to log
+  def team_destroyed(changes:)
+    track_event('partner_portal_team_destroyed', changes:)
+  end
+
+  # Log when a team membership is created
+  # @param [Hash] changes The changes to log
+  def team_membership_created(changes:)
+    track_event('partner_portal_team_membership_created', changes:)
+  end
+
+  # Log when a team membership is destroyed
+  # @param [Hash] changes The changes to log
+  def team_membership_destroyed(changes:)
+    track_event('partner_portal_team_membership_destroyed', changes:)
+  end
+
+  # Log when a team membership changes
+  # @param [Hash] changes The changes to log
+  def team_membership_updated(changes:)
+    track_event('partner_portal_team_membership_updated', changes:)
+  end
+
+  # Log when a team is updated
+  # @param [Hash] changes The changes to log
+  def team_updated(changes:)
+    track_event('partner_portal_team_updated', changes:)
   end
 
   # @param [Pundit::NotAuthorizedError] exception
@@ -55,7 +81,7 @@ module LogEvents
       policy: exception.policy.class.name,
     }
 
-    track_event('unauthorized_access_attempt', details)
+    track_event('partner_portal_unauthorized_access_attempt', details)
   end
 
   # @param [ActionController::UnpermittedParameters] exception
@@ -66,18 +92,18 @@ module LogEvents
       params: exception.params,
     }
 
-    track_event('unpermitted_params_attempt', details)
+    track_event('partner_portal_unpermitted_params_attempt', details)
   end
 
-  private
+  # Log when a user is created
+  # @param [Hash] changes The changes to log
+  def user_created(changes:)
+    track_event('partner_portal_user_created', changes:)
+  end
 
-  # @param [#user_id,#group_id] record A record that belongs to a user and a team
-  # @return [Hash{Symbol => ApplicationRecord}]
-  #   the keys `:team_user` and `:team` with the appropriate record
-  def team_data(record)
-    {
-      team_user: User.find(record[:user_id]).email,
-      team: Team.find(record[:group_id]).name,
-    }
+  # Log when a user is destroyed
+  # @param [Hash] changes The changes to log
+  def user_destroyed(changes:)
+    track_event('partner_portal_user_destroyed', changes:)
   end
 end

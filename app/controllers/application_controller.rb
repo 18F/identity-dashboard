@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base # :nodoc:
   before_action :set_requested_url
   before_action :get_banner_messages
 
+  prepend_before_action :start_session
+
   protect_from_forgery with: :exception
 
   rescue_from Pundit::NotAuthorizedError, with: :log_not_auth_and_render_401
@@ -73,5 +75,15 @@ class ApplicationController < ActionController::Base # :nodoc:
 
   def get_banner_messages
     @active_banners = helpers.get_active_banners
+  end
+
+  def skip_session_load
+    @skip_session_load = true
+  end
+
+  def start_session
+    return if @skip_session_load
+
+    session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
   end
 end

@@ -14,6 +14,16 @@ FactoryBot.define do
       }
     end
 
+    trait :consistent do
+      sequence(:app_name) { |n| "App Name #{n}" }
+      with_team
+      ial { 2 }
+      with_ial_2_bundle
+      with_oidc_pkce
+      default_aal { 2 }
+      active { false }
+    end
+
     trait :ready_to_activate do
       sequence(:app_name) { |n| "App Name #{n}" }
       with_team
