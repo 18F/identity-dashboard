@@ -27,9 +27,11 @@ class InternalReportsController < AuthenticatedController
       end
     end
 
-    render renderable: UserPermissionsCsv.new(
-      memberships.union(internal_team_roles),
-    )
+    permissions_array = memberships.union(internal_team_roles).sort do |a, b|
+      [a[:issuer], a[:user_email]] <=> [b[:issuer], b[:user_email]]
+    end
+
+    render renderable: UserPermissionsCsv.new(permissions_array)
   end
 
   private

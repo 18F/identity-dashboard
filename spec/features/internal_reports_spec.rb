@@ -20,17 +20,12 @@ feature 'internal reports' do
     let(:complex_user) { create(:team_membership, :partner_admin).user }
     let(:additional_team) { create(:team) }
     # Report showing all issuers requires ServiceProviders
-    let(:sp0) { create(:service_provider, team: simple_user.teams.first) }
-    let(:sp1) { create(:service_provider, team: simple_user.teams.first) }
-    let(:sp2) { create(:service_provider, team: additional_team) }
-    let(:sp3) { create(:service_provider, team: additional_team) }
+    let!(:sp0) { create(:service_provider, team: simple_user.teams.first) }
+    let!(:sp1) { create(:service_provider, team: simple_user.teams.first) }
+    let!(:sp2) { create(:service_provider, team: additional_team) }
+    let!(:sp3) { create(:service_provider, team: additional_team) }
 
     before do
-      # ensure ServiceProviders are created for each test
-      sp0.issuer
-      sp1.issuer
-      sp2.issuer
-      sp3.issuer
       # Report shows TeamMembership for each issuer
       create(:team_membership,
              user: two_teams_admin,
@@ -60,6 +55,13 @@ feature 'internal reports' do
   def expected_table
     [
       ['Issuer', 'Team', 'Team UUID', 'User email', 'Role'],
+      [
+        '',
+        Team.internal_team.name,
+        Team.internal_team.uuid,
+        logingov_admin.email,
+        'Login.gov Admin',
+      ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
@@ -115,13 +117,6 @@ feature 'internal reports' do
         additional_team.uuid,
         two_teams_admin.email,
         'Partner Readonly',
-      ],
-      [
-        '',
-        Team.internal_team.name,
-        Team.internal_team.uuid,
-        logingov_admin.email,
-        'Login.gov Admin',
       ],
     ]
   end
