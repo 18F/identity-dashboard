@@ -108,7 +108,7 @@ FactoryBot.define do
       push_notification_url { 'http://localhost:1' }
     end
 
-    trait :moved_to_prod do
+    trait :with_moved_to_prod do
       status { 'moved_to_prod' }
     end
 
