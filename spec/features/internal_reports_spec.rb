@@ -53,18 +53,20 @@ feature 'internal reports' do
       csv_response = CSV.parse(body)
 
       expect(csv_response.length).to eq(10)
-      puts csv_response
-      puts expected_table
-      expected_table.each_with_index do |row, index|
-        expect(csv_response[index]).to eq(row)
-      end
-      # expect(csv_response).to eq(expected_table)
+      expect(csv_response).to eq(expected_table)
     end
   end
 
   def expected_table
     [
       ['Issuer', 'Team', 'Team UUID', 'User email', 'Role'],
+      [
+        '',
+        Team.internal_team.name,
+        Team.internal_team.uuid,
+        logingov_admin.email,
+        'Login.gov Admin',
+      ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
@@ -120,13 +122,6 @@ feature 'internal reports' do
         additional_team.uuid,
         two_teams_admin.email,
         'Partner Readonly',
-      ],
-      [
-        '',
-        Team.internal_team.name,
-        Team.internal_team.uuid,
-        logingov_admin.email,
-        'Login.gov Admin',
       ],
     ]
   end
