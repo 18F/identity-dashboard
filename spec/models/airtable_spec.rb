@@ -18,9 +18,7 @@ RSpec.describe Airtable, type: :model do
     it 'retrieves matching records' do
       issuers = ['Issuer 1', 'Issuer 2']
       user_token = 'mocked_token'
-      REDIS_POOL.with do |redis|
-        redis.setex("#{user_uuid}.airtable_oauth_token", 3600.seconds, user_token)
-      end
+      Rails.cache.write("#{user_uuid}.airtable_oauth_token", user_token)
 
       response_body = {
         'records' => [
@@ -34,17 +32,15 @@ RSpec.describe Airtable, type: :model do
       app_id = IdentityConfig.store.airtable_app_id
       table_id = IdentityConfig.store.airtable_table_id
 
-      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=").
-        with(
-          headers: {
-            'Accept' => '*/*',
-         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-         'Authorization' => 'Bearer mocked_token',
-         'Content-Type' => 'application/x-www-form-urlencoded',
-         'User-Agent' => 'Ruby',
-          },
-        ).
-        to_return(status: 200, body: response_body, headers: {})
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
+        .with(headers: {
+          'Authorization' => "Bearer #{user_token}",
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby',
+        })
+        .to_return(status: 200, body: response_body, headers: {})
 
       records = airtable.get_matching_records(issuers)
 
@@ -86,7 +82,7 @@ RSpec.describe Airtable, type: :model do
     let(:redirect_uri) { 'https://example.com' }
 
     before do
-      REDIS_POOL.with { |client| client.flushdb }
+      Rails.cache.clear
 
       stub_request(:post, 'https://airtable.com/oauth2/v1/token')
         .with(
@@ -111,9 +107,7 @@ RSpec.describe Airtable, type: :model do
 
     it 'requests and saves the token' do
       expect { airtable.request_token(code, redirect_uri) }.to change {
-        REDIS_POOL.with do |redis|
-          redis.get("#{user_uuid}.airtable_oauth_token")
-        end
+        Rails.cache.read("#{user_uuid}.airtable_oauth_token")
       }.from(nil).to('mock_access_token')
     end
   end
@@ -123,18 +117,12 @@ RSpec.describe Airtable, type: :model do
     let(:airtable) { Airtable.new(user_uuid) }
 
     before do
-      REDIS_POOL.with do |redis|
-        redis.setex("#{user_uuid}.airtable_oauth_token", 6000.seconds, 'token')
-      end
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token_expiration")
+        .and_return(expiration_time)
     end
 
     context 'when the token has expired' do
-      before do
-        REDIS_POOL.with do |redis|
-          redis.setex("#{user_uuid}.airtable_oauth_token", 1.seconds, 'token')
-          sleep(2) # pause for 2 seconds to let the token expire
-        end
-      end
+      let(:expiration_time) { DateTime.now - 1 }
 
       it 'returns true' do
         expect(airtable.needs_refreshed_token?).to eq(true)
@@ -142,6 +130,16 @@ RSpec.describe Airtable, type: :model do
     end
 
     context 'when the token has not expired' do
+      let(:expiration_time) { DateTime.now + 1 }
+
+      it 'returns false' do
+        expect(airtable.needs_refreshed_token?).to eq(false)
+      end
+    end
+
+    context 'when the expiration time is not present' do
+      let(:expiration_time) { nil }
+
       it 'returns false' do
         expect(airtable.needs_refreshed_token?).to eq(false)
       end
@@ -159,29 +157,26 @@ RSpec.describe Airtable, type: :model do
     end
 
     before do
-      REDIS_POOL.with do |redis|
-        redis.setex("#{user_uuid}.airtable_oauth_refresh_token",
-                     6000.seconds,
-                     'refresh_token')
-        redis.setex("#{user_uuid}.airtable_oauth_token",
-                     60 * 60 * 24 * 60.seconds,
-                     'old_access_token')
-      end
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_refresh_token")
+        .and_return('refresh_token')
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
+        .and_return('old_access_token')
 
-      stub_request(:post, 'https://airtable.com/oauth2/v1/token').
-        with(
-          body: { 'grant_type' => 'refresh_token',
-                 'redirect_uri' => 'https://example.com',
-                 'refresh_token' => 'refresh_token' },
-          headers: {
-            'Accept' => '*/*',
-         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-         'Authorization' => 'Basic mock_auth',
-         'Content-Type' => 'application/x-www-form-urlencoded',
-         'User-Agent' => 'Ruby',
+      stub_request(:post, 'https://airtable.com/oauth2/v1/token')
+        .with(
+          body: {
+            'refresh_token' => 'refresh_token',
+            'grant_type' => 'refresh_token',
+            'redirect_uri' => 'https://example.com',
           },
-        ).
-        to_return(status: 200, body: token_response, headers: {})
+          headers: {
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent' => 'Ruby',
+          },
+        )
+        .to_return(status: 200, body: token_response, headers: {})
 
       allow(airtable).to receive(:token_basic_authorization_header)
         .and_return({ 'Authorization' => 'Basic mock_auth' })
@@ -196,23 +191,10 @@ RSpec.describe Airtable, type: :model do
   end
 
   describe '#has_token?' do
-    context 'there is a token' do
-      it 'checks if a token exists' do
-        REDIS_POOL.with do |redis|
-          redis.setex("#{user_uuid}.airtable_oauth_token", 6000.seconds, 'token')
-        end
-        expect(airtable.has_token?).to eq(true)
-      end
-    end
-
-    context 'there is not a token' do
-      it 'checks if a token exists' do
-        REDIS_POOL.with do |redis|
-          redis.setex("#{user_uuid}.airtable_oauth_token", 1.seconds, 'token')
-          sleep(2)
-        end
-        expect(airtable.has_token?).to eq(false)
-      end
+    it 'checks if a token exists' do
+      allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
+        .and_return('token')
+      expect(airtable.has_token?).to eq(true)
     end
   end
 

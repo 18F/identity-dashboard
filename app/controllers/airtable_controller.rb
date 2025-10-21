@@ -7,23 +7,12 @@ class AirtableController < AuthenticatedController
       airtable_api.refresh_token(airtable_api.build_redirect_uri(request))
     end
 
-    @token, @token_expiration = REDIS_POOL.with do |redis|
-      [redis.get("#{current_user.uuid}.airtable_oauth_token"),
-       DateTime.now + redis.TTL("#{current_user.uuid}.airtable_oauth_token").seconds]
-    end
-
-    return unless @token.blank?
-
     base_url = "#{request.protocol}#{request.host_with_port}"
     @oauth_url = airtable_api.generate_oauth_url(base_url)
   end
 
   def oauth_redirect
-    cached_state = REDIS_POOL.with do |redis|
-      redis.get("#{current_user.uuid}.airtable_state")
-    end
-
-    unless cached_state == params[:state]
+    unless Rails.cache.read("#{current_user.uuid}.airtable_state") == params[:state]
       flash[:error] = 'State does not match, blocking token request.'
       redirect_to airtable_path and return
     end
@@ -40,18 +29,10 @@ class AirtableController < AuthenticatedController
   end
 
   def clear_token
-    REDIS_POOL.with do |redis|
-      prefix = "#{current_user.uuid}*"
-
-      keys_to_delete = []
-      redis.scan_each(match: prefix) do |key|
-        keys_to_delete << key
-      end
-
-      keys_to_delete.each_slice(10) do |batch|
-        redis.del(batch)
-      end
-    end
+    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token")
+    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token_expiration")
+    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token")
+    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token_expiration")
 
     redirect_to airtable_path
   end
