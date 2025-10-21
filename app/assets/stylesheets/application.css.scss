@@ -130,19 +130,3 @@
 *:not(p) + p.usa-error-message {
   margin: 0;
 }
-
-.list-style-checkbox {
-  & li {
-    padding-left: 0.5em;
-
-    &::marker {
-      font-size: 1.2em;
-      content: '☐';
-    }
-  }
-}
-
-.usa-definitions .token {
-  word-wrap: break-word;
-  max-width: 33rem;
-}

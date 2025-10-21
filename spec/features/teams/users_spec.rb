@@ -314,12 +314,7 @@ describe 'users' do
 
   feature 'modifying team user permissions' do
     context 'when login.gov admin' do
-      before do
-        login_as logingov_admin
-        allow(Rails.cache).to receive(:read)
-          .with("#{partner_admin_team_member.uuid}.airtable_oauth_token")
-          .and_return('access_token')
-      end
+      before { login_as logingov_admin }
 
       it 'allows modifying any user roles' do
         team_users = [partner_admin_team_member, readonly_team_member]
@@ -373,33 +368,7 @@ describe 'users' do
           expect(input_item_strings[index]).to include(role.friendly_name)
         end
         expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
-        expect(page).to_not have_content('Can add and delete users and teams')
-      end
-    end
-
-    context 'user has not connected with airtable' do
-      before do
-        login_as logingov_admin
-        Rails.cache.clear
-      end
-
-      it 'shows the requirement to connect with airtable before allow partner admin' do
-        team_users = [partner_admin_team_member, readonly_team_member]
-
-        user_to_change = team_users.sample
-        old_role = TeamMembership.find_by(user: user_to_change, team: team).role
-        (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
-
-        user_to_not_change = (team_users - [user_to_change]).first
-        TeamMembership.find_by(user: user_to_not_change, team: team).role
-
-        visit team_users_path(team)
-
-        within('tr', text: user_to_change.email) do
-          click_on 'Edit'
-        end
-
-        expect(page).to have_content('you must first connect with Airtable')
+        expect(page).to_not have_content('Partner Admin')
       end
     end
   end
