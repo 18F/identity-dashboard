@@ -234,10 +234,13 @@ accessibility-specs:
     - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+    - name: public.ecr.aws/docker/library/redis:7.0
+      alias: db-redis
   script:
     - *bundle_install
     - *npm_install
     - cp config/application.yml.default config/application.yml
+    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\" > config/application.yml"
     - bundle exec rake db:setup
     - bundle exec rspec --pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
   artifacts:
