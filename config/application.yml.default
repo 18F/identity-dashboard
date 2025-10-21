@@ -19,8 +19,6 @@ event_log_filename: 'events.log'
 newrelic_license_key: changeme
 prod_like_env: false
 rack_timeout_service_timeout_seconds: '15'
-redis_pool_size: 5
-redis_url: redis://localhost:6379/0
 secret_key_base: changeme
 serve_static_files: 'false'
 
@@ -47,7 +45,6 @@ production:
   mailer_domain: changeme
   post_logout_redirect_uri: changeme
   prod_like_env: false
-  redis_url: redis://redis.login.gov.internal:6379
   saml_sp_issuer: changeme
   saml_sp_private_key: changeme
   saml_sp_private_key_password: changeme

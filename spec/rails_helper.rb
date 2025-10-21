@@ -29,7 +29,6 @@ RSpec.configure do |config|
 
   config.before do
     stub_request(:any, /idp.example.com/).to_rack(FakeSamlIdp)
-    REDIS_POOL.with { |client| client.flushdb } if Identity::Hostdata.config
   end
 
   config.after do
