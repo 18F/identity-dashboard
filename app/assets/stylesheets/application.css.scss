@@ -130,3 +130,8 @@
 *:not(p) + p.usa-error-message {
   margin: 0;
 }
+
+.usa-definitions .token {
+  word-wrap: break-word;
+  max-width: 33rem;
+}
