@@ -51,8 +51,6 @@ RSpec.describe AirtableController, type: :controller do
         REDIS_POOL.with do |redis|
           redis.set("#{logingov_admin.uuid}.airtable_state", 'valid_state')
         end
-        # allow(Rails.cache).to receive(:read).with("#{logingov_admin.uuid}.airtable_state")
-        #   .and_return('valid_state')
       end
 
       it 'requests the token' do
@@ -108,18 +106,6 @@ RSpec.describe AirtableController, type: :controller do
         expect(redis.exists?("#{logingov_admin.uuid}_airtable_oauth_token")).to be_falsey
         expect(redis.exists?("#{logingov_admin.uuid}_airtable_oauth_refresh_token")).to be_falsey
       end
-      # After the action, these keys should be deleted
-      # expect(Rails.cache).to receive(:delete)
-      #   .with("#{logingov_admin.uuid}.airtable_oauth_token")
-      # expect(Rails.cache).to receive(:delete)
-      #   .with("#{logingov_admin.uuid}.airtable_oauth_token_expiration")
-      # expect(Rails.cache).to receive(:delete)
-      #   .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token")
-      # expect(Rails.cache).to receive(:delete)
-      #   .with("#{logingov_admin.uuid}.airtable_oauth_refresh_token_expiration")
-
-      # get :clear_token
-      # expect(response).to redirect_to(airtable_path)
     end
   end
 end

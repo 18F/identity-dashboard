@@ -316,9 +316,6 @@ describe 'users' do
     context 'when login.gov admin' do
       before do
         login_as logingov_admin
-        allow(Rails.cache).to receive(:read)
-          .with("#{partner_admin_team_member.uuid}.airtable_oauth_token")
-          .and_return('access_token')
       end
 
       it 'allows modifying any user roles' do
