@@ -10,9 +10,8 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV PIDFILE /tmp/server.pid
-ENV YARN_VERSION 1.22.19
-ENV NODE_VERSION 18.16.1
-ENV BUNDLER_VERSION 2.5.6
+ENV NODE_VERSION 22.12.0
+ENV BUNDLER_VERSION 2.6.9
 
 ENV POSTGRES_SSLMODE prefer 
 ENV POSTGRES_DB dashboard
@@ -85,11 +84,6 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=$YARN_VERSION-1
-
 RUN mkdir -p /usr/local/share/aws \
     && cd /usr/local/share/aws \
     && curl -fsSLk https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem --output rds-combined-ca-bundle.pem
@@ -128,8 +122,8 @@ RUN bundle install
 RUN bundle binstubs --all
 
 COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
-RUN yarn install --cache-folder .cache/yarn
+COPY package-lock.json $RAILS_ROOT/package-lock.json
+RUN npm install --cache=.cache/npm
 
 # Generate and place SSL certificates for puma
 RUN mkdir -p $RAILS_ROOT/keys

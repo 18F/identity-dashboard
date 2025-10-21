@@ -21,7 +21,7 @@ else
 	bundle exec rubocop --parallel
 endif
 	@echo "--- eslint ---"
-	yarn lint
+	npm run lint
 
 lint_database_schema_files: ## Checks that database schema files have not changed
 	(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)
