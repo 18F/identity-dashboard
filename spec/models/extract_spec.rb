@@ -3,7 +3,8 @@ require 'rails_helper'
 describe Extract do
   let(:user) { create(:user, :logingov_admin) }
   let(:issuer_file) { fixture_file_upload('issuers.txt', 'text/plain') }
-  let(:sp1) { create(:service_provider, :ready_to_activate) }
+  let(:team) { create(:team) }
+  let(:sp1) { create(:service_provider, :ready_to_activate, team:) }
   let(:sp2) { create(:service_provider, :ready_to_activate) }
 
   describe 'Validations' do
@@ -147,7 +148,29 @@ describe Extract do
     end
   end
 
-  describe '#successes' do
+  describe '#teams' do
+    it 'should return existing teams by team ID' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'teams',
+        criteria_list: sp1.group_id.to_s,
+      })
+
+      expect(extract.teams).to eq([team])
+    end
+
+    it 'should return teams by SP issuer string' do
+      extract = build(:extract, {
+        ticket: '0',
+        search_by: 'issuers',
+        criteria_list: sp1.issuer,
+      })
+
+      expect(extract.teams).to eq([team])
+    end
+  end
+
+  describe '#service_providers' do
     it 'should return existing SPs by team ID' do
       extract = build(:extract, {
         ticket: '0',
@@ -155,7 +178,7 @@ describe Extract do
         criteria_list: sp1.group_id.to_s,
       })
 
-      expect(extract.successes).to eq([sp1])
+      expect(extract.service_providers).to eq([sp1])
     end
 
     it 'should return existing SPs by issuer string' do
@@ -165,7 +188,7 @@ describe Extract do
         criteria_list: sp2.issuer,
       })
 
-      expect(extract.successes).to eq([sp2])
+      expect(extract.service_providers).to eq([sp2])
     end
   end
 end

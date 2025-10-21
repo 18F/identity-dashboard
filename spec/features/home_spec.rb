@@ -53,7 +53,7 @@ feature 'Home' do
       api_auth_link = find_link 'Your API auth token'
       expect(api_auth_link['href']).to eq(auth_tokens_path)
       user_csv_link = find_link 'User permissions report'
-      expect(user_csv_link['href']).to eq(internal_reports_team_memberships_path(format: 'csv'))
+      expect(user_csv_link['href']).to eq(internal_reports_user_permissions_path(format: 'csv'))
     end
   end
 

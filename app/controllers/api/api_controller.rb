@@ -1,6 +1,7 @@
 module Api
-  # Controller for API authenticaion with token
+  # Controller for API authentication with token
   class ApiController < ApplicationController
+    prepend_before_action :skip_session_load
     before_action :authenticate_token
 
     private

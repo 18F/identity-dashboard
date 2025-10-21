@@ -1,10 +1,12 @@
 # Controller for admin-only Users pages
 class UsersController < ApplicationController
+  include ModelChanges
+
   before_action -> { authorize User, :manage_users? }, except: %i[none]
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
   after_action :verify_policy_scoped, except: [:none]
-  after_action :log_change, only: %i[create update destroy]
+  after_action :log_user_changes, only: %i[create destroy]
   helper_method :options_for_roles
   attr_reader :user
 
@@ -38,14 +40,13 @@ class UsersController < ApplicationController
     @user = policy_scope(User).find_by(id: params[:id])
 
     role = Role.find_by(name: user_params.delete(:team_membership)&.dig(:role_name))
-    authorize_and_make_admin(@user) if role && role == Role::LOGINGOV_ADMIN
+    authorize_and_make_admin(@user) if role == Role::LOGINGOV_ADMIN
     user.transaction do
-      user.update!(user_params)
       remove_admin(user) if user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
       user.team_memberships.each do |membership|
         membership.role = role
         membership.save!
-        log_change(membership) if membership.role_name_previously_changed?
+        log_membership_changes(membership) if membership.role_name_previously_changed?
       end
     end
     redirect_to users_url
@@ -98,10 +99,20 @@ class UsersController < ApplicationController
     @team_membership.role = @user.primary_role
   end
 
-  def log_change(team_membership = false)
-    record = team_membership || @user
-    return if action_name != 'destroy' && record.previous_changes.empty?
+  def log_user_changes
+    if action_name == 'create'
+      log.user_created(changes: changes_to_log(@user))
+    elsif action_name == 'destroy'
+      log.user_destroyed(changes: changes_to_log(@user))
+    end
+  end
 
-    log.record_save(action_name, record)
+  def log_membership_changes(membership)
+    log.team_membership_updated(
+      changes: changes_to_log(membership).merge(
+        'team_user' => membership.user.email,
+        'team' => membership.team.name,
+      ),
+    )
   end
 end

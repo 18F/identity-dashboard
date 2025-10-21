@@ -1,5 +1,7 @@
 # Controller for Teams pages. Team Users has its own controller.
 class TeamsController < AuthenticatedController
+  include ModelChanges
+
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
   after_action :log_change, only: %i[create update destroy]
@@ -89,6 +91,19 @@ class TeamsController < AuthenticatedController
   end
 
   def log_change
-    log.record_save(action_name, @team)
+    # TODO: Log error if @team is not valid
+    return unless @team.present?
+
+    if action_name == 'create'
+      log.team_created(changes:)
+    elsif action_name == 'destroy'
+      log.team_destroyed(changes:)
+    else
+      log.team_updated(changes:)
+    end
+  end
+
+  def changes
+    changes_to_log(@team)
   end
 end

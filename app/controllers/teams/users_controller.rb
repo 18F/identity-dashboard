@@ -1,12 +1,13 @@
 # Controls Team Users pages, where partners update the users for a given team
 class Teams::UsersController < AuthenticatedController
+  include ModelChanges
+
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 
   if IdentityConfig.store.access_controls_enabled
     after_action :verify_authorized
     after_action :verify_policy_scoped
-    before_action :log_change, only: %i[destroy]
     after_action :log_change, only: %i[create update]
   end
 
@@ -113,11 +114,13 @@ class Teams::UsersController < AuthenticatedController
       # If unauthorized, the option to delete should not show up in the UI
       # so it is acceptable to return a 401 instead of a redirect here
       authorize policy_scope(TeamMembership).find_by(user:, team:)
+      log_change
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path and return
     end
     if user_present_not_current_user(user)
+      log_change
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
@@ -191,7 +194,58 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def log_change
-    log.record_save(action_name, team_membership)
+    # TODO: Log error if team_membership is not valid
+    return unless team_membership.present?
+
+    if action_name == 'create'
+      log.team_membership_created(changes:)
+    elsif action_name == 'update'
+      # do not log if there are no changes
+      return if team_membership.previous_changes.empty?
+
+      log.team_membership_updated(changes:)
+    else
+      log.team_membership_destroyed(changes:)
+    end
+  end
+
+  def changes
+    changes_to_log(team_membership).merge(
+      'team_user' => team_membership.user.email,
+      'team' => team_membership.team.name,
+    )
+  end
+
+  def verified_partner_admin?
+    airtable_api = Airtable.new(current_user.uuid)
+    redirect_uri = airtable_api.build_redirect_uri(request)
+    airtable_api.refresh_token(redirect_uri) if airtable_api.needs_refreshed_token?
+    issuers = []
+    ServiceProvider.where(team: self.team).each do |sp|
+      issuers.push(sp.issuer)
+    end
+
+    airtable_api.get_matching_records(issuers).each do |record|
+      unless airtable_api.new_partner_admin_in_airtable?(
+        user.email, record
+      )
+        return false
+      end
+    end
+
+    true
+  end
+
+  def partner_admin_confirmation_needed?
+    return false unless IdentityConfig.store.prod_like_env
+
+    return true if team.service_providers.empty?
+
+    if team_membership.role_name == 'partner_admin'
+      return false if params[:confirm_partner_admin].present?
+      return true if !verified_partner_admin?
+    end
+    false
   end
 
   def verified_partner_admin?

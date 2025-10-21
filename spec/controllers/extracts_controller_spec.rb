@@ -5,7 +5,8 @@ describe ExtractsController do
 
   let(:partner) { create(:user) }
   let(:admin) { create(:user, :logingov_admin) }
-  let(:sp1) { create(:service_provider, :ready_to_activate) }
+  let(:team) { create(:team) }
+  let(:sp1) { create(:service_provider, :ready_to_activate, team:) }
   let(:sp2) { create(:service_provider, :ready_to_activate) }
   let(:params1) do
     { extract: {
@@ -82,7 +83,7 @@ describe ExtractsController do
           criteria_list: 'fake:issuer',
         } }
 
-        expect(flash[:error]).to eq('No ServiceProvider rows were returned')
+        expect(flash[:error]).to eq('No ServiceProvider or Team rows were returned')
         expect(response).to render_template 'index'
       end
 
@@ -100,11 +101,10 @@ describe ExtractsController do
       it 'will #save_to_file with some modified attributes' do
         post :create, params: params1
         filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
-
-        expected_data = sp1.attributes
-        expected_data['team_uuid'] = sp1.team.uuid
-        expected_data.delete 'remote_logo_key'
-        expect(File.read filename).to eq([expected_data].to_json)
+        sp_data = sp1.attributes
+        sp_data['team_uuid'] = sp1.team.uuid
+        sp_data.delete 'remote_logo_key'
+        expect(File.read filename).to eq({ teams: [team], service_providers: [sp_data] }.to_json)
         expect(response).to render_template 'results'
       end
 

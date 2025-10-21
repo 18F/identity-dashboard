@@ -14,10 +14,9 @@
     </legend>
     <%= form.collection_radio_buttons(:search_by,
                                      { "Teams" => 'teams', "Issuers" => 'issuers' },
-                                     :last, :first,
-                                     checked: 'teams') do |b| %>
+                                     :last, :first) do |b| %>
       <div class="usa-radio">
-        <%= b.radio_button(class: "usa-radio__input", id: "search_by")%>
+        <%= b.radio_button(class: "usa-radio__input")%>
         <%= b.label(class: "usa-radio__label") %>
       </div>
     <% end %>
