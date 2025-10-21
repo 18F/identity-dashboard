@@ -49,4 +49,11 @@ Rails.application.routes.draw do
 
   # preserve old Groups route
   get '/groups/:id', to: redirect('/teams/%{id}')
+
+  # airtable
+  get '/airtable' => 'airtable#index'
+  get '/airtable/get_partner_admins_for_issuer' => 'airtable#issuer_lookup'
+  get '/airtable/oauth/redirect' => 'airtable#oauth_redirect'
+  get '/airtable/oauth/refresh_token' => 'airtable#refresh_token'
+  get '/airtable/oauth/clear_token' => 'airtable#clear_token'
 end
