@@ -485,13 +485,8 @@ GEM
     rdoc (6.7.0)
       psych (>= 4.0.0)
     redacted_struct (2.0.0)
-    redcarpet (3.6.1)
-    redis (5.4.1)
-      redis-client (>= 0.22.0)
-    redis-client (0.26.1)
-      connection_pool
-    regexp_parser (2.11.3)
-    reline (0.6.2)
+    regexp_parser (2.9.2)
+    reline (0.5.10)
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -655,7 +650,6 @@ DEPENDENCIES
   capistrano-rails
   capybara (>= 3.39.1)
   colorize
-  connection_pool
   cssbundling-rails
   csv
   database_cleaner (>= 2.0.2)
