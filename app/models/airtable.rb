@@ -15,6 +15,7 @@ class Airtable
   def get_matching_records(issuers, offset = nil, matched_records = nil)
     app_id = IdentityConfig.store.airtable_app_id
     table_id = IdentityConfig.store.airtable_table_id
+
     all_records_uri = "#{BASE_API_URI}/#{app_id}/#{table_id}?offset=#{offset}"
 
     @conn.headers = token_bearer_authorization_header
@@ -59,7 +60,7 @@ class Airtable
   def needs_refreshed_token?
     token_ttl, refresh_token_ttl = REDIS_POOL.with do |redis|
       [redis.TTL("#{@user_uuid}.airtable_oauth_token"),
-        redis.TTL("#{@user_uuid}.airtable_oauth_refresh_token")]
+       redis.TTL("#{@user_uuid}.airtable_oauth_refresh_token")]
     end
 
     token_ttl < 0 && refresh_token_ttl > 0
@@ -87,7 +88,7 @@ class Airtable
       redis.exists("#{@user_uuid}.airtable_oauth_token")
     end
 
-    token_exists
+    token_exists == 1
   end
 
   def generate_oauth_url(base_url)
@@ -116,7 +117,7 @@ class Airtable
 
   def token_bearer_authorization_header
     auth_string = REDIS_POOL.with do |redis|
-      redis.exists("#{@user_uuid}.airtable_oauth_token")
+      redis.get("#{@user_uuid}.airtable_oauth_token")
     end
     { 'Content-Type' => 'application/x-www-form-urlencoded',
       'Authorization' => "Bearer #{auth_string}" }
@@ -132,6 +133,7 @@ class Airtable
 
   def save_token(response)
     return unless response['access_token'].present?
+
     REDIS_POOL.with do |redis|
       redis.setex("#{@user_uuid}.airtable_oauth_token",
                    response['expires_in'].seconds,

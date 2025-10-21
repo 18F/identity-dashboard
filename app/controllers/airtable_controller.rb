@@ -12,10 +12,10 @@ class AirtableController < AuthenticatedController
        DateTime.now + redis.TTL("#{current_user.uuid}.airtable_oauth_token").seconds]
     end
 
-    if @token.blank?
-      base_url = "#{request.protocol}#{request.host_with_port}"
-      @oauth_url = airtable_api.generate_oauth_url(base_url)
-    end
+    return unless @token.blank?
+
+    base_url = "#{request.protocol}#{request.host_with_port}"
+    @oauth_url = airtable_api.generate_oauth_url(base_url)
   end
 
   def oauth_redirect
