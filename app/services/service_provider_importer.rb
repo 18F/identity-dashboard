@@ -11,6 +11,7 @@ class ServiceProviderImporter
   def run
     validate_file unless data
     normalize_data unless models
+    binding.pry
     return errors if errors_any?
 
     save unless dry_run
