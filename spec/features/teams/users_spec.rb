@@ -348,7 +348,7 @@ describe 'users' do
 
       it 'requires confirmation when no service providers associated with team' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team: team)
         visit team_users_path(team)
         within('tr', text: readonly_team_member.email) do
           click_on 'Edit'
@@ -371,7 +371,7 @@ describe 'users' do
         allow_any_instance_of(Teams::UsersController).
           to receive(:verified_partner_admin?).and_return(false)
         create(:service_provider, team:)
-        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team: team)
 
         visit team_users_path(team)
         within('tr', text: readonly_team_member.email) do
@@ -393,7 +393,7 @@ describe 'users' do
       it 'does not require confirmation if confirm_partner_admin is present' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         create(:service_provider, team:)
-        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team: team)
 
         visit edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true)
         partner_admin_role = Role.find_by!(name: 'partner_admin')
@@ -401,7 +401,7 @@ describe 'users' do
         click_on 'Confirm Change'
 
         expect(page).to have_current_path(team_users_path(team))
-        expect(page).not_to have_content(
+        expect(page).to_not have_content(
           'Please verify with the appropriate Account Manager that this user should',
         )
         expect(membership.reload.role_name).to eq('partner_admin')
@@ -412,7 +412,7 @@ describe 'users' do
         allow_any_instance_of(Teams::UsersController).
           to receive(:verified_partner_admin?).and_return(false)
         create(:service_provider, team:)
-        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team: team)
 
         visit team_users_path(team)
         within('tr', text: readonly_team_member.email) do
@@ -423,7 +423,7 @@ describe 'users' do
         click_on 'Update'
 
         expect(page).to have_current_path(team_users_path(team))
-        expect(page).not_to have_content(
+        expect(page).to_not have_content(
           'Please verify with the appropriate Account Manager that this user should',
         )
         expect(membership.reload.role_name).to eq('partner_admin')
