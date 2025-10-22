@@ -345,6 +345,89 @@ describe 'users' do
         actual_unchanged_role = TeamMembership.find_by(user: user_to_not_change, team: team).role
         expect(actual_unchanged_role).to eq(expected_unchanged_role)
       end
+
+      it 'requires confirmation when no service providers associated with team' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+        visit team_users_path(team)
+        within('tr', text: readonly_team_member.email) do
+          click_on 'Edit'
+        end
+        partner_admin_role = Role.find_by!(name: 'partner_admin')
+        choose partner_admin_role.friendly_name
+        click_on 'Update'
+
+        expect(page).to have_current_path(
+          edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
+        )
+        expect(page).to have_content(
+          'Please verify with the appropriate Account Manager that this user should',
+        )
+        expect(membership.reload.role_name).to eq('partner_readonly')
+      end
+
+      it 'requires confirmation when user is not a verified partner admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        allow_any_instance_of(Teams::UsersController).
+          to receive(:verified_partner_admin?).and_return(false)
+        create(:service_provider, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+
+        visit team_users_path(team)
+        within('tr', text: readonly_team_member.email) do
+          click_on 'Edit'
+        end
+        partner_admin_role = Role.find_by!(name: 'partner_admin')
+        choose partner_admin_role.friendly_name
+        click_on 'Update'
+
+        expect(page).to have_current_path(
+          edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
+        )
+        expect(page).to have_content(
+          'Please verify with the appropriate Account Manager that this user should',
+        )
+        expect(membership.reload.role_name).to eq('partner_readonly')
+      end
+
+      it 'does not require confirmation if confirm_partner_admin is present' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        create(:service_provider, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+
+        visit edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true)
+        partner_admin_role = Role.find_by!(name: 'partner_admin')
+        choose partner_admin_role.friendly_name
+        click_on 'Confirm Change'
+
+        expect(page).to have_current_path(team_users_path(team))
+        expect(page).not_to have_content(
+          'Please verify with the appropriate Account Manager that this user should',
+        )
+        expect(membership.reload.role_name).to eq('partner_admin')
+      end
+
+      it 'does not require confirmation if not in prod_like_env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        allow_any_instance_of(Teams::UsersController).
+          to receive(:verified_partner_admin?).and_return(false)
+        create(:service_provider, team:)
+        membership = TeamMembership.find_by(user: readonly_team_member, team:)
+
+        visit team_users_path(team)
+        within('tr', text: readonly_team_member.email) do
+          click_on 'Edit'
+        end
+        partner_admin_role = Role.find_by!(name: 'partner_admin')
+        choose partner_admin_role.friendly_name
+        click_on 'Update'
+
+        expect(page).to have_current_path(team_users_path(team))
+        expect(page).not_to have_content(
+          'Please verify with the appropriate Account Manager that this user should',
+        )
+        expect(membership.reload.role_name).to eq('partner_admin')
+      end
     end
 
     context 'when partner admin' do
