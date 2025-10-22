@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProviderImporter do
-  let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
+  let(:good_file) { File.join(file_fixture_path, 'extract_with_id.json') }
 
   before do
     # Ensure at least one logingov_admin user exists
@@ -14,6 +14,7 @@ describe ServiceProviderImporter do
   context 'with ursula portal generated data' do
     subject(:importer) { described_class.new(good_file) }
 
+<<<<<<< HEAD
     describe 'successful import' do
       let(:expected_issuers) do
         [
@@ -57,6 +58,39 @@ describe ServiceProviderImporter do
           expect(model.user).to eq(expected_user)
           expect(model.team).to eq(Team.find_by(uuid: expected_team_uuids[index]))
         end
+=======
+    # Happy path integration test - generated from ursula portal data
+    it 'can inspect and save the data' do
+      expected_issuers = [
+        'howard:test',
+        'hello_banana_fire_ball',
+        '04:24:test:aj',
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:05291148',
+        '654756876587697863453242',
+      ]
+      expected_user = Team.internal_team.users.first
+      # This includes duplicates because multiple SPs can belong to the same team
+      expected_team_uuids = [
+        '69c251d7-0185-4550-b2bc-de2834e08e2f',
+        '69c251d7-0185-4550-b2bc-de2834e08e2f',
+        'ab2cceb7-9ef5-4ae6-880d-bd0b6ae938a8',
+        '706d3dc2-287b-4873-85da-1025dcd9b635',
+        '6a12003a-c17c-4838-8381-f1f26cfe9498',
+      ]
+      expect(Team.where(uuid: expected_team_uuids)).to be_empty
+      expect { importer.run }.to change { ServiceProvider.count }.by expected_issuers.count
+      expect(Team.where(uuid: expected_team_uuids).count).to eq expected_team_uuids.uniq.count
+      expect(importer.data.to_json["teams"]).to eq(File.read(good_file)["teams"])
+      # Order doesn't matter much, so sort both arrays before comparing
+      expect(importer.data["service_providers"].map { |sp| sp['issuer'] }.sort).to eq(expected_issuers.sort)
+      expect(importer.models.map(&:persisted?)).to be_all
+      expect(importer.models.map(&:issuer).sort).to eq(expected_issuers.sort)
+      saved_models = ServiceProvider.last(expected_issuers.count)
+      saved_models.each_with_index do |model, index|
+        expect(importer.models).to include(model)
+        expect(model.user).to eq(expected_user)
+        expect(model.team).to eq(Team.find_by(uuid: expected_team_uuids[index]))
+>>>>>>> 76cf0ea8 (the tests are passinggit add .)
       end
     end
 
@@ -64,7 +98,11 @@ describe ServiceProviderImporter do
       importer = described_class.new(File.join(file_fixture_path, 'extract_sample_no_team.json'))
       expect { importer.run }.to change { ServiceProvider.count }.by 1
       data_from_file = importer.data
+<<<<<<< HEAD
       saved_sp = ServiceProvider.find_by issuer: data_from_file['service_providers'].first['issuer']
+=======
+      saved_sp = ServiceProvider.find_by issuer: data_from_file["service_providers"].first['issuer']
+>>>>>>> 76cf0ea8 (the tests are passinggit add .)
       expect(saved_sp.team).to eq(Team.internal_team)
     end
 
@@ -81,11 +119,20 @@ describe ServiceProviderImporter do
 
     it 'will not honor DB IDs' do
       data_from_file = JSON.parse(File.read(File.join(file_fixture_path, 'extract_sample.json')))
+<<<<<<< HEAD
       conflicting_id = data_from_file['service_providers'].first['id']
       create(:service_provider, id: conflicting_id)
 
       expect { importer.run }.to change { ServiceProvider.count }.by 5
       issuer_from_file = data_from_file['service_providers'].first['issuer']
+=======
+      conflicting_id = data_from_file["service_providers"].first['id']
+      create(:service_provider, id: conflicting_id)
+
+
+      expect { importer.run }.to change { ServiceProvider.count }.by 5
+      issuer_from_file = data_from_file["service_providers"].first['issuer']
+>>>>>>> 76cf0ea8 (the tests are passinggit add .)
       saved_sp = ServiceProvider.find_by issuer: issuer_from_file
       expect(saved_sp.id).to_not eq(conflicting_id)
     end
