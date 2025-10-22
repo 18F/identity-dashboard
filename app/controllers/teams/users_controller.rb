@@ -237,12 +237,19 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def partner_admin_confirmation_needed?
+    # Logingov Admin is confirming now
+    return false if params[:confirm_partner_admin].present?
+
+    # Only check with Airtable in Prod Like Environments
     return false unless IdentityConfig.store.prod_like_env
 
-    return true if team.service_providers.empty?
-
+    # More checks needed if role is being set to partner admin.
     if team_membership.role_name == 'partner_admin'
-      return false if params[:confirm_partner_admin].present?
+      # Confirmation needed when there is no service providers associated
+      # with the team.
+      return true if team.service_providers.empty?
+      # Confirmation needed if the edited user is not a listed Partner
+      # Admin in Airtable for the Service Providers associated with the team
       return true if !verified_partner_admin?
     end
     false
