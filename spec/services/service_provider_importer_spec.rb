@@ -1,56 +1,43 @@
 require 'rails_helper'
 
 describe ServiceProviderImporter do
-  let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
+  let(:good_file) { File.join(file_fixture_path, 'extract_with_id.json') }
 
   before do
     # Ensure at least one logingov_admin user exists
     # This is currently used by the importer as a fall-back user
     create(:user, :logingov_admin)
+    create(:agency, id: 106, name: 'National Nuclear Security Administration')
+    create(:agency, id: 31, name: 'AbilityOne Commission')
   end
 
   context 'with new, reasonable data' do
     subject(:importer) { described_class.new(good_file) }
 
-    before do
-      # An agency with this ID is required by the fixture data. Might as well use the prod value
-      create(:agency, id: 130, name: 'Public Defender Service for the District of Columbia')
-    end
-
-    # Happy path integration test
+    # Happy path integration test - generated from ursula portal data
     it 'can inspect and save the data' do
       expected_issuers = [
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sandbox-test',
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:help_text',
-        '2024-10-15:non-admin:test',
-        '2024-10-17:helptext',
-        '2024-11-06-mobile-test',
-        'asdfsadfasd',
-        'asdfsadfas',
-        '2025-01-13:fields:test',
-        '2024-01-09:saml:test',
-        '2024-10-18-helptext',
+        'howard:test',
+        'hello_banana_fire_ball',
+        '04:24:test:aj',
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:05291148',
+        '654756876587697863453242',
       ]
       expected_user = Team.internal_team.users.first
+      # This includes duplicates because multiple SPs can belong to the same team
       expected_team_uuids = [
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        # In the fixture, this is missing a uuid, so should fall back to internal team
-        Team.internal_team.uuid,
-        '963bcc0a-2bd7-4762-8f59-a326e141970f',
-        '963bcc0a-2bd7-4762-8f59-a326e141970f',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
-        '27f565d5-4d60-4cc5-8e8d-90a8fd2bd3aa',
+        '69c251d7-0185-4550-b2bc-de2834e08e2f',
+        '69c251d7-0185-4550-b2bc-de2834e08e2f',
+        'ab2cceb7-9ef5-4ae6-880d-bd0b6ae938a8',
+        '706d3dc2-287b-4873-85da-1025dcd9b635',
+        '6a12003a-c17c-4838-8381-f1f26cfe9498',
       ]
-
+      expect(Team.where(uuid: expected_team_uuids)).to be_empty
       expect { importer.run }.to change { ServiceProvider.count }.by expected_issuers.count
-
-      expect(importer.data.to_json).to eq(File.read(good_file))
+      expect(Team.where(uuid: expected_team_uuids).count).to eq expected_team_uuids.uniq.count
+      expect(importer.data.to_json["teams"]).to eq(File.read(good_file)["teams"])
       # Order doesn't matter much, so sort both arrays before comparing
-      expect(importer.data.map { |sp| sp['issuer'] }.sort).to eq(expected_issuers.sort)
+      expect(importer.data["service_providers"].map { |sp| sp['issuer'] }.sort).to eq(expected_issuers.sort)
       expect(importer.models.map(&:persisted?)).to be_all
       expect(importer.models.map(&:issuer).sort).to eq(expected_issuers.sort)
       saved_models = ServiceProvider.last(expected_issuers.count)
@@ -61,8 +48,16 @@ describe ServiceProviderImporter do
       end
     end
 
+    it 'it creates service provider with internal team if no team uuid is present' do
+      importer = described_class.new(File.join(file_fixture_path, 'extract_sample_no_team.json'))
+      expect { importer.run }.to change { ServiceProvider.count }.by 1
+      data_from_file = importer.data
+      saved_sp = ServiceProvider.find_by issuer: data_from_file["service_providers"].first['issuer']
+      expect(saved_sp.team).to eq(Team.internal_team)
+    end
+
     it 'is idempotent' do
-      expect { importer.run }.to change { ServiceProvider.count }.by 10
+      expect { importer.run }.to change { ServiceProvider.count }.by 5
       expect { importer.run }.to_not change { ServiceProvider.count }
     end
 
@@ -72,19 +67,20 @@ describe ServiceProviderImporter do
     end
 
     it 'will not honor DB IDs' do
-      data_from_file = JSON.parse(File.read(File.join(file_fixture_path, 'extract_with_id.json')))
-      conflicting_id = data_from_file.first['id']
+      data_from_file = JSON.parse(File.read(File.join(file_fixture_path, 'extract_sample.json')))
+      conflicting_id = data_from_file["service_providers"].first['id']
       create(:service_provider, id: conflicting_id)
 
-      expect { importer.run }.to change { ServiceProvider.count }.by 10
-      issuer_from_file = data_from_file.first['issuer']
+
+      expect { importer.run }.to change { ServiceProvider.count }.by 5
+      issuer_from_file = data_from_file["service_providers"].first['issuer']
       saved_sp = ServiceProvider.find_by issuer: issuer_from_file
       expect(saved_sp.id).to_not eq(conflicting_id)
     end
   end
 
   context 'with a conflicting entry in the database' do
-    let(:duplicate_issuer) { '2025-01-13:fields:test' }
+    let(:duplicate_issuer) { 'howard:test' }
 
     before do
       create(:service_provider, issuer: duplicate_issuer)
