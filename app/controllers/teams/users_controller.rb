@@ -1,11 +1,13 @@
+# Controls Team Users pages, where partners update the users for a given team
 class Teams::UsersController < AuthenticatedController
+  include ModelChanges
+
   before_action :authorize_manage_team_users,
                 unless: -> { IdentityConfig.store.access_controls_enabled }
 
   if IdentityConfig.store.access_controls_enabled
     after_action :verify_authorized
     after_action :verify_policy_scoped
-    before_action :log_change, only: %i[destroy]
     after_action :log_change, only: %i[create update]
   end
 
@@ -13,10 +15,11 @@ class Teams::UsersController < AuthenticatedController
 
   def index
     authorize current_team_membership if IdentityConfig.store.access_controls_enabled
-    @team_memberships = team.team_memberships.where
+    @team_memberships = team && team.team_memberships.where
       .associated(:user, :team)
       .includes(:user)
       .order('users.email')
+    @team_memberships ||= []
   end
 
   def new
@@ -111,11 +114,13 @@ class Teams::UsersController < AuthenticatedController
       # If unauthorized, the option to delete should not show up in the UI
       # so it is acceptable to return a 401 instead of a redirect here
       authorize policy_scope(TeamMembership).find_by(user:, team:)
+      log_change
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path and return
     end
     if user_present_not_current_user(user)
+      log_change
       team.users.delete(user)
       flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
       redirect_to team_users_path
@@ -173,7 +178,7 @@ class Teams::UsersController < AuthenticatedController
     if team
       @current_team_membership = policy_scope(team.team_memberships).find_by(user: current_user)
     end
-    @current_team_membership ||= policy_scope(TeamMembership).new
+    @current_team_membership ||= policy_scope(TeamMembership).build(team:)
   end
 
   def team_membership
@@ -189,7 +194,26 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def log_change
-    log.record_save(action_name, team_membership)
+    # TODO: Log error if team_membership is not valid
+    return unless team_membership.present?
+
+    if action_name == 'create'
+      log.team_membership_created(changes:)
+    elsif action_name == 'update'
+      # do not log if there are no changes
+      return if team_membership.previous_changes.empty?
+
+      log.team_membership_updated(changes:)
+    else
+      log.team_membership_destroyed(changes:)
+    end
+  end
+
+  def changes
+    changes_to_log(team_membership).merge(
+      'team_user' => team_membership.user.email,
+      'team' => team_membership.team.name,
+    )
   end
 
   def verified_partner_admin?
