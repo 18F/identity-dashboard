@@ -9,7 +9,6 @@ class ServiceProviderDisabler
 
   def run
     validate_file unless data
-    sp_issuers unless issuers
     return errors if errors_any?
 
     disable unless dry_run
@@ -19,7 +18,7 @@ class ServiceProviderDisabler
   private
 
   def errors_any?
-    errors.values.any? { |error| error.any? }
+    errors.values.any?
   end
 
   def validate_file
@@ -35,7 +34,7 @@ class ServiceProviderDisabler
   end
 
   def errors
-    issuers.each_with_object({}) do |issuer, error_list|
+    @errors ||= sp_issuers.each_with_object({}) do |issuer, error_list|
       model = ServiceProvider.find_by(issuer: issuer)
       if model.blank?
         error_list[issuer] = ActiveRecord::RecordNotFound.new(issuer:)

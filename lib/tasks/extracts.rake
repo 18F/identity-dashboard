@@ -51,7 +51,10 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     errors.each do |issuer, errors|
       puts "For issuer '#{issuer}'"
       if errors
-        puts "\tErrors: #{errors.full_messages.join(' ')}"
+        messages = errors.class.name.match('ActiveRecord') ?
+          errors.detailed_message :
+          errors.full_messages.join(' ')
+        puts "\tErrors: #{messages}"
       else
         puts "\t— No errors —"
       end
@@ -91,7 +94,7 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     errors = disabler.run
     puts "\nIssuers to disable:\n#{issuers_list(disabler.models)}\n"
     print_errors(errors)
-    unless errors.any? || ARGV.include('--dry-run')
+    unless errors.any? || ARGV.include?('--dry-run')
       puts confirm_msg
       input = STDIN.gets.strip
       exit 1 unless /^y/i.match?(input)
@@ -105,11 +108,12 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
       puts '-- Dry Run --'
     else
       (saved, unsaved) = disabler.models.partition do |m|
-        m.previous_changes[:status][1] == 'moved_to_prod'
+        status = m.previous_changes[:status]
+        status && status[1] == 'moved_to_prod'
       end
       puts 'Updated status for' if saved.any?
       puts issuers_list(saved)
-      puts 'Did not update status for' if saved.any?
+      puts 'Did not update status for' if unsaved.any?
       puts issuers_list(unsaved)
     end
     puts '--- Done ---'
