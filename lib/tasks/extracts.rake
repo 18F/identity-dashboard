@@ -14,21 +14,18 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     # Always do a dry run first
     importer.dry_run = true
 
-  errors = importer.run
-  puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
-  puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
-  print_errors('team', errors[:team_errors])
-  print_errors('issuer', errors[:service_provider_errors])
+    errors = importer.run
+    preview_import(importer, errors)
+    errors_present = errors[:service_provider_errors].any? || errors[:team_errors].any?
 
-    unless (errors[:service_provider_errors].any? || errors[:team_errors].any?) || ARGV.include?('--dry-run')
+    if !errors_present && !ARGV.include?('--dry-run')
       puts "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
       input = STDIN.gets.strip
       exit 1 unless /^y/i.match?(input)
 
-  importer.dry_run = false
-  errors = importer.run
-  print_errors('team', errors[:team_errors])
-  print_errors('issuer', errors[:service_provider_errors])
+      importer.dry_run = false
+      errors = importer.run
+      preview_import(importer, errors)
     end
 
     if ARGV.include?('--dry-run')
@@ -50,16 +47,23 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
       yield(saved)
     end
 
-    if unsaved.any?
-      puts 'Did not save data for'
-      yield(unsaved)
-    end
+    return unless unsaved.any?
+
+    puts 'Did not save data for'
+    yield(unsaved)
+  end
+
+  def preview_import(importer, errors)
+    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
+    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
+    print_errors('team', errors[:team_errors])
+    print_errors('issuer', errors[:service_provider_errors])
   end
 
   def print_errors(label, errors)
     errors.each do |key, errs|
       puts "For #{label} '#{key}'"
-      if errs && errs.any?
+      if errs&.any?
         puts "\tErrors: #{errs.full_messages.join(' ')}"
       else
         puts "\t— No errors —"
