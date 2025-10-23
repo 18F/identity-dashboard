@@ -76,6 +76,7 @@ describe ServiceProviderImporter do
     it 'can do a dry run' do
       importer.dry_run = true
       expect { importer.run }.to_not change { ServiceProvider.count }
+      expect { importer.run }.to_not change { Team.count }
     end
 
     it 'will not honor DB IDs' do
