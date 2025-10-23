@@ -51,10 +51,7 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     errors.each do |issuer, errors|
       puts "For issuer '#{issuer}'"
       if errors
-        messages = errors.class.name.match('ActiveRecord') ?
-          errors.detailed_message :
-          errors.full_messages.join(' ')
-        puts "\tErrors: #{messages}"
+        puts "\tErrors: #{errors.full_messages.join(' ')}"
       else
         puts "\t— No errors —"
       end
