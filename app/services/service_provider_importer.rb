@@ -34,7 +34,7 @@ class ServiceProviderImporter
   def normalize_data
     create_available_teams
     create_missing_teams
-    @models = data["service_providers"].map do |config|
+    @models = data['service_providers'].map do |config|
       team = Team.find_by uuid: config['team_uuid'] if config['team_uuid']
       # Assign these to the internal team if the team info is missing.
       # We can easily change the team later.
@@ -52,7 +52,7 @@ class ServiceProviderImporter
   end
 
   def create_available_teams
-    data["teams"].each do |config|
+    data['teams'].each do |config|
       Team.create(
         uuid: config['uuid'],
         name: config['name'],
@@ -62,9 +62,8 @@ class ServiceProviderImporter
     end
   end
 
-
   def create_missing_teams
-    data["service_providers"].each do |config|
+    data['service_providers'].each do |config|
       team_uuid = config['team_uuid']
       next unless team_uuid
       next if Team.exists?(uuid: team_uuid)
