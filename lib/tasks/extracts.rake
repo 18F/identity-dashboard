@@ -47,10 +47,17 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
       yield(saved)
     end
 
-    if unsaved.any?
-      puts 'Did not save data for'
-      yield(unsaved)
-    end
+    return unless unsaved.any?
+
+    puts 'Did not save data for'
+    yield(unsaved)
+  end
+
+  def preview_import(importer, errors)
+    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
+    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
+    print_errors('team', errors[:team_errors])
+    print_errors('issuer', errors[:service_provider_errors])
   end
 
   def preview_import(importer, errors)

@@ -107,12 +107,9 @@ describe ServiceProviderImporter do
 
     it 'has an error only for the conflicting entry' do
       errors = importer.run
-<<<<<<< HEAD
+
       conflict_msgs = errors[:service_provider_errors][duplicate_issuer].full_messages
       expect(conflict_msgs).to eq(['Issuer has already been taken'])
-=======
-      expect(errors[:service_provider_errors][duplicate_issuer].full_messages).to eq(['Issuer has already been taken'])
->>>>>>> 1c12b266 (updating extracts.rake to output team data and do dry run properly for teams)
       errors[:service_provider_errors].delete duplicate_issuer
       expect(errors[:service_provider_errors].values.map(&:any?)).to be_none
     end
