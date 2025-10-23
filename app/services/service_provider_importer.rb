@@ -13,7 +13,7 @@ class ServiceProviderImporter
     create_available_teams unless teams
     teams.concat(create_missing_teams).compact!
     normalize_service_providers unless service_providers
-    errors = {service_provider_errors: service_provider_errors, team_errors: team_errors}
+    errors = { service_provider_errors: service_provider_errors, team_errors: team_errors }
     return errors if service_provider_errors_any? || team_errors_any?
 
     save unless dry_run
@@ -24,7 +24,7 @@ class ServiceProviderImporter
     service_provider_errors.values.any? { |error| error.any? }
   end
 
-   def team_errors_any?
+  def team_errors_any?
     team_errors.values.any? { |error| error.any? }
   end
 
@@ -44,9 +44,7 @@ class ServiceProviderImporter
 
       # Prefer an in-memory team created earlier in this run (dry_run or unsaved);
       # fall back to DB lookup; otherwise use internal team.
-      team = if team_uuid
-               teams&.find { |t| t.uuid == team_uuid } || Team.find_by(uuid: team_uuid)
-             end
+      team = (teams&.find { |t| t.uuid == team_uuid } || Team.find_by(uuid: team_uuid) if team_uuid)
       team ||= Team.internal_team
 
       config.delete 'id'
