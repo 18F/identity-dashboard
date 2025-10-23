@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProviderImporter do
-  let(:good_file) { File.join(file_fixture_path, 'extract_with_id.json') }
+  let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
 
   before do
     # Ensure at least one logingov_admin user exists
@@ -49,11 +49,11 @@ describe ServiceProviderImporter do
         expect(importer.data['service_providers'].map do |sp|
           sp['issuer']
         end.sort).to eq(expected_issuers.sort)
-        expect(importer.models.map(&:persisted?)).to be_all
-        expect(importer.models.map(&:issuer).sort).to eq(expected_issuers.sort)
+        expect(importer.service_providers.map(&:persisted?)).to be_all
+        expect(importer.service_providers.map(&:issuer).sort).to eq(expected_issuers.sort)
         saved_models = ServiceProvider.last(expected_issuers.count)
         saved_models.each_with_index do |model, index|
-          expect(importer.models).to include(model)
+          expect(importer.service_providers).to include(model)
           expect(model.user).to eq(expected_user)
           expect(model.team).to eq(Team.find_by(uuid: expected_team_uuids[index]))
         end
@@ -101,14 +101,14 @@ describe ServiceProviderImporter do
 
     it 'saves nothing' do
       expect { importer.run }.to_not change { ServiceProvider.count }
-      expect(importer.models.map(&:persisted?)).to be_none
+      expect(importer.service_providers.map(&:persisted?)).to be_none
     end
 
     it 'has an error only for the conflicting entry' do
       errors = importer.run
-      expect(errors[duplicate_issuer].full_messages).to eq(['Issuer has already been taken'])
-      errors.delete duplicate_issuer
-      expect(errors.values.map(&:any?)).to be_none
+      expect(errors[:service_provider_errors][duplicate_issuer].full_messages).to eq(['Issuer has already been taken'])
+      errors[:service_provider_errors].delete duplicate_issuer
+      expect(errors[:service_provider_errors].values.map(&:any?)).to be_none
     end
   end
 
@@ -117,6 +117,7 @@ describe ServiceProviderImporter do
     importer = described_class.new(file_name)
     expect { importer.run }.to raise_error(ArgumentError)
     expect(importer.data).to be_blank
-    expect(importer.models).to be_blank
+    expect(importer.service_providers).to be_blank
+    expect(importer.teams).to be_blank
   end
 end
