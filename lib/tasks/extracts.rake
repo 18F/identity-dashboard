@@ -47,10 +47,10 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
       yield(saved)
     end
 
-    return unless unsaved.any?
-
-    puts 'Did not save data for'
-    yield(unsaved)
+    if unsaved.any?
+      puts 'Did not save data for'
+      yield(unsaved)
+    end
   end
 
   def preview_import(importer, errors)
