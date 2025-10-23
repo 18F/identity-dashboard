@@ -100,7 +100,6 @@ class ServiceProviderImporter
 
   def team_errors
     teams.each_with_object({}) do |model, error_list|
-      # binding.pry
       model.valid?
       error_list[model.uuid] = model.errors if model.errors.any?
     end
