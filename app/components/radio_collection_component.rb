@@ -1,6 +1,6 @@
 # A radio button input collection component for SimpleForm
 class RadioCollectionComponent < ViewComponent::Base
-  attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled
+  attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled, :rbac
 
   # @param form [SimpleForm]
   # @param describedby [String] a proper value for `aria-describedby`
@@ -21,27 +21,43 @@ class RadioCollectionComponent < ViewComponent::Base
     @default = options[:default]
     @disabled = options[:disabled]
     @additional_descriptions = options[:additional_descriptions]
+    @rbac = options[:rbac]
   end
 
   def button_and_label_for(input)
-    button = input.radio_button(class: 'usa-radio__input', disabled: disabled)
-    label = if @additional_descriptions
+    label = if IdentityConfig.store.prod_like_env && rbac
+              label_with_prod_description(input)
+            elsif @additional_descriptions
               label_with_extra_description(input)
             else
               input.label(class: 'usa-radio__label')
             end
-    button + label
+    button_for(input) + label
   end
 
   private
 
+  def button_for(input)
+    input.radio_button(class: 'usa-radio__input', disabled: disabled)
+  end
+
+  def html_label(input)
+    input.label(class: 'usa-radio__label strong') do
+      "<strong>#{sanitize input.text}</strong>".html_safe
+    end
+  end
+
   # The use of `html_safe` should be good here because all other strings are either
   # defined statically or sanitized.
   def label_with_extra_description(input)
-    label = input.label(class: 'usa-radio__label strong') do
-      "<strong>#{sanitize input.text}</strong>".html_safe
-    end
+    label = html_label(input)
     description = sanitize I18n.t("#{form.object.class.to_s.tableize}.#{input.value}_description")
+    "#{label} #{description}".html_safe
+  end
+
+  def label_with_prod_description(input)
+    label = html_label(input)
+    description = sanitize I18n.t("#{form.object.class.to_s.tableize}.#{input.value}_prod_description")
     "#{label} #{description}".html_safe
   end
 end
