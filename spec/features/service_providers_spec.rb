@@ -705,7 +705,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Deleted By')
       expect(page).to have_content(logingov_admin.email)
     end
-
   end
 
   describe 'Update' do
