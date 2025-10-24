@@ -57,7 +57,9 @@ class RadioCollectionComponent < ViewComponent::Base
 
   def label_with_prod_description(input)
     label = html_label(input)
-    description = sanitize I18n.t("#{form.object.class.to_s.tableize}.#{input.value}_prod_description")
+    description = sanitize I18n.t(
+      "#{form.object.class.to_s.tableize}.#{input.value}_prod_description",
+    )
     "#{label} #{description}".html_safe
   end
 end
