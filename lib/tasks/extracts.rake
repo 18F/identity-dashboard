@@ -62,9 +62,9 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
 
   def print_errors(label, errors)
     errors.each do |key, errs|
-      puts "For #{label} '#{key}'"
+      puts "\nFor #{label} '#{key}'"
       if errs&.any?
-        puts "\tErrors: #{errs.full_messages.join(' ')}"
+        puts "\tErrors: #{errs.full_messages.join('; ')}\n"
       else
         puts "\t— No errors —"
       end
@@ -72,10 +72,10 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
   end
 
   def teams_list(models)
-    models.map { |model| "'#{model.name}: #{model.uuid}'" }.join(', ')
+    models.map { |model| "'#{model.name}: #{model.uuid}'" }.join("\n ")
   end
 
   def issuers_list(models)
-    models.map { |model| "'#{model.issuer}'" }.join(', ')
+    models.map { |model| "'#{model.issuer}'" }.join("\n ")
   end
 end
