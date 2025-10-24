@@ -8,7 +8,7 @@
     <%= render partial: 'deleted_service_provider_table_header' %>
     <tbody>
     <% @service_providers.each do |record| %>
-      <%= render partial: 'deleted_service_provider_table_row', locals: { deleted_at: record[:created_at], app: record[:object] } %>
+      <%= render partial: 'deleted_service_provider_table_row', locals: { deleted_at: record[:created_at], app: record[:object], deleted_by: record[:whodunnit] } %>
     <% end %>
     </tbody>
   </table>

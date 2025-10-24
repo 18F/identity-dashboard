@@ -691,6 +691,20 @@ feature 'Service Providers CRUD' do
         expect(page).to have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
       end
     end
+
+    scenario 'deleted page shows Deleted By column and email for deleted SPs', :versioning do
+      app = create(:service_provider, team:, user:)
+
+      visit service_provider_path(app)
+      click_on 'Delete'
+
+      expect(page).to have_content("Success! You have deleted #{app.issuer}")
+
+      visit service_providers_deleted_path
+
+      expect(page).to have_content('Deleted By')
+      expect(page).to have_content(logingov_admin.email)
+    end
   end
 
   describe 'Update' do
