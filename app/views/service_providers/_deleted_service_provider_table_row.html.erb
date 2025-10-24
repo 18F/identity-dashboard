@@ -2,4 +2,5 @@
   <td class="text-wrap"><%= app["issuer"] %></td>
   <td><%= deleted_at %></td>
   <td><%= Agency.find(app["agency_id"]).name if app["agency_id"] %></td>
+  <td><%= deleted_by %></td>
 </tr>
