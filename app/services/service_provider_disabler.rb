@@ -41,7 +41,7 @@ class ServiceProviderDisabler
     raise ArgumentError, "File #{file_name} cannot be opened" unless File.readable?(file_name)
 
     File.open(file_name) do |file|
-      @data = JSON.parse(file.read)
+      @data = JSON.parse(file.read)['service_providers']
     end
   end
 
