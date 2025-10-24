@@ -893,7 +893,7 @@ feature 'Service Providers CRUD' do
 
     describe 'production config on sandbox with status: moved_to_prod' do
       let(:sp) { create(:service_provider, :with_moved_to_prod, team: team, prod_config: true) }
-      
+
       before do
         allow(IdentityConfig.store).to receive('prod_like_env').and_return(false)
       end

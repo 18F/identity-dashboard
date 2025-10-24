@@ -1,20 +1,20 @@
 require 'rails_helper'
+require './spec/support/migration_helpers'
 
 SAMPLE_ISSUERS = [
-"howard:test",
-"hello_banana_fire_ball",
-"04:24:test:aj",
-"urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:05291148",
-"654756876587697863453242",
+  'howard:test',
+  'hello_banana_fire_ball',
+  '04:24:test:aj',
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:05291148',
+  '654756876587697863453242',
 ]
 
 describe ServiceProviderDisabler do
-  let(:good_file) { File.join(file_fixture_path, 'extract_sample.json') }
+  let(:sample_file) { File.join(file_fixture_path, 'extract_sample.json') }
+  subject(:disabler) { described_class.new(sample_file) }
+  let(:parsed_file) { JSON.parse(File.read(sample_file)) }
 
-  context 'with a valid JSON file' do
-    subject(:disabler) { described_class.new(good_file) }
-    let(:parsed_file) { JSON.parse(File.read(good_file)) }
-
+  context 'with a valid, portal-generated JSON file' do
     before do
       # These SPs must exist in order to take the Success happy path
       SAMPLE_ISSUERS.each do |issuer|
@@ -24,20 +24,17 @@ describe ServiceProviderDisabler do
 
     it 'can inspect data and update status of valid configs' do
       expect { disabler.run }.to change {
-      (ServiceProvider.where(issuer: SAMPLE_ISSUERS).filter { |sp|
-        sp.status == 'moved_to_prod'
-      }).count }.by SAMPLE_ISSUERS.count
+        all_disabled_configs.count
+      }.by SAMPLE_ISSUERS.count
     end
 
     it 'is idempotent' do
       expect { disabler.run }.to change {
-      (ServiceProvider.where(issuer: SAMPLE_ISSUERS).filter { |sp|
-        sp.status == 'moved_to_prod'
-      }).count }.by SAMPLE_ISSUERS.count
+        all_disabled_configs.count
+      }.by SAMPLE_ISSUERS.count
       expect { disabler.run }.to_not change {
-      (ServiceProvider.where(issuer: SAMPLE_ISSUERS).filter { |sp|
-        sp.status == 'moved_to_prod'
-      }).count }
+        all_disabled_configs.count
+      }
     end
 
     it 'correctly imports service_provider data from file' do
@@ -48,6 +45,64 @@ describe ServiceProviderDisabler do
     it 'returns no errors when file contains all valid data' do
       disabler.run
       expect(disabler.errors_any?).to be_falsy
+    end
+
+    it 'can do a dry run' do
+      disabler.dry_run = true
+      expect { disabler.run }.to_not change {
+        all_disabled_configs.count
+      }
+    end
+  end
+
+  context 'with a JSON file not matching existing issuers' do
+    # No existing ServiceProviders
+
+    it 'returns expected errors' do
+      errors = disabler.run
+      expect(disabler.errors_any?).to be_truthy
+      SAMPLE_ISSUERS.each do |issuer|
+        expect(errors[issuer].of_kind?(:issuer, :invalid)).to be_truthy
+      end
+    end
+
+    it 'does not change anything' do
+      expect { disabler.run }.to_not change { all_disabled_configs.count }
+    end
+  end
+
+  context 'with a JSON file that matches some issuers' do
+    let(:some_issuers) { SAMPLE_ISSUERS[0..1] }
+    let(:other_issuers) { SAMPLE_ISSUERS[2..] }
+
+    before do
+      some_issuers.each do |issuer|
+        create(:service_provider, :ready_to_activate, issuer:)
+      end
+    end
+
+    it 'returns errors and records valid issuers' do
+      errors = disabler.run
+      success_issuers = disabler.models.map { |m| m.issuer }
+      failed_issuers = errors.keys
+
+      expect(failed_issuers.count + success_issuers.count).to eq(SAMPLE_ISSUERS.count)
+      expect(success_issuers).to eq(some_issuers)
+      expect(failed_issuers).to eq(other_issuers)
+    end
+
+    it 'returns expected errors' do
+      errors = disabler.run
+      expect(disabler.errors_any?).to be_truthy
+      other_issuers.each do |issuer|
+        expect(errors[issuer].of_kind?(:issuer, :invalid)).to be_truthy
+      end
+    end
+
+    it 'does not update valid SPs when errors are found' do
+      expect { disabler.run }.to_not change {
+        all_disabled_configs.count
+      }
     end
   end
 end
