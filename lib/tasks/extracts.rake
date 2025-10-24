@@ -59,7 +59,7 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
   end
 
   def issuers_list(models)
-    models.map { |model| "'#{model.issuer}'" }.join(', ')
+    models.map { |model| "'#{model.issuer}'" }.join("\n")
   end
 
   def export_models_to_file(models, file_name)
@@ -108,9 +108,9 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
         status = m.previous_changes[:status]
         status && status[1] == 'moved_to_prod'
       end
-      puts 'Updated status for' if saved.any?
+      puts "\nUpdated status for" if saved.any?
       puts issuers_list(saved)
-      puts 'Did not update status for' if unsaved.any?
+      puts "\nDid not update status for" if unsaved.any?
       puts issuers_list(unsaved)
     end
     puts '--- Done ---'
