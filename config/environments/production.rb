@@ -58,7 +58,7 @@ Rails.application.configure do
 
   config.log_level = :info
 
-  config.cache_store = :memory_store, { size: 64.megabytes }
+  config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url, pool: false }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
