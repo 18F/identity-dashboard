@@ -1,4 +1,5 @@
-namespace :extracts do # rubocop:disable Metrics/BlockLength
+# rubocop:disable Metrics/BlockLength
+namespace :extracts do
   confirm_msg = "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
   import_usage = <<~DESCRIPTION
     Imports extracted service providers from a JSON file. Provide the file name as a separate, final argument.
@@ -146,3 +147,4 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     puts '--- Done ---'
   end
 end
+# rubocop:enable Metrics/BlockLength

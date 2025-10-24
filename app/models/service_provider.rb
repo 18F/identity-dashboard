@@ -215,7 +215,7 @@ class ServiceProvider < ApplicationRecord
 
   def set_status
     return if IdentityConfig.store.prod_like_env || self.status != 'pending'
-    
+
     self.status = 'live'
   end
 

@@ -2,8 +2,8 @@
 # the rake extracts:import script (Array of ServiceProviders JSON)
 class ServiceProviderDisabler
   extend ActiveModel::Naming
-
-  attr_reader :file_name, :data, :models
+  # :issuer needs to be present for error handling
+  attr_reader :file_name, :data, :models, :issuer
   attr_accessor :dry_run
 
   def initialize(file_name)
@@ -27,7 +27,7 @@ class ServiceProviderDisabler
 
   # This is also required for errors. See
   # https://api.rubyonrails.org/classes/ActiveModel/Errors.html#class-ActiveModel::Errors-label-Active+Model+Errors
-  def self.human_attribute_name(attr, options = {})
+  def self.human_attribute_name(attr, _options = {})
     attr
   end
 
@@ -46,7 +46,7 @@ class ServiceProviderDisabler
   end
 
   def sp_issuers
-    @issuers ||= data.map{ |config| config['issuer'] }
+    @issuers ||= data.map { |config| config['issuer'] }
   end
 
   def errors
