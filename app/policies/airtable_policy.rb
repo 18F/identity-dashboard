@@ -1,6 +1,6 @@
 class AirtablePolicy < BasePolicy # :nodoc: all
   def index?
-    user_has_login_admin_role?
+    IdentityConfig.store.prod_like_env && user_has_login_admin_role?
   end
 
   alias oauth_redirect? index?

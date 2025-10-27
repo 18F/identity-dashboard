@@ -466,7 +466,8 @@ describe 'users' do
         Rails.cache.clear
       end
 
-      it 'shows the requirement to connect with airtable before allow partner admin' do
+      it 'requirements to connect with airtable before allowing partner admin in prod_like_env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         team_users = [partner_admin_team_member, readonly_team_member]
 
         user_to_change = team_users.sample
@@ -483,6 +484,26 @@ describe 'users' do
         end
 
         expect(page).to have_content('you must first connect with Airtable')
+      end
+
+      it 'allows partner admin in non prod_like_env without airtable' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        team_users = [partner_admin_team_member, readonly_team_member]
+
+        user_to_change = team_users.sample
+        old_role = TeamMembership.find_by(user: user_to_change, team: team).role
+        (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
+
+        user_to_not_change = (team_users - [user_to_change]).first
+        TeamMembership.find_by(user: user_to_not_change, team: team).role
+
+        visit team_users_path(team)
+
+        within('tr', text: user_to_change.email) do
+          click_on 'Edit'
+        end
+
+        expect(page).to have_content('Can add and delete users and teams')
       end
     end
   end
