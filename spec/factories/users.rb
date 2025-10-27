@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :user do
-    sequence(:email) { |n| "user#{n}@example.gov" }
+    # sequence makes alphabetical sorting flaky
+    sequence(:email) { |n| "user#{n.to_s.rjust(5,'0')}@example.gov" }
     sequence(:first_name) { |n| "FirstName#{n}" }
     sequence(:last_name) { |n| "LastName#{n}" }
 
