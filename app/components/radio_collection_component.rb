@@ -1,6 +1,6 @@
 # A radio button input collection component for SimpleForm
 class RadioCollectionComponent < ViewComponent::Base
-  attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled, :rbac
+  attr_reader :form, :describedby, :model_method, :inputs, :default, :disabled
 
   # @param form [SimpleForm]
   # @param describedby [String] a proper value for `aria-describedby`
@@ -21,11 +21,10 @@ class RadioCollectionComponent < ViewComponent::Base
     @default = options[:default]
     @disabled = options[:disabled]
     @additional_descriptions = options[:additional_descriptions]
-    @rbac = options[:rbac]
   end
 
   def button_and_label_for(input)
-    label = if IdentityConfig.store.prod_like_env && rbac
+    label = if IdentityConfig.store.prod_like_env
               label_with_prod_description(input)
             elsif @additional_descriptions
               label_with_extra_description(input)
