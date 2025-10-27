@@ -26,7 +26,6 @@ class ServiceProviderImporter
     service_provider_errors.values.any? { |error| error.any? }
   end
 
-
   def team_errors_any?
     team_errors.values.any? { |error| error.any? }
   end
