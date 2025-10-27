@@ -60,7 +60,7 @@ class ServiceProviderImporter
   end
 
   def create_available_teams
-    @teams = data['teams'].map do |config|
+    @teams = data['teams'].uniq.map do |config|
       team = Team.new(
         uuid: config['uuid'],
         name: config['name'],
