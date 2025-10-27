@@ -33,15 +33,17 @@ class Teams::UsersController < AuthenticatedController
       return
     end
 
-    airtable_api = Airtable.new(current_user.uuid)
-    if airtable_api.has_token?
-      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
-    else
-      @remove_partner_admin = true
-      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+    if IdentityConfig.store.prod_like_env
+      airtable_api = Airtable.new(current_user.uuid)
+      if airtable_api.has_token?
+        @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
+      else
+        @remove_partner_admin = true
+        airtable_api.refresh_token if airtable_api.needs_refreshed_token?
 
-      base_url = "#{request.protocol}#{request.host_with_port}"
-      @oauth_url = airtable_api.generate_oauth_url(base_url)
+        base_url = "#{request.protocol}#{request.host_with_port}"
+        @oauth_url = airtable_api.generate_oauth_url(base_url)
+      end
     end
 
     authorize team_membership
@@ -78,7 +80,7 @@ class Teams::UsersController < AuthenticatedController
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
 
-    if partner_admin_confirmation_needed?
+    if IdentityConfig.store.prod_like_env && partner_admin_confirmation_needed?
       flash[:error] =
         "User #{team_membership.user.email} is not a Partner Admin in Airtable.
           Please verify with the appropriate Account Manager that this user should
@@ -131,7 +133,7 @@ class Teams::UsersController < AuthenticatedController
 
   def roles_for_options
     roles = policy(team_membership).roles_for_edit
-    unless Airtable.new(current_user.uuid).has_token?
+    if IdentityConfig.store.prod_like_env && !Airtable.new(current_user.uuid).has_token?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end
     roles.map { |r| [r.friendly_name, r.name] }
