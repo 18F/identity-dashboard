@@ -321,6 +321,46 @@ describe 'users' do
           .and_return('access_token')
       end
 
+      context 'on production' do
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        end
+
+        it 'shows correct partner roles and descriptions' do
+          team_users = [partner_admin_team_member, readonly_team_member]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+
+          visit team_users_path(team)
+          within('tr', text: team_users.sample.email) do
+            click_on 'Edit'
+          end
+          partner_roles.each do |role|
+            expect(page).to have_content(role.friendly_name)
+            expect(page).to have_content(I18n.t("team_memberships.#{role.name}_prod_description"))
+          end
+        end
+      end
+
+      context 'on sandbox' do
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        end
+
+        it 'shows correct partner roles and descriptions' do
+          team_users = [partner_admin_team_member, readonly_team_member]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+
+          visit team_users_path(team)
+          within('tr', text: team_users.sample.email) do
+            click_on 'Edit'
+          end
+          partner_roles.each do |role|
+            expect(page).to have_content(role.friendly_name)
+            expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
+          end
+        end
+      end
+
       it 'allows modifying any user roles' do
         team_users = [partner_admin_team_member, readonly_team_member]
 

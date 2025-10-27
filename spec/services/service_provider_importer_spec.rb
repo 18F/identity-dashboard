@@ -117,10 +117,10 @@ describe ServiceProviderImporter do
 
   it 'errors with an invalid file name' do
     file_name = 'this file name is never going to exist'
-    importer = described_class.new(file_name)
-    expect { importer.run }.to raise_error(ArgumentError)
-    expect(importer.data).to be_blank
-    expect(importer.service_providers).to be_blank
-    expect(importer.teams).to be_blank
+    importer_invalid = described_class.new(file_name)
+    expect { importer_invalid.run }.to raise_error(ArgumentError)
+    expect(importer_invalid.data).to be_blank
+    expect(importer_invalid.service_providers).to be_blank
+    expect(importer_invalid.teams).to be_blank
   end
 end
