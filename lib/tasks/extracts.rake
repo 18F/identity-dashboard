@@ -61,15 +61,8 @@ namespace :extracts do
   end
 
   def preview_import(importer, errors)
-    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
-    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
-    print_errors('team', errors[:team_errors])
-    print_errors('issuer', errors[:service_provider_errors])
-  end
-
-  def preview_import(importer, errors)
-    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
-    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
+    puts "\nIssuers to import:\n #{issuers_list(importer.service_providers)}\n"
+    puts "\nTeams to import:\n #{teams_list(importer.teams)}\n"
     print_errors('team', errors[:team_errors])
     print_errors('issuer', errors[:service_provider_errors])
   end
@@ -120,8 +113,8 @@ namespace :extracts do
     disabler.dry_run = true
 
     errors = disabler.run
-    puts "\nIssuers to disable:\n#{issuers_list(disabler.models)}\n"
-    print_errors(errors)
+    puts "\nIssuers to disable:\n #{issuers_list(disabler.models)}\n"
+    print_errors('issuer', errors)
     unless errors.any? || ARGV.include?('--dry-run')
       puts confirm_msg
       input = STDIN.gets.strip
@@ -129,7 +122,7 @@ namespace :extracts do
 
       disabler.dry_run = false
       errors = disabler.run
-      print_errors(errors)
+      print_errors('issuer', errors)
     end
 
     if ARGV.include?('--dry-run')
