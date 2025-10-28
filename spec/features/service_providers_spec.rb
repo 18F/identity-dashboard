@@ -555,7 +555,9 @@ feature 'Service Providers CRUD' do
       }
       service_provider.save!
 
-      allow(IdentityConfig.store).to receive(:edit_button_uses_service_config_wizard).and_return(false)
+      allow(IdentityConfig.store).to receive(
+        :edit_button_uses_service_config_wizard,
+      ).and_return(false)
 
       visit edit_service_provider_path(service_provider)
 
