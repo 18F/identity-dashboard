@@ -141,7 +141,7 @@ en:
     confirm_delete: Are you sure you want to delete this user?
     service_provider_deleted: Success! You have deleted %{issuer}
     service_provider_saved: Success! You have saved %{issuer}
-    service_provider_help_text_html: For assistance, please reach out to the <a href="https://zendesk.login.gov" target="_blank">partner support help desk</a>. Help text guidance is provided in the <a href="https://developers.login.gov/user-experience/help-text/" target="_blank">User experience section of the developer docs</a>. Please review the guidance before requesting support.
+    service_provider_help_text_html: For assistance, please reach out to the <a href="https://zendesk.login.gov" class="usa-link" target="_blank">partner support help desk</a>. Help text guidance is provided in the <a href="https://developers.login.gov/user-experience/help-text/" class="usa-link" target="_blank">User experience section of the developer docs</a>. Please review the guidance before requesting support.
     service_provider_help_text_no_permission_html: You do not have permissions to adjust the help text. Please reach out to your team admin or the <a href='https://zendesk.login.gov/' class='usa-link'>partner support help desk</a>.
     service_provider_iaa_notice:
         All configuration changes or new configurations must be promoted to production following the process outlined in the <a href='https://developers.login.gov/production' target='_blank' class='usa-link'>Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
