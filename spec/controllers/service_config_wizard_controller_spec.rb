@@ -26,7 +26,6 @@ RSpec.describe ServiceConfigWizardController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(enabled)
     allow(logger_double).to receive(:sp_updated)
     allow(logger_double).to receive(:sp_created)
     allow(logger_double).to receive(:unauthorized_access_attempt)
@@ -75,16 +74,6 @@ RSpec.describe ServiceConfigWizardController do
         get :new
         expect(response).to be_redirect
         expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
-      end
-
-      context 'when the wizard is not enabled' do
-        let(:enabled) { false }
-
-        it 'is redirected if the flag is not set' do
-          get :new
-          expect(response).to be_redirect
-          expect(response.redirect_url).to eq(service_providers_url)
-        end
       end
     end
 
@@ -483,16 +472,6 @@ RSpec.describe ServiceConfigWizardController do
       expect(response.redirect_url).to eq(service_config_wizard_url(Wicked::FIRST_STEP))
     end
 
-    context 'when wizard is not enabled' do
-      let(:enabled) { false }
-
-      it 'is redirected if the flag is not set' do
-        get :new
-        expect(response).to be_redirect
-        expect(response.redirect_url).to eq(service_providers_url)
-      end
-    end
-
     describe 'logo and cert' do
       it 'adds new certs uploaded to the certs array' do
         file = Rack::Test::UploadedFile.new(
@@ -747,7 +726,6 @@ RSpec.describe ServiceConfigWizardController do
 
   context 'when not logged in' do
     it 'requires authentication without checking flag status' do
-      expect(IdentityConfig.store).to_not receive(:service_config_wizard_enabled)
       get :new
       expect(response).to be_redirect
       expect(response.redirect_url).to eq(root_url)

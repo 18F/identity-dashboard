@@ -199,8 +199,7 @@ module ServiceProviderHelper # :nodoc:
   end
 
   def edit_button_goes_to_wizard?
-    IdentityConfig.store.service_config_wizard_enabled &&
-      (IdentityConfig.store.edit_button_uses_service_config_wizard ||
-        IdentityConfig.store.prod_like_env)
+    IdentityConfig.store.edit_button_uses_service_config_wizard ||
+      IdentityConfig.store.prod_like_env
   end
 end

@@ -9,7 +9,6 @@ class ServiceConfigWizardController < AuthenticatedController
   UPLOAD_STEP = 'logo_and_cert'
   attr_reader :wizard_step_model
 
-  before_action :redirect_unless_flagged_in
   before_action -> { authorize step, policy_class: ServiceConfigPolicy }
   before_action :get_model_for_step, except: %i[new create]
   before_action :verify_environment_permissions, only: %i[new]
@@ -184,10 +183,6 @@ class ServiceConfigWizardController < AuthenticatedController
     step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
   end
 
-  def redirect_unless_flagged_in
-    redirect_to service_providers_path unless IdentityConfig.store.service_config_wizard_enabled
-  end
-
   def finish_wizard_path
     service_providers_path
   end
@@ -240,7 +235,6 @@ class ServiceConfigWizardController < AuthenticatedController
   def can_cancel?
     params[:commit].present? &&
       params[:commit].downcase == 'cancel' &&
-      IdentityConfig.store.service_config_wizard_enabled &&
       step == STEPS.last &&
       current_user.logingov_admin?
   end

@@ -32,7 +32,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def new
-    if IdentityConfig.store.service_config_wizard_enabled && IdentityConfig.store.prod_like_env
+    if IdentityConfig.store.prod_like_env
       redirect_to new_service_config_wizard_url
     end
     @service_provider = policy_scope(ServiceProvider).new
@@ -40,8 +40,7 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def edit
-    @prod_like_env = IdentityConfig.store.prod_like_env
-    return unless IdentityConfig.store.service_config_wizard_enabled && @prod_like_env
+    return unless IdentityConfig.store.prod_like_env
 
     redirect_to service_config_wizard_index_path(service_provider: params[:id])
   end

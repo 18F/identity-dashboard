@@ -55,7 +55,7 @@ module ServiceConfigWizardHelper
   end
 
   def show_cancel?
-    IdentityConfig.store.service_config_wizard_enabled && current_user.logingov_admin?
+    current_user.logingov_admin?
   end
 
   def prod_like_env?
