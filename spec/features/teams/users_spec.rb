@@ -348,7 +348,7 @@ describe 'users' do
 
         it 'shows correct partner roles and descriptions' do
           team_users = [partner_admin_team_member, readonly_team_member]
-          partner_roles = Role.all = [Role::LOGINGOV_ADMIN]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
 
           visit team_users_path(team)
           within('tr', text: team_users.sample.email) do
@@ -356,7 +356,7 @@ describe 'users' do
           end
           partner_roles.each do |role|
             expect(page).to have_content(role.friendly_name)
-            expect(page).to have_content(I18n.t("team_memberships.#{role_name}_description"))
+            expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
           end
         end
       end
