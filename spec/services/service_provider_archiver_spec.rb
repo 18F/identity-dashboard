@@ -9,9 +9,9 @@ SAMPLE_ISSUERS = [
   '654756876587697863453242',
 ]
 
-describe ServiceProviderDisabler do
+describe ServiceProviderArchiver do
   let(:sample_file) { File.join(file_fixture_path, 'extract_sample.json') }
-  subject(:disabler) { described_class.new(sample_file) }
+  subject(:archiver) { described_class.new(sample_file) }
   let(:parsed_file) { JSON.parse(File.read(sample_file)) }
 
   context 'with a valid, portal-generated JSON file' do
@@ -23,34 +23,34 @@ describe ServiceProviderDisabler do
     end
 
     it 'can inspect data and update status of valid configs' do
-      expect { disabler.run }.to change {
-        all_disabled_configs.count
+      expect { archiver.run }.to change {
+        all_archived_configs.count
       }.by SAMPLE_ISSUERS.count
     end
 
     it 'is idempotent' do
-      expect { disabler.run }.to change {
-        all_disabled_configs.count
+      expect { archiver.run }.to change {
+        all_archived_configs.count
       }.by SAMPLE_ISSUERS.count
-      expect { disabler.run }.to_not change {
-        all_disabled_configs.count
+      expect { archiver.run }.to_not change {
+        all_archived_configs.count
       }
     end
 
     it 'correctly imports service_provider data from file' do
-      disabler.run
-      expect(JSON.parse(disabler.data.to_json)).to eq(parsed_file['service_providers'])
+      archiver.run
+      expect(JSON.parse(archiver.data.to_json)).to eq(parsed_file['service_providers'])
     end
 
     it 'returns no errors when file contains all valid data' do
-      disabler.run
-      expect(disabler.errors_any?).to be_falsy
+      archiver.run
+      expect(archiver.errors_any?).to be_falsy
     end
 
     it 'can do a dry run' do
-      disabler.dry_run = true
-      expect { disabler.run }.to_not change {
-        all_disabled_configs.count
+      archiver.dry_run = true
+      expect { archiver.run }.to_not change {
+        all_archived_configs.count
       }
     end
   end
@@ -59,15 +59,15 @@ describe ServiceProviderDisabler do
     # No existing ServiceProviders
 
     it 'returns expected errors' do
-      errors = disabler.run
-      expect(disabler.errors_any?).to be_truthy
+      errors = archiver.run
+      expect(archiver.errors_any?).to be_truthy
       SAMPLE_ISSUERS.each do |issuer|
         expect(errors[issuer].of_kind?(:issuer, :invalid)).to be_truthy
       end
     end
 
     it 'does not change anything' do
-      expect { disabler.run }.to_not change { all_disabled_configs.count }
+      expect { archiver.run }.to_not change { all_archived_configs.count }
     end
   end
 
@@ -82,8 +82,8 @@ describe ServiceProviderDisabler do
     end
 
     it 'returns errors and records valid issuers' do
-      errors = disabler.run
-      success_issuers = disabler.models.map { |m| m.issuer }
+      errors = archiver.run
+      success_issuers = archiver.models.map { |m| m.issuer }
       failed_issuers = errors.keys
 
       expect(failed_issuers.count + success_issuers.count).to eq(SAMPLE_ISSUERS.count)
@@ -92,16 +92,16 @@ describe ServiceProviderDisabler do
     end
 
     it 'returns expected errors' do
-      errors = disabler.run
-      expect(disabler.errors_any?).to be_truthy
+      errors = archiver.run
+      expect(archiver.errors_any?).to be_truthy
       other_issuers.each do |issuer|
         expect(errors[issuer].of_kind?(:issuer, :invalid)).to be_truthy
       end
     end
 
     it 'does not update valid SPs when errors are found' do
-      expect { disabler.run }.to_not change {
-        all_disabled_configs.count
+      expect { archiver.run }.to_not change {
+        all_archived_configs.count
       }
     end
   end

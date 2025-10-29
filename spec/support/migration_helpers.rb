@@ -1,6 +1,6 @@
-# All ServiceProviders with the disabling status, `moved_to_prod`
+# All ServiceProviders with the archiving status, `moved_to_prod`
 # @return [Array<ServiceProvider>]
-def all_disabled_configs
+def all_archived_configs
   ServiceProvider.where(issuer: SAMPLE_ISSUERS).filter do |sp|
     sp.status == 'moved_to_prod'
   end
