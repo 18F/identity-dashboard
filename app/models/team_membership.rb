@@ -48,6 +48,10 @@ class TeamMembership < ApplicationRecord
   end
 
   def set_default_role
-    self.role_name ||= team.missing_a_partner_admin? ? 'partner_admin' : 'partner_readonly'
+    return if self.role_name
+    self.role_name = 'partner_admin' and return if team.missing_a_partner_admin?
+    self.role_name = 'partner_readonly' and return if IdentityConfig.store.prod_like_env
+
+    self.role_name = 'partner_developer'
   end
 end

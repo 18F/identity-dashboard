@@ -104,7 +104,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
       new_team_membership = TeamMembership.find_by(user: User.find_by(email: email_to_add),
                                                    team: team)
-      expect(new_team_membership.role.name).to eq('partner_readonly')
+      expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
     scenario 'team member adds existing member of team' do
@@ -119,7 +119,7 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
       new_team_membership = TeamMembership.find_by(user: User.find_by(email: user.email),
                                                    team: team)
-      expect(new_team_membership.role.name).to eq('partner_readonly')
+      expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
     scenario 'add a user not yet in the system' do
@@ -129,6 +129,31 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
       team_member_emails = team.reload.users.map(&:email)
       expect(team_member_emails).to include(random_email)
+    end
+
+    context 'when Login.gov Admin' do
+      scenario 'user defaults to Partner Readonly in prod-like envs' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        visit new_team_user_path(Team.find(team_member.teams.first.id))
+        random_email = "random_user_#{rand(1..1000)}@gsa.gov"
+        fill_in 'Email', with: random_email
+        click_on 'Add'
+        expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+        new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
+        expect(new_membership.role_name).to eq 'partner_readonly'
+      end
+      scenario 'user defaults to Partner Developer in non-prod envs' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+
+        visit new_team_user_path(Team.find(team_member.teams.first.id))
+        random_email = "random_user_#{rand(1..1000)}@gsa.gov"
+        fill_in 'Email', with: random_email
+        click_on 'Add'
+        expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+        new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
+        expect(new_membership.role_name).to eq 'partner_developer'
+      end
     end
   end
 
