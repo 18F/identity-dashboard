@@ -37,3 +37,4 @@ RUN curl -Ss "https://storage.googleapis.com/chrome-for-testing-public/$(google-
     rm -r /tmp/chromedriver
 
 RUN find / -perm /6000 -type f -exec chmod a-s {} \; || true
+
