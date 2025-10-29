@@ -53,7 +53,6 @@ class RadioCollectionComponent < ViewComponent::Base
     description = sanitize I18n.t("#{form.object.class.to_s.tableize}.#{input.value}_description")
     "#{label} #{description}".html_safe
   end
-  # rubocop:enable Rails/OutputSafety
 
   def label_with_prod_description(input)
     label = html_label(input)
@@ -62,4 +61,5 @@ class RadioCollectionComponent < ViewComponent::Base
     )
     "#{label} #{description}".html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 end
