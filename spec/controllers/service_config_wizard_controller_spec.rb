@@ -667,7 +667,7 @@ RSpec.describe ServiceConfigWizardController do
 
             put :update, params: {
               id: 'help_text',
-              wizard_step: { help_text: },
+              wizard_step: { help_text: help_text.merge('sign_up' => { 'en' => 'blank' }) },
             }
 
             expected_log = {
