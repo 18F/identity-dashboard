@@ -1,4 +1,4 @@
-# rubocop:archive Metrics/BlockLength
+# rubocop:disable Metrics/BlockLength
 namespace :extracts do
   confirm_msg = "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
   import_usage = <<~DESCRIPTION
