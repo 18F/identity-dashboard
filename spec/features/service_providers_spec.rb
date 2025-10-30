@@ -890,6 +890,24 @@ feature 'Service Providers CRUD' do
         expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
+
+    describe 'production config on sandbox with status: moved_to_prod' do
+      let(:sp) { create(:service_provider, :with_moved_to_prod, team: team, prod_config: true) }
+
+      before do
+        allow(IdentityConfig.store).to receive('prod_like_env').and_return(false)
+      end
+
+      it 'displays an info alert that the config has moved' do
+        visit service_provider_path(sp)
+        expect(page).to have_content(strip_tags(t('moved_to_prod_html')))
+      end
+
+      it 'does not have an edit button' do
+        visit service_provider_path(sp)
+        expect(page).to_not have_button(t('forms.buttons.edit_service_provider'))
+      end
+    end
   end
 
   scenario 'Delete' do

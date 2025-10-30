@@ -108,6 +108,10 @@ FactoryBot.define do
       push_notification_url { 'http://localhost:1' }
     end
 
+    trait :with_moved_to_prod do
+      status { 'moved_to_prod' }
+    end
+
     transient do
       with_team_from_user { nil }
       after(:build) do |service_provider, context|

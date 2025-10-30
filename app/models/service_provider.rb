@@ -25,7 +25,7 @@ class ServiceProvider < ApplicationRecord
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
 
-  STATUSES = %w[pending live rejected].freeze
+  STATUSES = %w[pending live rejected moved_to_prod].freeze
 
   enum :status, Hash[STATUSES.zip STATUSES], default: 'pending'
   enum :block_encryption, {
@@ -39,9 +39,8 @@ class ServiceProvider < ApplicationRecord
     self.attribute_bundle = attribute_bundle.reject(&:blank?) if attribute_bundle.present?
   end
 
-  after_initialize ->(record) { record.status = 'live' },
-    unless: -> { IdentityConfig.store.prod_like_env }
   before_save :sanitize_help_text_content
+  before_save :set_status
 
   ALLOWED_HELP_TEXT_HTML_TAGS = %w[
     p
@@ -213,6 +212,12 @@ class ServiceProvider < ApplicationRecord
   end
 
   private
+
+  def set_status
+    return if IdentityConfig.store.prod_like_env || self.status != 'pending'
+
+    self.status = 'live'
+  end
 
   def attachment_changes_string_buffer
     attachable = attachment_changes['logo_file'].attachable

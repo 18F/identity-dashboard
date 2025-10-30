@@ -1,4 +1,6 @@
-namespace :extracts do # rubocop:disable Metrics/BlockLength
+# rubocop:disable Metrics/BlockLength
+namespace :extracts do
+  confirm_msg = "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
   import_usage = <<~DESCRIPTION
     Imports extracted service providers from a JSON file. Provide the file name as a separate, final argument.
     For a dry run, use:
@@ -7,7 +9,10 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
   desc import_usage
   task import: [:environment] do
     file_name = ARGV.last
-    raise ArgumentError, import_usage if file_name.starts_with? 'extracts:import'
+    if file_name.starts_with? 'extracts:import'
+      puts "\n#{import_usage}"
+      exit 1
+    end
 
     importer = ServiceProviderImporter.new(file_name)
 
@@ -19,7 +24,7 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     errors_present = errors[:service_provider_errors].any? || errors[:team_errors].any?
 
     if !errors_present && !ARGV.include?('--dry-run')
-      puts "\nPress enter or 'ctrl-c' to cancel. Press 'y' and then enter to continue:"
+      puts confirm_msg
       input = STDIN.gets.strip
       exit 1 unless /^y/i.match?(input)
 
@@ -33,10 +38,12 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
     else
       (saved_sps, unsaved_sps) = importer.service_providers.partition { |m| m.persisted? }
       output_models(saved_sps, unsaved_sps) { |models| puts issuers_list(models) }
+      if saved_sps.any?
+        export_models_to_file(saved_sps, "#{File.dirname(filename)}/exported_models.json")
+      end
 
       (saved_teams, unsaved_teams) = importer.teams.partition { |m| m.persisted? }
       output_models(saved_teams, unsaved_teams) { |models| puts teams_list(models) }
-
     end
     puts '--- Done ---'
   end
@@ -54,15 +61,8 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
   end
 
   def preview_import(importer, errors)
-    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
-    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
-    print_errors('team', errors[:team_errors])
-    print_errors('issuer', errors[:service_provider_errors])
-  end
-
-  def preview_import(importer, errors)
-    puts "\nIssuers to import:\n#{issuers_list(importer.service_providers)}\n"
-    puts "\nTeams to import:\n#{teams_list(importer.teams)}\n"
+    puts "\nIssuers to import:\n #{issuers_list(importer.service_providers)}\n"
+    puts "\nTeams to import:\n #{teams_list(importer.teams)}\n"
     print_errors('team', errors[:team_errors])
     print_errors('issuer', errors[:service_provider_errors])
   end
@@ -85,4 +85,59 @@ namespace :extracts do # rubocop:disable Metrics/BlockLength
   def issuers_list(models)
     models.map { |model| "'#{model.issuer}'" }.join("\n ")
   end
+
+  def export_models_to_file(models, file_name)
+    File.open(file_name, 'w') { |f| f.puts models }
+  end
+
+  archive_usage = <<~DESCRIPTION
+    archives sandbox service providers that have been imported to Prod. Provide the source file name as a separate argument.
+
+    Usage:
+      #{$PROGRAM_NAME} extracts:archive -- {options} <filename.json>
+
+    Options:
+      --dry-run outputs affected service providers without making database changes.
+  DESCRIPTION
+  desc archive_usage
+  task archive: [:environment] do
+    file_name = ARGV.last
+    if file_name.starts_with? 'extracts:archive'
+      puts "\n#{archive_usage}"
+      exit 1
+    end
+
+    archiver = ServiceProviderArchiver.new(file_name)
+
+    # Always to a dry run first
+    archiver.dry_run = true
+
+    errors = archiver.run
+    puts "\nIssuers to archive:\n #{issuers_list(archiver.models)}\n"
+    print_errors('issuer', errors)
+    unless errors.any? || ARGV.include?('--dry-run')
+      puts confirm_msg
+      input = STDIN.gets.strip
+      exit 1 unless /^y/i.match?(input)
+
+      archiver.dry_run = false
+      errors = archiver.run
+      print_errors('issuer', errors)
+    end
+
+    if ARGV.include?('--dry-run')
+      puts '-- Dry Run --'
+    else
+      (saved, unsaved) = archiver.models.partition do |m|
+        status = m.previous_changes[:status]
+        status && status[1] == 'moved_to_prod'
+      end
+      puts "\nUpdated status for" if saved.any?
+      puts issuers_list(saved)
+      puts "\nDid not update status for" if unsaved.any?
+      puts issuers_list(unsaved)
+    end
+    puts '--- Done ---'
+  end
 end
+# rubocop:enable Metrics/BlockLength

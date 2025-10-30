@@ -141,10 +141,24 @@ describe ServiceProviderPolicy do
         expect(described_class).to permit(user_not_on_team, app)
       end
 
-      it 'is ignored with RBAC oon' do
+      it 'is ignored with RBAC on' do
         app.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
         expect(described_class).to_not permit(user_not_on_team, app)
+      end
+    end
+
+    describe 'status moved_to_prod' do
+      before { app.status = 'moved_to_prod' }
+
+      it 'does not allow Login.gov admins to edit' do
+        app.user = logingov_admin
+        expect(described_class).to_not permit(logingov_admin, app)
+      end
+
+      it 'does not allow partner admins to edit' do
+        app.user = partner_admin
+        expect(described_class).to_not permit(partner_admin, app)
       end
     end
   end

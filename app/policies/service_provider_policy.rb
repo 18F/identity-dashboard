@@ -62,6 +62,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def edit?
+    return false if record.moved_to_prod?
     return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
     user_has_login_admin_role? || (team_membership && !partner_readonly?)
