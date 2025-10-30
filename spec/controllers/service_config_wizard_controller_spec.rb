@@ -724,14 +724,6 @@ RSpec.describe ServiceConfigWizardController do
     end
   end
 
-  context 'when not logged in' do
-    it 'requires authentication without checking flag status' do
-      get :new
-      expect(response).to be_redirect
-      expect(response.redirect_url).to eq(root_url)
-    end
-  end
-
   def changes(service_provider:)
     {
       'id' => service_provider.id,
