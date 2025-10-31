@@ -15,6 +15,12 @@ module LogEvents
     track_event("partner_portal_extract_#{action}", extracts_params)
   end
 
+  # Analytics log when a partner selects Next in the Guided Flow Wizard
+  # @param step_name [String] The name of the submitted step
+  def wizard_step_updated(step_name:)
+    track_event('partner_portal_wizard_step_updated', step_name:)
+  end
+
   # Log when a service provider is created
   # @param changes [Hash] The changes to log
   def sp_created(changes:)

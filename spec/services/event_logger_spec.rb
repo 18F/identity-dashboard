@@ -99,6 +99,21 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#wizard_step_updated' do
+    let(:name) { 'partner_portal_wizard_step_updated' }
+    let(:step_name) { 'first_step' }
+
+    it 'logs partner_portal_wizard_step_updated event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties: { step_name: }, name:)
+          .deep_stringify_keys)
+      end
+
+      log.wizard_step_updated(step_name:)
+    end
+  end
+
   describe '#sp_created' do
     let(:name) { 'partner_portal_sp_created' }
     let(:changes) do
