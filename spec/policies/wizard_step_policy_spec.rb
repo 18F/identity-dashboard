@@ -6,15 +6,15 @@ describe WizardStepPolicy do
   let(:step_for_user) { build(:wizard_step, user:) }
 
   permissions :destroy? do
-    it 'is true for all login.gov admins' do
+    it 'is allowed for all login.gov admins' do
       expect(WizardStepPolicy).to permit(logingov_admin, step_for_user)
     end
 
-    it 'is true for the owning user' do
+    it 'is allowed for the user who is creating the config' do
       expect(WizardStepPolicy).to permit(user, step_for_user)
     end
 
-    it 'is false for other users' do
+    it 'is forbidden for other users' do
       other_user = build(:user)
       expect(WizardStepPolicy).to_not permit(other_user, step_for_user)
     end
