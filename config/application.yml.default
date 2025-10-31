@@ -29,7 +29,6 @@ api_token_required_enabled: false
 access_controls_enabled: true
 edit_button_uses_service_config_wizard: true
 help_text_options_feature_enabled: true
-service_config_wizard_enabled: true
 
 development:
   dashboard_api_token: test_token
@@ -56,7 +55,6 @@ production:
   access_controls_enabled: false
   edit_button_uses_service_config_wizard: false
   help_text_options_feature_enabled: false
-  service_config_wizard_enabled: false
 test:
   dashboard_api_token: sekret
   idp_sp_url: 'http://idp.example.com/api/service_provider'

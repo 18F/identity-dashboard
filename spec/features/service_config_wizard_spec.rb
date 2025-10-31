@@ -416,18 +416,6 @@ feature 'Service Config Wizard' do
       end
     end
 
-    it 'is redirected to service_providers if not flagged in' do
-      allow(IdentityConfig.store).to receive(:service_config_wizard_enabled).
-        at_least(ServiceConfigWizardController::STEPS.count + 1).
-        and_return(nil)
-      visit new_service_config_wizard_path
-      expect(current_url).to eq(service_providers_url)
-      ServiceConfigWizardController::STEPS.each do |step_name|
-        visit new_service_config_wizard_path(step_name)
-        expect(current_url).to eq(service_providers_url)
-      end
-    end
-
     # This test uses `:js` because JS tests are configured to use Chrome headless.
     # Otherwise we'd be using a default webdriver that doesn't allow `send_keys`
     it 'can tab through the page in the correct order', :js do
@@ -500,7 +488,6 @@ feature 'Service Config Wizard' do
     end
 
     it 'renders Help text as expected' do
-      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       visit service_config_wizard_path('help_text')
 
       find_all('.usa-radio__input[checked]').each do |input|
@@ -668,7 +655,6 @@ feature 'Service Config Wizard' do
 
   context 'when selecting OIDC' do
     before do
-      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
       user_to_login = [logingov_admin, user].sample
@@ -694,7 +680,6 @@ feature 'Service Config Wizard' do
 
   context 'when selecting SAML' do
     before do
-      allow(IdentityConfig.store).to receive_messages(service_config_wizard_enabled: true)
       app_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
       user_to_login = [logingov_admin, user].sample

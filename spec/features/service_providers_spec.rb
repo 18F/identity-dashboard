@@ -555,7 +555,9 @@ feature 'Service Providers CRUD' do
       }
       service_provider.save!
 
-      allow(IdentityConfig.store).to receive(:service_config_wizard_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(
+        :edit_button_uses_service_config_wizard,
+      ).and_return(false)
 
       visit edit_service_provider_path(service_provider)
 
@@ -672,10 +674,7 @@ feature 'Service Providers CRUD' do
 
     context 'and Production gate is enabled' do
       before do
-        allow(IdentityConfig.store).to receive_messages(
-          prod_like_env: true,
-          service_config_wizard_enabled: true,
-        )
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
 
       it 'has Create a New App button' do
@@ -855,7 +854,7 @@ feature 'Service Providers CRUD' do
     describe 'the `edit_button_uses_service_config_wizard` flag' do
       it 'uses the 1-page form when flagged out' do
         allow(IdentityConfig.store).to receive_messages(
-          service_config_wizard_enabled: true, edit_button_uses_service_config_wizard: false,
+          edit_button_uses_service_config_wizard: false,
         )
         visit service_provider_path(sp)
         click_on 'Edit'
@@ -864,7 +863,7 @@ feature 'Service Providers CRUD' do
 
       it 'uses the wizard when flagged in' do
         allow(IdentityConfig.store).to receive_messages(
-          service_config_wizard_enabled: true, edit_button_uses_service_config_wizard: true,
+          edit_button_uses_service_config_wizard: true,
         )
         visit service_provider_path(sp)
         click_on 'Edit'

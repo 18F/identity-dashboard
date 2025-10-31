@@ -43,8 +43,7 @@ class WizardStepPolicy < BasePolicy
   end
 
   def destroy?
-    IdentityConfig.store.service_config_wizard_enabled &&
-      (user_has_login_admin_role? || record.user == user)
+    user_has_login_admin_role? || record.user == user
   end
 
   # WizardStep policy scope
