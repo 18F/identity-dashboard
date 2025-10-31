@@ -5,6 +5,7 @@
 
 variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+  SECURE_ANALYZERS_PREFIX: "${ECR_REGISTRY}/gitlab/security-products"
   IDP_WORKER_IMAGE_TAG: 'main'
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
