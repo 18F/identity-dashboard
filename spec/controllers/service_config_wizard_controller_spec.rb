@@ -143,7 +143,9 @@ RSpec.describe ServiceConfigWizardController do
             attribute_bundle: ['', 'email'],
           } }
         end.to(change { WizardStep.count }.by(1))
-        expect(logger_double).to have_received(:wizard_step_updated).with({ step_name: 'authentication' })
+        expect(logger_double).to have_received(:wizard_step_updated).with(
+          { step_name: 'authentication' },
+        )
 
         next_step = ServiceConfigWizardController::STEPS[step_index('authentication') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -190,7 +192,9 @@ RSpec.describe ServiceConfigWizardController do
         expect do
           put :update, params: { id: 'logo_and_cert' }
         end.to(change { WizardStep.count }.by(1))
-        expect(logger_double).to have_received(:wizard_step_updated).with({ step_name: 'logo_and_cert' })
+        expect(logger_double).to have_received(:wizard_step_updated).with(
+          { step_name: 'logo_and_cert' },
+        )
 
         next_index = ServiceConfigWizardController::STEPS.index('logo_and_cert') + 1
         next_step = ServiceConfigWizardController::STEPS[next_index]
@@ -366,7 +370,9 @@ RSpec.describe ServiceConfigWizardController do
         expect do
           put :update, params: { id: 'redirects', wizard_step: { active: false } }
         end.to(change { WizardStep.count }.by(1))
-        expect(logger_double).to have_received(:wizard_step_updated).with({ step_name: 'redirects' })
+        expect(logger_double).to have_received(:wizard_step_updated).with(
+          { step_name: 'redirects' },
+        )
 
         next_step = ServiceConfigWizardController::STEPS[step_index('redirects') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
@@ -381,7 +387,9 @@ RSpec.describe ServiceConfigWizardController do
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
         end.to(change { ServiceProvider.count }.by(1))
-        expect(logger_double).to have_received(:wizard_step_updated).with({ step_name: 'help_text' })
+        expect(logger_double).to have_received(:wizard_step_updated).with(
+          { step_name: 'help_text' },
+        )
 
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
