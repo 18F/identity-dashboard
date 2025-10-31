@@ -66,6 +66,7 @@ class ServiceConfigWizardController < AuthenticatedController
       @model.wizard_form_data = @model.wizard_form_data.merge(wizard_step_params)
     end
     if valid? && @model.save
+      log.wizard_step_updated(step_name: step)
       return save_to_service_provider if step == wizard_steps.last
 
       skip_step

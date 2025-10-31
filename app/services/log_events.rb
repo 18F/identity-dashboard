@@ -106,4 +106,10 @@ module LogEvents
   def user_destroyed(changes:)
     track_event('partner_portal_user_destroyed', changes:)
   end
+
+  # Analytics log when a partner selects Next in the Guided Flow Wizard
+  # @param step_name [String] The name of the submitted step
+  def wizard_step_updated(step_name:)
+    track_event('partner_portal_wizard_step_updated', step_name:)
+  end
 end
