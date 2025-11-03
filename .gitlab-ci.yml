@@ -310,6 +310,8 @@ review-app:
   resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
+  before_script:
+    - apk add --no-cache yq
   script:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
@@ -342,7 +344,7 @@ review-app:
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
     # Update application.yml flags
-    - sed -i '' "s/prod_like_env: false/prod_like_env: $PROD_LIKE_ENV/g" config/application.yml
+    - yq -i "prod_like_env = true" config/application.yml
     - echo "Flag prod_like_env set to $PROD_LIKE_ENV"
   environment:
     name: review/$CI_COMMIT_REF_NAME
