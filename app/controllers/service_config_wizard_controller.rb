@@ -173,7 +173,7 @@ class ServiceConfigWizardController < AuthenticatedController
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
     return if step == Wicked::FINISH_STEP
 
-    referrer = request.referrer.split('/').last if request.referrer
+    referrer = referring_step if request.referrer
     log_back_pressed if referrer && immediately_precedes?(step, referrer)
     @model = policy_scope(WizardStep).find_or_initialize_by(step_name: step)
   end
@@ -184,6 +184,10 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def step_with_param?(param_name)
     step == WizardStep::ATTRIBUTE_STEP_LOOKUP[param_name]
+  end
+
+  def referring_step
+    request.referrer.split('/').last
   end
 
   def finish_wizard_path
@@ -343,8 +347,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def log_back_pressed
-    step_index = STEPS.index(step)
-    log.wizard_back_pressed(step_name: STEPS[step_index + 1])
+    log.wizard_back_pressed(step_name: referring_step)
   end
 
   def create?
