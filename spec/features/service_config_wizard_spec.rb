@@ -69,9 +69,11 @@ feature 'Service Config Wizard' do
       team_to_pick = logingov_admin.teams.sample
       select(team_to_pick.name, from: 'Team')
       click_on 'Next'
+      expect(logger_double).to_not have_received(:wizard_back_pressed)
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
       click_on 'Back'
+      expect(logger_double).to have_received(:wizard_back_pressed)
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
