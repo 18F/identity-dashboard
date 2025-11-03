@@ -132,7 +132,7 @@ build-review-image:
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
     - if [ -n "$PROD_LIKE_ENV" ]; then
-        sed -i '' "s/prod_like_env: false/prod_like_env: $PROD_LIKE_ENV"
+        sed -i '' "s/prod_like_env: false/prod_like_env: $PROD_LIKE_ENV" config/application.yml
       fi
 
 build-ci-image:
