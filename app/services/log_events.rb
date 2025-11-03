@@ -107,6 +107,12 @@ module LogEvents
     track_event('partner_portal_user_destroyed', changes:)
   end
 
+  # Log when a user clicks the back button
+  # @params [String] Name of step that back button was pressed on
+  def wizard_back_pressed(step:)
+    track_event('wizard_back_pressed', step:)
+  end
+
   # Analytics log when a partner selects Next in the Guided Flow Wizard
   # @param step_name [String] The name of the submitted step
   def wizard_step_updated(step_name:)
