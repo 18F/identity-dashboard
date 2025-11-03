@@ -12,6 +12,7 @@ variables:
   DASHBOARD_CI_SHA: 'sha256:27d86d55aad5d29d821ce792436054763269c32835d47675cca8397bb70c2227'
   GITLAB_CI: 'true'
   APPLICATION_MANIFEST: 'dockerfiles/application.yaml'
+  PROD_LIKE_ENV: ''
 
 default:
   image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
@@ -130,6 +131,9 @@ build-review-image:
       --cache=true
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
+    - if [ -n "$PROD_LIKE_ENV" ]; then
+        sed -i '' "s/prod_like_env: false/prod_like_env: $PROD_LIKE_ENV"
+      fi
 
 build-ci-image:
   stage: build
