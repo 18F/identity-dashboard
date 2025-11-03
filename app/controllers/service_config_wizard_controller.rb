@@ -344,7 +344,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def log_back_pressed
     step_index = STEPS.index(step)
-    log.wizard_back_pressed(step: STEPS[step_index + 1])
+    log.wizard_back_pressed(step_name: STEPS[step_index + 1])
   end
 
   def create?
