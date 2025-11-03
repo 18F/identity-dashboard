@@ -9,6 +9,7 @@ feature 'Service Config Wizard' do
     create(:team_membership, [:partner_admin, :partner_developer].sample, team:)
   end
   let(:user) { user_membership.user }
+  let(:logger_double) { instance_double(EventLogger) }
 
   let(:custom_help_text) do
     {
@@ -43,8 +44,11 @@ feature 'Service Config Wizard' do
   context 'when admin' do
     before do
       login_as(logingov_admin)
+      allow(logger_double).to receive(:wizard_back_pressed)
       allow(logger_double).to receive(:wizard_step_updated)
       allow(logger_double).to receive(:sp_created)
+      allow(logger_double).to receive(:sp_updated)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
     it 'can remember something filled in' do
