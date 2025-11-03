@@ -21,9 +21,19 @@ class EventLogger
   #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
   #   the value of `IdentityConfig.store.event_log_filename`
   def initialize(request: nil, response: nil, user: nil, session: nil, logger: nil)
-    default_logger = ActiveSupport::Logger.new(
-      Rails.root.join('log', IdentityConfig.store.event_log_filename),
-    )
+    Rails.logger.warn(ENV.keys)
+    default_logger = begin
+      ActiveSupport::Logger.new(
+        Rails.root.join('log', IdentityConfig.store.event_log_filename),
+      )
+    rescue SystemCallError => err
+      # Fail for EC2 environments
+      # TODO: eventually, we'll have to change this ENV var when prod is on K8s
+      raise err unless ENV['KUBERNETES_REVIEW_APP']
+
+      Rails.logger
+    end
+
     default_logger.formatter = Rails.logger.formatter
 
     @request = request
