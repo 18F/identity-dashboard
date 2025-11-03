@@ -20,22 +20,10 @@ class EventLogger
   # @param logger A destination to log events.
   #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
   #   the value of `IdentityConfig.store.event_log_filename`
+  # @raise [SystemCallError] Can raise an error when using the default logger and log_filename
+  #   can't be created. For actions that should fail if they can't be logged, make sure to
+  #    initialize this class first so that the raised error will interrupt normal flow.
   def initialize(request: nil, response: nil, user: nil, session: nil, logger: nil)
-    Rails.logger.warn(ENV.keys)
-    default_logger = begin
-      ActiveSupport::Logger.new(
-        Rails.root.join('log', IdentityConfig.store.event_log_filename),
-      )
-    rescue SystemCallError => err
-      # Fail for EC2 environments
-      # TODO: eventually, we'll have to change this ENV var when prod is on K8s
-      raise err unless ENV['KUBERNETES_REVIEW_APP']
-
-      Rails.logger
-    end
-
-    default_logger.formatter = Rails.logger.formatter
-
     @request = request
     @response = response
     @user = user
@@ -111,5 +99,22 @@ class EventLogger
 
   def generate_uuid
     SecureRandom.uuid
+  end
+
+  def default_logger
+    result = begin
+      ActiveSupport::Logger.new(
+        Rails.root.join('log', IdentityConfig.store.event_log_filename),
+      )
+    rescue SystemCallError => err
+      # Hard fail unless we're definitely a review app, like if our database is in the K8s cluster
+      raise err unless ENV['POSTGRES_HOST'].include?('.review-app')
+
+      # If we're a review app, events won't get pulled into Cloudwatch regardless, so it's OK
+      # to fall back to using the built-in logger
+      Rails.logger
+    end
+    result.formatter = Rails.logger.formatter
+    result
   end
 end
