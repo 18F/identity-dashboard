@@ -330,7 +330,7 @@ review-app:
     - sed -i "s|{{CI_MERGE_REQUEST_IID}}|${CI_MERGE_REQUEST_IID}|g" ${APPLICATION_MANIFEST}
     - cat ${APPLICATION_MANIFEST}
     # Update application.yml feature flags
-    - sed -i -E "s/(prod_like_env:\s)false/\1$PROD_LIKE_ENV/" /config/application.yml
+    - sed -i -E "s/(prod_like_env: )false/\1$PROD_LIKE_ENV/" /config/application.yml
     - echo "Flag prod_like_env set to $PROD_LIKE_ENV"
     # Apply our ArgoCD Application
     - kubectl apply -f ${APPLICATION_MANIFEST} -n argocd
