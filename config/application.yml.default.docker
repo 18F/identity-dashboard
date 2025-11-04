@@ -12,6 +12,8 @@ production:
   dp_reaping_frequency: '10'
   newrelic_license_key: changeme
   prod_like_env: true
+  api_token_required_enabled: true
+  edit_button_users_sevice_config_wizard: false
   rack_timeout_service_timeout_seconds: '15'
   secret_key_base: changeme
   serve_static_files: 'false'
