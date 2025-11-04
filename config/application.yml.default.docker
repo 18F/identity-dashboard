@@ -11,7 +11,7 @@ production:
   db_pool: '5'
   dp_reaping_frequency: '10'
   newrelic_license_key: changeme
-  prod_like_env: true
+  prod_like_env: false
   api_token_required_enabled: true
   edit_button_users_sevice_config_wizard: false
   rack_timeout_service_timeout_seconds: '15'
