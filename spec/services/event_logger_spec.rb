@@ -51,14 +51,12 @@ RSpec.describe EventLogger do
       log.track_event('Trackable Event', { example: nil })
     end
   end
-  
-    
+
   describe '#redirect' do
     let(:name) { 'partner_portal_redirect' }
 
     let(:event_properties) do
       {
-        'id' => user.id,
         'origin_url' => 'https://old.url',
         'destination_url' => 'https://new.url',
       }

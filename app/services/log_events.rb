@@ -15,6 +15,14 @@ module LogEvents
     track_event("partner_portal_extract_#{action}", extracts_params)
   end
 
+  # Log that a user clicked on a link that we redirect to externally.
+  # @param [Hash] properties A hash with details about a redirect
+  # @option properties [String] :origin_url The page the user was on when clicking the link
+  # @option properties [String] :destination_url The destination the user is redirected to
+  def redirect(properties)
+    track_event('partner_portal_redirect', properties)
+  end
+
   # Log when a service provider is created
   # @param changes [Hash] The changes to log
   def sp_created(changes:)
