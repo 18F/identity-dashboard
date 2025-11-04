@@ -9,6 +9,7 @@ feature 'Service Config Wizard' do
     create(:team_membership, [:partner_admin, :partner_developer].sample, team:)
   end
   let(:user) { user_membership.user }
+  let(:logger_double) { instance_double(EventLogger) }
 
   let(:custom_help_text) do
     {
@@ -43,6 +44,11 @@ feature 'Service Config Wizard' do
   context 'when admin' do
     before do
       login_as(logingov_admin)
+      allow(logger_double).to receive(:wizard_back_pressed)
+      allow(logger_double).to receive(:wizard_step_updated)
+      allow(logger_double).to receive(:sp_created)
+      allow(logger_double).to receive(:sp_updated)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
     end
 
     it 'can remember something filled in' do
@@ -63,9 +69,11 @@ feature 'Service Config Wizard' do
       team_to_pick = logingov_admin.teams.sample
       select(team_to_pick.name, from: 'Team')
       click_on 'Next'
+      expect(logger_double).to_not have_received(:wizard_back_pressed)
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.protocol'))
       click_on 'Back'
+      expect(logger_double).to have_received(:wizard_back_pressed)
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
