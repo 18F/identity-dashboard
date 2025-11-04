@@ -342,7 +342,7 @@ review-app:
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
     # Update application.yml feature flags
-    - sed -i -E "s/(prod_like_env[^a-zA-Z_-] )true/\1$PROD_LIKE_ENV/" /config/application.yml
+    - sed -i -E "s/(prod_like_env[^a-zA-Z_-] )true/\1$PROD_LIKE_ENV/" config/application.yml
     - echo "Flag prod_like_env set to $PROD_LIKE_ENV"
   environment:
     name: review/$CI_COMMIT_REF_NAME
