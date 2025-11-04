@@ -389,6 +389,13 @@ feature 'Service Config Wizard' do
     describe 'starting at the service provider index' do
       let(:first_step) { ServiceConfigWizardController::STEPS[0] }
 
+      it 'goes through the redirector for documentation links' do
+        visit service_config_wizard_path(first_step)
+        docs_link = find_link 'production developer documents'
+        destination_url = docs_link.native['href']
+        expect(destination_url).to eq(redirect_path(destination: '/production'))
+      end
+
       it 'goes to the first wizard step' do
         visit service_providers_path
         click_on 'Create a new app'
