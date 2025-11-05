@@ -321,7 +321,7 @@ spec:
               value: "false"
             - op: add
               path: /data/PROD_LIKE_ENV
-              value: "testing"
+              value: "false"
             - op: add
               path: /data/SAML_SP_ISSUER
               value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
