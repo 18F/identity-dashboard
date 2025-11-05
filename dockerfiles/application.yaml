@@ -320,6 +320,9 @@ spec:
               path: /data/NEW_RELIC_ENABLED
               value: "false"
             - op: add
+              path: /data/PROD_LIKE_ENV
+              value: "false"
+            - op: add
               path: /data/SAML_SP_ISSUER
               value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
             - op: add
