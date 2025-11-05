@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     repoURL: 'git@gitlab.login.gov:lg-public/identity-eks-control.git'
-    targetRevision: main
+    targetRevision: add-dashboard-featureflag
     path: cluster-reviewapp/envs/reviewapps
     kustomize:
       namePrefix: "{{ENVIRONMENT}}-"
