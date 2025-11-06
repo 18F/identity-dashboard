@@ -127,6 +127,12 @@ describe ExtractsController do
           expect(ex_params).to include('ticket', 'search_by', 'criteria_list')
         end
       end
+
+      it 'downloads the archive ' do
+        post :create, params: params1, format: :gzip
+        in_memory_file = StringIO.new response.body
+        Minitar.unpack(Zlib::GzipReader.new(in_memory_file))
+      end
     end
   end
 end
