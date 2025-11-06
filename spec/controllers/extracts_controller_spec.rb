@@ -128,12 +128,26 @@ describe ExtractsController do
         end
       end
 
-      it 'downloads the archive ' do
-        sp1.logo_file = fixture_file_upload('logo.svg')
-        sp1.save!
-        post :create, params: params1, format: :gzip
-        in_memory_file = StringIO.new response.body, binmode: true
-        Minitar.unpack(Zlib::GzipReader.new(in_memory_file), 'tmp')
+      context 'has a service provider with a logo file' do
+        before do
+          sp1.logo_file = fixture_file_upload('logo.svg')
+          sp1.save!
+          post :create, params: params1, format: :gzip
+          in_memory_file = StringIO.new response.body, binmode: true
+          Minitar.unpack(Zlib::GzipReader.new(in_memory_file), 'tmp')
+        end
+
+        after do
+          system 'rm tmp/logo.svg'
+        end
+
+        it 'contains a logo file' do
+          expect(File.read('tmp/logo.svg')).to eq(sp1.logo_file.download)
+        end
+
+        it 'contains the json data' do
+          expect(JSON.parse(File.read('tmp/extract.json'))).to_not be_blank
+        end
       end
     end
   end
