@@ -24,7 +24,7 @@ class ExtractsController < AuthenticatedController
       save_to_file
       respond_to do |format|
         format.html { return render('results') }
-        format.gzip { send_data 'hi mom' }
+        format.gzip { send_data extract_archive }
       end
     elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
@@ -32,6 +32,15 @@ class ExtractsController < AuthenticatedController
   end
 
   private
+
+  def extract_archive
+    output = ''
+    in_memory_file = StringIO.new output
+    archive = ExtractArchive.new(in_memory_file)
+    archive.add_logos_from_service_providers(@extract.service_providers)
+    archive.save
+    output
+  end
 
   def extracts_params
     params.require(:extract).permit(

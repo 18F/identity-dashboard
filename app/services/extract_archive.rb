@@ -24,7 +24,7 @@ class ExtractArchive
     return if logo_attachments.none?
 
     # Any output to `sgz` will be zipped first before going to `destination`
-    sgz = Zlib::GzipWriter.new(destination)
+    sgz = Zlib::GzipWriter.new(@destination)
 
     # Any output to `tar` will be an archive that goes to `sgz`
     # (And `sgz` will then zip it up first before sending to `destination`)
@@ -35,7 +35,7 @@ class ExtractArchive
     logo_attachments.each do |data|
       logo_filename = data[:filename]
       logo_data = data[:attachment]
-      logo_filename ||= attachment.blob.filename
+      logo_filename ||= logo_data.blob.filename
       Minitar.pack_as_file(logo_filename.to_s, logo_data.download, tar)
     end
   ensure
