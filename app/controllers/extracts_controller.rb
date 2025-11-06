@@ -38,6 +38,7 @@ class ExtractsController < AuthenticatedController
     in_memory_file = StringIO.new output
     archive = ExtractArchive.new(in_memory_file)
     archive.add_logos_from_service_providers(@extract.service_providers)
+    # need to call add_json_file to make the test pass
     archive.save
     output
   end
