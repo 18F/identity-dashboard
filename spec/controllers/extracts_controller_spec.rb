@@ -129,9 +129,11 @@ describe ExtractsController do
       end
 
       it 'downloads the archive ' do
+        sp1.logo_file = fixture_file_upload('logo.svg')
+        sp1.save!
         post :create, params: params1, format: :gzip
-        in_memory_file = StringIO.new response.body
-        Minitar.unpack(Zlib::GzipReader.new(in_memory_file))
+        in_memory_file = StringIO.new response.body, binmode: true
+        Minitar.unpack(Zlib::GzipReader.new(in_memory_file), 'tmp')
       end
     end
   end

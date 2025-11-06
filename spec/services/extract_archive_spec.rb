@@ -7,7 +7,7 @@ RSpec.describe ExtractArchive do
     sp.save!
     file = Tempfile.create binmode: true
     archive = ExtractArchive.new file
-    archive.add_service_providers [sp]
+    archive.add_logos_from_service_providers [sp]
     archive.save
   end
 end
