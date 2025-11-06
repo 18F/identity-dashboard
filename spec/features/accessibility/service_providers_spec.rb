@@ -14,19 +14,19 @@ feature 'Service provider pages', :js do
 
     context 'a service provider exists' do
       let(:user) { create(:user, :with_teams) }
-      let(:app) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
+      let(:config) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
 
       context 'show page' do
         # login.gov admins have access to more features
         scenario 'is accessible' do
-          visit service_provider_path(app)
+          visit service_provider_path(config)
           expect_page_to_have_no_accessibility_violations(page)
         end
       end
 
       context 'edit page' do
         scenario 'is accessible' do
-          visit edit_service_provider_path(app)
+          visit edit_service_provider_path(config)
           expect_page_to_have_no_accessibility_violations(page)
         end
       end
@@ -53,16 +53,16 @@ feature 'Service provider pages', :js do
     end
 
     context 'service provider exists' do
-      let(:app) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
+      let(:config) { create(:service_provider, with_team_from_user: user, logo: 'generic.svg') }
 
       context 'show page' do
         scenario 'is accessible' do
-          visit service_provider_path(app)
+          visit service_provider_path(config)
           expect_page_to_have_no_accessibility_violations(page)
         end
 
-        context 'with a SAML app' do
-          let(:app) do
+        context 'with a SAML config' do
+          let(:config) do
             create(:service_provider,
                    :saml,
                    with_team_from_user: user,
@@ -70,7 +70,7 @@ feature 'Service provider pages', :js do
           end
 
           scenario 'is accessible' do
-            visit service_provider_path(app)
+            visit service_provider_path(config)
             expect_page_to_have_no_accessibility_violations(page)
           end
         end
@@ -78,15 +78,15 @@ feature 'Service provider pages', :js do
 
       context 'edit page' do
         scenario 'is accessible' do
-          visit edit_service_provider_path(app)
+          visit edit_service_provider_path(config)
           expect_page_to_have_no_accessibility_violations(page)
         end
       end
 
       context 'edit page' do
-        context 'switching to a a SAML app' do
+        context 'switching to a a SAML config' do
           before do
-            visit edit_service_provider_path(app)
+            visit edit_service_provider_path(config)
             find('label[for=service_provider_identity_protocol_saml]').click
           end
 

@@ -123,14 +123,14 @@ describe ZendeskRequest do
           422,
           { 'Content-Type' => 'application/json' },
           # rubocop:disable Layout/LineLength
-          '{"error":"RecordInvalid","description":"Record validation errors","details":{"base":[{"description":"Application URL: is invalid","error":"InvalidValue","field_key":4417940288916}, {"description":"Partner Portal Config URL: is invalid","error":"InvalidValue","field_key":4417948129556}]}}',
+          '{"error":"RecordInvalid","description":"Record validation errors","details":{"base":[{"description":"Application URL: is invalid","error":"InvalidValue","field_key":4417940288916}, {"description":"Partner Portal Configuration URL: is invalid","error":"InvalidValue","field_key":4417948129556}]}}',
           # rubocop:enable Layout/LineLength
         ]
       end
 
       zendesk_request.conn = conn
       expect(zendesk_request.create_ticket(custom_fields)).to eq({ success: false,
-errors: ['Application URL: is invalid', 'Partner Portal Config URL: is invalid'] })
+errors: ['Application URL: is invalid', 'Partner Portal Configuration URL: is invalid'] })
       stubs.verify_stubbed_calls
     end
   end

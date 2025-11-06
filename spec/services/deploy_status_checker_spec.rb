@@ -26,7 +26,7 @@ RSpec.describe DeployStatusChecker do
     end
 
     describe '#short_name' do
-      it 'remove the identity- part of the app name' do
+      it 'remove the identity- part of the config name' do
         expect(status.short_name).to eq('idp')
       end
     end

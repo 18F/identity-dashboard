@@ -1,4 +1,4 @@
-<%= link_to 'Back to apps', '/service_providers', :class => 'usa-link' %>
+<%= link_to 'Back to configs', '/service_providers', :class => 'usa-link' %>
 
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
 <% if moved_to_prod? %>
@@ -210,7 +210,7 @@
 <hr>
 
 <% if current_user.logingov_admin? %>
-  <h2><label for="service_provider_yaml">Service Provider config as YAML</label></h2>
+  <h2><label for="service_provider_yaml">Service Provider configuration as YAML</label></h2>
   <%= render 'service_provider_yaml' %>
 <% end %>
 

@@ -22,10 +22,10 @@ feature 'Service Providers CRUD' do
     scenario 'can create service provider' do
       visit new_service_provider_path
 
-      expect(page).to_not have_content('Approved')
+      expect(page).to_not have_content('configroved')
 
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
+      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:config-prod'
       attach_file('Choose a file', 'spec/fixtures/files/logo.svg')
       select user.teams[0].name, from: 'service_provider_group_id'
       select I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service'
@@ -46,7 +46,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       expect(page).to have_content('test service_provider')
-      expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod')
+      expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:config-prod')
       expect(page).to have_content('email')
       expect(page).to have_content(user.teams[0].agency.name)
       expect(page).to have_content(I18n.t('service_provider_form.ial_option_2'))
@@ -62,7 +62,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content('Unauthorized')
     end
 
-    scenario 'partner cannot change config to prod-ready with localhost URLs' do
+    scenario 'partner cannot change configuration to prod-ready with localhost URLs' do
       service_provider = create(:service_provider,
                                 :ready_to_activate_ial_2,
                                 :with_oidc_jwt,
@@ -74,14 +74,14 @@ feature 'Service Providers CRUD' do
       choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Update'
 
-      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page).to have_content('Portal Configuration cannot be Production with localhost URLs')
 
       choose 'Ready for Production'
       fill_in 'service_provider_push_notification_url', with: 'http://localhost:0'
       fill_in 'service_provider_failure_to_proof_url', with: 'http://localhost:0'
       click_on 'Update'
 
-      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page).to have_content('Portal Configuration cannot be Production with localhost URLs')
       expect(page.body).to include(
         "<li>#{I18n.t('service_provider_form.title.push_notification_url')}",
       )
@@ -174,7 +174,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://bar.com'])
     end
 
-    scenario 'can view all saml fields when editing a saml app', :js do
+    scenario 'can view all saml fields when editing a saml configuration', :js do
       service_provider = create(:service_provider, :saml, team:)
 
       visit edit_service_provider_path(service_provider)
@@ -395,7 +395,7 @@ feature 'Service Providers CRUD' do
 
     # rubocop:disable Layout/LineLength
     scenario 'can select default help text options for new configurations' do
-      friendly_name = '<Application Friendly Name>'
+      friendly_name = '<Configuration Friendly Name>'
       agency = '<Agency>'
 
       # taken from service_providers.en.yml
@@ -404,7 +404,7 @@ feature 'Service Providers CRUD' do
                                    "Sign in to Login.gov with your #{agency} email.",
                                    "Sign in to Login.gov with your #{agency} PIV/CAC.",
                                    "Create a Login.gov account using your #{agency} email.",
-                                   'Create a Login.gov account using the same email provided on your application.',
+                                   'Create a Login.gov account using the same email provided on your configuration.',
                                    'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.']
 
       visit new_service_provider_path
@@ -482,7 +482,7 @@ feature 'Service Providers CRUD' do
       scenario 'cannot add help text for new configurations' do
         visit new_service_provider_path
 
-        expect(page).to have_content('Do you need to add help text for your application? Contact us.')
+        expect(page).to have_content('Do you need to add help text for your configuration? Contact us.')
         expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
       end
     end
@@ -599,7 +599,7 @@ feature 'Service Providers CRUD' do
 
       select team.name, from: 'service_provider[group_id]'
       fill_in 'Friendly name', with: 'test service_provider'
-      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-app',
+      fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:ABC:my-cool-config',
                         match: :prefer_exact
       check 'email'
       check 'verified_at'
@@ -677,10 +677,10 @@ feature 'Service Providers CRUD' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
 
-      it 'has Create a New App button' do
+      it 'has Create a New Configuration button' do
         visit service_providers_path
 
-        expect(page).to have_button('Create a new app')
+        expect(page).to have_button('Create a new configuration')
       end
 
       it 'redirects to service_config_wizard' do
@@ -692,12 +692,12 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'deleted page shows Deleted By column and email for deleted SPs', :versioning do
-      app = create(:service_provider, team:, user:)
+      config = create(:service_provider, team:, user:)
 
-      visit service_provider_path(app)
+      visit service_provider_path(config)
       click_on 'Delete'
 
-      expect(page).to have_content("Success! You have deleted #{app.issuer}")
+      expect(page).to have_content("Success! You have deleted #{config.issuer}")
 
       visit service_providers_deleted_path
 
@@ -710,36 +710,36 @@ feature 'Service Providers CRUD' do
     let(:user_to_log_in_as) { user }
 
     scenario 'user updates service provider' do
-      app = create(:service_provider, with_team_from_user: user)
+      config = create(:service_provider, with_team_from_user: user)
 
-      visit edit_service_provider_path(app)
+      visit edit_service_provider_path(config)
 
       fill_in 'Friendly name', with: 'change service_provider name'
-      fill_in 'Description', with: 'app description foobar'
+      fill_in 'Description', with: 'configuration description foobar'
       select I18n.t('service_provider_form.aal_option_3'),
              from: 'Authentication Assurance Level (AAL)'
       choose 'SAML'
-      fill_in 'Assertion Consumer Service URL', with: 'https://app.agency.gov/auth/saml/sso'
-      fill_in 'Return to App URL', with: 'https://app.agency.gov'
+      fill_in 'Assertion Consumer Service URL', with: 'https://config.agency.gov/auth/saml/sso'
+      fill_in 'Return to App URL', with: 'https://config.agency.gov'
       click_on 'Update'
 
       expect(page).to have_content('Success')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
-      expect(page).to have_content('app description foobar')
+      expect(page).to have_content('configuration description foobar')
       expect(page).to have_content('change service_provider name')
       expect(page).to have_content('email')
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_3'))
     end
 
     scenario 'user updates service provider but service provider is invalid' do
-      app = create(:service_provider, team:)
+      config = create(:service_provider, team:)
 
       allow_any_instance_of(ServiceProvider).to receive(:valid?).and_return(false)
 
-      visit edit_service_provider_path(app)
+      visit edit_service_provider_path(config)
 
       fill_in 'Friendly name', with: 'change service_provider name'
-      fill_in 'Description', with: 'app description foobar'
+      fill_in 'Description', with: 'configuration description foobar'
       choose 'SAML'
       click_on 'Update'
 
@@ -748,14 +748,14 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'user updates service provider but service provider updater fails' do
-      app = create(:service_provider, with_team_from_user: user)
+      config = create(:service_provider, with_team_from_user: user)
 
-      visit edit_service_provider_path(app)
+      visit edit_service_provider_path(config)
 
       allow(ServiceProviderUpdater).to receive(:post_update).and_return(false)
 
       fill_in 'Friendly name', with: 'change service_provider name'
-      fill_in 'Description', with: 'app description foobar'
+      fill_in 'Description', with: 'configuration description foobar'
       choose 'SAML'
       check 'last_name'
       click_on 'Update'
@@ -829,7 +829,7 @@ feature 'Service Providers CRUD' do
             page.attach_file 'Choose a cert file', @file_path, make_visible: true
 
             error_field = page.find('.js-pem-input-error-message')
-            expect(error_field).to have_content('does not appear to be PEM encoded')
+            expect(error_field).to have_content('does not configear to be PEM encoded')
           end
         end
       end
@@ -873,7 +873,7 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    describe 'with a production config' do
+    describe 'with a production configuration' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
       # TODO: remove following when Zendesk form is fixed
@@ -890,14 +890,14 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    describe 'production config on sandbox with status: moved_to_prod' do
+    describe 'production configuration on sandbox with status: moved_to_prod' do
       let(:sp) { create(:service_provider, :with_moved_to_prod, team: team, prod_config: true) }
 
       before do
         allow(IdentityConfig.store).to receive('prod_like_env').and_return(false)
       end
 
-      it 'displays an info alert that the config has moved' do
+      it 'displays an info alert that the configuration has moved' do
         visit service_provider_path(sp)
         expect(page).to have_content(strip_tags(t('moved_to_prod_html')))
       end
@@ -910,16 +910,16 @@ feature 'Service Providers CRUD' do
   end
 
   scenario 'Delete' do
-    app = create(:service_provider, team:, user:)
+    config = create(:service_provider, team:, user:)
 
-    visit service_provider_path(app)
+    visit service_provider_path(config)
     click_on 'Delete'
 
     expect(page).to have_content('Success')
   end
 
   describe 'status indicator' do
-    let(:app) do
+    let(:config) do
       create(:service_provider,
              status: ServiceProvider::STATUSES.sample,
              prod_config: true,
@@ -927,35 +927,35 @@ feature 'Service Providers CRUD' do
     end
     let(:user_to_log_in_as) { logingov_admin }
 
-    it 'shows for Login.gov Admin for a prod app in a prod-like env' do
+    it 'shows for Login.gov Admin for a prod configuration in a prod-like env' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      visit service_provider_path(app)
+      visit service_provider_path(config)
       expect(page).to have_content('Portal Configuration: Production')
-      expect(page).to have_content("Portal Production Status: #{app.status.capitalize}")
+      expect(page).to have_content("Portal Production Status: #{config.status.capitalize}")
     end
 
     it 'does not show if the env is not prod-like' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      visit service_provider_path(app)
+      visit service_provider_path(config)
       expect(page).to have_content('Portal Configuration: Production')
-      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+      expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
 
     it 'does not show of the user is not a Login.gov Admin' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       login_as user
-      visit service_provider_path(app)
+      visit service_provider_path(config)
       expect(page).to have_content('Portal Configuration: Production')
-      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+      expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
 
-    it 'does not show if the app is not flagged for production' do
-      app.prod_config = false
-      app.save!
+    it 'does not show if the configuration is not flagged for production' do
+      config.prod_config = false
+      config.save!
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      visit service_provider_path(app)
+      visit service_provider_path(config)
       expect(page).to have_content('Portal Configuration: Sandbox')
-      expect(page).to_not have_content("Portal Production Status: #{app.status.capitalize}")
+      expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
   end
 end

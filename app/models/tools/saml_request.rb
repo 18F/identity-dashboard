@@ -82,7 +82,7 @@ module Tools
       if certs.nil?
         @errors.push(<<~EOS.squish)
           Could not find any certificates to use. Please add a
-          certificate to your application configuration or paste one below.
+          certificate to your configuration or paste one below.
         EOS
 
         return false

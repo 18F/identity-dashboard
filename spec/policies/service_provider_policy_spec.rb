@@ -7,7 +7,7 @@ describe ServiceProviderPolicy do
   let(:partner_developer) { create(:team_membership, :partner_developer, team:).user }
   let(:partner_readonly) { create(:team_membership, :partner_readonly, team:).user }
   let(:user_not_on_team) { create(:user) }
-  let(:app) { create(:service_provider, team:) }
+  let(:config) { create(:service_provider, team:) }
 
   shared_examples_for 'allows all team members except Partner Readonly for `object`' do
     it 'forbids Partner Readonly' do
@@ -83,36 +83,36 @@ describe ServiceProviderPolicy do
 
   permissions :show? do
     it 'forbids non-team-member users' do
-      expect(described_class).to_not permit(user_not_on_team, app)
+      expect(described_class).to_not permit(user_not_on_team, config)
     end
 
     it 'allows Login Admin' do
-      expect(described_class).to permit(logingov_admin, app)
+      expect(described_class).to permit(logingov_admin, config)
     end
 
     it 'allows Partner Admin' do
-      expect(described_class).to permit(partner_admin, app)
+      expect(described_class).to permit(partner_admin, config)
     end
 
     it 'allows Partner Developer' do
-      expect(described_class).to permit(partner_developer, app)
+      expect(described_class).to permit(partner_developer, config)
     end
 
     it 'allows Partner Readonly' do
-      expect(described_class).to permit(partner_readonly, app)
+      expect(described_class).to permit(partner_readonly, config)
     end
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, app)
+        expect(described_class).to permit(user_not_on_team, config)
       end
 
       it 'is ignored with RBAC oon' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, app)
+        expect(described_class).to_not permit(user_not_on_team, config)
       end
     end
   end
@@ -124,41 +124,41 @@ describe ServiceProviderPolicy do
 
     it 'allows Parter Readonly with RBAC off' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      app = ServiceProvider.new(team:)
-      expect(described_class).to permit(partner_readonly, app)
+      config = ServiceProvider.new(team:)
+      expect(described_class).to permit(partner_readonly, config)
     end
   end
 
   permissions :edit? do
     it_behaves_like 'allows all team members except Partner Readonly for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, app)
+        expect(described_class).to permit(user_not_on_team, config)
       end
 
       it 'is ignored with RBAC on' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, app)
+        expect(described_class).to_not permit(user_not_on_team, config)
       end
     end
 
     describe 'status moved_to_prod' do
-      before { app.status = 'moved_to_prod' }
+      before { config.status = 'moved_to_prod' }
 
       it 'does not allow Login.gov admins to edit' do
-        app.user = logingov_admin
-        expect(described_class).to_not permit(logingov_admin, app)
+        config.user = logingov_admin
+        expect(described_class).to_not permit(logingov_admin, config)
       end
 
       it 'does not allow partner admins to edit' do
-        app.user = partner_admin
-        expect(described_class).to_not permit(partner_admin, app)
+        config.user = partner_admin
+        expect(described_class).to_not permit(partner_admin, config)
       end
     end
   end
@@ -188,11 +188,11 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_admin, object)
     end
 
-    it 'allows Partner Developer if they created the app' do
+    it 'allows Partner Developer if they created the configuration' do
       expect(described_class).to permit(partner_developer_creator, object)
     end
 
-    it 'forbids Partner Developer if they did not create the app' do
+    it 'forbids Partner Developer if they did not create the configuration' do
       expect(described_class).to_not permit(partner_developer_noncreator, object)
     end
 
@@ -219,26 +219,26 @@ describe ServiceProviderPolicy do
       it 'forbids with RBAC off' do
         object.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to_not permit(user_not_on_team, app)
+        expect(described_class).to_not permit(user_not_on_team, config)
       end
 
       it 'is ignored with RBAC on' do
         object.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, app)
+        expect(described_class).to_not permit(user_not_on_team, config)
       end
     end
   end
 
   permissions :create? do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
 
     it 'allows Parter Readonly with RBAC off' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      app = ServiceProvider.new(team:)
-      expect(described_class).to permit(partner_readonly, app)
+      config = ServiceProvider.new(team:)
+      expect(described_class).to permit(partner_readonly, config)
     end
 
     context 'when in a prod-like env' do
@@ -247,27 +247,27 @@ describe ServiceProviderPolicy do
       end
 
       it_behaves_like 'allows login.gov admins only for `object`' do
-        let(:object) { app }
+        let(:object) { config }
       end
     end
   end
 
   permissions :update? do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
 
     describe 'user owner not in team' do
       it 'allows with RBAC off' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, app)
+        expect(described_class).to permit(user_not_on_team, config)
       end
 
       it 'is ignored with RBAC on' do
-        app.user = user_not_on_team
+        config.user = user_not_on_team
         allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, app)
+        expect(described_class).to_not permit(user_not_on_team, config)
       end
     end
   end
@@ -286,19 +286,19 @@ describe ServiceProviderPolicy do
 
   permissions :edit_custom_help_text? do
     it_behaves_like 'allows login.gov admins only for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
   end
 
   permissions :see_status? do
     it_behaves_like 'allows login.gov admins only for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
   end
 
   permissions :prod_request? do
     it_behaves_like  'allows all team members except Partner Readonly for `object`' do
-      let(:object) { app }
+      let(:object) { config }
     end
   end
 
@@ -317,7 +317,7 @@ describe ServiceProviderPolicy do
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
           allow_prompt_login
-          approved
+          configroved
         ]
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end
@@ -332,7 +332,7 @@ describe ServiceProviderPolicy do
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
           allow_prompt_login
-          approved
+          configroved
         ]
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end

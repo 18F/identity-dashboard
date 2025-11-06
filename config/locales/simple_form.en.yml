@@ -20,11 +20,11 @@ en:
         acs_url: Assertion Consumer Service URL
         active: Accessible
         agency: Agency
-        app_name: App name
+        app_name: Configuration name
         assertion_consumer_logout_service_url: Assertion Consumer Logout Service URL
         attribute_bundle: Attribute bundle
-        create_sandbox_application: Create an application in the sandbox environment
-        promote_to_production: Promote your application to production
+        create_sandbox_application: Create a configuration in the sandbox environment
+        promote_to_production: Promote your configuration to production
         block_encryption: SAML Assertion Encryption
         cert_file: Choose a cert file
         prod_config: Portal configuration

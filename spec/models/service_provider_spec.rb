@@ -206,7 +206,7 @@ describe ServiceProvider do
       expect(service_provider).to be_valid
     end
 
-    context 'validate sandbox config in prod-like env' do
+    context 'validate sandbox configuration in prod-like env' do
       before do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
@@ -215,7 +215,7 @@ describe ServiceProvider do
         service_provider = build(:service_provider, :ready_to_activate, prod_config: false)
         service_provider.valid_prod_config?
 
-        expect(service_provider.errors[:prod_config]).to include('can\\t be a sandbox config')
+        expect(service_provider.errors[:prod_config]).to include('can\\t be a sandbox configuration')
       end
     end
 

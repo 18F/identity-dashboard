@@ -1,4 +1,4 @@
-# Permission policy for config Extract tool
+# Permission policy for configuration Extract tool
 class ExtractPolicy < BasePolicy
   attr_reader :user, :extract
 

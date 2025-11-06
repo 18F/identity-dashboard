@@ -291,7 +291,7 @@ describe ServiceProvidersController do
             return_to_sp_url: ' https://returntospurl.biz  ',
             failure_to_proof_url: '  https://failuretoproof.com  ',
             push_notification_url: ' https://pushnotifications.com  ',
-            app_name: '   app name  ',
+            app_name: '   configuration name  ',
             help_text: init_help_params,
           },
         }
@@ -305,7 +305,7 @@ describe ServiceProvidersController do
         expect(sp.return_to_sp_url).to eq('https://returntospurl.biz')
         expect(sp.failure_to_proof_url).to eq('https://failuretoproof.com')
         expect(sp.push_notification_url).to eq('https://pushnotifications.com')
-        expect(sp.app_name).to eq('app name')
+        expect(sp.app_name).to eq('configuration name')
       end
     end
 

@@ -1,9 +1,9 @@
 
 <h1 class="usa-display">New App</h1>
-<p class='usa-intro'>Use this form to create a new app for testing or production.<p>
+<p class='usa-intro'>Use this form to create a new configuration for testing or production.<p>
 
 <%= simple_form_for(@service_provider, html: { autocomplete: 'off', class: 'service-provider-form usa-form usa-form--large' }) do |form| %>
   <%= render 'form', form: form %>
   <br>
-  <%= form.button :submit, 'Create app', :class => "usa-button" %>
+  <%= form.button :submit, 'Create configuration', :class => "usa-button" %>
 <% end %>

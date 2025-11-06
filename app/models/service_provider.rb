@@ -151,7 +151,7 @@ class ServiceProvider < ApplicationRecord
   def valid_prod_config?
     return unless IdentityConfig.store.prod_like_env && !production_ready?
 
-    errors.add(:prod_config, 'can\t be a sandbox config')
+    errors.add(:prod_config, 'can\t be a sandbox configuration')
   end
 
   # in the case of Long Form, :long_form should be passed in for extra checks.
