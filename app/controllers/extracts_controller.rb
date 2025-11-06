@@ -22,12 +22,13 @@ class ExtractsController < AuthenticatedController
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
       save_to_file
-      return render 'results'
+      respond_to do |format|
+        format.html { return render('results') }
+        format.gzip { send_data 'hi mom' }
+      end
     elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
-
-    render 'index'
   end
 
   private
