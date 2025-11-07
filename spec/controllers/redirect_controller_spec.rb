@@ -11,4 +11,9 @@ RSpec.describe RedirectController do
     expect(response).to redirect_to('https://developers.login.gov/')
   end
 
+  it 'can redirect with extra path segments' do
+    get :show, params: { destination: '/some/path?with=params' }
+    expect(response).to have_http_status(:moved_permanently)
+    expect(response).to redirect_to('https://developers.login.gov/some/path?with=params')
+  end
 end

@@ -1,7 +1,7 @@
 class RedirectController < AuthenticatedController
-
   def show
-    redirect_to 'https://developers.login.gov/', status: :moved_permanently, allow_other_host: true
+    destination = params[:destination].to_s.gsub(%r{^/}, '')
+    redirect_to "https://developers.login.gov/#{destination}", status: :moved_permanently,
+allow_other_host: true
   end
-
 end
