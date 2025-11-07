@@ -108,7 +108,7 @@ class EventLogger
       )
     rescue SystemCallError => err
       # Hard fail unless we're definitely a review app, like if our database is in the K8s cluster
-      raise err unless ENV['POSTGRES_HOST'].include?('.review-app')
+      raise err unless ENV['POSTGRES_HOST']&.include?('.review-app')
 
       # If we're a review app, events won't get pulled into Cloudwatch regardless, so it's OK
       # to fall back to using the built-in logger
