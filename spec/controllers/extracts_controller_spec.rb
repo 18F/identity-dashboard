@@ -139,6 +139,7 @@ describe ExtractsController do
 
         after do
           system 'rm tmp/logo.svg'
+          system 'rm tmp/extracts.json'
         end
 
         it 'contains a logo file' do

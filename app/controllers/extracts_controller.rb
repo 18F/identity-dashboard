@@ -23,12 +23,14 @@ class ExtractsController < AuthenticatedController
       end
       save_to_file
       respond_to do |format|
-        format.html { return render('results') }
+        format.html { render('results') }
         format.gzip { send_data extract_archive }
-      end
+      end and return
     elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
+
+    render 'index'
   end
 
   private
@@ -38,7 +40,10 @@ class ExtractsController < AuthenticatedController
     in_memory_file = StringIO.new output
     archive = ExtractArchive.new(in_memory_file)
     archive.add_logos_from_service_providers(@extract.service_providers)
-    # need to call add_json_file to make the test pass
+    archive.add_json_file(
+      File.read(@extract.filename),
+      'extract.json',
+    )
     archive.save
     output
   end
@@ -57,15 +62,7 @@ class ExtractsController < AuthenticatedController
   def save_to_file
     begin
       File.open(@extract.filename, 'w') do |f|
-        sp_data = @extract.service_providers.map do |sp|
-          attributes = sp.attributes
-          attributes['team_uuid'] = sp.team.uuid
-          # This is not portable between environments.
-          attributes.delete 'remote_logo_key'
-          attributes
-        end
-        data = { teams: @extract.teams, service_providers: sp_data }
-        f.print data.to_json
+        f.print @extract.to_json
       end
       flash[:success] = 'Extracted configs saved'
     rescue => err
