@@ -5,7 +5,7 @@ RSpec.describe RedirectController do
     sign_in create(:user)
   end
 
-  it 'can redirect a documentation link to the right URL' do
+  it 'can redirect without extra path segments' do
     get :show, params: { destination: '/' }
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/')
@@ -15,5 +15,24 @@ RSpec.describe RedirectController do
     get :show, params: { destination: '/some/path?with=params' }
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/some/path?with=params')
+  end
+
+  context 'logging' do
+    let(:logger_double) { instance_double(EventLogger) }
+
+    before do
+      allow(logger_double).to receive(:redirect)
+      allow(EventLogger).to receive(:new).and_return(logger_double)
+    end
+
+    it 'logs the redirect event' do
+      request.env['HTTP_REFERER'] = 'https://old.url'
+      get :show, params: { destination: '/some/path?with=params' }
+
+      expect(logger_double).to have_received(:redirect).with(
+        { origin_url: 'https://old.url',
+          destination_url: 'https://developers.login.gov/some/path?with=params' },
+      )
+    end
   end
 end
