@@ -12,9 +12,17 @@ RSpec.describe RedirectController do
   end
 
   it 'can redirect with extra path segments' do
-    get :show, params: { destination: '/some/path?with=params' }
+    get :show, params: { destination: '/some/path#fragment' }
     expect(response).to have_http_status(:moved_permanently)
-    expect(response).to redirect_to('https://developers.login.gov/some/path?with=params')
+    expect(response).to redirect_to('https://developers.login.gov/some/path#fragment')
+  end
+
+  it 'sanitizes unsafe characters from destination' do
+    unsafe_url = '/path!@$%^&*()+=[]\;,{}|":<>?`~#_-/section'
+    get :show, params: { destination: unsafe_url }
+
+    expect(response).to have_http_status(:moved_permanently)
+    expect(response).to redirect_to('https://developers.login.gov/path#_-/section')
   end
 
   context 'logging' do
@@ -27,11 +35,11 @@ RSpec.describe RedirectController do
 
     it 'logs the redirect event' do
       request.env['HTTP_REFERER'] = 'https://old.url'
-      get :show, params: { destination: '/some/path?with=params' }
+      get :show, params: { destination: '/some/path#fragment' }
 
       expect(logger_double).to have_received(:redirect).with(
         { origin_url: 'https://old.url',
-          destination_url: 'https://developers.login.gov/some/path?with=params' },
+          destination_url: 'https://developers.login.gov/some/path#fragment' },
       )
     end
   end
