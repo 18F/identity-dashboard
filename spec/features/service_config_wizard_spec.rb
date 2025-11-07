@@ -393,7 +393,7 @@ feature 'Service Config Wizard' do
         visit service_config_wizard_path(first_step)
         docs_link = find_link 'production developer documents'
         destination_url = docs_link.native['href'].html_safe
-        expect(destination_url).to eq(redirect_path(destination: '/production').gsub("%2F", "/"))
+        expect(destination_url).to eq(redirect_path(destination: '/production').gsub('%2F', '/'))
       end
 
       it 'goes to the first wizard step' do
