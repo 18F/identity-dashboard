@@ -27,4 +27,8 @@ class Role < ApplicationRecord
     partner_readonly: I18n.t("#{ROLES_I18N_BUCKET}.partner_readonly"),
   }.freeze
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
+
+  def friendly_name
+    ACTIVE_ROLES_NAMES[self.name.to_sym]
+  end
 end

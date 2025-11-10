@@ -69,8 +69,8 @@ class Team < ApplicationRecord
     end
   end
 
-  # Every team should have a partner admin, but regularly we'll want to create a team before we know
-  # who the partner admin should be.
+  # Every team should have a partner_admin, but regularly we'll want to create a team before we know
+  # who the partner_admin should be.
   def missing_a_partner_admin?
     TeamMembership.where(team: self).none? do |membership|
       # Every membership must have a valid user.

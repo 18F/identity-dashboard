@@ -245,7 +245,7 @@ class Teams::UsersController < AuthenticatedController
     # Only check with Airtable in Prod Like Environments
     return false unless IdentityConfig.store.prod_like_env
 
-    # More checks needed if role is being set to partner admin.
+    # More checks needed if role is being set to partner_admin.
     if team_membership.role_name == 'partner_admin'
       # Confirmation needed when there is no service providers associated
       # with the team.
