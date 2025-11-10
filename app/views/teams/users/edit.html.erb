@@ -12,7 +12,9 @@
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-top-3">
     <% if IdentityConfig.store.prod_like_env && @remove_partner_admin %>
-      <p>In order to give <strong>Partner Admin</strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
+      <p>In order to give <strong><%=
+        t('role_names.production.partner_admin')
+      %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
     <% end %>
     <legend><p id='rbac_description'><%= t('team_memberships.rbac_description') %></p></legend>
     <%= render(RadioCollectionComponent.new(
