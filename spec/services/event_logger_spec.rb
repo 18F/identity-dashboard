@@ -52,6 +52,27 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#redirect' do
+    let(:name) { 'partner_portal_redirect' }
+
+    let(:event_properties) do
+      {
+        'origin_url' => 'https://old.url',
+        'destination_url' => 'https://new.url',
+      }
+    end
+
+    it 'logs partner_portal_redirect event' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj).to include(crud_properties(event_properties:, name:)
+          .deep_stringify_keys)
+      end
+
+      log.redirect(event_properties)
+    end
+  end
+
   describe '#visit_token' do
     it 'returns the session visit_token' do
       expect(log.visit_token).to eq('test_token')

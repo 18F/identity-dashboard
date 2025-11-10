@@ -58,4 +58,6 @@ Rails.application.routes.draw do
   get '/airtable/oauth/redirect' => 'airtable#oauth_redirect'
   get '/airtable/oauth/refresh_token' => 'airtable#refresh_token'
   get '/airtable/oauth/clear_token' => 'airtable#clear_token'
+
+  get '/documentation' => 'docs_redirect#show'
 end
