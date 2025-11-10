@@ -107,11 +107,13 @@ class EventLogger
         Rails.root.join('log', IdentityConfig.store.event_log_filename),
       )
     rescue SystemCallError => err
-      # Hard fail unless we're definitely a review app, like if our database is in the K8s cluster
+      # We arrive here if the log destination is not writable
+
+      # Hard fail unless we're definitely a review app running against a review-app DB
       raise err unless ENV['POSTGRES_HOST']&.include?('.review-app')
 
-      # If we're a review app, events won't get pulled into Cloudwatch regardless, so it's OK
-      # to fall back to using the built-in logger
+      # Fall back to the built-in logging for review apps. Review app logs will never
+      # go to Cloudwatch. This workaround gives us a way to still see the log entries.
       Rails.logger
     end
     result.formatter = Rails.logger.formatter

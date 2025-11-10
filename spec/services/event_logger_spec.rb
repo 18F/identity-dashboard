@@ -45,7 +45,7 @@ RSpec.describe EventLogger do
           .and_return('/root/failure/.inaccessible/event.log')
       end
 
-      it 'falls back to Rails.logger when being run as a K8s review-app' do
+      it 'falls back to Rails.logger when being run in Kubernetes as a review-app' do
         initial_pg_host = ENV['POSTGRES_HOST']
         ENV['POSTGRES_HOST'] = 'test-db.review-apps.identitysandbox.gov'
         allow(Rails.logger).to receive(:info)
@@ -58,7 +58,7 @@ RSpec.describe EventLogger do
         ENV['POSTGRES_HOST'] = initial_pg_host
       end
 
-      it 'throws an error when not a K8s review-app' do
+      it 'throws an error when not a Kubernetes review-app' do
         expect { EventLogger.new }.to raise_error(Errno::ENOENT)
       end
     end
