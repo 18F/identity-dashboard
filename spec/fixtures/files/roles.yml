@@ -1,19 +1,15 @@
 logingov_admin:
   id: 1
   name: logingov_admin
-  friendly_name: Login.gov Admin
 
 partner_admin:
   id: 2
   name: partner_admin
-  friendly_name: Partner Admin
 
 partner_developer:
   id: 3
   name: partner_developer
-  friendly_name: Partner Developer
 
 partner_readonly:
   id: 4
   name: partner_readonly
-  friendly_name: Partner Readonly
