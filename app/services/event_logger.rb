@@ -20,12 +20,10 @@ class EventLogger
   # @param logger A destination to log events.
   #   If blank, `EventLogger` will try to use the `log` folder and open a file base on
   #   the value of `IdentityConfig.store.event_log_filename`
+  # @raise [SystemCallError] Can raise an error when using the default logger and log_filename
+  #   can't be created. For actions that should fail if they can't be logged, make sure to
+  #    initialize this class first so that the raised error will interrupt normal flow.
   def initialize(request: nil, response: nil, user: nil, session: nil, logger: nil)
-    default_logger = ActiveSupport::Logger.new(
-      Rails.root.join('log', IdentityConfig.store.event_log_filename),
-    )
-    default_logger.formatter = Rails.logger.formatter
-
     @request = request
     @response = response
     @user = user
@@ -101,5 +99,24 @@ class EventLogger
 
   def generate_uuid
     SecureRandom.uuid
+  end
+
+  def default_logger
+    result = begin
+      ActiveSupport::Logger.new(
+        Rails.root.join('log', IdentityConfig.store.event_log_filename),
+      )
+    rescue SystemCallError => err
+      # We arrive here if the log destination is not writable
+
+      # Hard fail unless we're definitely a review app running against a review-app DB
+      raise err unless ENV['POSTGRES_HOST']&.include?('.review-app')
+
+      # Fall back to the built-in logging for review apps. Review app logs will never
+      # go to Cloudwatch. This workaround gives us a way to still see the log entries.
+      Rails.logger
+    end
+    result.formatter = Rails.logger.formatter
+    result
   end
 end

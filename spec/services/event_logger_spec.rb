@@ -38,6 +38,32 @@ RSpec.describe EventLogger do
   end
   let(:sp) { create(:service_provider) }
 
+  describe '.new' do
+    context 'with an unreachable log file' do
+      before do
+        expect(IdentityConfig.store).to receive(:event_log_filename)
+          .and_return('/root/failure/.inaccessible/event.log')
+      end
+
+      it 'falls back to Rails.logger when being run in Kubernetes as a review-app' do
+        initial_pg_host = ENV['POSTGRES_HOST']
+        ENV['POSTGRES_HOST'] = 'test-db.review-apps.identitysandbox.gov'
+        allow(Rails.logger).to receive(:info)
+
+        subject = EventLogger.new
+        test_event = "test_event_#{rand(1..1000)}"
+        subject.track_event(test_event)
+
+        expect(Rails.logger).to have_received(:info).with(match(%("name":"#{test_event}")))
+        ENV['POSTGRES_HOST'] = initial_pg_host
+      end
+
+      it 'throws an error when not a Kubernetes review-app' do
+        expect { EventLogger.new }.to raise_error(Errno::ENOENT)
+      end
+    end
+  end
+
   describe '#track_event' do
     it 'collects data and sends the event to the backend' do
       expect(logger).to receive(:info).with(match(event_name))
