@@ -97,9 +97,9 @@ feature 'login.gov admin manages users' do
   scenario 'rbac flag shows edit for user on teams' do
     flag_in
     roles = ['Login.gov Admin',
-             'Partner Admin',
-             'Partner Developer',
-             'Partner Readonly']
+             'Sandbox Partner Admin',
+             'Sandbox Team Dev',
+             'Team Readonly']
 
     visit edit_user_path(create(:user, :with_teams))
 
@@ -118,7 +118,7 @@ feature 'login.gov admin manages users' do
     expect(page).to have_content('Permissions')
     radio_labels = find_all('.usa-radio__label').map(&:text)
     expect(radio_labels).to eq(['Login.gov Admin',
-                                'Partner Admin'])
+                                'Sandbox Partner Admin'])
     expect(find_all('input[type=radio]').last).to be_checked
     find_all('input[type=radio]').first.click
     click_on 'Update'
@@ -134,7 +134,7 @@ feature 'login.gov admin manages users' do
   scenario 'can demote a legacy Login.gov admin and make them a Login.gov admin again' do
     legacy_admin_user = create(:user, admin: true)
     visit edit_user_path(legacy_admin_user)
-    choose 'Partner Admin'
+    choose 'Sandbox Partner Admin'
     click_on 'Update'
     expect(page).to have_http_status(:ok)
     expect(legacy_admin_user.reload).to_not be_logingov_admin

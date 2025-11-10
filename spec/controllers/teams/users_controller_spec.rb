@@ -117,7 +117,7 @@ describe Teams::UsersController do
           }
           expect(response).to be_unauthorized
           updatable_team_membership.reload
-          expect(updatable_team_membership.role.friendly_name).to eq('Partner Developer')
+          expect(updatable_team_membership.role.friendly_name).to eq('Sandbox Team Dev')
 
           expect(logger_double).to_not have_received(:team_membership_updated)
         end
@@ -241,7 +241,7 @@ describe Teams::UsersController do
       end
     end
 
-    context 'with Partner Developer role' do
+    context 'with partner_developer role' do
       let(:team_membership) { create(:team_membership, :partner_developer) }
 
       describe '#index' do

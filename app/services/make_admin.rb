@@ -18,12 +18,12 @@ class MakeAdmin
 
     if admin.logingov_admin?
       return puts("INFO: User \"#{email}\" already has #{
-        t('role_names.global.logingov_admin')
+        I18n.t('role_names.global.logingov_admin')
       } privileges.")
     end
 
     make_admin
-    puts "SUCCESS: Promoted \"#{email}\" to #{t('role_names.global.logingov_admin')}."
+    puts "SUCCESS: Promoted \"#{email}\" to #{I18n.t('role_names.global.logingov_admin')}."
   end
 
   private

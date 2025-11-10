@@ -48,6 +48,8 @@ feature 'internal reports' do
       csv_response = CSV.parse(body)
 
       expect(csv_response.length).to eq(10)
+      # Note that role names are initialized at boot, so this tests always use
+      # sandbox names
       expect(csv_response).to eq(expected_table)
     end
   end
@@ -67,56 +69,56 @@ feature 'internal reports' do
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Partner Developer',
+        'Sandbox Team Dev',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Partner Admin',
+        'Sandbox Partner Admin',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Partner Developer',
+        'Sandbox Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Partner Developer',
+        'Sandbox Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Partner Admin',
+        'Sandbox Partner Admin',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Partner Developer',
+        'Sandbox Team Dev',
       ],
       [
         sp2.issuer,
         additional_team.name,
         additional_team.uuid,
         two_teams_admin.email,
-        'Partner Readonly',
+        'Team Readonly',
       ],
       [
         sp3.issuer,
         additional_team.name,
         additional_team.uuid,
         two_teams_admin.email,
-        'Partner Readonly',
+        'Team Readonly',
       ],
     ]
   end
