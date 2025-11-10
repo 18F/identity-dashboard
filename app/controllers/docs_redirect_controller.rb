@@ -1,5 +1,5 @@
 # for logging redirects to external developer documentation
-class RedirectController < AuthenticatedController
+class DocsRedirectController < AuthenticatedController
   def show
     @destination = params[:destination]
       .sub(%r{^/}, '') # remove leading slash

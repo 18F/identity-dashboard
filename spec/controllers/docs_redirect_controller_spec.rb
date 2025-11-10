@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RedirectController do
+RSpec.describe DocsRedirectController do
   before do
     sign_in create(:user)
   end
