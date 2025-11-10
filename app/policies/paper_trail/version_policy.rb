@@ -8,6 +8,6 @@ class PaperTrail::VersionPolicy < BasePolicy
   end
 
   def can_view_papertrail?
-    return user_has_login_admin_role?
+    user_has_login_admin_role?
   end
 end
