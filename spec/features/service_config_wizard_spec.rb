@@ -258,10 +258,6 @@ feature 'Service Config Wizard' do
       existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
       click_on 'Edit'
-      puts '************'
-      puts existing_config.inspect
-      puts existing_config.app_name
-      puts '************'
       expect(find_field('Configuration name').value).to eq(existing_config.app_name)
       click_on 'Next'
       # Skip making changes to protocol options
