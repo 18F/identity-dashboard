@@ -11,6 +11,8 @@ class ExtractArchive
   # @param models [Enumerable<ServiceProvider>]
   def add_logos_from_service_providers(models)
     models.each do |model|
+      next if model.logo_file.blank?
+
       @logo_attachments.push({ filename: model.logo, attachment: model.logo_file })
     end
   end
@@ -21,8 +23,6 @@ class ExtractArchive
   end
 
   def save
-    return if logo_attachments.none?
-
     # Any output to `sgz` will be zipped first before going to `destination`
     sgz = Zlib::GzipWriter.new(@destination)
 

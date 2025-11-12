@@ -21,10 +21,9 @@ class ExtractsController < AuthenticatedController
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
-      save_to_file
       respond_to do |format|
         format.html { render('results') }
-        format.gzip { send_data extract_archive }
+        format.gzip { send_data extract_archive, filename: "#{@extract.filename}.tgz" }
       end and return
     elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
@@ -41,7 +40,7 @@ class ExtractsController < AuthenticatedController
     archive = ExtractArchive.new(in_memory_file)
     archive.add_logos_from_service_providers(@extract.service_providers)
     archive.add_json_file(
-      File.read(@extract.filename),
+      @extract.to_json,
       'extract.json',
     )
     archive.save
@@ -55,19 +54,6 @@ class ExtractsController < AuthenticatedController
       :criteria_file,
       :criteria_list,
     )
-  end
-
-  # @return [String]
-  # json output be a hash of two arrays (teams, service_providers)
-  def save_to_file
-    begin
-      File.open(@extract.filename, 'w') do |f|
-        f.print @extract.to_json
-      end
-      flash[:success] = 'Extracted configs saved'
-    rescue => err
-      flash[:error] = "There was a problem writing to file: #{err}"
-    end
   end
 
   def log_request

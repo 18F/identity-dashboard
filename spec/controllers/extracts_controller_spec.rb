@@ -98,16 +98,6 @@ describe ExtractsController do
         expect(response).to render_template 'results'
       end
 
-      it 'will #save_to_file with some modified attributes' do
-        post :create, params: params1
-        filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
-        sp_data = sp1.attributes
-        sp_data['team_uuid'] = sp1.team.uuid
-        sp_data.delete 'remote_logo_key'
-        expect(File.read filename).to eq({ teams: [team], service_providers: [sp_data] }.to_json)
-        expect(response).to render_template 'results'
-      end
-
       it 'logs extraneous params' do
         post :create, params: { extract: {
           ticket: '0',

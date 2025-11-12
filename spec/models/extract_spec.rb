@@ -54,7 +54,7 @@ describe Extract do
         criteria_list: sp1.issuer,
       })
 
-      expect(extract.filename).to eq("#{Dir.tmpdir}/config_extract_rmfr")
+      expect(extract.filename).to eq('config_extract_rmfr')
     end
   end
 
