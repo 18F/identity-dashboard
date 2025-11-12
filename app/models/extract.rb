@@ -43,7 +43,7 @@ class Extract
 
   # @return [String]
   def filename
-    "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
+    "config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
   # @return [Array<Team>]
