@@ -1,5 +1,5 @@
 class RemoveFriendlyNameFromRole < ActiveRecord::Migration[7.2]
   def change
-    remove_column :roles, :friendly_name
+    remove_column :roles, :friendly_name, :string
   end
 end
