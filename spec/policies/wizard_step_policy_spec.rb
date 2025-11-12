@@ -10,7 +10,7 @@ describe WizardStepPolicy do
       expect(WizardStepPolicy).to permit(logingov_admin, step_for_user)
     end
 
-    it 'is allowed for the user who is creating the config' do
+    it 'is allowed for the user who is creating the configuration' do
       expect(WizardStepPolicy).to permit(user, step_for_user)
     end
 
@@ -35,7 +35,7 @@ describe WizardStepPolicy do
         expect(subject.permitted_attributes).to eq(described_class::PARAMS)
       end
 
-      it 'forbids editing IAL on editing existing config for non-admin' do
+      it 'forbids editing IAL on editing existing configuration for non-admin' do
         editing_step = build(:wizard_step)
         existing_application = build(:service_provider, ial: 2)
         allow(editing_step).to receive(:existing_service_provider?).and_return true
@@ -45,7 +45,7 @@ describe WizardStepPolicy do
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end
 
-      it 'allows editing IAL on new config for non-admin' do
+      it 'allows editing IAL on new configuration for non-admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         subject = described_class.new(user, build(:wizard_step))
         expect(subject.permitted_attributes).to eq(described_class::PARAMS)

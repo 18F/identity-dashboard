@@ -14,7 +14,7 @@ describe 'Users::ServiceProviders' do
   end
 
   describe 'approve on update' do
-    it 'disallows app owner from approving the app' do
+    it 'disallows configuration owner from approving the configuration' do
       login_as(partner_admin)
 
       put service_provider_path(sp), params: { service_provider: { approved: 'true' } }
@@ -22,7 +22,7 @@ describe 'Users::ServiceProviders' do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it 'disallows non owner from approving the app' do
+    it 'disallows non owner from approving the configuration' do
       user_on_the_team = create(:team_membership, :partner_developer, team: sp.team).user
       login_as(user_on_the_team)
 
@@ -44,7 +44,7 @@ describe 'Users::ServiceProviders' do
     end
   end
 
-  describe 'view an app' do
+  describe 'view an configuration' do
     it 'allows Partner Admin to view' do
       login_as(partner_admin)
 

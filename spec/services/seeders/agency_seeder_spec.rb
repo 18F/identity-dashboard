@@ -41,7 +41,7 @@ RSpec.describe Seeders::AgencySeeder do
       end
     end
 
-    context 'when an extra agency outside the config exists in the database' do
+    context 'when an extra agency outside the configuration exists in the database' do
       let!(:existing) { create(:agency, id: 1000, name: 'department of awesomeness') }
 
       it 'leaves existing records alone' do

@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     trait :consistent do
-      sequence(:app_name) { |n| "App Name #{n}" }
+      sequence(:app_name) { |n| "Configuration Name #{n}" }
       with_team
       ial { 2 }
       with_ial_2_bundle
@@ -25,7 +25,7 @@ FactoryBot.define do
     end
 
     trait :ready_to_activate do
-      sequence(:app_name) { |n| "App Name #{n}" }
+      sequence(:app_name) { |n| "Configuration Name #{n}" }
       with_team
       ial = [1, 2].sample
       send("with_ial_#{ial}")
@@ -36,7 +36,7 @@ FactoryBot.define do
     end
 
     trait :ready_to_activate_ial_1 do
-      sequence(:app_name) { |n| "App Name #{n}" }
+      sequence(:app_name) { |n| "Configuration Name #{n}" }
       with_team
       with_ial_1
       send %i[saml with_oidc_jwt with_oidc_pkce].sample
@@ -45,7 +45,7 @@ FactoryBot.define do
     end
 
     trait :ready_to_activate_ial_2 do
-      sequence(:app_name) { |n| "App Name #{n}" }
+      sequence(:app_name) { |n| "Configuration Name #{n}" }
       with_team
       with_ial_2
       with_ial_2_bundle

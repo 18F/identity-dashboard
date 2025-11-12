@@ -23,7 +23,7 @@
           </button>
           <ul class="usa-nav__primary usa-accordion">
             <li class="usa-nav__primary-item">
-              <%= navigation_link_to 'Apps', service_providers_path %>
+              <%= navigation_link_to 'Configurations', service_providers_path %>
             </li>
             <li class="usa-nav__primary-item">
               <%= navigation_link_to 'Teams', teams_path %>
@@ -85,7 +85,7 @@
                   </li>
                   <% if !IdentityConfig.store.prod_like_env %>
                     <li class="usa-nav__submenu-item">
-                      <%= link_to 'Config extraction', extracts_path %>
+                      <%= link_to 'Configuration extraction', extracts_path %>
                     </li>
                     <li class="usa-nav__submenu-item">
                       <%= link_to 'Connect with Airtable', airtable_path %>

@@ -151,7 +151,7 @@ class ServiceProvider < ApplicationRecord
   def valid_prod_config?
     return unless IdentityConfig.store.prod_like_env && !production_ready?
 
-    errors.add(:prod_config, 'can\t be a sandbox config')
+    errors.add(:prod_config, 'can\t be a sandbox configuration')
   end
 
   # in the case of Long Form, :long_form should be passed in for extra checks.
@@ -198,7 +198,7 @@ class ServiceProvider < ApplicationRecord
       "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     errors.each do |err|
       if err.attribute == :prod_config && production_ready?
-        error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
+        error_msg += '<li>Portal Configuration cannot be Production with localhost URLs</li>'
       else
         error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
       end

@@ -52,7 +52,7 @@ feature 'Service Config Wizard' do
     end
 
     it 'can remember something filled in' do
-      app_name = "name#{rand(1..1000)}"
+      config_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
       issuer_name = "test:config:#{rand(1...1000)}"
       help_text = {
@@ -64,7 +64,7 @@ feature 'Service Config Wizard' do
       click_on 'Next' # Skip the intro page
       current_step = find('.step-indicator__step--current')
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
-      fill_in('App name', with: app_name)
+      fill_in('Configuration name', with: config_name)
       fill_in('Friendly name', with: test_name)
       team_to_pick = logingov_admin.teams.sample
       select(team_to_pick.name, from: 'Team')
@@ -92,7 +92,7 @@ feature 'Service Config Wizard' do
           )
         end
       end
-      click_on 'Create app' # details page
+      click_on 'Create configuration' # details page
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
       HelpText::CONTEXTS.each do |context|
@@ -113,8 +113,8 @@ feature 'Service Config Wizard' do
         # settings
         'group_id' => team_to_pick.id, # required
         'prod_config' => 'false',
-        'app_name' => 'my-app', # required
-        'friendly_name' => 'My App', # required
+        'app_name' => 'my-configuration', # required
+        'friendly_name' => 'My Configuration', # required
         'description' => '',
         # auth
         'identity_protocol' => 'saml', # not default, but we're using SAML to test other defaults
@@ -167,7 +167,7 @@ feature 'Service Config Wizard' do
       expect(team_field_options.count).to_not eq(1)
       expect(team_options_with_current_value.count).to eq(1)
       expect(team_options_with_current_value.first.text).to eq('- Select -')
-      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Configuration name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
       select(team_to_pick.name, from: 'Team')
       expect(team_field.value).to eq(team_to_pick.id.to_s)
@@ -196,7 +196,7 @@ feature 'Service Config Wizard' do
           )
         end
       end
-      click_on 'Create app'
+      click_on 'Create configuration'
 
       saved_config_data = ServiceProvider.find_by(issuer: expected_data['issuer'])
       expect(current_url).to match(service_providers_url(saved_config_data.id)),
@@ -230,13 +230,13 @@ feature 'Service Config Wizard' do
         # settings
         'group_id' => '', # required
         'prod_config' => 'false',
-        'app_name' => 'my-app', # required
-        'friendly_name' => 'My App', # required
+        'config_name' => 'my-configuration', # required
+        'friendly_name' => 'My Configuration', # required
         'description' => '',
       }
       visit new_service_config_wizard_path
       click_on 'Next' # Skip the intro page
-      fill_in('App name', with: expected_data['app_name'])
+      fill_in('Configuration name', with: expected_data['config_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
       click_on 'Next'
       expect(page).to have_content('Team can\'t be blank')
@@ -254,11 +254,11 @@ feature 'Service Config Wizard' do
       expect(actual_error_message).to eq(expected_error_message)
     end
 
-    it 'can edit an existing config' do
+    it 'can edit an existing configuration' do
       existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
       click_on 'Edit'
-      expect(find_field('App name').value).to eq(existing_config.app_name)
+      expect(find_field('Configuration name').value).to eq(existing_config.app_name)
       click_on 'Next'
       # Skip making changes to protocol options
       click_on 'Next'
@@ -279,7 +279,7 @@ feature 'Service Config Wizard' do
       fill_in('Push notification URL', with: expected_push_url)
       click_on 'Next'
       # Skip making changes to help text
-      click_on 'Update app'
+      click_on 'Update configuration'
       existing_config.reload
       expect(existing_config.push_notification_url).to eq(expected_push_url)
     end
@@ -291,7 +291,7 @@ feature 'Service Config Wizard' do
       visit service_provider_path(existing_config)
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
-      click_on 'Update app'
+      click_on 'Update configuration'
       # rubocop:disable Layout/LineLength
       content = "help_text: sign_in: en: '' es: '' fr: '' zh: '' sign_up: en: First time here from #{existing_config.friendly_name}? Your old #{existing_config.friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously. es: ¿Es la primera vez que visita #{existing_config.friendly_name}? Su antiguo nombre de usuario y contraseña de #{existing_config.friendly_name} ya no funcionan. Cree una cuenta en Login.gov con el mismo correo electrónico que usó anteriormente. fr: C’est la première fois que vous vous connectez à #{existing_config.friendly_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à #{existing_config.friendly_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement. zh: 第一次从 #{existing_config.friendly_name} 来到这里？您的旧 #{existing_config.friendly_name} 用户名和密码将不起作用。用之前使用的同一电子邮件地址 来设立一个 Login.gov帐户。 forgot_password: en: '' es: '' fr: '' zh: ''"
       # rubocop:enable Layout/LineLength
@@ -309,7 +309,7 @@ feature 'Service Config Wizard' do
       it 'allows Login.gov Admin to set initial IAL' do
         visit service_config_wizard_path('settings')
         select(logingov_admin.teams[0].name, from: 'Team')
-        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Configuration name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
         visit service_config_wizard_path('authentication')
@@ -336,7 +336,7 @@ feature 'Service Config Wizard' do
       end
 
       it 'allows creation of an application' do
-        app_name = "name#{rand(1..1000)}"
+        config_name = "name#{rand(1..1000)}"
         test_name = "Test name #{rand(1..1000)}"
         issuer_name = "test:config:#{rand(1...1000)}"
         help_text = {
@@ -348,7 +348,7 @@ feature 'Service Config Wizard' do
         click_on 'Next' # Skip the intro page
         current_step = find('.step-indicator__step--current')
         expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
-        fill_in('App name', with: app_name)
+        fill_in('Configuration name', with: config_name)
         fill_in('Friendly name', with: test_name)
         team_to_pick = logingov_admin.teams.sample
         select(team_to_pick.name, from: 'Team')
@@ -374,7 +374,7 @@ feature 'Service Config Wizard' do
             )
           end
         end
-        click_on 'Create app' # details page
+        click_on 'Create configuration' # details page
         expect(page).to_not have_content('Error(s) found in these fields')
         expect(page).to have_content("Details for \"#{test_name}\"")
       end
@@ -399,7 +399,7 @@ feature 'Service Config Wizard' do
 
       it 'goes to the first wizard step' do
         visit service_providers_path
-        click_on 'Create a new app'
+        click_on 'Create a new configuration'
         expect(page).to have_current_path(service_config_wizard_path(first_step))
       end
 
@@ -409,9 +409,9 @@ feature 'Service Config Wizard' do
 
         before do
           visit service_providers_path
-          click_on 'Create a new app'
+          click_on 'Create a new configuration'
           click_on 'Next'
-          fill_in('App name', with: new_name)
+          fill_in('Configuration name', with: new_name)
           fill_in('Friendly name', with: new_friendly_name)
           select(team.name, from: 'Team')
           click_on 'Next'
@@ -423,7 +423,7 @@ feature 'Service Config Wizard' do
           expect(saved_steps).to be(1)
 
           visit service_providers_path
-          click_on 'Create a new app'
+          click_on 'Create a new configuration'
           expect(page).to have_current_path(service_config_wizard_path(first_step))
           saved_steps = WizardStep.where("wizard_form_data->>'group_id' = CAST(? as varchar)",
                                          team.id).count
@@ -548,9 +548,9 @@ feature 'Service Config Wizard' do
       choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Next'
       visit service_config_wizard_path(WizardStep::STEPS.last)
-      click_on 'Update app'
+      click_on 'Update configuration'
 
-      expect(page).to have_content('Portal Config cannot be Production with localhost URLs')
+      expect(page).to have_content('Portal Configuration cannot be Production with localhost URLs')
     end
 
     describe 'and Production gate is enabled' do
@@ -571,7 +571,7 @@ feature 'Service Config Wizard' do
       it 'allows Partners to set initial IAL' do
         visit service_config_wizard_path('settings')
         select(team.name, from: 'Team')
-        fill_in('App name', with: "name#{rand(1..1000)}")
+        fill_in('Configuration name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
         visit service_config_wizard_path('authentication')
@@ -591,7 +591,7 @@ feature 'Service Config Wizard' do
         expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
       end
 
-      it 'does not show prod_config field' do
+      it 'does not show prod_configuration field' do
         existing_config = create(:service_provider,
                                  :ready_to_activate,
                                  :with_prod_config,
@@ -603,7 +603,7 @@ feature 'Service Config Wizard' do
         expect(page).to_not have_css('#wizard_step_prod_config_true')
       end
 
-      it 'does not allow sandbox configs' do
+      it 'does not allow sandbox configurations' do
         existing_config = create(:service_provider,
                                  :ready_to_activate,
                                  :with_sandbox,
@@ -611,7 +611,7 @@ feature 'Service Config Wizard' do
         visit service_provider_path(existing_config)
         click_on 'Edit'
         visit service_config_wizard_path(WizardStep::STEPS.last)
-        click_on 'Update app'
+        click_on 'Update configuration'
 
         expect(page).to have_content('Error(s) found in these fields:')
         expect(page.body).to include(
@@ -649,7 +649,7 @@ feature 'Service Config Wizard' do
           visit service_provider_path(existing_config)
           click_on 'Edit'
           visit service_config_wizard_path(WizardStep::STEPS.last)
-          click_on 'Update app'
+          click_on 'Update configuration'
 
           expect(page).to_not have_content('Error(s) found in these fields:')
         end
@@ -671,13 +671,13 @@ feature 'Service Config Wizard' do
 
   context 'when selecting OIDC' do
     before do
-      app_name = "name#{rand(1..1000)}"
+      config_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
       user_to_login = [logingov_admin, user].sample
       login_as(user_to_login)
       visit service_config_wizard_path('settings')
       select(user_to_login.teams.sample.name, from: 'Team')
-      fill_in('App name', with: app_name)
+      fill_in('Configuration name', with: config_name)
       fill_in('Friendly name', with: test_name)
       click_on 'Next'
       visit service_config_wizard_path('protocol')
@@ -696,13 +696,13 @@ feature 'Service Config Wizard' do
 
   context 'when selecting SAML' do
     before do
-      app_name = "name#{rand(1..1000)}"
+      config_name = "name#{rand(1..1000)}"
       test_name = "Test name #{rand(1..1000)}"
       user_to_login = [logingov_admin, user].sample
       login_as(user_to_login)
       visit service_config_wizard_path('settings')
       select(user_to_login.teams.sample.name, from: 'Team')
-      fill_in('App name', with: app_name)
+      fill_in('Configuration name', with: config_name)
       fill_in('Friendly name', with: test_name)
       click_on 'Next'
       visit service_config_wizard_path('protocol')

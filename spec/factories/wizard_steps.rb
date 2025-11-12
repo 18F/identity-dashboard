@@ -10,9 +10,9 @@ FactoryBot.define do
     step_name { 'settings' }
     wizard_form_data do
       '{
-      "app_name" => "Production App",
+      "app_name" => "Production Configuration",
       "description" => "test with prod_config",
-      "friendly_name" => "Prod App",
+      "friendly_name" => "Prod Configuration",
       "group_id" => nil,
       "prod_config" => "true"
     }'

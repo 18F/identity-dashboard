@@ -40,15 +40,15 @@ en:
     welcome: Welcome to the Login.gov Partner Portal
     service_providers:
       edit: Edit service provider
-      index: View applications
+      index: View configurations
       main: My service providers
       new: Create a new service provider
-      new_app: Create a new app
+      new_app: Create a new configuration
       show: 'Service Provider: %{friendly_name}'
     teams:
       index: View teams
       new_team: Create a new team
-      temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an application in this team. Only add an agency if you are prepared to migrate your users across applications."
+      temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of a configuration in this team. Only add an agency if you are prepared to migrate your users across configurations."
     users:
       edit: Edit user
       index: Users
@@ -70,7 +70,7 @@ en:
         confirm_html:
           Are you sure you want to remove <span class="text-bold">%{email}</span> from <span class="text-bold">%{team}</span>?
           <br/><br/>
-          If you remove this user, they will no longer be able to see applications associated with the team using this email address.
+          If you remove this user, they will no longer be able to see configurations associated with the team using this email address.
   users:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
   team_memberships:
@@ -81,8 +81,8 @@ en:
     partner_admin_prod_description: Can add and delete users on teams; grant and rescind permissions; edit and delete existing configs
     partner_developer_description: Can create, edit and submit new and existing configs
     partner_developer_prod_description: Can edit and submit existing configs
-    partner_readonly_description: Can view existing config applications but cannot make changes
-    partner_readonly_prod_description: Can view existing config applications but cannot make changes
+    partner_readonly_description: Can view existing configurations but cannot make changes
+    partner_readonly_prod_description: Can view existing configurations but cannot make changes
   extracts:
     ticket_description: This should be a unique identifier, the date and time is ok (ie, 2509171542).
     file_description: Plaintext file with comma- or whitespace-separated list of team IDs or issuers to extract.
@@ -112,8 +112,8 @@ en:
         title: Test integrations in the sandbox
         body: Safely test, validate, and trouble shoot issues without impacting the production data.
       view:
-        title: View your application integrations
-        body: Get a comprehensive overview of all your connected applications.
+        title: View your configurations
+        body: Get a comprehensive overview of all your configurations.
     system_use: System use notification
     system_agree: I agree
   links:
@@ -149,7 +149,7 @@ en:
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='https://developers.login.gov/production' target='_blank' class='usa-link'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
     service_providers_refreshed: Success! Service providers publish request has been sent.
-    team_delete_failed: Only teams without apps can be deleted. Reassign or delete the apps first.
+    team_delete_failed: Only teams without configs can be deleted. Reassign or delete the configs first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
   omniauth:

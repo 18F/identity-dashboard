@@ -122,7 +122,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'can post' do
         expect do
           put :update, params: { id: 'settings', wizard_step: {
-            app_name: "App name #{rand(1..1000)}",
+            app_name: "Configuration name #{rand(1..1000)}",
             friendly_name: "Friendly name name #{rand(1..1000)}",
             group_id: create(:team).id,
           } }
@@ -421,7 +421,7 @@ RSpec.describe ServiceConfigWizardController do
       let(:good_upload) { fixture_file_upload('logo.svg') }
       let(:good_upload_checksum) { OpenSSL::Digest.base64digest('MD5', good_upload.read) }
 
-      scenario 'adding a logo to a config' do
+      scenario 'adding a logo to a configuration' do
         put :create, params: { service_provider: service_provider }
 
         expect(service_provider.logo_file).to_not be_attached
@@ -446,7 +446,7 @@ RSpec.describe ServiceConfigWizardController do
                team: create(:team),
                prod_config: true,
                issuer: "issuer:string:#{rand(1...1000)}",
-               friendly_name: 'Friendly App')
+               friendly_name: 'Friendly Configuration')
       end
 
       before do
@@ -513,7 +513,7 @@ RSpec.describe ServiceConfigWizardController do
       let(:non_blank_sign_up_preset) { HelpText::PRESETS['sign_up'][1..].sample }
       let(:non_blank_forgot_password_preset) { HelpText::PRESETS['forgot_password'][1..].sample }
 
-      it 'can create a new app' do
+      it 'can create a new configuration' do
         wizard_steps_ready_to_go.each(&:save!)
         expect do
           put :update, params: {
@@ -595,7 +595,7 @@ RSpec.describe ServiceConfigWizardController do
       end
       let(:data) { build(:wizard_step, step_name: 'help_text').wizard_form_data }
 
-      context 'on config create' do
+      context 'on configuration create' do
         before do
           wizard_steps_ready_to_go.each(&:save!)
         end
@@ -625,7 +625,7 @@ RSpec.describe ServiceConfigWizardController do
         end
       end
 
-      context 'on config update' do
+      context 'on configuration update' do
         let(:help_text) do
           wizard_service_provider.help_text
         end
@@ -686,7 +686,7 @@ RSpec.describe ServiceConfigWizardController do
                :ready_to_activate_ial_1,
                team: team,
                issuer: "issuer:string:#{rand(1...1000)}",
-               friendly_name: 'Friendly App')
+               friendly_name: 'Friendly Configuration')
       end
 
       before do
