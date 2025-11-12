@@ -22,7 +22,7 @@ feature 'Service Providers CRUD' do
     scenario 'can create service provider' do
       visit new_service_provider_path
 
-      expect(page).to_not have_content('configroved')
+      expect(page).to_not have_content('approved')
 
       fill_in 'Friendly name', with: 'test service_provider'
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:config-prod'

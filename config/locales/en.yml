@@ -48,7 +48,7 @@ en:
     teams:
       index: View teams
       new_team: Create a new team
-      temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of an configuration in this team. Only add an agency if you are prepared to migrate your users across configurations."
+      temporary_warning_team_user: "**Warning** Changing your team's agency will affect the UUIDs of the users of a configuration in this team. Only add an agency if you are prepared to migrate your users across configurations."
     users:
       edit: Edit user
       index: Users
@@ -91,7 +91,7 @@ en:
     landing_title: Simple integration for a more secure login experience
     landing_subtitle: Manage and test your integrations in the Partner Portal sandbox so that your users can log in with confidence.
     feature_section: Discover the possibilities
-    body_partners_html: Interested in Login.gov for your federal government configurations? Visit %{href_partners}
+    body_partners_html: Interested in Login.gov for your federal government applications? Visit %{href_partners}
     deployed_by_html: Deployed %{time} ago. View %{href}.
     dev_docs: View developer guide
     partners_link: login.gov/partners
