@@ -437,7 +437,7 @@ feature 'Service Config Wizard' do
     it 'can tab through the page in the correct order', :js do
       visit service_config_wizard_path(ServiceConfigWizardController::STEPS[1])
       find('#wizard_step_app_name').send_keys(:tab)
-      expect(find('*:focus')).to eq(find('#wizard_step_app_name'))
+      expect(find('*:focus')).to eq(find('#wizard_step_friendly_name'))
 
       # As long as the description field is last, this will work
       find('#wizard_step_description').send_keys(:tab)
