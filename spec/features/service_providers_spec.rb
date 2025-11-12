@@ -395,7 +395,7 @@ feature 'Service Providers CRUD' do
 
     # rubocop:disable Layout/LineLength
     scenario 'can select default help text options for new configurations' do
-      friendly_name = '<Configuration Friendly Name>'
+      friendly_name = '<Application Friendly Name>'
       agency = '<Agency>'
 
       # taken from service_providers.en.yml
@@ -404,7 +404,7 @@ feature 'Service Providers CRUD' do
                                    "Sign in to Login.gov with your #{agency} email.",
                                    "Sign in to Login.gov with your #{agency} PIV/CAC.",
                                    "Create a Login.gov account using your #{agency} email.",
-                                   'Create a Login.gov account using the same email provided on your configuration.',
+                                   'Create a Login.gov account using the same email provided on your application.',
                                    'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.']
 
       visit new_service_provider_path
