@@ -57,8 +57,8 @@ en:
     logo_html: Choose a file to upload as your logo. Your file should follow <a href='https://developers.login.gov/user-experience/agency-logo/' target='_blank'>our guidelines</a>."
     logo_input: Logo file type must be SVG or PNG
     cert_input: Upload your PEM encoded public certificate
-    save_new: Create config
-    save_existing: Update config
+    save_new: Create configuration
+    save_existing: Update configuration
     certificate: Your public certificate (or certificates), which contains your public key. Needed for OpenID Connect (when using private_key_jwt) and for SAML. Optional for OIDC PKCE.
     certificate_html: This certificate can be generated using the <a href='https://developers.login.gov/testing/#creating-a-public-certificate' target='_blank' class='usa-link'>OpenSSL command to generate a self-signed cert</a>. Self-signed certs should be for testing/sandbox purposes only. The public key is part of the public certificate, which you may see referenced in other parts of the documentation. We recommend using Certificate Authority (CA) issued certificates for your production integration.</p><p class='usa-hint'>The command also generates a corresponding private key — keep this private and <strong>do not lose it</strong>.</p><p class='usa-hint'>To simplify the complexity of rotation, Login.gov does not check certificate expiration dates. At this time, new certificates are not deployed to production automatically — <a href='https://developers.login.gov/production/#certificate-rotation-process' target='_blank' class='usa-link'>follow our certificate rotation procedure documented here</a>.</p><p class='usa-hint'>We do not delete old certificates from the database even if you remove them from the portal. You must request their deletion through the <a href='https://logingov.zendesk.com' class='usa-link' target='_blank'>Partner Support Help Desk</a>.
     certificate_example_html: "Certificate must be <a href='https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail' class='usa-link' target='_blank'>PEM encoded</a>, like this example:"

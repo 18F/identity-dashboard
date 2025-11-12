@@ -43,7 +43,7 @@ en:
       index: View configurations
       main: My service providers
       new: Create a new service provider
-      new_app: Create a new config
+      new_app: Create a new configuration
       show: 'Service Provider: %{friendly_name}'
     teams:
       index: View teams

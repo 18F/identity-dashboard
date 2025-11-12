@@ -317,7 +317,7 @@ describe ServiceProviderPolicy do
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
           allow_prompt_login
-          configroved
+          approved
         ]
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end

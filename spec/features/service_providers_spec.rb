@@ -829,7 +829,7 @@ feature 'Service Providers CRUD' do
             page.attach_file 'Choose a cert file', @file_path, make_visible: true
 
             error_field = page.find('.js-pem-input-error-message')
-            expect(error_field).to have_content('does not configear to be PEM encoded')
+            expect(error_field).to have_content('does not appear to be PEM encoded')
           end
         end
       end

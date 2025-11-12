@@ -113,7 +113,7 @@ feature 'Service Config Wizard' do
         # settings
         'group_id' => team_to_pick.id, # required
         'prod_config' => 'false',
-        'config_name' => 'my-configuration', # required
+        'app_name' => 'my-configuration', # required
         'friendly_name' => 'My Configuration', # required
         'description' => '',
         # auth
@@ -258,7 +258,11 @@ feature 'Service Config Wizard' do
       existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
       click_on 'Edit'
-      expect(find_field('Configuration name').value).to eq(existing_config.config_name)
+      puts '************'
+      puts existing_config.inspect
+      puts existing_config.app_name
+      puts '************'
+      expect(find_field('Configuration name').value).to eq(existing_config.app_name)
       click_on 'Next'
       # Skip making changes to protocol options
       click_on 'Next'
@@ -511,7 +515,7 @@ feature 'Service Config Wizard' do
       end
       # rubocop:disable Layout/LineLength
       choose 'Sign in to Login.gov with your {Agency} email.'
-      choose 'Create a Login.gov account using the same email provided on your configuration.'
+      choose 'Create a Login.gov account using the same email provided on your application.'
       choose 'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.'
       expect(page).to have_checked_field('wizard_step_help_text_sign_in_en_agency_email')
       expect(page).to have_checked_field('wizard_step_help_text_sign_up_en_same_email')
