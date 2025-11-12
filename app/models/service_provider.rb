@@ -198,7 +198,7 @@ class ServiceProvider < ApplicationRecord
       "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     errors.each do |err|
       if err.attribute == :prod_config && production_ready?
-        error_msg += '<li>Portal Config cannot be Production with localhost URLs</li>'
+        error_msg += '<li>Portal Configuration cannot be Production with localhost URLs</li>'
       else
         error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
       end

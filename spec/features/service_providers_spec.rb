@@ -481,8 +481,7 @@ feature 'Service Providers CRUD' do
 
       scenario 'cannot add help text for new configurations' do
         visit new_service_provider_path
-
-        expect(page).to have_content('Do you need to add help text for your configuration? Contact us.')
+        expect(page).to have_content('Do you need to add help text for your integration? Contact us.')
         expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
       end
     end

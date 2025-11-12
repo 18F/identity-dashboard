@@ -167,7 +167,7 @@ feature 'Service Config Wizard' do
       expect(team_field_options.count).to_not eq(1)
       expect(team_options_with_current_value.count).to eq(1)
       expect(team_options_with_current_value.first.text).to eq('- Select -')
-      fill_in('Configuration name', with: expected_data['config_name'])
+      fill_in('Configuration name', with: expected_data['app_name'])
       fill_in('Friendly name', with: expected_data['friendly_name'])
       select(team_to_pick.name, from: 'Team')
       expect(team_field.value).to eq(team_to_pick.id.to_s)
@@ -436,8 +436,8 @@ feature 'Service Config Wizard' do
     # Otherwise we'd be using a default webdriver that doesn't allow `send_keys`
     it 'can tab through the page in the correct order', :js do
       visit service_config_wizard_path(ServiceConfigWizardController::STEPS[1])
-      find('#wizard_step_config_name').send_keys(:tab)
-      expect(find('*:focus')).to eq(find('#wizard_step_friendly_name'))
+      find('#wizard_step_app_name').send_keys(:tab)
+      expect(find('*:focus')).to eq(find('#wizard_step_app_name'))
 
       # As long as the description field is last, this will work
       find('#wizard_step_description').send_keys(:tab)
