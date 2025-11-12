@@ -215,7 +215,7 @@ describe ServiceProvider do
         service_provider = build(:service_provider, :ready_to_activate, prod_config: false)
         service_provider.valid_prod_config?
 
-        expect(service_provider.errors[:prod_config]).to include('can\\t be a sandbox configuration')
+        expect(service_provider.errors[:prod_config]).to include("can't be a sandbox configuration")
       end
     end
 
