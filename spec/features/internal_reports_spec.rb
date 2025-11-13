@@ -42,6 +42,8 @@ feature 'internal reports' do
     end
 
     it 'can generate a CSV showing everything sorted' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
       login_as logingov_admin
       visit internal_reports_user_permissions_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
@@ -69,42 +71,42 @@ feature 'internal reports' do
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Sandbox Team Dev',
+        'Production Team Dev',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Sandbox Partner Admin',
+        'Production Team Admin',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Sandbox Team Dev',
+        'Production Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Sandbox Team Dev',
+        'Production Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Sandbox Partner Admin',
+        'Production Team Admin',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Sandbox Team Dev',
+        'Production Team Dev',
       ],
       [
         sp2.issuer,
