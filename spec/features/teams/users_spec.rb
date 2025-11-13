@@ -140,6 +140,8 @@ describe 'users' do
         fill_in 'Email', with: random_email
         click_on 'Add'
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+        click_on 'Back'
+        expect(find('tr', :text => random_email)).to have_content(I18n.t('role_names.sandbox.partner_readonly'))
         new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
         expect(new_membership.role_name).to eq 'partner_readonly'
       end
@@ -151,6 +153,8 @@ describe 'users' do
         fill_in 'Email', with: random_email
         click_on 'Add'
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+        click_on 'Back'
+        expect(find('tr', :text => random_email)).to have_content(I18n.t('role_names.sandbox.partner_developer'))
         new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
         expect(new_membership.role_name).to eq 'partner_developer'
       end
@@ -172,6 +176,8 @@ describe 'users' do
       fill_in 'Email', with: random_email
       click_on 'Add'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
+      click_on 'Back'
+      expect(find('tr', :text => random_email)).to have_content(I18n.t('role_names.sandbox.partner_admin'))
       new_team_membership = TeamMembership.find_by(
         user: User.find_by(email: random_email),
         team: empty_team,
