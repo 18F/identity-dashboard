@@ -24,7 +24,7 @@ RSpec.describe Role, type: :model do
           'partner_developer' => 'Sandbox Team Dev',
           'partner_readonly' => 'Team Readonly',
         }
-        expect(Role.new.active_roles_names).to eq(roles_hash)
+        expect(Role.active_roles_names).to eq(roles_hash)
       end
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe Role, type: :model do
           'partner_developer' => 'Production Team Dev',
           'partner_readonly' => 'Team Readonly',
         }
-        expect(Role.new.active_roles_names).to eq(roles_hash)
+        expect(Role.active_roles_names).to eq(roles_hash)
       end
     end
   end

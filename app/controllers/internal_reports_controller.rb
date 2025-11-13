@@ -22,7 +22,7 @@ class InternalReportsController < AuthenticatedController
           team_uuid: spt.uuid,
           team_name: spt.name,
           user_email: spt_m.email,
-          role: Role.new.active_roles_names[spt_m.name],
+          role: Role.active_roles_names[spt_m.name],
         })
       end
     end
@@ -70,7 +70,7 @@ class InternalReportsController < AuthenticatedController
         team_uuid: membership.uuid,
         team_name: membership.name,
         user_email: membership.email,
-        role: Role.new.active_roles_names[membership.role_name],
+        role: Role.active_roles_names[membership.role_name],
       }
     end
   end

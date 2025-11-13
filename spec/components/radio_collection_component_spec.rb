@@ -10,7 +10,7 @@ RSpec.describe RadioCollectionComponent, type: :component do
   end
   let(:form) { SimpleForm::FormBuilder.new(:team_membership, team_membership, view, {}) }
   let(:random_id) { "id_#{rand(10..1000)}" }
-  let(:inputs) { Role.new.active_friendly_names }
+  let(:inputs) { Role.active_friendly_names }
 
   it 'displays reasonable options with correct default' do
     render = render_inline(described_class.new(

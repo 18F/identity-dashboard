@@ -25,23 +25,23 @@ class Role < ApplicationRecord
   ]
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
 
-  def active_friendly_names
+  def self.active_friendly_names
     active_roles_names.invert
   end
 
-  def active_roles_names
+  def self.active_roles_names
     @active_roles_names || ROLES_NAMES.map do |role|
       [role, I18n.t("#{roles_i18n_bucket}.#{role}")]
     end.to_h
   end
 
   def friendly_name
-    active_roles_names[self.name]
+    Role.active_roles_names[self.name]
   end
 
   private
 
-  def roles_i18n_bucket
+  def self.roles_i18n_bucket
     return 'role_names.production' if IdentityConfig.store.prod_like_env
 
     'role_names.sandbox'
