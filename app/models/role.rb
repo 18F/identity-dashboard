@@ -39,7 +39,7 @@ class Role < ApplicationRecord
     Role.active_roles_names[self.name]
   end
 
-  private
+  private_class_method
 
   def self.roles_i18n_bucket
     return 'role_names.production' if IdentityConfig.store.prod_like_env
