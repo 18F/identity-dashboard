@@ -5,13 +5,13 @@ RSpec.describe DocsRedirectController do
     sign_in create(:user)
   end
 
-  it 'can redirect without extra path segments' do
-    get :show, params: { destination: '/' }
+  it 'can redirect without destination' do
+    get :show, params: {}
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/')
   end
 
-  it 'can redirect with extra path segments' do
+  it 'can redirect with destination path segments' do
     get :show, params: { destination: '/some/path#fragment' }
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/some/path#fragment')

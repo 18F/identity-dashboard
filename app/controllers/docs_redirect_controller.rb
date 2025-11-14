@@ -1,9 +1,11 @@
 # for logging redirects to external developer documentation
 class DocsRedirectController < AuthenticatedController
   def show
-    @destination = params[:destination]
-      .sub(%r{^/}, '') # remove leading slash
-      .tr('^A-Za-z0-9/#_-', '') # allow alphanumeric, forward slash, hash, underscore, and hyphen
+    @destination = params[:destination] || ''
+    unless @destination.blank?
+      # remove leading slash + allow alphanumeric, forward slash, hash, underscore, and hyphen
+      @destination = @destination.sub(%r{^/}, '').tr('^A-Za-z0-9/#_-', '')
+    end
     log_redirect
     redirect_to "https://developers.login.gov/#{@destination}",
                 status: :moved_permanently,
