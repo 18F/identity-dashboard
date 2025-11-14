@@ -9,9 +9,6 @@ class ServiceProviderImporter
   end
 
   def run
-    # Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
-    # expect(File.read("tmp/#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
-
     validate_file unless data
     create_available_teams unless teams
     teams.concat(create_missing_teams).compact!
@@ -35,6 +32,10 @@ class ServiceProviderImporter
 
   private
 
+  def extract_destination
+    @extract_destination ||= Dir.mktmpdir
+  end
+
   def validate_file
     raise ArgumentError, "File #{file_name} cannot be opened" unless File.readable?(file_name)
 
@@ -43,8 +44,8 @@ class ServiceProviderImporter
         @data = JSON.parse(file.read)
       end
     rescue JSON::ParserError
-      Minitar.unpack(Zlib::GzipReader.open(file_name), 'tmp')
-      File.open('tmp/extract.json') do |f|
+      Minitar.unpack(Zlib::GzipReader.open(file_name), extract_destination)
+      File.open(File.join(extract_destination, 'extract.json')) do |f|
         @data = JSON.parse(f.read)
       end
       @from_gzip = true
@@ -119,7 +120,7 @@ class ServiceProviderImporter
   def save
     service_providers.each do |sp|
       if sp.logo && @from_gzip
-        logo_data = File.open(File.join('tmp', sp.logo))
+        logo_data = File.open(File.join(extract_destination, sp.logo))
         content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
         blob = ActiveStorage::Blob.create_and_upload!(
           io: logo_data,
