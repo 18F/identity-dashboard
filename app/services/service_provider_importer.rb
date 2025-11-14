@@ -9,6 +9,9 @@ class ServiceProviderImporter
   end
 
   def run
+    # Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
+    # expect(File.read("tmp/#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
+
     validate_file unless data
     create_available_teams unless teams
     teams.concat(create_missing_teams).compact!
@@ -35,8 +38,15 @@ class ServiceProviderImporter
   def validate_file
     raise ArgumentError, "File #{file_name} cannot be opened" unless File.readable?(file_name)
 
-    File.open(file_name) do |file|
-      @data = JSON.parse(file.read)
+    begin
+      File.open(file_name) do |file|
+        @data = JSON.parse(file.read)
+      end
+    rescue JSON::ParserError
+      Minitar.unpack(Zlib::GzipReader.open(file_name), 'tmp')
+      File.open('tmp/extract.json') do |f|
+        @data = JSON.parse(f.read)
+      end
     end
   end
 
