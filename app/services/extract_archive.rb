@@ -8,12 +8,12 @@ class ExtractArchive
     @logo_attachments = []
   end
 
-  # @param models [Enumerable<ServiceProvider>]
-  def add_logos_from_service_providers(models)
-    models.each do |model|
-      next if model.logo_file.blank?
+  # @param service_providers [Enumerable<ServiceProvider>]
+  def add_logos_from_service_providers(service_providers)
+    service_providers.each do |sp|
+      next if sp.logo_file.blank?
 
-      @logo_attachments.push({ filename: model.logo, attachment: model.logo_file })
+      @logo_attachments.push({ filename: sp.logo, attachment: sp.logo_file })
     end
   end
 
@@ -33,9 +33,8 @@ class ExtractArchive
     Minitar.pack_as_file(@json_filename, @json_data, tar) if @json_data && @json_filename
 
     logo_attachments.each do |data|
-      logo_filename = data[:filename]
       logo_data = data[:attachment]
-      logo_filename ||= logo_data.blob.filename
+      logo_filename = data[:filename] ||= logo_data.blob.filename
       Minitar.pack_as_file(logo_filename.to_s, logo_data.download, tar)
     end
   ensure
