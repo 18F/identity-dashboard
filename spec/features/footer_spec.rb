@@ -41,7 +41,8 @@ feature 'Footer' do
       expect(docs_link).to have_content('Developer Guide')
     end
     scenario 'should include Contact link' do
-      gsa_link = section.find('[href="/documentation?destination=/support/#contacting-partner-support"]')
+      url = '/documentation?destination=/support/#contacting-partner-support'
+      gsa_link = section.find("[href='#{url}']")
 
       expect(gsa_link.tag_name).to eq('a')
       expect(gsa_link).to have_content('Contact')
