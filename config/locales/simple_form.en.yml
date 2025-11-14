@@ -7,12 +7,12 @@ en:
     required:
       html: '<abbr class="text-secondary-dark" title="required">*</abbr>'
     lead:
-      authentication_html: "The <a class='usa-link' href='https://developers.login.gov/oidc/getting-started/'>OpenID Connect page</a> and the <a class='usa-link' href='https://developers.login.gov/saml/getting-started/'>SAML page</a> of the developer docs have more information about the authentication requirements."
+      authentication_html: "The <a class='usa-link usa-link--external' href='/documentation?destination=/oidc/getting-started/'>OpenID Connect page</a> and the <a class='usa-link usa-link--external' href='/documentation?destination=/saml/getting-started/'>SAML page</a> of the developer docs have more information about the authentication requirements."
       help_text: You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.
-      issuer_html: "The <a class='usa-link' href='https://developers.login.gov/production/#production-configuration-process'>Production configuration process section</a> of the developer docs has more information about issuer strings."
-      settings_html: "The <a class='usa-link' href='https://developers.login.gov/testing/'>Testing page of our developer docs</a> has additional information about setting up your app."
+      issuer_html: "The <a class='usa-link usa-link--external' href='/documentation?destination=/production/#production-configuration-process'>Production configuration process section</a> of the developer docs has more information about issuer strings."
+      settings_html: "The <a class='usa-link usa-link--external' href='/documentation?destination=/testing/'>Testing page of our developer docs</a> has additional information about setting up your app."
       protocol: The protocol you choose will determine how you structure the requests made to Login.gov. Note that we recommend using OIDC because SAML is significantly more difficult to set up.
-      protocol_html: The <a href='https://developers.login.gov/oidc/getting-started/' class='usa-link'>OpenID Connect page</a> and the <a href='https://developers.login.gov/saml/getting-started/' class='usa-link'>SAML page</a> of the developer docs have more information about the authentication requirements.
+      protocol_html: The <a href='/documentation?destination=/oidc/getting-started/' class='usa-link usa-link--external'>OpenID Connect page</a> and the <a href='/documentation?destination=/saml/getting-started/' class='usa-link usa-link--external'>SAML page</a> of the developer docs have more information about the authentication requirements.
     labels:
       required: required
       select: "- Select -"

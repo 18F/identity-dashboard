@@ -19,7 +19,7 @@
                     "No file selected",
                     class: 'input-preview' %>
   </div>
-  <%= form.hint 'Choose a file to upload as your logo. See <a href="https://developers.login.gov/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
+  <%= form.hint 'Choose a file to upload as your logo. See <a class="usa-link usa-link--external" href="/documentation?destination=/design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
   <div <%= "class='usa-error-message'" if service_provider.errors[:logo_file].present? %> id='logo-upload-error'>
     <% if service_provider.errors[:logo_file].present? %>
       ERROR:
