@@ -4,6 +4,7 @@ RSpec.describe ExtractArchive do
   it 'can add images to the archive' do
     sp = create(:service_provider)
     sp.logo_file = fixture_file_upload('logo.svg')
+    sp.logo = 'logo.svg'
     sp.save!
     expected_logo_filename = sp.logo_file.blob.filename
     file = Tempfile.create binmode: true

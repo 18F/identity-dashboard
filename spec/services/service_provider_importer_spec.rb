@@ -130,4 +130,16 @@ describe ServiceProviderImporter do
     subject.run
     expect(subject.data).to_not be_blank
   end
+
+  it 'saves any logo files included in the .tgz file to ActiveRecord' do
+    gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
+    Minitar.unpack(Zlib::GzipReader.open(gzipped_filename), 'tmp')
+    subject = described_class.new(gzipped_filename)
+    subject.run
+
+    subject.service_providers.each do |sp|
+      expect(sp.logo_file.attached?).to be_truthy
+      expect(sp.logo_file.download).to eq(File.read("tmp/#{sp.logo}"))
+    end
+  end
 end
