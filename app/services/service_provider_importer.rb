@@ -47,6 +47,7 @@ class ServiceProviderImporter
       File.open('tmp/extract.json') do |f|
         @data = JSON.parse(f.read)
       end
+      @from_gzip = true
     end
   end
 
@@ -116,7 +117,19 @@ class ServiceProviderImporter
   end
 
   def save
-    service_providers.each &:save!
+    service_providers.each do |sp|
+      if sp.logo && @from_gzip
+        logo_data = File.open(File.join('tmp', sp.logo))
+        content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: logo_data,
+          filename: sp.logo,
+          content_type: content_type,
+        )
+        sp.logo_file.attach blob
+      end
+      sp.save!
+    end
     teams.each &:save!
   end
 end

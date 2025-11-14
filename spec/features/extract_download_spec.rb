@@ -10,7 +10,10 @@ feature 'Extract Download' do
   let(:expected_ticket_number) { rand(1..1000).to_s }
   let(:expected_logo_name) { "logo_#{rand(1..1000)}.svg" }
   let(:sp_to_export) do
-    sp = create(:service_provider, :ready_to_activate)
+    sp = create(:service_provider, :ready_to_activate, agency_id: 9)
+    team = sp.team
+    team.agency_id = 9
+    team.save!
     sp.logo_file.attach(fixture_file_upload('logo.svg'))
     sp.logo = expected_logo_name
     sp.save!

@@ -135,6 +135,7 @@ describe ServiceProviderImporter do
     gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
     Minitar.unpack(Zlib::GzipReader.open(gzipped_filename), 'tmp')
     subject = described_class.new(gzipped_filename)
+    subject.dry_run = false
     subject.run
 
     subject.service_providers.each do |sp|
