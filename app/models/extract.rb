@@ -55,7 +55,7 @@ class Extract
     sp_data = service_providers.map do |sp|
       attributes = sp.attributes
       attributes['team_uuid'] = sp.team.uuid
-      # This is not portable between environments.
+      # The remote key is not portable between environments.
       attributes.delete 'remote_logo_key'
       attributes
     end

@@ -17,42 +17,52 @@ feature 'Extract Download' do
     sp
   end
 
-  it 'can deliver a download with the correct logo file' do
+  it 'has no download link with invalid criteria' do
     visit extracts_path
     fill_in 'Ticket number', with: expected_ticket_number
     choose 'Teams'
-    fill_in 'extract[criteria_list]', with: sp_to_export.team.id
+    fill_in 'extract[criteria_list]', with: Team.last.id + rand(10.1000)
     click_on 'Extract configs'
-    click_on 'Download now'
-    downloaded_file = StringIO.new page.body
-
-    Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
-    expect(File.read("tmp/#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
+    expect(page).to have_content('No ServiceProvider or Team rows were returned')
+    expect(page).to_not have_button('Download now')
+    expect(page).to_not have_link('Download now')
   end
 
-  it 'will include the correct attributes in the download' do
-    visit extracts_path
-    fill_in 'Ticket number', with: expected_ticket_number
-    choose 'Teams'
-    fill_in 'extract[criteria_list]', with: sp_to_export.team.id
-    click_on 'Extract configs'
-    click_on 'Download now'
-
-    downloaded_file = StringIO.new page.body
-
-    Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
-    json_from_archive = JSON.parse(File.read('tmp/extract.json'))
-    expect(json_from_archive['service_providers'].count).to be 1
-    exported_attributes = json_from_archive['service_providers'].first
-    exported_attributes.keys.each do |attribute_key|
-      next if attribute_key == 'team_uuid'
-      next if attribute_key.end_with? '_at' # comparison of timestamps is flaky
-
-      expect(exported_attributes[attribute_key]).to eq(sp_to_export[attribute_key]),
-        "Key #{attribute_key} didn't match, value was: #{exported_attributes[attribute_key]}"
+  context 'when downloading' do
+    before do
+      visit extracts_path
+      fill_in 'Ticket number', with: expected_ticket_number
+      choose 'Teams'
+      fill_in 'extract[criteria_list]', with: sp_to_export.team.id
+      click_on 'Extract configs'
+      click_on 'Download now'
     end
 
-    expect(exported_attributes['team_uuid']).to eq(sp_to_export.team.uuid)
+    it 'can deliver a download with the correct logo file' do
+      downloaded_file = StringIO.new page.body
+
+      Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
+      expect(File.read("tmp/#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
+    end
+
+    it 'will include the correct attributes in the download' do
+      downloaded_file = StringIO.new page.body
+
+      Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
+      json_from_archive = JSON.parse(File.read('tmp/extract.json'))
+      expect(json_from_archive['service_providers'].count).to be 1
+      exported_attributes = json_from_archive['service_providers'].first
+      expect(exported_attributes['logo']).to eq(expected_logo_name)
+      exported_attributes.keys.each do |attribute_key|
+        next if attribute_key == 'team_uuid'
+        next if attribute_key.end_with? '_at' # comparison of timestamps is flaky
+
+        expect(exported_attributes[attribute_key]).to eq(sp_to_export[attribute_key]),
+          "Key #{attribute_key} didn't match, value was: #{exported_attributes[attribute_key]}"
+      end
+
+      expect(exported_attributes['team_uuid']).to eq(sp_to_export.team.uuid)
+    end
   end
 
   after do
