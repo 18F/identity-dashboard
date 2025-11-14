@@ -123,4 +123,11 @@ describe ServiceProviderImporter do
     expect(importer_invalid.service_providers).to be_blank
     expect(importer_invalid.teams).to be_blank
   end
+
+  it 'can read a JSON file from inside a .tgz file' do
+    gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
+    subject = described_class.new(gzipped_filename)
+    subject.run
+    expect(subject.data).to_not be_blank
+  end
 end
