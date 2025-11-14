@@ -35,13 +35,13 @@ feature 'Footer' do
     end
 
     scenario 'should include Dev Docs link' do
-      docs_link = section.find('[href="https://developers.login.gov/"]')
+      docs_link = section.find('[href="/documentation"]')
 
       expect(docs_link.tag_name).to eq('a')
       expect(docs_link).to have_content('Developer Guide')
     end
     scenario 'should include Contact link' do
-      gsa_link = section.find('[href="https://developers.login.gov/support/#contacting-partner-support"]')
+      gsa_link = section.find('[href="/documentation?destination=/support/#contacting-partner-support"]')
 
       expect(gsa_link.tag_name).to eq('a')
       expect(gsa_link).to have_content('Contact')

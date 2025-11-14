@@ -877,7 +877,7 @@ feature 'Service Providers CRUD' do
 
       # TODO: remove following when Zendesk form is fixed
       it 'displays the production call to action links' do
-        prod_url = 'https://developers.login.gov/production'
+        prod_url = '/documentation?destination=/production'
         zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
 
         expect(page).to have_css("a[href='#{prod_url}']")
