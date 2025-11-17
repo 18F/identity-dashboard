@@ -131,16 +131,20 @@ class ServiceProviderImporter
     service_providers.each do |sp|
       if sp.logo.present? && @from_gzip
         logo_data = File.open(File.join(extract_destination, sp.logo))
-        content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
-        blob = ActiveStorage::Blob.create_and_upload!(
-          io: logo_data,
-          filename: sp.logo,
-          content_type: content_type,
-        )
-        sp.logo_file.attach blob
+        attach_logo(sp, logo_data)
       end
       sp.save!
     end
     teams.each &:save!
+  end
+
+  def attach_logo(sp, logo_data)
+    content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: logo_data,
+      filename: sp.logo,
+      content_type: content_type,
+    )
+    sp.logo_file.attach blob
   end
 end
