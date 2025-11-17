@@ -21,8 +21,10 @@ class ExtractsController < AuthenticatedController
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
-      save_to_file
-      return render 'results'
+      respond_to do |format|
+        format.html { render('results') }
+        format.gzip { send_data extract_archive, filename: "#{@extract.filename}.tgz" }
+      end and return
     elsif @extract.errors.empty? && @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
@@ -32,6 +34,19 @@ class ExtractsController < AuthenticatedController
 
   private
 
+  def extract_archive
+    output = ''
+    in_memory_file = StringIO.new output
+    archive = ExtractArchive.new(in_memory_file)
+    archive.add_logos_from_service_providers(@extract.service_providers)
+    archive.add_json_file(
+      @extract.to_json,
+      'extract.json',
+    )
+    archive.save
+    output
+  end
+
   def extracts_params
     params.require(:extract).permit(
       :ticket,
@@ -39,27 +54,6 @@ class ExtractsController < AuthenticatedController
       :criteria_file,
       :criteria_list,
     )
-  end
-
-  # @return [String]
-  # json output be a hash of two arrays (teams, service_providers)
-  def save_to_file
-    begin
-      File.open(@extract.filename, 'w') do |f|
-        sp_data = @extract.service_providers.map do |sp|
-          attributes = sp.attributes
-          attributes['team_uuid'] = sp.team.uuid
-          # This is not portable between environments.
-          attributes.delete 'remote_logo_key'
-          attributes
-        end
-        data = { teams: @extract.teams, service_providers: sp_data }
-        f.print data.to_json
-      end
-      flash[:success] = 'Extracted configs saved'
-    rescue => err
-      flash[:error] = "There was a problem writing to file: #{err}"
-    end
   end
 
   def log_request

@@ -43,12 +43,23 @@ class Extract
 
   # @return [String]
   def filename
-    "#{Dir.tmpdir}/config_extract_#{ticket.gsub(/\W/, '')}"
+    "config_extract_#{ticket.gsub(/\W/, '')}"
   end
 
   # @return [Array<Team>]
   def teams
     @teams ||= service_providers.map(&:team) || []
+  end
+
+  def to_json
+    sp_data = service_providers.map do |sp|
+      attributes = sp.attributes
+      attributes['team_uuid'] = sp.team.uuid
+      # The remote key is not portable between environments.
+      attributes.delete 'remote_logo_key'
+      attributes
+    end
+    { teams: teams, service_providers: sp_data }.to_json
   end
 
   # @return [Array<ServiceProvider>]

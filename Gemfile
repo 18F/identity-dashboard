@@ -27,6 +27,7 @@ gem 'json-jwt', '>= 1.15.3'
 gem 'jwt'
 gem 'kaminari'
 gem 'lru_redux'
+gem 'minitar', '~> 1.1'
 gem 'newrelic_rpm', '>= 6.14.0'
 gem 'nokogiri', '~> 1.18.9'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
