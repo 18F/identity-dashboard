@@ -106,6 +106,7 @@ class ServiceProviderImporter
   def service_provider_errors
     service_providers.each_with_object({}) do |model, error_list|
       model.valid?
+      logo_errors model
       error_list[model.issuer] = model.errors if model.errors.any?
     end
   end
@@ -117,9 +118,18 @@ class ServiceProviderImporter
     end
   end
 
+  def logo_errors(sp)
+    return unless sp.logo.present? && @from_gzip
+
+    filepath = File.join(extract_destination, sp.logo)
+    if !File.exist?(filepath)
+      sp.errors.add(:logo_file, message: "'#{sp.logo}' is missing.")
+    end
+  end
+
   def save
     service_providers.each do |sp|
-      if sp.logo && @from_gzip
+      if sp.logo.present? && @from_gzip
         logo_data = File.open(File.join(extract_destination, sp.logo))
         content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
         blob = ActiveStorage::Blob.create_and_upload!(

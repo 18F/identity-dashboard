@@ -149,11 +149,11 @@ describe ServiceProviderImporter do
       archive_missing_images = File.join(file_fixture_path, 'extract_with_missing_images.tgz')
       subject = described_class.new(archive_missing_images)
       result = subject.run
-      expect(subject.team_errors_any?).to be_truthy
+      expect(subject.service_provider_errors_any?).to be_truthy
       failing_issuer = '04:24:test:aj'
       expect(result[:service_provider_errors][failing_issuer]).to_not be_blank
       error_messages = result[:service_provider_errors][failing_issuer].full_messages
-      expect(error_messages).to include('The image file "test_logo.png" is missing.')
+      expect(error_messages).to include("Logo file 'test_logo.png' is missing.")
     end
   end
 end
