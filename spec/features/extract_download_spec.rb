@@ -24,8 +24,8 @@ feature 'Extract Download' do
     fill_in 'extract[criteria_list]', with: Team.last.id + rand(10.1000)
     click_on 'Extract configs'
     expect(page).to have_content('No ServiceProvider or Team rows were returned')
-    expect(page).to_not have_button('Download now')
-    expect(page).to_not have_link('Download now')
+    expect(page).to_not have_button('Download configs')
+    expect(page).to_not have_link('Download configs')
   end
 
   context 'when downloading' do
@@ -35,7 +35,7 @@ feature 'Extract Download' do
       choose 'Teams'
       fill_in 'extract[criteria_list]', with: sp_to_export.team.id
       click_on 'Extract configs'
-      click_on 'Download now'
+      click_on 'Download configs'
     end
 
     it 'can deliver a download with the correct logo file' do
