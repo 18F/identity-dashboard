@@ -131,16 +131,29 @@ describe ServiceProviderImporter do
     expect(subject.data).to_not be_blank
   end
 
-  it 'saves any logo files included in the .tgz file to ActiveRecord' do
-    gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
-    Minitar.unpack(Zlib::GzipReader.open(gzipped_filename), 'tmp')
-    subject = described_class.new(gzipped_filename)
-    subject.dry_run = false
-    subject.run
+  describe 'attaching images' do
+    it 'saves any logo files included in the .tgz file to ActiveRecord' do
+      gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
+      Minitar.unpack(Zlib::GzipReader.open(gzipped_filename), 'tmp')
+      subject = described_class.new(gzipped_filename)
+      subject.dry_run = false
+      subject.run
 
-    subject.service_providers.each do |sp|
-      expect(sp.logo_file.attached?).to be_truthy
-      expect(sp.logo_file.download).to eq(File.read("tmp/#{sp.logo}"))
+      subject.service_providers.each do |sp|
+        expect(sp.logo_file.attached?).to be_truthy
+        expect(sp.logo_file.download).to eq(File.read("tmp/#{sp.logo}"))
+      end
+    end
+
+    it 'gives a meaningful error when the image is missing' do
+      archive_missing_images = File.join(file_fixture_path, 'extract_with_missing_images.tgz')
+      subject = described_class.new(archive_missing_images)
+      result = subject.run
+      expect(subject.team_errors_any?).to be_truthy
+      failing_issuer = '04:24:test:aj'
+      expect(result[:service_provider_errors][failing_issuer]).to_not be_blank
+      error_messages = result[:service_provider_errors][failing_issuer].full_messages
+      expect(error_messages).to include('The image file "test_logo.png" is missing.')
     end
   end
 end
