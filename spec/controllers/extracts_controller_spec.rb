@@ -98,16 +98,6 @@ describe ExtractsController do
         expect(response).to render_template 'results'
       end
 
-      it 'will #save_to_file with some modified attributes' do
-        post :create, params: params1
-        filename = "#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}"
-        sp_data = sp1.attributes
-        sp_data['team_uuid'] = sp1.team.uuid
-        sp_data.delete 'remote_logo_key'
-        expect(File.read filename).to eq({ teams: [team], service_providers: [sp_data] }.to_json)
-        expect(response).to render_template 'results'
-      end
-
       it 'logs extraneous params' do
         post :create, params: { extract: {
           ticket: '0',
@@ -125,6 +115,29 @@ describe ExtractsController do
         expect(logger_double).to have_received(:extraction_request) do |op, ex_params|
           expect(op).to eq('create')
           expect(ex_params).to include('ticket', 'search_by', 'criteria_list')
+        end
+      end
+
+      context 'has a service provider with a logo file' do
+        before do
+          sp1.logo_file = fixture_file_upload('logo.svg')
+          sp1.save!
+          post :create, params: params1, format: :gzip
+          in_memory_file = StringIO.new response.body, binmode: true
+          Minitar.unpack(Zlib::GzipReader.new(in_memory_file), 'tmp')
+        end
+
+        after do
+          system 'rm tmp/logo.svg'
+          system 'rm tmp/extracts.json'
+        end
+
+        it 'contains a logo file' do
+          expect(File.read('tmp/logo.svg')).to eq(sp1.logo_file.download)
+        end
+
+        it 'contains the json data' do
+          expect(JSON.parse(File.read('tmp/extract.json'))).to_not be_blank
         end
       end
     end

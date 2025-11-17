@@ -9,7 +9,7 @@ class InternalReportsController < AuthenticatedController
   #   * :team_uuid [UUID] Team instance UUID
   #   * :team_name [String] Team instance Id
   #   * :user_email [String] User instance email address
-  #   * :role [String] TeamMembership instance Role friendly_name
+  #   * :role [String] TeamMembership instance Role.friendly_name
   # @return [Array<Hash>]
   def user_permissions
     memberships = []
@@ -22,7 +22,7 @@ class InternalReportsController < AuthenticatedController
           team_uuid: spt.uuid,
           team_name: spt.name,
           user_email: spt_m.email,
-          role: spt_m.friendly_name,
+          role: Role.active_roles_names[spt_m.name],
         })
       end
     end
@@ -50,17 +50,17 @@ class InternalReportsController < AuthenticatedController
   end
 
   # @return [Array<TeamMembership, User, Role>] Joins TeamMembership group_id
-  # with User email and Role friendly_name
+  # with User email and Role name
   def team_memberships
     @team_memberships ||= TeamMembership.left_joins(:user, :role)
-      .select(:id, :email, :group_id, roles: [:friendly_name])
+      .select(:id, :email, :group_id, roles: [:name])
   end
 
   # We need to include `logingov_admin` roles in our report
   # @return [Array<Hash>] of the same shape as `user_permissions`
   def internal_team_roles
-    internal_memberships = TeamMembership.left_joins(:team, :user, :role)
-      .select(:email, role: [:friendly_name], team: [:uuid, :name])
+    internal_memberships = TeamMembership.left_joins(:team, :user)
+      .select(:email, :role_name, team: [:uuid, :name])
       .where(group_id: Team.internal_team.id)
     # Issuer is not particularly relevant for the Internal Team, and
     # we don't have any at the moment.
@@ -70,7 +70,7 @@ class InternalReportsController < AuthenticatedController
         team_uuid: membership.uuid,
         team_name: membership.name,
         user_email: membership.email,
-        role: membership.friendly_name,
+        role: Role.active_roles_names[membership.role_name],
       }
     end
   end

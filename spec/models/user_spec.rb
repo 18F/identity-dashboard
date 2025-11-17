@@ -173,7 +173,7 @@ describe User do
 
   describe '#primary_role' do
     it 'returns Partner Admin if the user has no teams yet' do
-      expect(user.primary_role.friendly_name).to eq('Partner Admin')
+      expect(user.primary_role.friendly_name).to eq('Sandbox Partner Admin')
     end
 
     it 'returns "Login.gov Admin" if applicable' do

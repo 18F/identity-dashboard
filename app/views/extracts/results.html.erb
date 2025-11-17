@@ -22,3 +22,15 @@
     <li>team <%= team.id %> | <%= team.name %></li>
   <% end %>
 </ul>
+<% if @extract.service_providers.any? %>
+  <p>
+    A <%= 'partial' if @extract.failures.any?  %> download is ready.
+    <%= form_for(@extract, format: :gzip) do |f| %>
+      <%= f.hidden_field :ticket, value: @extract.ticket %>
+      <%= f.hidden_field :search_by, value: @extract.search_by %>
+      <%= f.hidden_field(:criteria_file, value: @extract.criteria_file) if @extract.criteria_file %>
+      <%= f.hidden_field(:criteria_list, value: @extract.criteria_list) if @extract.criteria_list %>
+      <%= f.submit 'Download configs', class: 'usa-button' %>
+    <% end %>
+  </p>
+<% end %>

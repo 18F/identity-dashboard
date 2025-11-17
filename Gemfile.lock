@@ -352,6 +352,7 @@ GEM
     mime-types-data (3.2024.1001)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
+    minitar (1.1.0)
     minitest (5.25.5)
     multi_json (1.15.0)
     mustermann (3.0.3)
@@ -688,6 +689,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   lru_redux
+  minitar (~> 1.1)
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.18.9)
   omniauth-rails_csrf_protection

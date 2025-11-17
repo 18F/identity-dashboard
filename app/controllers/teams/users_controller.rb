@@ -82,9 +82,11 @@ class Teams::UsersController < AuthenticatedController
 
     if IdentityConfig.store.prod_like_env && partner_admin_confirmation_needed?
       flash[:error] =
-        "User #{team_membership.user.email} is not a Partner Admin in Airtable.
+        "User #{team_membership.user.email} is not a #{
+            t('role_names.production.partner_admin')
+          } in Airtable.
           Please verify with the appropriate Account Manager that this user should
-          be given the Partner Admin role."
+          be given the #{t('role_names.production.partner_admin')} role."
 
       redirect_to edit_team_user_path(team, team_membership.user,
                                       need_to_confirm_role: true) and return
@@ -245,7 +247,7 @@ class Teams::UsersController < AuthenticatedController
     # Only check with Airtable in Prod Like Environments
     return false unless IdentityConfig.store.prod_like_env
 
-    # More checks needed if role is being set to partner admin.
+    # More checks needed if role is being set to partner_admin.
     if team_membership.role_name == 'partner_admin'
       # Confirmation needed when there is no service providers associated
       # with the team.

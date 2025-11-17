@@ -6,11 +6,11 @@ RSpec.describe RadioCollectionComponent, type: :component do
   include ActionView::TestCase::Behavior
 
   let(:team_membership) do
-    create(:team_membership, role_name: Role::ACTIVE_ROLES_NAMES.keys.sample)
+    create(:team_membership, role_name: Role::ROLES_NAMES.sample)
   end
   let(:form) { SimpleForm::FormBuilder.new(:team_membership, team_membership, view, {}) }
   let(:random_id) { "id_#{rand(10..1000)}" }
-  let(:inputs) { Role::ACTIVE_ROLES_NAMES.invert }
+  let(:inputs) { Role.active_friendly_names }
 
   it 'displays reasonable options with correct default' do
     render = render_inline(described_class.new(
