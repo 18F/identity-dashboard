@@ -15,12 +15,15 @@ class MakeAdmin
 
   def call
     raise(USAGE_WARNING) if user_info_invalid?
+
     if admin.logingov_admin?
-      return puts("INFO: User \"#{email}\" already has Login.gov admin privileges.")
+      return puts("INFO: User \"#{email}\" already has #{
+        I18n.t('role_names.global.logingov_admin')
+      } privileges.")
     end
 
     make_admin
-    puts "SUCCESS: Promoted \"#{email}\" to Login.gov admin."
+    puts "SUCCESS: Promoted \"#{email}\" to #{I18n.t('role_names.global.logingov_admin')}."
   end
 
   private

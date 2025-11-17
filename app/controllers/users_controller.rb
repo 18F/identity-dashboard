@@ -64,9 +64,9 @@ class UsersController < ApplicationController
 
   def options_for_roles
     if @has_no_teams
-      Role::ACTIVE_ROLES_NAMES.slice(:logingov_admin, :partner_admin).invert
+      Role.active_roles_names.slice('logingov_admin', 'partner_admin').invert
     else
-      Role::ACTIVE_ROLES_NAMES.invert
+      Role.active_friendly_names
     end
   end
 

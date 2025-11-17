@@ -3,9 +3,9 @@
        input_html: { class: 'usa-input', aria: { invalid: false } },
        required: true,
        disabled: action_name == 'edit' %>
-    <legend class='usa-sr-only'>Make Login.gov admin?</legend>
+    <legend class='usa-sr-only'>Make <%= t('role_names.global.logingov_admin') %>?</legend>
     <%= form.label :admin,
-                   label: 'Make Login.gov admin?',
+                   label: "Make #{t('role_names.global.logingov_admin')}?",
                    class: 'usa-label' %>
     <%= form.collection_radio_buttons(:admin,
                                     { "Yes" => true, "No" => false },

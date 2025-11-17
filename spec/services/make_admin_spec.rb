@@ -20,7 +20,7 @@ describe MakeAdmin do
           "INFO: User \"#{email}\" not found; creating a new User.",
         )
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{email}\" to Login.gov admin.",
+          "SUCCESS: Promoted \"#{email}\" to Login.gov Admin.",
         )
 
         subject.call
@@ -39,7 +39,7 @@ describe MakeAdmin do
     context 'when the user does exist and is not a Login admin' do
       it 'promotes the user to be an Login admin' do
         expect(subject).to receive(:puts).with(
-          "SUCCESS: Promoted \"#{email}\" to Login.gov admin.",
+          "SUCCESS: Promoted \"#{email}\" to Login.gov Admin.",
         )
 
         user = User.create(
@@ -60,7 +60,7 @@ describe MakeAdmin do
     context 'when the user does exist and is a login.gov admin' do
       it 'prints an info message and does nothing' do
         expect(subject).to receive(:puts).with(
-          "INFO: User \"#{email}\" already has Login.gov admin privileges.",
+          "INFO: User \"#{email}\" already has Login.gov Admin privileges.",
         )
 
         user = create(:logingov_admin, email:)

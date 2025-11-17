@@ -17,11 +17,33 @@ class Role < ApplicationRecord
            # If we delete a role, still keep the team memberships of users assigned that role
            dependent: :nullify
 
-  ACTIVE_ROLES_NAMES = {
-    logingov_admin: 'Login.gov Admin',
-    partner_admin: 'Partner Admin',
-    partner_developer: 'Partner Developer',
-    partner_readonly: 'Partner Readonly',
-  }.freeze
+  ROLES_NAMES = %w[
+    logingov_admin
+    partner_admin
+    partner_developer
+    partner_readonly
+  ]
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
+
+  def self.active_friendly_names
+    active_roles_names.invert
+  end
+
+  def self.active_roles_names
+    @active_roles_names || ROLES_NAMES.map do |role|
+      [role, I18n.t("#{roles_i18n_bucket}.#{role}")]
+    end.to_h
+  end
+
+  def friendly_name
+    Role.active_roles_names[self.name]
+  end
+
+  private_class_method
+
+  def self.roles_i18n_bucket
+    return 'role_names.production' if IdentityConfig.store.prod_like_env
+
+    'role_names.sandbox'
+  end
 end

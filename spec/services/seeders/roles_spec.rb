@@ -11,21 +11,21 @@ RSpec.describe Seeders::Roles do
   it 'initializes roles' do
     described_class.new.seed
     expect(logger).to have_received(:info)
-      .with 'logingov_admin added to roles as Login.gov Admin'
+      .with 'logingov_admin added to roles'
     expect(logger).to have_received(:info)
-      .with 'partner_admin added to roles as Partner Admin'
+      .with 'partner_admin added to roles'
     expect(logger).to have_received(:info)
-      .with 'partner_developer added to roles as Partner Developer'
+      .with 'partner_developer added to roles'
     expect(logger).to have_received(:info)
-      .with 'partner_readonly added to roles as Partner Readonly'
+      .with 'partner_readonly added to roles'
   end
 
   it 'skips roles that already exist' do
-    Role.create!(name: 'partner_admin', friendly_name: 'Partner Admin')
+    Role.create!(name: 'partner_admin')
     described_class.new.seed
     expect(logger).to_not have_received(:info)
-      .with 'partner_admin added to roles as Partner Admin'
+      .with 'partner_admin added to roles'
     expect(logger).to have_received(:info)
-      .with 'partner_developer added to roles as Partner Developer'
+      .with 'partner_developer added to roles'
   end
 end

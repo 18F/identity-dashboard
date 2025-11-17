@@ -42,12 +42,16 @@ feature 'internal reports' do
     end
 
     it 'can generate a CSV showing everything sorted' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
       login_as logingov_admin
       visit internal_reports_user_permissions_path(format: 'csv')
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
 
       expect(csv_response.length).to eq(10)
+      # Note that role names are initialized at boot, so this tests always use
+      # sandbox names
       expect(csv_response).to eq(expected_table)
     end
   end
@@ -67,56 +71,56 @@ feature 'internal reports' do
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Partner Developer',
+        'Production Team Dev',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Partner Admin',
+        'Production Team Admin',
       ],
       [
         sp0.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Partner Developer',
+        'Production Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         simple_user.email,
-        'Partner Developer',
+        'Production Team Dev',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         two_teams_admin.email,
-        'Partner Admin',
+        'Production Team Admin',
       ],
       [
         sp1.issuer,
         simple_user.teams.first.name,
         simple_user.teams.first.uuid,
         complex_user.email,
-        'Partner Developer',
+        'Production Team Dev',
       ],
       [
         sp2.issuer,
         additional_team.name,
         additional_team.uuid,
         two_teams_admin.email,
-        'Partner Readonly',
+        'Team Readonly',
       ],
       [
         sp3.issuer,
         additional_team.name,
         additional_team.uuid,
         two_teams_admin.email,
-        'Partner Readonly',
+        'Team Readonly',
       ],
     ]
   end
