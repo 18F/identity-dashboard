@@ -122,9 +122,9 @@ class ServiceProviderImporter
     return unless sp.logo.present? && @from_gzip
 
     filepath = File.join(extract_destination, sp.logo)
-    if !File.exist?(filepath)
-      sp.errors.add(:logo_file, message: "'#{sp.logo}' is missing.")
-    end
+    return if File.exist?(filepath)
+
+    sp.errors.add(:logo_file, message: "'#{sp.logo}' is missing.")
   end
 
   def save
