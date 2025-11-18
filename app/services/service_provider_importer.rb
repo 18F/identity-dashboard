@@ -32,11 +32,23 @@ class ServiceProviderImporter
 
   private
 
+  def extract_destination
+    @extract_destination ||= Dir.mktmpdir
+  end
+
   def validate_file
     raise ArgumentError, "File #{file_name} cannot be opened" unless File.readable?(file_name)
 
-    File.open(file_name) do |file|
-      @data = JSON.parse(file.read)
+    begin
+      File.open(file_name) do |file|
+        @data = JSON.parse(file.read)
+      end
+    rescue JSON::ParserError
+      Minitar.unpack(Zlib::GzipReader.open(file_name), extract_destination)
+      File.open(File.join(extract_destination, 'extract.json')) do |f|
+        @data = JSON.parse(f.read)
+      end
+      @from_gzip = true
     end
   end
 
@@ -94,6 +106,7 @@ class ServiceProviderImporter
   def service_provider_errors
     service_providers.each_with_object({}) do |model, error_list|
       model.valid?
+      logo_errors model
       error_list[model.issuer] = model.errors if model.errors.any?
     end
   end
@@ -105,8 +118,33 @@ class ServiceProviderImporter
     end
   end
 
+  def logo_errors(sp)
+    return unless sp.logo.present? && @from_gzip
+
+    filepath = File.join(extract_destination, sp.logo)
+    return if File.exist?(filepath)
+
+    sp.errors.add(:logo_file, message: "'#{sp.logo}' is missing.")
+  end
+
   def save
-    service_providers.each &:save!
+    service_providers.each do |sp|
+      if sp.logo.present? && @from_gzip
+        logo_data = File.open(File.join(extract_destination, sp.logo))
+        attach_logo(sp, logo_data)
+      end
+      sp.save!
+    end
     teams.each &:save!
+  end
+
+  def attach_logo(sp, logo_data)
+    content_type = sp.logo.end_with?('.png') ? 'image/png' : 'image/svg'
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: logo_data,
+      filename: sp.logo,
+      content_type: content_type,
+    )
+    sp.logo_file.attach blob
   end
 end
