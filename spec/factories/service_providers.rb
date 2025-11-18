@@ -2,7 +2,10 @@ FactoryBot.define do
   factory :service_provider do
     attribute_bundle { %w[email] }
     sequence(:friendly_name) { |n| "test-service_provider-#{n}" }
-    sequence(:issuer) { |n| "urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-#{n}" }
+    # rjust is required for tests that expect sorts by issuer string
+    sequence(:issuer) do |n|
+      "urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-#{n.to_s.rjust(4, '0')}"
+    end
     sequence(:description) { |n| "test service_provider description #{n}" }
     association :user, factory: :user
     association :agency, factory: :agency
