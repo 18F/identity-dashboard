@@ -876,7 +876,7 @@ feature 'Service Providers CRUD' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
 
       it 'displays the production call to action links' do
-        prod_url = '/documentation?destination=production'
+        prod_url = documentation_path(destination: 'production')
         zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
 
         expect(page).to have_css("a[href='#{prod_url}']")
