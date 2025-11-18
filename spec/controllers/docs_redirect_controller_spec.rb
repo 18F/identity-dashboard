@@ -5,20 +5,20 @@ RSpec.describe DocsRedirectController do
     sign_in create(:user)
   end
 
-  it 'can redirect without extra path segments' do
-    get :show, params: { destination: '/' }
+  it 'can redirect without destination' do
+    get :show, params: {}
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/')
   end
 
-  it 'can redirect with extra path segments' do
-    get :show, params: { destination: '/some/path#fragment' }
+  it 'can redirect with destination path segments' do
+    get :show, params: { destination: 'some/path#fragment' }
     expect(response).to have_http_status(:moved_permanently)
     expect(response).to redirect_to('https://developers.login.gov/some/path#fragment')
   end
 
   it 'sanitizes unsafe characters from destination' do
-    unsafe_url = '/path!@$%^&*()+=[]\;,{}|":<>?`~#_-/section'
+    unsafe_url = 'path!@$%^&*()+=[]\;,{}|":<>?`~#_-/section'
     get :show, params: { destination: unsafe_url }
 
     expect(response).to have_http_status(:moved_permanently)
@@ -35,7 +35,7 @@ RSpec.describe DocsRedirectController do
 
     it 'logs the redirect event' do
       request.env['HTTP_REFERER'] = 'https://old.url'
-      get :show, params: { destination: '/some/path#fragment' }
+      get :show, params: { destination: 'some/path#fragment' }
 
       expect(logger_double).to have_received(:redirect).with(
         { origin_url: 'https://old.url',
