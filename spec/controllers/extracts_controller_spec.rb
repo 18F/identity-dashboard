@@ -129,7 +129,7 @@ describe ExtractsController do
 
         after do
           system 'rm tmp/logo.svg'
-          system 'rm tmp/extracts.json'
+          system 'rm tmp/extract.json'
         end
 
         it 'contains a logo file' do
@@ -139,6 +139,24 @@ describe ExtractsController do
         it 'contains the json data' do
           expect(JSON.parse(File.read('tmp/extract.json'))).to_not be_blank
         end
+      end
+
+      it 'works with fully-translated help text strings' do
+        sp1.help_text = { 'sign_up' => { 'en' => 'first_time' } }
+        sp1.help_text = HelpText.lookup(service_provider: sp1).to_localized_h
+        sp1.save!
+
+        post :create, params: params1, format: :gzip
+
+        in_memory_file = StringIO.new response.body, binmode: true
+        Minitar.unpack(Zlib::GzipReader.new(in_memory_file), 'tmp')
+        extracted_data = JSON.parse(File.read('tmp/extract.json'))
+
+        expect(extracted_data['service_providers'].count).to be 1
+        extracted_help_text = extracted_data['service_providers'].first['help_text']
+        expect(extracted_help_text).to eq(sp1.help_text)
+        expect(extracted_help_text['sign_up']['zh']).to include('第一')
+        system 'rm tmp/extract.json'
       end
     end
   end
