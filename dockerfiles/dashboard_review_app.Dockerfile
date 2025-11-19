@@ -110,7 +110,7 @@ COPY ./babel.config.js ./babel.config.js
 COPY ./webpack.config.js ./webpack.config.js
 COPY ./.browserslistrc ./.browserslistrc
 
-COPY ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
+COPY ./config/application.yml.default.review_app $RAILS_ROOT/config/application.yml
 COPY ./config/newrelic.yml.docker $RAILS_ROOT/config/newrelic.yml
 COPY ./config/database.yml.docker $RAILS_ROOT/config/database.yml
 

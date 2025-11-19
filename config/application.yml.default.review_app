@@ -1,0 +1,81 @@
+# These settings are common across environments, but may be overridden
+# in any particular environment
+production:
+  admin_email: 'partners@login.gov'
+  asset_host: ''
+  assets_version: '1.0'
+  auto_account_creation_tlds: '.gov,.mil'
+  aws_region: us-west-2
+  aws_logo_bucket: changeme
+  certificate_expiration_warning_period: '60'
+  db_pool: '5'
+  dp_reaping_frequency: '10'
+  newrelic_license_key: changeme
+  prod_like_env: true
+  rack_timeout_service_timeout_seconds: '15'
+  secret_key_base: changeme
+  serve_static_files: 'false'
+  dashboard_api_token: ['env', 'DASHBOARD_API_TOKEN']
+  idp_sp_url:  ['env', 'IDP_SP_URL']
+  idp_url:  ['env', 'IDP_URL']
+  mailer_domain: ['env','MAILER_DOMAIN']
+  post_logout_redirect_uri:  ['env', 'POST_LOGOUT_URL']
+  saml_sp_issuer:   ['env', 'SAML_SP_ISSUER']
+  saml_sp_private_key_password: 'foobar'
+
+  #Dummy Key Should not be used in PROD
+  saml_sp_private_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    Proc-Type: 4,ENCRYPTED
+    DEK-Info: DES-EDE3-CBC,3BBA2AE203104123
+
+    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
+    -----END RSA PRIVATE KEY-----
