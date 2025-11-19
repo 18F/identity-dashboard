@@ -1,7 +1,7 @@
 <% @service_providers.each do |sps| %>
-  <h1 class="usa-display">My <%= sps[:type] %> Apps</h1>
+  <h1 class="usa-display">My <%= sps[:type] %> Configurations</h1>
   <% if sps[:type] == 'Production' %>
-    <p class='usa-intro'>These apps are live. Changes need to be approved by the partner support help desk before going into production.</p>
+    <p class='usa-intro'>These configurations are live. Changes need to be approved by the partner support help desk before going into production.</p>
     <% else %>
     <p class='usa-intro'>The sandbox environment lets you test different scenarios without changes to the live app.</p>
   <% end %>
@@ -15,6 +15,6 @@
       </tbody>
     </table>
   <% else %>
-    <h2>No apps to show.</h2>
+    <h2>No configurations to show.</h2>
   <% end %>
 <% end %>
