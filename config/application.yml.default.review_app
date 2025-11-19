@@ -1,6 +1,6 @@
-# These settings are common across environments, but may be overridden
-# in any particular environment
+# These settings are used by review apps.
 production:
+  tspencertest: 'test1234'
   admin_email: 'partners@login.gov'
   asset_host: ''
   assets_version: '1.0'
