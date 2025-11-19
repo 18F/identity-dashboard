@@ -29,8 +29,13 @@ class ExtractArchive
     # Any output to `tar` will be an archive that goes to `sgz`
     # (And `sgz` will then zip it up first before sending to `destination`)
     tar = Minitar::Output.new(sgz)
-
-    Minitar.pack_as_file(@json_filename, @json_data, tar) if @json_data && @json_filename
+    if @json_data && @json_filename
+      # Using `force_encoding('BINARY')` ensures non-ASCII-printable characters are preserved.
+      # As nice as Minitar is, it doesn't leverage Ruby's string encoding tools well.
+      # Because we're otherwise using Ruby's default string encodings everywhere, we don't have to
+      # do anything when unpacking this data.
+      Minitar.pack_as_file(@json_filename, @json_data.force_encoding('BINARY'), tar)
+    end
 
     logo_attachments.each do |data|
       logo_data = data[:attachment]
