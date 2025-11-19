@@ -1,5 +1,6 @@
 # These settings are used by review apps.
 production:
+  tspencertest: 'wibble'
   admin_email: 'partners@login.gov'
   asset_host: ''
   assets_version: '1.0'
