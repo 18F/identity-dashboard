@@ -78,7 +78,7 @@ class User < ApplicationRecord
   end
 
   def gov_partner?
-    self&.email.match(/\.(gov|mil)\z/)
+    self.email.match(/\.(gov|mil)\z/)
   end
 
   def primary_role
