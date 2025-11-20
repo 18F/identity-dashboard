@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'TeamMembership CRUD' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:gov_partner) { create(:user, email: 'test@gsa.gov') }
 
   def disable_rbac
     allow(IdentityConfig.store).
@@ -19,6 +20,22 @@ feature 'TeamMembership CRUD' do
     create(:agency, name: 'GSA')
 
     login_as(logingov_admin)
+    visit new_team_path
+
+    fill_in 'Description', with: 'department name'
+    fill_in 'Name', with: 'team name'
+    select('GSA', from: 'Agency')
+
+    click_on 'Create'
+    expect(page).to have_current_path(team_users_path(Team.last))
+    expect(page).to have_content('Success')
+    expect(page).to have_content('team name')
+  end
+
+  scenario 'Create (user is not yet on a team)' do
+    create(:agency, name: 'GSA')
+
+    login_as(gov_partner)
     visit new_team_path
 
     fill_in 'Description', with: 'department name'
