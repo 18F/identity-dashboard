@@ -216,6 +216,31 @@ describe User do
     end
   end
 
+  describe '#gov_partner?' do
+    it 'identifies all users with .gov emails' do
+      user0 = create(:user, email: 'test@gsa.gov')
+      user1 = create(:user, email: 'test.name@test.gsa.gov')
+      expect(user0.gov_partner?).to be_truthy
+      expect(user1.gov_partner?).to be_truthy
+    end
+
+    it 'identifies all users with .mil emails' do
+      user0 = create(:user, email: 'user@dod.mil')
+      user1 = create(:user, email: 'user.one@test.dod.mil')
+      expect(user0.gov_partner?).to be_truthy
+      expect(user1.gov_partner?).to be_truthy
+    end
+
+    it 'rejects all users with other emails' do
+      user0 = create(:user, email: 'user@mail.com')
+      user1 = create(:user, email: 'user.test@email.emil')
+      user2 = create(:user, email: 'user@test.gov.com')
+      expect(user0.gov_partner?).to be_falsey
+      expect(user1.gov_partner?).to be_falsey
+      expect(user2.gov_partner?).to be_falsey
+    end
+  end
+
   describe '#auth_token' do
     it 'always picks the latest one' do
       logingov_admin = create(:user, :logingov_admin) # only admins can access tokens

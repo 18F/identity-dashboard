@@ -10,21 +10,23 @@ describe TeamPolicy do
     let(:partner_developer_user) { create(:team_membership, :partner_developer, team:).user }
     let(:partner_readonly_user) { create(:team_membership, :partner_readonly, team:).user }
     let(:user_not_on_team) { build(:user) }
+    let(:gov_partner) { create(:user, email: 'test@agency.gov') }
+    let(:mil_partner) { create(:user, email: 'test@branch.mil') }
+    let(:contractor) { create(:user, email: 'user@contrator.com') }
 
     before do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
     end
 
     permissions :create? do
-      it 'allows login.gov admins or partner admins' do
+      it 'allows login.gov admins or .gov|mil parters' do
         expect(TeamPolicy).to permit(logingov_admin, team)
-        expect(TeamPolicy).to permit(partner_admin_user, team)
+        expect(TeamPolicy).to permit(gov_partner, team)
+        expect(TeamPolicy).to permit(mil_partner, team)
       end
 
       it 'does not allow others' do
-        expect(TeamPolicy).to_not permit(partner_developer_user, team)
-        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
-        expect(TeamPolicy).to_not permit(user_not_on_team, team)
+        expect(TeamPolicy).to_not permit(contractor, team)
       end
 
       context 'in a prod-like env' do
@@ -37,6 +39,9 @@ describe TeamPolicy do
         end
 
         it 'forbids everyone else' do
+          expect(TeamPolicy).to_not permit(gov_partner, team)
+          expect(TeamPolicy).to_not permit(mil_partner, team)
+          expect(TeamPolicy).to_not permit(contractor, team)
           expect(TeamPolicy).to_not permit(user_not_on_team, team)
           expect(TeamPolicy).to_not permit(partner_admin_user, team)
           expect(TeamPolicy).to_not permit(partner_developer_user, team)
@@ -89,19 +94,21 @@ describe TeamPolicy do
     end
 
     permissions :new? do
-      it 'allows login.gov admins or partner admins' do
+      it 'allows login.gov admins or .gov|mil partners' do
         expect(TeamPolicy).to permit(logingov_admin, team)
-        expect(TeamPolicy).to permit(partner_admin_user, team)
+        expect(TeamPolicy).to permit(gov_partner, team)
+        expect(TeamPolicy).to permit(mil_partner, team)
       end
 
-      it 'does not allow non-admin users' do
-        expect(TeamPolicy).to_not permit(user_not_on_team, team)
-        expect(TeamPolicy).to_not permit(partner_developer_user, team)
-        expect(TeamPolicy).to_not permit(partner_readonly_user, team)
+      it 'does not allow other users' do
+        expect(TeamPolicy).to_not permit(contractor, team)
       end
 
       it 'does not allow partners in prod-like envs' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        expect(TeamPolicy).to_not permit(gov_partner, team)
+        expect(TeamPolicy).to_not permit(mil_partner, team)
+        expect(TeamPolicy).to_not permit(contractor, team)
         expect(TeamPolicy).to_not permit(partner_admin_user, team)
         expect(TeamPolicy).to_not permit(partner_developer_user, team)
         expect(TeamPolicy).to_not permit(partner_readonly_user, team)

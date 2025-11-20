@@ -77,6 +77,10 @@ class User < ApplicationRecord
       TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
   end
 
+  def gov_partner?
+    self&.email.match(/\.(gov|mil)\z/)
+  end
+
   def primary_role
     return Role::LOGINGOV_ADMIN if logingov_admin?
     return team_memberships.first.role if team_memberships.first&.role.present?

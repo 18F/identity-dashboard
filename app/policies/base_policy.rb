@@ -68,4 +68,8 @@ class BasePolicy # :nodoc: all
       membership.role == Role.find_by(name: 'partner_admin')
     end
   end
+
+  def user_is_gov_partner?
+    user&.gov_partner?
+  end
 end
