@@ -11,7 +11,6 @@ production:
   db_pool: '5'
   dp_reaping_frequency: '10'
   newrelic_license_key: changeme
-  prod_like_env: true
   rack_timeout_service_timeout_seconds: '15'
   secret_key_base: changeme
   serve_static_files: 'false'
@@ -23,7 +22,14 @@ production:
   saml_sp_issuer:   ['env', 'SAML_SP_ISSUER']
   saml_sp_private_key_password: 'foobar'
 
-  #Dummy Key Should not be used in PROD
+  # Feature Flags
+  access_controls_enabled: true
+  api_token_required_enabled: true
+  edit_button_uses_servigce_config_wizard: true
+  help_text_options_feature_enabled: true
+  prod_like_env: false
+
+  # Dummy Key Should not be used in PROD
   saml_sp_private_key: |
     -----BEGIN RSA PRIVATE KEY-----
     Proc-Type: 4,ENCRYPTED
