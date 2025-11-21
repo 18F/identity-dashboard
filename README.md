@@ -44,7 +44,7 @@ Branches should be specifically named in a standard format that closely matches 
 
 Branches should be specific to a specific feature. Sub-branches can be created for larger features that require development broken into multiple parts for completion.
 
-Branches should be rebased to main to keep the history on the main branch clear and easy to follow.
+Branches should be rebased to `main` to keep the history on the main branch clear and easy to follow.
 
 Branches should be completed and sent for review via Pull Request and merged into main via squashed merge-commit to keep noise in main down.
 
