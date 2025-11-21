@@ -69,7 +69,9 @@ For code reviewers
 
 RSpec is the test runner. Use `bundle exec rspec {file}{:ln}` command to run individual tests, including relative file path (`file`) and line number (`ln`) 
 
-## Test Standards 
+## Test Standards
+Use a TDD approach when shipping new features.
+
 - New controller actions MUST have controller specs (see `spec/controllers/*_spec.rb`).
 - New services and model methods should include unit specs under `spec/services` or `spec/models`.
 - When adding a new API endpoint, add request specs under `spec/requests` and examples of expected JSON input/output.
