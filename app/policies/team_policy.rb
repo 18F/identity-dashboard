@@ -11,7 +11,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
       return allowlisted_user?(user) || user_has_login_admin_role?
     end
 
-    user_has_login_admin_role? || user_has_partner_admin_role?
+    user_has_login_admin_role? || user_is_gov_partner?
   end
 
   def destroy?
@@ -36,7 +36,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
       return allowlisted_user?(user) || user_has_login_admin_role?
     end
 
-    user_has_login_admin_role? || user_has_partner_admin_role?
+    user_has_login_admin_role? || user_is_gov_partner?
   end
 
   def show?
