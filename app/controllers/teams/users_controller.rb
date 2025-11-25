@@ -150,7 +150,7 @@ class Teams::UsersController < AuthenticatedController
   private
 
   def member_email
-    user_params.require(:email).downcase
+    user_params[:email]&.downcase
   end
 
   def new_team_member

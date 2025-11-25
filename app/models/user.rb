@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :service_providers, through: :teams
   has_many :security_events, dependent: :destroy
 
-  validates :email, format: { with: Devise.email_regexp }
+  validates :email, presence: true, format: { with: Devise.email_regexp }
 
   validates_with UserValidator, on: :create
 
