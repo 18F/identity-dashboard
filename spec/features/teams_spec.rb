@@ -187,6 +187,8 @@ feature 'TeamMembership CRUD' do
 
       expect(page).to have_content(org1.name)
       expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.uuid)
+      expect(page).to have_content(org2.uuid)
       expect(page).to have_content(org1.agency.name)
       expect(page).to have_content(org2.agency.name)
       expect(page).to have_content(org1.description)
@@ -264,6 +266,9 @@ feature 'TeamMembership CRUD' do
       find('.usa-button', text: 'Back').click
 
       expect(page).to have_current_path(team_path(team))
+      # Team UUID is displayed and has Copy button
+      expect(page).to have_content(team.uuid)
+      expect(page).to have_content('copy UUID to clipboard')
       newest_event_text = find('#versions>:first-child').text
       expect(newest_event_text).to include("user_id #{user.id}")
       expect(newest_event_text).to include("By: #{logingov_admin.email}")
@@ -285,6 +290,21 @@ feature 'TeamMembership CRUD' do
 
       expect(page).to_not have_content(team.name)
       expect(page).to have_content('Unauthorized')
+    end
+
+    scenario 'regular user views own team' do
+      user = create(:user, :team_member)
+      team = user.teams.first
+
+      login_as(user)
+
+      visit team_path(team)
+
+      expect(page).to have_content(team.name)
+      expect(page).to_not have_content('Unauthorized')
+      # Team UUID is not displayed
+      expect(page).to_not have_content(team.uuid)
+      expect(page).to_not have_content('copy UUID to clipboard')
     end
   end
 
