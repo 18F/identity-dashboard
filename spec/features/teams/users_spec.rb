@@ -107,6 +107,18 @@ describe 'users' do
       expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
+    scenario 'team member adds user with blank email' do
+      fill_in 'Email', with: ''
+      click_on 'Add'
+      expect(page).to have_content("Email can't be blank")
+    end
+
+    scenario 'team member add user with invalid email' do
+      fill_in 'Email', with: 'invalid'
+      click_on 'Add'
+      expect(page).to have_content('Email is invalid')
+    end
+
     scenario 'team member adds existing member of team' do
       fill_in 'Email', with: other_team_member.email
       click_on 'Add'
