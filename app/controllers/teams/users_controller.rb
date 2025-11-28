@@ -96,6 +96,9 @@ class Teams::UsersController < AuthenticatedController
       @user = team_membership.user
       render :edit
     end
+    new_role_name = t("role_names.sandbox.#{team_membership.role_name}")
+    flash[:success] =
+      "Succesfully changed role for #{team_membership.user.email} to #{new_role_name}"
     redirect_to team_users_path(team)
   end
 
