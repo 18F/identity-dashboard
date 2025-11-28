@@ -78,9 +78,47 @@ feature 'Home' do
       expect(page).to_not have_css('.usa-accordion > button[aria-expanded="false"]')
       expect(page).to have_content('Data you need')
     end
+  end
 
-    scenario 'is logged out after Devise timeout' do
-      expect(user.timedout?(IdentityConfig.store.devise_timeout_minutes.minutes.ago)).to be_truthy
+  feature 'session timeout' do
+    let(:user) { create(:user) }
+
+    before do
+      freeze_time
+      travel_to last_access_time do
+        login_as(user)
+        visit root_path
+      end
+    end
+
+    after do
+      unfreeze_time
+    end
+
+    describe 'when last access time is older than the timeout threshold' do
+      let(:last_access_time) { (IdentityConfig.store.devise_timeout_minutes + 1).minutes.ago }
+
+      it 'is logged out after Devise timeout' do
+        visit root_path
+        expect(page).to have_content('Your session expired. Please sign in again to continue.')
+      end
+
+      it 'logs the session duration' do
+        flunk
+      end
+    end
+
+    describe 'when last access time is newer than the timeout threshold' do
+      let(:last_access_time) { (IdentityConfig.store.devise_timeout_minutes - 1).minutes.ago }
+
+      it 'will not timeout' do
+        visit root_path
+        expect(page).to_not have_content(' Your session expired. Please sign in again to continue.')
+      end
+
+      it 'does not log' do
+        flunk
+      end
     end
   end
 end
