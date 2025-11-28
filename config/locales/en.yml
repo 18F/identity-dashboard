@@ -59,6 +59,8 @@ en:
       default_message: <div class='usa-alert__body'><p class='usa-alert__text'>Please review the problems below:</p></div>
   teams:
     users:
+      update:
+        success_html: <p class="usa-alert__text">You've updated the role for <strong>%{email}</strong> to <strong>%{new_role_name}</strong></p>
       create:
         success: Success! You have added %{email} to the team.
         invalid_email: "%{email} is not a valid email address."
