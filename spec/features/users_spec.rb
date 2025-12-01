@@ -63,10 +63,10 @@ feature 'login.gov admin manages users' do
       visit users_path
       click_on 'Create a new user'
       expect(page).to have_content('New user')
-      expect(page).to_not have_content('Email is invalid')
+      expect(page).to_not have_content('Email can\'t be blank')
       click_on 'Create'
       expect(page).to have_content('New user')
-      expect(page).to have_content('Email is invalid')
+      expect(page).to have_content('Email can\'t be blank')
       new_email = "test#{rand(1..10000)}@test.domain"
       fill_in 'Email', with: new_email
       click_on 'Create'
