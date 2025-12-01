@@ -64,7 +64,7 @@ class Teams::UsersController < AuthenticatedController
       )
       new_team_membership.set_default_role
       authorize new_team_membership
-      render :new and return unless new_team_membership.save
+      render :new and return unless new_team_membership.save!
 
       flash[:success] = I18n.t('teams.users.create.success', email: member_email)
       redirect_to new_team_user_path and return
