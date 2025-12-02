@@ -82,8 +82,12 @@ feature 'Home' do
 
   feature 'session timeout' do
     let(:user) { create(:user) }
+    let(:logger_double) { instance_double(EventLogger) }
 
     before do
+      allow(EventLogger).to receive(:new).and_return(logger_double)
+      allow(logger_double).to receive(:session_duration)
+
       freeze_time
       travel_to last_access_time do
         login_as(user)
@@ -104,7 +108,12 @@ feature 'Home' do
       end
 
       it 'logs the session duration' do
-        flunk
+        visit root_path
+        expect(logger_double).to have_received(:session_duration).with(
+          last_access_time.iso8601,
+          # `Time.zone.now` works here because of `freeze_time` in the `before` block
+          Time.zone.now.iso8601,
+        )
       end
     end
 
@@ -113,11 +122,12 @@ feature 'Home' do
 
       it 'will not timeout' do
         visit root_path
-        expect(page).to_not have_content(' Your session expired. Please sign in again to continue.')
+        expect(page).to_not have_content('Your session expired. Please sign in again to continue.')
       end
 
       it 'does not log' do
-        flunk
+        visit root_path
+        expect(logger_double).to_not have_received(:session_duration)
       end
     end
   end

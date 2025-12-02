@@ -161,6 +161,25 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#session_duration' do
+    it 'logs the beginning and end timestamps' do
+      ended_at = Time.zone.now
+      started_at = ended_at - rand(1..1000).minutes
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['properties']).to eq({
+          'event_properties' => {
+            'started_at' => started_at.iso8601,
+            'ended_at' => ended_at.iso8601,
+          },
+          'path' => path,
+        })
+      end
+
+      log.session_duration(started_at, ended_at)
+    end
+  end
+
   describe '#sp_created' do
     let(:name) { 'partner_portal_sp_created' }
     let(:changes) do

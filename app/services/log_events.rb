@@ -23,6 +23,13 @@ module LogEvents
     track_event('partner_portal_redirect', properties)
   end
 
+  # Log the length of a session when a session times out
+  # @param started_at [String] A timestamp in iso8601 format
+  # @param ended_at [String] A timestamp in iso8601 format
+  def session_duration(started_at, ended_at)
+    track_event('session_duration', { started_at:, ended_at: })
+  end
+
   # Log when a service provider is created
   # @param changes [Hash] The changes to log
   def sp_created(changes:)
