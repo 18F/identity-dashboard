@@ -381,6 +381,34 @@ RSpec.describe ServiceConfigWizardController do
 
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
     describe 'step "help_text"' do
+      let(:required_attributes) do
+        %w[
+          id
+          user_id
+          issuer
+          friendly_name
+          description
+          block_encryption
+          created_at
+          updated_at
+          active
+          approved
+          agency_id
+          attribute_bundle
+          group_id
+          identity_protocol
+          ial
+          help_text
+          allow_prompt_login
+          default_aal
+          email_nameid_format_allowed
+          signed_response_message_requested
+          app_name
+          prod_config
+          status
+        ]
+      end
+
       it 'can save valid service provider settings' do
         wizard_steps_ready_to_go.each(&:save!)
 
@@ -393,6 +421,9 @@ RSpec.describe ServiceConfigWizardController do
 
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        required_attributes.each do |attr|
+          expect(assigns['service_provider'].attributes[attr]).to_not eq(nil)
+        end
         expect(WizardStep.where(user: logingov_admin)).to be_empty
       end
 
