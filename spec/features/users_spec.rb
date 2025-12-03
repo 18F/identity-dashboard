@@ -97,6 +97,7 @@ feature 'login.gov admin manages users' do
   scenario 'rbac flag shows edit for user on teams' do
     flag_in
     roles = ['Login.gov Admin',
+             'Login.gov Readonly',
              'Sandbox Partner Admin',
              'Sandbox Team Dev',
              'Team Readonly']
@@ -118,6 +119,7 @@ feature 'login.gov admin manages users' do
     expect(page).to have_content('Permissions')
     radio_labels = find_all('.usa-radio__label').map(&:text)
     expect(radio_labels).to eq(['Login.gov Admin',
+                                'Login.gov Readonly',
                                 'Sandbox Partner Admin'])
     expect(find_all('input[type=radio]').last).to be_checked
     find_all('input[type=radio]').first.click
@@ -129,6 +131,28 @@ feature 'login.gov admin manages users' do
     find_all('input[type=radio]').last.click
     click_on 'Update'
     expect(user_to_edit.reload).to_not be_logingov_admin
+  end
+
+  scenario 'can change Login.gov Admin to Login.gov Readonly role' do
+    flag_in
+    user_to_edit = create(:user, :logingov_admin)
+    visit edit_user_path(user_to_edit)
+    choose 'Login.gov Readonly'
+    click_on 'Update'
+    expect(page).to have_http_status(:ok)
+    expect(user_to_edit.reload).to_not be_logingov_admin
+    expect(user_to_edit).to be_logingov_readonly
+  end
+
+  scenario 'can change Login.gov Readonly to Login.gov Admin role' do
+    flag_in
+    user_to_edit = create(:user, :logingov_readonly)
+    visit edit_user_path(user_to_edit)
+    choose 'Login.gov Admin'
+    click_on 'Update'
+    expect(page).to have_http_status(:ok)
+    expect(user_to_edit.reload).to_not be_logingov_readonly
+    expect(user_to_edit).to be_logingov_admin
   end
 
   scenario 'can demote a legacy Login.gov admin and make them a Login.gov admin again' do

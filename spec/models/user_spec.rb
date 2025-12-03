@@ -234,6 +234,20 @@ describe User do
     end
   end
 
+  describe '#logingov_staff?' do
+    it 'returns true when user is logingov_staff' do
+      admin = create(:user, :logingov_admin)
+      readonly = create(:user, :logingov_readonly)
+      expect(admin.logingov_staff?).to be_truthy
+      expect(readonly.logingov_staff?).to be_truthy
+    end
+
+    it 'returns false when user is not logingov_staff' do
+      user = create(:user, :team_member)
+      expect(user.logingov_staff?).to be_falsy
+    end
+  end
+
   describe '#gov_partner?' do
     it 'identifies all users with .gov emails' do
       user0 = create(:user, email: 'test@gsa.gov')
