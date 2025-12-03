@@ -23,6 +23,12 @@ class TeamMembership < ApplicationRecord
     find_or_initialize_by(user: user, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
   end
 
+  def self.find_or_build_logingov_readonly(user)
+    raise ActiveRecord::RecordNotFound unless Team.internal_team
+
+    find_or_initialize_by(user: user, team: Team.internal_team, role: Role::LOGINGOV_READONLY)
+  end
+
   def self.destroy_orphaned_memberships(logger: nil)
     data_for_deleted_users = TeamMembership.where.missing(:user)
     if data_for_deleted_users.any?

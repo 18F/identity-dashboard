@@ -77,12 +77,23 @@ class User < ApplicationRecord
       TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
   end
 
+  def logingov_readonly?
+    return false unless IdentityConfig.store.access_controls_enabled
+
+    TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_READONLY)
+  end
+
+  def logingov_staff?
+    logingov_admin? || logingov_readonly?
+  end
+
   def gov_partner?
     self.email.match(/\.(gov|mil)\z/)
   end
 
   def primary_role
     return Role::LOGINGOV_ADMIN if logingov_admin?
+    return Role::LOGINGOV_READONLY if logingov_readonly?
     return team_memberships.first.role if team_memberships.first&.role.present?
     return Role.find_by(name: 'partner_readonly') if teams.any?
 
