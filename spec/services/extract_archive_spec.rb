@@ -29,7 +29,7 @@ RSpec.describe ExtractArchive do
     expect(File.read("tmp/#{expected_logo_filename}")).to eq(sp.logo_file.download)
   end
 
-  it 'can add multiple images' do
+  it 'can add multiple images with same file name' do
     sp_with_svg = create(:service_provider)
     sp_with_svg.logo_file = fixture_file_upload('logo.svg')
     sp_with_svg.logo = 'logo.svg'
