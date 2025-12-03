@@ -8,7 +8,9 @@ class ExtractArchive
     @logo_attachments = []
   end
 
-  # @param service_providers [Enumerable<ServiceProvider>]
+  # @param logos [Array<Hash{Symbol=>String,ActiveStorage::Attached::One}>] an array of hashes where
+  #   each hash is has a key `:filename`, a string <String>, and
+  #   `:attachment` <ActiveStorage::Attached::One>}
   def add_logos(logos)
     @logo_attachments = @logo_attachments.union(logos)
   end

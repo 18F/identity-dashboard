@@ -45,7 +45,9 @@ feature 'Extract Download' do
       downloaded_file = StringIO.new page.body
 
       Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
-      expect(File.read("tmp/#{sp_to_export.id}_#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
+      expect(File.read(
+        "tmp/#{sp_to_export.id}_#{expected_logo_name}",
+      )).to eq(sp_to_export.logo_file.download)
     end
 
     it 'will include the correct attributes in the download' do
