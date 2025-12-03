@@ -71,7 +71,8 @@ class UsersController < ApplicationController
       Role.active_roles_names.slice(
         'logingov_admin',
         'logingov_readonly',
-        'partner_admin').invert
+        'partner_admin',
+      ).invert
     else
       Role.active_friendly_names
     end
