@@ -57,6 +57,7 @@ class Extract
       attributes['team_uuid'] = sp.team.uuid
       # The remote key is not portable between environments.
       attributes.delete 'remote_logo_key'
+      attributes['logo'] = logo_filename_for(sp) if sp.logo_file.present?
       attributes
     end
     { teams: teams, service_providers: sp_data }.to_json
@@ -71,6 +72,22 @@ class Extract
 
   def valid?
     super
+  end
+
+  # @return [Array<Hash{Symbol=>String,ActiveStorage::Attached::One}>] For each service provider
+  #   return a hash of the format `{attachment: ActiveStorage::Attached::One, filename: String }`
+  def logos
+    service_providers.map do |sp|
+      next if sp.logo_file.blank?
+
+      { filename: logo_filename_for(sp), attachment: sp.logo_file }
+    end.compact
+  end
+
+  def logo_filename_for(sp)
+    filename = sp.logo
+    filename ||= sp.logo_file.blob.filename
+    "#{sp.id}_#{filename}"
   end
 
   private

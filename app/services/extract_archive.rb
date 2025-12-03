@@ -9,12 +9,8 @@ class ExtractArchive
   end
 
   # @param service_providers [Enumerable<ServiceProvider>]
-  def add_logos_from_service_providers(service_providers)
-    service_providers.each do |sp|
-      next if sp.logo_file.blank?
-
-      @logo_attachments.push({ filename: sp.logo, attachment: sp.logo_file })
-    end
+  def add_logos(logos)
+    @logo_attachments = @logo_attachments.union(logos)
   end
 
   def add_json_file(data, filename)

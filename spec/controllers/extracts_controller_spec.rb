@@ -128,12 +128,12 @@ describe ExtractsController do
         end
 
         after do
-          system 'rm tmp/logo.svg'
+          system "rm tmp//#{sp1.id}_logo.svg"
           system 'rm tmp/extract.json'
         end
 
         it 'contains a logo file' do
-          expect(File.read('tmp/logo.svg')).to eq(sp1.logo_file.download)
+          expect(File.read("tmp/#{sp1.id}_logo.svg")).to eq(sp1.logo_file.download)
         end
 
         it 'contains the json data' do
@@ -156,6 +156,7 @@ describe ExtractsController do
         extracted_help_text = extracted_data['service_providers'].first['help_text']
         expect(extracted_help_text).to eq(sp1.help_text)
         expect(extracted_help_text['sign_up']['zh']).to include('第一')
+
         system 'rm tmp/extract.json'
       end
     end
