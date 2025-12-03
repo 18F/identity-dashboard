@@ -7,7 +7,7 @@ class PopulateRoles
       WARNING: this will loop through all TeamMemberships with invalid or nil roles and reset roles based on legacy permissions
   WARN
 
-  VALID_ROLENAMES = %w[partner_admin partner_developer partner_readonly logingov_admin]
+  VALID_ROLENAMES = %w[partner_admin partner_developer partner_readonly logingov_readonly logingov_admin]
 
   def initialize(logger)
     @logger = logger
