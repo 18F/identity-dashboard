@@ -37,6 +37,10 @@ class Role < ApplicationRecord
     end.to_h
   end
 
+  def self.login_staff?(role)
+    role == Role::LOGINGOV_ADMIN || role == Role::LOGINGOV_READONLY
+  end
+
   def friendly_name
     Role.active_roles_names[self.name]
   end
