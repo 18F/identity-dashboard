@@ -38,7 +38,7 @@ class ExtractsController < AuthenticatedController
     output = ''
     in_memory_file = StringIO.new output
     archive = ExtractArchive.new(in_memory_file)
-    archive.add_logos_from_service_providers(@extract.service_providers)
+    archive.add_logos(@extract.logos)
     archive.add_json_file(
       @extract.to_json,
       'extract.json',

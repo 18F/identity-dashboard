@@ -191,4 +191,24 @@ describe Extract do
       expect(extract.service_providers).to eq([sp2])
     end
   end
+
+  describe '#logos' do
+    subject(:extract) do
+      Extract.new(ticket: rand(1.1000), search_by: 'issuers', criteria_list: sp1.issuer)
+    end
+
+    it 'is empty if the service provider has no logo' do
+      expect(extract.logos).to be_empty
+    end
+
+    it 'contains a logo and prefixed filename' do
+      sp1.logo_file = fixture_file_upload('logo.svg')
+      sp1.logo = 'logo.svg'
+      sp1.save!
+      expect(extract.logos.count).to be 1
+      expect(extract.logos.first[:filename]).to eq("#{sp1.id}_logo.svg")
+      expected_contents = File.read(File.join(Rails.root, file_fixture_path, 'logo.svg'))
+      expect(extract.logos.first[:attachment].blob.download).to eq(expected_contents)
+    end
+  end
 end
