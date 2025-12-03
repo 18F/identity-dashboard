@@ -2,11 +2,17 @@ require 'rails_helper'
 
 describe PaperTrail::VersionPolicy::Scope do
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:regular_user) { create(:user) }
   let(:scope_double) { instance_double(ActiveRecord::Relation) }
 
   it 'allows everything for login.gov admins' do
     resolution = described_class.new(logingov_admin, scope_double).resolve
+    expect(resolution).to be(scope_double)
+  end
+
+  it 'allows everything for login.gov readonly' do
+    resolution = described_class.new(logingov_readonly, scope_double).resolve
     expect(resolution).to be(scope_double)
   end
 
