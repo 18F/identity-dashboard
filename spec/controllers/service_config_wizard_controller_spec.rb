@@ -427,6 +427,18 @@ RSpec.describe ServiceConfigWizardController do
         expect(WizardStep.where(user: logingov_admin)).to be_empty
       end
 
+      # rubocop:disable Layout/LineLength
+      it 'assigns a UUID to the service provider' do
+        wizard_steps_ready_to_go.each(&:save!)
+
+        put :update, params: { id: 'help_text', wizard_step: { active: false } }
+
+        service_provider = ServiceProvider.last
+        expect(service_provider.uuid).to_not be_nil
+        expect(service_provider.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
+      end
+      # rubocop:enable Layout/LineLength
+
       it 'stays on this step when the service provider would be invalid' do
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }

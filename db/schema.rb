@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_10_141625) do
+ActiveRecord::Schema[7.2].define(version: 2025_12_04_083427) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,8 +146,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_10_141625) do
     t.boolean "prod_config", default: false, null: false
     t.string "post_idv_follow_up_url"
     t.string "status", default: "pending"
+    t.string "uuid"
     t.index ["group_id"], name: "index_service_providers_on_group_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+    t.index ["uuid"], name: "index_service_providers_on_uuid", unique: true
   end
 
   create_table "team_memberships", id: :serial, force: :cascade do |t|
