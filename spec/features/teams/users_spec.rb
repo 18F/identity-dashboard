@@ -11,6 +11,7 @@ describe 'users' do
   let(:readonly_team_membership) { create(:team_membership, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_team_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:user) { create(:user) }
 
   before do
@@ -44,6 +45,12 @@ describe 'users' do
       login_as logingov_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
+    end
+
+    scenario 'access denied to login.gov readonly' do
+      login_as logingov_readonly
+      visit new_team_user_path(team)
+      expect(page).to have_content('Unauthorized')
     end
 
     scenario 'access denied to partner read-only' do
@@ -278,6 +285,12 @@ describe 'users' do
 
     scenario 'access permitted to login.gov admin' do
       login_as logingov_admin
+      visit team_users_path(team)
+      expect(page).to have_content("Manage users for #{team.name}")
+    end
+
+    scenario 'access permitted to login.gov readonly' do
+      login_as logingov_readonly
       visit team_users_path(team)
       expect(page).to have_content("Manage users for #{team.name}")
     end

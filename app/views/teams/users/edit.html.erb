@@ -10,7 +10,7 @@
 
 <%= simple_form_for(@team_membership, url: team_user_path(@team_membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
-  <fieldset class="usa-fieldset margin-top-3">
+  <fieldset class="usa-fieldset margin-y-3">
     <% if IdentityConfig.store.prod_like_env && @remove_partner_admin %>
       <p>In order to give <strong><%=
         t('role_names.production.partner_admin')

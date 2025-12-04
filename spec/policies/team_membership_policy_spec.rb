@@ -9,6 +9,7 @@ describe TeamMembershipPolicy do
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 
@@ -124,6 +125,10 @@ describe TeamMembershipPolicy do
       expect(described_class).to permit(logingov_admin, partner_admin_membership)
     end
 
+    it 'forbids Login Readonly' do
+      expect(described_class).to_not permit(logingov_readonly, partner_admin_membership)
+    end
+
     it 'allows Partner Admins with some role names' do
       new_team_membership = team.team_memberships.build(role_name: ['partner_readonly',
                                                                     'partner_developer'].sample)
@@ -176,18 +181,22 @@ describe TeamMembershipPolicy do
   end
 
   describe '#roles_for_edit' do
-    it 'is everything but Login Admin for Login Admins' do
+    it 'is everything but Login Staff for Login Admins' do
       team_membership = [partner_admin_membership,
                          partner_developer_membership,
                          partner_readonly_membership].sample
-      expected_roles = Role.all - [Role::LOGINGOV_ADMIN]
+      expected_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
       expect(described_class.new(logingov_admin, team_membership).roles_for_edit)
         .to eq(expected_roles)
     end
 
-    it 'is everything but Login Admin and Partner Admin for Partner Admins' do
+    it 'is everything but Login Staff and Partner Admin for Partner Admins' do
       team_membership = [partner_developer_membership, partner_readonly_membership].sample
-      expected_roles = Role.all - [Role::LOGINGOV_ADMIN, Role.find_by(name: 'partner_admin')]
+      expected_roles = Role.all - [
+        Role::LOGINGOV_ADMIN,
+        Role::LOGINGOV_READONLY,
+        Role.find_by(name: 'partner_admin'),
+      ]
       expect(described_class.new(partner_admin, team_membership).roles_for_edit)
         .to eq(expected_roles)
     end
