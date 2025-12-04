@@ -34,7 +34,10 @@
     <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
   <% end %>
 </ul>
-<%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+
+<% if policy(@team).edit? %>
+  <%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+<% end %>
 
 <% if policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @audit_events %>

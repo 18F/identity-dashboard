@@ -279,6 +279,23 @@ feature 'TeamMembership CRUD' do
       expect(oldest_event_text).to include("At: #{team.created_at}")
     end
 
+    scenario 'readonly user attempts to edit a team' do
+      team = create(:team)
+      user = create(:team_membership, :partner_readonly, team:).user
+
+      login_as(user)
+
+      visit team_path(team)
+
+      expect(page).to_not have_button('Edit')
+
+      visit edit_team_path(team)
+      expect(page).to have_content('Unauthorized')
+
+      visit teams_all_path
+      expect(page).to_not have_button('Edit')
+    end
+
     scenario 'regular user attempts to view a team' do
       user = create(:user)
       team = create(:team)
