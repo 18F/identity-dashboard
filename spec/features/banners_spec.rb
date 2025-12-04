@@ -29,13 +29,24 @@ feature 'Banners' do
     end
   end
 
-  scenario 'html renders in banners admin table' do
-    logingov_admin = create(:user, :logingov_admin)
-    login_as(logingov_admin)
+  context 'html renders in banners admin table' do
+    it 'renders for login.gov admin' do
+      logingov_admin = create(:user, :logingov_admin)
+      login_as(logingov_admin)
 
-    visit banners_path
+      visit banners_path
 
-    expect(page).to have_css("th > a[href='banner_test_link']")
+      expect(page).to have_css("th > a[href='banner_test_link']")
+    end
+
+    it 'renders for login.gov readonly' do
+      logingov_readonly = create(:user, :logingov_readonly)
+      login_as(logingov_readonly)
+
+      visit banners_path
+
+      expect(page).to have_css("th > a[href='banner_test_link']")
+    end
   end
 
   context 'it displays at the approptiate start time' do
