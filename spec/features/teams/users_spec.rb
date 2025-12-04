@@ -290,6 +290,12 @@ describe 'users' do
       expect(page).to have_content("Manage users for #{team.name}")
     end
 
+    scenario 'access permitted to login.gov readonly' do
+      login_as logingov_readonly
+      visit team_users_path(team)
+      expect(page).to have_content("Manage users for #{team.name}")
+    end
+
     scenario 'access permitted to team member to remove other team member (without RBAC)' do
       allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       login_as team_member

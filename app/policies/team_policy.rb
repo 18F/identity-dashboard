@@ -2,7 +2,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
   include TeamHelper
 
   def all?
-    user_has_login_admin_role?
+    user.logingov_staff?
   end
 
   def create?
@@ -40,7 +40,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
   end
 
   def show?
-    in_team? || user_has_login_admin_role?
+    in_team? || user.logingov_staff?
   end
 
   alias update? edit?
