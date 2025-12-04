@@ -22,11 +22,13 @@
   <% end %>
 </ul>
 
-<%= link_to(
-  "Manage users",
-  team_users_path(@team),
-  class: 'margin-y-1 display-block',
-) %>
+<% if policy(@team).edit? %>
+  <%= link_to(
+    "Manage users",
+    team_users_path(@team),
+    class: 'margin-y-1 display-block',
+  ) %>
+<% end %>
 
 <h2>Configurations: (<%= @team.service_providers.count %>)</h2>
 <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled">
