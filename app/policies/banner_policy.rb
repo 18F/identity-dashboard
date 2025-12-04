@@ -3,6 +3,10 @@ class BannerPolicy < BasePolicy # :nodoc: all
     user_has_login_admin_role?
   end
 
+  def view_banners?
+    user&.logingov_staff?
+  end
+
   def edit?
     return false if record.ended?
 
@@ -12,7 +16,7 @@ class BannerPolicy < BasePolicy # :nodoc: all
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      user_has_login_admin_role? ? scope.all : scope.none
+      user.logingov_staff? ? scope.all : scope.none
     end
   end
 end
