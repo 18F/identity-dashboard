@@ -106,6 +106,13 @@ feature 'login.gov admin manages users' do
       expect(page).to have_current_path(users_path)
     end
 
+    scenario 'create and delete buttons are hidden' do
+      visit users_path
+
+      expect(page).to_not have_content('New User')
+      expect(page).to_not have_content('Delete unconfirmed users')
+    end
+
     scenario 'user index page shows all users' do
       users = create_list(:user, 3)
 
