@@ -23,7 +23,9 @@
       <th scope="col"><%=
         IdentityConfig.store.access_controls_enabled ? 'Role' : 'Admin'
       %></th>
-      <th scope="col">Actions</th>
+      <% if current_user.logingov_admin? %>
+        <th scope="col">Actions</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -47,14 +49,16 @@
                             aria: { hidden: true } if user.logingov_admin? %>
           <% end %>
         </td>
-        <td>
-          <%= button_to 'Delete', user_path(user.id), method: :delete,
-                      form_class: 'display-inline',
-                      class: 'usa-button usa-button--unstyled usa-link margin-right-1',
-                      data: { confirm: t('notices.confirm_delete') } %>
-          <span>&nbsp;</span>
-          <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
-        </td>
+        <% if current_user.logingov_admin? %>
+          <td>
+            <%= button_to 'Delete', user_path(user.id), method: :delete,
+                        form_class: 'display-inline',
+                        class: 'usa-button usa-button--unstyled usa-link margin-right-1',
+                        data: { confirm: t('notices.confirm_delete') } %>
+            <span>&nbsp;</span>
+            <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
