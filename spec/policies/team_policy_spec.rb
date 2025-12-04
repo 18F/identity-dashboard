@@ -113,6 +113,10 @@ describe TeamPolicy do
         expect(TeamPolicy).to_not permit(logingov_readonly, team)
       end
 
+      it 'does not allow logingov readonly' do
+        expect(TeamPolicy).to_not permit(logingov_readonly, team)
+      end
+
       it 'does not allow other users' do
         expect(TeamPolicy).to_not permit(contractor, team)
       end
