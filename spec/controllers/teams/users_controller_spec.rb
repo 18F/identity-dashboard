@@ -78,6 +78,14 @@ describe Teams::UsersController do
         before { allow(logger_double).to receive(:team_membership_created) }
         it_behaves_like 'can create valid users'
 
+        it 'renders :new when there is an error saving' do
+          user_validator = instance_double(UserValidator)
+          allow(user_validator).to receive(:validate).and_return(false)
+
+          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          expect(response).to redirect_to(new_team_user_path team.id)
+        end
+
         context 'logging' do
           it 'calls log.team_membership_created' do
             post :create, params: { team_id: team.id, user: { email: valid_email } }
