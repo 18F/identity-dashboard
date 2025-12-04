@@ -115,6 +115,10 @@ RSpec.describe ServiceConfigWizardController do
       initial_attributes.delete('identity_protocol')
       new_attributes.delete('identity_protocol')
 
+      # UUID may be assigned if it was nil
+      initial_attributes.delete('uuid')
+      new_attributes.delete('uuid')
+
       expect(new_attributes).to eq(initial_attributes)
     end
 
@@ -716,7 +720,7 @@ RSpec.describe ServiceConfigWizardController do
             }
 
             expect(logger_double).to have_received(:sp_updated).with(
-              { changes: expected_log },
+              { changes: hash_including(expected_log) },
             )
           end
         end
