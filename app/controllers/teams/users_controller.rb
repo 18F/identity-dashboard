@@ -53,7 +53,7 @@ class Teams::UsersController < AuthenticatedController
   def create
     if !new_team_member.valid?
       team
-      authorize TeamMembership.new, :create?
+      authorize TeamMembership.new(team:), :create?
       render(:new) and return
     end
 
