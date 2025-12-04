@@ -123,6 +123,7 @@ class ServiceConfigWizardController < AuthenticatedController
   def save_to_service_provider
     service_provider = draft_service_provider
 
+    service_provider.uuid ||= SecureRandom.uuid
     service_provider.agency_id ||= service_provider.agency&.id
     service_provider.user ||= current_user
     if helpers.help_text_options_enabled? && !current_user.logingov_admin?
