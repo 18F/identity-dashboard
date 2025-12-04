@@ -53,7 +53,7 @@ class Teams::UsersController < AuthenticatedController
   def create
     if !new_team_member.valid?
       team
-      skip_authorization
+      authorize team, :edit?
       render(:new) and return
     end
 
@@ -74,7 +74,6 @@ class Teams::UsersController < AuthenticatedController
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path and return
   rescue ActiveRecord::RecordInvalid => err
-    skip_authorization
     flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
   end
