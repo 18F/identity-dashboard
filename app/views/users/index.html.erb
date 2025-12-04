@@ -2,12 +2,13 @@
 <h1 class="usa-display">Users</h1>
 
 <div class="display-flex">
-  <%= button_to t('headings.users.new_user'),
-    new_user_path,
-    method: :get,
-    class: 'usa-button'
-  %>
-
+  <% if current_user.logingov_admin? %>
+    <%= button_to t('headings.users.new_user'),
+      new_user_path,
+      method: :get,
+      class: 'usa-button'
+    %>
+  <% end %>
   <% if can_delete_unconfirmed_users?(current_user, @users) %>
     <%= button_to t('forms.buttons.delete_unconfirmed_users'),
       delete_unconfirmed_users_path,
