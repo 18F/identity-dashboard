@@ -94,6 +94,46 @@ feature 'login.gov admin manages users' do
     end
   end
 
+  feature 'login.gov readonly views users' do
+    let(:logingov_readonly) { create(:logingov_readonly) }
+
+    before { login_as(logingov_readonly) }
+
+    scenario 'manage user page accessible from nav bar link' do
+      visit service_providers_path
+      click_on 'Users'
+
+      expect(page).to have_current_path(users_path)
+    end
+
+    scenario 'user index page shows all users' do
+      users = create_list(:user, 3)
+
+      visit users_path
+
+      users.each do |user|
+        expect(page).to have_content(user.email)
+      end
+    end
+
+    scenario 'rbac flag index page shows user table' do
+      flag_in
+      users = create_list(:user, 3)
+      everyone = [logingov_readonly, users].flatten
+      headings = ['Email', 'Signed in', 'Role']
+
+      visit users_path
+
+      headings.each do |heading|
+        expect(page).to have_content(heading)
+      end
+      everyone.each do |user|
+        user_row = find('tr', text: user.email)
+        expect(user_row).to have_content(user.primary_role.friendly_name)
+      end
+    end
+  end
+
   scenario 'rbac flag shows edit for user on teams' do
     flag_in
     roles = ['Login.gov Admin',

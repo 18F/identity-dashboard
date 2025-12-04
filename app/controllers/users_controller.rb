@@ -2,7 +2,8 @@
 class UsersController < ApplicationController
   include ModelChanges
 
-  before_action -> { authorize User, :manage_users? }, except: %i[none]
+  before_action -> { authorize User, :manage_users? }, except: %i[index none]
+  before_action -> { authorize User, :view_users? }, only: [:index]
   before_action -> { authorize User }, only: [:none]
   after_action :verify_authorized
   after_action :verify_policy_scoped, except: [:none]
