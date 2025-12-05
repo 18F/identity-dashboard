@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   attr_reader :user
 
   def index
-    @users = policy_scope(User).sorted
+    @users = policy_scope(User).includes([:teams]).sorted
   end
 
   def new

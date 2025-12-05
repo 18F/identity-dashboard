@@ -40,6 +40,13 @@ describe UsersController do
         get :index
         expect(response).to have_http_status(:ok)
       end
+
+      it 'eager loads teams with includes' do
+        get :index
+
+        user = assigns['users'].first
+        expect(user.association(:teams).loaded?).to be true
+      end
     end
 
     context 'when not a login.gov admin' do
