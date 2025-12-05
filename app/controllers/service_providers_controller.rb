@@ -157,7 +157,6 @@ value: func.to_proc.call(@service_provider) })
     @service_provider || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
-
   def moved_to_prod?
     !IdentityConfig.store.prod_like_env && service_provider.status == 'moved_to_prod'
   end
