@@ -8,13 +8,34 @@
     class: 'usa-button'
   %>
 
-  <% if can_delete_unconfirmed_users?(current_user, @users) %>
+  <% if can_delete_unconfirmed_users?(current_user) %>
     <%= button_to t('forms.buttons.delete_unconfirmed_users'),
       delete_unconfirmed_users_path,
       method: :delete,
       class: 'usa-button' %>
   <% end %>
 </div>
+
+<% if @total_pages > 1 %>
+  <nav aria-label="Pagination" class="margin-y-2">
+    <% if @page > 1 %>
+      <%= link_to 'First', users_path(page: 1), class: 'usa-button usa-button--outline' %>
+      <%= link_to 'Previous', users_path(page: @page - 1), class: 'usa-button usa-button--outline' %>
+    <% end %>
+    <% ([@page - 2, 1].max..[@page + 2, @total_pages].min).each do |pg| %>
+      <% if pg == @page %>
+        <span class="usa-button"><%= pg %></span>
+      <% else %>
+        <%= link_to pg, users_path(page: pg), class: 'usa-button usa-button--outline' %>
+      <% end %>
+    <% end %>
+    <% if @page < @total_pages %>
+      <%= link_to 'Next', users_path(page: @page + 1), class: 'usa-button usa-button--outline' %>
+      <%= link_to 'Last', users_path(page: @total_pages), class: 'usa-button usa-button--outline' %>
+    <% end %>
+  </nav>
+<% end %>
+
 <table class="usa-table">
   <thead>
     <tr>
@@ -35,7 +56,7 @@
                           alt: alt(user),
                           aria: { hidden: true },
                           style: 'vertical-align:bottom' %>
-          <%= caption(user) %>                  
+          <%= caption(user) %>
         </td>
         <td>
           <% if IdentityConfig.store.access_controls_enabled %>
@@ -59,3 +80,23 @@
     <% end %>
   </tbody>
 </table>
+
+<% if @total_pages > 1 %>
+  <nav aria-label="Pagination" class="margin-y-2">
+    <% if @page > 1 %>
+      <%= link_to 'First', users_path(page: 1), class: 'usa-button usa-button--outline' %>
+      <%= link_to 'Previous', users_path(page: @page - 1), class: 'usa-button usa-button--outline' %>
+    <% end %>
+    <% ([@page - 3, 1].max..[@page + 3, @total_pages].min).each do |pg| %>
+      <% if pg == @page %>
+        <span class="usa-button"><%= pg %></span>
+      <% else %>
+        <%= link_to pg, users_path(page: pg), class: 'usa-button usa-button--outline' %>
+      <% end %>
+    <% end %>
+    <% if @page < @total_pages %>
+      <%= link_to 'Next', users_path(page: @page + 1), class: 'usa-button usa-button--outline' %>
+      <%= link_to 'Last', users_path(page: @total_pages), class: 'usa-button usa-button--outline' %>
+    <% end %>
+  </nav>
+<% end %>

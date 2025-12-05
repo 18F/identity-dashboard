@@ -40,6 +40,64 @@ describe UsersController do
         get :index
         expect(response).to have_http_status(:ok)
       end
+
+      describe 'pagination' do
+        let!(:users) { create_list(:user, 150) }
+
+        it 'sets pagination variables' do
+          get :index
+          expect(assigns(:page)).to eq(1)
+          expect(assigns(:total_count)).to eq(User.count)
+          expect(assigns(:total_pages)).to eq((User.count.to_f / UsersController::PER_PAGE).ceil)
+        end
+
+        it 'defaults to page 1' do
+          get :index
+          expect(assigns(:page)).to eq(1)
+          expect(assigns(:users).size).to be <= UsersController::PER_PAGE
+        end
+
+        it 'returns the correct page when page param is provided' do
+          get :index, params: { page: 2 }
+          expect(assigns(:page)).to eq(2)
+        end
+
+        it 'limits results to PER_PAGE' do
+          get :index
+          expect(assigns(:users).size).to eq(UsersController::PER_PAGE)
+        end
+
+        it 'returns remaining users on last page' do
+          total_pages = (User.count.to_f / UsersController::PER_PAGE).ceil
+          get :index, params: { page: total_pages }
+          expected_count = User.count % UsersController::PER_PAGE
+          expected_count = UsersController::PER_PAGE if expected_count == 0
+          expect(assigns(:users).size).to eq(expected_count)
+        end
+
+        it 'treats page 0 as page 1' do
+          get :index, params: { page: 0 }
+          expect(assigns(:page)).to eq(1)
+        end
+
+        it 'treats negative page numbers as page 1' do
+          get :index, params: { page: -5 }
+          expect(assigns(:page)).to eq(1)
+        end
+
+        it 'clamps page number to last page if too high' do
+          get :index, params: { page: 9999 }
+          expect(assigns(:page)).to eq(assigns(:total_pages))
+        end
+
+        it 'eager loads team_memberships with roles and teams' do
+          get :index
+          # Verify no N+1 queries by checking associations are loaded
+          assigns(:users).each do |u|
+            expect(u.team_memberships.loaded?).to be(true)
+          end
+        end
+      end
     end
 
     context 'when not a login.gov admin' do
