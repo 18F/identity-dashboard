@@ -17,6 +17,7 @@ class TeamMembership < ApplicationRecord
                                     message: 'This user is already a member of the team.' }
   validate :role_exists_if_present
 
+  scope :admin, -> { where(role_name: 'logingov_admin') }
   def self.find_or_build_logingov_admin(user)
     raise ActiveRecord::RecordNotFound unless Team.internal_team
 

@@ -74,7 +74,7 @@ class User < ApplicationRecord
     return admin_without_deprecation? unless IdentityConfig.store.access_controls_enabled
 
     admin_without_deprecation? || # TODO: delete legacy admin property
-      TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
+      TeamMembership.admin.find { |membership| membership.user == self }
   end
 
   def gov_partner?

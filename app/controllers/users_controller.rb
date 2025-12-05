@@ -11,7 +11,10 @@ class UsersController < ApplicationController
   attr_reader :user
 
   def index
-    @users = policy_scope(User).includes([:teams]).sorted
+    @users = policy_scope(User).includes(
+      [:teams, :team_memberships],
+    )
+    TeamMembership.admin.eager_load(:user)
   end
 
   def new
