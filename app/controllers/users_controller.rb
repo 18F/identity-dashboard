@@ -43,10 +43,8 @@ class UsersController < ApplicationController
     authorize_and_make_admin(@user) if role == Role::LOGINGOV_ADMIN
     authorize_and_make_login_readonly(@user) if role == Role::LOGINGOV_READONLY
     user.transaction do
-      remove_admin(user) if user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
-      if user.logingov_readonly? && role && role != Role::LOGINGOV_READONLY
-        remove_login_readonly(user)
-      end
+      remove_admin(user) if login_admin_assigned_new_role
+      remove_login_readonly(user) if login_readonly_assigned_new_role
       user.team_memberships.each do |membership|
         membership.role = role
         membership.save!
@@ -79,6 +77,14 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def login_admin_assigned_new_role?(role)
+    user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
+  end
+
+  def login_readonly_assigned_new_role?(role)
+    user.logingov_readonly? && role && role != Role::LOGINGOV_READONLY
+  end
 
   def authorize_and_make_admin(user)
     admin_membership = TeamMembership.find_or_build_logingov_admin(user)
