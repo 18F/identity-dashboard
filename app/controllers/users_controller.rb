@@ -43,8 +43,8 @@ class UsersController < ApplicationController
     authorize_and_make_admin(@user) if role == Role::LOGINGOV_ADMIN
     authorize_and_make_login_readonly(@user) if role == Role::LOGINGOV_READONLY
     user.transaction do
-      remove_admin(user) if login_admin_assigned_new_role
-      remove_login_readonly(user) if login_readonly_assigned_new_role
+      remove_admin(user) if login_admin_assigned_new_role? role
+      remove_login_readonly(user) if login_readonly_assigned_new_role? role
       user.team_memberships.each do |membership|
         membership.role = role
         membership.save!
