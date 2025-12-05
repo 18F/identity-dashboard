@@ -64,6 +64,19 @@ describe Teams::UsersController do
           expect(response).to be_ok
           expect(response).to render_template(:index)
         end
+
+        context 'when accessed by team uuid' do
+          let(:team_with_uuid) { create(:team, uuid: SecureRandom.uuid) }
+          let!(:team_membership_with_uuid) do
+            create(:team_membership, :partner_admin, team: team_with_uuid, user: user)
+          end
+
+          it 'finds the team by uuid' do
+            get :index, params: { team_id: team_with_uuid.uuid }
+            expect(response).to be_ok
+            expect(assigns(:team_memberships).map(&:team).uniq).to eq([team_with_uuid])
+          end
+        end
       end
 
       describe '#new' do
