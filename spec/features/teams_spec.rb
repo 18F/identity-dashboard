@@ -288,6 +288,7 @@ feature 'TeamMembership CRUD' do
       visit team_path(team)
 
       expect(page).to_not have_button('Edit')
+      expect(page).to_not have_link('Manage users')
 
       visit edit_team_path(team)
       expect(page).to have_content('Unauthorized')
