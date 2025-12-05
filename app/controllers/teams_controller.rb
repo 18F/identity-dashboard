@@ -71,7 +71,7 @@ class TeamsController < AuthenticatedController
   private
 
   def team
-    @team ||= Team.find_by_id_or_uuid(params[:id])
+    @team ||= Team.find_by_id_or_uuid(params[:id]) # rubocop:disable Rails/DynamicFindBy
   end
 
   def team_params
