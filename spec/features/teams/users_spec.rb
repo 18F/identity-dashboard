@@ -292,7 +292,7 @@ describe 'users' do
     scenario 'access permitted to login.gov readonly' do
       login_as logingov_readonly
       visit team_users_path(team)
-      expect(page).to have_content("Manage users for #{team.name}")
+      expect(page).to have_content("Users for #{team.name}")
     end
 
     scenario 'access permitted to team member to remove other team member (without RBAC)' do
@@ -387,7 +387,7 @@ describe 'users' do
 
         it 'shows correct partner roles and descriptions' do
           team_users = [partner_admin_team_member, readonly_team_member]
-          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
 
           visit team_users_path(team)
           within('tr', text: team_users.sample.email) do
@@ -407,7 +407,7 @@ describe 'users' do
 
         it 'shows correct partner roles and descriptions' do
           team_users = [partner_admin_team_member, readonly_team_member]
-          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
 
           visit team_users_path(team)
           within('tr', text: team_users.sample.email) do
@@ -545,10 +545,10 @@ describe 'users' do
         end
       end
 
-      it 'does show all roles except for login.gov admin and partner admin roles' do
+      it 'does show all roles except for login.gov staff and partner admin roles' do
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN])
+        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY])
         expected_roles.delete(Role.find_by(name: 'partner_admin'))
         expect(input_item_strings.count).to eq(expected_roles.count)
         expected_roles.each_with_index do |role, index|
