@@ -76,6 +76,16 @@ describe TeamsController do
         expect(response).to render_template(:show)
       end
 
+      context 'when accessed by uuid' do
+        let(:team_with_uuid) { create(:team, uuid: SecureRandom.uuid) }
+
+        it 'finds the team by uuid' do
+          get :show, params: { id: team_with_uuid.uuid }
+          expect(response).to render_template(:show)
+          expect(assigns(:team)).to eq(team_with_uuid)
+        end
+      end
+
       it 'shows audit events' do
         test_version = PaperTrail::Version.new(
           object_changes: { 'user_email' => [nil, "test#{rand(1..1000)}@gsa.gov"] },
@@ -249,6 +259,16 @@ describe TeamsController do
       it 'shows the edit template' do
         get :edit, params: { id: team.id }
         expect(response).to render_template(:edit)
+      end
+
+      context 'when accessed by uuid' do
+        let(:team_with_uuid) { create(:team, uuid: SecureRandom.uuid) }
+
+        it 'finds the team by uuid' do
+          get :edit, params: { id: team_with_uuid.uuid }
+          expect(response).to render_template(:edit)
+          expect(assigns(:team)).to eq(team_with_uuid)
+        end
       end
     end
 

@@ -71,7 +71,17 @@ class TeamsController < AuthenticatedController
   private
 
   def team
-    @team ||= Team.find(params[:id])
+    @team ||= find_team_by_id_or_uuid(params[:id])
+  end
+
+  def find_team_by_id_or_uuid(identifier)
+    return Team.find_by(uuid: identifier) if uuid_format?(identifier)
+
+    Team.find(identifier)
+  end
+
+  def uuid_format?(string)
+    /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i.match?(string.to_s)
   end
 
   def team_params
