@@ -188,19 +188,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def team
-    @team ||= find_team_by_id_or_uuid(params[:team_id])
-  end
-
-  def find_team_by_id_or_uuid(identifier)
-    if uuid_format?(identifier)
-      policy_scope(Team).find_by(uuid: identifier)
-    else
-      policy_scope(Team).find_by(id: identifier)
-    end
-  end
-
-  def uuid_format?(string)
-    /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i.match?(string.to_s)
+    @team ||= policy_scope(Team).find_by_id_or_uuid(params[:team_id])
   end
 
   def current_team_membership
