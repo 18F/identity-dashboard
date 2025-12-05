@@ -47,7 +47,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user_has_login_admin_role?
+      return scope if user.logingov_staff?
 
       scope.where(id: user.teams)
     end
