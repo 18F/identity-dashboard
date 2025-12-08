@@ -45,6 +45,10 @@ class TeamPolicy < BasePolicy # :nodoc: all
 
   alias update? edit?
 
+  def manage_users?
+    edit? || user.logingov_readonly?
+  end
+
   class Scope < BasePolicy::Scope
     def resolve
       return scope if user.logingov_staff?

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'TeamMembership CRUD' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:logingov_readonly) { create(:user, :logingov_readonly) }
   let(:gov_partner) { create(:user, email: 'test@gsa.gov') }
   let(:contractor) { create(:user, email: 'contractor@gsa.com') }
 
@@ -277,6 +278,31 @@ feature 'TeamMembership CRUD' do
       oldest_event_text = find('#versions>:last-child').text
       expect(oldest_event_text).to include('Action: Create')
       expect(oldest_event_text).to include("At: #{team.created_at}")
+    end
+
+    scenario 'login.gov readonly views team details' do
+      team = create(:team)
+      user = create(:user, teams: [team])
+      create(:service_provider, team:)
+
+      login_as(logingov_readonly)
+      visit teams_all_path
+      find("a[href='#{team_path(team)}']", text: team.name).click
+
+      expect(page).to have_current_path(team_path(team))
+      expect(page).to have_content(team.name)
+      expect(page).to have_content(team.agency.name)
+      expect(page).to have_content(user.email)
+      expect(page).to have_content('Version History')
+
+      # Team UUID is displayed and has Copy button
+      # expect(page).to have_content(team.uuid)
+      # expect(page).to have_content('copy UUID to clipboard')
+
+      find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
+      find('.usa-button', text: 'Back').click
+
+      expect(page).to have_current_path(team_path(team))
     end
 
     scenario 'readonly user attempts to edit a team' do
