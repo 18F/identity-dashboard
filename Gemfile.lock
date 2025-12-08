@@ -386,7 +386,7 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    omniauth-rails_csrf_protection (1.0.2)
+    omniauth-rails_csrf_protection (2.0.0)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
@@ -432,7 +432,7 @@ GEM
     rack-canonical-host (1.3.0)
       addressable (> 0, < 3)
       rack (>= 1.6, < 4)
-    rack-protection (4.1.1)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
@@ -592,11 +592,11 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
-    sinatra (4.1.1)
+    sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
-      rack-protection (= 4.1.1)
+      rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
     sshkit (1.23.2)
@@ -698,7 +698,7 @@ DEPENDENCIES
   minitar (~> 1.1)
   newrelic_rpm (>= 6.14.0)
   nokogiri (~> 1.18.9)
-  omniauth-rails_csrf_protection
+  omniauth-rails_csrf_protection (>= 2.0.0)
   omniauth_login_dot_gov!
   paper_trail (~> 16)
   pg
@@ -736,7 +736,7 @@ DEPENDENCIES
   simple_form (~> 5.3, >= 5.3.0)
   simplecov (~> 0.22.0)
   simplecov-cobertura
-  sinatra (~> 4.1.0)
+  sinatra (~> 4.2.0)
   timecop
   uglifier
   view_component (~> 3.21)
