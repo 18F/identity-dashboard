@@ -1,7 +1,7 @@
 # The InternalReports page is used for verifying TeamMemberships by issuer
 # and is a security requirement
 class InternalReportsController < AuthenticatedController
-  before_action :admin_only
+  before_action :staff_only
 
   # Return hash shape is
   #
@@ -36,9 +36,9 @@ class InternalReportsController < AuthenticatedController
 
   private
 
-  # @return [ActionNotFound, nil] raises error if not logingov_admin
-  def admin_only
-    raise AbstractController::ActionNotFound unless current_user.logingov_admin?
+  # @return [ActionNotFound, nil] raises error if not logingov_admin or _readonly
+  def staff_only
+    raise AbstractController::ActionNotFound unless current_user.logingov_staff?
   end
 
   # @return [Array<ServiceProvider, Team>] Joins ServiceProvider issuer with
