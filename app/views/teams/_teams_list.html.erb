@@ -5,7 +5,7 @@
         <h2 class='margin-y-05'>
           <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
         </h2>
-        <% if current_user.logingov_admin? %>
+        <% if current_user.logingov_staff? %>
           <p class="margin-0">
             <strong>Team UUID:</strong> <%= team.uuid %>
           </p>

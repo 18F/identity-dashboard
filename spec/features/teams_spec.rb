@@ -197,6 +197,26 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content(sp.friendly_name)
     end
 
+    scenario 'as logingov_readonly' do
+      org1 = create(:team)
+      org2 = create(:team)
+      team = create(:team)
+      sp = create(:service_provider, team:)
+
+      login_as(logingov_readonly)
+      visit teams_all_path
+
+      expect(page).to have_content(org1.name)
+      expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.uuid)
+      expect(page).to have_content(org2.uuid)
+      expect(page).to have_content(org1.agency.name)
+      expect(page).to have_content(org2.agency.name)
+      expect(page).to have_content(org1.description)
+      expect(page).to have_content(org2.description)
+      expect(page).to have_content(sp.friendly_name)
+    end
+
     scenario 'without RBAC' do
       disable_rbac
       org1 = create(:team)
@@ -296,8 +316,8 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content('Version History')
 
       # Team UUID is displayed and has Copy button
-      # expect(page).to have_content(team.uuid)
-      # expect(page).to have_content('copy UUID to clipboard')
+      expect(page).to have_content(team.uuid)
+      expect(page).to have_content('copy UUID to clipboard')
 
       find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
       find('.usa-button', text: 'Back').click

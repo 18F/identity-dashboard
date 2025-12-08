@@ -5,7 +5,7 @@
 
 <h1 class="usa-display">Team details for "<%= @team.name %>" </h1>
 
-<% if current_user.logingov_admin? %>
+<% if current_user.logingov_staff? %>
   <%= render 'uuid_with_copy' %>
 <% end %>
 
