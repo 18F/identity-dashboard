@@ -11,6 +11,7 @@ describe 'users' do
   let(:readonly_team_membership) { create(:team_membership, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_team_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:user) { create(:user) }
 
   before do
@@ -44,6 +45,12 @@ describe 'users' do
       login_as logingov_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
+    end
+
+    scenario 'access denied to login.gov readonly' do
+      login_as logingov_readonly
+      visit new_team_user_path(team)
+      expect(page).to have_content('Unauthorized')
     end
 
     scenario 'access denied to partner read-only' do
@@ -375,7 +382,7 @@ describe 'users' do
 
         it 'shows correct partner roles and descriptions' do
           team_users = [partner_admin_team_member, readonly_team_member]
-          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
 
           visit team_users_path(team)
           within('tr', text: team_users.sample.email) do
@@ -395,7 +402,7 @@ describe 'users' do
 
         it 'shows correct partner roles and descriptions' do
           team_users = [partner_admin_team_member, readonly_team_member]
-          partner_roles = Role.all - [Role::LOGINGOV_ADMIN]
+          partner_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
 
           visit team_users_path(team)
           within('tr', text: team_users.sample.email) do
@@ -413,7 +420,7 @@ describe 'users' do
 
         user_to_change = team_users.sample
         old_role = TeamMembership.find_by(user: user_to_change, team: team).role
-        new_role = (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
+        new_role = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY, old_role]).sample
 
         user_to_not_change = (team_users - [user_to_change]).first
         expected_unchanged_role = TeamMembership.find_by(user: user_to_not_change, team: team).role
@@ -533,16 +540,17 @@ describe 'users' do
         end
       end
 
-      it 'does show all roles except for login.gov admin and partner admin roles' do
+      it 'does show all roles except for login.gov staff and partner admin roles' do
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN])
+        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY])
         expected_roles.delete(Role.find_by(name: 'partner_admin'))
         expect(input_item_strings.count).to eq(expected_roles.count)
         expected_roles.each_with_index do |role, index|
           expect(input_item_strings[index]).to include(role.friendly_name)
         end
         expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
+        expect(page).to_not have_content(Role::LOGINGOV_READONLY.friendly_name)
         expect(page).to_not have_content('Can add and delete users and teams')
       end
 
@@ -570,7 +578,7 @@ describe 'users' do
 
         user_to_change = team_users.sample
         old_role = TeamMembership.find_by(user: user_to_change, team: team).role
-        (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
+        (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY, old_role]).sample
 
         user_to_not_change = (team_users - [user_to_change]).first
         TeamMembership.find_by(user: user_to_not_change, team: team).role
@@ -590,7 +598,7 @@ describe 'users' do
 
         user_to_change = team_users.sample
         old_role = TeamMembership.find_by(user: user_to_change, team: team).role
-        (Role.all - [Role::LOGINGOV_ADMIN, old_role]).sample
+        (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY, old_role]).sample
 
         user_to_not_change = (team_users - [user_to_change]).first
         TeamMembership.find_by(user: user_to_not_change, team: team).role
