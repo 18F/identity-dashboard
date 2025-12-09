@@ -79,7 +79,7 @@ RSpec.describe TeamMembership do
     it 'with a user ID that is not valid it deletes the team membership while keeping the team' do
       invalidated_team_membership = create(:team_membership)
       affected_team = invalidated_team_membership.team
-      invalidated_team_membership.update_column(:user_id, User.last.id + rand(100.10000))
+      invalidated_team_membership.update_column(:user_id, User.last.id + rand(100..10000))
       expect do
         User.find(invalidated_team_membership.user_id)
       end.to raise_error(ActiveRecord::RecordNotFound)
@@ -94,7 +94,7 @@ RSpec.describe TeamMembership do
     it 'with a team ID that is not valid it deletes the membership while keeping the user' do
       invalidated_team_membership = create(:team_membership)
       affected_user = invalidated_team_membership.user
-      invalidated_team_membership.update_column(:group_id, Team.last.id + rand(100.10000))
+      invalidated_team_membership.update_column(:group_id, Team.last.id + rand(100..10000))
       expect do
         Team.find(invalidated_team_membership.group_id)
       end.to raise_error(ActiveRecord::RecordNotFound)

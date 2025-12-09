@@ -41,8 +41,10 @@ class UsersController < ApplicationController
 
     role = Role.find_by(name: user_params.delete(:team_membership)&.dig(:role_name))
     authorize_and_make_admin(@user) if role == Role::LOGINGOV_ADMIN
+    authorize_and_make_login_readonly(@user) if role == Role::LOGINGOV_READONLY
     user.transaction do
-      remove_admin(user) if user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
+      remove_admin(user) if login_admin_assigned_new_role? role
+      remove_login_readonly(user) if login_readonly_assigned_new_role? role
       user.team_memberships.each do |membership|
         membership.role = role
         membership.save!
@@ -64,7 +66,11 @@ class UsersController < ApplicationController
 
   def options_for_roles
     if @has_no_teams
-      Role.active_roles_names.slice('logingov_admin', 'partner_admin').invert
+      Role.active_roles_names.slice(
+        'logingov_admin',
+        'logingov_readonly',
+        'partner_admin',
+      ).invert
     else
       Role.active_friendly_names
     end
@@ -72,9 +78,19 @@ class UsersController < ApplicationController
 
   private
 
+  def login_admin_assigned_new_role?(role)
+    user.logingov_admin? && role && role != Role::LOGINGOV_ADMIN
+  end
+
+  def login_readonly_assigned_new_role?(role)
+    user.logingov_readonly? && role && role != Role::LOGINGOV_READONLY
+  end
+
   def authorize_and_make_admin(user)
     admin_membership = TeamMembership.find_or_build_logingov_admin(user)
     authorize admin_membership
+    remove_login_readonly user if user.logingov_readonly?
+
     user.transaction do
       admin_membership.save!
       user.update!(admin: true) # TODO: delete legacy admin property
@@ -88,6 +104,20 @@ class UsersController < ApplicationController
       admin_membership.destroy!
       user.update!(admin: false) # TODO: delete legacy admin property
     end
+  end
+
+  def authorize_and_make_login_readonly(user)
+    readonly_membership = TeamMembership.find_or_build_logingov_readonly(user)
+    authorize readonly_membership
+    remove_admin user if user.logingov_admin?
+
+    readonly_membership.save!
+  end
+
+  def remove_login_readonly(user)
+    readonly_membership = TeamMembership.find_or_build_logingov_readonly(user)
+    authorize readonly_membership
+    readonly_membership.destroy!
   end
 
   def user_params

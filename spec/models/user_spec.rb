@@ -182,6 +182,12 @@ describe User do
       expect(user.primary_role.friendly_name).to eq('Login.gov Admin')
     end
 
+    it 'returns "Login.gov Readonly if applicable' do
+      user = create(:user, :with_teams)
+      TeamMembership.find_or_build_logingov_readonly(user).save!
+      expect(user.primary_role.friendly_name).to eq('Login.gov Readonly')
+    end
+
     it 'returns Partner Readonly if user belongs to teams without role defined' do
       create(:team_membership, user:)
       create(:team_membership, user:)
@@ -213,6 +219,32 @@ describe User do
       User::DeprecateAdmin.deprecator.behavior = :raise
       expect { User.new.logingov_admin? }.to_not raise_error
       User::DeprecateAdmin.deprecator.behavior = default_behavior
+    end
+  end
+
+  describe '#logingov_readonly?' do
+    it 'returns true when user is logingov_readonly' do
+      user = create(:user, :logingov_readonly)
+      expect(user.logingov_readonly?).to be_truthy
+    end
+
+    it 'returns false when user is not logingov_readonly' do
+      user = create(:user, :team_member)
+      expect(user.logingov_readonly?).to be_falsy
+    end
+  end
+
+  describe '#logingov_staff?' do
+    it 'returns true when user is logingov_staff' do
+      admin = create(:user, :logingov_admin)
+      readonly = create(:user, :logingov_readonly)
+      expect(admin.logingov_staff?).to be_truthy
+      expect(readonly.logingov_staff?).to be_truthy
+    end
+
+    it 'returns false when user is not logingov_staff' do
+      user = create(:user, :team_member)
+      expect(user.logingov_staff?).to be_falsy
     end
   end
 

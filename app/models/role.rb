@@ -19,11 +19,13 @@ class Role < ApplicationRecord
 
   ROLES_NAMES = %w[
     logingov_admin
+    logingov_readonly
     partner_admin
     partner_developer
     partner_readonly
   ]
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
+  LOGINGOV_READONLY = Role.find_by(name: :logingov_readonly)
 
   def self.active_friendly_names
     active_roles_names.invert
@@ -33,6 +35,10 @@ class Role < ApplicationRecord
     @active_roles_names || ROLES_NAMES.map do |role|
       [role, I18n.t("#{roles_i18n_bucket}.#{role}")]
     end.to_h
+  end
+
+  def self.login_staff?(role)
+    role == Role::LOGINGOV_ADMIN || role == Role::LOGINGOV_READONLY
   end
 
   def friendly_name
