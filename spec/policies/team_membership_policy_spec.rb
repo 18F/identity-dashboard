@@ -176,18 +176,22 @@ describe TeamMembershipPolicy do
   end
 
   describe '#roles_for_edit' do
-    it 'is everything but Login Admin for Login Admins' do
+    it 'is everything but Login Staff for Login Admins' do
       team_membership = [partner_admin_membership,
                          partner_developer_membership,
                          partner_readonly_membership].sample
-      expected_roles = Role.all - [Role::LOGINGOV_ADMIN]
+      expected_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
       expect(described_class.new(logingov_admin, team_membership).roles_for_edit)
         .to eq(expected_roles)
     end
 
-    it 'is everything but Login Admin and Partner Admin for Partner Admins' do
+    it 'is everything but Login Staff and Partner Admin for Partner Admins' do
       team_membership = [partner_developer_membership, partner_readonly_membership].sample
-      expected_roles = Role.all - [Role::LOGINGOV_ADMIN, Role.find_by(name: 'partner_admin')]
+      expected_roles = Role.all - [
+        Role::LOGINGOV_ADMIN,
+        Role::LOGINGOV_READONLY,
+        Role.find_by(name: 'partner_admin'),
+      ]
       expect(described_class.new(partner_admin, team_membership).roles_for_edit)
         .to eq(expected_roles)
     end

@@ -47,9 +47,11 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
 
   def roles_for_edit
     return Role.none unless edit?
-    return Role.where.not(name: :logingov_admin) if user_has_login_admin_role?
+    if user_has_login_admin_role?
+      return Role.where.not(name: [:logingov_admin, :logingov_readonly])
+    end
 
-    Role.where.not(name: [:logingov_admin, :partner_admin])
+    Role.where.not(name: [:logingov_admin, :logingov_readonly, :partner_admin])
   end
 
   class Scope < BasePolicy::Scope
