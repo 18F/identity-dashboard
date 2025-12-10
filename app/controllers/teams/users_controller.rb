@@ -188,7 +188,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def team
-    @team ||= policy_scope(Team).find_by(id: params[:team_id])
+    @team ||= policy_scope(Team).find_by_id_or_uuid(params[:team_id]) # rubocop:disable Rails/DynamicFindBy
   end
 
   def current_team_membership

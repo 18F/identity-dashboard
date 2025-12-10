@@ -817,6 +817,45 @@ describe ServiceProvidersController do
     end
   end
 
+  describe '#show' do
+    let(:sp_with_uuid) { create(:service_provider, team: team, uuid: SecureRandom.uuid) }
+
+    before do
+      sign_in(logingov_admin)
+    end
+
+    context 'when accessed by id' do
+      it 'finds the service provider' do
+        get :show, params: { id: sp_with_uuid.id }
+        expect(response).to have_http_status(:ok)
+        expect(assigns(:service_provider)).to eq(sp_with_uuid)
+      end
+    end
+
+    context 'when accessed by uuid' do
+      it 'finds the service provider' do
+        get :show, params: { id: sp_with_uuid.uuid }
+        expect(response).to have_http_status(:ok)
+        expect(assigns(:service_provider)).to eq(sp_with_uuid)
+      end
+    end
+  end
+
+  describe '#edit' do
+    let(:sp_with_uuid) { create(:service_provider, team: team, uuid: SecureRandom.uuid) }
+
+    before do
+      sign_in(logingov_admin)
+    end
+
+    context 'when accessed by uuid' do
+      it 'finds the service provider' do
+        get :edit, params: { id: sp_with_uuid.uuid }
+        expect(assigns(:service_provider)).to eq(sp_with_uuid)
+      end
+    end
+  end
+
   def changes(service_provider:)
     {
       'id' => service_provider.id,

@@ -152,7 +152,9 @@ value: func.to_proc.call(@service_provider) })
   def service_provider
     # TODO: improve the 404 page and let this be a `find` that raises a `NotFound` error,
     # removing the `not_authorized` error
-    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:id])
+    # rubocop:disable Rails/DynamicFindBy
+    @service_provider ||= policy_scope(ServiceProvider).find_by_id_or_uuid(params[:id])
+    # rubocop:enable Rails/DynamicFindBy
 
     @service_provider || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
