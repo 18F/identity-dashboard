@@ -10,7 +10,7 @@ describe ServiceProviderPolicy do
   let(:user_not_on_team) { create(:user) }
   let(:config) { create(:service_provider, team:) }
 
-  shared_examples_for 'allows all team members except Readonly for `object`' do
+  shared_examples_for 'allows all team members except Admin/Partner Readonly for `object`' do
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
     end
@@ -161,7 +161,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :new? do
-    it_behaves_like 'allows all team members except Readonly for `object`' do
+    it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { ServiceProvider.new(team:) }
     end
 
@@ -173,7 +173,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :edit? do
-    it_behaves_like 'allows all team members except Readonly for `object`' do
+    it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -279,7 +279,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :create? do
-    it_behaves_like  'allows all team members except Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -301,7 +301,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :update? do
-    it_behaves_like  'allows all team members except Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -345,7 +345,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :prod_request? do
-    it_behaves_like  'allows all team members except Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
   end

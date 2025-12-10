@@ -6,6 +6,9 @@ describe UserPolicy do
   let(:ic_user) { create(:user) }
   let(:restricted_user) { create(:restricted_ic) }
   let(:user_record) { build(:user) }
+  let(:partner_admin) { build(:user, :partner_admin) }
+  let(:partner_developer) { build(:user, :partner_developer) }
+  let(:partner_readonly) { build(:user, :partner_readonly) }
 
   require 'rails_helper'
 
@@ -26,12 +29,12 @@ describe UserPolicy do
     end
   end
 
-  permissions :view_users? do
+  permissions :index? do
     it 'authorizes a login.gov admin' do
       expect(UserPolicy).to permit(logingov_admin, user_record)
     end
 
-    it 'authrizes login.gov readonly' do
+    it 'authorizes login.gov readonly' do
       expect(UserPolicy).to permit(logingov_readonly, user_record)
     end
 
@@ -55,6 +58,28 @@ describe UserPolicy do
 
     it 'gives access to restricted ICs' do
       expect(UserPolicy).to permit(restricted_user, user_record)
+    end
+  end
+
+  permissions :above_readonly_role? do
+    it 'forbids access to login.gov readonly' do
+      expect(UserPolicy).to_not permit(logingov_readonly, user_record)
+    end
+
+    it 'forbids access to a partner readonly' do
+      expect(UserPolicy).to_not permit(partner_readonly, user_record)
+    end
+
+    it 'gives access to login.gov admin' do
+      expect(UserPolicy).to permit(logingov_admin, user_record)
+    end
+
+    it 'gives access to partner admin' do
+      expect(UserPolicy).to permit(partner_admin, user_record)
+    end
+
+    it 'gives access to partner developer' do
+      expect(UserPolicy).to permit(partner_developer, user_record)
     end
   end
 end

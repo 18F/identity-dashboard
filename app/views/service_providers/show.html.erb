@@ -216,7 +216,7 @@
   <%= render 'service_provider_yaml' %>
 <% end %>
 
-<% if !current_user.readonly_role? %>
+<% if policy(current_user).above_readonly_role? %>
   <% if !moved_to_prod? %>
     <% if edit_button_goes_to_wizard? %>
       <%= button_to t('forms.buttons.edit_service_provider'),

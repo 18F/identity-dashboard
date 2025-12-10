@@ -5,12 +5,17 @@ class UserPolicy < BasePolicy # :nodoc:
     user_has_login_admin_role?
   end
 
-  def view_users?
+  def index?
     user.logingov_staff?
   end
 
   def none?
     true
+  end
+
+  def above_readonly_role?
+    permitted_roles = Role::ROLES_NAMES - %w[logingov_readonly partner_readonly]
+    permitted_roles.include? user.primary_role.name
   end
 
   # User policy scope

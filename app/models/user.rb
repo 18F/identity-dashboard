@@ -100,10 +100,6 @@ class User < ApplicationRecord
     Role.find_by(name: 'partner_admin')
   end
 
-  def readonly_role?
-    logingov_readonly? || primary_role.name == 'partner_readonly'
-  end
-
   def auth_token
     AuthToken.for(self)
   end
