@@ -37,6 +37,7 @@ class IdentityConfig
       config.add(:saml_sp_private_key_password, type: :string)
       config.add(:secret_key_base, type: :string)
       config.add(:serve_static_files, type: :boolean)
+      config.add(:users_per_page, type: :integer)
 
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:api_token_required_enabled, type: :boolean)
