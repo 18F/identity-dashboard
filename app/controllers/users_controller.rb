@@ -10,8 +10,15 @@ class UsersController < ApplicationController
   helper_method :options_for_roles
   attr_reader :user
 
+  PER_PAGE = 100
+
   def index
-    @users = policy_scope(User).sorted
+    @page = [params[:page].to_i, 1].max
+    base_scope = policy_scope(User).includes(team_memberships: [:role, :team]).sorted
+    @total_count = base_scope.count
+    @total_pages = (@total_count.to_f / PER_PAGE).ceil
+    @page = [@page, @total_pages].min if @total_pages > 0
+    @users = base_scope.limit(PER_PAGE).offset((@page - 1) * PER_PAGE)
   end
 
   def new
