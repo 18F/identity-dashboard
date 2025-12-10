@@ -1,6 +1,5 @@
 <% return if total_pages <= 1 %>
 
-
 <nav aria-label="Pagination" class="usa-pagination">
   <ul class="usa-pagination__list">
     <% if current_page > 1 %>
@@ -16,30 +15,8 @@
       </li>
     <% end %>
 
-    <%
-        visible_pages = []
-
-        visible_pages << 1
-
-        if current_page <= 4
-          visible_pages += (2..5).to_a
-          visible_pages << :overflow
-          visible_pages << total_pages
-        elsif current_page >= total_pages - 3
-          visible_pages << :overflow
-          visible_pages += ((total_pages - 4)..total_pages).to_a
-        else
-          visible_pages << :overflow
-          visible_pages << current_page - 1
-          visible_pages << current_page
-          visible_pages << current_page + 1
-          visible_pages << :overflow
-          visible_pages << total_pages
-        end
-    %>
-
-    <% visible_pages.each do |pg| %>
-      <% if pg == :overflow %>
+    <% pagination_visible_pages(current_page:, total_pages:).each do |pg| %>
+      <% if pg == PaginationHelper::OVERFLOW %>
         <li class="usa-pagination__item usa-pagination__overflow" aria-label="ellipsis indicating non-visible pages">
           <span>&hellip;</span>
         </li>
