@@ -1,0 +1,80 @@
+<% return if total_pages <= 1 %>
+
+<% unbounded ||= false %>
+<% slots = 7 %>
+
+<nav aria-label="Pagination" class="usa-pagination">
+  <ul class="usa-pagination__list">
+    <% if current_page > 1 %>
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <%= link_to path_helper.call(current_page - 1),
+            class: "usa-pagination__link usa-pagination__previous-page",
+            aria: { label: "Previous page" } do %>
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+            <use href="<%= asset_path 'sprite.svg#navigate_before' %>"></use>
+          </svg>
+          <span class="usa-pagination__link-text">Previous</span>
+        <% end %>
+      </li>
+    <% end %>
+
+    <%
+      if total_pages <= slots
+        visible_pages = (1..total_pages).to_a
+      else
+        visible_pages = []
+
+        visible_pages << 1
+
+        if current_page <= 4
+          visible_pages += (2..5).to_a
+          visible_pages << :overflow
+          visible_pages << total_pages
+        elsif current_page >= total_pages - 3
+          visible_pages << :overflow
+          visible_pages += ((total_pages - 4)..total_pages).to_a
+        else
+          visible_pages << :overflow
+          visible_pages << current_page - 1
+          visible_pages << current_page
+          visible_pages << current_page + 1
+          visible_pages << :overflow
+          visible_pages << total_pages
+        end
+      end
+    %>
+
+    <% visible_pages.each do |pg| %>
+      <% if pg == :overflow %>
+        <li class="usa-pagination__item usa-pagination__overflow" aria-label="ellipsis indicating non-visible pages">
+          <span>&hellip;</span>
+        </li>
+      <% elsif pg == current_page %>
+        <li class="usa-pagination__item usa-pagination__page-no">
+          <%= link_to pg, path_helper.call(pg),
+              class: "usa-pagination__button usa-current",
+              aria: { label: "Page #{pg}", current: "page" } %>
+        </li>
+      <% else %>
+        <li class="usa-pagination__item usa-pagination__page-no">
+          <%= link_to pg, path_helper.call(pg),
+              class: "usa-pagination__button",
+              aria: { label: "Page #{pg}" } %>
+        </li>
+      <% end %>
+    <% end %>
+
+    <% if current_page < total_pages %>
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <%= link_to path_helper.call(current_page + 1),
+            class: "usa-pagination__link usa-pagination__next-page",
+            aria: { label: "Next page" } do %>
+          <span class="usa-pagination__link-text">Next</span>
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+            <use href="<%= asset_path 'sprite.svg#navigate_next' %>"></use>
+          </svg>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</nav>
