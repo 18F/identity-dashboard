@@ -217,18 +217,16 @@
 <% end %>
 
 <% if policy(current_user).above_readonly_role? %>
-  <% if !moved_to_prod? %>
-    <% if edit_button_goes_to_wizard? %>
-      <%= button_to t('forms.buttons.edit_service_provider'),
-        service_config_wizard_index_path(service_provider:),
-        class: 'usa-button float-left',
-        method: :post %>
-     <% else %>
-      <%= button_to t('forms.buttons.edit_service_provider'),
-        edit_service_provider_path(service_provider),
-        class: 'usa-button float-left',
-        method: :get %>
-    <% end %>
+  <% if edit_button_to_show == 'wizard' %>
+    <%= button_to t('forms.buttons.edit_service_provider'),
+      service_config_wizard_index_path(service_provider:),
+      class: 'usa-button float-left',
+      method: :post %>
+  <% elsif edit_button_to_show == 'long_form' %>
+    <%= button_to t('forms.buttons.edit_service_provider'),
+      edit_service_provider_path(service_provider),
+      class: 'usa-button float-left',
+      method: :get %>
   <% end %>
   <%= button_to t('forms.buttons.delete_service_provider'),
     service_provider_path(service_provider),
