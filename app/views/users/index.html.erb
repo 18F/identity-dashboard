@@ -2,12 +2,13 @@
 <h1 class="usa-display">Users</h1>
 
 <div class="display-flex">
-  <%= button_to t('headings.users.new_user'),
-    new_user_path,
-    method: :get,
-    class: 'usa-button'
-  %>
-
+  <% if current_user.logingov_admin? %>
+    <%= button_to t('headings.users.new_user'),
+      new_user_path,
+      method: :get,
+      class: 'usa-button'
+    %>
+  <% end %>
   <% if can_delete_unconfirmed_users?(current_user, @users) %>
     <%= button_to t('forms.buttons.delete_unconfirmed_users'),
       delete_unconfirmed_users_path,
@@ -23,7 +24,9 @@
       <th scope="col"><%=
         IdentityConfig.store.access_controls_enabled ? 'Role' : 'Admin'
       %></th>
-      <th scope="col">Actions</th>
+      <% if current_user.logingov_admin? %>
+        <th scope="col">Actions</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -47,14 +50,16 @@
                             aria: { hidden: true } if user.logingov_admin? %>
           <% end %>
         </td>
-        <td>
-          <%= button_to 'Delete', user_path(user.id), method: :delete,
-                      form_class: 'display-inline',
-                      class: 'usa-button usa-button--unstyled usa-link margin-right-1',
-                      data: { confirm: t('notices.confirm_delete') } %>
-          <span>&nbsp;</span>
-          <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
-        </td>
+        <% if current_user.logingov_admin? %>
+          <td>
+            <%= button_to 'Delete', user_path(user.id), method: :delete,
+                        form_class: 'display-inline',
+                        class: 'usa-button usa-button--unstyled usa-link margin-right-1',
+                        data: { confirm: t('notices.confirm_delete') } %>
+            <span>&nbsp;</span>
+            <%= link_to 'Edit', edit_user_path(user.id), class: 'usa-link' %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

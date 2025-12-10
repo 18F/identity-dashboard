@@ -47,7 +47,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def show?
-    team_member_or_admin?
+    team_member_or_staff?
   end
 
   def new?
@@ -90,11 +90,11 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def all?
-    user_has_login_admin_role?
+    user.logingov_staff?
   end
 
   def deleted?
-    user_has_login_admin_role?
+    user.logingov_staff?
   end
 
   def prod_request?
@@ -115,12 +115,12 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def see_status?
-    user_has_login_admin_role?
+    user.logingov_staff?
   end
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user_has_login_admin_role?
+      return scope if user.logingov_staff?
 
       user.scoped_service_providers(scope:).reorder(nil)
     end
@@ -140,6 +140,12 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
     return true if record.user == user && !IdentityConfig.store.access_controls_enabled
 
     user_has_login_admin_role? || !!team_membership
+  end
+
+  def team_member_or_staff?
+    return true if record.user == user && !IdentityConfig.store.access_controls_enabled
+
+    user.logingov_staff? || !!team_membership
   end
 
   def creator?

@@ -12,7 +12,8 @@ class ServiceProvidersController < AuthenticatedController
                except: :publish # `#publish` is currently an API call only, so no DB scope required
   before_action :log_change, only: %i[destroy]
 
-  helper_method :parsed_help_text, :localized_help_text, :service_provider, :moved_to_prod?
+  helper_method :parsed_help_text, :localized_help_text, :service_provider, :moved_to_prod?,
+:edit_button_to_show
 
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
@@ -161,6 +162,14 @@ value: func.to_proc.call(@service_provider) })
 
   def moved_to_prod?
     !IdentityConfig.store.prod_like_env && service_provider.status == 'moved_to_prod'
+  end
+
+  def edit_button_to_show
+    return nil if moved_to_prod?
+    return 'wizard' if IdentityConfig.store.edit_button_uses_service_config_wizard ||
+                       IdentityConfig.store.prod_like_env
+
+    'long_form'
   end
 
   def parsed_help_text

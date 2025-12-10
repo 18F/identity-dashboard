@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe ServiceProviderPolicy do
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:team) { create(:team) }
   let(:partner_admin) { create(:team_membership, :partner_admin, team:).user }
   let(:partner_developer) { create(:team_membership, :partner_developer, team:).user }
@@ -9,9 +10,13 @@ describe ServiceProviderPolicy do
   let(:user_not_on_team) { create(:user) }
   let(:config) { create(:service_provider, team:) }
 
-  shared_examples_for 'allows all team members except Partner Readonly for `object`' do
+  shared_examples_for 'allows all team members except Admin/Partner Readonly for `object`' do
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids logingov_readonly' do
+      expect(described_class).to_not permit(logingov_readonly, object)
     end
 
     it 'forbids non-team-member users' do
@@ -36,6 +41,36 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(logingov_admin, object)
     end
 
+    it 'forbids logingov_readonly' do
+      expect(described_class).to_not permit(logingov_readonly, object)
+    end
+
+    it 'forbids Partner Admin' do
+      expect(described_class).to_not permit(partner_admin, object)
+    end
+
+    it 'forbids Partner Developer' do
+      expect(described_class).to_not permit(partner_developer, object)
+    end
+
+    it 'forbids Partner Readonly' do
+      expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids non-team-member users' do
+      expect(described_class).to_not permit(user_not_on_team, object)
+    end
+  end
+
+  shared_examples_for 'allows login.gov staff only for `object`' do
+    it 'allows logingov_admin' do
+      expect(described_class).to permit(logingov_admin, object)
+    end
+
+    it 'allows logingov_readonly' do
+      expect(described_class).to permit(logingov_readonly, object)
+    end
+
     it 'forbids Partner Admin' do
       expect(described_class).to_not permit(partner_admin, object)
     end
@@ -56,6 +91,10 @@ describe ServiceProviderPolicy do
   permissions :index? do
     it 'allows Login Admin' do
       expect(described_class).to permit(logingov_admin, ServiceProvider)
+    end
+
+    it 'allows Login Readonly' do
+      expect(described_class).to permit(logingov_readonly, ServiceProvider)
     end
 
     it 'allows Partner Admin' do
@@ -90,6 +129,10 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(logingov_admin, config)
     end
 
+    it 'allows Login Readonly' do
+      expect(described_class).to permit(logingov_readonly, config)
+    end
+
     it 'allows Partner Admin' do
       expect(described_class).to permit(partner_admin, config)
     end
@@ -118,7 +161,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :new? do
-    it_behaves_like 'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { ServiceProvider.new(team:) }
     end
 
@@ -130,7 +173,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :edit? do
-    it_behaves_like 'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -176,6 +219,10 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(partner_readonly, object)
     end
 
+    it 'forbids Login.gov Readonly' do
+      expect(described_class).to_not permit(logingov_readonly, object)
+    end
+
     it 'forbids non-team-member users' do
       expect(described_class).to_not permit(user_not_on_team, object)
     end
@@ -212,6 +259,7 @@ describe ServiceProviderPolicy do
         expect(described_class).to_not permit(user_not_on_team, object)
         expect(described_class).to_not permit(partner_readonly, object)
         expect(described_class).to_not permit(partner_admin, object)
+        expect(described_class).to_not permit(logingov_readonly, object)
       end
     end
 
@@ -231,7 +279,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :create? do
-    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -253,7 +301,7 @@ describe ServiceProviderPolicy do
   end
 
   permissions :update? do
-    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
 
@@ -273,13 +321,13 @@ describe ServiceProviderPolicy do
   end
 
   permissions :all? do
-    it_behaves_like 'allows login.gov admins only for `object`' do
+    it_behaves_like 'allows login.gov staff only for `object`' do
       let(:object) { ServiceProvider }
     end
   end
 
   permissions :deleted? do
-    it_behaves_like 'allows login.gov admins only for `object`' do
+    it_behaves_like 'allows login.gov staff only for `object`' do
       let(:object) { ServiceProvider }
     end
   end
@@ -291,13 +339,13 @@ describe ServiceProviderPolicy do
   end
 
   permissions :see_status? do
-    it_behaves_like 'allows login.gov admins only for `object`' do
+    it_behaves_like 'allows login.gov staff only for `object`' do
       let(:object) { config }
     end
   end
 
   permissions :prod_request? do
-    it_behaves_like  'allows all team members except Partner Readonly for `object`' do
+    it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
     end
   end
@@ -351,8 +399,8 @@ describe ServiceProviderPolicy::Scope do
   let(:user_double) { object_double(build(:user)) }
   let(:test_scope) { object_double(ServiceProvider.all) }
 
-  it 'does not filter when login.gov admin' do
-    allow(user_double).to receive(:logingov_admin?).and_return(true)
+  it 'does not filter when login.gov staff' do
+    allow(user_double).to receive(:logingov_staff?).and_return(true)
 
     resolution = described_class.new(user_double, test_scope).resolve
 
@@ -363,7 +411,7 @@ describe ServiceProviderPolicy::Scope do
     intermediary_scope = object_spy(ServiceProvider.all)
     expected_result = ["canary_value_#{rand(1..1000)}"]
 
-    allow(user_double).to receive(:logingov_admin?).and_return(false)
+    allow(user_double).to receive(:logingov_staff?).and_return(false)
     allow(user_double).to receive(:scoped_service_providers)
       .with(scope: test_scope)
       .and_return(intermediary_scope)
@@ -371,7 +419,7 @@ describe ServiceProviderPolicy::Scope do
 
     resolution = described_class.new(user_double, test_scope).resolve
 
-    expect(user_double).to have_received(:logingov_admin?)
+    expect(user_double).to have_received(:logingov_staff?)
     expect(resolution).to be(expected_result)
   end
 end

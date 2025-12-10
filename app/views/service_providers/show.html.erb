@@ -87,7 +87,7 @@
 <p class="text-italic"><%= t('service_provider_form.issuer_html') %></p>
 <hr>
 
-<% if current_user.logingov_admin? %>
+<% if current_user.logingov_staff? %>
   <%= render partial: 'allow_prompt_login', locals: { service_provider: service_provider } %>
   <hr>
   <%= render partial: 'email_nameid_format_allowed', locals: { service_provider: service_provider } %>
@@ -211,28 +211,28 @@
 <p class="text-italic"><%= I18n.t('service_provider_form.active') %></p>
 <hr>
 
-<% if current_user.logingov_admin? %>
+<% if current_user.logingov_staff? %>
   <h2><label for="service_provider_yaml">Service Provider configuration as YAML</label></h2>
   <%= render 'service_provider_yaml' %>
 <% end %>
 
-<% if !moved_to_prod? %>
-  <% if edit_button_goes_to_wizard? %>
+<% if policy(current_user).above_readonly_role? %>
+  <% if edit_button_to_show == 'wizard' %>
     <%= button_to t('forms.buttons.edit_service_provider'),
       service_config_wizard_index_path(service_provider:),
       class: 'usa-button float-left',
       method: :post %>
-   <% else %>
+  <% elsif edit_button_to_show == 'long_form' %>
     <%= button_to t('forms.buttons.edit_service_provider'),
       edit_service_provider_path(service_provider),
       class: 'usa-button float-left',
       method: :get %>
   <% end %>
+  <%= button_to t('forms.buttons.delete_service_provider'),
+    service_provider_path(service_provider),
+    class: 'usa-button usa-button--outline float-left',
+    method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
 <% end %>
-<%= button_to t('forms.buttons.delete_service_provider'),
-  service_provider_path(service_provider),
-  class: 'usa-button usa-button--outline float-left',
-  method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
 
 
 <% if policy(PaperTrail::Version).can_view_papertrail? %>
