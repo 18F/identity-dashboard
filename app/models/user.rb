@@ -92,7 +92,6 @@ class User < ApplicationRecord
     return Role::LOGINGOV_ADMIN if logingov_admin?
     return Role::LOGINGOV_READONLY if logingov_readonly?
     return team_memberships.first.role if team_memberships.first&.role.present?
-
     return Role.find_by(name: 'partner_readonly') if teams.any?
 
     Role.find_by(name: 'partner_admin')
