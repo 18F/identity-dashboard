@@ -10,7 +10,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
   end
 
   def index?
-    user.logingov_staff? || team_membership && current_user_role_on_team != 'partner_readonly'
+    user_has_login_staff_role? || team_membership && current_user_role_on_team != 'partner_readonly'
   end
 
   def create?
@@ -54,7 +54,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user.logingov_staff?
+      return scope if user_has_login_staff_role?
 
       scope.where(team: user.teams)
     end

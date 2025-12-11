@@ -16,7 +16,7 @@ class BannerPolicy < BasePolicy # :nodoc: all
   class Scope < BasePolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      user.logingov_staff? ? scope.all : scope.none
+      user_has_login_staff_role? ? scope.all : scope.none
     end
   end
 end

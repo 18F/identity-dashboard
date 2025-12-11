@@ -6,7 +6,7 @@ class UserPolicy < BasePolicy # :nodoc:
   end
 
   def index?
-    user.logingov_staff?
+    user_has_login_staff_role?
   end
 
   def none?
@@ -21,7 +21,7 @@ class UserPolicy < BasePolicy # :nodoc:
   # User policy scope
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user.logingov_staff?
+      return scope if user_has_login_staff_role?
 
       # Rails can hand this off efficiently to the database
       user_ids_on_current_teams = TeamMembership.select(:user_id).where(team: user.teams)

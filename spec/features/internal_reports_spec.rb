@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'internal reports' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
-  let(:logingov_readonly) { create(:user, :logingov_readonly) } 
+  let(:logingov_readonly) { create(:user, :logingov_readonly) }
 
   it 'responds with an error when not logged in' do
     visit internal_reports_user_permissions_path(format: 'csv')
@@ -58,7 +58,7 @@ feature 'internal reports' do
         csv_response = CSV.parse(body)
 
         expect(csv_response.length).to eq(11)
-        
+
         expect(csv_response).to eq(expected_table)
       end
 
