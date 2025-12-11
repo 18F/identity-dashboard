@@ -13,6 +13,7 @@ describe TeamPolicy do
     let(:user_not_on_team) { build(:user) }
     let(:gov_partner) { create(:user, email: 'test@agency.gov') }
     let(:mil_partner) { create(:user, email: 'test@branch.mil') }
+    let(:fed_partner) { create(:user, email: 'test@group.fed.us') }
     let(:contractor) { create(:user, email: 'user@contrator.com') }
 
     before do
@@ -20,10 +21,11 @@ describe TeamPolicy do
     end
 
     permissions :create? do
-      it 'allows logingov admins or .gov|mil parters' do
+      it 'allows logingov admins or .gov|mil|fed parters' do
         expect(TeamPolicy).to permit(logingov_admin, team)
         expect(TeamPolicy).to permit(gov_partner, team)
         expect(TeamPolicy).to permit(mil_partner, team)
+        expect(TeamPolicy).to permit(fed_partner, team)
       end
 
       it 'does not allow others' do
@@ -44,6 +46,7 @@ describe TeamPolicy do
           expect(TeamPolicy).to_not permit(logingov_readonly, team)
           expect(TeamPolicy).to_not permit(gov_partner, team)
           expect(TeamPolicy).to_not permit(mil_partner, team)
+          expect(TeamPolicy).to_not permit(fed_partner, team)
           expect(TeamPolicy).to_not permit(contractor, team)
           expect(TeamPolicy).to_not permit(user_not_on_team, team)
           expect(TeamPolicy).to_not permit(partner_admin_user, team)
@@ -99,10 +102,11 @@ describe TeamPolicy do
     end
 
     permissions :new? do
-      it 'allows logingov admins or .gov|mil partners' do
+      it 'allows logingov admins or .gov|mil|fed partners' do
         expect(TeamPolicy).to permit(logingov_admin, team)
         expect(TeamPolicy).to permit(gov_partner, team)
         expect(TeamPolicy).to permit(mil_partner, team)
+        expect(TeamPolicy).to permit(fed_partner, team)
       end
 
       it 'does not allow logingov readonly' do
@@ -117,6 +121,7 @@ describe TeamPolicy do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         expect(TeamPolicy).to_not permit(gov_partner, team)
         expect(TeamPolicy).to_not permit(mil_partner, team)
+        expect(TeamPolicy).to_not permit(fed_partner, team)
         expect(TeamPolicy).to_not permit(contractor, team)
         expect(TeamPolicy).to_not permit(partner_admin_user, team)
         expect(TeamPolicy).to_not permit(partner_developer_user, team)
