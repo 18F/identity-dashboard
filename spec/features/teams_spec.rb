@@ -228,7 +228,8 @@ feature 'TeamMembership CRUD' do
       org2 = create(:team)
       team = create(:team)
       sp = create(:service_provider, team:)
-
+      user = create(:user, teams: [team])
+      
       login_as(logingov_readonly)
       visit teams_all_path
 
@@ -241,6 +242,7 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content(org1.description)
       expect(page).to have_content(org2.description)
       expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_content(user.email)
     end
 
     scenario 'without RBAC' do
