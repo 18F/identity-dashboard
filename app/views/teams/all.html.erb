@@ -2,14 +2,16 @@
 
 <div>
   <% if @teams.count > 0 %>
-    <%=
-      button_to(
-          t('headings.teams.new_team'),
-          new_team_path,
-          method: :get,
-          class: "usa-button margin-top-4 margin-bottom-4",
-          ) if can_create_teams? (current_user)
-    %>
+    <% if current_user.logingov_admin? %>
+      <%=
+        button_to(
+            t('headings.teams.new_team'),
+            new_team_path,
+            method: :get,
+            class: "usa-button margin-top-4 margin-bottom-4",
+            ) if can_create_teams? (current_user)
+      %>
+    <% end %>
     <%= render 'teams_list' %>
   <% elsif can_create_teams?(current_user) %>
     <div class='lg-card'>

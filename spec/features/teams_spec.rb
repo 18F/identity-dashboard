@@ -197,6 +197,7 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content(org2.description)
       expect(page).to have_content(sp.friendly_name)
       expect(page).to have_content(user.email)
+      expect(page).to have_button('Create a new team')
     end
 
     scenario 'as logingov_readonly' do
@@ -205,7 +206,7 @@ feature 'TeamMembership CRUD' do
       team = create(:team)
       sp = create(:service_provider, team:)
       user = create(:user, teams: [team])
-      
+
       login_as(logingov_readonly)
       visit teams_all_path
 
@@ -219,6 +220,7 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content(org2.description)
       expect(page).to have_content(sp.friendly_name)
       expect(page).to have_content(user.email)
+      expect(page).to_not have_button('Create a new team')
     end
 
     scenario 'without RBAC' do
