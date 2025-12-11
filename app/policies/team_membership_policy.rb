@@ -10,7 +10,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
   end
 
   def index?
-    user_has_login_admin_role? || team_membership && current_user_role_on_team != 'partner_readonly'
+    user.logingov_staff? || team_membership && current_user_role_on_team != 'partner_readonly'
   end
 
   def create?
@@ -46,7 +46,6 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
   end
 
   def roles_for_edit
-    # TODO #320
     return Role.none unless edit?
     return Role.where.not(name: [:logingov_admin, :logingov_readonly]) if user_has_login_admin_role?
 
@@ -55,7 +54,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
 
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user_has_login_admin_role?
+      return scope if user.logingov_staff?
 
       scope.where(team: user.teams)
     end

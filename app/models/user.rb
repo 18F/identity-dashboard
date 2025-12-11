@@ -17,6 +17,8 @@ class User < ApplicationRecord
 
   scope :sorted, -> { order(email: :asc) }
 
+  ALLOWLISTED_DOMAINS = %w[.mil .gov .fed.us].freeze
+
   def scoped_teams
     if logingov_admin?
       Team.all
@@ -88,7 +90,7 @@ class User < ApplicationRecord
   end
 
   def gov_partner?
-    self.email.match(/\.(gov|mil)\z/)
+    ALLOWLISTED_DOMAINS.any? { |domain| self.email.end_with? domain }
   end
 
   def primary_role
@@ -98,6 +100,10 @@ class User < ApplicationRecord
     return Role.find_by(name: 'partner_readonly') if teams.any?
 
     Role.find_by(name: 'partner_admin')
+  end
+
+  def readonly_role?
+    logingov_readonly? || primary_role.name == 'partner_readonly'
   end
 
   def auth_token

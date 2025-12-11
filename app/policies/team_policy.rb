@@ -2,7 +2,7 @@ class TeamPolicy < BasePolicy # :nodoc: all
   include TeamHelper
 
   def all?
-    user_has_login_admin_role?
+    user.logingov_staff?
   end
 
   def create?
@@ -40,14 +40,18 @@ class TeamPolicy < BasePolicy # :nodoc: all
   end
 
   def show?
-    in_team? || user_has_login_admin_role?
+    in_team? || user.logingov_staff?
   end
 
   alias update? edit?
 
+  def manage_users?
+    edit? || user.logingov_readonly?
+  end
+
   class Scope < BasePolicy::Scope
     def resolve
-      return scope if user_has_login_admin_role?
+      return scope if user.logingov_staff?
 
       scope.where(id: user.teams)
     end

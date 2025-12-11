@@ -9,6 +9,7 @@ describe TeamMembershipPolicy do
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 
@@ -122,6 +123,10 @@ describe TeamMembershipPolicy do
   permissions :update? do
     it 'allows Login Admins' do
       expect(described_class).to permit(logingov_admin, partner_admin_membership)
+    end
+
+    it 'forbids Login Readonly' do
+      expect(described_class).to_not permit(logingov_readonly, partner_admin_membership)
     end
 
     it 'allows Partner Admins with some role names' do

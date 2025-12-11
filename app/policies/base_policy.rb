@@ -70,6 +70,6 @@ class BasePolicy # :nodoc: all
   end
 
   def user_is_gov_partner?
-    user&.gov_partner?
+    user&.gov_partner? && !user&.logingov_readonly?
   end
 end
