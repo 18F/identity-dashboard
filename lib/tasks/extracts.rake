@@ -87,7 +87,7 @@ namespace :extracts do
   end
 
   def export_models_to_file(models, file_name)
-    File.open(file_name, 'w') { |f| f.puts models }
+    File.open(file_name, 'w') { |f| f.puts models.to_json }
   end
 
   archive_usage = <<~DESCRIPTION
