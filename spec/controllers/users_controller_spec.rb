@@ -48,8 +48,9 @@ describe UsersController do
           get :index
           expect(assigns(:page)).to eq(1)
           expect(assigns(:total_count)).to eq(User.count)
-          expect(assigns(:total_pages)).to
-          eq((User.count.to_f / IdentityConfig.store.users_per_page).ceil)
+          expect(assigns(:total_pages)).to eq(
+            (User.count.to_f / IdentityConfig.store.users_per_page).ceil,
+          )
         end
 
         it 'defaults to page 1' do
