@@ -51,7 +51,6 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def new?
-    return true unless IdentityConfig.store.access_controls_enabled
     return true if user_has_login_admin_role?
     return false if IdentityConfig.store.prod_like_env
 
@@ -63,27 +62,22 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
 
   def edit?
     return false if record.moved_to_prod?
-    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
 
     user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def create?
-    return true unless IdentityConfig.store.access_controls_enabled
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
 
     user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def update?
-    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
-
     user_has_login_admin_role? || (team_membership && !partner_readonly?)
   end
 
   def destroy?
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
-    return team_member_or_admin? unless IdentityConfig.store.access_controls_enabled
     return false if !team_membership && !user_has_login_admin_role?
 
     user_has_login_admin_role? || partner_admin? || creator?
@@ -137,14 +131,10 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def team_member_or_admin?
-    return true if record.user == user && !IdentityConfig.store.access_controls_enabled
-
     user_has_login_admin_role? || !!team_membership
   end
 
   def team_member_or_staff?
-    return true if record.user == user && !IdentityConfig.store.access_controls_enabled
-
     user_has_login_staff_role? || !!team_membership
   end
 

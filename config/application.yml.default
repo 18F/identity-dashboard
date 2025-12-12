@@ -26,7 +26,6 @@ serve_static_files: 'false'
 
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false
-access_controls_enabled: true
 edit_button_uses_service_config_wizard: true
 help_text_options_feature_enabled: true
 

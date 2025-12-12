@@ -9,7 +9,6 @@ describe TeamsController do
   let(:logger_double) { instance_double(EventLogger) }
 
   before do
-    allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
     allow(controller).to receive(:current_user).and_return(user)
     allow(EventLogger).to receive(:new).and_return(logger_double)
     allow(logger_double).to receive(:team_created)
@@ -277,9 +276,10 @@ describe TeamsController do
         team.users << user
       end
 
-      it 'shows the edit template' do
+      it 'has an unauthorized response' do
         get :edit, params: { id: team.id }
-        expect(response).to render_template(:edit)
+        expect(response).to have_http_status(:unauthorized)
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end

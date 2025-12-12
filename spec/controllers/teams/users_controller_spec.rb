@@ -11,7 +11,6 @@ describe Teams::UsersController do
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
       post :create, params: { team_id: team.id, user: { email: valid_email } }
 
       expect(response).to redirect_to(new_team_user_path(team))
@@ -143,17 +142,6 @@ describe Teams::UsersController do
           expect(logger_double).to_not have_received(:team_membership_updated)
         end
 
-        it 'redirects without RBAC flag' do
-          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-          put :update, params: {
-            team_id: team.id,
-            id: updatable_team_membership.user.id,
-            team_membership: { role_name: 'totally-fake-role' },
-          }
-          expect(response).to redirect_to(team_users_path(team))
-          expect(logger_double).to_not have_received(:team_membership_updated)
-        end
-
         it 'is unauthorized if the policy role list is empty' do
           policy_double = TeamMembershipPolicy.new(user, updatable_team_membership)
           expect(policy_double).to receive(:roles_for_edit).and_return([]).at_least(:once)
@@ -198,17 +186,6 @@ describe Teams::UsersController do
 
             expect(logger_double).to_not have_received(:team_membership_updated)
           end
-        end
-      end
-
-      describe '#edit' do
-        it 'redirects without RBAC flag' do
-          allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-          get :edit, params: {
-            team_id: team.id,
-            id: user,
-          }
-          expect(response).to redirect_to(team_users_path(team))
         end
       end
 

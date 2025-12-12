@@ -21,9 +21,7 @@
     <tr>
       <th scope="col">Email</th>
       <th scope="col">Signed in?</th>
-      <th scope="col"><%=
-        IdentityConfig.store.access_controls_enabled ? 'Role' : 'Admin'
-      %></th>
+      <th scope="col">Role</th>
       <% if current_user.logingov_admin? %>
         <th scope="col">Actions</th>
       <% end %>
@@ -40,16 +38,7 @@
                           style: 'vertical-align:bottom' %>
           <%= caption(user) %>                  
         </td>
-        <td>
-          <% if IdentityConfig.store.access_controls_enabled %>
-            <%= user.primary_role.friendly_name %>
-          <% else %>
-            <%= image_tag 'security-key.svg',
-                            height: '27', width: '27',
-                            alt: 'admin user',
-                            aria: { hidden: true } if user.logingov_admin? %>
-          <% end %>
-        </td>
+        <td><%= user.primary_role.friendly_name %></td>
         <% if current_user.logingov_admin? %>
           <td>
             <%= button_to 'Delete', user_path(user.id), method: :delete,

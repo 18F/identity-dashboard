@@ -13,24 +13,6 @@ describe TeamMembershipPolicy do
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 
-  permissions :manage_team_users? do
-    before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-    end
-
-    it 'allows a team member to manage team users' do
-      expect(described_class).to permit(without_role_membership.user, without_role_membership)
-    end
-
-    it 'allows login.gov admin to manage team users' do
-      expect(described_class).to permit(logingov_admin, without_role_membership)
-    end
-
-    it 'does not allow a random user to manage team users' do
-      expect(described_class).to_not permit(other_user, without_role_membership)
-    end
-  end
-
   permissions :index? do
     it 'allows Partner Admins' do
       expect(described_class).to permit(partner_admin, partner_admin_membership)

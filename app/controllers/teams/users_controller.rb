@@ -2,19 +2,14 @@
 class Teams::UsersController < AuthenticatedController
   include ModelChanges
 
-  before_action :authorize_manage_team_users,
-                unless: -> { IdentityConfig.store.access_controls_enabled }
-
-  if IdentityConfig.store.access_controls_enabled
-    after_action :verify_authorized
-    after_action :verify_policy_scoped
-    after_action :log_change, only: %i[create update]
-  end
+  after_action :verify_authorized
+  after_action :verify_policy_scoped
+  after_action :log_change, only: %i[create update]
 
   helper_method :roles_for_options, :show_actions?
 
   def index
-    authorize current_team_membership if IdentityConfig.store.access_controls_enabled
+    authorize current_team_membership
     @team_memberships = team && team.team_memberships.where
       .associated(:user, :team)
       .includes(:user)
@@ -23,16 +18,11 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def new
-    authorize current_team_membership if IdentityConfig.store.access_controls_enabled
+    authorize current_team_membership
     @user = policy_scope(User).new
   end
 
   def edit
-    unless IdentityConfig.store.access_controls_enabled
-      redirect_to(action: :index, team_id: team)
-      return
-    end
-
     if IdentityConfig.store.prod_like_env
       airtable_api = Airtable.new(current_user.uuid)
       if airtable_api.has_token?
@@ -57,32 +47,22 @@ class Teams::UsersController < AuthenticatedController
       render(:new) and return
     end
 
-    if IdentityConfig.store.access_controls_enabled
-      new_team_membership = policy_scope(TeamMembership).build(
-        team: team,
-        user: new_team_member,
-      )
-      new_team_membership.set_default_role
-      authorize new_team_membership
-      render :new and return unless new_team_membership.save!
+    new_team_membership = policy_scope(TeamMembership).build(
+      team: team,
+      user: new_team_member,
+    )
+    new_team_membership.set_default_role
+    authorize new_team_membership
+    render :new and return unless new_team_membership.save!
 
-      flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-      redirect_to new_team_user_path and return
-    end
-    new_team_member.team_memberships << TeamMembership.create!(user_id: new_team_member.id,
-                                                               group_id: team.id)
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_user_path and return
+    redirect_to new_team_user_path
   rescue ActiveRecord::RecordInvalid => err
     flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
   end
 
   def update
-    unless IdentityConfig.store.access_controls_enabled
-      redirect_to(action: :index, team_id: team) and return
-    end
-
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
 
@@ -113,37 +93,18 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def remove_confirm
-    if IdentityConfig.store.access_controls_enabled
-      team_membership_to_delete = policy_scope(TeamMembership).find_by(user:, team:)
-      authorize team_membership_to_delete
-      return
-    end
-
-    if user_present_not_current_user(user)
-      render :remove_confirm
-    else
-      render_401
-    end
+    team_membership_to_delete = policy_scope(TeamMembership).find_by(user:, team:)
+    authorize team_membership_to_delete
   end
 
   def destroy
-    if IdentityConfig.store.access_controls_enabled
-      # If unauthorized, the option to delete should not show up in the UI
-      # so it is acceptable to return a 401 instead of a redirect here
-      authorize policy_scope(TeamMembership).find_by(user:, team:)
-      log_change
-      team.users.delete(user)
-      flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
-      redirect_to team_users_path and return
-    end
-    if user_present_not_current_user(user)
-      log_change
-      team.users.delete(user)
-      flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
-      redirect_to team_users_path
-    else
-      render_401
-    end
+    # If unauthorized, the option to delete should not show up in the UI
+    # so it is acceptable to return a 401 instead of a redirect here
+    authorize policy_scope(TeamMembership).find_by(user:, team:)
+    log_change
+    team.users.delete(user)
+    flash[:success] = I18n.t('teams.users.remove.success', email: user.email)
+    redirect_to team_users_path
   end
 
   def roles_for_options
@@ -155,8 +116,6 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def show_actions?
-    return true unless IdentityConfig.store.access_controls_enabled
-
     @team_memberships.any? { |membership| policy(membership).destroy? || policy(membership).edit? }
   end
 
@@ -200,14 +159,6 @@ class Teams::UsersController < AuthenticatedController
 
   def team_membership
     @team_membership ||= policy_scope(TeamMembership).find_by(user:, team:)
-  end
-
-  def authorize_manage_team_users
-    authorize(
-      current_team_membership,
-      :manage_team_users?,
-      policy_class: TeamMembershipPolicy,
-    )
   end
 
   def log_change

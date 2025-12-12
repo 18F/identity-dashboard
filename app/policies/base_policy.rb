@@ -69,14 +69,6 @@ class BasePolicy # :nodoc: all
     user&.logingov_staff?
   end
 
-  def user_has_partner_admin_role?
-    return false unless IdentityConfig.store.access_controls_enabled
-
-    user.team_memberships.any? do |membership|
-      membership.role == Role.find_by(name: 'partner_admin')
-    end
-  end
-
   def user_is_gov_partner?
     user&.gov_partner? && !user&.logingov_readonly?
   end

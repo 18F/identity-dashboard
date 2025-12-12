@@ -1,14 +1,4 @@
 class TeamMembershipPolicy < BasePolicy # :nodoc: all
-  # TODO: remove `manage_team_users?` after turning on IdentityConfig.store.access_controls_enabled
-  # and removing the flag
-  def manage_team_users?
-    unless IdentityConfig.store.access_controls_enabled
-      return user_has_login_admin_role? || team_membership
-    end
-
-    create?
-  end
-
   def index?
     user_has_login_staff_role? || team_membership && current_user_role_on_team != 'partner_readonly'
   end
@@ -38,11 +28,7 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
   end
 
   def remove_confirm?
-    if IdentityConfig.store.access_controls_enabled
-      destroy?
-    else
-      manage_team_users? && record.user != user
-    end
+    destroy?
   end
 
   def roles_for_edit

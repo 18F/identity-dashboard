@@ -1,13 +1,5 @@
 require 'rails_helper'
 
-def flag_in
-  allow(IdentityConfig.store).to receive_messages(access_controls_enabled: true)
-end
-
-def flag_out
-  allow(IdentityConfig.store).to receive_messages(access_controls_enabled: false)
-end
-
 feature 'login.gov admin manages users' do
   let(:logingov_admin) { create(:logingov_admin) }
 
@@ -30,8 +22,7 @@ feature 'login.gov admin manages users' do
     end
   end
 
-  scenario 'rbac flag index page shows user table' do
-    flag_in
+  scenario 'index page shows user table' do
     users = create_list(:user, 3)
     everyone = [logingov_admin, users].flatten
     headings = ['Email', 'Signed in', 'Role', 'Actions']
@@ -57,41 +48,38 @@ feature 'login.gov admin manages users' do
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  [:flag_in, :flag_out].each do |flag|
-    scenario "logingov_admin creates a user with RBAC #{flag}" do
-      send flag
-      visit users_path
-      click_on 'Create a new user'
-      expect(page).to have_content('New user')
-      expect(page).to_not have_content('Email can\'t be blank')
-      click_on 'Create'
-      expect(page).to have_content('New user')
-      expect(page).to have_content('Email can\'t be blank')
-      new_email = "test#{rand(1..10000)}@test.domain"
-      fill_in 'Email', with: new_email
-      click_on 'Create'
-      expect(page).to have_current_path(users_path)
-      expect(User.last.email).to eq(new_email)
-      expect(page).to have_content("#{new_email} User has not yet signed in")
-    end
+  scenario 'logingov_admin creates a user' do
+    visit users_path
+    click_on 'Create a new user'
+    expect(page).to have_content('New user')
+    expect(page).to_not have_content('Email can\'t be blank')
+    click_on 'Create'
+    expect(page).to have_content('New user')
+    expect(page).to have_content('Email can\'t be blank')
+    new_email = "test#{rand(1..10000)}@test.domain"
+    fill_in 'Email', with: new_email
+    click_on 'Create'
+    expect(page).to have_current_path(users_path)
+    expect(User.last.email).to eq(new_email)
+    expect(page).to have_content("#{new_email} User has not yet signed in")
+  end
 
-    scenario "logingov_admin edits users with RBAC #{flag}" do
-      user = create(:user, :with_teams)
+  scenario 'logingov_admin edits users' do
+    user = create(:user, :with_teams)
 
-      visit users_path
-      expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
-      find("a[href='#{edit_user_path(user)}']").click
+    visit users_path
+    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
+    find("a[href='#{edit_user_path(user)}']").click
 
-      expect(page).to have_current_path(edit_user_path(user))
-      email_field = find_field('user_email', disabled: true)
-      expect(email_field.value).to eq(user.email)
+    expect(page).to have_current_path(edit_user_path(user))
+    email_field = find_field('user_email', disabled: true)
+    expect(email_field.value).to eq(user.email)
 
-      choose 'Login.gov Admin'
-      click_on 'Update'
+    choose 'Login.gov Admin'
+    click_on 'Update'
 
-      expect(page).to have_current_path(users_path)
-      expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
-    end
+    expect(page).to have_current_path(users_path)
+    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
   feature 'login.gov readonly views users' do
@@ -123,8 +111,7 @@ feature 'login.gov admin manages users' do
       end
     end
 
-    scenario 'rbac flag index page shows user table' do
-      flag_in
+    scenario 'index page shows user table' do
       users = create_list(:user, 3)
       everyone = [logingov_readonly, users].flatten
       headings = ['Email', 'Signed in', 'Role']
@@ -141,8 +128,7 @@ feature 'login.gov admin manages users' do
     end
   end
 
-  scenario 'rbac flag shows edit for user on teams' do
-    flag_in
+  scenario 'shows edit for user on teams' do
     roles = ['Login.gov Admin',
              'Login.gov Readonly',
              'Sandbox Partner Admin',
@@ -159,7 +145,6 @@ feature 'login.gov admin manages users' do
   end
 
   scenario 'when no teams assigned permissions limited to site admin promotion/demotion' do
-    flag_in
     user_to_edit = create(:user)
     visit edit_user_path(user_to_edit)
 
@@ -181,7 +166,6 @@ feature 'login.gov admin manages users' do
   end
 
   scenario 'can change Login.gov Admin to Login.gov Readonly role' do
-    flag_in
     user_to_edit = create(:user, :logingov_admin)
     visit edit_user_path(user_to_edit)
     choose 'Login.gov Readonly'
@@ -192,7 +176,6 @@ feature 'login.gov admin manages users' do
   end
 
   scenario 'can change Login.gov Readonly to Login.gov Admin role' do
-    flag_in
     user_to_edit = create(:user, :logingov_readonly)
     visit edit_user_path(user_to_edit)
     choose 'Login.gov Admin'

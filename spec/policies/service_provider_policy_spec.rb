@@ -113,11 +113,6 @@ describe ServiceProviderPolicy do
       # Policy scopes ensure they'll only see the service providers they have permissions for
       expect(described_class).to permit(user_not_on_team, ServiceProvider)
     end
-
-    it 'allows anywone without the RBAC flag' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      expect(described_class).to permit(user_not_on_team, ServiceProvider)
-    end
   end
 
   permissions :show? do
@@ -145,30 +140,15 @@ describe ServiceProviderPolicy do
       expect(described_class).to permit(partner_readonly, config)
     end
 
-    describe 'user owner not in team' do
-      it 'allows with RBAC off' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, config)
-      end
-
-      it 'is ignored with RBAC oon' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, config)
-      end
+    it 'ignores user owner not in team' do
+      config.user = user_not_on_team
+      expect(described_class).to_not permit(user_not_on_team, config)
     end
   end
 
   permissions :new? do
     it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { ServiceProvider.new(team:) }
-    end
-
-    it 'allows Parter Readonly with RBAC off' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      config = ServiceProvider.new(team:)
-      expect(described_class).to permit(partner_readonly, config)
     end
   end
 
@@ -177,18 +157,9 @@ describe ServiceProviderPolicy do
       let(:object) { config }
     end
 
-    describe 'user owner not in team' do
-      it 'allows with RBAC off' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, config)
-      end
-
-      it 'is ignored with RBAC on' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, config)
-      end
+    it 'ignores user owner not in team' do
+      config.user = user_not_on_team
+      expect(described_class).to_not permit(user_not_on_team, config)
     end
 
     describe 'status moved_to_prod' do
@@ -210,10 +181,6 @@ describe ServiceProviderPolicy do
     let(:partner_developer_creator) { create(:team_membership, :partner_developer, team:).user }
     let(:partner_developer_noncreator) { create(:team_membership, :partner_developer, team:).user }
     let(:object) { create(:service_provider, team: team, user: partner_developer_creator) }
-
-    before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-    end
 
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
@@ -263,30 +230,15 @@ describe ServiceProviderPolicy do
       end
     end
 
-    describe 'user owner not in team' do
-      it 'forbids with RBAC off' do
-        object.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to_not permit(user_not_on_team, config)
-      end
-
-      it 'is ignored with RBAC on' do
-        object.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, config)
-      end
+    it 'ignores user owner not in team' do
+      object.user = user_not_on_team
+      expect(described_class).to_not permit(user_not_on_team, config)
     end
   end
 
   permissions :create? do
     it_behaves_like  'allows all team members except Admin/Partner Readonly for `object`' do
       let(:object) { config }
-    end
-
-    it 'allows Parter Readonly with RBAC off' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      config = ServiceProvider.new(team:)
-      expect(described_class).to permit(partner_readonly, config)
     end
 
     context 'when in a prod-like env' do
@@ -305,18 +257,9 @@ describe ServiceProviderPolicy do
       let(:object) { config }
     end
 
-    describe 'user owner not in team' do
-      it 'allows with RBAC off' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-        expect(described_class).to permit(user_not_on_team, config)
-      end
-
-      it 'is ignored with RBAC on' do
-        config.user = user_not_on_team
-        allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
-        expect(described_class).to_not permit(user_not_on_team, config)
-      end
+    it 'ignores user owner not in team' do
+      config.user = user_not_on_team
+      expect(described_class).to_not permit(user_not_on_team, config)
     end
   end
 
