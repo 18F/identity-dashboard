@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe BannersController do
   let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
   let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:logingov_readonly) { create(:user, :logingov_readonly) }
   let(:banner) { create(:banner) }
 
   let(:updated_message) { 'Updated Banner' }
@@ -50,6 +51,28 @@ RSpec.describe BannersController do
         expect(banner.start_date).to eq(updated_start_date)
         expect(banner.end_date).to eq(updated_end_date)
       end
+    end
+  end
+
+  context 'when logged in as login.gov readonly' do
+    before do
+      sign_in logingov_readonly
+    end
+
+    it 'allows read access' do
+      get :index
+      expect(response).to be_successful
+    end
+
+    it 'denies other access' do
+      get :new
+      expect(response).to be_unauthorized
+      get :edit, params: { id: banner.id }
+      expect(response).to be_unauthorized
+      put :create, params: { banner: { message: 'test message' } }
+      expect(response).to be_unauthorized
+      patch :update, params: banner.attributes
+      expect(response).to be_unauthorized
     end
   end
 

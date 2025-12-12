@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe SecurityEventPolicy do
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:ic_user) { create(:user) }
   let(:restricted_user) { create(:restricted_ic) }
   let(:security_event) { create(:security_event, user: restricted_user) }
@@ -9,6 +10,10 @@ describe SecurityEventPolicy do
   permissions :manage_security_events? do
     it 'authorizes a login.gov admin' do
       expect(SecurityEventPolicy).to permit(logingov_admin, SecurityEvent)
+    end
+
+    it 'authorizes login.gov readonly' do
+      expect(SecurityEventPolicy).to permit(logingov_readonly, SecurityEvent)
     end
 
     it 'does not authorize an IC user' do

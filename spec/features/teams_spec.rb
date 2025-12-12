@@ -223,6 +223,29 @@ feature 'TeamMembership CRUD' do
       expect(page).to_not have_button('Create a new team')
     end
 
+    scenario 'as logingov_readonly' do
+      org1 = create(:team)
+      org2 = create(:team)
+      team = create(:team)
+      sp = create(:service_provider, team:)
+      user = create(:user, teams: [team])
+
+      login_as(logingov_readonly)
+      visit teams_all_path
+
+      expect(page).to have_content(org1.name)
+      expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.uuid)
+      expect(page).to have_content(org2.uuid)
+      expect(page).to have_content(org1.agency.name)
+      expect(page).to have_content(org2.agency.name)
+      expect(page).to have_content(org1.description)
+      expect(page).to have_content(org2.description)
+      expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_content(user.email)
+      expect(page).to_not have_button('Create a new team')
+    end
+
     scenario 'without RBAC' do
       disable_rbac
       org1 = create(:team)

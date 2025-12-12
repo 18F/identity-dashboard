@@ -53,12 +53,20 @@ class BasePolicy # :nodoc: all
     def user_has_login_admin_role?
       user&.logingov_admin?
     end
+
+    def user_has_login_staff_role?
+      user&.logingov_staff?
+    end
   end
 
   private
 
   def user_has_login_admin_role?
     user&.logingov_admin?
+  end
+
+  def user_has_login_staff_role?
+    user&.logingov_staff?
   end
 
   def user_has_partner_admin_role?

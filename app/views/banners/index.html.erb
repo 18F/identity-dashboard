@@ -1,4 +1,6 @@
-<%= link_to "Create a new message", new_banner_path, class: 'usa-button'%>
+<% if policy(@banners).manage_banners? %>
+  <%= link_to "Create a new message", new_banner_path, class: 'usa-button'%>
+<% end %>
 <div id="banners">
   <% if @banners.any? %>
     <% sort_banners_by_timing(@banners).each_pair do |timing, banners| %>

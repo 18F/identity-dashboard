@@ -2,13 +2,14 @@ require 'rails_helper'
 
 feature 'internal reports' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:logingov_readonly) { create(:user, :logingov_readonly) }
 
   it 'responds with an error when not logged in' do
     visit internal_reports_user_permissions_path(format: 'csv')
     expect(body).to eq('You need to sign in or sign up before continuing.')
   end
 
-  it 'responds with an error when not a logingov admin' do
+  it 'responds with an error when not logingov staff' do
     login_as create(:user)
     visit internal_reports_user_permissions_path(format: 'csv')
     expect(page).to have_http_status(:not_found)
@@ -41,18 +42,38 @@ feature 'internal reports' do
              role_name: 'partner_developer')
     end
 
-    it 'can generate a CSV showing everything sorted' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+    describe 'can generate a CSV showing everything sorted' do
+      before do
+        # add staff to internal team
+        logingov_admin
+        logingov_readonly
+      end
 
-      login_as logingov_admin
-      visit internal_reports_user_permissions_path(format: 'csv')
-      expect(response_headers['content-type']).to start_with('text/csv')
-      csv_response = CSV.parse(body)
+      it 'when user is Login.gov Admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
 
-      expect(csv_response.length).to eq(10)
-      # Note that role names are initialized at boot, so this tests always use
-      # sandbox names
-      expect(csv_response).to eq(expected_table)
+        login_as logingov_admin
+        visit internal_reports_user_permissions_path(format: 'csv')
+        expect(response_headers['content-type']).to start_with('text/csv')
+        csv_response = CSV.parse(body)
+
+        expect(csv_response.length).to eq(11)
+
+        expect(csv_response).to eq(expected_table)
+      end
+
+      it 'when user is Login.gov Readonly' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        login_as logingov_readonly
+        visit internal_reports_user_permissions_path(format: 'csv')
+        expect(response_headers['content-type']).to start_with('text/csv')
+        csv_response = CSV.parse(body)
+
+        expect(csv_response.length).to eq(11)
+
+        expect(csv_response).to eq(expected_table)
+      end
     end
   end
 
@@ -65,6 +86,13 @@ feature 'internal reports' do
         Team.internal_team.uuid,
         logingov_admin.email,
         'Login.gov Admin',
+      ],
+      [
+        '',
+        Team.internal_team.name,
+        Team.internal_team.uuid,
+        logingov_readonly.email,
+        'Login.gov Readonly',
       ],
       [
         sp0.issuer,
