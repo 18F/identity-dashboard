@@ -23,7 +23,6 @@ production:
   saml_sp_private_key_password: 'foobar'
 
   # Feature Flags
-  access_controls_enabled: true
   api_token_required_enabled: true
   edit_button_uses_servigce_config_wizard: true
   help_text_options_feature_enabled: true

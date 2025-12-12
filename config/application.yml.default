@@ -51,7 +51,6 @@ production:
   saml_sp_private_key_password: changeme
 
   # Feature Flags, options expected to be higher churn than the above settings
-  access_controls_enabled: false
   edit_button_uses_service_config_wizard: false
   help_text_options_feature_enabled: false
 test:
