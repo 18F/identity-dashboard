@@ -147,7 +147,7 @@ feature 'TeamMembership CRUD' do
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(page).to have_current_path(team_path(org.id))
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -169,7 +169,7 @@ feature 'TeamMembership CRUD' do
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(page).to have_current_path(team_path(org.id))
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -435,7 +435,7 @@ feature 'TeamMembership CRUD' do
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(page).to have_current_path(teams_path)
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
@@ -449,7 +449,7 @@ feature 'TeamMembership CRUD' do
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(page).to have_current_path(teams_path)
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
@@ -479,5 +479,44 @@ feature 'TeamMembership CRUD' do
 
     expect(page).to have_current_path(edit_team_path(team))
     expect(page).to have_content(I18n.t('notices.team_delete_failed'))
+  end
+
+  describe 'finishing editing' do
+    it 'returns to the index page if you started there' do
+      login_as [gov_partner, logingov_admin].sample
+      create(:team_membership, :partner_admin, user: gov_partner)
+      visit teams_path
+      click_on 'Edit'
+      click_on 'Cancel'
+      expect(page).to have_current_path(teams_path)
+
+      click_on 'Edit'
+      fill_in 'Description', with: "some randomized update #{rand(10..1000)}"
+      click_on 'Update'
+      expect(page).to have_current_path(teams_path)
+    end
+
+    it 'can return to the index page on Delete' do
+      # Currently only Login.gov Admin can see the "Delete" button
+      login_as logingov_admin
+      visit teams_all_path
+      click_on 'Edit'
+
+      click_on 'Delete'
+      expect(page).to have_current_path(teams_all_path)
+    end
+
+    it 'returns to the "all" page if you started there' do
+      # Currently only Login.gov users can see the teams_all page
+      login_as logingov_admin
+      visit teams_all_path
+      click_on 'Edit'
+      click_on 'Cancel'
+      expect(page).to have_current_path(teams_all_path)
+
+      click_on 'Edit'
+      click_on 'Delete'
+      expect(page).to have_current_path(teams_all_path)
+    end
   end
 end

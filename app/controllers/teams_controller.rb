@@ -9,6 +9,7 @@ class TeamsController < AuthenticatedController
   def index
     includes = %i[users service_providers agency]
     @teams = current_user.teams.includes(*includes).all
+    update_return_path(nil)
   end
 
   def show
@@ -24,6 +25,7 @@ class TeamsController < AuthenticatedController
   end
 
   def edit
+    get_return_path
     @agencies = Agency.order(:name)
   end
 
@@ -44,7 +46,7 @@ class TeamsController < AuthenticatedController
   def update
     if @team.update(update_params_with_current_user)
       flash[:success] = 'Success'
-      redirect_to team_path(@team.id)
+      redirect_to get_return_path
     else
       @agencies = Agency.order(:name)
       render :edit
@@ -54,16 +56,17 @@ class TeamsController < AuthenticatedController
   def destroy
     if @team.service_providers.empty? && @team.destroy
       flash[:success] = 'Success'
-      return redirect_to teams_path
+      return redirect_to get_return_path
     end
 
     flash[:warning] = I18n.t('notices.team_delete_failed')
-    redirect_back(fallback_location: teams_path)
+    redirect_back(fallback_location: get_return_path)
   end
 
   def all
     includes = %i[users service_providers agency]
     @teams = Team.includes(*includes).all
+    update_return_path('all')
 
     render 'teams/all'
   end
@@ -105,5 +108,13 @@ class TeamsController < AuthenticatedController
 
   def changes
     changes_to_log(@team)
+  end
+
+  def get_return_path
+    @teams_return_path = session[:team_return] == 'all' ? teams_all_path : teams_path
+  end
+
+  def update_return_path(path_suffix)
+    session[:team_return] = path_suffix
   end
 end
