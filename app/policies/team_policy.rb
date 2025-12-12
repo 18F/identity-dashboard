@@ -7,9 +7,6 @@ class TeamPolicy < BasePolicy # :nodoc: all
 
   def create?
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
-    unless IdentityConfig.store.access_controls_enabled
-      return allowlisted_user?(user) || user_has_login_admin_role?
-    end
 
     user_has_login_admin_role? || user_is_gov_partner?
   end
@@ -19,10 +16,6 @@ class TeamPolicy < BasePolicy # :nodoc: all
   end
 
   def edit?
-    unless IdentityConfig.store.access_controls_enabled
-      return in_team? || user_has_login_admin_role?
-    end
-
     user_has_login_admin_role? || (team_membership && team_membership.role_name == 'partner_admin')
   end
 
@@ -32,9 +25,6 @@ class TeamPolicy < BasePolicy # :nodoc: all
 
   def new?
     return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
-    unless IdentityConfig.store.access_controls_enabled
-      return allowlisted_user?(user) || user_has_login_admin_role?
-    end
 
     user_has_login_admin_role? || user_is_gov_partner?
   end

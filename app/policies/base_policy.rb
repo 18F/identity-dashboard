@@ -70,8 +70,6 @@ class BasePolicy # :nodoc: all
   end
 
   def user_has_partner_admin_role?
-    return false unless IdentityConfig.store.access_controls_enabled
-
     user.team_memberships.any? do |membership|
       membership.role == Role.find_by(name: 'partner_admin')
     end

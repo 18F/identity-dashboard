@@ -1,4 +1,4 @@
-<% if policy(@current_team_membership).manage_team_users? %>
+<% if policy(@current_team_membership).create? %>
   <h1>Manage users for <%= @team.name %></h1>
   <p>Manage team members from this screen. Add a new user and manage access and permissions from the Actions column.</p>
   <%= button_to "Add user",
