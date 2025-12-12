@@ -1,7 +1,5 @@
 <h1 class="usa-display">
-  <% if !IdentityConfig.store.access_controls_enabled %>
-    Edit user "<%= @user.email %>"
-  <% elsif @user.first_name && @user.last_name %>
+  <% if @user.first_name && @user.last_name %>
     <%= "#{@user.first_name} #{@user.last_name}" %>
   <% else %>
     <%= @user.email %>
@@ -10,11 +8,7 @@
 
 <%= simple_form_for(@user, html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
-  <% if IdentityConfig.store.access_controls_enabled %>
-    <%= render 'form_rbac', form: form %>
-  <% else %>
-    <%= render 'form', form: form %>
-  <% end %>
+  <%= render 'form_rbac', form: form %>
   <%= form.button :submit, 'Update', :class => "usa-button float-left" %>
   <%= link_to(
           'Delete',

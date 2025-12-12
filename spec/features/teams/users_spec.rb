@@ -20,23 +20,8 @@ describe 'users' do
   end
 
   feature 'add team user page access' do
-    scenario 'access permitted to team member (without RBAC)' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit new_team_user_path(team)
-      expect(page).to have_content('Add new user')
-    end
-
     scenario 'access permitted to Partner Admin team member' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
-      visit new_team_user_path(team)
-      expect(page).to have_content('Add new user')
-    end
-
-    scenario 'access permitted to login.gov admin (without RBAC)' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as logingov_admin
       visit new_team_user_path(team)
       expect(page).to have_content('Add new user')
     end
@@ -66,40 +51,8 @@ describe 'users' do
     end
   end
 
-  feature 'add team users (without RBAC)' do
-    before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit new_team_user_path(Team.find(team_member.teams.first.id))
-    end
-
-    scenario 'team member adds new user' do
-      email_to_add = 'new_user@example.com'
-      fill_in 'Email', with: email_to_add
-      click_on 'Add'
-      expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
-      team_member_emails = team.reload.users.map(&:email)
-      expect(team_member_emails).to include(email_to_add)
-    end
-
-    scenario 'team member adds existing member of team' do
-      fill_in 'Email', with: other_team_member.email
-      click_on 'Add'
-      expect(page).to have_content('This user is already a member of the team.')
-    end
-
-    scenario 'team member adds existing user not member of team' do
-      fill_in 'Email', with: user.email
-      click_on 'Add'
-      expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
-      team_member_emails = team.reload.users.map(&:email)
-      expect(team_member_emails).to include(user.email)
-    end
-  end
-
   feature 'add users to a team' do
     before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
       visit new_team_user_path(Team.find(team_member.teams.first.id))
     end
@@ -187,7 +140,6 @@ describe 'users' do
     let(:empty_team) { create(:team) }
 
     before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as logingov_admin
       visit new_team_user_path(empty_team)
     end
@@ -210,16 +162,7 @@ describe 'users' do
   end
 
   feature 'remove team user page access' do
-    scenario 'access permitted to team member to remove other team member (without RBAC)' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit team_remove_confirm_path(team, other_team_member)
-      expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team: team))
-    end
-
     scenario 'access permitted to partner admin team member to remove other team member' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
       visit team_remove_confirm_path(team, other_team_member)
       expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
@@ -227,34 +170,8 @@ describe 'users' do
     end
   end
 
-  feature 'remove team users (without RBAC)' do
-    before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit team_remove_confirm_path(team, other_team_member)
-    end
-
-    scenario 'team member clicks cancel' do
-      expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team: team))
-      click_on 'Cancel'
-      expect(page).to have_current_path(team_users_path(team))
-      expect(page).to have_content(other_team_member.email)
-    end
-
-    scenario 'team member removes user' do
-      expect(page).to have_content(I18n.t('teams.users.remove.confirm_title',
-                                          email: other_team_member.email, team: team))
-      click_on I18n.t('teams.users.remove.button')
-      expect(page).to have_current_path(team_users_path(team))
-      expect(page).to have_content(I18n.t('teams.users.remove.success',
-                                          email: other_team_member.email))
-    end
-  end
-
   feature 'remove team users' do
     before do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as partner_admin_team_member
       visit team_remove_confirm_path(team, other_team_member)
     end
@@ -296,15 +213,7 @@ describe 'users' do
       expect(page).to have_content("Users for #{team.name}")
     end
 
-    scenario 'access permitted to team member to remove other team member (without RBAC)' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit team_users_path(team)
-      expect(page).to have_content("Manage users for #{team.name}")
-    end
-
     scenario 'access permitted to partner admin team member to remove other team member' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as team_member
       visit team_users_path(team)
       expect(page).to_not have_content("Manage users for #{team.name}")
@@ -334,17 +243,7 @@ describe 'users' do
       expect(page).to have_content(other_team_member.email)
     end
 
-    scenario 'remove button only present for any other team member (without RBAC)' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(false)
-      login_as team_member
-      visit team_users_path(team)
-      expect(find_all('a', text: 'Remove').count).to eq(1)
-      click_on 'Remove'
-      expect(page).to have_current_path(team_remove_confirm_path(team.id, other_team_member.id))
-    end
-
     scenario 'remove button only present for another team member who is a Partner Admin' do
-      allow(IdentityConfig.store).to receive(:access_controls_enabled).and_return(true)
       login_as team_member
       visit team_users_path(team)
       expect(find_all('a', text: 'Remove').count).to eq(0)

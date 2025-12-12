@@ -16,9 +16,7 @@
     <tr>
       <th scope="col">Email</th>
       <th scope="col">Last Login</th>
-      <% if IdentityConfig.store.access_controls_enabled %>
-        <th scope="col">Role</th>
-      <% end %>
+      <th scope="col">Role</th>
       <% if show_actions? %>
         <th scope="col">Actions</th>
       <% end %>
@@ -29,12 +27,10 @@
       <tr>
         <td><%= membership.user.email %></td>
         <td><%= membership.user.last_sign_in_at || "Never" %></td>
-        <% if IdentityConfig.store.access_controls_enabled %>
-          <td><%= membership.role&.friendly_name %></td>
-        <% end %>
+        <td><%= membership.role&.friendly_name %></td>
         <% if show_actions? %>
           <td>
-            <% if IdentityConfig.store.access_controls_enabled && policy(membership).edit? %>
+            <% if policy(membership).edit? %>
               <%= link_to 'Edit',
                           edit_team_user_path(@team, membership.user),
                           class: 'usa-button--unstyled usa-link margin-right-1' %>
