@@ -56,12 +56,7 @@ class Teams::UsersController < AuthenticatedController
     render :new and return unless new_team_membership.save!
 
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_user_path and return
-
-    new_team_member.team_memberships << TeamMembership.create!(user_id: new_team_member.id,
-                                                               group_id: team.id)
-    flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_user_path and return
+    redirect_to new_team_user_path
   rescue ActiveRecord::RecordInvalid => err
     flash[:error] = "'#{member_email}': " + err.record.errors.full_messages.join(', ')
     redirect_to new_team_user_path
