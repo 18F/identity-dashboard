@@ -1,3 +1,4 @@
+# Helper for Admin/Users view to handle pagination display logic
 module PaginationHelper
   OVERFLOW = :overflow
 
