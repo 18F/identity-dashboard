@@ -48,13 +48,13 @@ describe UsersController do
           get :index
           expect(assigns(:page)).to eq(1)
           expect(assigns(:total_count)).to eq(User.count)
-          expect(assigns(:total_pages)).to eq((User.count.to_f / UsersController::PER_PAGE).ceil)
+          expect(assigns(:total_pages)).to eq((User.count.to_f / IdentityConfig.store.users_per_page).ceil)
         end
 
         it 'defaults to page 1' do
           get :index
           expect(assigns(:page)).to eq(1)
-          expect(assigns(:users).size).to be <= UsersController::PER_PAGE
+          expect(assigns(:users).size).to be <= IdentityConfig.store.users_per_page
         end
 
         it 'returns the correct page when page param is provided' do
@@ -64,14 +64,14 @@ describe UsersController do
 
         it 'limits results to PER_PAGE' do
           get :index
-          expect(assigns(:users).size).to eq(UsersController::PER_PAGE)
+          expect(assigns(:users).size).to eq(IdentityConfig.store.users_per_page)
         end
 
         it 'returns remaining users on last page' do
-          total_pages = (User.count.to_f / UsersController::PER_PAGE).ceil
+          total_pages = (User.count.to_f / IdentityConfig.store.users_per_page).ceil
           get :index, params: { page: total_pages }
-          expected_count = User.count % UsersController::PER_PAGE
-          expected_count = UsersController::PER_PAGE if expected_count == 0
+          expected_count = User.count % IdentityConfig.store.users_per_page
+          expected_count = IdentityConfig.store.users_per_page if expected_count == 0
           expect(assigns(:users).size).to eq(expected_count)
         end
 
