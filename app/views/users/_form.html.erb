@@ -3,18 +3,4 @@
        input_html: { class: 'usa-input', aria: { invalid: false } },
        required: true,
        disabled: action_name == 'edit' %>
-    <legend class='usa-sr-only'>Make <%= t('role_names.global.logingov_admin') %>?</legend>
-    <%= form.label :admin,
-                   label: "Make #{t('role_names.global.logingov_admin')}?",
-                   class: 'usa-label' %>
-    <%= form.collection_radio_buttons(:admin,
-                                    { "Yes" => true, "No" => false },
-                                    :last, :first,
-                                    collection_wrapper_tag: :div,
-                                    collection_wrapper_class: 'margin-bottom-3',
-                                    item_wrapper_tag: :div,
-                                    item_wrapper_class: 'usa-radio') do |b| %>
-        <%=  b.radio_button(class: "usa-radio__input") %>
-        <%=  b.label(class: "usa-radio__label")%>
-    <% end %>
 </fieldset>

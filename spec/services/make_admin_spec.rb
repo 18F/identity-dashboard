@@ -46,7 +46,6 @@ describe MakeAdmin do
           email: email,
           first_name: first_name,
           last_name: last_name,
-          admin: false,
         )
 
         subject.call
@@ -67,7 +66,7 @@ describe MakeAdmin do
 
         subject.call
 
-        expect(user.logingov_admin?).to eq(true)
+        expect(user.logingov_admin?).to be_truthy
       end
     end
 

@@ -4,7 +4,7 @@ describe ExtractsController do
   include Devise::Test::ControllerHelpers
 
   let(:partner) { create(:user) }
-  let(:admin) { create(:user, :logingov_admin) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:team) { create(:team) }
   let(:sp1) { create(:service_provider, :ready_to_activate, team:) }
   let(:sp2) { create(:service_provider, :ready_to_activate) }
@@ -55,7 +55,7 @@ describe ExtractsController do
 
   describe 'a logingov_admin user' do
     before do
-      sign_in admin
+      sign_in logingov_admin
     end
 
     context '#index' do

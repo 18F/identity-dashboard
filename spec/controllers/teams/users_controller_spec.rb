@@ -342,7 +342,6 @@ describe Teams::UsersController do
       let(:team_membership) { create(:team_membership) }
 
       before do
-        user.admin = true
         user.save!
         TeamMembership.find_or_build_logingov_admin(user).save!
       end

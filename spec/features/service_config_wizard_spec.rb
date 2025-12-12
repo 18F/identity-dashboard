@@ -41,7 +41,7 @@ feature 'Service Config Wizard' do
     }
   end
 
-  context 'when admin' do
+  context 'when Login.gov admin' do
     before do
       login_as(logingov_admin)
       allow(logger_double).to receive(:wizard_back_pressed)

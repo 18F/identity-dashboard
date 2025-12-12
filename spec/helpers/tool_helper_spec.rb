@@ -15,13 +15,13 @@ describe TeamHelper do
       let(:user) { create(:user, :logingov_admin) }
 
       it 'returns true' do
-        expect(helper.can_view_request_details?(sp)).to be true
+        expect(helper.can_view_request_details?(sp)).to be_truthy
       end
     end
 
     context 'whe not a login.gov admin' do
       it 'returns false' do
-        expect(helper.can_view_request_details?(sp)).to be false
+        expect(helper.can_view_request_details?(sp)).to be_falsy
       end
 
       context 'a member of the team' do
@@ -30,7 +30,7 @@ describe TeamHelper do
         end
 
         it 'returns true' do
-          expect(helper.can_view_request_details?(sp)).to be true
+          expect(helper.can_view_request_details?(sp)).to be_truthy
         end
       end
     end

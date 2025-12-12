@@ -2,15 +2,15 @@ module TeamHelper # :nodoc:
   ALLOWLISTED_DOMAINS = %w[.mil .gov .fed.us].freeze
 
   def can_edit_teams?(user)
-    !user.teams.empty? || user.admin?
+    !user.teams.empty? || user.logingov_admin?
   end
 
   def can_create_teams?(user)
-    allowlisted_user?(user) || user.admin?
+    allowlisted_user?(user) || user.logingov_admin?
   end
 
   def can_delete_team?(user)
-    user.admin?
+    user.logingov_admin?
   end
 
   def allowlisted_user?(user)
