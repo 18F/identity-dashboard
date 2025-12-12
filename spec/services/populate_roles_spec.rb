@@ -29,7 +29,6 @@ describe PopulateRoles do
           email: gov_email,
           first_name: gov_first_name,
           last_name: gov_last_name,
-          admin: false,
         )
         user.team_memberships << without_role_membership
         subject.call
@@ -46,7 +45,6 @@ describe PopulateRoles do
           email: nongov_email,
           first_name: nongov_first_name,
           last_name: nongov_last_name,
-          admin: false,
         )
         user.team_memberships << without_role_membership
         subject.call
@@ -63,7 +61,6 @@ describe PopulateRoles do
           email: nongov_email,
           first_name: nongov_first_name,
           last_name: nongov_last_name,
-          admin: false,
         )
         user.team_memberships << with_role_membership
         subject.call

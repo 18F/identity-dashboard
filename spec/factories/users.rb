@@ -22,7 +22,6 @@ FactoryBot.define do
     end
 
     factory :logingov_admin do
-      admin { true } # TODO: delete legacy admin property
       # From the FactoryBot docs, this syntax:
       # >  works with `build`, `build_stubbed`, and `create`
       # >  (although it doesn't work well with `attributes_for`)
@@ -30,7 +29,6 @@ FactoryBot.define do
     end
 
     trait :logingov_admin do
-      admin { true } # TODO: delete legacy admin property
       team_memberships { [association(:team_membership, :logingov_admin)] }
     end
 

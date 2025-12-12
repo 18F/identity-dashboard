@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe BannersController do
-  let(:user) { create(:user, uuid: SecureRandom.uuid, admin: false) }
+  let(:user) { create(:user, uuid: SecureRandom.uuid) }
   let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:logingov_readonly) { create(:user, :logingov_readonly) }
   let(:banner) { create(:banner) }

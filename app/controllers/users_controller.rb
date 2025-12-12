@@ -93,7 +93,6 @@ class UsersController < ApplicationController
 
     user.transaction do
       admin_membership.save!
-      user.update!(admin: true) # TODO: delete legacy admin property
     end
   end
 
@@ -102,7 +101,6 @@ class UsersController < ApplicationController
     authorize admin_membership
     admin_membership.transaction do
       admin_membership.destroy!
-      user.update!(admin: false) # TODO: delete legacy admin property
     end
   end
 
@@ -121,7 +119,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    @user_params ||= params.require(:user).permit(:email, :admin, team_membership: :role_name)
+    @user_params ||= params.require(:user).permit(:email, team_membership: :role_name)
   end
 
   def populate_role_if_missing

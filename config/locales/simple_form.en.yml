@@ -56,7 +56,6 @@ en:
         team: Team
         upload_certificate: Upload new public certificate
       user:
-        admin: Admin?
         email: Email
         first_name: First name
         last_name: Last name

@@ -204,21 +204,15 @@ describe User do
     end
   end
 
-  describe '#admin?' do
-    it 'is deprecated' do
-      default_behavior = User::DeprecateAdmin.deprecator.behavior
-      User::DeprecateAdmin.deprecator.behavior = :raise
-      expect { User.new.admin? }.to raise_error(ActiveSupport::DeprecationException)
-      User::DeprecateAdmin.deprecator.behavior = default_behavior
-    end
-  end
-
   describe '#logingov_admin?' do
-    it 'is not deprecated' do
-      default_behavior = User::DeprecateAdmin.deprecator.behavior
-      User::DeprecateAdmin.deprecator.behavior = :raise
-      expect { User.new.logingov_admin? }.to_not raise_error
-      User::DeprecateAdmin.deprecator.behavior = default_behavior
+    it 'returns true when user is logingov_admin' do
+      user = create(:user, :logingov_admin)
+      expect(user.logingov_admin?).to be_truthy
+    end
+
+    it 'returns false when user is not logingov_admin' do
+      user = create(:user, :team_member)
+      expect(user.logingov_admin?).to be_falsy
     end
   end
 

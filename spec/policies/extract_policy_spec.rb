@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ExtractPolicy do
   let(:user) { build(:user) }
-  let(:admin) { build(:user, :logingov_admin) }
+  let(:logingov_admin) { create(:team_membership, :logingov_admin).user }
   let(:extract) do
     build(:extract, {
       ticket: '0',
@@ -12,8 +12,8 @@ describe ExtractPolicy do
   end
 
   permissions :index? do
-    it 'allows admins' do
-      expect(ExtractPolicy).to permit(admin)
+    it 'allows login.gov admins' do
+      expect(ExtractPolicy).to permit(logingov_admin)
     end
 
     it 'does not allow non-admins' do
@@ -22,8 +22,8 @@ describe ExtractPolicy do
   end
 
   permissions :create? do
-    it 'allows admins' do
-      expect(ExtractPolicy).to permit(admin)
+    it 'allows login.gov admins' do
+      expect(ExtractPolicy).to permit(logingov_admin)
     end
 
     it 'does not allow non-admins' do
