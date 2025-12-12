@@ -48,7 +48,7 @@ feature 'login.gov admin manages users' do
     expect(page).to have_content('Deleted 1 unconfirmed user')
   end
 
-  scenario "logingov_admin creates a user" do
+  scenario 'logingov_admin creates a user' do
     visit users_path
     click_on 'Create a new user'
     expect(page).to have_content('New user')
@@ -64,7 +64,7 @@ feature 'login.gov admin manages users' do
     expect(page).to have_content("#{new_email} User has not yet signed in")
   end
 
-  scenario "logingov_admin edits users" do
+  scenario 'logingov_admin edits users' do
     user = create(:user, :with_teams)
 
     visit users_path
