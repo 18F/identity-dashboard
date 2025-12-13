@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'active_model_serializers', '>= 0.10.14'
+gem 'active_model_serializers', '>= 0.10.16'
 gem 'acts_as_paranoid'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
