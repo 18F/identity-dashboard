@@ -87,7 +87,7 @@ feature 'TeamMembership CRUD' do
     select('USDS', from: 'Agency')
     click_on 'Update'
 
-    expect(page).to have_current_path(team_path(org.id))
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
@@ -308,7 +308,7 @@ feature 'TeamMembership CRUD' do
     find("a[href='#{edit_team_path(team)}']").click
     click_on 'Delete'
 
-    expect(page).to have_current_path(teams_path)
+    expect(page).to have_current_path(teams_all_path)
     expect(page).to have_content('Success')
     expect(page).to_not have_content(team.name)
   end
