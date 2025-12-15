@@ -19,7 +19,6 @@ RSpec.describe SecurityEventsController do
 
       it 'renders unauthorized' do
         get :index
-        expect(user.admin).to be false
         expect(response).to be_unauthorized
       end
     end

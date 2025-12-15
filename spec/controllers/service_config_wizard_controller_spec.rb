@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ServiceConfigWizardController do
   let(:team) { create(:team, agency:) }
   let(:partner_admin) do
-    user = create(:user, uuid: SecureRandom.uuid, admin: false)
+    user = create(:user, uuid: SecureRandom.uuid)
     create(:team_membership, :partner_admin, user:, team:)
     user
   end
@@ -33,7 +33,7 @@ RSpec.describe ServiceConfigWizardController do
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
-  context 'as an login.gov admin' do
+  context 'as a login.gov admin' do
     let(:wizard_steps_ready_to_go) do
       # The team needs to be persisted and with an ID or WizardStep validation will fail,
       # so its factory is called here with `create`.

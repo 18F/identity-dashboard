@@ -170,7 +170,7 @@
 <p class="text-italic"><%= I18n.t('service_provider_form.failure_to_proof_url') %></p>
 <hr>
 
-<% if current_user.admin? %>
+<% if current_user.logingov_admin? %>
   <h2 class="margin-bottom-0">
     <label for="post_idv_follow_up_url">Post IdV Follow-up URL: </label>
     <span class="font-mono-xs margin-left-5"><%= service_provider.post_idv_follow_up_url %></span>

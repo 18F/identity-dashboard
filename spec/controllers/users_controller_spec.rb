@@ -93,7 +93,7 @@ describe UsersController do
       before { allow(logger_double).to receive(:team_membership_updated) }
 
       it 'has a redirect response' do
-        patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
+        patch :update, params: { id: user.id, user: { email: 'example@example.com' } }
         expect(response).to have_http_status(:found)
       end
 
@@ -157,7 +157,7 @@ describe UsersController do
 
     context 'when not a login.gov admin' do
       it 'has an error response' do
-        patch :update, params: { id: user.id, user: { admin: true, email: 'example@example.com' } }
+        patch :update, params: { id: user.id, user: { email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
         expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
@@ -170,31 +170,27 @@ describe UsersController do
 
       context 'when the user is valid' do
         it 'has a redirect response' do
-          patch :create, params: { user: { admin: true, email: 'example@example.com' } }
+          patch :create, params: { user: { email: 'example@example.com' } }
           expect(response).to have_http_status(:found)
         end
       end
 
       context 'when the user is invalid' do
         it 'renders the #new view' do
-          patch :create, params: { user: { admin: true, email: user.email } }
+          patch :create, params: { user: { email: user.email } }
           expect(response).to render_template(:new)
         end
       end
 
       context 'logging' do
         it 'calls log.user_created' do
-          patch :create, params: { user: { admin: true, email: 'example@example.com' } }
+          patch :create, params: { user: { email: 'example@example.com' } }
           user = User.find_by(email: 'example@example.com')
           changes = {
             'id' => user.id,
             'email' => {
               'old' => nil,
               'new' => 'example@example.com',
-            },
-            'admin' => {
-              'old' => false,
-              'new' => true,
             },
           }
 
@@ -207,7 +203,7 @@ describe UsersController do
 
     context 'when the user is not a login.gov admin' do
       it 'has an error response' do
-        patch :create, params: { user: { admin: true, email: 'example@example.com' } }
+        patch :create, params: { user: { email: 'example@example.com' } }
         expect(response).to have_http_status(:unauthorized)
         expect(logger_double).to have_received(:unauthorized_access_attempt)
       end

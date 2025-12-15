@@ -73,8 +73,7 @@ class User < ApplicationRecord
   end
 
   def logingov_admin?
-    admin_without_deprecation? || # TODO: delete legacy admin property
-      TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
+    TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
   end
 
   def logingov_readonly?
@@ -113,21 +112,4 @@ class User < ApplicationRecord
     membership.role = Role.find_by(name: role_name)
     membership.save
   end
-
-  # Deprecation for Legacy Admin User
-  module DeprecateAdmin
-    def self.deprecator
-      @deprecator ||= ActiveSupport::Deprecation.new("after we're fully migrated to RBAC", 'Portal')
-    end
-
-    def admin?
-      super
-    end
-
-    alias admin_without_deprecation? admin?
-    private :admin_without_deprecation?
-  end
-
-  include DeprecateAdmin
-  deprecate admin?: 'use `logingov_admin?` instead', deprecator: DeprecateAdmin.deprecator
 end
