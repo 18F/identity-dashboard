@@ -14,6 +14,10 @@ namespace :extracts do
       exit 1
     end
 
+    puts
+    puts '---> (When copying output into Slack, begin below this line) <---'
+    puts
+
     importer = ServiceProviderImporter.new(file_name)
 
     # Always do a dry run first
