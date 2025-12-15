@@ -89,6 +89,8 @@ Authorization uses Pundit; look for policies in `app/policies` and checks in con
 
 To add an admin-only action: check `app/policies/*Policy.rb` for authorization and add tests in `spec/policies` and `spec/controllers`.
 
+Our strategy is that permissions are additive, ie. a user with a Login.gov Readonly global role and a Partner Admin Team role will have general Readonly perms, plus the permissions of a Partner Admin for that team.
+
 # Debugging
 
 In order to see what you are typing when debugging with `binding.pry` , use `rails s -p 3001` instead of `make run`
