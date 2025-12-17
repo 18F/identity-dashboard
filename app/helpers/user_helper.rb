@@ -4,7 +4,7 @@ module UserHelper # :nodoc:
   end
 
   def can_delete_unconfirmed_users?(current_user)
-    current_user.admin?
+    current_user.logingov_admin?
   end
 
   def sign_in_icon(user)
