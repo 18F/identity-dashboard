@@ -9,3 +9,7 @@ en:
               invalid: is not formatted correctly. The issuer must be a unique string with no spaces.
             certs:
               invalid: are not all valid
+        team_membership:
+          attributes:
+            user_id:
+              taken: '%{value} is already a member of the team.'

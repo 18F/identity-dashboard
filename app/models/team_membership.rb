@@ -13,8 +13,7 @@ class TeamMembership < ApplicationRecord
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :team_memberships
 
-  validates :user_id, uniqueness: { scope: :group_id, on: :create,
-                                    message: 'This user is already a member of the team.' }
+  validates :user_id, uniqueness: { scope: :group_id, on: :create }
   validate :role_exists_if_present
 
   def self.find_or_build_logingov_admin(user)
