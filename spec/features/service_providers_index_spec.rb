@@ -48,8 +48,6 @@ feature 'Users can access service providers that belong to their team' do
 
     scenario 'login.gov admins can see Publish service providers button' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user1)
-      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user1)
 
       login_as(logingov_admin)
       visit service_providers_all_path
@@ -59,8 +57,6 @@ feature 'Users can access service providers that belong to their team' do
 
     scenario 'login.gov readonly can not see Publish service providers button' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user1)
-      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user1)
 
       login_as(logingov_readonly)
       visit service_providers_all_path
