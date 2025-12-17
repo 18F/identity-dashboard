@@ -40,6 +40,35 @@ feature 'Users can access service providers that belong to their team' do
     end
   end
 
+  context 'All' do
+    let(:team0) { create(:team) }
+    let(:user1) { create(:user, teams: [team0]) }
+    let(:logingov_admin) { create(:user, :logingov_admin) }
+    let(:logingov_readonly) { create(:user, :logingov_readonly) }
+
+    scenario 'login.gov admins can see Publish service providers button' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user1)
+      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user1)
+
+      login_as(logingov_admin)
+      visit service_providers_all_path
+
+      expect(page).to have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+    end
+
+    scenario 'login.gov readonly can not see Publish service providers button' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user1)
+      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user1)
+
+      login_as(logingov_readonly)
+      visit service_providers_all_path
+
+      expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+    end
+  end
+
   context 'Edit' do
     scenario 'user can edit a service provider that belongs to a shared team' do
       team = create(:team)

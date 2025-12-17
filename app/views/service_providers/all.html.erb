@@ -1,3 +1,5 @@
-<%= button_to t('forms.buttons.trigger_idp_refresh'), service_providers_publish_path, method: :post, :class => "usa-button" %>
+<% if current_user.logingov_admin? %>
+  <%= button_to t('forms.buttons.trigger_idp_refresh'), service_providers_publish_path, method: :post, :class => "usa-button" %>
+<% end %>
 
 <%= render partial: 'service_provider_table', locals: { service_providers: @service_providers, show_created_at: true } %>
