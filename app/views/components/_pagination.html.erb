@@ -1,0 +1,51 @@
+<% return if total_pages <= 1 %>
+
+<nav aria-label="Pagination" class="usa-pagination">
+  <ul class="usa-pagination__list">
+    <% if current_page > 1 %>
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <%= link_to path_helper.call(current_page - 1),
+            class: "usa-pagination__link usa-pagination__previous-page",
+            aria: { label: "Previous page" } do %>
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+            <use href="<%= asset_path 'sprite.svg#navigate_before' %>"></use>
+          </svg>
+          <span class="usa-pagination__link-text">Previous</span>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% pagination_visible_pages(current_page:, total_pages:).each do |pg| %>
+      <% if pg == PaginationHelper::OVERFLOW %>
+        <li class="usa-pagination__item usa-pagination__overflow" aria-label="ellipsis indicating non-visible pages">
+          <span>&hellip;</span>
+        </li>
+      <% elsif pg == current_page %>
+        <li class="usa-pagination__item usa-pagination__page-no">
+          <%= link_to pg, path_helper.call(pg),
+              class: "usa-pagination__button usa-current",
+              aria: { label: "Page #{pg}", current: "page" } %>
+        </li>
+      <% else %>
+        <li class="usa-pagination__item usa-pagination__page-no">
+          <%= link_to pg, path_helper.call(pg),
+              class: "usa-pagination__button",
+              aria: { label: "Page #{pg}" } %>
+        </li>
+      <% end %>
+    <% end %>
+
+    <% if current_page < total_pages %>
+      <li class="usa-pagination__item usa-pagination__arrow">
+        <%= link_to path_helper.call(current_page + 1),
+            class: "usa-pagination__link usa-pagination__next-page",
+            aria: { label: "Next page" } do %>
+          <span class="usa-pagination__link-text">Next</span>
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+            <use href="<%= asset_path 'sprite.svg#navigate_next' %>"></use>
+          </svg>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

@@ -24,8 +24,11 @@ class Role < ApplicationRecord
     partner_developer
     partner_readonly
   ]
+
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
   LOGINGOV_READONLY = Role.find_by(name: :logingov_readonly)
+  PARTNER_ADMIN = Role.find_by(name: :partner_admin)
+  PARTNER_READONLY = Role.find_by(name: :partner_readonly)
 
   def self.active_friendly_names
     active_roles_names.invert

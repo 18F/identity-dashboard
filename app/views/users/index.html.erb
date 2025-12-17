@@ -9,13 +9,20 @@
       class: 'usa-button'
     %>
   <% end %>
-  <% if can_delete_unconfirmed_users?(current_user, @users) %>
+
+  <% if can_delete_unconfirmed_users?(current_user) %>
     <%= button_to t('forms.buttons.delete_unconfirmed_users'),
       delete_unconfirmed_users_path,
       method: :delete,
       class: 'usa-button' %>
   <% end %>
 </div>
+
+<%= render 'components/pagination',
+    current_page: @page,
+    total_pages: @total_pages,
+    path_helper: ->(pg) { users_path(page: pg) } %>
+
 <table class="usa-table">
   <thead>
     <tr>
@@ -36,7 +43,7 @@
                           alt: alt(user),
                           aria: { hidden: true },
                           style: 'vertical-align:bottom' %>
-          <%= caption(user) %>                  
+          <%= caption(user) %>
         </td>
         <td><%= user.primary_role.friendly_name %></td>
         <% if current_user.logingov_admin? %>
@@ -53,3 +60,8 @@
     <% end %>
   </tbody>
 </table>
+
+<%= render 'components/pagination',
+    current_page: @page,
+    total_pages: @total_pages,
+    path_helper: ->(pg) { users_path(page: pg) } %>

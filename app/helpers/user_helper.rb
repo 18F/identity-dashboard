@@ -3,8 +3,8 @@ module UserHelper # :nodoc:
     (user.created_at + 14.days).strftime('%m/%d/%Y')
   end
 
-  def can_delete_unconfirmed_users?(current_user, users)
-    current_user.logingov_admin? && users.any? { |user| user.unconfirmed? }
+  def can_delete_unconfirmed_users?(current_user)
+    current_user.logingov_admin?
   end
 
   def sign_in_icon(user)

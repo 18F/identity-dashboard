@@ -11,7 +11,13 @@ class UsersController < ApplicationController
   attr_reader :user
 
   def index
-    @users = policy_scope(User).sorted
+    per_page = IdentityConfig.store.users_per_page
+    @page = [params[:page].to_i, 1].max
+    base_scope = policy_scope(User).includes(team_memberships: [:role, :team]).sorted
+    @total_count = base_scope.count
+    @total_pages = (@total_count.to_f / per_page).ceil
+    @page = [@page, @total_pages].min if @total_pages > 0
+    @users = base_scope.limit(per_page).offset((@page - 1) * per_page)
   end
 
   def new

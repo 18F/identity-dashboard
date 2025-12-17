@@ -23,6 +23,7 @@ redis_pool_size: 5
 redis_url: redis://localhost:6379/0
 secret_key_base: changeme
 serve_static_files: 'false'
+users_per_page: 100
 
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false
