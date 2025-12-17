@@ -16,21 +16,21 @@ describe UserHelper do
       current_user = create(:user, :logingov_admin)
       user.created_at = 15.days.ago
       users = [user]
-      expect(can_delete_unconfirmed_users?(current_user, users)).to be_truthy
+      expect(can_delete_unconfirmed_users?(current_user)).to be true
     end
 
     it 'returns false if the current user is not an Login.gov admin' do
       current_user = build(:user)
       user.created_at = 2.days.ago
       users = [user]
-      expect(can_delete_unconfirmed_users?(current_user, users)).to be_falsy
+      expect(can_delete_unconfirmed_users?(current_user)).to be_falsy
     end
 
     it 'returns false if no users are unconfirmed' do
       current_user = build(:user)
       user.created_at = 2.days.ago
       users = [user]
-      expect(can_delete_unconfirmed_users?(current_user, users)).to be_falsy
+      expect(can_delete_unconfirmed_users?(current_user)).to be false
     end
   end
 

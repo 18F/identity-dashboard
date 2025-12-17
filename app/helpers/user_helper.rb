@@ -3,7 +3,7 @@ module UserHelper # :nodoc:
     (user.created_at + 14.days).strftime('%m/%d/%Y')
   end
 
-  def can_delete_unconfirmed_users?(current_user, users)
+  def can_delete_unconfirmed_users?(current_user)
     current_user.admin?
   end
 

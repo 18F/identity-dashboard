@@ -9,7 +9,8 @@
       class: 'usa-button'
     %>
   <% end %>
-  <% if can_delete_unconfirmed_users?(current_user, @users) %>
+
+  <% if can_delete_unconfirmed_users?(current_user) %>
     <%= button_to t('forms.buttons.delete_unconfirmed_users'),
       delete_unconfirmed_users_path,
       method: :delete,
