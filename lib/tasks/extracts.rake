@@ -39,7 +39,7 @@ namespace :extracts do
       (saved_sps, unsaved_sps) = importer.service_providers.partition { |m| m.persisted? }
       output_models(saved_sps, unsaved_sps) { |models| puts issuers_list(models) }
       if saved_sps.any?
-        export_models_to_file(saved_sps, "#{File.dirname(filename)}/exported_models.json")
+        export_models_to_file(saved_sps, "#{File.dirname(file_name)}/exported_models.json")
       end
 
       (saved_teams, unsaved_teams) = importer.teams.partition { |m| m.persisted? }

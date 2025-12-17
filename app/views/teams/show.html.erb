@@ -5,32 +5,41 @@
 
 <h1 class="usa-display">Team details for "<%= @team.name %>" </h1>
 
-<h2><label for="agency">Agency:</label></h2>
-<p class="font-mono-xs margin-top-0" name="agency"><%= @team&.agency&.name %></p>
+<% if current_user.logingov_admin? %>
+  <%= render 'uuid_with_copy' %>
+<% end %>
 
-<h2><label for="description">Description:</label></h2>
-<p class="font-mono-xs margin-top-0" name="description"><%= @team.description %></p>
+<h2>Agency:</h2>
+<p class="font-mono-xs margin-top-0"><%= @team&.agency&.name %></p>
 
-<h2><label for="users">Users: (<%= @team.users.count %>)</label></h2>
-<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="users">
+<h2>Description:</h2>
+<p class="font-mono-xs margin-top-0"><%= @team.description %></p>
+
+<h2>Users: (<%= @team.users.count %>)</h2>
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled">
   <% @team.users.each do |u| %>
     <li><%= u.email %></li>
   <% end %>
 </ul>
 
-<%= link_to(
-  "Manage users",
-  team_users_path(@team),
-  class: 'margin-y-1 display-block',
-) %>
+<% if policy(@team).edit? %>
+  <%= link_to(
+    "Manage users",
+    team_users_path(@team),
+    class: 'margin-y-1 display-block',
+  ) %>
+<% end %>
 
-<h2><label for="apps">Configurations: (<%= @team.service_providers.count %>)</label></h2>
-<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled" name="apps">
+<h2>Configurations: (<%= @team.service_providers.count %>)</h2>
+<ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled">
   <% @team.service_providers.each do |a| %>
     <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
   <% end %>
 </ul>
-<%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+
+<% if policy(@team).edit? %>
+  <%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+<% end %>
 
 <% if policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @audit_events %>

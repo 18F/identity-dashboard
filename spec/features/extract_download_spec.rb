@@ -45,7 +45,9 @@ feature 'Extract Download' do
       downloaded_file = StringIO.new page.body
 
       Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
-      expect(File.read("tmp/#{expected_logo_name}")).to eq(sp_to_export.logo_file.download)
+      expect(File.read(
+        "tmp/#{sp_to_export.id}_#{expected_logo_name}",
+      )).to eq(sp_to_export.logo_file.download)
     end
 
     it 'will include the correct attributes in the download' do
@@ -53,24 +55,30 @@ feature 'Extract Download' do
 
       Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
       json_from_archive = JSON.parse(File.read('tmp/extract.json'))
+
       expect(json_from_archive['service_providers'].count).to be 1
       exported_attributes = json_from_archive['service_providers'].first
-      expect(exported_attributes['logo']).to eq(expected_logo_name)
+
+      # Test attributes that don't behave like the others
+      expect(exported_attributes['team_uuid']).to eq(sp_to_export.team.uuid)
+      expect(exported_attributes['logo']).to eq("#{sp_to_export.id}_#{expected_logo_name}")
+
       exported_attributes.keys.each do |attribute_key|
-        next if attribute_key == 'team_uuid'
         next if attribute_key.end_with? '_at' # comparison of timestamps is flaky
+
+        # Skip attributes already tested
+        next if attribute_key == 'team_uuid'
+        next if attribute_key == 'logo'
 
         expect(exported_attributes[attribute_key]).to eq(sp_to_export[attribute_key]),
           "Key #{attribute_key} didn't match, value was: #{exported_attributes[attribute_key]}"
       end
-
-      expect(exported_attributes['team_uuid']).to eq(sp_to_export.team.uuid)
     end
   end
 
   after do
     # Clean up extracted files
     system('rm tmp/extract.json')
-    system("rm tmp/#{expected_logo_name}")
+    system("rm tmp/#{sp_to_export.id}_#{expected_logo_name}")
   end
 end

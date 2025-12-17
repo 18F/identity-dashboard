@@ -97,6 +97,7 @@ FactoryBot.define do
 
     trait :with_team do
       association :team, factory: :team
+      agency_id { team.agency_id }
     end
 
     trait :without_signed_response_message_requested do

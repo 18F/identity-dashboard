@@ -107,6 +107,18 @@ describe 'users' do
       expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
+    scenario 'team member adds user with blank email' do
+      fill_in 'Email', with: ''
+      click_on 'Add'
+      expect(page).to have_content("Email can't be blank")
+    end
+
+    scenario 'team member add user with invalid email' do
+      fill_in 'Email', with: 'invalid'
+      click_on 'Add'
+      expect(page).to have_content('Email is invalid')
+    end
+
     scenario 'team member adds existing member of team' do
       fill_in 'Email', with: other_team_member.email
       click_on 'Add'
@@ -155,8 +167,9 @@ describe 'users' do
         click_on 'Add'
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
         click_on 'Back'
-        expect(find('tr',
-:text => random_email)).to have_content(I18n.t('role_names.sandbox.partner_developer'))
+        expect(
+          find('tr', :text => random_email),
+        ).to have_content(I18n.t('role_names.sandbox.partner_developer'))
         new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
         expect(new_membership.role_name).to eq 'partner_developer'
       end
@@ -531,6 +544,17 @@ describe 'users' do
         end
         expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
         expect(page).to_not have_content('Can add and delete users and teams')
+      end
+
+      it 'shows a status message when succesfully changing a role' do
+        new_role = %w[partner_developer partner_readonly].sample
+        new_role_description = I18n.t("role_names.sandbox.#{new_role}")
+        visit edit_team_user_path(team, team_member)
+        choose new_role_description
+        click_on 'Update'
+        expect(page).to have_content(
+          "You've updated the role for #{team_member.email} to #{new_role_description}",
+        )
       end
     end
 

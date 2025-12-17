@@ -268,6 +268,22 @@ describe ServiceProvidersController do
         )
       end
     end
+
+    # rubocop:disable Layout/LineLength
+    describe 'UUID assignment' do
+      it 'assigns a UUID to the service provider' do
+        post :create, params: { service_provider: {
+          issuer: 'uuid.test.issuer',
+          group_id: user.teams.first.id,
+          friendly_name: 'UUID Test',
+        } }
+
+        service_provider = ServiceProvider.find_by(issuer: 'uuid.test.issuer')
+        expect(service_provider.uuid).to_not be_nil
+        expect(service_provider.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
+      end
+    end
+    # rubocop:enable Layout/LineLength
   end
 
   describe '#update' do

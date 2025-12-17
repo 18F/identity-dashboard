@@ -44,7 +44,7 @@ Branches should be specifically named in a standard format that closely matches 
 
 Branches should be specific to a specific feature. Sub-branches can be created for larger features that require development broken into multiple parts for completion.
 
-Branches should be rebased to main to keep the history on the main branch clear and easy to follow.
+Branches should be rebased to `main` to keep the history on the main branch clear and easy to follow.
 
 Branches should be completed and sent for review via Pull Request and merged into main via squashed merge-commit to keep noise in main down.
 
@@ -64,18 +64,34 @@ For code reviewers
 - Wait to merge the branch until it has passed Continuous Integration testing.
 - Use [Conventional Comments](https://conventionalcomments.org/) in order to clarify whether a comment is blocking or non-blocking for merging the PR.
 
-# Testing Standards
+# Testing
 *When do we use feature tests / integration / regression / unit tests*
 
+RSpec is the test runner. Use `bundle exec rspec {file}{:ln}` command to run individual tests, including relative file path (`file`) and line number (`ln`) 
 
-We primarily write tests in rpsec using additional tools like capybara for feature tests.
+## Test Standards
+Use a TDD approach when shipping new features.
+
+- New controller actions MUST have controller specs (see `spec/controllers/*_spec.rb`).
+- New services and model methods should include unit specs under `spec/services` or `spec/models`.
+- When adding a new API endpoint, add request specs under `spec/requests` and examples of expected JSON input/output.
 
 ## Test Coverage
+
 To check test coverage with RSPEC:
 `COVERAGE=true bundle exec rspec {my_spec_file}`
 
  Note that when running this command your coverage file will show that all other files don't have coverage.
 
+# Authorization
+
+Authorization uses Pundit; look for policies in `app/policies` and checks in controllers.
+
+To add an admin-only action: check `app/policies/*Policy.rb` for authorization and add tests in `spec/policies` and `spec/controllers`.
+
+# Debugging
+
+In order to see what you are typing when debugging with `binding.pry` , use `rails s -p 3001` instead of `make run`
 
 # Linting
 

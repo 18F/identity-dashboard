@@ -8,13 +8,11 @@ class ExtractArchive
     @logo_attachments = []
   end
 
-  # @param service_providers [Enumerable<ServiceProvider>]
-  def add_logos_from_service_providers(service_providers)
-    service_providers.each do |sp|
-      next if sp.logo_file.blank?
-
-      @logo_attachments.push({ filename: sp.logo, attachment: sp.logo_file })
-    end
+  # @param logos [Array<Hash{Symbol=>String,ActiveStorage::Attached::One}>] an array of hashes where
+  #   each hash is has a key `:filename`, a string <String>, and
+  #   `:attachment` <ActiveStorage::Attached::One>}
+  def add_logos(logos)
+    @logo_attachments = @logo_attachments.union(logos)
   end
 
   def add_json_file(data, filename)

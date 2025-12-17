@@ -5,6 +5,11 @@
         <h2 class='margin-y-05'>
           <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
         </h2>
+        <% if current_user.logingov_admin? %>
+          <p class="margin-0">
+            <strong>Team UUID:</strong> <%= team.uuid %>
+          </p>
+        <% end %>
         <p class='margin-0'>
           <strong>Agency:</strong> <%= team&.agency&.name %>
         </p>
@@ -32,9 +37,11 @@
           <% end %>
         </p>
       </div>
-      <div class='tablet:grid-col-2 text-right'>
-        <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
-      </div>
+      <% if policy(team).edit? %>
+        <div class='tablet:grid-col-2 text-right'>
+          <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>

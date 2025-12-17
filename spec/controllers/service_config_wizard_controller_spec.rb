@@ -115,6 +115,10 @@ RSpec.describe ServiceConfigWizardController do
       initial_attributes.delete('identity_protocol')
       new_attributes.delete('identity_protocol')
 
+      # UUID may be assigned if it was nil
+      initial_attributes.delete('uuid')
+      new_attributes.delete('uuid')
+
       expect(new_attributes).to eq(initial_attributes)
     end
 
@@ -381,6 +385,34 @@ RSpec.describe ServiceConfigWizardController do
 
     # help_text gets saved to draft, then to `service_provider`, then deleted in one step
     describe 'step "help_text"' do
+      let(:required_attributes) do
+        %w[
+          id
+          user_id
+          issuer
+          friendly_name
+          description
+          block_encryption
+          created_at
+          updated_at
+          active
+          approved
+          agency_id
+          attribute_bundle
+          group_id
+          identity_protocol
+          ial
+          help_text
+          allow_prompt_login
+          default_aal
+          email_nameid_format_allowed
+          signed_response_message_requested
+          app_name
+          prod_config
+          status
+        ]
+      end
+
       it 'can save valid service provider settings' do
         wizard_steps_ready_to_go.each(&:save!)
 
@@ -393,8 +425,23 @@ RSpec.describe ServiceConfigWizardController do
 
         expect(response.redirect_url).to eq(service_provider_url(ServiceProvider.last))
         expect(assigns['service_provider']).to eq(ServiceProvider.last)
+        required_attributes.each do |attr|
+          expect(assigns['service_provider'].attributes[attr]).to_not eq(nil)
+        end
         expect(WizardStep.where(user: logingov_admin)).to be_empty
       end
+
+      # rubocop:disable Layout/LineLength
+      it 'assigns a UUID to the service provider' do
+        wizard_steps_ready_to_go.each(&:save!)
+
+        put :update, params: { id: 'help_text', wizard_step: { active: false } }
+
+        service_provider = ServiceProvider.last
+        expect(service_provider.uuid).to_not be_nil
+        expect(service_provider.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
+      end
+      # rubocop:enable Layout/LineLength
 
       it 'stays on this step when the service provider would be invalid' do
         expect do
@@ -673,7 +720,7 @@ RSpec.describe ServiceConfigWizardController do
             }
 
             expect(logger_double).to have_received(:sp_updated).with(
-              { changes: expected_log },
+              { changes: hash_including(expected_log) },
             )
           end
         end

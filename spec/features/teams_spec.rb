@@ -187,6 +187,8 @@ feature 'TeamMembership CRUD' do
 
       expect(page).to have_content(org1.name)
       expect(page).to have_content(org2.name)
+      expect(page).to have_content(org1.uuid)
+      expect(page).to have_content(org2.uuid)
       expect(page).to have_content(org1.agency.name)
       expect(page).to have_content(org2.agency.name)
       expect(page).to have_content(org1.description)
@@ -264,6 +266,9 @@ feature 'TeamMembership CRUD' do
       find('.usa-button', text: 'Back').click
 
       expect(page).to have_current_path(team_path(team))
+      # Team UUID is displayed and has Copy button
+      expect(page).to have_content(team.uuid)
+      expect(page).to have_content('copy UUID to clipboard')
       newest_event_text = find('#versions>:first-child').text
       expect(newest_event_text).to include("user_id #{user.id}")
       expect(newest_event_text).to include("By: #{logingov_admin.email}")
@@ -272,6 +277,24 @@ feature 'TeamMembership CRUD' do
       oldest_event_text = find('#versions>:last-child').text
       expect(oldest_event_text).to include('Action: Create')
       expect(oldest_event_text).to include("At: #{team.created_at}")
+    end
+
+    scenario 'readonly user attempts to edit a team' do
+      team = create(:team)
+      user = create(:team_membership, :partner_readonly, team:).user
+
+      login_as(user)
+
+      visit team_path(team)
+
+      expect(page).to_not have_button('Edit')
+      expect(page).to_not have_link('Manage users')
+
+      visit edit_team_path(team)
+      expect(page).to have_content('Unauthorized')
+
+      visit teams_all_path
+      expect(page).to_not have_button('Edit')
     end
 
     scenario 'regular user attempts to view a team' do
@@ -285,6 +308,21 @@ feature 'TeamMembership CRUD' do
 
       expect(page).to_not have_content(team.name)
       expect(page).to have_content('Unauthorized')
+    end
+
+    scenario 'regular user views own team' do
+      user = create(:user, :team_member)
+      team = user.teams.first
+
+      login_as(user)
+
+      visit team_path(team)
+
+      expect(page).to have_content(team.name)
+      expect(page).to_not have_content('Unauthorized')
+      # Team UUID is not displayed
+      expect(page).to_not have_content(team.uuid)
+      expect(page).to_not have_content('copy UUID to clipboard')
     end
   end
 

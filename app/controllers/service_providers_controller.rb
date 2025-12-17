@@ -46,6 +46,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def create
     @service_provider = policy_scope(ServiceProvider).new
+    @service_provider.uuid = SecureRandom.uuid
 
     cert = params[:service_provider].delete(:cert)
     @service_provider.assign_attributes(permitted_attributes(service_provider))
