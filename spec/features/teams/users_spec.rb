@@ -11,7 +11,13 @@ describe 'users' do
   let(:readonly_team_membership) { create(:team_membership, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_team_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_admin_team_membership) {
+    create(:team_membership, :logingov_admin, team: Team.internal_team)
+  }
   let(:logingov_readonly) { create(:logingov_readonly) }
+  let(:logingov_readonly_team_membership) {
+    create(:team_membership, :logingov_readonly, team: Team.internal_team)
+  }
   let(:user) { create(:user) }
 
   before do
@@ -274,6 +280,7 @@ describe 'users' do
   feature 'modifying team user permissions' do
     context 'when login.gov admin' do
       before do
+        logingov_readonly # initialize for the Internal Team
         login_as logingov_admin
         allow(Rails.cache).to receive(:read)
           .with("#{partner_admin_team_member.uuid}.airtable_oauth_token")
@@ -285,7 +292,7 @@ describe 'users' do
           allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         end
 
-        it 'shows correct partner roles and descriptions' do
+        it 'shows correct partner roles and descriptions in general' do
           team_users = [partner_admin_team_member, readonly_team_member]
           partner_roles = Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
 
@@ -294,6 +301,19 @@ describe 'users' do
             click_on 'Edit'
           end
           partner_roles.each do |role|
+            expect(page).to have_content(role.friendly_name)
+            expect(page).to have_content(I18n.t("team_memberships.#{role.name}_prod_description"))
+          end
+        end
+
+        it 'shows correct partner roles and descriptions for the Internal Team' do
+          staff_roles = [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
+
+          visit team_users_path(Team.internal_team)
+          within('tr', text: logingov_readonly.email) do
+            click_on 'Edit'
+          end
+          staff_roles.each do |role|
             expect(page).to have_content(role.friendly_name)
             expect(page).to have_content(I18n.t("team_memberships.#{role.name}_prod_description"))
           end
@@ -314,6 +334,19 @@ describe 'users' do
             click_on 'Edit'
           end
           partner_roles.each do |role|
+            expect(page).to have_content(role.friendly_name)
+            expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
+          end
+        end
+
+        it 'shows correct partner roles and descriptions for the Internal Team' do
+          staff_roles = [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
+
+          visit team_users_path(Team.internal_team)
+          within('tr', text: logingov_readonly.email) do
+            click_on 'Edit'
+          end
+          staff_roles.each do |role|
             expect(page).to have_content(role.friendly_name)
             expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
           end
