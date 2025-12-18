@@ -77,10 +77,10 @@ en:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
   team_memberships:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
-    logingov_admin_description: ''
-    logingov_admin_prod_description: ''
-    logingov_readonly_description: ''
-    logingov_readonly_prod_description: ''
+    logingov_admin_description: Can create, read, update, and delete all users, teams, and configs
+    logingov_admin_prod_description: Can create, read, update, and delete all users, teams, and configs
+    logingov_readonly_description: Can read all users, teams, and configs
+    logingov_readonly_prod_description: Can read all users, teams, and configs
     partner_admin_description: Can add and delete users and teams; grant and rescind permissions; create, edit, delete, and submit new and existing configs
     partner_admin_prod_description: Can add and delete users on teams; grant and rescind permissions; edit and delete existing configs
     partner_developer_description: Can create, edit and submit new and existing configs

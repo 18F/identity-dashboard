@@ -2,14 +2,20 @@ require 'rails_helper'
 
 describe TeamMembershipPolicy do
   let(:team) { create(:team) }
+  let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
+  let(:logingov_admin_membership) do
+    create(:team_membership, :logingov_admin, team: Team.internal_team)
+  end
+  let(:logingov_readonly_membership) do
+    create(:team_membership, :logingov_readonly, team: Team.internal_team)
+  end
   let(:partner_admin_membership) { create(:team_membership, :partner_admin, team:) }
   let(:partner_developer_membership) { create(:team_membership, :partner_developer, team:) }
   let(:partner_readonly_membership) { create(:team_membership, :partner_readonly, team:) }
   let(:partner_admin) { partner_admin_membership.user }
   let(:partner_developer) { partner_developer_membership.user }
   let(:partner_readonly) { partner_readonly_membership.user }
-  let(:logingov_admin) { create(:logingov_admin) }
-  let(:logingov_readonly) { create(:logingov_readonly) }
   let(:other_user) { build(:restricted_ic) }
   let(:without_role_membership) { create(:team_membership) }
 
@@ -163,7 +169,13 @@ describe TeamMembershipPolicy do
   end
 
   describe '#roles_for_edit' do
-    it 'is everything but Login Staff for Login Admins' do
+    it 'is only Login Staff on the Internal Team' do
+      expected_roles = [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY]
+      expect(described_class.new(logingov_admin, logingov_admin_membership).roles_for_edit)
+        .to eq(expected_roles)
+    end
+
+    it 'is everything but Login Staff on other teams for Login Admins' do
       team_membership = [partner_admin_membership,
                          partner_developer_membership,
                          partner_readonly_membership].sample
@@ -181,6 +193,10 @@ describe TeamMembershipPolicy do
       ]
       expect(described_class.new(partner_admin, team_membership).roles_for_edit)
         .to eq(expected_roles)
+    end
+
+    it 'is empty for non-staff when trying to edit the internal team' do
+      expect(described_class.new(partner_admin, partner_admin_membership).roles_for_edit).to eq([])
     end
 
     it 'is empty for Partner Admins when trying to edit themselves' do
