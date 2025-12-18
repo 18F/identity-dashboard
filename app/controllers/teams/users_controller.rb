@@ -67,7 +67,7 @@ class Teams::UsersController < AuthenticatedController
       else
         record_error
       end
-    end.join
+    end.join(', ')
     flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
     redirect_to new_team_user_path
   end
