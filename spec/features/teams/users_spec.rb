@@ -11,13 +11,13 @@ describe 'users' do
   let(:readonly_team_membership) { create(:team_membership, :partner_readonly, team:) }
   let(:readonly_team_member) { readonly_team_membership.user }
   let(:logingov_admin) { create(:logingov_admin) }
-  let(:logingov_admin_team_membership) {
+  let(:logingov_admin_team_membership) do
     create(:team_membership, :logingov_admin, team: Team.internal_team)
-  }
+  end
   let(:logingov_readonly) { create(:logingov_readonly) }
-  let(:logingov_readonly_team_membership) {
+  let(:logingov_readonly_team_membership) do
     create(:team_membership, :logingov_readonly, team: Team.internal_team)
-  }
+  end
   let(:user) { create(:user) }
 
   before do

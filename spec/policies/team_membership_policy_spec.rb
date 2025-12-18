@@ -4,8 +4,12 @@ describe TeamMembershipPolicy do
   let(:team) { create(:team) }
   let(:logingov_admin) { create(:logingov_admin) }
   let(:logingov_readonly) { create(:logingov_readonly) }
-  let(:logingov_admin_membership) { create(:team_membership, :logingov_admin, team: Team.internal_team) }
-  let(:logingov_readonly_membership) { create(:team_membership, :logingov_readonly, team: Team.internal_team) }
+  let(:logingov_admin_membership) do
+    create(:team_membership, :logingov_admin, team: Team.internal_team)
+  end
+  let(:logingov_readonly_membership) do
+    create(:team_membership, :logingov_readonly, team: Team.internal_team)
+  end
   let(:partner_admin_membership) { create(:team_membership, :partner_admin, team:) }
   let(:partner_developer_membership) { create(:team_membership, :partner_developer, team:) }
   let(:partner_readonly_membership) { create(:team_membership, :partner_readonly, team:) }
