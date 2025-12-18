@@ -4,7 +4,7 @@ RSpec.describe TeamMembership do
   describe '#user_id' do
     it {
       expect(subject).to validate_uniqueness_of(:user_id).scoped_to(:group_id).
-        with_message('This user is already a member of the team.')
+        with_message('0 is already a member of the team.')
     }
   end
 
