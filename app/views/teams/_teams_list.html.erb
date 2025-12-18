@@ -33,7 +33,7 @@
           </strong>
           <br/>
           <% if current_user.logingov_staff? %>
-            <%= team.users.map{ |user| link_to(user.email, edit_user_path(user.id), class:'text-primary text-no-underline' ) }.join(", ").html_safe %>
+            <%= team.users.map{ |user| user.email}.join(", ") %>
           <% end %>
         </p>
       </div>
