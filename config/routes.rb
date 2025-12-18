@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   get '/env' => 'env#index'
   get '/internal_reports/user_permissions' => 'internal_reports#user_permissions'
 
-  resources :users
+  resources :users, except: %i[edit]
   resources :banners, except: :destroy
   resources :service_config_wizard, except: %i[index edit]
   resources :auth_tokens, only: %i[index new create]
