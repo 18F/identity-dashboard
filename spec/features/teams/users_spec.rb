@@ -88,7 +88,9 @@ describe 'users' do
     scenario 'team member adds existing member of team' do
       fill_in 'Email', with: other_team_member.email
       click_on 'Add'
-      expect(page).to have_content("User #{other_team_member.email} is already a member of the team")
+      expect(page).to have_content(
+        "User #{other_team_member.email} is already a member of the team",
+      )
     end
 
     scenario 'team member adds existing user not member of team' do
