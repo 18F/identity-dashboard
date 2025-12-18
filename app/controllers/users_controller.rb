@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   after_action :verify_authorized
   after_action :verify_policy_scoped, except: [:none]
   after_action :log_user_changes, only: %i[create destroy]
-  helper_method :options_for_roles
   attr_reader :user
 
   def index
@@ -22,13 +21,6 @@ class UsersController < ApplicationController
 
   def new
     @user = policy_scope(User).new
-  end
-
-  def edit
-    @user = policy_scope(User).find_by(id: params[:id])
-    @team_membership = @user&.team_memberships&.first
-    populate_role_if_missing
-    @has_no_teams = true if @user.teams.none?
   end
 
   def create
@@ -69,18 +61,6 @@ class UsersController < ApplicationController
   end
 
   def none; end
-
-  def options_for_roles
-    if @has_no_teams
-      Role.active_roles_names.slice(
-        'logingov_admin',
-        'logingov_readonly',
-        'partner_admin',
-      ).invert
-    else
-      Role.active_friendly_names
-    end
-  end
 
   private
 
