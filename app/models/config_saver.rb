@@ -2,7 +2,7 @@
 #  a ServiceProvider config through the UI.
 #
 # This concern doesn't obviously belong to the model or a controller
-module ConfigSaver
+class ConfigSaver
   STRING_ATTRIBUTES = %w[
     issuer
     friendly_name
@@ -31,17 +31,17 @@ module ConfigSaver
     draft_config.valid_localhost_uris? if !current_user.logingov_admin?
 
     @errors = draft_config.errors
-    service_provider.save! if @errors.none?
+    draft_config.save! if @errors.none?
   end
 
   def clear_formatting
-    draft.attributes.each do |k, v|
+    draft_config.attributes.each do |k, v|
       v.try(:strip!) if STRING_ATTRIBUTES.include?(k)
     end
 
-    service_provider.redirect_uris&.each do |uri|
+    draft_config.redirect_uris&.each do |uri|
       uri.try(:strip!)
     end
-    service_provider
+    draft_config
   end
 end
