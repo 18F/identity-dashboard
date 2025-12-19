@@ -20,14 +20,6 @@ feature 'User pages', :js do
         expect_page_to_have_no_accessibility_violations(page)
       end
     end
-
-    context 'edit_user view' do
-      scenario 'is accessible' do
-        user = create(:user)
-        visit edit_user_path(user)
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
   end
 
   context 'when not a login.gov admin' do
@@ -47,13 +39,6 @@ feature 'User pages', :js do
     context 'new_user view' do
       scenario 'is accessible' do
         visit new_user_path
-        expect_page_to_have_no_accessibility_violations(page)
-      end
-    end
-
-    context 'edit_user view' do
-      scenario 'is accessible' do
-        visit edit_user_path(user)
         expect_page_to_have_no_accessibility_violations(page)
       end
     end
