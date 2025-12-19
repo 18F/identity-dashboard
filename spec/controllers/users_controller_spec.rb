@@ -111,41 +111,6 @@ describe UsersController do
     end
   end
 
-  describe '#edit' do
-    context 'when a login.gov admin' do
-      let(:user) { create(:user, :logingov_admin) }
-
-      it 'has a success response' do
-        get :edit, params: { id: user.id }
-        expect(response).to have_http_status(:ok)
-      end
-
-      context 'when editing a user without a team' do
-        let(:editing_user) { build(:user) }
-
-        it 'defaults to the login.gov admin role for login.gov admins' do
-          editing_user = create(:user, :logingov_admin)
-          get :edit, params: { id: editing_user.id }
-          expect(assigns['team_membership'].role_name).to eq(Role::LOGINGOV_ADMIN.name)
-        end
-
-        it 'defaults to the partner admin role for non-login.gov admins' do
-          editing_user.save!
-          get :edit, params: { id: editing_user.id }
-          expect(assigns['team_membership'].role_name).to eq('partner_admin')
-        end
-      end
-    end
-
-    context 'when not a login.gov admin' do
-      it 'has an error response' do
-        get :edit, params: { id: 1 }
-        expect(response).to have_http_status(:unauthorized)
-        expect(logger_double).to have_received(:unauthorized_access_attempt)
-      end
-    end
-  end
-
   describe '#update' do
     context 'when the user is a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }

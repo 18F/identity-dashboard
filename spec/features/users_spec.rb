@@ -35,6 +35,7 @@ feature 'login.gov admin manages users' do
     everyone.each do |user|
       user_row = find('tr', text: user.email)
       expect(user_row).to have_content(user.primary_role.friendly_name)
+      expect(user_row).to have_button('Delete')
     end
   end
 
@@ -62,24 +63,6 @@ feature 'login.gov admin manages users' do
     expect(page).to have_current_path(users_path)
     expect(User.last.email).to eq(new_email)
     expect(page).to have_content("#{new_email} User has not yet signed in")
-  end
-
-  scenario 'logingov_admin edits users' do
-    user = create(:user, :with_teams)
-
-    visit users_path
-    expect(find('tr', text: user.email)).to_not have_content('Login.gov Admin')
-    find("a[href='#{edit_user_path(user)}']").click
-
-    expect(page).to have_current_path(edit_user_path(user))
-    email_field = find_field('user_email', disabled: true)
-    expect(email_field.value).to eq(user.email)
-
-    choose 'Login.gov Admin'
-    click_on 'Update'
-
-    expect(page).to have_current_path(users_path)
-    expect(find('tr', text: user.email)).to have_content('Login.gov Admin')
   end
 
   feature 'login.gov readonly views users' do
@@ -126,62 +109,5 @@ feature 'login.gov admin manages users' do
         expect(user_row).to have_content(user.primary_role.friendly_name)
       end
     end
-  end
-
-  scenario 'shows edit for user on teams' do
-    roles = ['Login.gov Admin',
-             'Login.gov Readonly',
-             'Sandbox Partner Admin',
-             'Sandbox Team Dev',
-             'Team Readonly']
-
-    visit edit_user_path(create(:user, :with_teams))
-
-    expect(page).to have_content('Permissions')
-    radio_labels = find_all('.usa-radio__label').map(&:text)
-    roles.each do |role|
-      expect(radio_labels).to include(role)
-    end
-  end
-
-  scenario 'when no teams assigned permissions limited to site admin promotion/demotion' do
-    user_to_edit = create(:user)
-    visit edit_user_path(user_to_edit)
-
-    expect(page).to have_content('Permissions')
-    radio_labels = find_all('.usa-radio__label').map(&:text)
-    expect(radio_labels).to eq(['Login.gov Admin',
-                                'Login.gov Readonly',
-                                'Sandbox Partner Admin'])
-    expect(find_all('input[type=radio]').last).to be_checked
-    find_all('input[type=radio]').first.click
-    click_on 'Update'
-    expect(user_to_edit.reload).to be_logingov_admin
-
-    visit edit_user_path(user_to_edit)
-    expect(find_all('input[type=radio]').first).to be_checked
-    find_all('input[type=radio]').last.click
-    click_on 'Update'
-    expect(user_to_edit.reload).to_not be_logingov_admin
-  end
-
-  scenario 'can change Login.gov Admin to Login.gov Readonly role' do
-    user_to_edit = create(:user, :logingov_admin)
-    visit edit_user_path(user_to_edit)
-    choose 'Login.gov Readonly'
-    click_on 'Update'
-    expect(page).to have_http_status(:ok)
-    expect(user_to_edit.reload).to_not be_logingov_admin
-    expect(user_to_edit).to be_logingov_readonly
-  end
-
-  scenario 'can change Login.gov Readonly to Login.gov Admin role' do
-    user_to_edit = create(:user, :logingov_readonly)
-    visit edit_user_path(user_to_edit)
-    choose 'Login.gov Admin'
-    click_on 'Update'
-    expect(page).to have_http_status(:ok)
-    expect(user_to_edit.reload).to_not be_logingov_readonly
-    expect(user_to_edit).to be_logingov_admin
   end
 end
