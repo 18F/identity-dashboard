@@ -12,7 +12,7 @@ class InternalReportsController < AuthenticatedController
   #   * :role [String] TeamMembership instance Role.friendly_name
   # @return [Array<Hash>]
   def user_permissions
-    memberships = service_provider_teams.each_with_object[] do |spt, membership_results|
+    memberships = service_provider_teams.each_with_object([]) do |spt, membership_results|
       spt_membership = team_memberships.where(group_id: spt.group_id)
       spt_membership.each do |spt_m|
         membership_results.push({
