@@ -156,17 +156,22 @@ class ZendeskRequest
 
     if resp.status == 201
       ticket_id = response.dig('request', 'id')
-      { success: true, ticket_id: ticket_id }
+      return { success: true, ticket_id: ticket_id }
     else
       errors = response.dig('details', 'base')
-      if errors
-        parsed_errors = []
-        errors.each do |e|
-          parsed_errors.push(e['description'])
-        end
-        return { success: false, errors: parsed_errors }
-      end
-      { success: false, errors: [] }
+
+      return parsed_errors(errors) if errors
     end
+    { success: false, errors: [] }
+  end
+
+  private
+
+  def parsed_errors(response_errors)
+    errors = response_errors.each_with_object([]) do |error, results|
+      results.push(error['description'])
+    end
+
+    { success: false, errors: }
   end
 end
