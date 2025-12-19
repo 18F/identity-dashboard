@@ -281,9 +281,9 @@ class ServiceConfigWizardController < AuthenticatedController
     saver = ServiceProviderSaver.new(draft_service_provider, self)
     saver.validate_and_save
 
-    return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
+    return save_service_provider(draft_service_provider) if saver.errors.none?
 
-    flash[:error] = draft_service_provider.compile_errors
+    flash[:error] = saver.compile_errors
   end
 
   def save_service_provider(service_provider)
