@@ -29,10 +29,14 @@ class AirtableController < AuthenticatedController
   end
 
   def clear_token
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_token_expiration")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token")
-    Rails.cache.delete("#{current_user.uuid}.airtable_oauth_refresh_token_expiration")
+    %w[
+      airtable_oauth_token
+      airtable_oauth_token_expiration
+      airtable_oauth_refresh_token
+      airtable_oauth_refresh_token_expiration
+    ].each do |cache_key|
+      Rails.cache.delete "#{current_user.uuid}.#{cache_key}"
+    end
 
     redirect_to airtable_path
   end
