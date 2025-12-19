@@ -12,16 +12,19 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     return if uris.blank?
 
     Array(uris).each do |uri_string|
-      changed_form_data = record.changes['wizard_form_data']
-      attribute_unchanged = !changed_form_data || (
-        changed_form_data[0] && changed_form_data[0][attribute] == changed_form_data[1][attribute]
-      )
-      # check if the attribute is changed
-      check_non_admin_localhost(record, uri_string) unless attribute_unchanged
+      # Only check if the attribute is changed
+      check_non_admin_localhost(record, uri_string) unless attribute_unchanged(record, attribute)
     end
   end
 
   private
+
+  def attribute_unchanged(record, attribute)
+    changed_form_data = record.changes['wizard_form_data']
+    !changed_form_data || (
+      changed_form_data[0] && changed_form_data[0][attribute] == changed_form_data[1][attribute]
+    )
+  end
 
   def check_non_admin_localhost(record, uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)

@@ -17,15 +17,18 @@ class ExtractsController < AuthenticatedController
       criteria_file: extracts_params[:criteria_file],
     )
 
-    if @extract.valid? && @extract.service_providers.present?
+    if @extract.valid?
       if @extract.failures.length > 0
         flash[:warning] = 'Some criteria were invalid. Please check the results.'
       end
+
       respond_to do |format|
         format.html { render('results') }
         format.gzip { send_data extract_archive, filename: "#{@extract.filename}.tgz" }
       end and return
-    elsif @extract.errors.empty? && @extract.service_providers.empty?
+    end
+
+    if @extract.service_providers.empty?
       flash[:error] = 'No ServiceProvider or Team rows were returned'
     end
 
