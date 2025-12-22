@@ -147,34 +147,26 @@ class ZendeskRequest
   end
 
   def create_ticket(ticket_data)
-    resp = connection.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
+    headers = { 'Content-Type' => 'application/json' }
+
+    @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
+
+    resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
 
     if resp.status == 201
       ticket_id = response.dig('request', 'id')
-      return { success: true, ticket_id: ticket_id }
+      { success: true, ticket_id: ticket_id }
     else
       errors = response.dig('details', 'base')
-
-      return parsed_errors(errors) if errors
+      if errors
+        parsed_errors = []
+        errors.each do |e|
+          parsed_errors.push(e['description'])
+        end
+        return { success: false, errors: parsed_errors }
+      end
+      { success: false, errors: [] }
     end
-    { success: false, errors: [] }
-  end
-
-  private
-
-  def parsed_errors(response_errors)
-    errors = response_errors.each_with_object([]) do |error, results|
-      results.push(error['description'])
-    end
-
-    { success: false, errors: }
-  end
-
-  def connection
-    @connection ||= Faraday.new(
-      url: ZENDESK_BASE_URL,
-      headers: { 'Content-Type' => 'application/json' },
-    )
   end
 end
