@@ -141,14 +141,14 @@ describe ServiceProviderHelper do
 
     it 'returns saml attributes without signed_response_message_requested if false' do
       expect(config_hash(
-        saml_without_requested_response,
-      )).to_not include('signed_response_message_requested')
+               saml_without_requested_response,
+             )).to_not include('signed_response_message_requested')
     end
 
     it 'returns saml attribute email_nameid_format_allowed if true' do
       expect(config_hash(
-        saml_email_id_format,
-      )).to include('email_nameid_format_allowed')
+               saml_email_id_format,
+             )).to include('email_nameid_format_allowed')
     end
 
     it 'truens saml attributes without email_nameid_format_allowed if false' do
@@ -250,16 +250,16 @@ describe ServiceProviderHelper do
     context 'sp_response_message_requested is true' do
       it 'returns a string saying signed response is requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          true,
-        )).to eq 'Signed response message requested'
+                 true,
+               )).to eq 'Signed response message requested'
       end
     end
 
     context 'sp_response_message_requested is false' do
       it 'returns a string saying signed response is not requested' do
         expect(sp_signed_response_message_requested_img_alt(
-          false,
-        )).to eq 'Signed response message not requested'
+                 false,
+               )).to eq 'Signed response message not requested'
       end
     end
   end

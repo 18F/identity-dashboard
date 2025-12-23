@@ -7,13 +7,13 @@ FactoryBot.define do
       "urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-#{n.to_s.rjust(4, '0')}"
     end
     sequence(:description) { |n| "test service_provider description #{n}" }
-    association :user, factory: :user
-    association :agency, factory: :agency
+    association :user
+    association :agency
     help_text do
       {
-        'sign_in': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
-        'sign_up': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
-        'forgot_password': { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
+        sign_in: { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
+        sign_up: { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
+        forgot_password: { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },
       }
     end
 
@@ -96,7 +96,7 @@ FactoryBot.define do
     end
 
     trait :with_team do
-      association :team, factory: :team
+      association :team
       agency_id { team.agency_id }
     end
 

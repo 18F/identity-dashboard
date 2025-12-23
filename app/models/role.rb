@@ -41,11 +41,11 @@ class Role < ApplicationRecord
   end
 
   def self.login_staff?(role)
-    role == Role::LOGINGOV_ADMIN || role == Role::LOGINGOV_READONLY
+    [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].include?(role)
   end
 
   def friendly_name
-    Role.active_roles_names[self.name]
+    Role.active_roles_names[name]
   end
 
   private_class_method

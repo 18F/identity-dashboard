@@ -59,16 +59,16 @@ RSpec.describe WizardStep, type: :model do
 
     it 'pulls the relevant step out of the database' do
       subject = create(:wizard_step,
-        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
-        user: user)
+                       step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+                       user: user)
       expected_result = create(:wizard_step, step_name: step_name_to_find, user: user)
       expect(subject.get_step(step_name_to_find)).to eq(expected_result)
     end
 
     it 'builds a new step if no matching step exists' do
       subject = create(:wizard_step,
-        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
-        user: user)
+                       step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+                       user: user)
       a_different_user = create(:user)
       absent_result = create(:wizard_step, step_name: step_name_to_find, user: a_different_user)
       expected_result = WizardStep.find_or_initialize_by(step_name: step_name_to_find, user: user)

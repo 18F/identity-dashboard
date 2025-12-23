@@ -73,7 +73,7 @@ describe UsersController do
           total_pages = (User.count.to_f / IdentityConfig.store.users_per_page).ceil
           get :index, params: { page: total_pages }
           expected_count = User.count % IdentityConfig.store.users_per_page
-          expected_count = IdentityConfig.store.users_per_page if expected_count == 0
+          expected_count = IdentityConfig.store.users_per_page if expected_count.zero?
           expect(assigns(:users).size).to eq(expected_count)
         end
 
@@ -154,9 +154,9 @@ describe UsersController do
               'old' => nil,
               'new' => new_role,
             },
-              'id' => updated_user.team_memberships.first.id,
-              'team_user' => updated_user.email,
-              'team' => updated_user.team_memberships.first.team.name,
+            'id' => updated_user.team_memberships.first.id,
+            'team_user' => updated_user.email,
+            'team' => updated_user.team_memberships.first.team.name,
           }
 
           expect(logger_double).to have_received(:team_membership_updated).with(changes:)

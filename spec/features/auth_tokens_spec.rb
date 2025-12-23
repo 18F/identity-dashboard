@@ -41,12 +41,12 @@ feature 'Auth tokens' do
       #
       # Ref. documents: https://chromedevtools.github.io/devtools-protocol/tot/Browser/
       page.driver.browser.execute_cdp('Browser.setPermission',
-        permission: {
-          name: 'clipboard-read',
-          allowWithoutSanitization: true,
-          origin: page.server_url,
-        },
-        setting: 'granted')
+                                      permission: {
+                                        name: 'clipboard-read',
+                                        allowWithoutSanitization: true,
+                                        origin: page.server_url,
+                                      },
+                                      setting: 'granted')
       visit new_auth_token_path
       click_on 'Create new token'
       expect(page).to have_current_path(auth_tokens_path)

@@ -17,9 +17,9 @@ module PaginationHelper
       visible += ((total_pages - 4)..total_pages).to_a
     else
       visible << OVERFLOW
-      visible << current_page - 1
+      visible << (current_page - 1)
       visible << current_page
-      visible << current_page + 1
+      visible << (current_page + 1)
       visible << OVERFLOW
       visible << total_pages
     end

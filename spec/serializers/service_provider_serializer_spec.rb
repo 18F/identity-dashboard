@@ -8,13 +8,13 @@ RSpec.describe ServiceProviderSerializer do
 
   let(:service_provider) do
     sp = create(:service_provider,
-          redirect_uris: ['http://localhost:9292/result', 'x-example-app:/result'],
-          updated_at: Time.zone.now,
-          team: create(:team, agency: create(:agency, id: team_agency_id)),
-          ial: 2,
-          default_aal: 3,
-          certs: [build_pem],
-          allow_prompt_login: true)
+                redirect_uris: ['http://localhost:9292/result', 'x-example-app:/result'],
+                updated_at: Time.zone.now,
+                team: create(:team, agency: create(:agency, id: team_agency_id)),
+                ial: 2,
+                default_aal: 3,
+                certs: [build_pem],
+                allow_prompt_login: true)
     sp.logo_file.attach(fixture_file_upload(logo_filename))
     sp.update(logo: logo_filename)
     sp.reload

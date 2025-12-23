@@ -124,7 +124,7 @@ module Tools
     def saml_params
       @saml_params ||= begin
         s_params = url_params(auth_url)
-        s_params.present? ? s_params : { SAMLRequest: auth_url }
+        s_params.presence || { SAMLRequest: auth_url }
       end
     end
 

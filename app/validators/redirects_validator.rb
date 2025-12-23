@@ -32,12 +32,10 @@ class RedirectsValidator < IdentityValidations::IdentityValidator
         changed_form_data[0] && changed_form_data[0][attribute] == changed_form_data[1][attribute]
       )
       # check if the attribute is changed
-      if !attribute_unchanged
-        # check if a nonadmin is using localhost on a prod_ready config
-        if validating_uri.uri.host&.match(/(localhost|127\.0\.0)/) &&
-           record.production_ready? && !user.logingov_admin?
-          record.errors.add(attribute, "'localhost' is not allowed on Production")
-        end
+      # check if a nonadmin is using localhost on a prod_ready config
+      if !attribute_unchanged && validating_uri.uri.host&.match(/(localhost|127\.0\.0)/) &&
+         record.production_ready? && !user.logingov_admin?
+        record.errors.add(attribute, "'localhost' is not allowed on Production")
       end
     end
   end

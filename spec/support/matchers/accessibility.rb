@@ -308,7 +308,7 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
     :wcag21aa,
     :wcag22a,
     :wcag22aa,
-    :"best-practice",
+    :'best-practice',
   )
 
   expect(page).to have_valid_idrefs

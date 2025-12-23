@@ -4,16 +4,16 @@ describe HelpText do
   let(:service_provider) { build(:service_provider) }
   let(:subject) { HelpText.lookup(service_provider:) }
   let(:all_presets_help_text) do
-    HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
-      result[context] = Hash.new
+    HelpText::CONTEXTS.each_with_object({}) do |context, result|
+      result[context] = {}
       HelpText::LOCALES.each do |locale|
         result[context][locale] = HelpText::PRESETS[context].sample
       end
     end
   end
   let(:maybe_presets_help_text) do
-    HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
-      result[context] = Hash.new
+    HelpText::CONTEXTS.each_with_object({}) do |context, result|
+      result[context] = {}
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
       HelpText::LOCALES.each do |locale|
         result[context][locale] =
@@ -31,8 +31,8 @@ describe HelpText do
     end
   end
   let(:blank_help_text) do
-    HelpText::CONTEXTS.each_with_object(Hash.new) do |context, result|
-      result[context] = Hash.new
+    HelpText::CONTEXTS.each_with_object({}) do |context, result|
+      result[context] = {}
       can_be_blank = HelpText::PRESETS[context].include?('blank')
       options = ['', ' ', '     ']
       options += ['blank'] if can_be_blank

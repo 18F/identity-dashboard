@@ -24,9 +24,11 @@ class Extract
   def criteria
     # find whitespace- and/or comma-separated group_ids xor issuers
     list_criteria = criteria_list.split(/,\s*|\s+/)
-    file_criteria ||= criteria_file ?
-      criteria_file.read.split(/,\s*|\s+/) :
-      []
+    file_criteria ||= if criteria_file
+                        criteria_file.read.split(/,\s*|\s+/)
+                      else
+                        []
+                      end
     @criteria ||= list_criteria.union(file_criteria)
   end
 
@@ -34,9 +36,11 @@ class Extract
   def failures
     criteria.reject do |criterion|
       service_providers.find do |config|
-        extract_by_team? ?
-        config.group_id.to_s == criterion :
-        config.issuer == criterion
+        if extract_by_team?
+          config.group_id.to_s == criterion
+        else
+          config.issuer == criterion
+        end
       end
     end
   end
@@ -65,9 +69,11 @@ class Extract
 
   # @return [Array<ServiceProvider>]
   def service_providers
-    @service_providers ||= extract_by_team? ?
-      ServiceProvider.joins(:team).where(group_id: criteria) :
-      ServiceProvider.joins(:team).where(issuer: criteria)
+    @service_providers ||= if extract_by_team?
+                             ServiceProvider.joins(:team).where(group_id: criteria)
+                           else
+                             ServiceProvider.joins(:team).where(issuer: criteria)
+                           end
   end
 
   def valid?

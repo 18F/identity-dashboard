@@ -56,8 +56,8 @@ RSpec.describe ExtractArchive do
     expect(File.read('tmp/logo.svg')).to eq(sp_with_svg.logo_file.download)
     expect(File.read('tmp/logo.png', binmode: true)).to eq(sp_with_png.logo_file.download)
     expect(File.read(
-      "tmp/#{altered_filename}",
-      binmode: true,
-    )).to eq(sp_with_conflicting_file.logo_file.download)
+             "tmp/#{altered_filename}",
+             binmode: true,
+           )).to eq(sp_with_conflicting_file.logo_file.download)
   end
 end

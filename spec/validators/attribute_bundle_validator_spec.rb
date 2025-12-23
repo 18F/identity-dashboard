@@ -3,6 +3,7 @@ require 'rails_helper'
 class BundleTestRecord
   include ActiveModel::Validations
   attr_accessor :ial, :saml, :attribute_bundle
+
   validates_with AttributeBundleValidator
   def initialize
     @attribute_bundle = []

@@ -2,7 +2,7 @@ require 'portal/constants'
 # Controller for the Home pages (logged-in and out)
 class HomeController < ApplicationController
   def index
-    @canonical_url = !user_signed_in? ? request.base_url.gsub('portal', 'dashboard') : nil
+    @canonical_url = user_signed_in? ? nil : request.base_url.gsub('portal', 'dashboard')
     render :index and return unless user_signed_in?
 
     signed_in_redirect

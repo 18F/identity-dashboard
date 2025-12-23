@@ -13,12 +13,12 @@ RSpec.describe RadioCollectionComponent, type: :component do
   let(:inputs) { Role.active_friendly_names }
 
   it 'displays reasonable options with correct default' do
-    render = render_inline(described_class.new(
-      form: form,
-      model_method: :role_name,
-      inputs: inputs,
-      describedby: random_id,
-    ))
+    render = render_inline(
+      described_class.new(form: form,
+                          model_method: :role_name,
+                          inputs: inputs,
+                          describedby: random_id),
+    )
     list_items = render.css('li')
     expect(list_items.count).to eq(inputs.count)
     expect(list_items.map(&:text)).to eq(inputs.keys)
@@ -31,13 +31,13 @@ RSpec.describe RadioCollectionComponent, type: :component do
   end
 
   it 'allows for additional descriptions' do
-    render = render_inline(described_class.new(
-      form: form,
-      model_method: :role_name,
-      inputs: inputs,
-      describedby: random_id,
-      additional_descriptions: true,
-    ))
+    render = render_inline(
+      described_class.new(form: form,
+                          model_method: :role_name,
+                          inputs: inputs,
+                          describedby: random_id,
+                          additional_descriptions: true),
+    )
     list_items = render.css('li')
     expect(list_items.count).to eq(inputs.count)
     extended_descriptions = inputs.map do |(name, value)|

@@ -10,7 +10,7 @@ def build_pem(serial: SecureRandom.rand(100_000))
   root_ca.issuer = root_ca.subject # root CA's are "self-signed"
   root_ca.public_key = root_key.public_key
   root_ca.not_before = Time.zone.now
-  root_ca.not_after = root_ca.not_before + 2 * 365 * 24 * 60 * 60 # 2 years validity
+  root_ca.not_after = root_ca.not_before + (2 * 365 * 24 * 60 * 60) # 2 years validity
   ef = OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = root_ca
   ef.issuer_certificate = root_ca
@@ -28,7 +28,7 @@ def build_pem(serial: SecureRandom.rand(100_000))
   cert.issuer = root_ca.subject # root CA is the issuer
   cert.public_key = key.public_key
   cert.not_before = Time.zone.now
-  cert.not_after = cert.not_before + 1 * 365 * 24 * 60 * 60 # 1 years validity
+  cert.not_after = cert.not_before + (1 * 365 * 24 * 60 * 60) # 1 years validity
   ef = OpenSSL::X509::ExtensionFactory.new
   ef.subject_certificate = cert
   ef.issuer_certificate = root_ca
