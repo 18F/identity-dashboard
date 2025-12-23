@@ -143,10 +143,10 @@ describe ServiceProvider do
         it 'is not valid' do
           expect(service_provider).to_not be_valid
 
-          expect(service_provider.errors.first.message).to eq(I18n.t(
-            'service_provider_form.errors.logo_file.has_script_tag',
-            filename: 'logo_with_script.svg',
-          ))
+          expect(service_provider.errors.first.message).to eq(
+            I18n.t('service_provider_form.errors.logo_file.has_script_tag',
+                   filename: 'logo_with_script.svg'),
+          )
         end
       end
     end
@@ -355,10 +355,10 @@ describe ServiceProvider do
     it 'sanitizes help text before saving' do
       sp_with_unsanitary_help_text = create(
         :service_provider,
-          help_text: {
-            'sign_in': { en: '<script>unsanitary script</script>' }, 'sign_up': {},
-            'forgot_password': {}
-          },
+        help_text: {
+          sign_in: { en: '<script>unsanitary script</script>' }, sign_up: {},
+          forgot_password: {}
+        },
       )
       expect(sp_with_unsanitary_help_text.help_text['sign_in']['en']).to eq 'unsanitary script'
     end

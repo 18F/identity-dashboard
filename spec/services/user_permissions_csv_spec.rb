@@ -7,7 +7,7 @@ describe UserPermissionsCsv do
     describe 'with legacy users that do not have a role yet' do
       let(:user_permissions) do
         [{
-          issuer:  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-0',
+          issuer: 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DEPT:APP-0',
           team_uuid: '6373a17e-954f-4ab4-b54b-487d2a5a3531',
           team_name: 'User Permissions Test',
           user_email: 'rspec@good.gov',

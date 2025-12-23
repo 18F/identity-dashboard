@@ -204,7 +204,7 @@ class ServiceConfigWizardController < AuthenticatedController
     return if params.dig(:wizard_step, :cert).blank?
 
     crt = params[:wizard_step].delete(:cert).read
-    @model.certs << crt unless crt.blank?
+    @model.certs << crt if crt.present?
   end
 
   def remove_certificates
@@ -254,8 +254,8 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def when_saving_config
-    action_name == 'update' &&
-      step == STEPS.last ||
+    (action_name == 'update' &&
+      step == STEPS.last) ||
       step == Wicked::FINISH_STEP
   end
 
@@ -283,7 +283,7 @@ class ServiceConfigWizardController < AuthenticatedController
     draft_service_provider.valid?
     draft_service_provider.valid_saml_settings?
     draft_service_provider.valid_prod_config?
-    draft_service_provider.valid_localhost_uris? if !current_user.logingov_admin?
+    draft_service_provider.valid_localhost_uris? unless current_user.logingov_admin?
 
     return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
 

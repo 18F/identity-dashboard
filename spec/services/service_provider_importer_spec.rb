@@ -124,7 +124,7 @@ describe ServiceProviderImporter do
   end
 
   it 'can read a JSON file from inside a .tgz file' do
-    gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
+    gzipped_filename = Rails.root.join('spec/fixtures/simple_extract.tgz').to_s
     subject = described_class.new(gzipped_filename)
     subject.run
     expect(subject.data).to_not be_blank
@@ -132,7 +132,7 @@ describe ServiceProviderImporter do
 
   describe 'attaching images' do
     it 'saves any logo files included in the .tgz file to ActiveRecord' do
-      gzipped_filename = File.join(Rails.root, 'spec/fixtures/simple_extract.tgz')
+      gzipped_filename = Rails.root.join('spec/fixtures/simple_extract.tgz').to_s
       Minitar.unpack(Zlib::GzipReader.open(gzipped_filename), 'tmp')
       subject = described_class.new(gzipped_filename)
       subject.dry_run = false

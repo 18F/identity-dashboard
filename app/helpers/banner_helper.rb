@@ -14,13 +14,13 @@ module BannerHelper # :nodoc:
     # Sort upcoming by start then end, past by end then start.
     # These are not DateTime values, they're ActiveSupport::TimeWithZone, and can be nil.
     upcoming.sort! do |a, b|
-      a_int = a.start_date.to_f + a.end_date.to_f / 10000000000
-      b_int = b.start_date.to_f + b.end_date.to_f / 10000000000
+      a_int = a.start_date.to_f + (a.end_date.to_f / 10_000_000_000)
+      b_int = b.start_date.to_f + (b.end_date.to_f / 10_000_000_000)
       a_int <=> b_int
     end
     past.sort! do |a, b|
-      a_int = a.end_date.to_f + a.start_date.to_f / 10000000000
-      b_int = b.end_date.to_f + b.start_date.to_f / 10000000000
+      a_int = a.end_date.to_f + (a.start_date.to_f / 10_000_000_000)
+      b_int = b.end_date.to_f + (b.start_date.to_f / 10_000_000_000)
       b_int <=> a_int
     end
 
@@ -31,8 +31,8 @@ module BannerHelper # :nodoc:
     all_banners = Banner.all
     active_banners = all_banners.select { |banner| banner.active? == true }
     active_banners.sort! do |a, b|
-      a_int = a.start_date.to_f + a.end_date.to_f / 10000000000
-      b_int = b.start_date.to_f + b.end_date.to_f / 10000000000
+      a_int = a.start_date.to_f + (a.end_date.to_f / 10_000_000_000)
+      b_int = b.start_date.to_f + (b.end_date.to_f / 10_000_000_000)
       a_int <=> b_int
     end
   end

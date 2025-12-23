@@ -3,6 +3,7 @@ require 'rails_helper'
 class CertsTestRecord
   include ActiveModel::Validations
   attr_accessor :certs
+
   validates_with CertsArePemsValidator
 end
 

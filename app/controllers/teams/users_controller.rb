@@ -40,7 +40,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def create
-    if !new_team_member.valid?
+    unless new_team_member.valid?
       team
       authorize TeamMembership.new(team:), :create?
       render(:new) and return
@@ -201,7 +201,7 @@ class Teams::UsersController < AuthenticatedController
     redirect_uri = airtable_api.build_redirect_uri(request)
     airtable_api.refresh_token(redirect_uri) if airtable_api.needs_refreshed_token?
     issuers = []
-    ServiceProvider.where(team: self.team).each do |sp|
+    ServiceProvider.where(team: team).each do |sp|
       issuers.push(sp.issuer)
     end
 
@@ -230,7 +230,7 @@ class Teams::UsersController < AuthenticatedController
       return true if team.service_providers.empty?
       # Confirmation needed if the edited user is not a listed Partner
       # Admin in Airtable for the Service Providers associated with the team
-      return true if !verified_partner_admin?
+      return true unless verified_partner_admin?
     end
     false
   end

@@ -538,7 +538,7 @@ RSpec.describe ServiceConfigWizardController do
       it 'adds new certs uploaded to the certs array' do
         file = Rack::Test::UploadedFile.new(
           StringIO.new(build_pem(serial: 10)),
-                 original_filename: 'my-cert.crt',
+          original_filename: 'my-cert.crt',
         )
 
         put :update,
@@ -590,24 +590,26 @@ RSpec.describe ServiceConfigWizardController do
           } } }
         end.to(change { ServiceProvider.count }.by(1))
         actual_help_text = ServiceProvider.last.help_text
-        expect(actual_help_text['sign_in']['en']).to eq(I18n.t(
-          "service_provider_form.help_text.sign_in.#{non_blank_sign_in_preset}",
-          agency: Team.find(settings_step.group_id).agency.name,
-          sp_name: settings_step.friendly_name,
-          locale: :en,
-        ))
-        expect(actual_help_text['sign_up']['en']).to eq(I18n.t(
-          "service_provider_form.help_text.sign_up.#{non_blank_sign_up_preset}",
-          agency: Team.find(settings_step.group_id).agency.name,
-          sp_name: settings_step.friendly_name,
-          locale: :en,
-        ))
-        expect(actual_help_text['forgot_password']['en']).to eq(I18n.t(
-          "service_provider_form.help_text.forgot_password.#{non_blank_forgot_password_preset}",
-          agency: Team.find(settings_step.group_id).agency.name,
-          sp_name: settings_step.friendly_name,
-          locale: :en,
-        ))
+        expect(actual_help_text['sign_in']['en']).to eq(
+          I18n.t("service_provider_form.help_text.sign_in.#{non_blank_sign_in_preset}",
+                 agency: Team.find(settings_step.group_id).agency.name,
+                 sp_name: settings_step.friendly_name,
+                 locale: :en),
+        )
+        expect(actual_help_text['sign_up']['en']).to eq(
+          I18n.t("service_provider_form.help_text.sign_up.#{non_blank_sign_up_preset}",
+                 agency: Team.find(settings_step.group_id).agency.name,
+                 sp_name: settings_step.friendly_name,
+                 locale: :en),
+        )
+        expect(actual_help_text['forgot_password']['en']).to eq(
+          I18n.t(
+            "service_provider_form.help_text.forgot_password.#{non_blank_forgot_password_preset}",
+            agency: Team.find(settings_step.group_id).agency.name,
+            sp_name: settings_step.friendly_name,
+            locale: :en,
+          ),
+        )
       end
 
       it 'can set a preset help_text to blank' do

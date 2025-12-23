@@ -19,13 +19,13 @@ RSpec.describe Role, type: :model do
   context '#login_staff?' do
     it 'returns truthy for logingov_admin and _readonly' do
       %w[logingov_admin logingov_readonly].each do |role|
-        expect(Role.login_staff? Role.find_by(name: role)).to be_truthy
+        expect(Role.login_staff?(Role.find_by(name: role))).to be_truthy
       end
     end
 
     it 'returns falsy for other roles' do
       %w[partner_admin partner_developer partner_readonly].each do |role|
-        expect(Role.login_staff? Role.find_by(name: role)).to be_falsy
+        expect(Role.login_staff?(Role.find_by(name: role))).to be_falsy
       end
     end
   end

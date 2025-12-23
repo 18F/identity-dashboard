@@ -85,7 +85,7 @@ class User < ApplicationRecord
   end
 
   def gov_partner?
-    ALLOWLISTED_DOMAINS.any? { |domain| self.email.end_with? domain }
+    ALLOWLISTED_DOMAINS.any? { |domain| email.end_with? domain }
   end
 
   def primary_role

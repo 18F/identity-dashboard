@@ -9,8 +9,10 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
   private
 
   def service_provider
-    @service_provider ||= ServiceProvider.includes(:agency,
-logo_file_attachment: :blob).find(id)
+    @service_provider ||= ServiceProvider.includes(
+      :agency,
+      logo_file_attachment: :blob,
+    ).find(id)
   end
 
   def id

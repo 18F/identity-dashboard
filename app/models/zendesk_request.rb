@@ -89,7 +89,7 @@ class ZendeskRequest
     custom_fields << ial_value
 
     {
-      request:  {
+      request: {
         requester: {
           name: "#{@requestor.first_name} #{@requestor.last_name}",
           email: @requestor.email,
@@ -118,11 +118,11 @@ class ZendeskRequest
 
   def ial_value
     ial_value = case @service_provider.ial
-    when 1, nil
-      I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
-    when 2
-      I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
-    end
+                when 1, nil
+                  I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
+                when 2
+                  I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
+                end
     { id: ZENDESK_IAL_VALUE_ID, value: ial_value }
   end
 

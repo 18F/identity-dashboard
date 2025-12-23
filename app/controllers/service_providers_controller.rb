@@ -13,7 +13,7 @@ class ServiceProvidersController < AuthenticatedController
   before_action :log_change, only: %i[destroy]
 
   helper_method :parsed_help_text, :localized_help_text, :service_provider, :moved_to_prod?,
-:edit_button_to_show
+                :edit_button_to_show
 
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
@@ -117,15 +117,19 @@ class ServiceProvidersController < AuthenticatedController
 
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
-    portal_url = Rails.application.routes.url_helpers.service_provider_url(@service_provider,
-host: request.host)
+    portal_url = Rails.application.routes.url_helpers.service_provider_url(
+      @service_provider,
+      host: request.host,
+    )
 
     zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
 
     ticket_custom_fields = []
-    zendesk_request.ticket_field_functions.each_with_object(Hash.new) do |(id, func), _result|
-      ticket_custom_fields.push({ id: id,
-value: func.to_proc.call(@service_provider) })
+    zendesk_request.ticket_field_functions.each_with_object({}) do |(id, func), _result|
+      ticket_custom_fields.push({
+        id: id,
+        value: func.to_proc.call(@service_provider),
+      })
     end
 
     ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
@@ -191,7 +195,7 @@ value: func.to_proc.call(@service_provider) })
     @service_provider.valid?
     @service_provider.valid_saml_settings?
     @service_provider.valid_prod_config?
-    @service_provider.valid_localhost_uris? if !current_user.logingov_admin?
+    @service_provider.valid_localhost_uris? unless current_user.logingov_admin?
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 

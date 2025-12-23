@@ -12,10 +12,12 @@ class TeamsController < AuthenticatedController
   end
 
   def show
-    @audit_events = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
-      team,
-      scope: policy_scope(PaperTrail::Version),
-    ))
+    @audit_events = TeamAuditEvent.decorate(
+      TeamAuditEvent.by_team(
+        team,
+        scope: policy_scope(PaperTrail::Version),
+      ),
+    )
   end
 
   def new

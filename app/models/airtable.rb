@@ -77,11 +77,11 @@ class Airtable
 
   def generate_oauth_url(base_url)
     code_verifier = Rails.cache.fetch("#{@user_uuid}.airtable_code_verifier",
-      expires_in: 10.minutes) do
+                                      expires_in: 10.minutes) do
       SecureRandom.alphanumeric(50)
     end
     airtable_state = Rails.cache.fetch("#{@user_uuid}.airtable_state",
-      expires_in: 10.minutes) do
+                                       expires_in: 10.minutes) do
       SecureRandom.uuid
     end
     code_challenge = Base64.urlsafe_encode64(Digest::SHA256.digest(code_verifier)).delete('=')
@@ -117,9 +117,9 @@ class Airtable
   def save_token(response)
     Rails.cache.write("#{@user_uuid}.airtable_oauth_token", response['access_token'])
     Rails.cache.write("#{@user_uuid}.airtable_oauth_token_expiration",
-      DateTime.now + response['expires_in'].seconds)
+                      DateTime.now + response['expires_in'].seconds)
     Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token", response['refresh_token'])
     Rails.cache.write("#{@user_uuid}.airtable_oauth_refresh_token_expiration",
-      DateTime.now + response['refresh_expires_in'].seconds)
+                      DateTime.now + response['refresh_expires_in'].seconds)
   end
 end

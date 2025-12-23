@@ -207,7 +207,7 @@ describe Extract do
       sp1.save!
       expect(extract.logos.count).to be 1
       expect(extract.logos.first[:filename]).to eq("#{sp1.id}_logo.svg")
-      expected_contents = File.read(File.join(Rails.root, file_fixture_path, 'logo.svg'))
+      expected_contents = File.read(Rails.root.join(file_fixture_path, 'logo.svg').to_s)
       expect(extract.logos.first[:attachment].blob.download).to eq(expected_contents)
     end
   end

@@ -24,10 +24,13 @@ RSpec.describe TeamAuditEvent do
       expect(team.users.count).to be(1)
       expect(team.users[0]).to eq(added_admin_user)
 
-      trail = TeamAuditEvent.decorate(TeamAuditEvent.by_team(
-        team,
-        scope: Pundit.policy_scope(added_admin_user, PaperTrail::Version),
-      ))
+      trail = TeamAuditEvent.decorate(
+        TeamAuditEvent.by_team(
+          team,
+          scope: Pundit.policy_scope(added_admin_user,
+                                     PaperTrail::Version),
+        ),
+      )
 
       # most recent first
       expect(trail[0].event).to eq('remove')

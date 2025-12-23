@@ -4,6 +4,7 @@ class WizardStep < ApplicationRecord
   # Definition of individual WizardStep
   class Definition
     attr_reader :fields
+
     def initialize(fields = {})
       @fields = fields.with_indifferent_access
     end
@@ -94,7 +95,7 @@ class WizardStep < ApplicationRecord
 
   belongs_to :user
 
-  step_enum_values = STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
+  step_enum_values = STEP_DATA.keys.each_with_object({}) do |step, enum|
     enum[step] = step
   end
   # We want the hidden step to be a valid step name to save in the database
@@ -131,32 +132,32 @@ class WizardStep < ApplicationRecord
   validates :issuer, presence: true, on: 'issuer'
 
   validates :issuer,
-    format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
-    on: 'issuer'
+            format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
+            on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
   # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :redirect_uris,
-    on: 'redirects'
+                 attribute: :redirect_uris,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :failure_to_proof_url,
-    on: 'redirects'
+                 attribute: :failure_to_proof_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :push_notification_url,
-    on: 'redirects'
+                 attribute: :push_notification_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :acs_url,
-    on: 'redirects'
+                 attribute: :acs_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :sp_initiated_login_url,
-    on: 'redirects'
+                 attribute: :sp_initiated_login_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :return_to_sp_url,
-    on: 'redirects'
+                 attribute: :return_to_sp_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :assertion_consumer_logout_service_url,
-    on: 'redirects'
+                 attribute: :assertion_consumer_logout_service_url,
+                 on: 'redirects'
 
   validates_with IdentityValidations::CertsAreX509Validator, on: 'logo_and_cert'
   #
@@ -188,15 +189,15 @@ class WizardStep < ApplicationRecord
         next if ['created_at', 'updated_at'].include? attribute_name
 
         hash[attribute_name] = case attribute_name
-          when 'logo'
-            'logo_name'
-          when 'user_id'
-            'service_provider_user_id'
-          when 'id'
-            'service_provider_id'
-          else
-            attribute_name
-          end
+                               when 'logo'
+                                 'logo_name'
+                               when 'user_id'
+                                 'service_provider_user_id'
+                               when 'id'
+                                 'service_provider_id'
+                               else
+                                 attribute_name
+                               end
       end
   end
 
@@ -313,11 +314,11 @@ class WizardStep < ApplicationRecord
 
   def saml_settings_present?
     ['acs_url', 'return_to_sp_url'].each do |attr|
-      return true if !saml?
+      return true unless saml?
 
       errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
     end
-    self.errors.empty?
+    errors.empty?
   end
 
   def pending_or_current_logo_data
@@ -362,7 +363,7 @@ class WizardStep < ApplicationRecord
 
   def failure_to_proof_url_for_idv
     using_idv = ial.to_i > 1
-    return if !using_idv
+    return unless using_idv
 
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end

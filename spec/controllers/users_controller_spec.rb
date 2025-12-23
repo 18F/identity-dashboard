@@ -200,9 +200,9 @@ describe UsersController do
               'old' => nil,
               'new' => new_role,
             },
-              'id' => updated_user.team_memberships.first.id,
-              'team_user' => updated_user.email,
-              'team' => updated_user.team_memberships.first.team.name,
+            'id' => updated_user.team_memberships.first.id,
+            'team_user' => updated_user.email,
+            'team' => updated_user.team_memberships.first.team.name,
           }
 
           expect(logger_double).to have_received(:team_membership_updated).with(changes:)

@@ -69,17 +69,19 @@ class LogoValidator < ActiveModel::Validator
     svg = ValidatingSvg.new(record.pending_or_current_logo_data)
 
     unless svg.has_viewbox?
-      record.errors.add(:logo_file, I18n.t(
-        'service_provider_form.errors.logo_file.no_viewbox',
-        filename: record.logo_file.filename,
-      ))
+      record.errors.add(
+        :logo_file,
+        I18n.t('service_provider_form.errors.logo_file.no_viewbox',
+               filename: record.logo_file.filename),
+      )
     end
 
     return unless svg.has_script_tag?
 
-    record.errors.add(:logo_file, I18n.t(
-      'service_provider_form.errors.logo_file.has_script_tag',
-      filename: record.logo_file.filename,
-    ))
+    record.errors.add(
+      :logo_file,
+      I18n.t('service_provider_form.errors.logo_file.has_script_tag',
+             filename: record.logo_file.filename),
+    )
   end
 end

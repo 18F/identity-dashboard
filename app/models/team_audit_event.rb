@@ -53,7 +53,7 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
   def self.membership_versions_by_team(team, scope: PaperTrail::Version.all)
     team_id = team.id
     if team_id.blank?
-      raise ArgumentError.new("Team #{team.name} is missing a team ID. Has it been saved yet?")
+      raise ArgumentError, "Team #{team.name} is missing a team ID. Has it been saved yet?"
     end
 
     scope.
