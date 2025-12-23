@@ -114,7 +114,7 @@ class WizardStep < ApplicationRecord
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
     if attribute_bundle.present?
-      self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
+      wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
     end
   end
 
@@ -227,7 +227,7 @@ class WizardStep < ApplicationRecord
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
 
     super
-    self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
+    self.wizard_form_data = enforce_valid_data(wizard_form_data)
   end
 
   def wizard_form_data=(new_data)
@@ -285,15 +285,15 @@ class WizardStep < ApplicationRecord
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
+    (STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name)) || super
   end
 
   def get_step(step_to_find)
     return self if step_name == step_to_find
 
-    WizardStepPolicy::Scope.new(self.user, self.class).
+    WizardStepPolicy::Scope.new(user, self.class).
       resolve.
-      find_or_initialize_by(user: self.user, step_name: step_to_find)
+      find_or_initialize_by(user: user, step_name: step_to_find)
   end
 
   def ial

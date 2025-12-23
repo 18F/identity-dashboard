@@ -44,12 +44,6 @@ AllCops:
   DisabledByDefault: false
   SuggestExtensions: true
 
-# Bundler:
-#   Enabled: true
-
-# Capybara/CurrentPathExpectation:
-#   Enabled: true
-
 Capybara/NegationMatcher:
   EnforcedStyle: not_to
 
@@ -58,9 +52,6 @@ Capybara/SpecificFinders:
 
 Capybara/SpecificMatcher:
   Enabled: false
-
-Naming/VariableNumber:
-  AllowedIdentifiers: ial_1, ial_2, with_ial_1, with_ial_2, ready_to_activate_ial_2, ready_to_activate_ial_1
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
@@ -99,6 +90,8 @@ Layout/EmptyLinesAroundClassBody:
   EnforcedStyle: no_empty_lines
 
 Lint/MissingSuper:
+  # ViewComponent::Base and BasePolicy have no meaningful base class initializers 
+  # that we'd want to call `super` on.
   Exclude:
    - app/policies/**/*.rb
    - app/components/**/*.rb
@@ -314,6 +307,9 @@ Naming/PredicateName:
 
 Naming/RescuedExceptionsVariableName:
   PreferredName: err
+
+Naming/VariableNumber:
+  AllowedIdentifiers: ial_1, ial_2, with_ial_1, with_ial_2, ready_to_activate_ial_2, ready_to_activate_ial_1
 
 # Performance/CollectionLiteralInLoop:
 #   Enabled: false
@@ -562,6 +558,9 @@ Style/AndOr:
 #     - nil
 #     - both
 
+Style/EmptyMethod:
+  Enabled: false
+
 # Style/For:
 #   Enabled: true
 #   EnforcedStyle: each
@@ -694,6 +693,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Layout/ArgumentAlignment:
+  Enabled: false
   EnforcedStyle: with_fixed_indentation
 
 Layout/LineEndStringConcatenationIndentation:
