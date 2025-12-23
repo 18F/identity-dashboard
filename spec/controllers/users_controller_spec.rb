@@ -73,7 +73,7 @@ describe UsersController do
           total_pages = (User.count.to_f / IdentityConfig.store.users_per_page).ceil
           get :index, params: { page: total_pages }
           expected_count = User.count % IdentityConfig.store.users_per_page
-          expected_count = IdentityConfig.store.users_per_page if expected_count == 0
+          expected_count = IdentityConfig.store.users_per_page if expected_count.zero?
           expect(assigns(:users).size).to eq(expected_count)
         end
 
