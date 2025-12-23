@@ -684,7 +684,20 @@ Metrics:
   Enabled: true
 
 Metrics/MethodLength:
+  Severity: info
   CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
+
+Metrics/AbcSize:
+  Severity: info
+
+Metrics/ClassLength:
+  Severity: info
+
+Metrics/CyclomaticComplexity:
+  Severity: info
+
+Metrics/PerceivedComplexity:
+  Severity: info
 
 RSpec/ExampleLength:
   Enabled: false
