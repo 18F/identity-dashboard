@@ -681,7 +681,7 @@ Style/SymbolArray:
   MinSize: 3
 
 Metrics:
-  Enabled: false
+  Enabled: true
 
 Metrics/MethodLength:
   CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
