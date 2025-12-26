@@ -949,4 +949,29 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
   end
+
+  describe 'return link on show' do
+    it 'returns to the teams page if you came from there' do
+      visit teams_path
+      sp = create(:service_provider, team:)
+
+      visit service_provider_path(sp)
+      expect(page).to have_link('View teams')
+      expect(page).to_not have_link('View apps')
+
+      click_on 'View teams'
+      expect(page).to have_current_path(teams_path)
+    end
+
+    it 'returns to the apps list by default' do
+      sp = create(:service_provider, team:)
+
+      visit service_provider_path(sp)
+      expect(page).to have_link('View apps')
+      expect(page).to_not have_link('View teams')
+
+      click_on 'View apps'
+      expect(page).to have_current_path(service_providers_path)
+    end
+  end
 end
