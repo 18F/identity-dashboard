@@ -23,9 +23,11 @@ class ServiceProvidersController < AuthenticatedController
     sandbox_apps = all_apps.select { |sp| sp.prod_config == false }
 
     @service_providers = build_service_provider_array(prod_apps, sandbox_apps)
+    return_tracker.set('config_index')
   end
 
   def show
+    @return_path, @return_text = return_tracker.path, return_tracker.text
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
     @show_status_indicator = IdentityConfig.store.prod_like_env &&
                              service_provider.prod_config? &&
@@ -329,5 +331,9 @@ value: func.to_proc.call(@service_provider) })
     return if policy(ServiceProvider.new).new?
 
     redirect_to service_providers_path
+  end
+
+  def return_tracker
+    @return_tracker ||= ReturnTracker.new(session, :config)
   end
 end
