@@ -18,6 +18,7 @@ class TeamsController < AuthenticatedController
       team,
       scope: policy_scope(PaperTrail::Version),
     ))
+    config_return_tracker.set("team,#{team.id}")
   end
 
   def new
@@ -76,6 +77,7 @@ class TeamsController < AuthenticatedController
 
   def team
     @team ||= Team.find_by_id_or_uuid(params[:id]) # rubocop:disable Rails/DynamicFindBy
+    @team ||= Team.new
   end
 
   def team_params

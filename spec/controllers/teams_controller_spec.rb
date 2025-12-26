@@ -128,6 +128,20 @@ describe TeamsController do
         get :show, params: { id: team.id }
         expect(assigns[:audit_events]).to eq([])
       end
+
+      # This is a security safeguard. Returning different statuses allows an attacker
+      # to guess information about the system we don't want them to know.
+      it 'returns the same status for teams denied access and teams that do not exist' do
+        test_id = Team.last.id + 10000
+        get :show, params: { id: test_id }
+        invalid_status = response.status
+
+        create(:team, id: test_id)
+        get :show, params: { id: test_id }
+        expect(response.status).to eq invalid_status
+
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 

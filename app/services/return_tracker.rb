@@ -13,7 +13,7 @@
 class ReturnTracker
   include Rails.application.routes.url_helpers
 
-  attr_reader :store, :tracking_key
+  attr_reader :store, :tracking_key, :stored_id
 
   TRACKING_KEY_VALUES = {
     team: {
@@ -23,12 +23,14 @@ class ReturnTracker
     config: {
       'team_index' => { path: :teams_path, text: 'View teams' },
       'config_index' => { path: :service_providers_path, text: 'View configurations' },
+      'team' => { path: :team_path, needs_id: true, text: 'Return to team %{name}' },
       default: { path: :service_providers_path, text: 'View configurations' },
     },
   }.freeze
 
   def initialize(store, tracking_key)
     @store, @tracking_key = store, tracking_key
+    @stored_id = nil
   end
 
   def set(value)
@@ -36,7 +38,7 @@ class ReturnTracker
   end
 
   def path
-    public_send TRACKING_KEY_VALUES[tracking_key][stored_value][:path]
+    public_send TRACKING_KEY_VALUES[tracking_key][stored_value][:path], @stored_id
   end
 
   def text
@@ -49,8 +51,21 @@ class ReturnTracker
     # Since the store currently defaults to the cookie store, it's possible for a user to
     # arbitrarily pick a value. We need to sanitize all user input.
     value = store["return_#{tracking_key}"]
+
+    return :default unless value.present?
     return value if TRACKING_KEY_VALUES[tracking_key].include? value
 
+    pair = value.split ','
+    if pair.count == 2 && valid_pair(*pair)
+      @stored_id = pair.second
+      return pair.first
+    end
+
     :default
+  end
+
+  # Reject the pair if the path need no ID or if the ID has any non-numeric characters
+  def valid_pair(key, id)
+    TRACKING_KEY_VALUES[tracking_key].fetch(key, {})[:needs_id] && id.tr('0-9', '').empty?
   end
 end
