@@ -32,6 +32,7 @@ class ServiceProvidersController < AuthenticatedController
     @show_status_indicator = IdentityConfig.store.prod_like_env &&
                              service_provider.prod_config? &&
                              policy(service_provider).see_status?
+    return_tracker.set("config,#{service_provider.id}")
   end
 
   def new

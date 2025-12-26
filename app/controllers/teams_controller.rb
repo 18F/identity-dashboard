@@ -18,6 +18,7 @@ class TeamsController < AuthenticatedController
       team,
       scope: policy_scope(PaperTrail::Version),
     ))
+    config_return_tracker.set("team,#{team.id}")
   end
 
   def new
