@@ -73,11 +73,11 @@ class User < ApplicationRecord
   end
 
   def logingov_admin?
-    TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_ADMIN)
+    !!logingov_admin
   end
 
   def logingov_readonly?
-    TeamMembership.find_by(user: self, team: Team.internal_team, role: Role::LOGINGOV_READONLY)
+    !!logingov_readonly
   end
 
   def logingov_staff?
@@ -111,5 +111,23 @@ class User < ApplicationRecord
 
     membership.role = Role.find_by(name: role_name)
     membership.save
+  end
+
+  private
+
+  def logingov_admin
+    @logingov_admin ||= TeamMembership.find_by(
+      user: self,
+      team: Team.internal_team,
+      role: Role::LOGINGOV_ADMIN,
+    )
+  end
+
+  def logingov_readonly
+    @logingov_readonly ||= TeamMembership.find_by(
+      user: self,
+      team: Team.internal_team,
+      role: Role::LOGINGOV_READONLY,
+    )
   end
 end
