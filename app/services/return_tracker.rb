@@ -64,7 +64,7 @@ class ReturnTracker
     :default
   end
 
-  # Reject the pair if the path need no ID or if the ID has any non-numeric characters
+  # Reject the pair if the path needs no ID or if the ID has any non-numeric characters
   def valid_pair(key, id)
     TRACKING_KEY_VALUES[tracking_key].fetch(key, {})[:needs_id] && id.tr('0-9', '').empty?
   end

@@ -951,11 +951,13 @@ feature 'Service Providers CRUD' do
   end
 
   describe 'return link on show' do
+    let!(:service_provider) { create(:service_provider, team:) }
+
     it 'returns to the teams page if you came from there' do
       visit teams_path
-      sp = create(:service_provider, team:)
+      click_on service_provider.friendly_name
 
-      visit service_provider_path(sp)
+      expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_link('View teams')
       expect(page).to_not have_link('View configurations')
 
@@ -964,14 +966,26 @@ feature 'Service Providers CRUD' do
     end
 
     it 'returns to the apps list by default' do
-      sp = create(:service_provider, team:)
-
-      visit service_provider_path(sp)
+      visit service_provider_path(service_provider)
       expect(page).to have_link('View configurations')
       expect(page).to_not have_link('View teams')
 
       click_on 'View configurations'
       expect(page).to have_current_path(service_providers_path)
+    end
+
+    it 'can return to the specific team page' do
+      visit team_path(team)
+      click_on service_provider.friendly_name
+      expected_link_text = "View team \"#{team.name}\""
+
+      expect(page).to have_current_path(service_provider_path(service_provider))
+      expect(page).to have_link(expected_link_text)
+      expect(page).to_not have_link('View teams')
+      expect(page).to_not have_link('View configurations')
+
+      click_on expected_link_text
+      expect(page).to have_current_path(team_path(team))
     end
   end
 end
