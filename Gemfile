@@ -88,6 +88,7 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
   gem 'yard', require: false
+  gem 'yard-junk', require: false
 end
 
 group :test do

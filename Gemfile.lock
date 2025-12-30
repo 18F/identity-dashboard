@@ -174,6 +174,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    backports (3.25.3)
     base64 (0.3.0)
     bcrypt (3.1.20)
     benchmark (0.4.1)
@@ -652,6 +653,11 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.37)
+    yard-junk (0.0.10)
+      backports (>= 3.18)
+      ostruct
+      rainbow
+      yard
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -745,6 +751,7 @@ DEPENDENCIES
   websocket-driver (= 0.7.3)
   wicked (~> 2.0)
   yard
+  yard-junk
 
 RUBY VERSION
    ruby 3.4.5p51
