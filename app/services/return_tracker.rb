@@ -22,8 +22,8 @@ class ReturnTracker
     },
     config: {
       'team_index' => { path: :teams_path, text: 'View teams' },
-      'config_index' => { path: :service_providers_path, text: 'View apps' },
-      default: { path: :service_providers_path, text: 'View apps' },
+      'config_index' => { path: :service_providers_path, text: 'View configurations' },
+      default: { path: :service_providers_path, text: 'View configurations' },
     },
   }.freeze
 

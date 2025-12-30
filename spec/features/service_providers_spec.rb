@@ -957,7 +957,7 @@ feature 'Service Providers CRUD' do
 
       visit service_provider_path(sp)
       expect(page).to have_link('View teams')
-      expect(page).to_not have_link('View apps')
+      expect(page).to_not have_link('View configurations')
 
       click_on 'View teams'
       expect(page).to have_current_path(teams_path)
@@ -967,10 +967,10 @@ feature 'Service Providers CRUD' do
       sp = create(:service_provider, team:)
 
       visit service_provider_path(sp)
-      expect(page).to have_link('View apps')
+      expect(page).to have_link('View configurations')
       expect(page).to_not have_link('View teams')
 
-      click_on 'View apps'
+      click_on 'View configurations'
       expect(page).to have_current_path(service_providers_path)
     end
   end
