@@ -1,2 +1,94 @@
+<%= javascript_include_tag 'charts' %>
+<%= stylesheet_link_tag 'charts' %>
+
 <h1>Configuration <%= @friendly_name %> Analytics Dashboard</h1>
 <h2>Issuer: <code><%= @issuer %> </code> </h2>
+
+<div class="grid-container">
+  <div class="grid-row">
+    <div class="analytics-chart-container">
+      <%= chart_canvas 'users-chart', 
+          type: 'bar',
+          labels: @recent_chart_data.map { |d| d.date.strftime('%b %d') },
+          datasets: [
+            { label: 'Total Users', data: @recent_chart_data.map { |d| d.topline_data['active_users'] } },
+            { label: 'New Accounts', data: @recent_chart_data.map { |d| d.usage_data['newly_created_accounts'] } },
+            { label: 'Prexisting Accounts', data: @recent_chart_data.map { |d| d.usage_data['existing_accounts'] } },
+          ]
+      %>
+    </div>
+  </div>
+</div>
+  <% @weekly_data.each do |data| %>
+  <div class="grid-container">
+    <div class="grid-row">
+      <h3>Week of <%= data.date %></h3>
+    </div>
+    <div class="grid-row">
+
+      <h4>Topline Data</h4>
+      <ul>
+        <% data.topline_data.each do |key, value| %>
+          <li><%= readable_header[key] %>: <%= value.to_f.round %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="grid-row">
+      <h4>Usage Data</h4>
+      <ul>
+        <% data.usage_data.each do |key, value| %>
+          <% next if readable_header[key].blank? %>
+          <li><%= readable_header[key] %>: <%= value.to_f.round %></li>
+        <% end %>
+      <ul>
+    </div>
+    <div class="grid-row">
+      <h4>Fraud Data</h4>
+    </div>
+    <div class="grid-row">
+      
+        <div class="analytics-chart-container grid-col">
+          <%= chart_canvas 'fraud-block-chart', 
+          type: 'pie',
+          labels: data.fraud_blocks.keys.map { |k| readable_header[k] },
+          datasets: [
+            { label: 'Total Users', data: data.fraud_blocks.values.map { |v| v.to_f.round } },
+          ]
+          %>
+        </div>
+        <div class="grid-col">
+          <h5>Fraud Block Details</h5>
+          <ul>
+          <% data.fraud_blocks.each do |key, value| %>
+              <% next if readable_header[key].blank? %>
+              <li><%= readable_header[key] %>: <%= value.to_f.round %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div> 
+      <div class="grid-row">
+        <div class="grid-col">
+          <h5>Fraud Alerts</h5>
+          <ul>
+            <% data.fraud_alerts.each do |key, value| %>
+              <% next if readable_header[key].blank? %>
+              <li><%= readable_header[key] %>: <%= value.to_f.round %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="grid-row">
+        <div class="grid-col">
+          <h5>Fraud Investigations</h5>
+          <ul>
+            <% data.fraud_investigation.each do |key, value| %>
+              <% next if readable_header[key].blank? %>
+              <li><%= readable_header[key] %>: <%= value %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<% end %>
