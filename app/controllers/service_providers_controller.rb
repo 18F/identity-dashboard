@@ -188,12 +188,8 @@ value: func.to_proc.call(@service_provider) })
   end
 
   def validate_and_save_service_provider(initial_action)
-    clear_formatting(@service_provider)
-
-    @service_provider.valid?
-    @service_provider.valid_saml_settings?
-    @service_provider.valid_prod_config?
-    @service_provider.valid_localhost_uris? if !current_user.logingov_admin?
+    saver = ServiceProviderSaver.new(@service_provider, self)
+    saver.validate_and_save
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
@@ -249,31 +245,6 @@ value: func.to_proc.call(@service_provider) })
   def cache_logo_info
     service_provider.logo = service_provider.logo_file.filename.to_s
     service_provider.remote_logo_key = service_provider.logo_file.key
-  end
-
-  def clear_formatting(service_provider)
-    string_attributes = %w[
-      issuer
-      friendly_name
-      description
-      metadata_url
-      acs_url
-      assertion_consumer_logout_service_url
-      sp_initiated_login_url
-      return_to_sp_url
-      failure_to_proof_url
-      push_notification_url
-      app_name
-    ]
-
-    service_provider.attributes.each do |k, v|
-      v.try(:strip!) if string_attributes.include?(k)
-    end
-
-    service_provider.redirect_uris&.each do |uri|
-      uri.try(:strip!)
-    end
-    service_provider
   end
 
   def body_attributes
