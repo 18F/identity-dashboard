@@ -46,6 +46,12 @@ module LogEvents
     track_event('partner_portal_sp_destroyed', changes:)
   end
 
+  # Log validation errors when present
+  # @param errors A list of errors
+  def sp_errors(errors:)
+    track_event('partner_portal_sp_errors', errors:)
+  end
+
   # Log when a service provider is updated
   # @param [Hash] changes The changes to log
   def sp_updated(changes:)

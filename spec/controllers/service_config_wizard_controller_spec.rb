@@ -444,6 +444,7 @@ RSpec.describe ServiceConfigWizardController do
       # rubocop:enable Layout/LineLength
 
       it 'stays on this step when the service provider would be invalid' do
+        expect(logger_double).to receive(:sp_errors)
         expect do
           put :update, params: { id: 'help_text', wizard_step: { active: false } }
         end.to_not(change { ServiceProvider.count })
@@ -746,6 +747,10 @@ RSpec.describe ServiceConfigWizardController do
       it 'does not allow Partners to update IAL on existing configs' do
         initial_ial = service_provider.reload.attributes['ial']
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+        expect(logger_double).to receive(:sp_errors).with({
+          errors: { prod_config: ["can't be a sandbox configuration"] },
+        })
+
         put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
         # fails silently

@@ -402,6 +402,13 @@ describe ServiceProvidersController do
         bad_logo = fixture_file_upload('../logo_without_size.svg')
         bad_logo_checksum = OpenSSL::Digest.base64digest('MD5', bad_logo.read)
 
+        expect(logger_double).to receive(:sp_errors).with({
+          errors: { logo_file: [
+            'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. ' \
+            'Please add a viewBox attribute to your SVG and re-upload',
+          ] },
+        })
+
         put :update, params: {
           id: sp.id,
           service_provider: sp_logo_params.merge(logo_file: bad_logo),
@@ -430,6 +437,9 @@ describe ServiceProvidersController do
         end
 
         it 'fails when uploading a big file' do
+          expect(logger_double).to receive(:sp_errors).with({
+            errors: { logo_file: [I18n.t('service_provider_form.title.logo_file')] },
+          })
           put :update, params: {
             id: sp.id,
             service_provider: sp_logo_params,
@@ -496,7 +506,9 @@ describe ServiceProvidersController do
         StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
         original_filename: 'my-cert.der',
       )
-
+      expect(logger_double).to receive(:sp_errors).with({
+        errors: { certs: ['Certificate is not PEM-encoded'] },
+      })
       expect do
         put :update, params: {
           id: sp.id,
