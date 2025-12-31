@@ -22,8 +22,6 @@ module Analytics
       fraud_users_blocked_for_fraud
     ]
 
-    ALL_FRAUD_HEADERS = FRAUD_BLOCKS + FRAUD_ALERTS + FRAUD_INVESTIGTION
-
     TOPLINE_DATA = %w[
       active_users
       fraudsters_blocked
