@@ -30,7 +30,7 @@ class LogoValidator < ActiveModel::Validator
     return unless changed_keys.include?('logo') || changed_keys.include?('remote_logo_key')
     return unless record.logo_file.blob.byte_size > MAX_LOGO_SIZE
 
-    record.errors.add(:logo_file, 'Logo must be less than 50kB')
+    record.errors.add(:logo_file, 'must be less than 50kB')
   end
 
   def logo_file_mime_type

@@ -45,9 +45,8 @@ describe ServiceProvider do
         it 'is not valid if the logo info is changing' do
           service_provider.logo = 'new_name.png'
           expect(service_provider).to_not be_valid
-
-          expect(service_provider.errors.first.message).to eq(
-            'Logo must be less than 50kB',
+          expect(service_provider.errors.full_messages).to eq(
+            ['Logo file must be less than 50kB'],
           )
         end
       end

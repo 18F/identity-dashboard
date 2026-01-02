@@ -438,7 +438,7 @@ describe ServiceProvidersController do
 
         it 'fails when uploading a big file' do
           expect(logger_double).to receive(:sp_errors).with({
-            errors: { logo_file: [I18n.t('service_provider_form.title.logo_file')] },
+            errors: { logo_file: ['must be less than 50kB'] },
           })
           put :update, params: {
             id: sp.id,

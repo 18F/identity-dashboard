@@ -7,7 +7,7 @@ class CertsArePemsValidator < ActiveModel::Validator
       if cert.include?('----BEGIN CERTIFICATE----')
         OpenSSL::X509::Certificate.new(cert)
       else
-        record.errors.add(:certs, 'Certificate is a not PEM-encoded')
+        record.errors.add(:certs, 'Certificate is not PEM-encoded')
       end
     rescue OpenSSL::X509::CertificateError => err
       record.errors.add(:certs, err.message)
