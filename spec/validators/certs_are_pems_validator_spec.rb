@@ -44,7 +44,7 @@ RSpec.describe CertsArePemsValidator, type: 'model' do
   it 'provides an error message if certificate is present but not x509' do
     subject.certs = ['foo']
     subject.valid?
-    expect(subject.errors[:certs]).to include('Certificate is a not PEM-encoded')
+    expect(subject.errors[:certs]).to include('Certificate is not PEM-encoded')
   end
 
   it 'accepts a valid x509 certificate' do
