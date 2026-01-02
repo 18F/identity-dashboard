@@ -99,13 +99,18 @@ describe Teams::UsersController do
         end
 
         context 'logging' do
-          it 'calls log.team_membership_created' do
+          it 'calls log.team_membership_created before save' do
             post :create, params: { team_id: team.id, user: { email: valid_email } }
             membership = TeamMembership.find_by(user: User.find_by(email: valid_email), team:)
-            changes = membership.attributes.except('created_at', 'updated_at').merge(
+            # Logging happens before save, so id is nil and attributes are in pending changes format
+            changes = {
+              'id' => nil,
+              'user_id' => { 'new' => membership.user_id, 'old' => nil },
+              'group_id' => { 'new' => membership.group_id, 'old' => nil },
+              'role_name' => { 'new' => membership.role_name, 'old' => nil },
               'team_user' => membership.user.email,
               'team' => membership.team.name,
-            )
+            }
 
             expect(logger_double).to have_received(:team_membership_created).with(
               changes: hash_including(changes),

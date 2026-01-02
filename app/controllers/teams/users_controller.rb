@@ -4,7 +4,6 @@ class Teams::UsersController < AuthenticatedController
 
   after_action :verify_authorized
   after_action :verify_policy_scoped
-  after_action :log_change, only: %i[create update]
 
   helper_method :roles_for_options, :show_actions?
 
@@ -53,6 +52,8 @@ class Teams::UsersController < AuthenticatedController
     )
     new_team_membership.set_default_role
     authorize new_team_membership
+    @team_membership = new_team_membership
+    log_change
     render :new and return unless new_team_membership.save!
 
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
@@ -87,6 +88,7 @@ class Teams::UsersController < AuthenticatedController
       redirect_to edit_team_user_path(team, team_membership.user,
                                       need_to_confirm_role: true) and return
     end
+    log_change
     team_membership.save
     if team_membership.errors.any?
       @user = team_membership.user
@@ -178,8 +180,8 @@ class Teams::UsersController < AuthenticatedController
     if action_name == 'create'
       log.team_membership_created(changes:)
     elsif action_name == 'update'
-      # do not log if there are no changes
-      return if team_membership.previous_changes.empty?
+      # do not log if there are no pending changes
+      return if team_membership.changes.empty?
 
       log.team_membership_updated(changes:)
     else
