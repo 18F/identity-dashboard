@@ -4,7 +4,6 @@ class TeamsController < AuthenticatedController
 
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
-  after_action :log_change, only: %i[create update destroy]
 
   def index
     includes = %i[users service_providers agency]
@@ -33,6 +32,7 @@ class TeamsController < AuthenticatedController
     @team = Team.new(update_params_with_current_user)
     @team.uuid = SecureRandom.uuid
 
+    log_change
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = 'Success'
@@ -44,7 +44,9 @@ class TeamsController < AuthenticatedController
   end
 
   def update
-    if @team.update(update_params_with_current_user)
+    @team.assign_attributes(update_params_with_current_user)
+    log_change
+    if @team.save
       flash[:success] = 'Success'
       redirect_to get_return_path
     else
@@ -54,6 +56,7 @@ class TeamsController < AuthenticatedController
   end
 
   def destroy
+    log_change
     if @team.service_providers.empty? && @team.destroy
       flash[:success] = 'Success'
       return redirect_to get_return_path
