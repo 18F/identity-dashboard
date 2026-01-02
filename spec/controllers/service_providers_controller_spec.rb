@@ -517,6 +517,21 @@ describe ServiceProvidersController do
       end.to_not(change { sp.reload.certs&.size })
     end
 
+    it 'logs a cert error no matter how invalid the cert is' do
+      image_file = fixture_file_upload('logo.png')
+
+      expect(logger_double).to receive(:sp_errors).with({
+        errors: { certs:
+          ['is invalid - PEM_read_bio_X509: no start line (Expecting: CERTIFICATE)',
+           'Certificate is not PEM-encoded'] },
+      })
+
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, cert: image_file },
+      }
+    end
+
     it 'does not update cert array when cert data is null/empty' do
       empty_file = Rack::Test::UploadedFile.new(
         StringIO.new(''),
