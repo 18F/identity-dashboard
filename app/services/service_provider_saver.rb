@@ -29,7 +29,19 @@ class ServiceProviderSaver < SimpleDelegator
   private
 
   def log_errors
-    log.sp_errors(errors: errors.to_hash)
+    sanitized_errors = errors.to_hash
+
+    # Some errors inherited from IdentityValidations::ServiceProviderValidation may attempt
+    # to include an entire invalid attached file.
+    # Truncate long errors to the message at the end. This keeps the message legible and prevents
+    # exceptions raised when trying to encode the log message.
+    sanitized_errors.keys.each do |key|
+      sanitized_errors[key] = sanitized_errors[key].map do |error_string|
+        error_string.length > 256 ? error_string.last(70) : error_string
+      end
+    end
+
+    log.sp_errors(errors: sanitized_errors)
   end
 
   def clear_formatting
