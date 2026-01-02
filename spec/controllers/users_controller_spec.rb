@@ -208,11 +208,11 @@ describe UsersController do
       end
 
       context 'logging' do
-        it 'calls log.user_created' do
+        it 'calls log.user_created before save' do
           patch :create, params: { user: { email: 'example@example.com' } }
-          user = User.find_by(email: 'example@example.com')
+          # Logging happens before save, so id is nil
           changes = {
-            'id' => user.id,
+            'id' => nil,
             'email' => {
               'old' => nil,
               'new' => 'example@example.com',
@@ -240,9 +240,12 @@ describe UsersController do
 
     context 'when a login.gov admin' do
       let(:user) { create(:user, :logingov_admin) }
+      let(:expected_user_attributes) { user_to_delete.as_json }
 
       before do
         allow(logger_double).to receive(:user_destroyed)
+        # Capture user attributes before they're deleted
+        expected_user_attributes
         delete :destroy, params: { id: user_to_delete.id }
       end
 
@@ -251,9 +254,10 @@ describe UsersController do
       end
 
       context 'logging' do
-        it 'calls log.user_destroyed' do
+        it 'calls log.user_destroyed before destroy' do
+          # Logging happens before destroy, so we capture the user's state
           expect(logger_double).to have_received(:user_destroyed).with(
-            changes: user_to_delete.reload.as_json,
+            changes: expected_user_attributes,
           )
         end
       end
