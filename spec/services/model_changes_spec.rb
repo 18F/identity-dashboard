@@ -7,7 +7,7 @@ describe ModelChanges do
 
   describe 'when it is a new record' do
     before do
-      allow(record).to receive(:previous_changes).and_return({})
+      allow(record).to receive(:changes).and_return({})
     end
 
     it 'returns all attributes' do
@@ -18,11 +18,12 @@ describe ModelChanges do
     end
   end
 
-  describe 'when it is an existing record' do
+  describe 'when it is an existing record with pending changes' do
     let(:new_name) { 'new name' }
 
-    it 'returns the updated attributes' do
-      record.update(friendly_name: new_name)
+    it 'returns the pending changes before save' do
+      # Assign attributes without saving to test pending changes
+      record.friendly_name = new_name
       attrs = {
         'friendly_name' => {
           'old' => friendly_name,
