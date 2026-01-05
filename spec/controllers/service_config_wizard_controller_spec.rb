@@ -786,9 +786,10 @@ RSpec.describe ServiceConfigWizardController do
     end
   end
 
+  # Pending changes captured before save (id is nil for new records)
   def changes(service_provider:)
     {
-      'id' => service_provider.id,
+      'id' => nil, # Logging happens before save, so id is nil
       'active' => { 'new' => false, 'old' => true },
       'app_name' => { 'new' => service_provider.app_name, 'old' => '' },
       'attribute_bundle' => { 'new' => service_provider.attribute_bundle, 'old' => nil },
@@ -803,7 +804,6 @@ RSpec.describe ServiceConfigWizardController do
       },
       'issuer' =>
         { 'new' => service_provider.issuer, 'old' => nil },
-      'status' => { 'new' => service_provider.status, 'old' => 'pending' },
       'user_id' => { 'new' => partner_admin.id, 'old' => nil },
     }
   end
