@@ -3,7 +3,6 @@ class ServiceConfigWizardController < AuthenticatedController
   include ::Wicked::Wizard
   include ModelChanges
 
-  after_action :log_change, only: %i[update]
   STEPS = WizardStep::STEPS
   steps(*STEPS)
   UPLOAD_STEP = 'logo_and_cert'
@@ -136,6 +135,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.logo_file.attach(logo_file.blob) if logo_file.blob
 
     authorize service_provider
+    log_change
     validate_and_save_service_provider
     return render_wizard if flash[:error].present?
 
@@ -352,7 +352,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def create?
-    draft_service_provider.previous_changes['id'].present?
+    draft_service_provider.new_record?
   end
 
   def verify_environment_permissions

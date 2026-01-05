@@ -64,8 +64,8 @@ class ServiceProvidersController < AuthenticatedController
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
-    validate_and_save_service_provider(:new)
     log_change
+    validate_and_save_service_provider(:new)
   end
 
   def update
@@ -84,8 +84,8 @@ class ServiceProvidersController < AuthenticatedController
     end
 
     service_provider.agency_id &&= service_provider.agency.id
-    validate_and_save_service_provider(:edit)
     log_change
+    validate_and_save_service_provider(:edit)
   end
 
   def destroy

@@ -179,10 +179,11 @@ describe TeamsController do
           expect(response).to redirect_to(team_users_path(team))
         end
 
-        it 'logs' do
+        it 'logs before save' do
+          # Logging happens before save, so id is nil
           changes = {
             'agency_id' => { 'old' => nil, 'new' => agency.id },
-            'id' => team.id,
+            'id' => nil,
             'name' => { 'old' => nil, 'new' => team.name },
             'uuid' => { 'old' => nil, 'new' => team.uuid },
           }
@@ -329,7 +330,7 @@ describe TeamsController do
 
       context 'when the update is unsuccessful' do
         before do
-          allow_any_instance_of(Team).to receive(:update).and_return(false)
+          allow_any_instance_of(Team).to receive(:save).and_return(false)
         end
 
         it 'renders the edit action' do

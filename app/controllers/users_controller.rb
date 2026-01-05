@@ -6,7 +6,6 @@ class UsersController < ApplicationController
   before_action -> { authorize User }, only: [:index, :none]
   after_action :verify_authorized
   after_action :verify_policy_scoped, except: [:none]
-  after_action :log_user_changes, only: %i[create destroy]
   attr_reader :user
 
   def index
@@ -26,6 +25,7 @@ class UsersController < ApplicationController
   def create
     @user = policy_scope(User).new(user_params)
 
+    log_user_changes
     if @user.save
       flash[:success] = 'Success'
       redirect_to users_path
@@ -45,8 +45,8 @@ class UsersController < ApplicationController
       remove_login_readonly(user) if login_readonly_assigned_new_role? role
       user.team_memberships.each do |membership|
         membership.role = role
+        log_membership_changes(membership) if membership.role_name_changed?
         membership.save!
-        log_membership_changes(membership) if membership.role_name_previously_changed?
       end
     end
     redirect_to users_url
@@ -54,6 +54,7 @@ class UsersController < ApplicationController
 
   def destroy
     @user = policy_scope(User).find_by(id: params[:id])
+    log_user_changes
     return unless user.destroy
 
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)

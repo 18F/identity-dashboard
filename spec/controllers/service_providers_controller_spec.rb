@@ -254,17 +254,16 @@ describe ServiceProvidersController do
     end
 
     describe 'logging' do
-      it 'logs the creation' do
+      it 'logs the creation before save' do
         post :create, params: { service_provider: {
           issuer: 'log.issuer.string',
         group_id: user.teams.first.id,
         friendly_name: 'Log',
         } }
 
-        service_provider = ServiceProvider.find_by(issuer: 'log.issuer.string')
-
+        # Logging happens before save, so id is nil and we capture pending changes
         expect(logger_double).to have_received(:sp_created).with(
-          { changes: hash_including(changes(service_provider:)) },
+          { changes: hash_including(pending_changes_for_create) },
         )
       end
     end
@@ -863,6 +862,17 @@ describe ServiceProvidersController do
       'group_id' => { 'new' => service_provider.group_id, 'old' => nil },
       'issuer' => { 'new' => service_provider.issuer, 'old' => nil },
       'status' => { 'new' => service_provider.status, 'old' => 'pending' },
+      'user_id' => { 'new' => user.id, 'old' => nil },
+    }
+  end
+
+  # Pending changes captured before save (id is nil, no status change)
+  def pending_changes_for_create
+    {
+      'id' => nil,
+      'friendly_name' => { 'new' => 'Log', 'old' => nil },
+      'group_id' => { 'new' => user.teams.first.id, 'old' => nil },
+      'issuer' => { 'new' => 'log.issuer.string', 'old' => nil },
       'user_id' => { 'new' => user.id, 'old' => nil },
     }
   end
