@@ -7,6 +7,13 @@ class Airtable
   BASE_TOKEN_URI = 'https://airtable.com/oauth2/v1'
   BASE_API_URI = 'https://api.airtable.com/v0'
 
+  CACHE_KEYS = %w[
+    airtable_oauth_token
+    airtable_oauth_token_expiration
+    airtable_oauth_refresh_token
+    airtable_oauth_refresh_token_expiration
+  ]
+
   def initialize(user_uuid)
     @user_uuid = user_uuid
     @conn ||= Faraday.new
@@ -89,6 +96,12 @@ class Airtable
   def build_redirect_uri(request)
     base_url = "#{request.protocol}#{request.host_with_port}"
     "#{base_url}/airtable/oauth/redirect"
+  end
+
+  def clear_token
+    CACHE_KEYS.each do |cache_key|
+      Rails.cache.delete "#{current_user.uuid}.#{cache_key}"
+    end
   end
 
   private

@@ -11,9 +11,11 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
     return if uris.blank?
 
+    # Only validate if the attribute is changing
+    return if attribute_unchanged(record, attribute)
+
     Array(uris).each do |uri_string|
-      # Only check if the attribute is changed
-      check_non_admin_localhost(record, uri_string) unless attribute_unchanged(record, attribute)
+      check_nonadmin_localhost_redirect(record, uri_string)
     end
   end
 
@@ -26,7 +28,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     )
   end
 
-  def check_non_admin_localhost(record, uri_string)
+  def check_nonadmin_localhost_redirect(record, uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)
     user = User.find record.user_id
 
