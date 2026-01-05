@@ -10,6 +10,20 @@ class ServiceProviderSaver < SimpleDelegator
 
   delegate :current_user, :log, to: :controller
 
+  STRING_ATTRIBUTES = %w[
+    issuer
+    friendly_name
+    description
+    metadata_url
+    acs_url
+    assertion_consumer_logout_service_url
+    sp_initiated_login_url
+    return_to_sp_url
+    failure_to_proof_url
+    push_notification_url
+    app_name
+  ].freeze
+
   def initialize(service_provider, controller)
     @controller = controller
     super(service_provider)
@@ -34,7 +48,7 @@ class ServiceProviderSaver < SimpleDelegator
     # Some errors inherited from IdentityValidations::ServiceProviderValidation may attempt
     # to include an entire invalid attached file.
     # Truncate long errors to the message at the end. This keeps the message legible and prevents
-    # exceptions raised when trying to encode the log message.
+    # exceptions getting thrown when trying to encode an entire file the log message.
     sanitized_errors.keys.each do |key|
       sanitized_errors[key] = sanitized_errors[key].map do |error_string|
         error_string.length > 256 ? error_string.last(70) : error_string
@@ -45,22 +59,8 @@ class ServiceProviderSaver < SimpleDelegator
   end
 
   def clear_formatting
-    string_attributes = %w[
-      issuer
-      friendly_name
-      description
-      metadata_url
-      acs_url
-      assertion_consumer_logout_service_url
-      sp_initiated_login_url
-      return_to_sp_url
-      failure_to_proof_url
-      push_notification_url
-      app_name
-    ]
-
     attributes.each do |k, v|
-      v.try(:strip!) if string_attributes.include?(k)
+      v.try(:strip!) if STRING_ATTRIBUTES.include?(k)
     end
 
     redirect_uris&.each do |uri|
