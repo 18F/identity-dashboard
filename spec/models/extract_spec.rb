@@ -13,6 +13,8 @@ describe Extract do
     it { should validate_inclusion_of(:search_by).in_array(%w[teams issuers]) }
 
     it 'should not have errors when file_criteria are valid' do
+      create(:service_provider, issuer: 'issuer:one', team:)
+
       with_file = build(:extract, {
         ticket: '1',
         search_by: 'issuers',
@@ -27,7 +29,7 @@ describe Extract do
       with_list = build(:extract, {
         ticket: '0',
         search_by: 'teams',
-        criteria_list: '1 ,2',
+        criteria_list: "1,2, #{sp1.team.id}",
       })
 
       expect(with_list).to be_valid
