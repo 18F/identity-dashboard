@@ -92,7 +92,7 @@ class ZendeskRequest
     },
   }.freeze
 
-  attr_accessor :portal_url, :requestor, :service_provider, :conn
+  attr_accessor :portal_url, :requestor, :service_provider
 
   def initialize(user, portal_url, service_provider)
     @requestor = user
@@ -147,11 +147,7 @@ class ZendeskRequest
   end
 
   def create_ticket(ticket_data)
-    headers = { 'Content-Type' => 'application/json' }
-
-    @conn ||= Faraday.new(url: ZENDESK_BASE_URL, headers: headers)
-
-    resp = @conn.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
+    resp = connection.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
     response = JSON.parse(resp.body)
 
     if resp.status == 201
@@ -168,5 +164,12 @@ class ZendeskRequest
       end
       { success: false, errors: [] }
     end
+  end
+
+  def connection
+    @connection ||= Faraday.new(
+      url: ZENDESK_BASE_URL,
+      headers: { 'Content-Type' => 'application/json' },
+    )
   end
 end
