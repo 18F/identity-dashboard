@@ -47,7 +47,7 @@ module LogEvents
   end
 
   # Log validation errors when present
-  # @param errors A list of errors
+  # @param [Hash<Symbol,Array<String>>] errors A hash of attribute => error-strings.
   def sp_errors(errors:)
     track_event('partner_portal_sp_errors', errors:)
   end
