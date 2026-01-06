@@ -214,35 +214,43 @@ feature 'TeamMembership CRUD' do
       expect(oldest_event_text).to include("At: #{team.created_at}")
     end
 
-    scenario 'login.gov admin edits Internal Team' do
+    describe 'login.gov admin edits Internal Team' do
       team = Team.internal_team
-      user = create(:user)
 
-      login_as(logingov_admin)
-      visit teams_all_path
-      find("a[href='#{team_path(team)}']", text: team.name).click
+      scenario 'add user with default role' do
+        user = create(:user)
 
-      expect(page).to have_current_path(team_path(team))
-      expect(page).to have_content(team.name)
-      expect(page).to have_content(team.agency.name)
+        login_as(logingov_admin)
+        visit teams_all_path
+        find("a[href='#{team_path(team)}']", text: team.name).click
 
-      click_on 'Manage users'
-      click_on 'Add user'
-      fill_in 'Email', with: user.email
-      click_on 'Add'
+        expect(page).to have_current_path(team_path(team))
+        expect(page).to have_content(team.name)
+        expect(page).to have_content(team.agency.name)
+      
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
 
-      expect(user.teams).to include(team)
-      membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
-      expect(membership).to be_truthy
-      expect(membership.role.name).to eq('logingov_readonly')
+        expect(user.teams).to include(team)
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('logingov_readonly')
+      end
 
-      visit team_path(team)
-      click_on 'Manage users'
-      find("a[href='#{team_users_path(team)}/#{user.id}/edit']", text: 'Edit').click
+      scenario 'edit user role' do
+        readonly_user = create(:user, :logingov_readonly)
 
-      [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].each do |role|
-        expect(page).to have_content(role.friendly_name)
-        expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
+        login_as(logingov_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        find("a[href='#{team_users_path(team)}/#{readonly_user.id}/edit']", text: 'Edit').click
+
+        [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].each do |role|
+          expect(page).to have_content(role.friendly_name)
+          expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
+        end
       end
     end
 
