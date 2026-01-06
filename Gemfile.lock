@@ -99,7 +99,7 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
-    active_model_serializers (0.10.15)
+    active_model_serializers (0.10.16)
       actionpack (>= 4.1)
       activemodel (>= 4.1)
       case_transform (>= 0.2)
@@ -144,16 +144,19 @@ GEM
       execjs (~> 2)
     aws-eventstream (1.3.0)
     aws-partitions (1.1001.0)
-    aws-sdk-core (3.211.0)
+    aws-sdk-core (3.240.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
+      base64
+      bigdecimal
       jmespath (~> 1, >= 1.6.1)
+      logger
     aws-sdk-kms (1.95.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.169.0)
-      aws-sdk-core (~> 3, >= 3.210.0)
+    aws-sdk-s3 (1.209.0)
+      aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sdk-secretsmanager (1.109.0)
@@ -658,11 +661,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_model_serializers (>= 0.10.14)
+  active_model_serializers (>= 0.10.16)
   acts_as_paranoid
   autoprefixer-rails (~> 10.1)
   aws-sdk-core (>= 3.188.0)
-  aws-sdk-s3
+  aws-sdk-s3 (>= 1.208.0)
   axe-core-rspec (~> 4.2)
   better_errors
   binding_of_caller
