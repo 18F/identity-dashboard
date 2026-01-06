@@ -214,10 +214,9 @@ feature 'TeamMembership CRUD' do
       expect(oldest_event_text).to include("At: #{team.created_at}")
     end
 
-    describe 'login.gov admin edits Internal Team' do
-      team = Team.internal_team
-
-      scenario 'add user with default role' do
+    describe 'default roles' do
+      scenario 'for the Login.gov Internal Team' do
+        team = Team.internal_team
         user = create(:user)
 
         login_as(logingov_admin)
@@ -239,18 +238,37 @@ feature 'TeamMembership CRUD' do
         expect(membership.role.name).to eq('logingov_readonly')
       end
 
-      scenario 'edit user role' do
-        readonly_user = create(:user, :logingov_readonly)
+      scenario 'for a team without a Partner Admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
 
-        login_as(logingov_admin)
-        visit team_path(team)
+        team = create(:team)
+        user = create(:user)
+
+        login_as(:gov_user)
+        visit(team_path(team))
         click_on 'Manage users'
-        find("a[href='#{team_users_path(team)}/#{readonly_user.id}/edit']", text: 'Edit').click
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
 
-        [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].each do |role|
-          expect(page).to have_content(role.friendly_name)
-          expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
-        end
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_admin')
+      end
+    end
+
+    scenario 'Login.gov Admin edits Internal Team user role' do
+      team = Team.internal_team
+      user = create(:user, :logingov_readonly)
+
+      login_as(logingov_admin)
+      visit team_path(team)
+      click_on 'Manage users'
+      find("a[href='#{team_users_path(team)}/#{user.id}/edit']", text: 'Edit').click
+
+      [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].each do |role|
+        expect(page).to have_content(role.friendly_name)
+        expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
       end
     end
 
