@@ -327,6 +327,8 @@ describe User do
       user.reload
       expect(user).to be_deleted
 
+      expect { team_membership.reload }.to raise_error(ActiveRecord::RecordNotFound)
+
       # `acts_as_paranoid` option `double_tap_destroys_fully` is enabled per default
       user.destroy
       expect { user.reload }.to raise_error(ActiveRecord::RecordNotFound)
