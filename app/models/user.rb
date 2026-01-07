@@ -97,10 +97,6 @@ class User < ApplicationRecord
     Role.find_by(name: 'partner_admin')
   end
 
-  def readonly_role?
-    logingov_readonly? || primary_role.name == 'partner_readonly'
-  end
-
   def auth_token
     AuthToken.for(self)
   end
@@ -116,12 +112,18 @@ class User < ApplicationRecord
   private
 
   def logingov_admin
-    @logingov_admin ||= TeamMembership.find_by(user: self, team: Team.internal_team,
-role: Role::LOGINGOV_ADMIN)
+    @logingov_admin ||= TeamMembership.find_by(
+      user: self,
+      team: Team.internal_team,
+      role: Role::LOGINGOV_ADMIN,
+    )
   end
 
   def logingov_readonly
-    @logingov_readonly ||= TeamMembership.find_by(user: self, team: Team.internal_team,
-role: Role::LOGINGOV_READONLY)
+    @logingov_readonly ||= TeamMembership.find_by(
+      user: self,
+      team: Team.internal_team,
+      role: Role::LOGINGOV_READONLY,
+    )
   end
 end
