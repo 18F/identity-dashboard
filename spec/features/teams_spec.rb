@@ -226,7 +226,7 @@ feature 'TeamMembership CRUD' do
         expect(page).to have_current_path(team_path(team))
         expect(page).to have_content(team.name)
         expect(page).to have_content(team.agency.name)
-      
+
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
@@ -240,12 +240,11 @@ feature 'TeamMembership CRUD' do
 
       scenario 'for a team without a Partner Admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-
         team = create(:team)
         user = create(:user)
 
-        login_as(:gov_user)
-        visit(team_path(team))
+        login_as(logingov_admin)
+        visit team_path(team)
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
@@ -254,6 +253,44 @@ feature 'TeamMembership CRUD' do
         membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
         expect(membership).to be_truthy
         expect(membership.role.name).to eq('partner_admin')
+      end
+
+      scenario 'for a team on Production' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        partner_admin = create(:user, :partner_admin)
+        team = partner_admin.teams.last
+        user = create(:user)
+
+        login_as(partner_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_readonly')
+      end
+
+      scenario 'for a team on Sandbox with a Partner Admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+
+        partner_admin = create(:user, :partner_admin)
+        team = partner_admin.teams.last
+        user = create(:user)
+
+        login_as(partner_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_developer')
       end
     end
 
