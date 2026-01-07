@@ -123,7 +123,7 @@ describe UsersController do
         non_matching_user = create(:user, email: 'other@example.gov')
         get :index, params: { query: 'searchable' }
         expect(assigns(:users)).to include(searchable_user)
-        expect(assigns(:users)).not_to include(non_matching_user)
+        expect(assigns(:users)).to_not include(non_matching_user)
       end
 
       it 'is case-insensitive' do
@@ -149,7 +149,7 @@ describe UsersController do
       end
 
       it 'preserves query across pagination' do
-        users = (1..150).map { |i| create(:user, email: "searchuser#{i}@gsa.gov") }
+        (1..150).map { |i| create(:user, email: "searchuser#{i}@gsa.gov") }
         get :index, params: { query: 'searchuser', page: 2 }
         expect(assigns(:page)).to eq(2)
         expect(assigns(:query)).to eq('searchuser')
