@@ -89,7 +89,7 @@ describe 'users' do
       fill_in 'Email', with: other_team_member.email
       click_on 'Add'
       expect(page).to have_content(
-        "User #{other_team_member.email} is already a member of the team",
+        "#{other_team_member.email} is already a member of the team",
       )
     end
 
