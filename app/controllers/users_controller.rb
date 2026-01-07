@@ -11,7 +11,16 @@ class UsersController < ApplicationController
   def index
     per_page = IdentityConfig.store.users_per_page
     @page = [params[:page].to_i, 1].max
-    base_scope = policy_scope(User).includes(team_memberships: [:role, :team]).sorted
+    @query = params[:query].to_s.strip
+
+    base_scope = policy_scope(User).includes(team_memberships: [:role, :team])
+
+    if @query.present?
+      search_term = "%#{User.sanitize_sql_like(@query)}%"
+      base_scope = base_scope.where('email ILIKE :q', q: search_term)
+    end
+
+    base_scope = base_scope.sorted
     @total_count = base_scope.count
     @total_pages = (@total_count.to_f / per_page).ceil
     @page = [@page, @total_pages].min if @total_pages > 0
