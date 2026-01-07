@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
     if @query.present?
       search_term = "%#{User.sanitize_sql_like(@query)}%"
-      base_scope = base_scope.where('email ILIKE :q', q: search_term)
+      base_scope = base_scope.where('email ILIKE ?', search_term)
     end
 
     base_scope = base_scope.sorted
