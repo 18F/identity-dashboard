@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     @page = [params[:page].to_i, 1].max
     @query = params[:query].to_s.strip
 
-    scope = base_scope(@query)  
+    scope = base_scope(@query)
     @total_count = scope.count
     @total_pages = (@total_count.to_f / per_page).ceil
     @page = [@page, @total_pages].min if @total_pages > 0
