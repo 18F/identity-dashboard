@@ -109,6 +109,52 @@ describe UsersController do
         expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
+
+    describe 'search' do
+      let(:user) { create(:user, :logingov_admin) }
+      let!(:searchable_user) { create(:user, email: 'searchable@example.gov') }
+
+      it 'filters users by email query' do
+        get :index, params: { query: 'searchable' }
+        expect(assigns(:users)).to include(searchable_user)
+      end
+
+      it 'excludes non-matching users from results' do
+        non_matching_user = create(:user, email: 'other@example.gov')
+        get :index, params: { query: 'searchable' }
+        expect(assigns(:users)).to include(searchable_user)
+        expect(assigns(:users)).to_not include(non_matching_user)
+      end
+
+      it 'is case-insensitive' do
+        get :index, params: { query: 'SEARCHABLE' }
+        expect(assigns(:users)).to include(searchable_user)
+      end
+
+      it 'handles empty query' do
+        get :index, params: { query: '' }
+        expect(response).to have_http_status(:ok)
+        expect(assigns(:query)).to eq('')
+      end
+
+      it 'handles no results' do
+        get :index, params: { query: 'nonexistent12345' }
+        expect(assigns(:users)).to be_empty
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'sanitizes SQL wildcards in query' do
+        get :index, params: { query: '100%' }
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'preserves query across pagination' do
+        (1..150).map { |i| create(:user, email: "searchuser#{i}@gsa.gov") }
+        get :index, params: { query: 'searchuser', page: 2 }
+        expect(assigns(:page)).to eq(2)
+        expect(assigns(:query)).to eq('searchuser')
+      end
+    end
   end
 
   describe '#update' do
