@@ -22,6 +22,15 @@ feature 'TeamMembership CRUD' do
     expect(page).to have_content('team name')
   end
 
+  scenario 'Create (Login.gov Readonly)' do
+    create(:agency, name: 'GSA')
+
+    login_as(logingov_readonly)
+    visit new_team_path
+
+    expect(page).to have_content('Unauthorized')
+  end
+
   scenario 'Create (gov user is not yet on a team)' do
     create(:agency, name: 'GSA')
 
@@ -203,6 +212,101 @@ feature 'TeamMembership CRUD' do
       oldest_event_text = find('#versions>:last-child').text
       expect(oldest_event_text).to include('Action: Create')
       expect(oldest_event_text).to include("At: #{team.created_at}")
+    end
+
+    describe 'default roles' do
+      scenario 'for the Login.gov Internal Team' do
+        team = Team.internal_team
+        user = create(:user)
+
+        login_as(logingov_admin)
+        visit teams_all_path
+        find("a[href='#{team_path(team)}']", text: team.name).click
+
+        expect(page).to have_current_path(team_path(team))
+        expect(page).to have_content(team.name)
+        expect(page).to have_content(team.agency.name)
+
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        expect(user.teams).to include(team)
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('logingov_readonly')
+      end
+
+      scenario 'for a team without a Partner Admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        team = create(:team)
+        user = create(:user)
+
+        login_as(logingov_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_admin')
+      end
+
+      scenario 'for a team on Production' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        partner_admin = create(:user, :partner_admin)
+        team = partner_admin.teams.last
+        user = create(:user)
+
+        login_as(partner_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_readonly')
+      end
+
+      scenario 'for a team on Sandbox with a Partner Admin' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+
+        partner_admin = create(:user, :partner_admin)
+        team = partner_admin.teams.last
+        user = create(:user)
+
+        login_as(partner_admin)
+        visit team_path(team)
+        click_on 'Manage users'
+        click_on 'Add user'
+        fill_in 'Email', with: user.email
+        click_on 'Add'
+
+        membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
+        expect(membership).to be_truthy
+        expect(membership.role.name).to eq('partner_developer')
+      end
+    end
+
+    scenario 'Login.gov Admin edits Internal Team user role' do
+      team = Team.internal_team
+      user = create(:user, :logingov_readonly)
+
+      login_as(logingov_admin)
+      visit team_path(team)
+      click_on 'Manage users'
+      find("a[href='#{team_users_path(team)}/#{user.id}/edit']", text: 'Edit').click
+
+      [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY].each do |role|
+        expect(page).to have_content(role.friendly_name)
+        expect(page).to have_content(I18n.t("team_memberships.#{role.name}_description"))
+      end
     end
 
     scenario 'login.gov readonly views team details' do

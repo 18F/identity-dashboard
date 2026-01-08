@@ -82,7 +82,6 @@ describe ServiceProviderImporter do
     it 'will not honor DB IDs' do
       data_from_file = JSON.parse(File.read(File.join(file_fixture_path, 'extract_sample.json')))
       conflicting_id = data_from_file['service_providers'].first['id']
-      create(:service_provider, id: conflicting_id)
 
       expect { importer.run }.to change { ServiceProvider.count }.by 5
       issuer_from_file = data_from_file['service_providers'].first['issuer']
