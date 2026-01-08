@@ -35,7 +35,7 @@ module IdentityDashboard
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
-    config.app_name = 'Partner Portal'
+    config.app_name = "Partner Portal#{" Sandbox" unless IdentityConfig.store.prod_like_env}"
     config.oidc = config_for(:oidc)
     config.quiet_assets = true
     config.generators do |generate|
