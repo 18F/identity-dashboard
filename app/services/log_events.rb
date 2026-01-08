@@ -23,6 +23,17 @@ module LogEvents
     track_event('partner_portal_redirect', properties)
   end
 
+  # Log session duration when user logs out
+  # @param session_started_at [Time] When the session started
+  # @param session_ended_at [Time] When the session ended
+  # @return (see EventLogger#track_event)
+  def session_duration(session_started_at:, session_ended_at:)
+    track_event('partner_portal_session_duration',
+      session_started_at: session_started_at,
+      session_ended_at: session_ended_at,
+      session_duration_seconds: (session_ended_at - session_started_at).to_i)
+  end
+
   # Log when a service provider is created
   # @param changes [Hash] The changes to log
   def sp_created(changes:)
