@@ -50,6 +50,7 @@ class EventLogger
       time: Time.current,
       event_id: generate_uuid,
       status: response.try(:status),
+      session_started_at: session[:session_started_at],
     }.compact
 
     data.merge!(request_attributes) if request

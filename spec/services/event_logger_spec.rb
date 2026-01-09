@@ -78,6 +78,56 @@ RSpec.describe EventLogger do
     end
   end
 
+  describe '#track_event with session_started_at' do
+    let(:session_start_time) { Time.zone.parse('2026-01-07 10:00:00') }
+    let(:session) { { visit_token: visit_id, session_started_at: session_start_time } }
+
+    it 'includes session_started_at in the logged data' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        expect(obj['session_started_at']).to eq(session_start_time.as_json)
+      end
+
+      log.track_event('test_event')
+    end
+
+    context 'when session_started_at is nil' do
+      let(:session) { { visit_token: visit_id } }
+
+      it 'does not include session_started_at in the logged data' do
+        expect(logger).to receive(:info) do |data|
+          obj = JSON.parse(data)
+          expect(obj).to_not have_key('session_started_at')
+        end
+
+        log.track_event('test_event')
+      end
+    end
+  end
+
+  describe '#session_duration' do
+    let(:name) { 'partner_portal_session_duration' }
+    let(:session_started_at) { Time.zone.parse('2026-01-07 10:00:00') }
+    let(:session_ended_at) { Time.zone.parse('2026-01-07 10:45:00') }
+    let(:expected_duration_seconds) { 2700 } # 45 minutes
+
+    it 'logs partner_portal_session_duration event with correct properties' do
+      expect(logger).to receive(:info) do |data|
+        obj = JSON.parse(data)
+        event_props = obj['properties']['event_properties']
+        expect(obj['name']).to eq(name)
+        expect(event_props['session_started_at']).to eq(session_started_at.as_json)
+        expect(event_props['session_ended_at']).to eq(session_ended_at.as_json)
+        expect(event_props['session_duration_seconds']).to eq(expected_duration_seconds)
+      end
+
+      log.session_duration(
+        session_started_at: session_started_at,
+        session_ended_at: session_ended_at,
+      )
+    end
+  end
+
   describe '#redirect' do
     let(:name) { 'partner_portal_redirect' }
 
