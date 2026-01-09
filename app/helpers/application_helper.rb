@@ -4,7 +4,7 @@ module ApplicationHelper # :nodoc:
   end
 
   def page_heading(title)
-    content_for(:title){ title }
+    content_for(:title) { title }
     content_tag(:h1, title, class: 'usa-display')
   end
 end
