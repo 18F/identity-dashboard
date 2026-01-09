@@ -1,3 +1,4 @@
+<% content_for(:title, 'Banners') %>
 <% if policy(@banners).manage_banners? %>
   <%= link_to "Create a new message", new_banner_path, class: 'usa-button'%>
 <% end %>

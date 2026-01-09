@@ -1,3 +1,4 @@
+<% content_for(:title, 'My Configurations') %>
 <% if policy(ServiceProvider.new).new? %>
   <%= button_to(
     t('headings.service_providers.new_app'),

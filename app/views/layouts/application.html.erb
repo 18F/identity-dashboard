@@ -8,7 +8,11 @@
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>test | Login.gov <%= Rails.application.config.app_name %></title>
+    <% if yield(:title).presence %>
+      <title><%= yield(:title) %> | Login.gov <%= Rails.application.config.app_name %></title>
+    <% else %>
+      <title>Login.gov <%= Rails.application.config.app_name %></title>
+    <% end %>
 
     <!-- 128x128 -->
     <link rel="shortcut icon" type="image/ico" href="<%= asset_path 'favicons/favicon.ico' %>">

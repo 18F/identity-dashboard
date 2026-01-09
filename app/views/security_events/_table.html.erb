@@ -28,7 +28,8 @@
             <td>
               <%= link_to(
                     friendly_name(security_event),
-                    security_event_path(security_event)
+                    security_event_path(security_event),
+                    class: 'usa-link'
                   ) %>
             </td>
             <td>
@@ -44,7 +45,10 @@
 <div class="grid-container padding-0">
   <div class="grid-row">
     <div class="grid-col-auto">
-      <%= link_to_if(local_assigns[:prev_page],'&larr; Previous'.html_safe, prev_page) do %>
+      <%= link_to_if(
+        local_assigns[:prev_page],
+        '&larr; Previous'.html_safe,
+        prev_page) do %>
         &nbsp;
       <% end %>
     </div>
@@ -52,7 +56,10 @@
       &nbsp;
     </div>
     <div class="grid-col-auto">
-      <%= link_to_if(local_assigns[:next_page],'Next &rarr;'.html_safe, next_page) do %>
+      <%= link_to_if(
+        local_assigns[:next_page],
+        'Next &rarr;'.html_safe,
+        next_page) do %>
         &nbsp;
       <% end %>
     </div>
