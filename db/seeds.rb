@@ -8,9 +8,9 @@
 
 Rails.env.test? ? Seeders::AgencySeeder.new.seed_test : Seeders::AgencySeeder.new.run!
 
+Seeders::Roles.new.seed
+Seeders::Teams.new.seed
+
 if Rails.env.development? || ENV['KUBERNETES_REVIEW_APP']
   MakeAdmin.new('admin@gsa.gov,Addy,Ministrator').call
 end
-
-Seeders::Roles.new.seed
-Seeders::Teams.new.seed
