@@ -47,13 +47,43 @@ feature 'Home' do
       expect(page).to have_content('Users')
     end
 
-    scenario 'should see admin nav menu items' do
-      expect(page).to have_button('Admin')
-      click_on 'Admin'
-      api_auth_link = find_link 'Your API auth token'
-      expect(api_auth_link['href']).to eq(auth_tokens_path)
-      user_csv_link = find_link 'User permissions report'
-      expect(user_csv_link['href']).to eq(internal_reports_user_permissions_path(format: 'csv'))
+    context 'should see admin nav menu items' do
+      scenario 'on all envs' do
+        expect(page).to have_button('Admin')
+        click_on 'Admin'
+        all_configs = find_link 'All configurations'
+        expect(all_configs['href']).to eq(service_providers_all_path)
+        all_users = find_link 'Users'
+        expect(all_users['href']).to eq(users_path)
+        all_teams = find_link 'All teams'
+        expect(all_teams['href']).to eq(teams_all_path)
+        security_events = find_link 'All security events'
+        expect(security_events['href']).to eq(security_events_all_path)
+        banners = find_link 'Banner messages'
+        expect(banners['href']).to eq(banners_path)
+        api_auth_link = find_link 'Your API auth token'
+        expect(api_auth_link['href']).to eq(auth_tokens_path)
+        deleted_configs = find_link 'Deleted configurations'
+        expect(deleted_configs['href']).to eq(service_providers_deleted_path)
+      end
+
+      scenario 'on sandbox' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        visit root_path
+        click_on 'Admin'
+        user_csv_link = find_link 'User permissions report'
+        expect(user_csv_link['href']).to eq(internal_reports_user_permissions_path(format: 'csv'))
+        extracts = find_link 'Configuration extraction'
+        expect(extracts['href']).to eq(extracts_path)
+      end
+
+      scenario 'on production' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        visit root_path
+        click_on 'Admin'
+        airtable_link = find_link 'Connect with Airtable'
+        expect(airtable_link['href']).to eq(airtable_path)
+      end
     end
   end
 
