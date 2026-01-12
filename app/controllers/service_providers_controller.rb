@@ -60,7 +60,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if helpers.help_text_options_enabled? && !current_user.logingov_admin?
+    if !current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
@@ -76,13 +76,11 @@ class ServiceProvidersController < AuthenticatedController
     help_text = parsed_help_text
     service_provider.assign_attributes(permitted_attributes(service_provider))
     attach_logo_file if logo_file_param
-    if helpers.help_text_options_enabled?
-      unless policy(@service_provider).edit_custom_help_text?
-        help_text = help_text.revert_unless_presets_only
-      end
-      service_provider.help_text = help_text.to_localized_h
-    end
 
+    unless policy(@service_provider).edit_custom_help_text?
+      help_text = help_text.revert_unless_presets_only
+    end
+    service_provider.help_text = help_text.to_localized_h
     service_provider.agency_id &&= service_provider.agency.id
     log_change
     validate_and_save_service_provider(:edit)

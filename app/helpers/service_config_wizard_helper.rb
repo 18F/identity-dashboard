@@ -67,8 +67,7 @@ module ServiceConfigWizardHelper
   end
 
   def help_text_options_available?
-    feature_enabled = IdentityConfig.store.help_text_options_feature_enabled
-    options_enabled = feature_enabled && !current_user.logingov_admin?
+    options_enabled = !current_user.logingov_admin?
     text_info = view_parsed_help_text
     has_no_custom = text_info.blank? || text_info.presets_only?
 

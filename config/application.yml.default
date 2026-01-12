@@ -28,7 +28,6 @@ users_per_page: 100
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false
 edit_button_uses_service_config_wizard: true
-help_text_options_feature_enabled: true
 
 development:
   dashboard_api_token: test_token
@@ -53,7 +52,6 @@ production:
 
   # Feature Flags, options expected to be higher churn than the above settings
   edit_button_uses_service_config_wizard: false
-  help_text_options_feature_enabled: false
 test:
   dashboard_api_token: sekret
   idp_sp_url: 'http://idp.example.com/api/service_provider'

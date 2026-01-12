@@ -125,7 +125,7 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.uuid ||= SecureRandom.uuid
     service_provider.agency_id ||= service_provider.agency&.id
     service_provider.user ||= current_user
-    if helpers.help_text_options_enabled? && !current_user.logingov_admin?
+    if !current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     elsif parsed_help_text.presets_only?
       service_provider.help_text = parsed_help_text.to_localized_h

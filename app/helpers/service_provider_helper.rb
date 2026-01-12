@@ -86,10 +86,6 @@ module ServiceProviderHelper # :nodoc:
     end.sort.join(', ')
   end
 
-  def help_text_options_enabled?
-    IdentityConfig.store.help_text_options_feature_enabled
-  end
-
   def show_analytics_column?
     current_user.logingov_admin?
   end

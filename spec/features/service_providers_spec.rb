@@ -474,18 +474,6 @@ feature 'Service Providers CRUD' do
       end
     end
 
-    context 'with help text options feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:help_text_options_feature_enabled).and_return(false)
-      end
-
-      scenario 'cannot add help text for new configurations' do
-        visit new_service_provider_path
-        expect(page).to have_content('Do you need to add help text for your integration? Contact us.')
-        expect(page).to_not have_css('#service_provider_help_text_sign_in_en')
-      end
-    end
-
     context 'can not view papertrail', :versioning do
       scenario 'version history is not included on the page' do
         sp = create(:service_provider, :with_team, ial: 1)
