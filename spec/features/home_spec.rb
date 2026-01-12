@@ -95,6 +95,11 @@ feature 'Home' do
       visit root_path
     end
 
+    # this also tests application_helper.rb#page_heading
+    scenario 'should see an appropriate page title' do
+      expect(page.title).to eq('Welcome | Login.gov Partner Portal Sandbox')
+    end
+
     scenario 'should see manage teams and not see manage users' do
       expect(page).to_not have_button('Admin')
       expect(page).to have_content(I18n.t('headings.welcome'))
