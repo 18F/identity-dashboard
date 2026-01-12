@@ -1,3 +1,4 @@
+<% content_for(:title, 'Manage team members') %>
 <% if policy(@current_team_membership).create? %>
   <h1>Manage users for <%= @team.name %></h1>
   <p>Manage team members from this screen. Add a new user and manage access and permissions from the Actions column.</p>

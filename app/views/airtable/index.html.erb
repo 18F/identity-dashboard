@@ -1,4 +1,4 @@
-<h1>Airtable Connection</h1>
+<%= page_heading 'Airtable connection' %>
 
 <% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
   

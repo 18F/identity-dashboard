@@ -1,3 +1,4 @@
+<% content_for(:title, 'All configurations') %>
 <% if current_user.logingov_admin? %>
   <%= button_to t('forms.buttons.trigger_idp_refresh'), service_providers_publish_path, method: :post, :class => "usa-button" %>
 <% end %>

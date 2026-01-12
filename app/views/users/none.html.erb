@@ -1,11 +1,11 @@
 <div class="<%= 'grid-container padding-y-8' unless user_signed_in? %>">
-  <h1 class="usa-display">No account exists</h1>
+  <%= page_heading 'No account exists' %>
 
   <p>We were unable to find an account matching your email address in the <%= Rails.application.config.app_name %>.</p>
 
-  <p>If you would like to request access, please fill out <a href="https://login.gov/partners/business-inquiries/">this form
+  <p>If you would like to request access, please fill out <a class="usa-link" href="https://login.gov/partners/business-inquiries/">this form
   </a> to get in touch with our team.</p>
 
 
-  <p>Contact us at <a href="mailto:partners@login.gov">partners@login.gov</a> for help.</p>
+  <p>Contact us at <a class="usa-link" href="mailto:partners@login.gov">partners@login.gov</a> for help.</p>
 </div>

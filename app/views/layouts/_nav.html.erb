@@ -83,12 +83,13 @@
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'User permissions report', internal_reports_user_permissions_path(format: 'csv') %>
                   </li>
-                  <% if !IdentityConfig.store.prod_like_env %>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'Configuration extraction', extracts_path %>
-                    </li>
+                  <% if IdentityConfig.store.prod_like_env %>
                     <li class="usa-nav__submenu-item">
                       <%= link_to 'Connect with Airtable', airtable_path %>
+                    </li>
+                  <% else %>
+                    <li class="usa-nav__submenu-item">
+                      <%= link_to 'Configuration extraction', extracts_path %>
                     </li>
                   <% end %>
                 </ul>

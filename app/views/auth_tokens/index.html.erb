@@ -1,8 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Auth tokens" %>
-
-<h1>Auth tokens status</h1>
+<%= page_heading 'Auth tokens status' %>
 
 <% if @auth_token&.created_at.present? %>
   <%= render @auth_token %>

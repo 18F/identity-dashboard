@@ -28,4 +28,18 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe '#page_heading' do
+    it 'updates the page title content' do
+      page_heading('words')
+
+      expect(content_for :title).to eq('words')
+    end
+
+    it 'provides a full h1 with class' do
+      heading = page_heading('words')
+
+      expect(heading).to eq('<h1 class="usa-display">words</h1>')
+    end
+  end
 end
