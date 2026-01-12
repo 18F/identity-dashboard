@@ -48,7 +48,8 @@
       <%= link_to_if(
         local_assigns[:prev_page],
         '&larr; Previous'.html_safe,
-        prev_page) do %>
+        prev_page,
+        class: 'usa-link') do %>
         &nbsp;
       <% end %>
     </div>
@@ -59,7 +60,8 @@
       <%= link_to_if(
         local_assigns[:next_page],
         'Next &rarr;'.html_safe,
-        next_page) do %>
+        next_page,
+        class: 'usa-link') do %>
         &nbsp;
       <% end %>
     </div>
