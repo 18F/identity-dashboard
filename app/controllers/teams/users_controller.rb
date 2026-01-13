@@ -63,7 +63,7 @@ class Teams::UsersController < AuthenticatedController
       if [:user_id, :taken] == [record_error.attribute, record_error.type]
         I18n.t(
           'activerecord.errors.models.team_membership.attributes.user_id.taken',
-          value: "User <strong>#{err.record.user.email}</strong>",
+          value: "<strong>#{err.record.user.email}</strong>",
         )
       else
         record_error
