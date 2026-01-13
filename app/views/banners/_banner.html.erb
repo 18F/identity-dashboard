@@ -1,12 +1,12 @@
 <td><%= banner.message %></td>
-<td id='<%= dom_id banner %>-start-date'>
+<td id="<%= dom_id banner %>-start-date">
   <% if banner.start_date %>
     <%= time_tag(banner.start_date) %>
   <% end %>
 </td>
-<td id='<%= dom_id banner %>-end-date'>
+<td id="<%= dom_id banner %>-end-date">
   <%= time_tag(banner.end_date) if banner.end_date %>
 </td>
-<td id='<%= dom_id banner %>-status'>
+<td id="<%= dom_id banner %>-status">
   <%= banner.active?.to_s.titleize %>
 </td>

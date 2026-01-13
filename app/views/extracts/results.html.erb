@@ -24,7 +24,7 @@
 </ul>
 <% if @extract.service_providers.any? %>
   <p>
-    A <%= 'partial' if @extract.failures.any?  %> download is ready.
+    A <%= 'partial' if @extract.failures.any? %> download is ready.
     <%= form_for(@extract, format: :gzip) do |f| %>
       <%= f.hidden_field :ticket, value: @extract.ticket %>
       <%= f.hidden_field :search_by, value: @extract.search_by %>

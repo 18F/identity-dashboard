@@ -14,14 +14,14 @@
     <% end %>
     <%= render 'teams_list' %>
   <% elsif can_create_teams?(current_user) %>
-    <div class='lg-card'>
-      <div class='grid-row flex-row flex-align-end'>
-        <div class='tablet:grid-col-10'>
-          <h2 class='margin-bottom-05'>Create your first team</h2>
-          <p class='margin-top-05'>Get started with the sandbox environment. Make a team for your integration project.</p>
+    <div class="lg-card">
+      <div class="grid-row flex-row flex-align-end">
+        <div class="tablet:grid-col-10">
+          <h2 class="margin-bottom-05">Create your first team</h2>
+          <p class="margin-top-05">Get started with the sandbox environment. Make a team for your integration project.</p>
         </div>
-          <div class='tablet:grid-col-2 text-right'>
-          <a href="<%= new_team_path %>" class='usa-button usa-button--outline'>Continue</a>
+          <div class="tablet:grid-col-2 text-right">
+          <a href="<%= new_team_path %>" class="usa-button usa-button--outline">Continue</a>
         </div>
       </div>
     </div>

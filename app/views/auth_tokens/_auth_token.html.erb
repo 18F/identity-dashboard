@@ -3,11 +3,11 @@
     <strong>Created At:</strong>
     <%= auth_token.created_at %>
     <% if auth_token.ephemeral_token.present? %>
-      <div class='text-to-clipboard-wrapper'>
+      <div class="text-to-clipboard-wrapper">
         <p>Please copy your token down now, as this is the only time you will have access to it.</p>
-        <span class='clipboard-message opacity-0' aria-live='polite'>&nbsp;</span>
-        <input disabled='disabled' class='clipboard-input' value='<%= auth_token.ephemeral_token %>' size='80' />
-        <button type='button'>
+        <span class="clipboard-message opacity-0" aria-live="polite">&nbsp;</span>
+        <input disabled class="clipboard-input" value="<%= auth_token.ephemeral_token %>" size="80">
+        <button type="button">
           <span class="usa-sr-only">copy UUID to clipboard</span>
           <%# This SVG cpied from the USWDS %>
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24">

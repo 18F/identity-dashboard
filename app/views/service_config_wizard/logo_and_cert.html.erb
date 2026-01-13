@@ -1,7 +1,7 @@
 <%= page_heading t('service_provider_form.wizard_steps.logo_and_cert') %>
 <div class="wizard-main">
   <%= wizard_form do |form| %>
-    <fieldset class='wizard-field json optional service_provider_logo_file'>
+    <fieldset class="wizard-field json optional service_provider_logo_file">
       <legend class="usa-sr-only"><%= t('simple_form.labels.service_provider.logo_file') %></legend>
       <div class="usa-label__group">
         <p class="usa-label"><%= t('simple_form.labels.service_provider.logo_file') %></p>
@@ -18,7 +18,7 @@
                             class: 'input-file logo-input-file',
                             accept: sp_valid_logo_mime_types.join(',') %>
           <p class="usa-label"><%= I18n.t('service_provider_form.logo_input') %></p>
-          <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id='logo-upload-error'>
+          <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id="logo-upload-error">
             <% if form.object.errors[:logo_file].present? %>
               <%= form.object.errors[:logo_file].join('|') %>
             <% end %>
