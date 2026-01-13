@@ -27,10 +27,10 @@ feature 'Logo upload' do
       attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
       click_on 'Create'
 
-      expect(page).to have_content(I18n.t(
-        'service_provider_form.errors.logo_file.no_viewbox',
-        filename: 'logo_without_size.svg',
-      ))
+      expect(page).to have_content(
+        I18n.t('service_provider_form.errors.logo_file.no_viewbox',
+               filename: 'logo_without_size.svg'),
+      )
 
       expect(user.reload.service_providers.count).to eq(0)
     end
@@ -39,10 +39,10 @@ feature 'Logo upload' do
       attach_file('Choose a file', 'spec/fixtures/logo_with_script.svg')
       click_on 'Create'
 
-      expect(page).to have_content(I18n.t(
-        'service_provider_form.errors.logo_file.has_script_tag',
-        filename: 'logo_with_script.svg',
-      ))
+      expect(page).to have_content(
+        I18n.t('service_provider_form.errors.logo_file.has_script_tag',
+               filename: 'logo_with_script.svg'),
+      )
       expect(user.reload.service_providers.count).to eq(0)
     end
 
@@ -76,10 +76,10 @@ feature 'Logo upload' do
       attach_file('Choose a file', 'spec/fixtures/logo_without_size.svg')
       click_on 'Update'
 
-      expect(page).to have_content(I18n.t(
-        'service_provider_form.errors.logo_file.no_viewbox',
-        filename: 'logo_without_size.svg',
-      ))
+      expect(page).to have_content(
+        I18n.t('service_provider_form.errors.logo_file.no_viewbox',
+               filename: 'logo_without_size.svg'),
+      )
 
       expect(service_provider.reload.logo_file.attachment).to eq(nil)
     end
@@ -89,9 +89,9 @@ feature 'Logo upload' do
       click_on 'Update'
 
       expect(page).to have_content(I18n.t(
-        'service_provider_form.errors.logo_file.has_script_tag',
-        filename: 'logo_with_script.svg',
-      ))
+                                     'service_provider_form.errors.logo_file.has_script_tag',
+                                     filename: 'logo_with_script.svg',
+                                   ))
 
       expect(service_provider.reload.logo_file.attachment).to eq(nil)
     end
@@ -116,9 +116,9 @@ feature 'Logo upload' do
       click_on 'Update'
 
       expect(page).to have_content(I18n.t(
-        'service_provider_form.errors.logo_file.has_script_tag',
-        filename: 'logo_with_script.svg',
-      ))
+                                     'service_provider_form.errors.logo_file.has_script_tag',
+                                     filename: 'logo_with_script.svg',
+                                   ))
 
       click_on 'Update'
 

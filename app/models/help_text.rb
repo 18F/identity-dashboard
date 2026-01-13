@@ -27,7 +27,7 @@ class HelpText
   def self.lookup(service_provider:, params: nil)
     raise ArgumentError, '`HelpText.lookup`: nothing to look up' unless params || service_provider
 
-    params ||= service_provider.attributes['help_text'] unless service_provider&.attributes.blank?
+    params ||= service_provider.attributes['help_text'] if service_provider&.attributes.present?
 
     new(help_text: params, service_provider: service_provider)
   end
@@ -80,18 +80,22 @@ class HelpText
     is_presets_only = presets_only?
     result = {}
     CONTEXTS.each do |context|
-      result[context] = Hash.new
+      result[context] = {}
       base_value = fetch(context, LOCALE_FOR_PRESETS)
       LOCALES.each do |locale|
         value = is_presets_only ? base_value : fetch(context, locale)
         is_a_preset = PRESETS[context].include?(value)
         if is_a_preset
-          result[context][locale] = blank_text?(value) ? '' : I18n.t(
-            "service_provider_form.help_text.#{context}.#{value}",
-            locale: locale,
-            sp_name: sp_name,
-            agency: agency_name,
-          )
+          result[context][locale] = if blank_text?(value)
+                                      ''
+                                    else
+                                      I18n.t(
+                                        "service_provider_form.help_text.#{context}.#{value}",
+                                        locale: locale,
+                                        sp_name: sp_name,
+                                        agency: agency_name,
+                                      )
+                                    end
         elsif base_value && fetch(context, locale)
           result[context][locale] = help_text[context][locale]
         end
@@ -118,14 +122,14 @@ class HelpText
         LOCALES.each do |locale|
           help_text[context][locale] = 'blank' and next if blank_text?(help_text[context][locale])
 
-          if help_text[context][locale] == I18n.t(
+          next unless help_text[context][locale] == I18n.t(
             "service_provider_form.help_text.#{context}.#{preset}",
             locale: locale,
             sp_name: sp_name,
             agency: agency_name,
           )
-            help_text[context][locale] = preset
-          end
+
+          help_text[context][locale] = preset
         end
       end
     end

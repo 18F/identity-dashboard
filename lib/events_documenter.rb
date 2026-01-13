@@ -5,7 +5,7 @@ require 'yard'
 require 'optparse'
 require 'stringio'
 require 'active_support/core_ext/object/blank'
-require_relative './identity_config'
+require_relative 'identity_config'
 
 # Parses YARD output for AnalyticsEvents methods
 class EventsDocumenter
@@ -110,7 +110,7 @@ class EventsDocumenter
       end
 
       method_object.tags('param').each do |tag|
-        errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
+        errors << "#{error_prefix} #{tag.name} missing types" unless tag.types
       end
 
       description = method_description(method_object)

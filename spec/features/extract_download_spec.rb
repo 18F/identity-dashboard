@@ -46,8 +46,8 @@ feature 'Extract Download' do
 
       Minitar.unpack(Zlib::GzipReader.new(downloaded_file), 'tmp')
       expect(File.read(
-        "tmp/#{sp_to_export.id}_#{expected_logo_name}",
-      )).to eq(sp_to_export.logo_file.download)
+               "tmp/#{sp_to_export.id}_#{expected_logo_name}",
+             )).to eq(sp_to_export.logo_file.download)
     end
 
     it 'will include the correct attributes in the download' do
@@ -70,8 +70,10 @@ feature 'Extract Download' do
         next if attribute_key == 'team_uuid'
         next if attribute_key == 'logo'
 
-        expect(exported_attributes[attribute_key]).to eq(sp_to_export[attribute_key]),
-          "Key #{attribute_key} didn't match, value was: #{exported_attributes[attribute_key]}"
+        expect(
+          exported_attributes[attribute_key],
+        ).to eq(sp_to_export[attribute_key]),
+             "Key #{attribute_key} didn't match, value was: #{exported_attributes[attribute_key]}"
       end
     end
   end

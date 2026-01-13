@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe 'security_events/table.html.erb' do
   subject(:render_partial) do
     render partial: 'security_events/table',
-          locals: {
-            security_events:,
-            show_user:,
-            prev_page:,
-            next_page:,
-          }
+           locals: {
+             security_events:,
+             show_user:,
+             prev_page:,
+             next_page:,
+           }
   end
 
   let(:user) { create(:user) }

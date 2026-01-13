@@ -87,7 +87,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def redirect_uris=(uris)
-    super uris&.select(&:present?)
+    super(uris&.select(&:present?))
   end
 
   # @return [Array<ServiceProviderCertificate>]
@@ -117,7 +117,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def prod_localhost?(input)
-    return false if !production_ready?
+    return false unless production_ready?
 
     Array(self[input]).any? do |value|
       URI(value).host&.match?(/(localhost|127\.0\.0)/)
@@ -172,17 +172,17 @@ class ServiceProvider < ApplicationRecord
     ]
 
     settings = saml? ? saml_settings : oidc_settings
-    prod_config_changed = self.changes['prod_config']
+    prod_config_changed = changes['prod_config']
     changed_to_prod = prod_config_changed && prod_config_changed[1]
     settings.each do |attr|
       changes = self.changes[attr]
-      if prod_localhost?(attr)
-        if changed_to_prod && errors.where(:prod_config).empty?
-          errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
-        end
-        if changes && changes[0] != changes[1]
-          errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
-        end
+      next unless prod_localhost?(attr)
+
+      if changed_to_prod && errors.where(:prod_config).empty?
+        errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
+      end
+      if changes && changes[0] != changes[1]
+        errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
       end
     end
   end
@@ -197,11 +197,11 @@ class ServiceProvider < ApplicationRecord
     error_msg =
       "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     errors.each do |err|
-      if err.attribute == :prod_config && production_ready?
-        error_msg += '<li>Portal Configuration cannot be Production with localhost URLs</li>'
-      else
-        error_msg += "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
-      end
+      error_msg += if err.attribute == :prod_config && production_ready?
+                     '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+                   else
+                     "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
+                   end
     end
     # this prevents cookie size error, it is an estimate
     if error_msg.bytesize < 350
@@ -214,7 +214,7 @@ class ServiceProvider < ApplicationRecord
   private
 
   def set_status
-    return if IdentityConfig.store.prod_like_env || self.status != 'pending'
+    return if IdentityConfig.store.prod_like_env || status != 'pending'
 
     self.status = 'live'
   end

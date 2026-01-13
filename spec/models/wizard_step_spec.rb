@@ -32,7 +32,7 @@ RSpec.describe WizardStep, type: :model do
     end
 
     it 'pulls wizard_form_data back out' do
-      expected_name = "Test name #{rand(1..10000)}"
+      expected_name = "Test name #{rand(1..10_000)}"
       subject = WizardStep.new(step_name: 'settings')
       subject.wizard_form_data = { friendly_name: expected_name }
       expect(subject.friendly_name).to eq(expected_name)
@@ -40,7 +40,7 @@ RSpec.describe WizardStep, type: :model do
   end
 
   it 'throws an error with an invalid step name' do
-    bad_name = "random #{rand(1..10000)}"
+    bad_name = "random #{rand(1..10_000)}"
     invalidating_step = WizardStep.new
     expect do
       invalidating_step.step_name = bad_name
@@ -59,16 +59,16 @@ RSpec.describe WizardStep, type: :model do
 
     it 'pulls the relevant step out of the database' do
       subject = create(:wizard_step,
-        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
-        user: user)
+                       step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+                       user: user)
       expected_result = create(:wizard_step, step_name: step_name_to_find, user: user)
       expect(subject.get_step(step_name_to_find)).to eq(expected_result)
     end
 
     it 'builds a new step if no matching step exists' do
       subject = create(:wizard_step,
-        step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
-        user: user)
+                       step_name: (WizardStep::STEP_DATA.keys - [step_name_to_find]).sample,
+                       user: user)
       a_different_user = create(:user)
       absent_result = create(:wizard_step, step_name: step_name_to_find, user: a_different_user)
       expected_result = WizardStep.find_or_initialize_by(step_name: step_name_to_find, user: user)
@@ -558,8 +558,8 @@ RSpec.describe WizardStep, type: :model do
     it 'will stop returning wizard_form_data that have been deleted' do
       test_issuer = "test:issuer:#{rand(1..100)}"
       create(:wizard_step, step_name: 'issuer',
-        user: subject_user,
-        wizard_form_data: { issuer: test_issuer })
+                           user: subject_user,
+                           wizard_form_data: { issuer: test_issuer })
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq({ 'issuer' => test_issuer })
       WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
       expect(WizardStep.all_step_data_for_user(subject_user).keys).

@@ -257,8 +257,8 @@ describe ServiceProvidersController do
       it 'logs the creation before save' do
         post :create, params: { service_provider: {
           issuer: 'log.issuer.string',
-        group_id: user.teams.first.id,
-        friendly_name: 'Log',
+          group_id: user.teams.first.id,
+          friendly_name: 'Log',
         } }
 
         # Logging happens before save, so id is nil and we capture pending changes
@@ -435,7 +435,7 @@ describe ServiceProvidersController do
             service_provider: sp_logo_params,
           }
           expect(flash['error']).to_not be_blank
-          expect(flash['error']).to include(I18n.t 'service_provider_form.title.logo_file')
+          expect(flash['error']).to include(I18n.t('service_provider_form.title.logo_file'))
         end
 
         it 'does not fail if not updating the file' do
@@ -477,7 +477,7 @@ describe ServiceProvidersController do
     it 'adds new certs uploaded to the certs array' do
       file = Rack::Test::UploadedFile.new(
         StringIO.new(build_pem(serial: 10)),
-               original_filename: 'my-cert.crt',
+        original_filename: 'my-cert.crt',
       )
 
       put :update, params: {
@@ -494,7 +494,7 @@ describe ServiceProvidersController do
     it 'errors when cert data is not PEM encoded' do
       file = Rack::Test::UploadedFile.new(
         StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
-               original_filename: 'my-cert.der',
+        original_filename: 'my-cert.der',
       )
 
       expect do
@@ -653,10 +653,10 @@ describe ServiceProvidersController do
           }
           sp.reload
           expect(sp.help_text['sign_in']['en']).to_not eq(original_help_text['sign_in']['en'])
-          expect(sp.help_text['sign_in']['en']).to eq(t(
-            'service_provider_form.help_text.sign_in.first_time',
-            sp_name: sp.friendly_name,
-          ))
+          expect(sp.help_text['sign_in']['en']).to eq(
+            t('service_provider_form.help_text.sign_in.first_time',
+              sp_name: sp.friendly_name),
+          )
           expect(sp.help_text['sign_up']['en']).to_not eq(original_help_text['sign_up']['en'])
           expect(sp.help_text['forgot_password']['en'])
             .to_not eq(original_help_text['forgot_password']['en'])
@@ -689,7 +689,7 @@ describe ServiceProvidersController do
         end
 
         describe 'logging' do
-          let(:description) { "logging test #{rand(1...1000) }" }
+          let(:description) { "logging test #{rand(1...1000)}" }
           let(:changes) do
             {
               'description' => {

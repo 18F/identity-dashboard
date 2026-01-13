@@ -23,12 +23,10 @@ describe ExtractsController do
   end
 
   after do
-    begin
-      File.open("#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}") do |f|
-        File.delete f
-      end
-    rescue Errno::ENOENT
+    File.open("#{Dir.tmpdir}/config_extract_#{params1[:extract][:ticket]}") do |f|
+      File.delete f
     end
+  rescue Errno::ENOENT
   end
 
   describe 'a non-admin user' do

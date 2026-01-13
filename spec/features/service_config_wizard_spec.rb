@@ -211,13 +211,13 @@ feature 'Service Config Wizard' do
 
       expect(saved_config_data['default_aal']).to be_nil
 
-      expect(saved_config_data['certs']).
-        to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
-           'cert failed to save as expected'
-      expect(page).to have_content(t(
-        'notices.service_provider_saved',
-        issuer: expected_data['issuer'],
-      ))
+      expect(saved_config_data['certs'])
+        .to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
+            'cert failed to save as expected'
+      expect(page).to have_content(
+        t('notices.service_provider_saved',
+          issuer: expected_data['issuer']),
+      )
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(logingov_admin))
         .to eq({}), 'error: draft data not deleted'
@@ -621,10 +621,10 @@ feature 'Service Config Wizard' do
       context 'localhost URLs' do
         it 'are not allowed to be added' do
           existing_config = create(:service_provider,
-                             :ready_to_activate_ial_2,
-                             :with_oidc_jwt,
-                             :with_prod_config,
-                             team:)
+                                   :ready_to_activate_ial_2,
+                                   :with_oidc_jwt,
+                                   :with_prod_config,
+                                   team:)
 
           visit service_provider_path(existing_config)
           click_on 'Edit'
@@ -639,11 +639,11 @@ feature 'Service Config Wizard' do
 
         it 'are allowed to remain' do
           existing_config = create(:service_provider,
-                             :ready_to_activate_ial_2,
-                             :with_oidc_jwt,
-                             :with_prod_config,
-                             :with_localhost,
-                             team:)
+                                   :ready_to_activate_ial_2,
+                                   :with_oidc_jwt,
+                                   :with_prod_config,
+                                   :with_localhost,
+                                   team:)
 
           visit service_provider_path(existing_config)
           click_on 'Edit'

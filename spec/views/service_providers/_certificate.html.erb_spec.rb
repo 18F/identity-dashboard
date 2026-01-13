@@ -6,11 +6,11 @@ RSpec.describe 'service_providers/_certificate.html.erb' do
   let(:certificate) do
     ServiceProviderCertificate.new(
       instance_double(OpenSSL::X509::Certificate,
-        not_after: expiration,
-        issuer: OpenSSL::X509::Name.new([['O', 'TTS'], ['C', 'US']]),
-        subject: OpenSSL::X509::Name.new([['O', 'GSA'], ['C', 'US']]),
-        serial: OpenSSL::BN.new(SecureRandom.rand(100_000)),
-        to_pem: "----BEGIN CERTIFICATE-----\nI AM A PEM\n----END CERTIFICATE----"),
+                      not_after: expiration,
+                      issuer: OpenSSL::X509::Name.new([['O', 'TTS'], ['C', 'US']]),
+                      subject: OpenSSL::X509::Name.new([['O', 'GSA'], ['C', 'US']]),
+                      serial: OpenSSL::BN.new(SecureRandom.rand(100_000)),
+                      to_pem: "----BEGIN CERTIFICATE-----\nI AM A PEM\n----END CERTIFICATE----"),
     )
   end
 

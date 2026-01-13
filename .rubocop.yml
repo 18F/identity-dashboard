@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-# This should only includes the cops that differ from the Rubocop
+# This file should only include the cops that differ from the Rubocop
 # defaults, which can be found here:
 # https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml

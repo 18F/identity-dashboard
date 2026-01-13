@@ -51,7 +51,7 @@ describe ZendeskRequest do
       ticket_data = zendesk_request.build_zendesk_ticket(custom_fields)
 
       expected_response = {
-        request:  {
+        request: {
           requester: {
             name: "#{user.first_name} #{user.last_name}",
             email: user.email,
@@ -129,8 +129,11 @@ describe ZendeskRequest do
       end
 
       zendesk_request.conn = conn
-      expect(zendesk_request.create_ticket(custom_fields)).to eq({ success: false,
-errors: ['Application URL: is invalid', 'Partner Portal Configuration URL: is invalid'] })
+      expect(zendesk_request.create_ticket(custom_fields)).to eq({
+        success: false,
+        errors: ['Application URL: is invalid',
+                 'Partner Portal Configuration URL: is invalid'],
+      })
       stubs.verify_stubbed_calls
     end
   end

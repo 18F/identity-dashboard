@@ -94,9 +94,11 @@ module LogEvents
     details = {
       message: exception.message,
       query: exception.query.to_s,
-      record: exception.record.is_a?(Class) ?
-        exception.record.name :
-        exception.record.class.name,
+      record: if exception.record.is_a?(Class)
+                exception.record.name
+              else
+                exception.record.class.name
+              end,
       policy: exception.policy.class.name,
     }
 

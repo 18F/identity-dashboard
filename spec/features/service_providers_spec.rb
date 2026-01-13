@@ -165,7 +165,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
 
       visit edit_service_provider_path(service_provider)
-      page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
+      page.first('[name="service_provider[redirect_uris][]"]').set ''
       click_on 'Update'
       expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to_not have_content('https://foo.com')
@@ -300,7 +300,7 @@ feature 'Service Providers CRUD' do
       expect(service_provider.redirect_uris).to eq(['https://foo.com', 'https://bar.com'])
 
       visit edit_service_provider_path(service_provider)
-      page.all('[name="service_provider[redirect_uris][]"]')[0].set ''
+      page.first('[name="service_provider[redirect_uris][]"]').set ''
       click_on 'Update'
 
       expect(page).to have_current_path(service_provider_path(service_provider))

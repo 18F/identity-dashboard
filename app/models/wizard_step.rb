@@ -4,6 +4,7 @@ class WizardStep < ApplicationRecord
   # Definition of individual WizardStep
   class Definition
     attr_reader :fields
+
     def initialize(fields = {})
       @fields = fields.with_indifferent_access
     end
@@ -94,7 +95,7 @@ class WizardStep < ApplicationRecord
 
   belongs_to :user
 
-  step_enum_values = STEP_DATA.keys.each_with_object(Hash.new) do |step, enum|
+  step_enum_values = STEP_DATA.keys.each_with_object({}) do |step, enum|
     enum[step] = step
   end
   # We want the hidden step to be a valid step name to save in the database
@@ -113,7 +114,7 @@ class WizardStep < ApplicationRecord
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
   before_validation(on: 'authentication') do
     if attribute_bundle.present?
-      self.wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
+      wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
     end
   end
 
@@ -131,32 +132,32 @@ class WizardStep < ApplicationRecord
   validates :issuer, presence: true, on: 'issuer'
 
   validates :issuer,
-    format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
-    on: 'issuer'
+            format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
+            on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
   # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :redirect_uris,
-    on: 'redirects'
+                 attribute: :redirect_uris,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :failure_to_proof_url,
-    on: 'redirects'
+                 attribute: :failure_to_proof_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :push_notification_url,
-    on: 'redirects'
+                 attribute: :push_notification_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :acs_url,
-    on: 'redirects'
+                 attribute: :acs_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :sp_initiated_login_url,
-    on: 'redirects'
+                 attribute: :sp_initiated_login_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :return_to_sp_url,
-    on: 'redirects'
+                 attribute: :return_to_sp_url,
+                 on: 'redirects'
   validates_with RedirectsValidator,
-    attribute: :assertion_consumer_logout_service_url,
-    on: 'redirects'
+                 attribute: :assertion_consumer_logout_service_url,
+                 on: 'redirects'
 
   validates_with IdentityValidations::CertsAreX509Validator, on: 'logo_and_cert'
   #
@@ -188,15 +189,15 @@ class WizardStep < ApplicationRecord
         next if ['created_at', 'updated_at'].include? attribute_name
 
         hash[attribute_name] = case attribute_name
-          when 'logo'
-            'logo_name'
-          when 'user_id'
-            'service_provider_user_id'
-          when 'id'
-            'service_provider_id'
-          else
-            attribute_name
-          end
+                               when 'logo'
+                                 'logo_name'
+                               when 'user_id'
+                                 'service_provider_user_id'
+                               when 'id'
+                                 'service_provider_id'
+                               else
+                                 attribute_name
+                               end
       end
   end
 
@@ -226,7 +227,7 @@ class WizardStep < ApplicationRecord
     raise ArgumentError, "Invalid WizardStep '#{new_name}'." unless STEP_DATA.has_key?(new_name)
 
     super
-    self.wizard_form_data = enforce_valid_data(self.wizard_form_data)
+    self.wizard_form_data = enforce_valid_data(wizard_form_data)
   end
 
   def wizard_form_data=(new_data)
@@ -284,15 +285,15 @@ class WizardStep < ApplicationRecord
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name) || super
+    (STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(method_name)) || super
   end
 
   def get_step(step_to_find)
     return self if step_name == step_to_find
 
-    WizardStepPolicy::Scope.new(self.user, self.class).
+    WizardStepPolicy::Scope.new(user, self.class).
       resolve.
-      find_or_initialize_by(user: self.user, step_name: step_to_find)
+      find_or_initialize_by(user: user, step_name: step_to_find)
   end
 
   def ial
@@ -313,11 +314,11 @@ class WizardStep < ApplicationRecord
 
   def saml_settings_present?
     ['acs_url', 'return_to_sp_url'].each do |attr|
-      return true if !saml?
+      return true unless saml?
 
       errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
     end
-    self.errors.empty?
+    errors.empty?
   end
 
   def pending_or_current_logo_data
@@ -362,7 +363,7 @@ class WizardStep < ApplicationRecord
 
   def failure_to_proof_url_for_idv
     using_idv = ial.to_i > 1
-    return if !using_idv
+    return unless using_idv
 
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end
