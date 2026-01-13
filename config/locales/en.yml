@@ -106,7 +106,7 @@ en:
       logingov_admin: Login.gov Admin
       logingov_readonly: Login.gov Readonly
   extracts:
-    ticket_description: This should be a unique identifier, the date and time is ok (ie, 2509171542).
+    ticket_description: This should be a unique identifier, the date and time is ok
     file_description: Plaintext file with comma- or whitespace-separated list of team IDs or issuers to extract.
     list_description: Comma- or space-separated list of team IDs or issuers to extract.
   home:
