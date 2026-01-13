@@ -24,7 +24,7 @@ production:
 
   # Feature Flags
   api_token_required_enabled: true
-  edit_button_uses_servigce_config_wizard: true
+  edit_button_uses_service_config_wizard: true
   prod_like_env: false
 
   # Dummy Key Should not be used in PROD
