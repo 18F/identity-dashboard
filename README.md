@@ -97,11 +97,28 @@ In order to see what you are typing when debugging with `binding.pry` , use `rai
 
 # Linting
 
-## We lint with Rubocop and ESLint
+We lint with Rubocop, ESLint and Herb. All Linters are run as part of the CI/CD process, and you cannot merge without the linters passing.
 
-* Ruby using Rubocop rules. These rules are currently under active development.
+## Ruby 
+We use Rubocop. These rules are currently [under active development](.rubocop.yml).
 
-* JavaScript using ESLint. We use [the ESLint plugin from IdP](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin) as well as some rules to ensure we don't error on upstream dependencies that use variant linting rules or minified compiled assets.
+We have a number of rubocop violations that need to be fixed. The list can be found [here](.rubocop_todo.yml).
+
+To run locally: `bundle exec rubocop`
+
+## JavaScript 
+We use [the ESLint plugin from IdP](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin) as well as some rules to ensure we don't error on upstream dependencies that use variant linting rules or minified compiled assets.
+
+To run locally: `npm run lint`
+
+## HTML and erb files
+We use use [Herb](https://herb-tools.dev/configuration). The rules currently only exclude Yard documentation, vendor code, and all node modules; all rules are the default.
+
+To run locally: `npm run herb:lint`
+
+### To run all linters:
+
+`make lint`
 
 # Documentation
 * YARD docs to ensure they have no warnings and also we enforce that the `LogEvents` class has YARD documentation for all its methods
