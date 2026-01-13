@@ -39,6 +39,7 @@ linter:
   exclude:
     - './doc/**/*'
     - './node_modules/**/*'
+    - './vendor/**/*'
 
   # rules:
   #   erb-no-extra-newline:
