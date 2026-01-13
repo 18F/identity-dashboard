@@ -7,7 +7,7 @@
   "scripts": {
     "build": "webpack",
     "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds",
-    "herb:lint": "herb-lint",
+    "herb:lint": "herb-lint --simple",
     "lint": "eslint . --ignore-pattern public --ignore-pattern doc --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage"
   },
   "dependencies": {

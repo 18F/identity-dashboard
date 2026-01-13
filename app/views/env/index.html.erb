@@ -3,15 +3,15 @@
   <% @deploy_statuses.each do |environment| %>
 
     <h2>
-    <% case environment.env
-       when 'prod' %>
-         Production
+    <% case environment.env %>
+    <% when 'prod' %>
+      Production
     <% when 'staging' %>
-         Staging
+      Staging
     <% when 'int' %>
-         Agency integration
+      Agency integration
     <% when 'dev' %>
-         Development
+      Development
     <% end %>
     </h2>
 

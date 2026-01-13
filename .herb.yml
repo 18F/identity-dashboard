@@ -36,8 +36,9 @@ linter:
   #   - '**/*.xml.erb'
   #
   # # Patterns to exclude from linting
-  # exclude:
-  #   - 'app/views/admin/**/*'
+  exclude:
+    - './doc/**/*'
+    - './node_modules/**/*'
 
   # rules:
   #   erb-no-extra-newline:

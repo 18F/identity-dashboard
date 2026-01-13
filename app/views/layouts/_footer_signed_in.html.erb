@@ -2,10 +2,7 @@
 <div class="usa-identifier padding-top-2">
   <div class="usa-identifier__container footer__signed-in">
     <a href="https://www.gsa.gov" class="footer__agency-logo usa-link--external" target="_blank" rel="noopener noreferrer">
-      <img src="<%= asset_path 'gsa-logo_home.svg' %>"
-           class="margin-right-05"
-           width="20" height="20"
-           alt="" aria-hidden="true">
+      <%= image_tag(asset_path('gsa-logo_home.svg'), size: "20", class: "margin-right-05", "aria-hidden" => "true") %>
       US General Services Administration
     </a>
     <div class="footer__links">

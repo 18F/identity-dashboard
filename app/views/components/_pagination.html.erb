@@ -17,7 +17,7 @@
 
     <% pagination_visible_pages(current_page:, total_pages:).each do |pg| %>
       <% if pg == PaginationHelper::OVERFLOW %>
-        <li class="usa-pagination__item usa-pagination__overflow" aria-label="ellipsis indicating non-visible pages">
+        <li class="usa-pagination__item usa-pagination__overflow" aria-label="Ellipsis indicating non-visible pages">
           <span>&hellip;</span>
         </li>
       <% elsif pg == current_page %>
