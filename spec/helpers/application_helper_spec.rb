@@ -33,7 +33,7 @@ RSpec.describe ApplicationHelper do
     it 'updates the page title content' do
       page_heading('words')
 
-      expect(content_for :title).to eq('words')
+      expect(content_for(:title)).to eq('words')
     end
 
     it 'provides a full h1 with class' do
