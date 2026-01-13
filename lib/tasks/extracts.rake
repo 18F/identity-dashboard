@@ -94,7 +94,15 @@ namespace :extracts do
   end
 
   def export_models_to_file(models, file_name)
-    File.open(file_name, 'w') { |f| f.puts models.to_json }
+    minimal_config_data = models.map do |sp|
+      {
+        'id' => sp.id,
+        'user_id' => sp.user_id,
+        'uuid' => sp.uuid,
+        'issuer' => sp.issuer,
+      }
+    end
+    File.open(file_name, 'w') { |f| f.puts({ 'service_providers' => minimal_config_data }.to_json) }
   end
 
   archive_usage = <<~DESCRIPTION
