@@ -170,7 +170,7 @@ en:
         <br/><br/>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
     service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
-    service_providers_refreshed: Success! Service providers publish request has been sent.
+    service_providers_refreshed: Success! Service providers publish request has been sent (ie, 2509171542).
     team_delete_failed: Only teams without configs can be deleted. Reassign or delete the configs first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}
