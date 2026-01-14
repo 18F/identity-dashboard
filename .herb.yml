@@ -40,6 +40,8 @@ linter:
     - './doc/**/*'
     - './node_modules/**/*'
     - './vendor/**/*'
+    - './coverage/**/*'
+    - './tmp/**/*'
 
   # rules:
   #   erb-no-extra-newline:
