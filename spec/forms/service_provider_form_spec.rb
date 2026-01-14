@@ -1,21 +1,15 @@
 require 'rails_helper'
 
-describe ServiceProviderSaver do
+describe ServiceProviderForm do
   let(:current_user) { create(:user, :partner_admin) }
-  let(:mock_controller) do
-    mock = instance_double(ServiceProvidersController)
-    allow(mock).to receive(:current_user).and_return(current_user)
-    mock
-  end
 
   it 'populates errors and logs on validation failure' do
     log_mock = instance_double(EventLogger)
-    allow(mock_controller).to receive(:log).and_return(log_mock)
     allow(log_mock).to receive(:sp_errors)
 
     service_provider = ServiceProvider.new
 
-    subject = described_class.new(service_provider, mock_controller)
+    subject = described_class.new(service_provider, current_user, log_mock)
     subject.validate_and_save
 
     expect(service_provider.errors).to be_present

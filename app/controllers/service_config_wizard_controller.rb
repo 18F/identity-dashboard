@@ -278,8 +278,8 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def validate_and_save_service_provider
-    saver = ServiceProviderSaver.new(draft_service_provider, self)
-    saver.validate_and_save
+    form = ServiceProviderForm.new(draft_service_provider, current_user, log)
+    form.validate_and_save
 
     return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
 

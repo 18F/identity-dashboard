@@ -606,6 +606,9 @@ Style/LineEndConcatenation:
 #   Enabled: true
 #   EnforcedOctalStyle: zero_with_o
 
+Style/ParallelAssignment:
+  Enabled: false
+
 # Style/PercentLiteralDelimiters:
 #   # Specify the default preferred delimiter for all types with the 'default' key
 #   # Override individual delimiters (even with default specified) by specifying

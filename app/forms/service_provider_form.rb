@@ -5,10 +5,8 @@ require 'delegate'
 # In the future, we may want add features here such as
 # * a method to return messages the controllers display as flash messages
 # * a method that accepts a block and conditionally evaluates whether an error occurred or not
-class ServiceProviderSaver < SimpleDelegator
-  attr_reader :controller
-
-  delegate :current_user, :log, to: :controller
+class ServiceProviderForm < SimpleDelegator
+  attr_reader :current_user, :log
 
   STRING_ATTRIBUTES = %w[
     issuer
@@ -24,8 +22,8 @@ class ServiceProviderSaver < SimpleDelegator
     app_name
   ].freeze
 
-  def initialize(service_provider, controller)
-    @controller = controller
+  def initialize(service_provider, current_user, log)
+    @current_user, @log = current_user, log
     super(service_provider)
   end
 
