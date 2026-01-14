@@ -771,8 +771,8 @@ describe ServiceProvidersController do
 
       context 'when ServiceProviderUpdater fails' do
         before do
-          stub_request(:post, IdentityConfig.store.idp_sp_url).
-            to_return(status: 404)
+          stub_request(:post, IdentityConfig.store.idp_sp_url)
+            .to_return(status: 404)
         end
 
         it 'redirects to service_providers_path' do

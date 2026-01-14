@@ -94,8 +94,8 @@ describe TeamsController do
           item_type: 'TeamMembership',
         )
 
-        expect(TeamAuditEvent).to receive(:by_team).
-          with(
+        expect(TeamAuditEvent).to receive(:by_team)
+          .with(
             team,
             scope: PaperTrail::VersionPolicy::Scope.new(user, PaperTrail::Version).resolve,
           ).and_return([test_version])

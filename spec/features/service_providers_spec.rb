@@ -355,10 +355,10 @@ feature 'Service Providers CRUD' do
       updated_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
       expect(updated_radio_options.count).to be(HelpText::PRESETS.values.flatten.count)
       # The options stayed checked
-      expect(updated_radio_options.first).
-        to eq(find_all('fieldset.custom-help-text input[checked]').first)
-      expect(updated_radio_options.last).
-        to eq(find_all('fieldset.custom-help-text input[checked]').last)
+      expect(updated_radio_options.first)
+        .to eq(find_all('fieldset.custom-help-text input[checked]').first)
+      expect(updated_radio_options.last)
+        .to eq(find_all('fieldset.custom-help-text input[checked]').last)
     end
 
     scenario 'sees read-only text boxes when help text is custom' do

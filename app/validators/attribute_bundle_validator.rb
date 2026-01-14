@@ -26,9 +26,9 @@ class AttributeBundleValidator < ActiveModel::Validator
   ].freeze
 
   ALL_ATTRIBUTES = Hash[
-    *(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES).
-      map { |v| [v, v] }.
-      flatten,
+    *(ALLOWED_IAL1_ATTRIBUTES + ALLOWED_IAL2_ATTRIBUTES)
+      .map { |v| [v, v] }
+      .flatten,
   ].freeze
 
   def validate(record)

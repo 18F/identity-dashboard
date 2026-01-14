@@ -110,8 +110,8 @@ module Tools
     end
 
     def auth_request
-      @auth_request ||= SamlIdp::Request.
-        from_deflated_request(
+      @auth_request ||= SamlIdp::Request
+        .from_deflated_request(
           saml_params[:SAMLRequest],
           get_params: saml_params,
         )

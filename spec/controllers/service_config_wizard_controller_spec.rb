@@ -278,8 +278,8 @@ RSpec.describe ServiceConfigWizardController do
         original_serial = OpenSSL::X509::Certificate.new(original_certs.first).serial
         original_saved_logo = original_settings.logo_file
 
-        expect(original_saved_logo.blob.checksum).
-          to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
+        expect(original_saved_logo.blob.checksum)
+          .to eq(OpenSSL::Digest.base64digest('MD5', good_logo.read))
 
         # Deliberately picking a serial that's shorter than fixed value of the original serial
         new_serial = rand(1..100_000)
@@ -308,8 +308,8 @@ RSpec.describe ServiceConfigWizardController do
         expect(new_cert.serial).to_not eq(original_serial)
 
         expect(new_settings.logo_file.blob.checksum).to_not eq(original_saved_logo.blob.checksum)
-        expect(new_settings.logo_file.blob.checksum).
-          to eq(OpenSSL::Digest.base64digest('MD5', new_logo_upload.read))
+        expect(new_settings.logo_file.blob.checksum)
+          .to eq(OpenSSL::Digest.base64digest('MD5', new_logo_upload.read))
       end
 
       it 'sets errors for bad SVGs' do

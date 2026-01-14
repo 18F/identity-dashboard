@@ -33,15 +33,15 @@ RSpec.describe DeployStatusChecker do
 
     describe '#commit_url' do
       it 'links to the the commit on Github' do
-        expect(status.commit_url).
-          to eq('https://github.com/18F/identity-idp/commits/1234567890abcdef')
+        expect(status.commit_url)
+          .to eq('https://github.com/18F/identity-idp/commits/1234567890abcdef')
       end
     end
 
     describe '#pending_url' do
       it 'links to the compare link on Github' do
-        expect(status.pending_url).
-          to eq('https://github.com/18F/identity-idp/compare/1234567890abcdef...main')
+        expect(status.pending_url)
+          .to eq('https://github.com/18F/identity-idp/compare/1234567890abcdef...main')
       end
     end
 

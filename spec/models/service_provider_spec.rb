@@ -505,8 +505,8 @@ describe ServiceProvider do
       let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
       it 'removes that cert' do
-        expect { sp.remove_certificate(200) }.
-          to(change { sp.certificates.size }.from(3).to(2))
+        expect { sp.remove_certificate(200) }
+          .to(change { sp.certificates.size }.from(3).to(2))
 
         has_serial = sp.certificates.any? { |c| c.serial.to_s == '200' }
         expect(has_serial).to eq(false)

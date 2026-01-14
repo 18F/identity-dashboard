@@ -481,8 +481,8 @@ feature 'Service Config Wizard' do
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: '')
         click_on 'Next'
         expect(page).to have_content(
-          "#{t('simple_form.labels.service_provider.failure_to_proof_url').
-          capitalize} can't be empty",
+          "#{t('simple_form.labels.service_provider.failure_to_proof_url')
+          .capitalize} can't be empty",
         )
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'hello')
@@ -496,8 +496,8 @@ feature 'Service Config Wizard' do
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: 'https://test.gov')
         click_on 'Next'
         expect(page).to_not have_content(
-          t('simple_form.labels.service_provider.failure_to_proof_url').
-          capitalize,
+          t('simple_form.labels.service_provider.failure_to_proof_url')
+          .capitalize,
         )
       end
     end

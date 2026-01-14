@@ -14,9 +14,9 @@ describe ServiceProviderUpdater do
   end
 
   before do
-    stub_request(:post, url).
-      with(headers:).
-      to_return(status:)
+    stub_request(:post, url)
+      .with(headers:)
+      .to_return(status:)
   end
 
   describe '#post_update' do
@@ -49,8 +49,8 @@ describe ServiceProviderUpdater do
 
     context 'when the HTTP request raises an error' do
       before do
-        stub_request(:post, IdentityConfig.store.idp_sp_url).
-          to_timeout
+        stub_request(:post, IdentityConfig.store.idp_sp_url)
+          .to_timeout
       end
 
       it 'returns http status code for failure' do

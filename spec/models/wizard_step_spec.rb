@@ -262,8 +262,8 @@ RSpec.describe WizardStep, type: :model do
         let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
 
         it 'removes that cert' do
-          expect { subject.remove_certificate(200) }.
-            to(change { subject.certificates.size }.from(3).to(2))
+          expect { subject.remove_certificate(200) }
+            .to(change { subject.certificates.size }.from(3).to(2))
 
           has_serial = subject.certificates.any? { |c| c.serial.to_s == '200' }
           expect(has_serial).to eq(false)
@@ -317,8 +317,8 @@ RSpec.describe WizardStep, type: :model do
         expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
         expect(subject).to_not be_valid
         expect(subject.errors[:certs]).to_not be_blank
-        expect(subject.errors[:logo_file]).
-          to eq(['The file you uploaded (testcert.pem) is not a PNG or SVG'])
+        expect(subject.errors[:logo_file])
+          .to eq(['The file you uploaded (testcert.pem) is not a PNG or SVG'])
       end
     end
 
@@ -546,8 +546,8 @@ RSpec.describe WizardStep, type: :model do
 
       all_step_data = created_steps.map(&:wizard_form_data).reduce(&:merge)
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq(all_step_data)
-      expect(WizardStep.all_step_data_for_user(subject_user).values).
-        to_not include(extra_step.issuer)
+      expect(WizardStep.all_step_data_for_user(subject_user).values)
+        .to_not include(extra_step.issuer)
 
       all_field_names = WizardStep::STEPS.map do |step_name|
         WizardStep::STEP_DATA[step_name].fields
@@ -562,8 +562,8 @@ RSpec.describe WizardStep, type: :model do
                            wizard_form_data: { issuer: test_issuer })
       expect(WizardStep.all_step_data_for_user(subject_user)).to eq({ 'issuer' => test_issuer })
       WizardStep.where(user: subject_user, step_name: 'issuer').delete_all
-      expect(WizardStep.all_step_data_for_user(subject_user).keys).
-        to_not include('issuer')
+      expect(WizardStep.all_step_data_for_user(subject_user).keys)
+        .to_not include('issuer')
     end
 
     it 'returns an empty hash when no data has been saved' do
