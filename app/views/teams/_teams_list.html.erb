@@ -1,8 +1,8 @@
 <% @teams.each do |team| %>
-  <div class='lg-card margin-bottom-3'>
-    <div class='grid-row flex-row flex-align-end'>
-      <div class='tablet:grid-col-10'>
-        <h2 class='margin-y-05'>
+  <div class="lg-card margin-bottom-3">
+    <div class="grid-row flex-row flex-align-end">
+      <div class="tablet:grid-col-10">
+        <h2 class="margin-y-05">
           <%= link_to team.name, team_path(team), class: 'text-primary text-no-underline' %>
         </h2>
         <% if current_user.logingov_staff? %>
@@ -10,35 +10,35 @@
             <strong>Team UUID:</strong> <%= team.uuid %>
           </p>
         <% end %>
-        <p class='margin-0'>
+        <p class="margin-0">
           <strong>Agency:</strong> <%= team&.agency&.name %>
         </p>
-        <p class='margin-0'>
+        <p class="margin-0">
           <%= team.description %>
         </p>
-        <p class='margin-y-2'>
+        <p class="margin-y-2">
           <strong>
             <%= 'Configuration'.pluralize(team.service_providers.count) %>
             <%= "[#{team.service_providers.count}]:" %>
           </strong>
-          <br/>
+          <br>
           <% team.service_providers.each do |service_provider| %>
             <%= link_to service_provider.friendly_name, service_provider, class: "usa-button usa-button--inverse usa-button--tiny margin-top-1" %>
           <% end %>
         </p>
-        <p class='margin-y-2'>
+        <p class="margin-y-2">
           <strong>
             <%= 'User'.pluralize(team.users.count) %>
             <%= "[#{team.users.count}]" if team.users.count > 1 %><%= ":" if team.users.count > 1 && current_user.logingov_admin? %>
           </strong>
-          <br/>
+          <br>
           <% if current_user.logingov_staff? %>
             <%= team.users.map{ |user| user.email}.join(", ") %>
           <% end %>
         </p>
       </div>
       <% if policy(team).edit? %>
-        <div class='tablet:grid-col-2 text-right'>
+        <div class="tablet:grid-col-2 text-right">
           <%= link_to 'Edit', edit_team_path(team), class: 'usa-button usa-button--outline display-block margin-bottom-1' %>
         </div>
       <% end %>

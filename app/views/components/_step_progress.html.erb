@@ -3,7 +3,7 @@
   [Integer] current_step_index such that `steps[current_step_index]` is not null
   [String] localization_base so that `t("#{localization_base}.#{step}")` returns something valid from the i18n yml files
 %>
-<div class="lg-step-indicator shadow-1 padding-top-2" aria-label="progress">
+<div class="lg-step-indicator shadow-1 padding-top-2" aria-label="Progress">
   <ol class="step-indicator__scroller">
     <% steps.each_with_index do |step, index| %>
       <% case index <=> current_step_index %>
@@ -26,7 +26,7 @@
   <div class="usa-step-indicator__header flex-justify-center margin-bottom-1">
     <h4 class="usa-step-indicator__heading margin-top-0">
       <span class="usa-step-indicator__heading-counter"><span class="usa-sr-only">Step</span>
-        <span class="usa-step-indicator__current-step"><%= current_step_index + 1%></span>
+        <span class="usa-step-indicator__current-step"><%= current_step_index + 1 %></span>
         <span class="usa-step-indicator__total-steps">of <%= steps.count %></span> </span><span class="usa-step-indicator__heading-text"><%= t("#{localization_base}.#{step}") %></span>
     </h4>
   </div>

@@ -2,7 +2,7 @@
 <h1>Validate SAML authentication request signature</h1>
 <p class="usa-intro">You can use this tool to check whether Login.gov can successfully validate the authentication request signature your application is sending.</p>
 <% if @validation_attempted %>
-  <hr/>
+  <hr>
 
   <% if !@request.xml_valid? %>
     <div class="usa-alert usa-alert--error">
@@ -12,7 +12,7 @@
         </h2>
         <p>
           We could not decode your SAML request. Make sure it is encoded correctly, as described in
-          <a href="/documentation?destination=saml/#auth-request" target="_blank" class="usa-link usa-link--external">our documentation</a>.<br />
+          <a href="/documentation?destination=saml/#auth-request" target="_blank" class="usa-link usa-link--external">our documentation</a>.<br>
           Also note that all other URL parameters need to be properly URL-encoded.
           Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
         </p>
@@ -30,7 +30,7 @@
       </div>
     </div>
   <% elsif can_view_request_details?(@request.sp) %>
-    <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error"%>">
+    <div class="usa-alert <%= @request.valid_signature ? "usa-alert--success" : "usa-alert--error" %>">
       <div class="usa-alert__body">
         <h2 class="usa-alert__heading">
           Signature: <%= @request.valid_signature ? "Valid" : "Invalid" %>
@@ -47,19 +47,17 @@
           <% if @request.errors.present? %>
             <h3>Specific request problems found:</h3>
             <ul class="usa-list">
-              </li>
-              <% @request.errors.each do |error| %>
-                <li> <%= error %> </li>
-              <% end %>
+            <% @request.errors.each do |error| %>
+              <li> <%= error %> </li>
+            <% end %>
             </ul>
           <% end %>
           <% if @request.cert_errors.present? %>
             <h3>Specific certificate problems found:</h3>
             <ul class="usa-list">
-              </li>
-              <% @request.cert_errors&.each do |error| %>
-                <li> Certificate with the serial <%= error[:cert] %> has this issue: <%= error[:error_code] %> </li>
-              <% end %>
+            <% @request.cert_errors&.each do |error| %>
+              <li> Certificate with the serial <%= error[:cert] %> has this issue: <%= error[:error_code] %> </li>
+            <% end %>
             </ul>
           <% end %>
           <h3>Other issues to look into:</h3>
@@ -69,7 +67,7 @@
               </li>
               <li>
                 <span class="text-heavy">Wrong certificate:</span>
-                  If you've pasted a certificate, the certificate may not match the private key used by your application.<br />
+                  If you've pasted a certificate, the certificate may not match the private key used by your application.<br>
                   Otherwise, you need to add the public certificate to your Login.gov configuration that belongs to the private key used by your application.
               </li>
             </ul>
@@ -77,7 +75,7 @@
       </div>
     </div>
   <% else %>
-     <div class="usa-alert usa-alert--error"%>
+     <div class="usa-alert usa-alert--error">
       <div class="usa-alert__body">
         <h2 class="usa-alert__heading">
           You can only view request certificate details if you are a member of the team.

@@ -4,8 +4,10 @@
     <div class="usa-identifier__container">
       <div class="usa-identifier__logos">
         <a href="https://www.gsa.gov" class="usa-identifier__logo">
-          <img class="usa-identifier__logo-img" src="<%= asset_path 'gsa-logo.svg' %>"
-            alt="<%= t('footer.labels.gsa_link_logo') %>" />
+          <%= image_tag(asset_path('gsa-logo.svg'),
+            class: "usa-identifier__logo-img",
+            alt: t('footer.labels.gsa_link_logo')
+            ) %>
         </a>
       </div>
       <div class="usa-identifier__identity" aria-label="<%= t('footer.labels.description') %>">

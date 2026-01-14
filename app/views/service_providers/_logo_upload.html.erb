@@ -1,4 +1,4 @@
-<div class='json optional service_provider_logo_file'>
+<div class="json optional service_provider_logo_file">
   <%= form.label :logo_file,
                   label: 'Upload your logo',
                   class: 'usa-label' %>
@@ -10,7 +10,7 @@
       <%= image_tag url_for(service_provider.logo_file), height: '120px' %>
     </p>
   <% end %>
-  <div class='input-file-wrapper'>
+  <div class="input-file-wrapper">
     <%= form.label :logo_file,
                     label: 'Choose a file',
                     class: 'usa-button file-input-button',
@@ -20,7 +20,7 @@
                     class: 'input-preview' %>
   </div>
   <%= form.hint 'Choose a file to upload as your logo. See <a class="usa-link usa-link--external" href="/documentation?destination=design-guidelines/#agency-logo-guidelines">guidelines</a> for details.'.html_safe %>
-  <div <%= "class='usa-error-message'" if service_provider.errors[:logo_file].present? %> id='logo-upload-error'>
+  <div <%= "class='usa-error-message'" if service_provider.errors[:logo_file].present? %> id="logo-upload-error">
     <% if service_provider.errors[:logo_file].present? %>
       ERROR:
       <%= service_provider.errors[:logo_file].join('|') %>

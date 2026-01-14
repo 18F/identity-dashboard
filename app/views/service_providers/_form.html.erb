@@ -1,8 +1,8 @@
 <%= form.error_notification %>
-<fieldset class='usa-fieldset'>
+<fieldset class="usa-fieldset">
 
 <% if !prod_like_env? %>
-  <legend class='usa-sr-only'>Portal Configuration</legend>
+  <legend class="usa-sr-only">Portal Configuration</legend>
     <%= form.label :prod_config,
                   label: 'Portal Configuration',
                   class: 'usa-label' %>
@@ -12,8 +12,8 @@
                                       item_wrapper_tag: :ul,
                                       item_wrapper_class: "usa-input-list") do |b| %>
       <li>
-        <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
-        <%=  b.label(class: "usa-radio__label")%>
+        <%= b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+        <%= b.label(class: "usa-radio__label") %>
       </li>
     <% end %>
 <% else %>
@@ -53,8 +53,8 @@
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
       and use UL for radio buttons %>
-  <fieldset class='usa-fieldset'>
-    <legend class='usa-sr-only'>Authentication protocol</legend>
+  <fieldset class="usa-fieldset">
+    <legend class="usa-sr-only">Authentication protocol</legend>
     <%= form.label :identity_protocol,
                    label: 'Authentication protocol',
                    class: 'usa-label' %>
@@ -92,9 +92,9 @@
                  label: 'Default Authentication Assurance Level (AAL)' %>
 
   <%# label the grouping of items using a fieldset and legend for screen readers,
-      and use UL for checkboxes%>
-  <fieldset class='usa-fieldset-inputs usa-fieldset'>
-    <legend class='usa-sr-only'>Attribute bundle</legend>
+      and use UL for checkboxes %>
+  <fieldset class="usa-fieldset-inputs usa-fieldset">
+    <legend class="usa-sr-only">Attribute bundle</legend>
     <%= form.label :attribute_bundle,
                    label: 'Attribute bundle',
                    class: 'usa-label' %>
@@ -157,7 +157,7 @@
     <div class="usa-label">Certificates</div>
 
     <p>
-      <% I18n.t('service_provider_form.certificate') =%>
+      <%= I18n.t('service_provider_form.certificate') %>
     </p>
 
 
@@ -216,7 +216,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     </div>
   </fieldset>
 
-  <div class='saml-fields'>
+  <div class="saml-fields">
     <%= form.input :acs_url,
                    input_html: { class: 'usa-input', aria: { invalid: false } },
                    label_html: { class: 'usa-input-required'},
@@ -240,7 +240,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                    include_blank: false,
                    hint: I18n.t('service_provider_form.saml_assertion_encryption') %>
 
-    <legend class='usa-sr-only'>Signed Response Message Requested</legend>
+    <legend class="usa-sr-only">Signed Response Message Requested</legend>
     <%= form.label :signed_response_message_requested,
                   label: 'Signed Response Message Requested',
                   class: 'usa-label' %>
@@ -249,12 +249,12 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                                       :last, :first,
                                       item_wrapper_tag: :div,
                                       item_wrapper_class: 'usa-radio') do |b| %>
-      <%=  b.radio_button(class: "usa-radio__input") %>
-      <%=  b.label(class: "usa-radio__label")%>
+      <%= b.radio_button(class: "usa-radio__input") %>
+      <%= b.label(class: "usa-radio__label") %>
     <% end %>
   </div>
 
-  <div class='saml-fields'>
+  <div class="saml-fields">
     <%= form.input :return_to_sp_url,
                   input_html: { class: 'usa-input', aria: { invalid: false } },
                   label_html: { class: 'usa-input-required'},
@@ -275,7 +275,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  hint: I18n.t('service_provider_form.push_notification_url') %>
 
   <%# BEGIN redirect_uris %>
-    <div class='usa-hint oidc-fields'>
+    <div class="usa-hint oidc-fields">
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
                      class: 'usa-label' %>
@@ -286,7 +286,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     </div>
 
-    <div class='usa-hint saml-fields'>
+    <div class="usa-hint saml-fields">
       <%= form.label :redirect_uris,
                      label: 'Additional Redirect URIs',
                      class: 'usa-label' %>
@@ -307,11 +307,11 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
       <% end %>
     <% end %>
 
-    <div class='oidc-fields'>
+    <div class="oidc-fields">
       <%= t('service_provider_form.redirect_uris_oidc_html') %>
     </div>
 
-    <div class='saml-fields margin-0'>
+    <div class="saml-fields margin-0">
       <%= form.hint t('service_provider_form.redirect_uris_saml_html') %>
     </div>
 
@@ -322,8 +322,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                     class: 'usa-button margin-bottom-4' %>
   <%# END redirect_uris %>
 
-  <div class='active margin-bottom-4'>
-    <legend class='usa-sr-only'>Accessible</legend>
+  <div class="active margin-bottom-4">
+    <legend class="usa-sr-only">Accessible</legend>
     <%= form.label :admin,
                    label: 'Accessible',
                    class: 'usa-label' %>
@@ -333,8 +333,8 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                                       item_wrapper_tag: :ul,
                                       item_wrapper_class: 'usa-input-list') do |b| %>
       <li>
-        <%=  b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
-        <%=  b.label(class: "usa-radio__label")%>
+        <%= b.radio_button(class: "usa-radio__input usa-radio__input--tile") %>
+        <%= b.label(class: "usa-radio__label") %>
       </li>
     <% end %>
     <%= form.hint I18n.t('service_provider_form.active') %>

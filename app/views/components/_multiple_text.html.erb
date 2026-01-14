@@ -11,7 +11,7 @@
                    class: 'usa-input',
                    multiple: 'multiple',
                    disabled:,
-                   aria: { labelledby: fieldname.gsub('.','_') }%>
+                   aria: { labelledby: fieldname.gsub('.','_') } %>
 <% @model.errors[db_fieldname].each do |error| %>
   <% if Regexp.new("\\A#{value} ") =~ error %>
     <p class="usa-error-message"><%= error %></p>

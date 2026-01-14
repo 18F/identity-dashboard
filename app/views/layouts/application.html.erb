@@ -32,7 +32,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<%= asset_path 'favicons/favicon-144.png' %>">
     
     <% if @canonical_url.present? %>
-      <link rel="canonical" href="<%= @canonical_url %>" />
+      <link rel="canonical" href="<%= @canonical_url %>">
     <% end %>
 
     <%= stylesheet_link_tag 'application' %>
@@ -76,7 +76,7 @@
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Official websites use .gov</strong>
-                    <br/>
+                    <br>
                     A <strong>.gov</strong> website belongs to an official government organization in the United States.
                   </p>
                 </div>
@@ -89,7 +89,7 @@
                 <div class="usa-media-block__body">
                   <p>
                     <strong>Secure .gov websites use HTTPS</strong>
-                    <br/>
+                    <br>
                     A <strong>lock</strong> (
                       <%= image_tag 'lock.svg',
                         alt: '',
@@ -104,9 +104,8 @@
         </div>
       </section>
 
-      <%= render 'layouts/nav'%>
+      <%= render 'layouts/nav' %>
     </header>
-
 
 
     <main class="usa-layout-docs usa-section <%= 'padding-top-0' unless user_signed_in? %>" id="main-content">

@@ -3,19 +3,19 @@
 %>
 <div class="wizard-footer">
   <% if no_data? %>
-    <%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step?  %>
+    <%= link_to 'Next', next_wizard_path, class: 'usa-button' if not last_step? %>
   <% elsif last_step? %>
     <%= form.submit last_step_message, class: 'usa-button' %>
     <% if show_cancel? %>
       <%= form.submit 'Cancel', class: 'usa-button usa-button--unstyled' %>
     <% end %>
   <% else %>
-    <%= form.submit 'Next', class: 'usa-button'%>
+    <%= form.submit 'Next', class: 'usa-button' %>
   <% end %>
   <% unless first_step? %>
     <%= link_to 'Back',
                 previous_wizard_path,
                 class: 'usa-button usa-button--outline',
-                role: 'button'%>
+                role: 'button' %>
   <% end %>
 </div>
