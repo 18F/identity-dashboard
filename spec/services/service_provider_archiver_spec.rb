@@ -7,7 +7,7 @@ SAMPLE_ISSUERS = [
   '04:24:test:aj',
   'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:05291148',
   '654756876587697863453242',
-]
+].freeze
 
 describe ServiceProviderArchiver do
   let(:sample_file) { File.join(file_fixture_path, 'extract_sample.json') }
@@ -83,7 +83,7 @@ describe ServiceProviderArchiver do
 
     it 'returns errors and records valid issuers' do
       errors = archiver.run
-      success_issuers = archiver.models.map { |m| m.issuer }
+      success_issuers = archiver.models.map &:issuer
       failed_issuers = errors.keys
 
       expect(failed_issuers.count + success_issuers.count).to eq(SAMPLE_ISSUERS.count)

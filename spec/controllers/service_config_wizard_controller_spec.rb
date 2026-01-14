@@ -12,7 +12,7 @@ RSpec.describe ServiceConfigWizardController do
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
-      File.open(fixture_path + '/logo.svg'),
+      File.open(File.join(fixture_path, 'logo.svg')),
       'image/svg+xml',
       true,
       original_filename: 'alternative_filename.svg',

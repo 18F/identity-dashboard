@@ -595,7 +595,7 @@ feature 'Service Providers CRUD' do
       team = user_to_log_in_as.teams.first
       sp = create(:service_provider, team:)
       visit service_providers_path
-      data_link = sp.friendly_name + ' data'
+      data_link = "#{sp.friendly_name} data"
       expect(page).to have_content(data_link)
       click_on data_link
       expect(page).to have_content("#{sp.friendly_name.capitalize} analytics dashboard")
