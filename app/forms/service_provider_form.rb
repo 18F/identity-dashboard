@@ -6,6 +6,8 @@ require 'delegate'
 # * a method to return messages the controllers display as flash messages
 # * a method that accepts a block and conditionally evaluates whether an error occurred or not
 class ServiceProviderForm < SimpleDelegator
+  include ActionView::Helpers::TranslationHelper
+
   attr_reader :current_user, :log
 
   STRING_ATTRIBUTES = %w[
@@ -35,10 +37,43 @@ class ServiceProviderForm < SimpleDelegator
     valid_prod_config?
     valid_localhost_uris? unless current_user.logingov_admin?
 
-    log_errors if errors.any?
+    log_errors && return if errors.any?
+
+    save
+  end
+
+  def after_success
+    yield unless errors.any?
+  end
+
+  def after_errors
+    yield if errors.any?
+  end
+
+  def compile_errors
+    error_msg =
+      "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
+    error_msg += translate_errors.join
+
+    # this prevents cookie size error, it is an estimate
+    if error_msg.bytesize < 350
+      "#{error_msg}</ul>"
+    else
+      'Please fix errors on multiple fields.'
+    end
   end
 
   private
+
+  def translate_errors
+    errors.map(&:attribute).uniq.map do |attribute|
+      if attribute == :prod_config && production_ready?
+        '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+      else
+        "<li>#{I18n.t("service_provider_form.title.#{attribute}")}</li>"
+      end
+    end
+  end
 
   def log_errors
     sanitized_errors = errors.to_hash

@@ -193,17 +193,16 @@ class ServiceProvidersController < AuthenticatedController
     form = ServiceProviderForm.new(@service_provider, current_user, log)
     form.validate_and_save
 
-    return save_service_provider(@service_provider) if @service_provider.errors.none?
+    form.after_success do
+      flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
+      publish_service_provider
+      redirect_to service_provider_path(service_provider)
+    end
 
-    flash[:error] = @service_provider.compile_errors
-    render initial_action
-  end
-
-  def save_service_provider(service_provider)
-    service_provider.save!
-    flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    publish_service_provider
-    redirect_to service_provider_path(service_provider)
+    form.after_errors do
+      flash[:error] = form.compile_errors
+      render initial_action
+    end
   end
 
   def publish_service_provider
