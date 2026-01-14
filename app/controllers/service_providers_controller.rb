@@ -190,8 +190,8 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def validate_and_save_service_provider(initial_action)
-    saver = ServiceProviderSaver.new(@service_provider, self)
-    saver.validate_and_save
+    form = ServiceProviderForm.new(@service_provider, current_user, log)
+    form.validate_and_save
 
     return save_service_provider(@service_provider) if @service_provider.errors.none?
 
