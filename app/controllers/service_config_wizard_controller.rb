@@ -281,15 +281,15 @@ class ServiceConfigWizardController < AuthenticatedController
     form = ServiceProviderForm.new(draft_service_provider, current_user, log)
     form.validate_and_save
 
-    return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
-
-    flash[:error] = draft_service_provider.compile_errors
-  end
-
-  def save_service_provider(service_provider)
-    service_provider.save!
-    flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    publish_service_provider
+    form.after_success do
+      flash[:success] = I18n.t(
+        'notices.service_provider_saved', issuer: draft_service_provider.issuer
+      )
+      publish_service_provider
+    end
+    form.after_errors do
+      flash[:error] = form.compile_errors
+    end
   end
 
   def publish_service_provider

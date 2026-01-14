@@ -193,24 +193,6 @@ class ServiceProvider < ApplicationRecord
     logo_file&.blob&.download
   end
 
-  def compile_errors
-    error_msg =
-      "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
-    errors.each do |err|
-      error_msg += if err.attribute == :prod_config && production_ready?
-                     '<li>Portal Configuration cannot be Production with localhost URLs</li>'
-                   else
-                     "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
-                   end
-    end
-    # this prevents cookie size error, it is an estimate
-    if error_msg.bytesize < 350
-      "#{error_msg}</ul>"
-    else
-      'Please fix errors on multiple fields.'
-    end
-  end
-
   private
 
   def set_status
