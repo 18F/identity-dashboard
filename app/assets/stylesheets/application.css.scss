@@ -139,12 +139,21 @@
 }
 
 .list-style-checkbox {
-  & li {
-    padding-left: 0.5em;
+  list-style: none;
+  padding-left: 0;
 
-    &::marker {
+  & li {
+    padding-left: 2.2em;
+    position: relative;
+    margin-bottom: 0.5em;
+
+    &::before {
       font-size: 1.2em;
       content: '☐';
+      position: absolute;
+      left: 0;
+      margin-left: 5px;
+      line-height: 1;
     }
   }
 }
