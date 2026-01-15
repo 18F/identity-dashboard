@@ -30,7 +30,7 @@ namespace :extracts do
     if !errors_present && !ARGV.include?('--dry-run')
       puts confirm_msg
       input = STDIN.gets.strip
-      if not /^y/i.match?(input)
+      unless /^y/i.match?(input)
         puts '--- Import Cancelled ---'
         exit 1
       end
