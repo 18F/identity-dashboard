@@ -34,14 +34,13 @@ describe ServiceProviderForm do
       allow(mock).to receive(:sp_errors)
       mock
     end
-    let(:service_provider) { ServiceProvider.new }
+    let(:service_provider) do
+      sp = ServiceProvider.new
+      sp.user = current_user
+      sp
+    end
 
     it 'populates errors and logs on validation failure' do
-      log_mock = instance_double(EventLogger)
-      allow(log_mock).to receive(:sp_errors)
-
-      service_provider = ServiceProvider.new
-
       subject = described_class.new(service_provider, current_user, log_mock)
       subject.validate_and_save
 
@@ -53,15 +52,11 @@ describe ServiceProviderForm do
            issuer:
            ["can't be blank",
             'is not formatted correctly. The issuer must be a unique string with no spaces.'],
-           team: ['must exist'],
-           user: ['must exist'] },
+           team: ['must exist'] },
       })
     end
 
     it 'formats HTML-friendly errors' do
-      service_provider = ServiceProvider.new
-      service_provider.user = current_user
-
       subject = described_class.new(service_provider, current_user, log_mock)
       subject.validate_and_save
 
@@ -76,6 +71,26 @@ describe ServiceProviderForm do
       expected_html.tr!("\n", '')
       subject.compile_errors
       expect(subject.compile_errors).to eq expected_html
+    end
+
+    it 'shortens a very long list of errors' do
+      service_provider.identity_protocol = :saml
+      service_provider.certs = ['invalid']
+      service_provider.redirect_uris = ['invalid']
+      service_provider.ial = 2
+      %i[
+        acs_url
+        assertion_consumer_logout_service_url
+        failure_to_proof_url
+        push_notification_url
+        return_to_sp_url
+      ].each do |attr|
+        service_provider[attr] = 'invalid'
+      end
+
+      subject = described_class.new(service_provider, current_user, log_mock)
+      subject.validate_and_save
+      expect(subject.compile_errors).to eq 'Please fix errors on multiple fields.'
     end
 
     it 'will not be saved? after validate_and_save' do
