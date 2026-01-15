@@ -39,15 +39,11 @@ class ServiceProviderForm < SimpleDelegator
 
     log_errors && return if errors.any?
 
-    save
+    @saved = save
   end
 
-  def after_success
-    yield unless errors.any?
-  end
-
-  def after_errors
-    yield if errors.any?
+  def saved?
+    @saved
   end
 
   def compile_errors

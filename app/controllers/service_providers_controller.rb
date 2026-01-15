@@ -60,7 +60,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    if !current_user.logingov_admin?
+    unless current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end
 
@@ -193,13 +193,11 @@ class ServiceProvidersController < AuthenticatedController
     form = ServiceProviderForm.new(@service_provider, current_user, log)
     form.validate_and_save
 
-    form.after_success do
+    if form.saved?
       flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
       publish_service_provider
       redirect_to service_provider_path(service_provider)
-    end
-
-    form.after_errors do
+    else
       flash[:error] = form.compile_errors
       render initial_action
     end

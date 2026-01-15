@@ -11,7 +11,8 @@ describe ServiceProviderForm do
     end
     let(:service_provider) { build(:service_provider) }
 
-    it 'can save' do
+    it 'will persist the record' do
+      expect(service_provider).to_not be_persisted
       subject = described_class.new(service_provider, current_user, log_mock)
       subject.validate_and_save
 
@@ -20,26 +21,10 @@ describe ServiceProviderForm do
       expect(service_provider).to be_persisted
     end
 
-    it 'will run any after_success block' do
+    it 'will be saved? after validate_and_save' do
       subject = described_class.new(service_provider, current_user, log_mock)
       subject.validate_and_save
-      flash = []
-      expected_data = rand(1..1000)
-      subject.after_success do
-        flash.push expected_data
-      end
-      expect(flash).to eq([expected_data])
-    end
-
-    it 'will not run any after_errors block' do
-      subject = described_class.new(service_provider, current_user, log_mock)
-      subject.validate_and_save
-      flash = []
-      expected_data = rand(1..1000)
-      subject.after_errors do
-        flash.push expected_data
-      end
-      expect(flash).to eq([])
+      expect(subject).to be_saved
     end
   end
 
@@ -71,7 +56,6 @@ describe ServiceProviderForm do
            team: ['must exist'],
            user: ['must exist'] },
       })
-      expect(service_provider).to_not be_persisted
     end
 
     it 'formats HTML-friendly errors' do
@@ -94,26 +78,11 @@ describe ServiceProviderForm do
       expect(subject.compile_errors).to eq expected_html
     end
 
-    it 'will run not any after_success block' do
+    it 'will not be saved? after validate_and_save' do
       subject = described_class.new(service_provider, current_user, log_mock)
       subject.validate_and_save
-      flash = []
-      expected_data = rand(1..1000)
-      subject.after_success do
-        flash.push expected_data
-      end
-      expect(flash).to eq([])
-    end
-
-    it 'will run any after_errors block' do
-      subject = described_class.new(service_provider, current_user, log_mock)
-      subject.validate_and_save
-      flash = []
-      expected_data = rand(1..1000)
-      subject.after_errors do
-        flash.push expected_data
-      end
-      expect(flash).to eq([expected_data])
+      expect(subject).to_not be_saved
+      expect(service_provider).to_not be_persisted
     end
   end
 end
