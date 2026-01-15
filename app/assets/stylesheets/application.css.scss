@@ -153,3 +153,9 @@
   word-wrap: break-word;
   max-width: 33rem;
 }
+
+.usa-link--external {
+  &::after {
+    margin-top: 0;
+  }
+}

@@ -1,5 +1,5 @@
 # for logging redirects to external developer documentation
-class DocsRedirectController < AuthenticatedController
+class DocsRedirectController < ApplicationController
   def show
     @destination = params[:destination] || ''
     unless @destination.blank?
