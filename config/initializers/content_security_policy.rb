@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'feature_management'
-
 Rails.application.config.content_security_policy do |policy|
   connect_src = ["'self'"]
 
