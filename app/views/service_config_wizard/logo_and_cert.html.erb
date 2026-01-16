@@ -16,7 +16,7 @@
         <div class="lg-card margin-top-2">
           <%= form.file_field :logo_file,
                             class: 'input-file logo-input-file',
-                            accept: sp_valid_logo_mime_types.join(',') %>
+                            accept: sp_valid_logo_mime_types %>
           <p class="usa-label"><%= I18n.t('service_provider_form.logo_input') %></p>
           <p <%= "class='usa-error-message'" if form.object.errors[:logo_file].present? %> id="logo-upload-error">
             <% if form.object.errors[:logo_file].present? %>

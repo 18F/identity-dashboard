@@ -222,7 +222,7 @@ describe ServiceProviderHelper do
 
   describe '#sp_valid_logo_mime_types' do
     it 'equals the valid mime types' do
-      expect(sp_valid_logo_mime_types).to eq(['image/png', 'image/svg+xml'])
+      expect(sp_valid_logo_mime_types).to eq('image/png,image/svg+xml')
     end
   end
 

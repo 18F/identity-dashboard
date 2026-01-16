@@ -32,7 +32,7 @@ module ServiceProviderHelper # :nodoc:
   end
 
   def sp_valid_logo_mime_types
-    LogoValidator::SP_VALID_LOGO_MIME_TYPES
+    LogoValidator::SP_VALID_LOGO_MIME_TYPES.join(',')
   end
 
   def titleize(protocol)
