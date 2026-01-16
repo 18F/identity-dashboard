@@ -33,11 +33,11 @@ RSpec.describe Seeders::AgencySeeder do
       it 'renames everything correctly with no errors' do
         agency_seeder.run!
 
-        agency_1 = Agency.find(1)
-        expect(agency_1.name).to eq('some other name')
+        agency1 = Agency.find(1)
+        expect(agency1.name).to eq('some other name')
 
-        agency_2 = Agency.find(2)
-        expect(agency_2.name).to eq('some name')
+        agency2 = Agency.find(2)
+        expect(agency2.name).to eq('some name')
       end
     end
 

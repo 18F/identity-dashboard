@@ -402,8 +402,8 @@ describe 'users' do
 
       it 'requires confirmation when user is not a verified partner admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        allow_any_instance_of(Teams::UsersController).
-          to receive(:verified_partner_admin?).and_return(false)
+        allow_any_instance_of(Teams::UsersController)
+          .to receive(:verified_partner_admin?).and_return(false)
         create(:service_provider, team:)
         membership = TeamMembership.find_by(user: readonly_team_member, team: team)
 
@@ -443,8 +443,8 @@ describe 'users' do
 
       it 'does not require confirmation if not in prod_like_env' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-        allow_any_instance_of(Teams::UsersController).
-          to receive(:verified_partner_admin?).and_return(false)
+        allow_any_instance_of(Teams::UsersController)
+          .to receive(:verified_partner_admin?).and_return(false)
         create(:service_provider, team:)
         membership = TeamMembership.find_by(user: readonly_team_member, team: team)
 

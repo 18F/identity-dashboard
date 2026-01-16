@@ -105,9 +105,9 @@ end
 
 RSpec::Matchers.define :have_description do |description|
   def descriptors(element)
-    element['aria-describedby']&.
-      split(' ')&.
-      map { |descriptor_id| page.find("##{descriptor_id}")&.text }
+    element['aria-describedby']
+      &.split(' ')
+      &.map { |descriptor_id| page.find("##{descriptor_id}")&.text }
   end
 
   match { |element| descriptors(element)&.include?(description) }
@@ -171,9 +171,9 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).select { |img| img[:'aria-hidden'].nil? }.
-      map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
-      join("\n")
+    img_tags = decorative_svgs(page).select { |img| img[:'aria-hidden'].nil? }
+      .map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }
+      .join("\n")
 
     <<~STR
       Expect all decorative SVGs to have aria-hidden, but found ones without:
@@ -227,10 +227,10 @@ class AccessibleName
     # "if computing a name, and the current node has an aria-labelledby attribute that contains at
     # least one valid IDREF, and the current node is not already part of an aria-labelledby
     # traversal, process its IDREFs in the order they occur"
-    valid_labels = element['aria-labelledby']&.
-      split(' ')&.
-      map { |label_id| page.find("##{label_id}")&.text }&.
-      compact
+    valid_labels = element['aria-labelledby']
+      &.split(' ')
+      &.map { |label_id| page.find("##{label_id}")&.text }
+      &.compact
 
     valid_labels.join('') if valid_labels.present?
   end

@@ -33,6 +33,6 @@ module Portal
         title: 'home.cards.saml.title',
         body: 'home.cards.saml.body',
       },
-    ]
+    ].freeze
   end
 end

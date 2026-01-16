@@ -56,15 +56,15 @@ class TeamAuditEvent < Struct.new(:event, :created_at, :whodunnit, :changes, :id
       raise ArgumentError, "Team #{team.name} is missing a team ID. Has it been saved yet?"
     end
 
-    scope.
-      where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES).
-      where('object_changes @> ?', { group_id: [team_id] }.to_json)
+    scope
+      .where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES)
+      .where('object_changes @> ?', { group_id: [team_id] }.to_json)
       .or(
         # In theory, nothing in the current application can intentionally null out the group_id
         # without deleting the user, too, but let's check for that just to be safe.
-        scope.
-          where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES).
-          where('object @> ?', { group_id: team_id }.to_json),
+        scope
+          .where(item_type: TEAM_MEMBERSHIP_EVENT_TYPES)
+          .where('object @> ?', { group_id: team_id }.to_json),
       )
   end
 

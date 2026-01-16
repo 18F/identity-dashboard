@@ -23,11 +23,11 @@ class ServiceProviderImporter
   end
 
   def service_provider_errors_any?
-    service_provider_errors.values.any? { |error| error.any? }
+    service_provider_errors.values.any?
   end
 
   def team_errors_any?
-    team_errors.values.any? { |error| error.any? }
+    team_errors.values.any?
   end
 
   private

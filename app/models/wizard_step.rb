@@ -85,13 +85,13 @@ class WizardStep < ApplicationRecord
 
   # A reverse lookup, answers the question:
   #     Given an attribute, which step does it belong to?
-  ATTRIBUTE_STEP_LOOKUP = STEP_DATA.
-    each_with_object({}) do |(step_name, definition), hash|
+  ATTRIBUTE_STEP_LOOKUP = STEP_DATA
+    .each_with_object({}) do |(step_name, definition), hash|
       definition.fields.keys.each do |field_name|
         hash[field_name] = step_name
       end
-    end.
-    freeze
+    end
+    .freeze
 
   belongs_to :user
 
@@ -183,9 +183,9 @@ class WizardStep < ApplicationRecord
   end
 
   def self.service_provider_to_wizard_attribute_map
-    @@service_provider_to_wizard_attribute_map ||= ServiceProvider.
-      attribute_names.
-      each_with_object({}) do |attribute_name, hash|
+    @@service_provider_to_wizard_attribute_map ||= ServiceProvider
+      .attribute_names
+      .each_with_object({}) do |attribute_name, hash|
         next if ['created_at', 'updated_at'].include? attribute_name
 
         hash[attribute_name] = case attribute_name
@@ -291,9 +291,9 @@ class WizardStep < ApplicationRecord
   def get_step(step_to_find)
     return self if step_name == step_to_find
 
-    WizardStepPolicy::Scope.new(user, self.class).
-      resolve.
-      find_or_initialize_by(user: user, step_name: step_to_find)
+    WizardStepPolicy::Scope.new(user, self.class)
+      .resolve
+      .find_or_initialize_by(user: user, step_name: step_to_find)
   end
 
   def ial

@@ -13,7 +13,7 @@ class PopulateRoles
     partner_readonly
     logingov_readonly
     logingov_admin
-  ]
+  ].freeze
 
   def initialize(logger)
     @logger = logger

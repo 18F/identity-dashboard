@@ -137,7 +137,7 @@ class EventsDocumenter
   private
 
   def param_names_for(method_object)
-    param_names = method_object.parameters.map { |p| p.first }
+    param_names = method_object.parameters.map &:first
     _splat_params, param_names = param_names.partition { |p| p.start_with?('**') }
 
     param_names.map { |p| p.chomp(':') }

@@ -23,14 +23,12 @@ module ServiceProviderHelper # :nodoc:
 
   def sp_logo_path(file_name)
     file = file_name || 'generic.svg'
-    'https://raw.githubusercontent.com/18F/identity-idp/main/app/assets/images/sp-logos/' +
-      file
+    "https://raw.githubusercontent.com/18F/identity-idp/main/app/assets/images/sp-logos/#{file}"
   end
 
   def sp_logo_preview_path(file_name)
     file = file_name || 'generic.svg'
-    'https://github.com/18F/identity-idp/blob/main/app/assets/images/sp-logos/' +
-      file
+    "https://github.com/18F/identity-idp/blob/main/app/assets/images/sp-logos/#{file}"
   end
 
   def sp_valid_logo_mime_types

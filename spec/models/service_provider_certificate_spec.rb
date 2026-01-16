@@ -17,8 +17,8 @@ RSpec.describe ServiceProviderCertificate do
     let(:not_after) { 1.day.ago }
 
     it 'wraps the expiration in ansi color codes to make it black on red' do
-      expect(cert.expiration_time_to_colorized_s).
-        to match(/\A\e\[0;30;41m#{not_after}\e\[0m\z/)
+      expect(cert.expiration_time_to_colorized_s)
+        .to match(/\A\e\[0;30;41m#{not_after}\e\[0m\z/)
     end
 
     it 'has an expired CSS style' do
@@ -30,8 +30,8 @@ RSpec.describe ServiceProviderCertificate do
     let(:not_after) { (5.days - 10.seconds).from_now }
 
     it 'wraps the expiration in ansi color codes to make it black on yellow' do
-      expect(cert.expiration_time_to_colorized_s).
-        to match(/\A\e\[0;30;103m#{not_after}\e\[0m\z/)
+      expect(cert.expiration_time_to_colorized_s)
+        .to match(/\A\e\[0;30;103m#{not_after}\e\[0m\z/)
     end
 
     it 'has a warning CSS style' do
@@ -43,8 +43,8 @@ RSpec.describe ServiceProviderCertificate do
     let(:not_after) { (5.days + 10.seconds).from_now }
 
     it 'does not wrap the expiration in ansi color codes' do
-      expect(cert.expiration_time_to_colorized_s).
-        to match(/\A#{not_after}\z/)
+      expect(cert.expiration_time_to_colorized_s)
+        .to match(/\A#{not_after}\z/)
     end
 
     it 'does not have a CSS style' do

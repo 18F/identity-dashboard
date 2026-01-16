@@ -40,8 +40,8 @@ RSpec.describe SecurityEventForm do
         security_event = SecurityEvent.last
         aggregate_failures do
           expect(security_event.user).to eq(user)
-          expect(security_event.event_type).
-            to eq('https://schemas.openid.net/secevent/risc/event-type/account-purged')
+          expect(security_event.event_type)
+            .to eq('https://schemas.openid.net/secevent/risc/event-type/account-purged')
           expect(security_event.uuid).to eq(payload[:jti])
           expect(security_event.issued_at.to_i).to eq(payload[:iat])
           expect(JSON.parse(security_event.raw_event)).to eq(JSON.parse(payload.to_json))

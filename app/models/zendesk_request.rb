@@ -17,7 +17,7 @@ class ZendeskRequest
       IdentityConfig.store.prod_like_env ? 'integration_change' : 'new_integration'
     }, # Request type
     4418367585684 => ->(_record) { 'on' }, # Ready to move to production attestation
-  }
+  }.freeze
 
   # This is separete because the host isn't available in the model
   ZENDESK_PORTAL_URL_ID = 4417948129556
@@ -25,8 +25,8 @@ class ZendeskRequest
 
   ZENDESK_TICKET_FIELD_INFORMATION = {
     4417940288916 => { label: 'application_url',
-      placeholder: 'https://yourapp.gov/',
-      input_type: 'text' },
+                       placeholder: 'https://yourapp.gov/',
+                       input_type: 'text' },
     14323206118676 => {
       label: 'audience',
       placeholder: nil,
@@ -40,37 +40,57 @@ class ZendeskRequest
         { label: 'Other', value: 'other' },
       ],
     },
-    4417547364628 => { label: 'billing_pocs',
+    4417547364628 => {
+      label: 'billing_pocs',
       placeholder: 'First Last - Director, Department - first.last@agency.gov - (555) 555-5555',
-      input_type: 'text' },
-    4417514509076 => { label: 'est_annual_reg',
+      input_type: 'text',
+    },
+    4417514509076 => {
+      label: 'est_annual_reg',
       placeholder: 100000,
-      input_type: 'number' },
-    4417513940756 => { label: 'est_auths',
+      input_type: 'number',
+    },
+    4417513940756 => {
+      label: 'est_auths',
       placeholder: 50000,
-      input_type: 'number' },
-    4975909708564 => { label: 'help_desk_contact_info',
+      input_type: 'number',
+    },
+    4975909708564 => {
+      label: 'help_desk_contact_info',
       placeholder: '(555) 555-5555 - support@agency.gov',
-      input_type: 'text' },
-    4417546214292 => { label: 'iaa_number',
+      input_type: 'text',
+    },
+    4417546214292 => {
+      label: 'iaa_number',
       placeholder: 'LGABCFY210001-0001-0000',
-      input_type: 'text' },
-    4417512374548 => { label: 'launch_date',
+      input_type: 'text',
+    },
+    4417512374548 => {
+      label: 'launch_date',
       placeholder: nil,
-      input_type: 'date' },
-    14323273767572 => { label: 'monthly_active_users',
+      input_type: 'date',
+    },
+    14323273767572 => {
+      label: 'monthly_active_users',
       placeholder: 20000,
-      input_type: 'number' },
-    4417948190868 => { label: 'pm_pocs',
+      input_type: 'number',
+    },
+    4417948190868 => {
+      label: 'pm_pocs',
       placeholder: 'First Last - Program Manager - first.last@agency.gov - (555) 555-5555',
-      input_type: 'text' },
-    14326923502100 => { label: 'seasonality',
+      input_type: 'text',
+    },
+    14326923502100 => {
+      label: 'seasonality',
       placeholder: nil,
-      input_type: 'text' },
-    4417940248340 => { label: 'tech_support_pocs',
+      input_type: 'text',
+    },
+    4417940248340 => {
+      label: 'tech_support_pocs',
       placeholder: 'First Last - Technical Lead - first.last@agency.gov - (555) 555-5555',
-      input_type: 'text' },
-  }
+      input_type: 'text',
+    },
+  }.freeze
 
   attr_accessor :portal_url, :requestor, :service_provider, :conn
 

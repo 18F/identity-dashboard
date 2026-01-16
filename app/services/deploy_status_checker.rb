@@ -6,8 +6,8 @@ class DeployStatusChecker
 
   Environment = Struct.new(:env, :statuses)
 
-  DEPLOYS = YAML.load_file(Rails.root.join('config/status_checks.yml'))['deploys'].
-    map { |deploy| Deploy.new(deploy['app'], deploy['env'], deploy['host']) }.freeze
+  DEPLOYS = YAML.load_file(Rails.root.join('config/status_checks.yml'))['deploys']
+    .map { |deploy| Deploy.new(deploy['app'], deploy['env'], deploy['host']) }.freeze
 
   Status = Struct.new(:app, :env, :host, :sha, :branch, :user, :timestamp, :error) do
     def status_class

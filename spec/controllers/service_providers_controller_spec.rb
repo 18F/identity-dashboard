@@ -12,7 +12,7 @@ describe ServiceProvidersController do
   let(:fixture_path) { File.expand_path('../fixtures/files', __dir__) }
   let(:logo_file_params) do
     Rack::Test::UploadedFile.new(
-      File.open(fixture_path + '/logo.svg'),
+      File.open(File.join(fixture_path, 'logo.svg')),
       'image/svg+xml',
       true,
       original_filename: 'alternative_filename.svg',
@@ -367,7 +367,7 @@ describe ServiceProvidersController do
 
         let(:new_logo_file_params) do
           Rack::Test::UploadedFile.new(
-            File.open(fixture_path + '/logo.png'),
+            File.open(File.join(fixture_path, 'logo.png')),
             'image/png',
             true,
             original_filename: 'new_logo.png',
@@ -771,8 +771,8 @@ describe ServiceProvidersController do
 
       context 'when ServiceProviderUpdater fails' do
         before do
-          stub_request(:post, IdentityConfig.store.idp_sp_url).
-            to_return(status: 404)
+          stub_request(:post, IdentityConfig.store.idp_sp_url)
+            .to_return(status: 404)
         end
 
         it 'redirects to service_providers_path' do

@@ -32,7 +32,7 @@ class ServiceProviderArchiver
   end
 
   def errors_any?
-    errors.values.any? { |error| error.any? }
+    errors.values.any?
   end
 
   private

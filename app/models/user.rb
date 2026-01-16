@@ -33,9 +33,9 @@ class User < ApplicationRecord
   end
 
   def user_deletion_history
-    PaperTrail::Version.
-      where(event: 'destroy', item_type: TeamAuditEvent::TEAM_MEMBERSHIP_EVENT_TYPES).
-      where("object ->>'user_id' = CAST(? as varchar)", id)
+    PaperTrail::Version
+      .where(event: 'destroy', item_type: TeamAuditEvent::TEAM_MEMBERSHIP_EVENT_TYPES)
+      .where("object ->>'user_id' = CAST(? as varchar)", id)
   end
 
   def user_deletion_report_item(deleted_record)
@@ -51,11 +51,11 @@ class User < ApplicationRecord
   end
 
   def user_deletion_history_report(limit: 5000)
-    user_deletion_history.
-      order(created_at: :desc).
-      limit(limit).
-      pluck(:object, :created_at, :whodunnit).
-      map do |deleted_record, removed_at, whodunnit_id|
+    user_deletion_history
+      .order(created_at: :desc)
+      .limit(limit)
+      .pluck(:object, :created_at, :whodunnit)
+      .map do |deleted_record, removed_at, whodunnit_id|
         deleted_record['removed_at'] = removed_at
         deleted_record['whodunnit_id'] = whodunnit_id
         user_deletion_report_item(deleted_record)

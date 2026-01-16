@@ -30,7 +30,7 @@ class Rack::Attack
       req.ip if req.ip != '127.0.0.1' && req.ip != '::1'
     end
   else
-    throttle('req/ip', limit: 100, period: 1.minute) do |req|
+    throttle('req/ip', limit: 100, period: 1.minute) do |req| # rubocop:disable Style/SymbolProc
       req.ip # unless req.path.start_with?('/assets')
     end
   end

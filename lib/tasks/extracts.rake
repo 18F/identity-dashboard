@@ -43,13 +43,13 @@ namespace :extracts do
     if ARGV.include?('--dry-run')
       puts '-- Dry Run --'
     else
-      (saved_sps, unsaved_sps) = importer.service_providers.partition { |m| m.persisted? }
+      (saved_sps, unsaved_sps) = importer.service_providers.partition &:persisted?
       output_models(saved_sps, unsaved_sps) { |models| puts issuers_list(models) }
       if saved_sps.any?
         export_models_to_file(saved_sps, "#{File.dirname(file_name)}/exported_models.json")
       end
 
-      (saved_teams, unsaved_teams) = importer.teams.partition { |m| m.persisted? }
+      (saved_teams, unsaved_teams) = importer.teams.partition &:persisted?
       output_models(saved_teams, unsaved_teams) { |models| puts teams_list(models) }
     end
     puts '--- Done ---'
