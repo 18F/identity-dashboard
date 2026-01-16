@@ -1,33 +1,47 @@
-# Be sure to restart your server when you modify this file.
+# frozen_string_literal: true
 
-# Define an application-wide content security policy
-# For further information see the following documentation
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
-# https://guides.rubyonrails.org/security.html#content-security-policy-header
+require 'feature_management'
 
-# Rails.application.config.content_security_policy do |policy|
-#   policy.default_src :self, :https
-#   policy.font_src    :self, :https, :data
-#   policy.img_src     :self, :https, :data
-#   policy.object_src  :none
-#   policy.script_src  :self, :https
-#   policy.style_src   :self, :https
+Rails.application.config.content_security_policy do |policy|
+  connect_src = ["'self'"]
 
-#   # Specify URI for violation reports
-#   # policy.report_uri "/csp-violation-report-endpoint"
+  font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-#   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-#   config.content_security_policy_nonce_directives = %w(script-src style-src)
-#
-#   # Report violations without enforcing the policy.
-#   # config.content_security_policy_report_only = true
-# end
+  image_src = [
+    "'self'",
+    'data:',
+    'login.gov',
+    IdentityConfig.store.asset_host.presence,
+    IdentityConfig.store.aws_region.presence &&
+      "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
+  ].select(&:present?)
 
-# If you are using UJS then enable automatic nonce generation
-# Rails.application.config.content_security_policy_nonce_generator = -> request { SecureRandom.base64(16) }
+  script_src = [:self, IdentityConfig.store.asset_host.presence].compact
+  script_src << :unsafe_eval if !Rails.env.production?
 
-# Report CSP violations to a specified URI
-# For further information see the following documentation:
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only
-# Rails.application.config.content_security_policy_report_only = true
+  style_src = [:self, IdentityConfig.store.asset_host.presence].compact
+
+  if ENV['WEBPACK_PORT']
+    connect_src << "ws://localhost:#{ENV['WEBPACK_PORT']}"
+    script_src << "localhost:#{ENV['WEBPACK_PORT']}"
+  end
+
+  policy.default_src :self
+  policy.child_src :self # CSP 2.0 only; replaces frame_src
+  policy.form_action :self
+  policy.block_all_mixed_content true # CSP 2.0 only;
+  policy.connect_src(*connect_src.flatten.compact)
+  policy.font_src(*font_src)
+  policy.img_src(*image_src)
+  policy.media_src :self
+  policy.object_src :none
+  policy.script_src(*script_src)
+  policy.style_src(*style_src)
+  policy.base_uri :self
+end
+
+# rubocop:enable Metrics/BlockLength
+Rails.application.configure do
+  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  config.content_security_policy_nonce_directives = ['script-src', 'style-src']
+end
