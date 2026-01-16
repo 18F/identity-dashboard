@@ -47,11 +47,11 @@ feature 'Logo upload' do
     end
 
     it 'renders an error if the logo has an invalid MIME type' do
-      attach_file('Choose a file', 'spec/fixtures/invalid.txt')
+      attach_file('Choose a file', 'spec/fixtures/logo.jpg')
       click_on 'Create'
 
       expect(page).to have_content(
-        'The file you uploaded (invalid.txt) is not a PNG or SVG',
+        'The file you uploaded (logo.jpg) is not a PNG or SVG',
       )
       expect(user.reload.service_providers.count).to eq(0)
     end
