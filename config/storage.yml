@@ -10,5 +10,3 @@ amazon:
   service: S3
   region: <%= IdentityConfig.store.aws_region %>
   bucket: <%= IdentityConfig.store.aws_logo_bucket %>
-  upload:
-    acl: 'public-read'
