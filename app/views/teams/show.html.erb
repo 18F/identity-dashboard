@@ -33,7 +33,10 @@
 <h2>Configurations: (<%= @team.service_providers.count %>)</h2>
 <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled">
   <% @team.service_providers.each do |a| %>
-    <li><%= link_to a.friendly_name, service_provider_path(a) %></li>
+    <li><%= link_to a.friendly_name,
+      service_provider_path(a),
+      { class: 'usa-link' } %>
+    </li>
   <% end %>
 </ul>
 
