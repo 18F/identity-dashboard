@@ -16,7 +16,7 @@
     form:,
     param_name: 'redirect_uris',
     input_type: 'multi-text',
-    text_list: @model.redirect_uris,
+    inputs: @model.redirect_uris,
   )) %>
   <%= render partial:'footer', locals: { form: form } %>
 <% end %>

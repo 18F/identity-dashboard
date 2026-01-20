@@ -691,6 +691,33 @@ feature 'Service Config Wizard' do
         'See "Type of Service Level" in the OpenID Connect Authorization section.',
       )
     end
+
+    it 'preserves redirect_uris when navigating back from help_text step' do
+      visit service_config_wizard_path('issuer')
+      fill_in('Issuer', with: "test:oidc:#{rand(1..1000)}")
+      click_on 'Next' # logo_and_cert
+      click_on 'Next' # redirects
+
+      redirect_uri = 'https://example.gov/callback'
+      fill_in('wizard_step[redirect_uris][]', with: redirect_uri)
+      click_on 'Next' # help_text
+      click_on 'Back' # redirects
+
+      expect(find_field('wizard_step[redirect_uris][]').value).to eq(redirect_uri)
+    end
+
+    it 'displays validation errors for invalid redirect_uris' do
+      visit service_config_wizard_path('issuer')
+      fill_in('Issuer', with: "test:oidc:#{rand(1..1000)}")
+      click_on 'Next' # logo_and_cert
+      click_on 'Next' # redirects
+
+      invalid_uri = 'not-a-valid-uri'
+      fill_in('wizard_step[redirect_uris][]', with: invalid_uri)
+      click_on 'Next'
+
+      expect(page).to have_content("#{invalid_uri} is not a valid URI")
+    end
   end
 
   context 'when selecting SAML' do
