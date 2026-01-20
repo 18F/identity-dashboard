@@ -54,7 +54,8 @@
 <% if service_provider.team.present? %>
   <h2 class="margin-bottom-0">
     <label for="team">Team:</label>
-    <span class="font-mono-xs margin-left-5"><%= link_to service_provider.team, service_provider.team %></span>
+    <span class="font-mono-xs margin-left-5"><%= link_to service_provider.team, service_provider.team,
+      {class: 'usa-link'} %></span>
   </h2>
   <p class="text-italic"><%= I18n.t('service_provider_form.team') %></p>
 <% end %>
