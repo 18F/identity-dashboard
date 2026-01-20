@@ -95,7 +95,6 @@ Metrics/AbcSize:
   Exclude:
     - 'app/controllers/airtable_controller.rb'
     - 'app/controllers/extracts_controller.rb'
-    - 'app/controllers/internal_reports_controller.rb'
     - 'app/controllers/service_config_wizard_controller.rb'
     - 'app/controllers/service_providers_controller.rb'
     - 'app/controllers/teams/users_controller.rb'
@@ -162,7 +161,6 @@ Metrics/MethodLength:
   Exclude:
     - 'app/components/wizard_fieldset_component.rb'
     - 'app/controllers/extracts_controller.rb'
-    - 'app/controllers/internal_reports_controller.rb'
     - 'app/controllers/service_config_wizard_controller.rb'
     - 'app/controllers/service_providers_controller.rb'
     - 'app/controllers/teams/users_controller.rb'

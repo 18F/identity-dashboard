@@ -699,6 +699,7 @@ Metrics/AbcSize:
 
 Metrics/ClassLength:
   Severity: info
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
 
 Metrics/CyclomaticComplexity:
   Severity: info
