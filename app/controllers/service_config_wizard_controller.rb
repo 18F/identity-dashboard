@@ -278,22 +278,17 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def validate_and_save_service_provider
-    clear_formatting(draft_service_provider)
+    form = ServiceProviderForm.new(draft_service_provider, current_user, log)
+    form.validate_and_save
 
-    draft_service_provider.valid?
-    draft_service_provider.valid_saml_settings?
-    draft_service_provider.valid_prod_config?
-    draft_service_provider.valid_localhost_uris? unless current_user.logingov_admin?
-
-    return save_service_provider(draft_service_provider) if draft_service_provider.errors.none?
-
-    flash[:error] = draft_service_provider.compile_errors
-  end
-
-  def save_service_provider(service_provider)
-    service_provider.save!
-    flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-    publish_service_provider
+    if form.saved?
+      flash[:success] = I18n.t(
+        'notices.service_provider_saved', issuer: draft_service_provider.issuer
+      )
+      publish_service_provider
+    else
+      flash[:error] = form.compile_errors
+    end
   end
 
   def publish_service_provider
@@ -302,31 +297,6 @@ class ServiceConfigWizardController < AuthenticatedController
     else
       flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 305"
     end
-  end
-
-  def clear_formatting(service_provider)
-    string_attributes = %w[
-      issuer
-      friendly_name
-      description
-      metadata_url
-      acs_url
-      assertion_consumer_logout_service_url
-      sp_initiated_login_url
-      return_to_sp_url
-      failure_to_proof_url
-      push_notification_url
-      app_name
-    ]
-
-    service_provider.attributes.each do |k, v|
-      v.try(:strip!) if string_attributes.include?(k)
-    end
-
-    service_provider&.redirect_uris&.each do |uri|
-      uri.try(:strip!)
-    end
-    service_provider
   end
 
   def body_attributes

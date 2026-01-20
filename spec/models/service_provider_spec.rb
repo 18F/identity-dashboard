@@ -45,9 +45,8 @@ describe ServiceProvider do
         it 'is not valid if the logo info is changing' do
           service_provider.logo = 'new_name.png'
           expect(service_provider).to_not be_valid
-
-          expect(service_provider.errors.first.message).to eq(
-            'Logo must be less than 50kB',
+          expect(service_provider.errors.full_messages).to eq(
+            ['Logo file must be less than 50kB'],
           )
         end
       end
@@ -214,7 +213,7 @@ describe ServiceProvider do
       it 'does not allow prod config false on update' do
         service_provider = build(:service_provider, :ready_to_activate, prod_config: false)
         service_provider.valid_prod_config?
-        prod_error = 'can\\t be a sandbox configuration'
+        prod_error = "can't be a sandbox configuration"
         expect(service_provider.errors[:prod_config]).to include(prod_error)
       end
     end

@@ -402,6 +402,13 @@ describe ServiceProvidersController do
         bad_logo = fixture_file_upload('../logo_without_size.svg')
         bad_logo_checksum = OpenSSL::Digest.base64digest('MD5', bad_logo.read)
 
+        expect(logger_double).to receive(:sp_errors).with({
+          errors: { logo_file: [
+            'The logo file you uploaded (logo_without_size.svg) is missing a viewBox. ' \
+            'Please add a viewBox attribute to your SVG and re-upload',
+          ] },
+        })
+
         put :update, params: {
           id: sp.id,
           service_provider: sp_logo_params.merge(logo_file: bad_logo),
@@ -430,6 +437,9 @@ describe ServiceProvidersController do
         end
 
         it 'fails when uploading a big file' do
+          expect(logger_double).to receive(:sp_errors).with({
+            errors: { logo_file: ['must be less than 50kB'] },
+          })
           put :update, params: {
             id: sp.id,
             service_provider: sp_logo_params,
@@ -496,13 +506,30 @@ describe ServiceProvidersController do
         StringIO.new(OpenSSL::X509::Certificate.new(build_pem).to_der),
         original_filename: 'my-cert.der',
       )
-
+      expect(logger_double).to receive(:sp_errors).with({
+        errors: { certs: ['Certificate is not PEM-encoded'] },
+      })
       expect do
         put :update, params: {
           id: sp.id,
           service_provider: { issuer: sp.issuer, cert: file, help_text: init_help_params },
         }
       end.to_not(change { sp.reload.certs&.size })
+    end
+
+    it 'logs a cert error no matter how invalid the cert is' do
+      image_file = fixture_file_upload('logo.png')
+
+      expect(logger_double).to receive(:sp_errors).with({
+        errors: { certs:
+          ['is invalid - PEM_read_bio_X509: no start line (Expecting: CERTIFICATE)',
+           'Certificate is not PEM-encoded'] },
+      })
+
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, cert: image_file },
+      }
     end
 
     it 'does not update cert array when cert data is null/empty' do

@@ -151,7 +151,7 @@ class ServiceProvider < ApplicationRecord
   def valid_prod_config?
     return unless IdentityConfig.store.prod_like_env && !production_ready?
 
-    errors.add(:prod_config, 'can\t be a sandbox configuration')
+    errors.add(:prod_config, "can't be a sandbox configuration")
   end
 
   # in the case of Long Form, :long_form should be passed in for extra checks.
@@ -191,24 +191,6 @@ class ServiceProvider < ApplicationRecord
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
     logo_file&.blob&.download
-  end
-
-  def compile_errors
-    error_msg =
-      "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
-    errors.each do |err|
-      error_msg += if err.attribute == :prod_config && production_ready?
-                     '<li>Portal Configuration cannot be Production with localhost URLs</li>'
-                   else
-                     "<li>#{I18n.t("service_provider_form.title.#{err.attribute}")}</li>"
-                   end
-    end
-    # this prevents cookie size error, it is an estimate
-    if error_msg.bytesize < 350
-      "#{error_msg}</ul>"
-    else
-      'Please fix errors on multiple fields.'
-    end
   end
 
   private
