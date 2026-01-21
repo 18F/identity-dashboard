@@ -28,17 +28,22 @@ class InternalReportsController < AuthenticatedController
   end
 
   def internal_membership_data
-    TeamMembership.left_joins(:team, :user)
+    # This creates an collection of objects with the attributes
+    #   :email (from user), :role_name (from team_membership), :uuid (from team), :name (from team)
+    data = TeamMembership.left_joins(:team, :user)
       .select(:email, :role_name, team: [:uuid, :name])
-      .where(group_id: Team.internal_team.id).map do |membership|
-        {
-          issuer: '',
-          team_uuid: membership.uuid,
-          team_name: membership.name,
-          user_email: membership.email,
-          role: Role.active_roles_names[membership.role_name],
-        }
-      end
+      .where(group_id: Team.internal_team.id)
+
+    # This maps those objects to the data schema we want to return
+    data.map do |membership|
+      {
+        issuer: '',
+        team_uuid: membership.uuid,
+        team_name: membership.name,
+        user_email: membership.email,
+        role: Role.active_roles_names[membership.role_name],
+      }
+    end
   end
 
   def service_provider_membership_data
@@ -55,15 +60,15 @@ class InternalReportsController < AuthenticatedController
     end
   end
 
-  # Joins ServiceProvider id and issuer attributes with
-  # Team group_id, name, and uuid attributes
+  # Joins `ServiceProvider` id and issuer attributes with
+  # `Team` group_id, name, and uuid attributes
   def service_provider_teams
     @service_provider_teams ||= ServiceProvider.left_joins(:team)
       .select(:id, :issuer, :group_id, :name, team: [:uuid])
       .where.not(group_id: nil)
   end
 
-  # Joins TeamMembership id and group_id with User email and Role name.
+  # Joins `TeamMembership` id and group_id with `User` email and `Role` name.
   # Left join allows email and role to be nil when the team has no members.
   def team_memberships
     @team_memberships ||= TeamMembership.left_joins(:user, :role)
