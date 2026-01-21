@@ -100,7 +100,7 @@ class Airtable
 
   def clear_token
     CACHE_KEYS.each do |cache_key|
-      Rails.cache.delete "#{current_user.uuid}.#{cache_key}"
+      Rails.cache.delete "#{@user_uuid}.#{cache_key}"
     end
   end
 
