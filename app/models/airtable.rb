@@ -12,7 +12,7 @@ class Airtable
     airtable_oauth_token_expiration
     airtable_oauth_refresh_token
     airtable_oauth_refresh_token_expiration
-  ]
+  ].freeze
 
   def initialize(user_uuid)
     @user_uuid = user_uuid
