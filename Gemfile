@@ -97,7 +97,7 @@ group :test do
   gem 'fakefs', require: 'fakefs/safe'
   gem 'rack_session_access'
   gem 'rails-controller-testing', '>= 1.0.5'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '>= 4.36.0'
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
   gem 'simplecov-cobertura'
