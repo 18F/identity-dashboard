@@ -25,7 +25,7 @@ class Airtable
     matched_records ||= []
     issuers.each do |issuer|
       response['records'].select do |r|
-        matched_records.push(r) if r['fields']['Issuer String'].include?(issuer)
+        matched_records.push(r) if r['fields']['Issuer String']&.include?(issuer)
       end
     end
 

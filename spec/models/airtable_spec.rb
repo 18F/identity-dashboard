@@ -15,10 +15,16 @@ RSpec.describe Airtable, type: :model do
   end
 
   describe '#get_matching_records' do
+    let(:user_token) { 'mocked_token' }
+    let(:app_id) { IdentityConfig.store.airtable_app_id }
+    let(:table_id) { IdentityConfig.store.airtable_table_id }
+
+    before do
+      Rails.cache.write("#{user_uuid}.airtable_oauth_token", user_token)
+    end
+
     it 'retrieves matching records' do
       issuers = ['Issuer 1', 'Issuer 2']
-      user_token = 'mocked_token'
-      Rails.cache.write("#{user_uuid}.airtable_oauth_token", user_token)
 
       response_body = {
         'records' => [
@@ -28,9 +34,59 @@ RSpec.describe Airtable, type: :model do
         'offset' => nil,
       }.to_json
 
-      # Include the missing headers in the request stub
-      app_id = IdentityConfig.store.airtable_app_id
-      table_id = IdentityConfig.store.airtable_table_id
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
+        .with(headers: {
+          'Authorization' => "Bearer #{user_token}",
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby',
+        })
+        .to_return(status: 200, body: response_body, headers: {})
+
+      records = airtable.get_matching_records(issuers)
+
+      expect(records.size).to eq(1)
+      expect(records.first['fields']['Issuer String']).to eq('Issuer 1')
+    end
+
+    it 'returns an empty array when no records match' do
+      issuers = ['urn:gov:gsa:app:one', 'urn:gov:gsa:app:two']
+
+      response_body = {
+        'records' => [
+          { 'fields' => { 'Issuer String' => 'urn:gov:gsa:app:other' } },
+          { 'fields' => { 'Issuer String' => 'urn:gov:gsa:app:different' } },
+        ],
+        'offset' => nil,
+      }.to_json
+
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
+        .with(headers: {
+          'Authorization' => "Bearer #{user_token}",
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby',
+        })
+        .to_return(status: 200, body: response_body, headers: {})
+
+      records = airtable.get_matching_records(issuers)
+
+      expect(records).to eq([])
+    end
+
+    it 'handles records with nil Issuer String field gracefully' do
+      issuers = ['Issuer 1']
+
+      response_body = {
+        'records' => [
+          { 'fields' => { 'Issuer String' => 'Issuer 1' } },
+          { 'fields' => { 'Other Field' => 'Some value' } },
+          { 'fields' => { 'Issuer String' => nil } },
+        ],
+        'offset' => nil,
+      }.to_json
 
       stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
         .with(headers: {

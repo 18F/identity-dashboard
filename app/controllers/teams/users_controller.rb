@@ -205,15 +205,13 @@ class Teams::UsersController < AuthenticatedController
       issuers.push(sp.issuer)
     end
 
-    airtable_api.get_matching_records(issuers).each do |record|
-      unless airtable_api.new_partner_admin_in_airtable?(
-        user.email, record
-      )
-        return false
-      end
-    end
+    matched_records = airtable_api.get_matching_records(issuers)
 
-    true
+    return false if matched_records.empty?
+
+    matched_records.each do |record|
+      airtable_api.new_partner_admin_in_airtable?(user.email, record)
+    end
   end
 
   def partner_admin_confirmation_needed?
