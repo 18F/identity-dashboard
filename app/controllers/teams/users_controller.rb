@@ -204,16 +204,14 @@ class Teams::UsersController < AuthenticatedController
     ServiceProvider.where(team: team).each do |sp|
       issuers.push(sp.issuer)
     end
+    
+    matched_records = airtable_api.get_matching_records(issuers)
 
-    airtable_api.get_matching_records(issuers).each do |record|
-      unless airtable_api.new_partner_admin_in_airtable?(
-        user.email, record
-      )
-        return false
-      end
+    return false if matched_records.empty?
+
+    matched_records.each do |record|
+      airtable_api.new_partner_admin_in_airtable?(user.email, record)
     end
-
-    true
   end
 
   def partner_admin_confirmation_needed?
