@@ -204,7 +204,7 @@ class Teams::UsersController < AuthenticatedController
     ServiceProvider.where(team: team).each do |sp|
       issuers.push(sp.issuer)
     end
-    
+
     matched_records = airtable_api.get_matching_records(issuers)
 
     return false if matched_records.empty?
