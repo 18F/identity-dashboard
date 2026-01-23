@@ -12,12 +12,16 @@ class Airtable
     @conn ||= Faraday.new
   end
 
-  def get_matching_records(issuers, offset = nil, matched_records = [])
-    response = fetch_records(offset)
-    matches = filter_records_by_issuers(response['records'], issuers)
-    matched_records.concat(matches)
+  def get_matching_records(issuers)
+    matched_records = []
+    offset = nil
 
-    return get_matching_records(issuers, response['offset'], matched_records) if response['offset']
+    loop do
+      response = fetch_records(offset)
+      matched_records.concat(filter_records_by_issuers(response['records'], issuers))
+      offset = response['offset']
+      break unless offset
+    end
 
     matched_records
   end
