@@ -12,24 +12,16 @@ class Airtable
     @conn ||= Faraday.new
   end
 
-  def get_matching_records(issuers, offset = nil, matched_records = nil)
-    app_id = IdentityConfig.store.airtable_app_id
-    table_id = IdentityConfig.store.airtable_table_id
-    all_records_uri = "#{BASE_API_URI}/#{app_id}/#{table_id}?offset=#{offset}"
+  def get_matching_records(issuers)
+    matched_records = []
+    offset = nil
 
-    @conn.headers = token_bearer_authorization_header
-    @conn ||= Faraday.new(url: all_records_uri)
-
-    resp = @conn.get(all_records_uri)
-    response = JSON.parse(resp.body)
-    matched_records ||= []
-    issuers.each do |issuer|
-      response['records'].select do |r|
-        matched_records.push(r) if r['fields']['Issuer String']&.include?(issuer)
-      end
+    loop do
+      response = fetch_records(offset)
+      matched_records.concat(filter_records_by_issuers(response['records'], issuers))
+      offset = response['offset']
+      break unless offset
     end
-
-    get_matching_records(issuers, response['offset'], matched_records) if response['offset']
 
     matched_records
   end
@@ -100,6 +92,23 @@ class Airtable
   end
 
   private
+
+  def fetch_records(offset = nil)
+    app_id = IdentityConfig.store.airtable_app_id
+    table_id = IdentityConfig.store.airtable_table_id
+    uri = "#{BASE_API_URI}/#{app_id}/#{table_id}?offset=#{offset}"
+
+    @conn.headers = token_bearer_authorization_header
+    resp = @conn.get(uri)
+    JSON.parse(resp.body)
+  end
+
+  def filter_records_by_issuers(records, issuers)
+    records.select do |record|
+      issuer_string = record.dig('fields', 'Issuer String')
+      issuer_string && issuers.any? { |issuer| issuer_string.include?(issuer) }
+    end
+  end
 
   def token_bearer_authorization_header
     { 'Content-Type' => 'application/x-www-form-urlencoded',
