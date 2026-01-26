@@ -888,13 +888,39 @@ feature 'Service Providers CRUD' do
     end
   end
 
-  scenario 'Delete' do
-    config = create(:service_provider, team:, user:)
+  describe 'Delete' do
+    context 'as logingov admin' do
+      let(:user_to_log_in_as) { logingov_admin }
 
-    visit service_provider_path(config)
-    click_on 'Delete'
+      it 'allows deletion on prod config' do
+        config = create(:service_provider, team:, user:, prod_config: true)
 
-    expect(page).to have_content('Success')
+        visit service_provider_path(config)
+        click_on 'Delete'
+
+        expect(page).to have_content('Success')
+      end
+      it 'allows deletion on sandbox config' do
+        config = create(:service_provider, team:, user:, prod_config: false)
+
+        visit service_provider_path(config)
+        click_on 'Delete'
+
+        expect(page).to have_content('Success')
+      end
+    end
+    it 'does not allow deletion on prod config' do
+      config = create(:service_provider, user:, prod_config: true)
+
+      visit service_provider_path(config)
+      expect(page).to_not have_button(t('forms.buttons.delete_service_provider'))
+    end
+    it 'allows deletion on sandbox config' do
+      config = create(:service_provider, user:, prod_config: false)
+
+      visit service_provider_path(config)
+      expect(page).to_not have_button(t('forms.buttons.delete_service_provider'))
+    end
   end
 
   describe 'status indicator' do
