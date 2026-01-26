@@ -8,6 +8,7 @@ class Extract
   validates :ticket, presence: true
   validates :search_by, inclusion: { in: ['teams', 'issuers'] }
   validate :file_and_or_list
+  validates :service_providers, presence: true
 
   # @param [String] ticket identifier used in file name
   # @param [String('teams', 'issuers')] search_by criteria to use

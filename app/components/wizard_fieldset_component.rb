@@ -28,16 +28,13 @@ class WizardFieldsetComponent < ViewComponent::Base
       raise ArgumentError, "#{self.class}: invalid `input_type` '#{input_type}"
     end
 
-    @form = form
-    @input_type = input_type
-    @param_name = param_name
+    @form, @input_type, @param_name = form, input_type, param_name
     @disabled = options[:disabled] || false
     @inputs = inputs
     @model_method = options[:model_method] || @param_name
-    @required = options[:required]
     @description_key = options[:description_key] || "#{model_method}_html"
     @label_translation_key = options[:label_key] || model_method
-    @default = options[:default]
+    @required, @default = options[:required], options[:default]
   end
 
   def required_class

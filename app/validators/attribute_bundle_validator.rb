@@ -46,13 +46,17 @@ class AttributeBundleValidator < ActiveModel::Validator
       return false
     end
 
-    if [1, '1'].include?(record.ial) && (record.attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
-      record.errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
-    end
+    ial_2_attributes_without_ial2_selected(record)
     true
   end
 
   private
+
+  def ial_2_attributes_without_ial2_selected(record)
+    if [1, '1'].include?(record.ial) && (record.attribute_bundle & ALLOWED_IAL2_ATTRIBUTES).present?
+      record.errors.add(:attribute_bundle, 'Contains ial 2 attributes when ial 1 is selected')
+    end
+  end
 
   def contains_invalid_attribute?(attribute_bundle)
     attribute_bundle.any? { |att| !ALL_ATTRIBUTES.key?(att) }
