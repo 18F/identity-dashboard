@@ -3,17 +3,35 @@
 class InternalReportsController < AuthenticatedController
   before_action :staff_only
 
-  # Return data schema is
+  # Return hash shape is
   #
-  #   * :issuer [String] ServiceProvider instance issuer (empty for internal roles)
+  #   * :issuer [String] ServiceProvider instance issuer
   #   * :team_uuid [UUID] Team instance UUID
   #   * :team_name [String] Team instance Id
   #   * :user_email [String] User instance email address
   #   * :role [String] TeamMembership instance Role.friendly_name
+  # @return [Array<Hash>]
   def user_permissions
-    data = sort_data(collect_memberships)
+    memberships = []
 
-    render renderable: UserPermissionsCsv.new(data)
+    service_provider_teams.each do |spt|
+      spt_membership = team_memberships.where(group_id: spt.group_id)
+      spt_membership.each do |spt_m|
+        memberships.push({
+          issuer: spt.issuer,
+          team_uuid: spt.uuid,
+          team_name: spt.name,
+          user_email: spt_m.email,
+          role: Role.active_roles_names[spt_m.name],
+        })
+      end
+    end
+
+    permissions_array = memberships.union(internal_team_roles).sort do |a, b|
+      [a[:issuer], a[:user_email]] <=> [b[:issuer], b[:user_email]]
+    end
+
+    render renderable: UserPermissionsCsv.new(permissions_array)
   end
 
   private
@@ -23,19 +41,30 @@ class InternalReportsController < AuthenticatedController
     raise AbstractController::ActionNotFound unless current_user.logingov_staff?
   end
 
-  def collect_memberships
-    internal_membership_data.union(service_provider_membership_data)
+  # @return [Array<ServiceProvider, Team>] Joins ServiceProvider issuer with
+  # Team group_id, name, and uuid
+  def service_provider_teams
+    @service_provider_teams ||= ServiceProvider.left_joins(:team)
+      .select(:id, :issuer, :group_id, :name, team: [:uuid])
+      .where.not(group_id: nil)
   end
 
-  def internal_membership_data
-    # This creates an collection of objects with the attributes
-    #   :email (from user), :role_name (from team_membership), :uuid (from team), :name (from team)
-    data = TeamMembership.left_joins(:team, :user)
+  # @return [Array<TeamMembership, User, Role>] Joins TeamMembership group_id
+  # with User email and Role name
+  def team_memberships
+    @team_memberships ||= TeamMembership.left_joins(:user, :role)
+      .select(:id, :email, :group_id, roles: [:name])
+  end
+
+  # We need to include `logingov_admin` roles in our report
+  # @return [Array<Hash>] of the same shape as `user_permissions`
+  def internal_team_roles
+    internal_memberships = TeamMembership.left_joins(:team, :user)
       .select(:email, :role_name, team: [:uuid, :name])
       .where(group_id: Team.internal_team.id)
-
-    # This maps those objects to the data schema we want to return
-    data.map do |membership|
+    # Issuer is not particularly relevant for the Internal Team, and
+    # we don't have any at the moment.
+    internal_memberships.map do |membership|
       {
         issuer: '',
         team_uuid: membership.uuid,
@@ -43,41 +72,6 @@ class InternalReportsController < AuthenticatedController
         user_email: membership.email,
         role: Role.active_roles_names[membership.role_name],
       }
-    end
-  end
-
-  def service_provider_membership_data
-    service_provider_teams.flat_map do |sp_team|
-      team_memberships.where(group_id: sp_team.group_id).map do |membership|
-        {
-          issuer: sp_team.issuer,
-          team_uuid: sp_team.uuid,
-          team_name: sp_team.name,
-          user_email: membership.email,
-          role: Role.active_roles_names[membership.name],
-        }
-      end
-    end
-  end
-
-  # Joins `ServiceProvider` id and issuer attributes with
-  # `Team` group_id, name, and uuid attributes
-  def service_provider_teams
-    @service_provider_teams ||= ServiceProvider.left_joins(:team)
-      .select(:id, :issuer, :group_id, :name, team: [:uuid])
-      .where.not(group_id: nil)
-  end
-
-  # Joins `TeamMembership` id and group_id with `User` email and `Role` name.
-  # Left join allows email and role to be nil when the team has no members.
-  def team_memberships
-    @team_memberships ||= TeamMembership.left_joins(:user, :role)
-      .select(:id, :email, :group_id, roles: [:name])
-  end
-
-  def sort_data(collection)
-    collection.sort do |a, b|
-      [a[:issuer], a[:user_email]] <=> [b[:issuer], b[:user_email]]
     end
   end
 end
