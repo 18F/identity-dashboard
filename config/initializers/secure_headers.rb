@@ -6,7 +6,7 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
-  form_action = if Rails.env.development?
+  form_action = if IdentityConfig.store.idp_url.match(/login\.gov$/)
                   ["'self'", '*.identitysandbox.gov']
                 else
                   ["'self'", '*.login.gov']
