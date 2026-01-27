@@ -7,9 +7,9 @@ SecureHeaders::Configuration.default do |config|
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
   form_action = if /login\.gov$/.match?(IdentityConfig.store.idp_url)
-                  ["'self'", '*.identitysandbox.gov']
-                else
                   ["'self'", '*.login.gov']
+                else
+                  ["'self'", '*.identitysandbox.gov']
                 end
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://www.google-analytics.com']
