@@ -888,13 +888,59 @@ feature 'Service Providers CRUD' do
     end
   end
 
-  scenario 'Delete' do
-    config = create(:service_provider, team:, user:)
+  describe 'Delete' do
+    context 'as logingov admin in prod' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
 
-    visit service_provider_path(config)
-    click_on 'Delete'
+      let(:user_to_log_in_as) { logingov_admin }
 
-    expect(page).to have_content('Success')
+      it 'allows deletion on prod config' do
+        config = create(:service_provider, team:, user:, prod_config: true)
+
+        visit service_provider_path(config)
+        click_on 'Delete'
+
+        expect(page).to have_content('Success')
+      end
+    end
+    context 'as login admin in sandbox' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      end
+
+      let(:user_to_log_in_as) { logingov_admin }
+
+      it 'allows deletion on sandbox config' do
+        config = create(:service_provider, team:, user: user_to_log_in_as, prod_config: false)
+
+        visit service_provider_path(config)
+        click_on 'Delete'
+
+        expect(page).to have_content('Success')
+      end
+    end
+    it 'does not allow deletion on prod config for non admin' do
+      config = create(:service_provider, user:, prod_config: true)
+
+      visit service_provider_path(config)
+      expect(page).to_not have_button(t('forms.buttons.delete_service_provider'))
+    end
+
+    context 'partner admin on sandbox config' do
+      let(:user_membership) { create(:team_membership, role_name: :partner_admin, team: team) }
+      let(:user_to_log_in_as) { user_membership.user }
+
+      it 'does allow deletion on sandbox config' do
+        config = create(:service_provider, user: user_to_log_in_as, group_id: team.id,
+                                           prod_config: false)
+        visit service_provider_path(config)
+        click_on 'Delete'
+
+        expect(page).to have_content('Success')
+      end
+    end
   end
 
   describe 'status indicator' do

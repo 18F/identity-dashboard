@@ -230,10 +230,12 @@
       class: 'usa-button float-left',
       method: :get %>
   <% end %>
-  <%= button_to t('forms.buttons.delete_service_provider'),
-    service_provider_path(service_provider),
-    class: 'usa-button usa-button--outline float-left',
-    method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
+  <% if policy(service_provider).destroy? %>
+    <%= button_to t('forms.buttons.delete_service_provider'),
+      service_provider_path(service_provider),
+      class: 'usa-button usa-button--outline float-left',
+      method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
+  <% end %>
 <% end %>
 
 
