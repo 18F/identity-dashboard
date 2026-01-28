@@ -12,6 +12,30 @@ RSpec.describe Banner, type: :model do
     expect(new_banner.valid?).to be(false)
   end
 
+  it 'does not allow links outside .gov domains' do
+    new_banner.message = '<a href="https://mal.com">clickme</a>'
+    expect(new_banner.valid?).to be_falsey
+
+    new_banner.message = "<a href='https://mal.com'>clickme</a>"
+    expect(new_banner.valid?).to be_falsey
+  end
+
+  it 'allows links to .gov domains' do
+    new_banner.message = '<a href="https://good.gov/go">clickme</a>'
+    expect(new_banner.valid?).to be_truthy
+
+    new_banner.message = "<a href='https://good.gov/go'>clickme</a>"
+    expect(new_banner.valid?).to be_truthy
+  end
+
+  it 'allows internal links' do
+    new_banner.message = '<a href="service_providers/new">clickme</a>'
+    expect(new_banner.valid?).to be_truthy
+
+    new_banner.message = "<a href='service_providers/new'>clickme</a>"
+    expect(new_banner.valid?).to be_truthy
+  end
+
   it 'is valid if start date is blank and end date is set' do
     new_banner.start_date = nil
     new_banner.end_date = Time.zone.now
