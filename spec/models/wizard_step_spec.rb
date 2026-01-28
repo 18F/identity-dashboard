@@ -458,6 +458,17 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#invalid?' do
+      it 'fails with an invalid host in redirect_uris' do
+        subject.wizard_form_data = {
+          redirect_uris: ["http://local'host:0"],
+        }
+
+        expect(subject).to_not be_valid
+        expect(subject.errors[:redirect_uris]).to include(
+          "http://local'host:0 has an invalid host",
+        )
+      end
+
       it 'fails with bad URLs' do
         subject.wizard_form_data = {
           push_notification_url: 'http//badgov/',
