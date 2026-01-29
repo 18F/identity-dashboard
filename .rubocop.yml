@@ -621,6 +621,9 @@ Style/ParallelAssignment:
 #     '%w': '[]'
 #     '%W': '[]'
 
+Style/RegexpLiteral:
+  Enabled: false
+
 # Style/SafeNavigation:
 #   Enabled: true
 #   ConvertCodeThatCanStartToReturnNil: false
