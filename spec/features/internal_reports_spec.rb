@@ -57,9 +57,7 @@ feature 'internal reports' do
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
 
-        expect(csv_response.length).to eq(11)
-
-        expect(csv_response).to eq(expected_table)
+        expect(csv_response).to eq(expected_table_with_roleless_users)
       end
 
       it 'when user is Login.gov Readonly' do
@@ -70,11 +68,33 @@ feature 'internal reports' do
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
 
-        expect(csv_response.length).to eq(11)
-
-        expect(csv_response).to eq(expected_table)
+        expect(csv_response).to eq(expected_table_with_roleless_users)
       end
     end
+  end
+
+  describe 'includes users without team memberships' do
+    let!(:user_without_team) { create(:user, email: 'orphan@example.gov') }
+
+    it 'shows the user with empty team and role fields' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+      login_as logingov_admin
+      visit internal_reports_user_permissions_path(format: 'csv')
+      csv_response = CSV.parse(body)
+
+      orphan_row = csv_response.find { |row| row[3] == user_without_team.email }
+      expect(orphan_row).to eq(['', '', '', user_without_team.email, ''])
+    end
+  end
+
+  def expected_table_with_roleless_users
+    roleless_rows = User.where.missing(:team_memberships).order(:email).pluck(:email).map do |email|
+      ['', '', '', email, '']
+    end
+    header = [expected_table.first]
+    data_rows = (expected_table[1..] + roleless_rows).sort_by { |row| [row[0].to_s, row[3].to_s] }
+    header + data_rows
   end
 
   def expected_table

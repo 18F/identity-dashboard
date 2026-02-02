@@ -27,8 +27,9 @@ class InternalReportsController < AuthenticatedController
       end
     end
 
-    permissions_array = memberships.union(internal_team_roles).sort do |a, b|
-      [a[:issuer], a[:user_email]] <=> [b[:issuer], b[:user_email]]
+    all_permissions = (memberships + internal_team_roles + users_without_team_memberships)
+    permissions_array = all_permissions.sort_by do |entry|
+      [entry[:issuer].to_s, entry[:user_email].to_s]
     end
 
     render renderable: UserPermissionsCsv.new(permissions_array)
@@ -73,5 +74,21 @@ class InternalReportsController < AuthenticatedController
         role: Role.active_roles_names[membership.role_name],
       }
     end
+  end
+
+  # Users with no team memberships
+  # @return [Array<Hash>] of the same shape as `user_permissions`
+  def users_without_team_memberships
+    User.where.missing(:team_memberships)
+      .pluck(:email)
+      .map do |email|
+        {
+          issuer: '',
+          team_uuid: '',
+          team_name: '',
+          user_email: email,
+          role: '',
+        }
+      end
   end
 end
