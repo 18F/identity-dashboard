@@ -9,7 +9,7 @@ module TeamHelper # :nodoc:
     allowlisted_user?(user) || user.logingov_admin?
   end
 
-  def can_delete_team?(user)
+  def can_delete_team?(user, team)
     user.logingov_admin?
   end
 
