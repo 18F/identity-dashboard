@@ -27,7 +27,8 @@ class InternalReportsController < AuthenticatedController
       end
     end
 
-    permissions_array = (memberships + internal_team_roles + users_without_team_memberships).sort_by do |entry|
+    all_members = (memberships + internal_team_roles + users_without_team_memberships)
+    permissions_array = all_members.sort_by do |entry|
       [entry[:issuer].to_s, entry[:user_email].to_s]
     end
 
@@ -78,8 +79,7 @@ class InternalReportsController < AuthenticatedController
   # Users with no team memberships
   # @return [Array<Hash>] of the same shape as `user_permissions`
   def users_without_team_memberships
-    User.left_joins(:team_memberships)
-      .where(team_memberships: { id: nil })
+    User.where.missing(:team_memberships)
       .pluck(:email)
       .map do |email|
         {
