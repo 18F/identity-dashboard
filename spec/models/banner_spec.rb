@@ -15,6 +15,8 @@ RSpec.describe Banner, type: :model do
   it 'does not allow links outside .gov domains' do
     new_banner.message = '<a href="https://mal.com">clickme</a>&<a href="https://mal.me">click</a>'
     expect(new_banner.valid?).to be_falsey
+    expect(new_banner.errors.messages_for(:message)).to include('link has disallowed host: mal.com')
+    expect(new_banner.errors.messages_for(:message)).to include('link has disallowed host: mal.me')
 
     new_banner.message = "<a href='https://good.gov'>click</a>&<a href='https://mal.com'>clickme</a>"
     expect(new_banner.valid?).to be_falsey
