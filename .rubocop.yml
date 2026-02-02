@@ -696,6 +696,8 @@ Metrics:
 Metrics/MethodLength:
   Severity: info
   CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
+  # default is 10, we found need for more space
+  Max: 11
 
 Metrics/AbcSize:
   Severity: info
