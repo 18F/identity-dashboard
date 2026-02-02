@@ -27,8 +27,8 @@ class InternalReportsController < AuthenticatedController
       end
     end
 
-    all_members = (memberships + internal_team_roles + users_without_team_memberships)
-    permissions_array = all_members.sort_by do |entry|
+    all_permissions = (memberships + internal_team_roles + users_without_team_memberships)
+    permissions_array = all_permissions.sort_by do |entry|
       [entry[:issuer].to_s, entry[:user_email].to_s]
     end
 
