@@ -5,7 +5,7 @@ class Banner < ApplicationRecord
             comparison: { greater_than: :start_date, message: 'must be after start date' },
             if: :start_date?,
             allow_blank: true
-  validate :link_allowed
+  validate :links_valid?
 
   def started?
     start_date ? start_time < Time.zone.now : true
@@ -29,25 +29,21 @@ class Banner < ApplicationRecord
 
   private
 
-  def link_allowed
-    doc = Nokogiri::HTML(message)
-    links = doc.search('a')
+  def links_valid?
+    links = Nokogiri::HTML(message).search('a')
     return true unless links.present?
 
     links.each do |link|
       href = link.attribute_nodes.detect { |attr| attr.name == 'href' }
-      if href.value.present?
-        begin
-          uri = URI(href.value)
-        rescue URI::InvalidURIError
-          errors.add(:message, "anchor link has invalid href")
-          return false
-        end
-        host = uri.host
-        if host && !host.end_with?('.gov')
-          errors.add(:message, "link has disallowed host: #{host}")
-        end
+      next unless href.value.present?
+
+      begin
+        uri = URI(href.value)
+      rescue URI::InvalidURIError
+        errors.add(:message, 'anchor link has invalid href') && next
       end
+      host = uri.host
+      errors.add(:message, "link has disallowed host: #{host}") if host && !host.end_with?('.gov')
     end
 
     false if errors.present?
