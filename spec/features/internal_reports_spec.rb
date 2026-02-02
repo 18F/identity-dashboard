@@ -77,6 +77,21 @@ feature 'internal reports' do
     end
   end
 
+  describe 'includes users without team memberships' do
+    let!(:user_without_team) { create(:user, email: 'orphan@example.gov') }
+
+    it 'shows the user with empty team and role fields' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+      login_as logingov_admin
+      visit internal_reports_user_permissions_path(format: 'csv')
+      csv_response = CSV.parse(body)
+
+      orphan_row = csv_response.find { |row| row[3] == user_without_team.email }
+      expect(orphan_row).to eq(['', '', '', user_without_team.email, ''])
+    end
+  end
+
   def expected_table
     [
       ['Issuer', 'Team', 'Team UUID', 'User email', 'Role'],
