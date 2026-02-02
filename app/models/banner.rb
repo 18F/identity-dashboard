@@ -30,13 +30,26 @@ class Banner < ApplicationRecord
   private
 
   def link_allowed
-    href = message.match(/href=['|"]([a-zA-Z0-9\/:\-_.?#&%]+)['|"]/)
-    return unless href
+    doc = Nokogiri::HTML(message)
+    links = doc.search('a')
+    return true unless links.present?
 
-    host = URI(href[1]).host
-    return true if !host || host.end_with?('.gov')
+    links.each do |link|
+      href = link.attribute_nodes.detect { |attr| attr.name == 'href' }
+      if href.value.present?
+        begin
+          uri = URI(href.value)
+        rescue URI::InvalidURIError
+          errors.add(:message, "anchor link has invalid href")
+          return false
+        end
+        host = uri.host
+        if host && !host.end_with?('.gov')
+          errors.add(:message, "link has disallowed host: #{host}")
+        end
+      end
+    end
 
-    errors.add(:message, "link has disallowed host: #{host}")
-    false
+    false if errors.present?
   end
 end
