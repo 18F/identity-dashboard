@@ -12,6 +12,38 @@ RSpec.describe Banner, type: :model do
     expect(new_banner.valid?).to be(false)
   end
 
+  it 'does not allow links outside .gov domains' do
+    new_banner.message = '<a href="https://mal.com">clickme</a>&<a href="https://mal.me">click</a>'
+    expect(new_banner.valid?).to be_falsey
+    expect(new_banner.errors.messages_for(:message)).to include('link has disallowed host: mal.com')
+    expect(new_banner.errors.messages_for(:message)).to include('link has disallowed host: mal.me')
+
+    new_banner.message = "<a href='https://good.gov'>click</a>&<a href='https://mal.com'>clickme</a>"
+    expect(new_banner.valid?).to be_falsey
+  end
+
+  it 'allows links to .gov domains' do
+    new_banner.message = '<a href="https://good.gov/go">clickme</a>'
+    expect(new_banner.valid?).to be_truthy
+
+    new_banner.message = "<a href='https://good.gov/go'>clickme</a>&<a href='https://best.gov'>click</a>"
+    expect(new_banner.valid?).to be_truthy
+  end
+
+  it 'allows internal links' do
+    new_banner.message = '<a href="service_providers/new">clickme</a>'
+    expect(new_banner.valid?).to be_truthy
+
+    new_banner.message = "<a href='service_providers/new'>clickme</a>"
+    expect(new_banner.valid?).to be_truthy
+  end
+
+  it 'catches invalid hrefs on message links' do
+    # the href is missing a closing single quote
+    new_banner.message = "<a href='https://good.gov>click</a>"
+    expect(new_banner.valid?).to be_falsey
+  end
+
   it 'is valid if start date is blank and end date is set' do
     new_banner.start_date = nil
     new_banner.end_date = Time.zone.now

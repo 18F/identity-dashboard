@@ -621,6 +621,9 @@ Style/ParallelAssignment:
 #     '%w': '[]'
 #     '%W': '[]'
 
+Style/RegexpLiteral:
+  Enabled: false
+
 # Style/SafeNavigation:
 #   Enabled: true
 #   ConvertCodeThatCanStartToReturnNil: false
@@ -693,6 +696,8 @@ Metrics:
 Metrics/MethodLength:
   Severity: info
   CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
+  # default is 10, we found need for more space
+  Max: 11
 
 Metrics/AbcSize:
   Severity: info
