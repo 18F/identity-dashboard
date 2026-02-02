@@ -411,7 +411,7 @@ feature 'TeamMembership CRUD' do
     scenario 'allow as Partner Admin on sandbox' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
 
-      user = create(:user, :team_member)
+      user = create(:user, :partner_admin)
       team = user.teams.first
       login_as(user)
 

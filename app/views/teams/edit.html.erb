@@ -29,7 +29,7 @@
   </div>
 <% end %>
 
-<% if can_delete_team?(current_user) %>
+<% if policy(@team).destroy? %>
   <%= button_to(
           'Delete',
           team_path(@team),
