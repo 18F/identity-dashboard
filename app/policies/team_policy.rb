@@ -12,7 +12,9 @@ class TeamPolicy < BasePolicy # :nodoc: all
   end
 
   def destroy?
-    user_has_login_admin_role?
+    return user_has_login_admin_role? if IdentityConfig.store.prod_like_env
+
+    edit?
   end
 
   def edit?

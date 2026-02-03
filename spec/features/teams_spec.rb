@@ -381,29 +381,58 @@ feature 'TeamMembership CRUD' do
     end
   end
 
-  scenario 'Delete' do
-    team = create(:team)
-    login_as(logingov_admin)
+  describe 'Delete' do
+    scenario 'as Login.gov Admin' do
+      team = create(:team)
+      login_as(logingov_admin)
 
-    visit teams_all_path
-    find("a[href='#{edit_team_path(team)}']").click
-    click_on 'Delete'
+      visit teams_all_path
+      find("a[href='#{edit_team_path(team)}']").click
+      click_on 'Delete'
 
-    expect(page).to have_current_path(teams_all_path)
-    expect(page).to have_content('Success')
-    expect(page).to_not have_content(team.name)
-  end
+      expect(page).to have_current_path(teams_all_path)
+      expect(page).to have_content('Success')
+      expect(page).to_not have_content(team.name)
+    end
 
-  scenario 'Delete when a team still has service providers' do
-    team = create(:team)
-    create(:service_provider, team:)
+    scenario 'when a team still has service providers' do
+      team = create(:team)
+      create(:service_provider, team:)
 
-    login_as(logingov_admin)
+      login_as(logingov_admin)
 
-    visit edit_team_path(team)
-    click_on 'Delete'
+      visit edit_team_path(team)
+      click_on 'Delete'
 
-    expect(page).to have_current_path(edit_team_path(team))
-    expect(page).to have_content(I18n.t('notices.team_delete_failed'))
+      expect(page).to have_current_path(edit_team_path(team))
+      expect(page).to have_content(I18n.t('notices.team_delete_failed'))
+    end
+
+    scenario 'allow as Partner Admin on sandbox' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+
+      user = create(:user, :partner_admin)
+      team = user.teams.first
+      login_as(user)
+
+      visit edit_team_path(team)
+      click_on 'Delete'
+
+      expect(page).to have_current_path(teams_path)
+      expect(page).to have_content('Success')
+      expect(page).to_not have_content(team.name)
+    end
+
+    scenario 'forbid as Partner Admin on prod' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+      user = create(:user, :team_member)
+      team = user.teams.first
+      login_as(user)
+
+      visit edit_team_path(team)
+
+      expect(page).to_not have_content('Delete')
+    end
   end
 end

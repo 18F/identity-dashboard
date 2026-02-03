@@ -9,10 +9,6 @@ module TeamHelper # :nodoc:
     allowlisted_user?(user) || user.logingov_admin?
   end
 
-  def can_delete_team?(user)
-    user.logingov_admin?
-  end
-
   def allowlisted_user?(user)
     ALLOWLISTED_DOMAINS.any? { |domain| user.email.end_with? domain }
   end

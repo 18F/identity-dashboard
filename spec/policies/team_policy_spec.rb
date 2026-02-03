@@ -155,7 +155,13 @@ describe TeamPolicy do
       expect(TeamPolicy).to_not permit(logingov_readonly, team)
     end
 
+    it 'allows Partner Admins on sandbox' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      expect(TeamPolicy).to permit(partner_admin_user, team)
+    end
+
     it 'forbids partners' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       expect(TeamPolicy).to_not permit(partner_admin_user, team)
       expect(TeamPolicy).to_not permit(user_not_on_team, team)
       expect(TeamPolicy).to_not permit(partner_readonly_user, team)
