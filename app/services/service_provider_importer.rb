@@ -75,17 +75,12 @@ class ServiceProviderImporter
 
   def create_available_teams
     @teams = data['teams'].uniq.map do |config|
-      if Team.exists?(uuid: config['uuid'])
-        Team.find_by(uuid: config['uuid'])
-      else
-        team = Team.new(
-          uuid: config['uuid'],
-          name: config['name'],
-          description: config['description'],
-          agency_id: config['agency_id'],
-        )
-        team
-      end
+      Team.find_by(uuid: config['uuid']) || Team.new(
+        uuid: config['uuid'],
+        name: config['name'],
+        description: config['description'],
+        agency_id: config['agency_id'],
+      )
     end
   end
 
