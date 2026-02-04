@@ -75,14 +75,14 @@ describe ServiceProviderImporter do
 
     it 'is idempotent for teams' do
       # This ensures we can add configs to existing teams
-      test_team = Team.create({
-        "id": 6,
-        "created_at": "2024-06-18T18:27:13Z",
-        "updated_at": "2025-10-06T18:09:59Z",
-        "name": "Test Team Goes Boom",
-        "description": "",
-        "agency_id": 106,
-        "uuid": "69c251d7-0185-4550-b2bc-de2834e08e2f"
+      Team.create({
+        id: 6,
+        created_at: '2024-06-18T18:27:13Z',
+        updated_at: '2025-10-06T18:09:59Z',
+        name: 'Test Team Goes Boom',
+        description: '',
+        agency_id: 106,
+        uuid: '69c251d7-0185-4550-b2bc-de2834e08e2f',
       })
       expect { importer.run }
         .to change { ServiceProvider.count }.by(5)
