@@ -132,6 +132,7 @@ Metrics/ClassLength:
     - 'app/controllers/users_controller.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/wizard_step.rb'
+    - 'app/services/service_provider_importer.rb'
 
 # Offense count: 10
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
@@ -143,6 +144,7 @@ Metrics/CyclomaticComplexity:
     - 'app/models/help_text.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/team_membership.rb'
+    - 'app/services/service_provider_importer.rb'
     - 'lib/events_documenter.rb'
 
 # Offense count: 33
