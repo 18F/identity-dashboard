@@ -106,7 +106,7 @@ class ServiceProvidersController < AuthenticatedController
     if ServiceProviderUpdater.post_update == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
-      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 84"
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
     redirect_to service_providers_path
   end
@@ -194,7 +194,6 @@ class ServiceProvidersController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
       publish_service_provider
       redirect_to service_provider_path(service_provider)
     else
@@ -207,7 +206,7 @@ class ServiceProvidersController < AuthenticatedController
     if ServiceProviderUpdater.post_update(body_attributes) == 200
       flash[:notice] = I18n.t('notices.service_providers_refreshed')
     else
-      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 154"
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
   end
 

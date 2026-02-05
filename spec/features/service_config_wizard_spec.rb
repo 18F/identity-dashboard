@@ -214,10 +214,6 @@ feature 'Service Config Wizard' do
       expect(saved_config_data['certs'])
         .to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
             'cert failed to save as expected'
-      expect(page).to have_content(
-        t('notices.service_provider_saved',
-          issuer: expected_data['issuer']),
-      )
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(logingov_admin))
         .to eq({}), 'error: draft data not deleted'
