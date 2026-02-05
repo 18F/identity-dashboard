@@ -18,7 +18,7 @@ class ServiceProviderImporter
 
     return errors if service_provider_errors_any? || team_errors_any?
 
-    save unless dry_run
+    save_configs && save_teams unless dry_run
     errors
   end
 
@@ -75,13 +75,12 @@ class ServiceProviderImporter
 
   def create_available_teams
     @teams = data['teams'].uniq.map do |config|
-      team = Team.new(
+      Team.find_by(uuid: config['uuid']) || Team.new(
         uuid: config['uuid'],
         name: config['name'],
         description: config['description'],
         agency_id: config['agency_id'],
       )
-      team
     end
   end
 
@@ -127,7 +126,7 @@ class ServiceProviderImporter
     sp.errors.add(:logo_file, message: "'#{sp.logo}' is missing.")
   end
 
-  def save
+  def save_configs
     service_providers.each do |sp|
       if sp.logo.present? && @from_gzip
         logo_data = File.open(File.join(extract_destination, sp.logo))
@@ -135,7 +134,12 @@ class ServiceProviderImporter
       end
       sp.save!
     end
-    teams.each &:save!
+  end
+
+  def save_teams
+    teams_to_save = teams.filter { |team| !Team.exists?(uuid: team['uuid']) }
+    @teams = teams_to_save
+    teams_to_save.each &:save!
   end
 
   def attach_logo(sp, logo_data)

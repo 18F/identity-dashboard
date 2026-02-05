@@ -57,13 +57,13 @@ namespace :extracts do
 
   def output_models(saved, unsaved)
     if saved.any?
-      puts 'Saved data for'
+      puts "\nSaved data for"
       yield(saved)
     end
 
     return unless unsaved.any?
 
-    puts 'Did not save data for'
+    puts "\nDid not save data for"
     yield(unsaved)
   end
 
