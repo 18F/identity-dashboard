@@ -194,7 +194,7 @@ class ServiceProvidersController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      publish_service_provider
+      publish_service_provider(initial_action)
       redirect_to service_provider_path(service_provider)
     else
       flash[:error] = form.compile_errors
@@ -202,9 +202,13 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-  def publish_service_provider
+  def publish_service_provider(initial_action)
     if ServiceProviderUpdater.post_update(body_attributes) == 200
-      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      flash[:notice] = if initial_action == :edit
+                         I18n.t('notices.service_providers_refreshed')
+                       else
+                         I18n.t('notices.service_providers_new')
+                       end
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
