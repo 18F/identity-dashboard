@@ -467,6 +467,14 @@ describe 'users' do
     context 'when partner admin' do
       before { login_as partner_admin_team_member }
 
+      it 'does not show Airtable OAuth message on team/users/edit in prod_like_env' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+
+        visit edit_team_user_path(team, team_member)
+
+        expect(page).to_not have_content('you must first connect with Airtable')
+      end
+
       it 'does not show edit button for self' do
         editable_user = [team_member, readonly_team_member].sample
 

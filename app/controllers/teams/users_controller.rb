@@ -22,7 +22,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def edit
-    if IdentityConfig.store.prod_like_env
+    if IdentityConfig.store.prod_like_env && current_user.logingov_admin?
       airtable_api = Airtable.new(current_user.uuid)
       if airtable_api.has_token?
         @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
