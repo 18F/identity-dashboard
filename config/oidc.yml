@@ -8,6 +8,6 @@ development:
 
 production:
   <<: *default
-  client_id: urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:lgpartnerportal
+  client_id: "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:<%= Identity::Hostdata.env == 'prod' ? 'lgpartnerportal' : 'dashboard' %>"
   idp_url: "<%= IdentityConfig.store.idp_url %>"
   dashboard_url: "<%= IdentityConfig.store.saml_sp_issuer %>"
