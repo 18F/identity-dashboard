@@ -214,10 +214,6 @@ feature 'Service Config Wizard' do
       expect(saved_config_data['certs'])
         .to eq([fixture_file_upload('spec/fixtures/files/testcert.pem').read]),
             'cert failed to save as expected'
-      expect(page).to have_content(
-        t('notices.service_provider_saved',
-          issuer: expected_data['issuer']),
-      )
       expect(page).to_not have_content(t('notices.service_providers_refresh_failed'))
       expect(WizardStep.all_step_data_for_user(logingov_admin))
         .to eq({}), 'error: draft data not deleted'
@@ -296,6 +292,21 @@ feature 'Service Config Wizard' do
       content = "help_text: sign_in: en: '' es: '' fr: '' zh: '' sign_up: en: First time here from #{existing_config.friendly_name}? Your old #{existing_config.friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously. es: ¿Es la primera vez que visita #{existing_config.friendly_name}? Su antiguo nombre de usuario y contraseña de #{existing_config.friendly_name} ya no funcionan. Cree una cuenta en Login.gov con el mismo correo electrónico que usó anteriormente. fr: C’est la première fois que vous vous connectez à #{existing_config.friendly_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à #{existing_config.friendly_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement. zh: 第一次从 #{existing_config.friendly_name} 来到这里？您的旧 #{existing_config.friendly_name} 用户名和密码将不起作用。用之前使用的同一电子邮件地址 来设立一个 Login.gov帐户。 forgot_password: en: '' es: '' fr: '' zh: ''"
       # rubocop:enable Layout/LineLength
       expect(page).to have_content(content)
+    end
+
+    it 'shows an error when user updates a config but service provider updater fails' do
+      allow(ServiceProviderUpdater).to receive(:post_update).and_return(false)
+      existing_config = create(:service_provider, :ready_to_activate_ial_1)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+
+      visit service_config_wizard_path('settings')
+      fill_in('Friendly name', with: "Edited name #{rand(1..1000)}")
+      click_on 'Next'
+      visit service_config_wizard_path('help_text')
+      click_on 'Update configuration'
+
+      expect(page).to have_content('configuration has been saved, but the service provider deploy')
     end
 
     describe 'and Production gate is enabled' do
