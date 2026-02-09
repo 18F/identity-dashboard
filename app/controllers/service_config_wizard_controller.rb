@@ -247,10 +247,6 @@ class ServiceConfigWizardController < AuthenticatedController
       current_user.logingov_admin?
   end
 
-  def initial_action
-    @initial_action ||= ServiceProvider.exists?(draft_service_provider.id) ? :edit : :create
-  end
-
   def when_skipping_models
     action_name == 'new' ||
       step == STEPS.first ||
@@ -282,7 +278,6 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def validate_and_save_service_provider
-    initial_action
     form = ServiceProviderForm.new(draft_service_provider, current_user, log)
     form.validate_and_save
 
@@ -295,7 +290,7 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def publish_service_provider
     if ServiceProviderUpdater.post_update(body_attributes) == 200
-      flash[:notice] = if initial_action == :edit
+      flash[:notice] = if @model.existing_service_provider?
                          I18n.t('notices.service_providers_refreshed')
                        else
                          I18n.t('notices.service_providers_new')

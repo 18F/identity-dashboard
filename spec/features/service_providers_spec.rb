@@ -735,11 +735,9 @@ feature 'Service Providers CRUD' do
 
       fill_in 'Friendly name', with: 'change service_provider name'
       fill_in 'Description', with: 'configuration description foobar'
-      choose 'SAML'
-      check 'last_name'
       click_on 'Update'
 
-      expect(page).to have_content('Error(s) found in these fields:')
+      expect(page).to have_content('configuration has been saved, but the service provider deploy')
     end
 
     context 'when managing certificates' do

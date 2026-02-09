@@ -294,6 +294,21 @@ feature 'Service Config Wizard' do
       expect(page).to have_content(content)
     end
 
+    it 'shows an error when user updates a config but service provider updater fails' do
+      allow(ServiceProviderUpdater).to receive(:post_update).and_return(false)
+      existing_config = create(:service_provider, :ready_to_activate_ial_1)
+      visit service_provider_path(existing_config)
+      click_on 'Edit'
+
+      visit service_config_wizard_path('settings')
+      fill_in('Friendly name', with: "Edited name #{rand(1..1000)}")
+      click_on 'Next'
+      visit service_config_wizard_path('help_text')
+      click_on 'Update configuration'
+
+      expect(page).to have_content('configuration has been saved, but the service provider deploy')
+    end
+
     describe 'and Production gate is enabled' do
       before do
         allow(IdentityConfig.store).to receive_messages(
