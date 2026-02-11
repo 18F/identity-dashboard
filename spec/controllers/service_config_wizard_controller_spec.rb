@@ -760,10 +760,11 @@ RSpec.describe ServiceConfigWizardController do
         allow(controller).to receive(:publish_service_provider)
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
 
-        put :update, params: { id: 'settings', wizard_step: {
-          friendly_name: "no publish #{rand(1...1000)}"},
-          prod_config: true,
-        }
+        put :update, params: { id: 'settings',
+                               wizard_step: {
+                                 friendly_name: "no publish #{rand(1...1000)}",
+                               },
+                               prod_config: true }
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
 
         service_provider.reload
