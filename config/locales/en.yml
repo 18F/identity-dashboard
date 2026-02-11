@@ -162,15 +162,15 @@ en:
   notices:
     confirm_delete: Are you sure you want to delete this user?
     service_provider_deleted: Success! You have deleted %{issuer}
-    service_provider_saved: Success! You have saved %{issuer}
     service_provider_help_text_html: For assistance, please reach out to the <a href="https://zendesk.login.gov" class="usa-link usa-link--external" target="_blank">partner support help desk</a>. Help text guidance is provided in the <a href="/documentation?destination=user-experience/help-text/" class="usa-link" target="_blank">User experience section of the developer docs</a>. Please review the guidance before requesting support.
     service_provider_help_text_no_permission_html: You do not have permissions to adjust the help text. Please reach out to your team admin or the <a href='https://zendesk.login.gov/' class='usa-link usa-link--external'>partner support help desk</a>.
     service_provider_iaa_notice:
         All configuration changes or new configurations must be promoted to production following the process outlined in the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
         <br/><br/>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
-    service_providers_refresh_failed: Failed to publish service providers. Email partners@login.gov for support.
-    service_providers_refreshed: Success! Service providers publish request has been sent.
+    service_providers_refresh_failed: <p class="usa-alert__text margin-left-3">Your configuration has been saved, but the <a href='/documentation?destination=production/#service-provider-notification-failure' target='_blank' class='usa-link usa-link--external'>service provider deployment could not be initiated at this time</a>.</p>
+    service_providers_refreshed: You have edited a configuration. Service provider deployment has been initiated.
+    service_providers_new: You have created a configuration. Service provider deployment has been initiated.
     team_delete_failed: Only teams without configs can be deleted. Reassign or delete the configs first.
     user_already_exists: This user already exists
     user_deleted: Success! You have deleted %{email}

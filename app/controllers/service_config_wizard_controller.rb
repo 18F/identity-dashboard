@@ -282,9 +282,6 @@ class ServiceConfigWizardController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      flash[:success] = I18n.t(
-        'notices.service_provider_saved', issuer: draft_service_provider.issuer
-      )
       publish_service_provider
     else
       flash[:error] = form.compile_errors
@@ -293,9 +290,13 @@ class ServiceConfigWizardController < AuthenticatedController
 
   def publish_service_provider
     if ServiceProviderUpdater.post_update(body_attributes) == 200
-      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      flash[:notice] = if @model.existing_service_provider?
+                         I18n.t('notices.service_providers_refreshed')
+                       else
+                         I18n.t('notices.service_providers_new')
+                       end
     else
-      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 305"
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
   end
 
