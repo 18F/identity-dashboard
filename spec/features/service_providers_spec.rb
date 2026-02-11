@@ -44,7 +44,7 @@ feature 'Service Providers CRUD' do
       end
 
       expect(page).to have_content('You have created a configuration.')
-      expect(page).to have_content(I18n.t('notices.service_providers_new'))
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
       expect(page).to have_content('test service_provider')
       expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:config-prod')
       expect(page).to have_content('email')

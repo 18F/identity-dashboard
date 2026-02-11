@@ -282,7 +282,12 @@ class ServiceConfigWizardController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      publish_service_provider
+      return publish_service_provider unless IdentityConfig.store.prod_like_env
+
+      flash[:notice] = I18n.t(
+        'notices.service_provider_saved',
+        issuer: draft_service_provider.issuer,
+      )
     else
       flash[:error] = form.compile_errors
     end
@@ -293,7 +298,7 @@ class ServiceConfigWizardController < AuthenticatedController
       flash[:notice] = if @model.existing_service_provider?
                          I18n.t('notices.service_providers_refreshed')
                        else
-                         I18n.t('notices.service_providers_new')
+                         I18n.t('notices.service_providers_refreshed_new')
                        end
     else
       flash[:error] = I18n.t('notices.service_providers_refresh_failed')

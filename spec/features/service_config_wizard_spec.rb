@@ -388,6 +388,7 @@ feature 'Service Config Wizard' do
         click_on 'Create configuration' # details page
         expect(page).to_not have_content('Error(s) found in these fields')
         expect(page).to have_content("Details for \"#{test_name}\"")
+        expect(page).to have_content("You have saved #{issuer_name}")
       end
     end
   end

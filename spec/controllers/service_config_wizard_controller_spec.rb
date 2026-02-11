@@ -733,6 +733,7 @@ RSpec.describe ServiceConfigWizardController do
     context 'and Production gate is enabled' do
       let(:service_provider) do
         create(:service_provider,
+               :with_prod_config,
                :ready_to_activate_ial_1,
                team: team,
                issuer: "issuer:string:#{rand(1...1000)}",
@@ -747,15 +748,26 @@ RSpec.describe ServiceConfigWizardController do
       it 'does not allow Partners to update IAL on existing configs' do
         initial_ial = service_provider.reload.attributes['ial']
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
-        expect(logger_double).to receive(:sp_errors).with({
-          errors: { prod_config: ["can't be a sandbox configuration"] },
-        })
 
         put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
         # fails silently
         updated_ial = service_provider.reload.attributes['ial']
         expect(updated_ial).to eq(initial_ial)
+      end
+
+      it 'does not attempt to publish configs' do
+        allow(controller).to receive(:publish_service_provider)
+        default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
+
+        put :update, params: { id: 'settings', wizard_step: {
+          friendly_name: "no publish #{rand(1...1000)}"},
+          prod_config: true,
+        }
+        put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
+
+        service_provider.reload
+        expect(controller).to_not have_received(:publish_service_provider)
       end
     end
   end
