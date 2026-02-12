@@ -35,7 +35,7 @@ class ServiceProviderForm < SimpleDelegator
     valid?
     valid_saml_settings?
     valid_prod_config?
-    valid_localhost_uris? unless current_user.logingov_admin?
+    # valid_localhost_uris? unless current_user.logingov_admin?
 
     log_errors && return if errors.any?
 
