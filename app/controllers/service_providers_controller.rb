@@ -104,9 +104,9 @@ class ServiceProvidersController < AuthenticatedController
   def publish
     authorize ServiceProviderUpdater
     if ServiceProviderUpdater.post_update == 200
-      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      flash[:notice] = I18n.t('notices.service_providers_refresh_only')
     else
-      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 84"
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
     redirect_to service_providers_path
   end
@@ -194,8 +194,9 @@ class ServiceProvidersController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      flash[:success] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
-      publish_service_provider
+      # this is not accessible from P3, but publish must be disabled if
+      # this becomes accessible on prod
+      publish_service_provider(initial_action)
       redirect_to service_provider_path(service_provider)
     else
       flash[:error] = form.compile_errors
@@ -203,11 +204,15 @@ class ServiceProvidersController < AuthenticatedController
     end
   end
 
-  def publish_service_provider
+  def publish_service_provider(initial_action)
     if ServiceProviderUpdater.post_update(body_attributes) == 200
-      flash[:notice] = I18n.t('notices.service_providers_refreshed')
+      flash[:notice] = if initial_action == :edit
+                         I18n.t('notices.service_providers_refreshed')
+                       else
+                         I18n.t('notices.service_providers_refreshed_new')
+                       end
     else
-      flash[:error] = "#{I18n.t('notices.service_providers_refresh_failed')} Ref: 154"
+      flash[:error] = I18n.t('notices.service_providers_refresh_failed')
     end
   end
 
