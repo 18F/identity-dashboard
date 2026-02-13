@@ -17,8 +17,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     Array(uris).each do |uri_string|
       check_valid_host(uri_string)
     end
-# TODO: does this throw a localhost error when admin changes it?
-# or when we legit don't change the URI?
+
     # Only validate if the attribute is changing
     return if attribute_unchanged(attribute)
 
@@ -31,14 +30,14 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
   def attribute_unchanged(attribute)
     if is_wizard?
-      changed_form_data = @record.changed['wizard_form_data']
+      changed_form_data = @record.changes['wizard_form_data']
       attr_key = attribute.to_s
 
       !changed_form_data || (
         changed_form_data[0] && changed_form_data[0][attr_key] == changed_form_data[1][attr_key]
       )
     else
-      @record.changes[attribute]
+      !@record.changes[attribute]
     end
   end
 
@@ -62,7 +61,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
     # check if a nonadmin is using localhost on a prod_ready config
     if localhost_is_disallowed? && (uri.host&.match(/(localhost|127\.0\.0)/) || uri.scheme == 'localhost')
-       
+      @record.errors.delete attribute if @record.errors[attribute].include? 'is invalid'
       @record.errors.add(attribute, "'localhost' is not allowed on Production")
     end
   end

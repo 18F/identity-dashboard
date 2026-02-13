@@ -24,6 +24,16 @@ class ServiceProviderForm < SimpleDelegator
     app_name
   ].freeze
 
+  URI_ATTRIBUTES = %i[
+    redirect_uris
+    failure_to_proof_url
+    push_notification_url
+    acs_url
+    sp_initiated_login_url
+    return_to_sp_url
+    assertion_consumer_logout_service_url
+  ]
+
   def initialize(service_provider, current_user, log)
     @current_user, @log = current_user, log
     super(service_provider)
@@ -47,6 +57,7 @@ class ServiceProviderForm < SimpleDelegator
   end
 
   def compile_errors
+    puts 'abcde'
     error_msg =
       "<p class='usa-alert__text'>Error(s) found in these fields:</p><ul class='usa-list'>"
     error_msg += translate_errors.join
@@ -62,9 +73,16 @@ class ServiceProviderForm < SimpleDelegator
   private
 
   def translate_errors
+    puts "translate_errors"
     errors.map(&:attribute).uniq.map do |attribute|
-      if attribute == :prod_config && production_ready?
-        '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+      if production_ready?
+        puts "prod_ready: #{attribute}"
+        if attribute == :prod_config
+          '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+        elsif URI_ATTRIBUTES.include? attribute
+          puts "attribute included: #{attribute}"
+          "<li>#{I18n.t("service_provider_form.title.#{attribute}")}: #{errors[attribute][0]}</li>"
+        end
       else
         "<li>#{I18n.t("service_provider_form.title.#{attribute}")}</li>"
       end
