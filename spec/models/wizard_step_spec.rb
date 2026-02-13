@@ -352,11 +352,11 @@ RSpec.describe WizardStep, type: :model do
   end
 
   context 'step "redirects"' do
-    let(:subject_user) { create(:user) }
+    let(:redirects_user) { create(:user) }
     let(:admin_user) { create(:user, :logingov_admin) }
 
     subject do
-      build(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
+      create(:wizard_step, user: redirects_user, step_name: 'redirects', wizard_form_data: {
         push_notification_url: '',
         failure_to_proof_url: '',
         redirect_uris: '',
@@ -397,7 +397,7 @@ RSpec.describe WizardStep, type: :model do
 
       describe 'production_ready' do
         subject do
-          build(:wizard_step, user: admin_user, step_name: 'redirects')
+          create(:wizard_step, user: admin_user, step_name: 'redirects')
         end
         before do
           create(:wizard_step, user: admin_user, step_name: 'settings', wizard_form_data: {
@@ -407,7 +407,7 @@ RSpec.describe WizardStep, type: :model do
 
         context 'admin_user' do
           subject do
-            build(:wizard_step, user: admin_user, step_name: 'redirects')
+            create(:wizard_step, user: admin_user, step_name: 'redirects')
           end
 
           it 'allows logingov_admin to use localhost URLs' do
@@ -425,7 +425,7 @@ RSpec.describe WizardStep, type: :model do
 
         context 'existing localhost URLs' do
           subject do
-            create(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
+            create(:wizard_step, user: redirects_user, step_name: 'redirects', wizard_form_data: {
               push_notification_url: 'http://localhost:3001/',
               failure_to_proof_url: 'https://localhost:3001',
               redirect_uris: ['https://localhost:3001/somepath'],
@@ -496,7 +496,7 @@ RSpec.describe WizardStep, type: :model do
 
       describe 'production_ready' do
         before do
-          create(:wizard_step, user: first_user, step_name: 'settings', wizard_form_data: {
+          create(:wizard_step, user: redirects_user, step_name: 'settings', wizard_form_data: {
             prod_config: true,
           })
         end
@@ -517,7 +517,7 @@ RSpec.describe WizardStep, type: :model do
 
         context 'existing localhost URLs' do
           subject do
-            create(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
+            create(:wizard_step, user: redirects_user, step_name: 'redirects', wizard_form_data: {
               push_notification_url: 'http://localhost:3001/',
               failure_to_proof_url: 'https://localhost:3001',
               redirect_uris: ['https://localhost:3001/somepath'],

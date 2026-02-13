@@ -81,12 +81,12 @@ feature 'Service Providers CRUD' do
       click_on 'Update'
 
       expect(page).to have_content('Portal Configuration cannot be Production with localhost URLs')
-      # expect(page.body).to include(
-      #   "<li>#{I18n.t('service_provider_form.title.push_notification_url')}",
-      # )
-      # expect(page.body).to include(
-      #   "<li>#{I18n.t('service_provider_form.title.failure_to_proof_url')}",
-      # )
+      expect(page.body).to include(
+        "<li>#{I18n.t('service_provider_form.title.push_notification_url')}",
+      )
+      expect(page.body).to include(
+        "<li>#{I18n.t('service_provider_form.title.failure_to_proof_url')}",
+      )
     end
 
     scenario 'saml fields are shown on sp show page when saml is selected' do
