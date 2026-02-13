@@ -38,7 +38,6 @@ class ServiceProvider < ApplicationRecord
                  attribute: :return_to_sp_url
   validates_with RedirectsValidator,
                  attribute: :assertion_consumer_logout_service_url
-                 # todo: use a lambda
 
   STATUSES = %w[pending live rejected moved_to_prod].freeze
 
@@ -163,44 +162,43 @@ class ServiceProvider < ApplicationRecord
     errors.empty?
   end
 
-  def valid_prod_config?
-    return unless IdentityConfig.store.prod_like_env && !production_ready?
-
-    errors.add(:prod_config, "can't be a sandbox configuration")
+  def valid_sandbox_config?
+    if IdentityConfig.store.prod_like_env && !production_ready?
+      return errors.add(:prod_config, "can't be a sandbox configuration")
+    end
   end
 
-  # in the case of Long Form, :long_form should be passed in for extra checks.
-  # def valid_localhost_uris?
-  #   saml_settings = %w[
-  #     acs_url
-  #     assertion_consumer_logout_service_url
-  #     sp_initiated_login_url
-  #     return_to_sp_url
-  #     push_notification_url
-  #     failure_to_proof_url
-  #     redirect_uris
-  #   ]
-  #   oidc_settings = %w[
-  #     push_notification_url
-  #     failure_to_proof_url
-  #     redirect_uris
-  #   ]
+  def valid_prod_config?
+    saml_settings = %w[
+      acs_url
+      assertion_consumer_logout_service_url
+      sp_initiated_login_url
+      return_to_sp_url
+      push_notification_url
+      failure_to_proof_url
+      redirect_uris
+    ]
+    oidc_settings = %w[
+      push_notification_url
+      failure_to_proof_url
+      redirect_uris
+    ]
 
-  #   settings = saml? ? saml_settings : oidc_settings
-  #   prod_config_changed = changes['prod_config']
-  #   changed_to_prod = prod_config_changed && prod_config_changed[1]
-  #   settings.each do |attr|
-  #     changes = self.changes[attr]
-  #     next unless prod_localhost?(attr)
+    settings = saml? ? saml_settings : oidc_settings
+    prod_config_changed = changes['prod_config']
+    changed_to_prod = prod_config_changed && prod_config_changed[1]
 
-  #     if changed_to_prod && errors.where(:prod_config).empty?
-  #       errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
-  #     end
-  #     if changes && changes[0] != changes[1]
-  #       errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
-  #     end
-  #   end
-  # end
+    settings.each do |attr|
+      changes = self.changes[attr]
+      next unless prod_localhost?(attr)
+      if changed_to_prod && errors.where(:prod_config).empty?
+        errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
+      end
+      if changes && changes[0] != changes[1]
+        errors.add(attr.to_sym, ' can\'t use "localhost" on Production')
+      end
+    end
+  end
 
   def pending_or_current_logo_data
     return attachment_changes_string_buffer if attachment_changes['logo_file'].present?

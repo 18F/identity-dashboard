@@ -29,7 +29,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
   private
 
   def attribute_unchanged(attribute)
-    if is_wizard?
+    if wizard?
       changed_form_data = @record.changes['wizard_form_data']
       attr_key = attribute.to_s
 
@@ -55,15 +55,19 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
   def check_nonadmin_localhost_redirect(uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)
+
     return unless validating_uri.parseable?
 
     uri = validating_uri.uri
 
     # check if a nonadmin is using localhost on a prod_ready config
-    if localhost_is_disallowed? && (uri.host&.match(/(localhost|127\.0\.0)/) || uri.scheme == 'localhost')
-      @record.errors.delete attribute if @record.errors[attribute].include? 'is invalid'
-      @record.errors.add(attribute, "'localhost' is not allowed on Production")
+    unless localhost_is_disallowed? && (uri.host&.match(/(localhost|127\.0\.0)/) ||
+      uri.scheme == 'localhost')
+      return
     end
+
+    @record.errors.delete attribute if @record.errors[attribute].include? 'is invalid'
+    @record.errors.add(attribute, "'localhost' is not allowed on Production")
   end
 
   def localhost_is_disallowed?
@@ -71,7 +75,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     @record.production_ready? && !user.logingov_admin?
   end
 
-  def is_wizard?
-    @record.class.name == 'WizardStep'
+  def wizard?
+    @record.instance_of?(::WizardStep)
   end
 end
