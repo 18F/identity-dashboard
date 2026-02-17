@@ -9,7 +9,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
   def validate(record)
     super
     self.attribute ||= :redirect_uris
-    @record ||= record
+    @record = record
     uris = get_attribute(record)
 
     return if uris.blank?

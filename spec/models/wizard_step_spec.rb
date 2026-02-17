@@ -498,6 +498,7 @@ RSpec.describe WizardStep, type: :model do
         before do
           create(:wizard_step, user: first_user, step_name: 'settings', wizard_form_data: {
             prod_config: true,
+            group_id: 1,
           })
         end
 
@@ -517,7 +518,6 @@ RSpec.describe WizardStep, type: :model do
 
         context 'existing localhost URLs' do
           subject do
-            puts "aabbcc: #{first_user.deleted_at}"
             create(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
               push_notification_url: 'http://localhost:3001/',
               failure_to_proof_url: 'https://localhost:3001',

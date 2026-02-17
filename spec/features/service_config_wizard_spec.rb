@@ -713,7 +713,6 @@ feature 'Service Config Wizard' do
       redirect_uri = 'https://example.gov/callback'
       fill_in('wizard_step[redirect_uris][]', with: redirect_uri)
       click_on 'Next' # help_text
-      binding.pry
       click_on 'Back' # redirects
 
       expect(find_field('wizard_step[redirect_uris][]').value).to eq(redirect_uri)
