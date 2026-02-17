@@ -495,11 +495,11 @@ RSpec.describe WizardStep, type: :model do
       end
 
       describe 'production_ready' do
-        before do
+        subject do
           create(:wizard_step, user: first_user, step_name: 'settings', wizard_form_data: {
             prod_config: true,
-            group_id: 1,
           })
+          create(:wizard_step, user: first_user, step_name: 'redirects')
         end
 
         it 'fails when a non-logingov_admin uses localhost' do
@@ -515,30 +515,33 @@ RSpec.describe WizardStep, type: :model do
             "'localhost' is not allowed on Production",
           )
         end
+      end
 
-        context 'existing localhost URLs' do
-          subject do
-            create(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
-              push_notification_url: 'http://localhost:3001/',
-              failure_to_proof_url: 'https://localhost:3001',
-              redirect_uris: ['https://localhost:3001/somepath'],
-            })
-          end
+      describe 'production ready with existing localhost URLs' do
+        subject do
+          create(:wizard_step, user: first_user, step_name: 'settings', wizard_form_data:    {
+            prod_config: true,
+          })
+          create(:wizard_step, user: first_user, step_name: 'redirects', wizard_form_data: {
+            push_notification_url: 'http://localhost:3001/',
+            failure_to_proof_url: 'https://localhost:3001',
+            redirect_uris: ['https://localhost:3001/somepath'],
+          })
+        end
 
-          it 'fails when URL is updated but still localhost' do
-            subject.wizard_form_data = {
-              push_notification_url: 'http://localhost:3001/new_url',
-              failure_to_proof_url: 'https://localhost:3001',
-              redirect_uris: ['https://good.gov'],
-            }
+        it 'fails when URL is updated but still localhost' do
+          subject.wizard_form_data = {
+            push_notification_url: 'http://localhost:3001/new_url',
+            failure_to_proof_url: 'https://localhost:3001',
+            redirect_uris: ['https://good.gov'],
+          }
 
-            expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
-            expect(subject).to_not be_valid
-            expect(subject.errors[:push_notification_url]).to include(
-              "'localhost' is not allowed on Production",
-            )
-            expect(subject.errors).to_not include(:failure_to_proof_url, :redirect_uris)
-          end
+          expect(subject.get_step('settings').wizard_form_data['prod_config']).to eq(true)
+          expect(subject).to_not be_valid
+          expect(subject.errors[:push_notification_url]).to include(
+            "'localhost' is not allowed on Production",
+          )
+          expect(subject.errors).to_not include(:failure_to_proof_url, :redirect_uris)
         end
       end
     end
