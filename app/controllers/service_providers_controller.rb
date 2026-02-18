@@ -60,6 +60,7 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
+    service_provider.current_user_id = current_user.id
     unless current_user.logingov_admin?
       service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
     end

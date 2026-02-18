@@ -71,6 +71,8 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
   end
 
   def localhost_is_disallowed?
+    return false unless @record.current_user_id
+
     user = User.find @record.current_user_id
     @record.production_ready? && !user.logingov_admin?
   end
