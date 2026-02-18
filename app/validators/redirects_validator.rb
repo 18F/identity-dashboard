@@ -8,7 +8,6 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
   def validate(record)
     super
-    self.attribute ||= :redirect_uris
     @record = record
     uris = get_attribute(record)
 
@@ -53,18 +52,12 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     @record.errors.add(attribute, "#{uri_string} has an invalid host")
   end
 
+  # check if a nonadmin is using localhost on a prod_ready config
   def check_nonadmin_localhost_redirect(uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)
 
     return unless validating_uri.parseable?
-
-    uri = validating_uri.uri
-
-    # check if a nonadmin is using localhost on a prod_ready config
-    unless localhost_is_disallowed? && (uri.host&.match(/(localhost|127\.0\.0)/) ||
-      uri.scheme == 'localhost')
-      return
-    end
+    return unless localhost_is_disallowed? && localhost_uri?(validating_uri.uri)
 
     @record.errors.delete attribute if @record.errors[attribute].include? 'is invalid'
     @record.errors.add(attribute, "'localhost' is not allowed on Production")
@@ -75,6 +68,10 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
     user = User.find @record.current_user_id
     @record.production_ready? && !user.logingov_admin?
+  end
+
+  def localhost_uri?(uri)
+    uri.host&.match(/(localhost|127\.0\.0)/) || uri.scheme == 'localhost'
   end
 
   def wizard?

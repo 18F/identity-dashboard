@@ -458,6 +458,8 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#invalid?' do
+      let(:user) { create(:user, :partner_admin) }
+
       it 'fails with an invalid host in redirect_uris' do
         subject.wizard_form_data = {
           redirect_uris: ["http://local'host:0"],
@@ -503,6 +505,7 @@ RSpec.describe WizardStep, type: :model do
         end
 
         it 'fails when a non-logingov_admin uses localhost' do
+          subject.current_user_id = user.id
           subject.wizard_form_data = {
             push_notification_url: 'http://localhost:3001/',
             failure_to_proof_url: 'https://localhost:3001',
@@ -530,6 +533,7 @@ RSpec.describe WizardStep, type: :model do
         end
 
         it 'fails when URL is updated but still localhost' do
+          subject.current_user_id = user.id
           subject.wizard_form_data = {
             push_notification_url: 'http://localhost:3001/new_url',
             failure_to_proof_url: 'https://localhost:3001',

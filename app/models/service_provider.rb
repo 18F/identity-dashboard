@@ -164,9 +164,9 @@ class ServiceProvider < ApplicationRecord
   end
 
   def valid_sandbox_config?
-    if IdentityConfig.store.prod_like_env && !production_ready?
-      return errors.add(:prod_config, "can't be a sandbox configuration")
-    end
+    return unless IdentityConfig.store.prod_like_env && !production_ready?
+
+    errors.add(:prod_config, "can't be a sandbox configuration")
   end
 
   def valid_prod_config?
@@ -192,6 +192,7 @@ class ServiceProvider < ApplicationRecord
     settings.each do |attr|
       changes = self.changes[attr]
       next unless prod_localhost?(attr)
+
       if changed_to_prod && errors.where(:prod_config).empty?
         errors.add(:prod_config, 'can\'t set to Production Ready with localhost URLs')
       end
