@@ -3,10 +3,18 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
   def seed
     return unless ENV['KUBERNETES_REVIEW_APP']
 
+    logger.info 'Seeding Users'
     create_users
+
+    logger.info 'Seeding Teams'
     create_teams
+
+    logger.info 'Seeding Team Memberships'
     assign_memberships
+
+    logger.info 'Seeding Configurations'
     create_service_providers
+    
     logger.info 'Seeded review app data'
   end
 
