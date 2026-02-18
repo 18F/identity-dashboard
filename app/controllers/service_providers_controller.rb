@@ -82,6 +82,7 @@ class ServiceProvidersController < AuthenticatedController
     end
     service_provider.help_text = help_text.to_localized_h
     service_provider.agency_id &&= service_provider.agency.id
+    service_provider.current_user_id = current_user.id
     log_change
     validate_and_save_service_provider(:edit)
   end

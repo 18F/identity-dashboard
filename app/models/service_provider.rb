@@ -14,6 +14,7 @@ class ServiceProvider < ApplicationRecord
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
+  attr_accessor :current_user_id
 
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :service_providers

@@ -93,6 +93,8 @@ class WizardStep < ApplicationRecord
     end
     .freeze
 
+  attr_accessor :current_user_id
+
   belongs_to :user
 
   step_enum_values = STEP_DATA.keys.each_with_object({}) do |step, enum|
