@@ -72,7 +72,6 @@ RSpec.describe Seeders::ReviewAppData do
         .with('Assigned partner-readonly@gsa.gov to Production Team as partner_readonly')
       expect(logger).to have_received(:info)
         .with('Assigned partner-readonly@gsa.gov to Sandbox Team as partner_readonly')
-
     end
 
     it 'seeds configurations' do
