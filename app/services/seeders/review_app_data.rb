@@ -14,7 +14,7 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
 
     logger.info 'Seeding Configurations'
     create_service_providers
-    
+
     logger.info 'Seeded review app data'
   end
 
@@ -49,11 +49,11 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
       user = User.find_by(email: "#{role_name.tr('_', '-')}@gsa.gov")
 
       # Login.gov staff get added to internal team with their actual role
-      if role_name.start_with?('logingov_') && Team.internal_team
-        unless TeamMembership.exists?(user: user, team: Team.internal_team)
-          TeamMembership.create!(user: user, team: Team.internal_team, role_name: role_name)
-          logger.info "Assigned #{user.email} to #{Team.internal_team.name} as #{role_name}"
-        end
+      if role_name.start_with?('logingov_') && Team.internal_team && !TeamMembership.exists?(
+        user: user, team: Team.internal_team,
+      )
+        TeamMembership.create!(user: user, team: Team.internal_team, role_name: role_name)
+        logger.info "Assigned #{user.email} to #{Team.internal_team.name} as #{role_name}"
       end
 
       # Everyone gets partner roles on the review teams
