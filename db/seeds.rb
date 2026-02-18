@@ -13,4 +13,5 @@ Seeders::Teams.new.seed
 
 if Rails.env.development? || ENV['KUBERNETES_REVIEW_APP']
   MakeAdmin.new('admin@gsa.gov,Addy,Ministrator').call
+  Seeders::ReviewAppData.new.seed
 end

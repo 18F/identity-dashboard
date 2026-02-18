@@ -390,6 +390,7 @@ Style/ClassAndModuleChildren:
     - 'app/policies/paper_trail/version_policy.rb'
     - 'app/services/seeders/agency_seeder.rb'
     - 'app/services/seeders/base_seeder.rb'
+    - 'app/services/seeders/review_app_data.rb'
     - 'app/services/seeders/roles.rb'
     - 'app/services/seeders/teams.rb'
     - 'config/initializers/rack_attack.rb'
