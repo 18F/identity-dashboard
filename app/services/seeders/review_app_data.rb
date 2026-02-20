@@ -3,24 +3,17 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
   def seed
     return unless Rails.env.development? || ENV['POSTGRES_HOST']&.include?('.review-app')
 
-    logger.info 'Seeding Users'
     create_users
-
-    logger.info 'Seeding Teams'
     create_teams
-
-    logger.info 'Seeding Team Memberships'
     assign_memberships
-
-    logger.info 'Seeding Configurations'
     create_service_providers
-
     logger.info 'Seeded review app data'
   end
 
   private
 
   def create_users
+    logger.info 'Seeding Users'
     Role::ROLES_NAMES.each do |role_name|
       email = "#{role_name.tr('_', '-')}@gsa.gov"
       next if User.exists?(email: email)
@@ -31,6 +24,7 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
   end
 
   def create_teams
+    logger.info 'Seeding Teams'
     %w[Production Sandbox].each do |env|
       name = "#{env} Team"
       next if Team.exists?(name: name)
@@ -45,6 +39,7 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
   end
 
   def assign_memberships
+    logger.info 'Seeding Team Memberships'
     Role::ROLES_NAMES.each do |role_name|
       user = User.find_by(email: "#{role_name.tr('_', '-')}@gsa.gov")
       assign_to_internal_team(user, role_name) if role_name.start_with?('logingov_')
@@ -71,6 +66,7 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
   end
 
   def create_service_providers
+    logger.info 'Seeding Configurations'
     [
       { name: 'Prod OIDC', prod: true, protocol: :openid_connect_pkce },
       { name: 'Prod SAML', prod: true, protocol: :saml },
