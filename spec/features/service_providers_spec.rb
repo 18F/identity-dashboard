@@ -43,7 +43,6 @@ feature 'Service Providers CRUD' do
         click_on 'Create'
       end
 
-      expect(page).to have_content('You have created a configuration.')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
       expect(page).to have_content('test service_provider')
       expect(page).to have_content('urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:config-prod')
@@ -570,7 +569,7 @@ feature 'Service Providers CRUD' do
       fill_in 'Push notification URL', with: url
       click_on 'Update'
 
-      expect(page).to have_content('You have edited a configuration.')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
 
       expect(page.find(:id, 'yaml')).to have_content("push_notification_url: #{url}")
     end
@@ -588,7 +587,7 @@ feature 'Service Providers CRUD' do
       check 'verified_at'
       click_on 'Create'
 
-      expect(page).to have_content('You have created a configuration.')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
     end
 
     scenario 'can see and visit link to analytics path' do
@@ -609,7 +608,7 @@ feature 'Service Providers CRUD' do
       check 'service_provider_allow_prompt_login'
       click_on 'Update'
 
-      expect(page).to have_content('You have edited a configuration.')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
     end
 
     scenario 'can enable email NameID format for a service provider' do
@@ -619,7 +618,7 @@ feature 'Service Providers CRUD' do
       check 'service_provider_email_nameid_format_allowed'
       click_on 'Update'
 
-      expect(page).to have_content('You have edited a configuration.')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
     end
 
     scenario 'cannot send an empty attribute bundle to the backend with saml and ial2' do
@@ -702,7 +701,6 @@ feature 'Service Providers CRUD' do
       fill_in 'Return to App URL', with: 'https://config.agency.gov'
       click_on 'Update'
 
-      expect(page).to have_content('You have edited a configuration.')
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       expect(page).to have_content('configuration description foobar')
       expect(page).to have_content('change service_provider name')
