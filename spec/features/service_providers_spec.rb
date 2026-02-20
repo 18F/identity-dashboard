@@ -258,56 +258,55 @@ feature 'Service Providers CRUD' do
       end
 
       scenario 'invalid URLs should display an error' do
-        acs_input = find_field('service_provider_acs_url')
-        acs_input.set('abcd')
-        logout_input = find_field('service_provider_assertion_consumer_logout_service_url')
-        logout_input.set('https:bad')
-        login_input = find_field('service_provider_sp_initiated_login_url')
-        login_input.set('badcom')
-        return_to_sp_input = find_field('service_provider_return_to_sp_url')
-        return_to_sp_input.set('://bad.gov')
-        push_input = find_field('service_provider_push_notification_url')
-        push_input.set('https:// bad.gov')
+        acs_value = 'abcd'
+        fill_in('Assertion Consumer Service URL', with: acs_value)
+        logout_value = 'https:bad'
+        fill_in('Assertion Consumer Logout Service URL', with: logout_value)
+        login_value = 'badcom'
+        fill_in('SP Initiated Login URL', with: login_value)
+        return_to_sp_value = '://bad.gov'
+        fill_in('Return to App URL', with: return_to_sp_value)
+        push_value = 'https:// bad.gov'
+        fill_in('Push notification URL', with: push_value)
+        redirects_value = 'invalid.redirect'
         redirects_input = find_field('service_provider_redirect_uris')
-        redirects_input.set('invalid.redirect')
+        redirects_input.set(redirects_value)
 
-        submit_btn = find('input[name="commit"]')
-        submit_btn.click
+        click_on 'Update'
 
         expect(page).to have_content('Error(s) found in these fields:')
         expect(page).to have_content('Acs url is invalid')
         expect(page).to have_content('Assertion consumer logout service url is invalid')
-        expect(page).to have_content('Sp initiated login url badcom is not a valid URI')
-        expect(page).to have_content('Return to sp url ://bad.gov is not a valid URI')
+        expect(page).to have_content("Sp initiated login url #{login_value} is not a valid URI")
+        expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
         expect(page).to have_content('Push notification url is invalid')
-        expect(page).to have_content('invalid.redirect is not a valid URI')
+        expect(page).to have_content("#{redirects_value} is not a valid URI")
       end
 
       scenario 'multiple URLs in a single input should display an error' do
-        acs_input = find_field('service_provider_acs_url')
-        acs_input.set('https://good.gov https://bad.gov')
-        logout_input = find_field('service_provider_assertion_consumer_logout_service_url')
-        logout_input.set('https://good.gov, https://bad.gov')
-        login_input = find_field('service_provider_sp_initiated_login_url')
-        login_input.set('https://good.gov,https://bad.gov')
-        return_to_sp_input = find_field('service_provider_return_to_sp_url')
-        return_to_sp_input.set('https://good.gov   https://bad.gov')
-        push_input = find_field('service_provider_push_notification_url')
-        push_input.set('https://good.gov
-          https://bad.gov')
+        acs_value = 'https://good.gov https://bad.gov'
+        fill_in('Assertion Consumer Service URL', with: acs_value)
+        logout_value = 'https://good.gov, https://bad.gov'
+        fill_in('Assertion Consumer Logout Service URL', with: logout_value)
+        login_value = 'https://good.gov,https://bad.gov'
+        fill_in('SP Initiated Login URL', with: login_value)
+        return_to_sp_value = 'https://good.gov https://bad.gov'
+        fill_in('Return to App URL', with: return_to_sp_value)
+        push_value = 'https://good.gov\nhttps://bad.gov'
+        fill_in('Push notification URL', with: push_value)
+        redirects_value = 'https://good.gov https://bad.gov'
         redirects_input = find_field('service_provider_redirect_uris')
-        redirects_input.set('https://good.gov\thttps://bad.gov')
+        redirects_input.set(redirects_value)
 
-        submit_btn = find('input[name="commit"]')
-        submit_btn.click
+        click_on 'Update'
 
         expect(page).to have_content('Error(s) found in these fields:')
         expect(page).to have_content('Acs url is invalid')
         expect(page).to have_content('Assertion consumer logout service url is invalid')
-        expect(page).to have_content('Sp initiated login url https://good.gov,https://bad.gov has an invalid host')
-        expect(page).to have_content('Return to sp url https://good.gov https://bad.gov is not a valid URI')
+        expect(page).to have_content("Sp initiated login url #{login_value} has an invalid host")
+        expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
         expect(page).to have_content('Push notification url is invalid')
-        expect(page).to have_content('https://good.gov\thttps://bad.gov is not a valid URI')
+        expect(page).to have_content("#{redirects_value} is not a valid URI")
       end
     end
 
