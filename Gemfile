@@ -29,7 +29,7 @@ gem 'kaminari'
 gem 'lru_redux'
 gem 'minitar', '~> 1.1'
 gem 'newrelic_rpm', '>= 6.14.0'
-gem 'nokogiri', '~> 1.18.9'
+gem 'nokogiri', '~> 1.19.1'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov.git',
                               branch: 'main'
 gem 'omniauth-rails_csrf_protection', '>= 2.0.0'
