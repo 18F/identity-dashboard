@@ -250,6 +250,67 @@ feature 'Service Providers CRUD' do
       end
     end
 
+    describe 'Redirects are validated' do
+       let(:service_provider) { create(:service_provider, :saml, team:) }
+
+      before do
+        visit edit_service_provider_path(service_provider)
+      end
+
+      scenario 'invalid URLs should display an error' do
+        acs_input = find_field('service_provider_acs_url')
+        acs_input.set('abcd')
+        logout_input = find_field('service_provider_assertion_consumer_logout_service_url')
+        logout_input.set('https:bad')
+        login_input = find_field('service_provider_sp_initiated_login_url')
+        login_input.set('badcom')
+        return_to_sp_input = find_field('service_provider_return_to_sp_url')
+        return_to_sp_input.set('://bad.gov')
+        push_input = find_field('service_provider_push_notification_url')
+        push_input.set('https:// bad.gov')
+        redirects_input = find_field('service_provider_redirect_uris')
+        redirects_input.set('invalid.redirect')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+
+        expect(page).to have_content('Error(s) found in these fields:')
+        expect(page).to have_content('Acs url is invalid')
+        expect(page).to have_content('Assertion consumer logout service url is invalid')
+        expect(page).to have_content('Sp initiated login url badcom is not a valid URI')
+        expect(page).to have_content('Return to sp url ://bad.gov is not a valid URI')
+        expect(page).to have_content('Push notification url is invalid')
+        expect(page).to have_content('invalid.redirect is not a valid URI')
+      end
+
+      scenario 'multiple URLs in a single input should display an error' do
+        acs_input = find_field('service_provider_acs_url')
+        acs_input.set('https://good.gov https://bad.gov')
+        logout_input = find_field('service_provider_assertion_consumer_logout_service_url')
+        logout_input.set('https://good.gov, https://bad.gov')
+        login_input = find_field('service_provider_sp_initiated_login_url')
+        login_input.set('https://good.gov,https://bad.gov')
+        return_to_sp_input = find_field('service_provider_return_to_sp_url')
+        return_to_sp_input.set('https://good.gov   https://bad.gov')
+        push_input = find_field('service_provider_push_notification_url')
+        push_input.set('https://good.gov
+          https://bad.gov')
+        redirects_input = find_field('service_provider_redirect_uris')
+        redirects_input.set('https://good.gov\thttps://bad.gov')
+
+        submit_btn = find('input[name="commit"]')
+        submit_btn.click
+
+        expect(page).to have_content('Error(s) found in these fields:')
+        expect(page).to have_content('Acs url is invalid')
+        expect(page).to have_content('Assertion consumer logout service url is invalid')
+        expect(page).to have_content('Sp initiated login url https://good.gov,https://bad.gov has an invalid host')
+        expect(page).to have_content('Return to sp url https://good.gov https://bad.gov is not a valid URI')
+        expect(page).to have_content('Push notification url is invalid')
+        expect(page).to have_content('https://good.gov\thttps://bad.gov is not a valid URI')
+      end
+    end
+
     scenario 'switching protocols when editing a saml sp should persist saml info', :js do
       service_provider = create(:service_provider, :saml, team:)
 
