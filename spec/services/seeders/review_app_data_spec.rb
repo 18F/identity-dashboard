@@ -16,7 +16,7 @@ RSpec.describe Seeders::ReviewAppData do
   context 'when POSTGRES_HOST is review-app' do
     before do
       allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with('POSTGRES_HOST').and_return('db.review-app.example.com')   
+      allow(ENV).to receive(:[]).with('POSTGRES_HOST').and_return('db.review-app.example.com')
     end
 
     it 'seeds users' do
