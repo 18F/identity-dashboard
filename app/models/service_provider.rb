@@ -14,6 +14,7 @@ class ServiceProvider < ApplicationRecord
 
   attr_readonly :issuer
   attr_writer :issuer_department, :issuer_app
+  attr_accessor :current_user_id
 
   belongs_to :user
   belongs_to :team, foreign_key: 'group_id', inverse_of: :service_providers
@@ -24,6 +25,20 @@ class ServiceProvider < ApplicationRecord
   validates_with LogoValidator
   validates_with CertsArePemsValidator
   validates_with AttributeBundleValidator
+  validates_with RedirectsValidator,
+                 attribute: :redirect_uris
+  validates_with RedirectsValidator,
+                 attribute: :failure_to_proof_url
+  validates_with RedirectsValidator,
+                 attribute: :push_notification_url
+  validates_with RedirectsValidator,
+                 attribute: :acs_url
+  validates_with RedirectsValidator,
+                 attribute: :sp_initiated_login_url
+  validates_with RedirectsValidator,
+                 attribute: :return_to_sp_url
+  validates_with RedirectsValidator,
+                 attribute: :assertion_consumer_logout_service_url
 
   STATUSES = %w[pending live rejected moved_to_prod].freeze
 
@@ -148,14 +163,13 @@ class ServiceProvider < ApplicationRecord
     errors.empty?
   end
 
-  def valid_prod_config?
+  def valid_sandbox_config?
     return unless IdentityConfig.store.prod_like_env && !production_ready?
 
     errors.add(:prod_config, "can't be a sandbox configuration")
   end
 
-  # in the case of Long Form, :long_form should be passed in for extra checks.
-  def valid_localhost_uris?
+  def valid_prod_config?
     saml_settings = %w[
       acs_url
       assertion_consumer_logout_service_url
@@ -174,6 +188,7 @@ class ServiceProvider < ApplicationRecord
     settings = saml? ? saml_settings : oidc_settings
     prod_config_changed = changes['prod_config']
     changed_to_prod = prod_config_changed && prod_config_changed[1]
+
     settings.each do |attr|
       changes = self.changes[attr]
       next unless prod_localhost?(attr)

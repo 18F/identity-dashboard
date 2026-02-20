@@ -8,34 +8,39 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
   def validate(record)
     super
-    self.attribute ||= :redirect_uris
+    @record = record
     uris = get_attribute(record)
 
     return if uris.blank?
 
     Array(uris).each do |uri_string|
-      check_valid_host(record, uri_string)
+      check_valid_host(uri_string)
     end
 
     # Only validate if the attribute is changing
-    return if attribute_unchanged(record, attribute)
+    return if attribute_unchanged(attribute)
 
     Array(uris).each do |uri_string|
-      check_nonadmin_localhost_redirect(record, uri_string)
+      check_nonadmin_localhost_redirect(uri_string)
     end
   end
 
   private
 
-  def attribute_unchanged(record, attribute)
-    changed_form_data = record.changes['wizard_form_data']
-    attr_key = attribute.to_s
-    !changed_form_data || (
-      changed_form_data[0] && changed_form_data[0][attr_key] == changed_form_data[1][attr_key]
-    )
+  def attribute_unchanged(attribute)
+    if wizard?
+      changed_form_data = @record.changes['wizard_form_data']
+      attr_key = attribute.to_s
+
+      !changed_form_data || (
+        changed_form_data[0] && changed_form_data[0][attr_key] == changed_form_data[1][attr_key]
+      )
+    else
+      !@record.changes[attribute]
+    end
   end
 
-  def check_valid_host(record, uri_string)
+  def check_valid_host(uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)
     return unless validating_uri.parseable?
 
@@ -44,19 +49,32 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
     return if host.match?(VALID_HOST_PATTERN)
 
-    record.errors.add(attribute, "#{uri_string} has an invalid host")
+    @record.errors.add(attribute, "#{uri_string} has an invalid host")
   end
 
-  def check_nonadmin_localhost_redirect(record, uri_string)
+  # check if a nonadmin is using localhost on a prod_ready config
+  def check_nonadmin_localhost_redirect(uri_string)
     validating_uri = IdentityValidations::ValidatingURI.new(uri_string)
+
     return unless validating_uri.parseable?
+    return unless localhost_is_disallowed? && localhost_uri?(validating_uri.uri)
 
-    user = User.find record.user_id
+    @record.errors.delete(attribute, :invalid)
+    @record.errors.add(attribute, "'localhost' is not allowed on Production")
+  end
 
-    # check if a nonadmin is using localhost on a prod_ready config
-    if validating_uri.uri.host&.match(/(localhost|127\.0\.0)/) &&
-       record.production_ready? && !user.logingov_admin?
-      record.errors.add(attribute, "'localhost' is not allowed on Production")
-    end
+  def localhost_is_disallowed?
+    return false unless @record.current_user_id
+
+    @user ||= User.find @record.current_user_id
+    @record.production_ready? && !@user.logingov_admin?
+  end
+
+  def localhost_uri?(uri)
+    uri.host&.match(/(localhost|127\.0\.0)/) || uri.scheme == 'localhost'
+  end
+
+  def wizard?
+    @record.instance_of?(::WizardStep)
   end
 end

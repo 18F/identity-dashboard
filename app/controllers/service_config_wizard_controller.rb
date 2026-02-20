@@ -89,6 +89,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def valid?
+    @model.current_user_id = current_user.id
     @model.valid?
     @model.saml_settings_present? if step?('redirects')
 

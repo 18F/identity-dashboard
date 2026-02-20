@@ -755,5 +755,70 @@ feature 'Service Config Wizard' do
         'See "Type of Service Level" in the SAML Authentication section of the developer docs.',
       )
     end
+
+    describe 'Redirects are validated' do
+      before do
+        user_to_login = [logingov_admin, user].sample
+        login_as(user_to_login)
+        visit service_config_wizard_path('protocol')
+        choose 'SAML'
+        click_on 'Next'
+        visit service_config_wizard_path('redirects')
+      end
+
+      scenario 'invalid URLs should display an error' do
+        acs_value = 'abcd'
+        fill_in('Assertion Consumer Service URL', with: acs_value)
+        logout_value = 'https:bad'
+        fill_in('Assertion Consumer Logout Service URL', with: logout_value)
+        login_value = 'badcom'
+        fill_in('SP Initiated Login URL', with: login_value)
+        return_to_sp_value = '://bad.gov'
+        fill_in('Return to App URL', with: return_to_sp_value)
+        push_value = 'https:// bad.gov'
+        fill_in('Push notification URL', with: push_value)
+        redirects_value = 'invalid.redirect'
+        redirects_input = page.find('[name="wizard_step[redirect_uris][]"]')
+        redirects_input.set(redirects_value)
+
+        click_on 'Next'
+
+        expect(page).to have_content("Acs url #{acs_value} is not a valid URI")
+        expect(page).to have_content(
+          "Assertion consumer logout service url #{logout_value} is not a valid URI",
+        )
+        expect(page).to have_content("Sp initiated login url #{login_value} is not a valid URI")
+        expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
+        expect(page).to have_content("Push notification url #{push_value} is not a valid URI")
+        expect(page).to have_content("#{redirects_value} is not a valid URI")
+      end
+
+      scenario 'multiple URLs in a single input should display an error' do
+        acs_value = 'https://good.gov https://bad.gov'
+        fill_in('Assertion Consumer Service URL', with: acs_value)
+        logout_value = 'https://good.gov, https://bad.gov'
+        fill_in('Assertion Consumer Logout Service URL', with: logout_value)
+        login_value = 'https://good.gov,https://bad.gov'
+        fill_in('SP Initiated Login URL', with: login_value)
+        return_to_sp_value = 'https://good.gov https://bad.gov'
+        fill_in('Return to App URL', with: return_to_sp_value)
+        push_value = 'https://good.gov\nhttps://bad.gov'
+        fill_in('Push notification URL', with: push_value)
+        redirects_value = 'https://good.gov https://bad.gov'
+        redirects_input = page.find('[name="wizard_step[redirect_uris][]"]')
+        redirects_input.set(redirects_value)
+
+        click_on 'Next'
+
+        expect(page).to have_content("Acs url #{acs_value} is not a valid URI")
+        expect(page).to have_content(
+          "Assertion consumer logout service url #{logout_value} is not a valid URI",
+        )
+        expect(page).to have_content("Sp initiated login url #{login_value} has an invalid host")
+        expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
+        expect(page).to have_content("Push notification url #{push_value} is not a valid URI")
+        expect(page).to have_content("#{redirects_value} is not a valid URI")
+      end
+    end
   end
 end

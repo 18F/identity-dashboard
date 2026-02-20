@@ -24,6 +24,16 @@ class ServiceProviderForm < SimpleDelegator
     app_name
   ].freeze
 
+  URI_ATTRIBUTES = %i[
+    redirect_uris
+    failure_to_proof_url
+    push_notification_url
+    acs_url
+    sp_initiated_login_url
+    return_to_sp_url
+    assertion_consumer_logout_service_url
+  ].freeze
+
   def initialize(service_provider, current_user, log)
     @current_user, @log = current_user, log
     super(service_provider)
@@ -34,8 +44,8 @@ class ServiceProviderForm < SimpleDelegator
 
     valid?
     valid_saml_settings?
-    valid_prod_config?
-    valid_localhost_uris? unless current_user.logingov_admin?
+    valid_sandbox_config?
+    valid_prod_config? unless current_user.logingov_admin?
 
     log_errors && return if errors.any?
 
@@ -63,8 +73,12 @@ class ServiceProviderForm < SimpleDelegator
 
   def translate_errors
     errors.map(&:attribute).uniq.map do |attribute|
-      if attribute == :prod_config && production_ready?
-        '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+      if production_ready?
+        if attribute == :prod_config
+          '<li>Portal Configuration cannot be Production with localhost URLs</li>'
+        elsif URI_ATTRIBUTES.include? attribute
+          "<li>#{I18n.t("service_provider_form.title.#{attribute}")}: #{errors[attribute][0]}</li>"
+        end
       else
         "<li>#{I18n.t("service_provider_form.title.#{attribute}")}</li>"
       end

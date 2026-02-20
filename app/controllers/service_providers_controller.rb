@@ -191,6 +191,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def validate_and_save_service_provider(initial_action)
     form = ServiceProviderForm.new(@service_provider, current_user, log)
+    form.current_user_id = current_user.id
     form.validate_and_save
 
     if form.saved?
