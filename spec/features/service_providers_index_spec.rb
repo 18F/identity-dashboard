@@ -81,7 +81,7 @@ feature 'Users can access service providers that belong to their team' do
       check 'last_name'
       click_on 'Update'
 
-      expect(page).to have_content('You have edited a configuration.')
+      expect(page).to have_content(I18n.t('notices.service_providers_refreshed'))
       expect(page).to have_content(new_name)
       expect(page).to have_content(new_description)
       expect(page).to have_content('last_name')
