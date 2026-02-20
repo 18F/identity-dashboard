@@ -784,7 +784,9 @@ feature 'Service Config Wizard' do
         click_on 'Next'
 
         expect(page).to have_content("Acs url #{acs_value} is not a valid URI")
-        expect(page).to have_content("Assertion consumer logout service url #{logout_value} is not a valid URI")
+        expect(page).to have_content(
+          "Assertion consumer logout service url #{logout_value} is not a valid URI",
+        )
         expect(page).to have_content("Sp initiated login url #{login_value} is not a valid URI")
         expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
         expect(page).to have_content("Push notification url #{push_value} is not a valid URI")
@@ -809,7 +811,9 @@ feature 'Service Config Wizard' do
         click_on 'Next'
 
         expect(page).to have_content("Acs url #{acs_value} is not a valid URI")
-        expect(page).to have_content("Assertion consumer logout service url #{logout_value} is not a valid URI")
+        expect(page).to have_content(
+          "Assertion consumer logout service url #{logout_value} is not a valid URI",
+        )
         expect(page).to have_content("Sp initiated login url #{login_value} has an invalid host")
         expect(page).to have_content("Return to sp url #{return_to_sp_value} is not a valid URI")
         expect(page).to have_content("Push notification url #{push_value} is not a valid URI")

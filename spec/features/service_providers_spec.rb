@@ -251,7 +251,7 @@ feature 'Service Providers CRUD' do
     end
 
     describe 'Redirects are validated' do
-       let(:service_provider) { create(:service_provider, :saml, team:) }
+      let(:service_provider) { create(:service_provider, :saml, team:) }
 
       before do
         visit edit_service_provider_path(service_provider)

@@ -59,15 +59,15 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
     return unless validating_uri.parseable?
     return unless localhost_is_disallowed? && localhost_uri?(validating_uri.uri)
 
-    @record.errors.delete attribute if @record.errors[attribute].include? 'is invalid'
+    @record.errors.delete(attribute, :invalid)
     @record.errors.add(attribute, "'localhost' is not allowed on Production")
   end
 
   def localhost_is_disallowed?
     return false unless @record.current_user_id
 
-    user = User.find @record.current_user_id
-    @record.production_ready? && !user.logingov_admin?
+    @user ||= User.find @record.current_user_id
+    @record.production_ready? && !@user.logingov_admin?
   end
 
   def localhost_uri?(uri)
