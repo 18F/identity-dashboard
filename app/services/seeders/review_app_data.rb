@@ -53,6 +53,8 @@ class Seeders::ReviewAppData < Seeders::BaseSeeder
 
     TeamMembership.create!(user: user, team: Team.internal_team, role_name: role_name)
     logger.info "Assigned #{user.email} to #{Team.internal_team.name} as #{role_name}"
+  rescue ActiveRecord::RecordInvalid => e
+    raise StandardError, "Failed to assign #{user.email} to internal team: #{e.message}"
   end
 
   def assign_to_review_teams(user, role_name)
