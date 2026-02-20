@@ -7,16 +7,16 @@ RSpec.describe Seeders::ReviewAppData do
     allow(logger).to receive(:info).with(any_args)
   end
 
-  context 'without KUBERNETES_REVIEW_APP set' do
+  context 'when POSTGRES_HOST is not review-app' do
     it 'does nothing' do
       expect { described_class.new.seed }.to_not change { User.count }
     end
   end
 
-  context 'with KUBERNETES_REVIEW_APP set' do
+  context 'when POSTGRES_HOST is review-app' do
     before do
       allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with('KUBERNETES_REVIEW_APP').and_return('true')
+      allow(ENV).to receive(:[]).with('POSTGRES_HOST').and_return('db.review-app.example.com')   
     end
 
     it 'seeds users' do

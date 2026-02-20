@@ -1,7 +1,7 @@
 # Seeds test users, teams, and service providers for review app environments.
 class Seeders::ReviewAppData < Seeders::BaseSeeder
   def seed
-    return unless ENV['KUBERNETES_REVIEW_APP']
+    return unless Rails.env.development? || ENV['POSTGRES_HOST']&.include?('.review-app')
 
     logger.info 'Seeding Users'
     create_users

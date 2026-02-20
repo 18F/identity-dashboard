@@ -11,7 +11,7 @@ Rails.env.test? ? Seeders::AgencySeeder.new.seed_test : Seeders::AgencySeeder.ne
 Seeders::Roles.new.seed
 Seeders::Teams.new.seed
 
-if Rails.env.development? || ENV['KUBERNETES_REVIEW_APP']
+if Rails.env.development? || ENV['POSTGRES_HOST']&.include?('.review-app')
   MakeAdmin.new('admin@gsa.gov,Addy,Ministrator').call
   Seeders::ReviewAppData.new.seed
 end
