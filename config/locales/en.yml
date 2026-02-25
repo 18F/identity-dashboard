@@ -169,7 +169,7 @@ en:
         All configuration changes or new configurations must be promoted to production following the process outlined in the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
         <br/><br/>
         Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
-    service_providers_refresh_failed: <p class="usa-alert__text margin-left-3">Your configuration has been saved, but the <a href='/documentation?destination=production/#service-provider-notification-failure' target='_blank' class='usa-link usa-link--external'>service provider deployment could not be initiated at this time</a>.</p>
+    service_providers_refresh_failed: '<p>Your config has been saved, but the <a href="/documentation?destination=production/#service-provider-notification-failure" class="usa-link">sandbox deployment could not be initiated</a>.</p>'
     service_providers_refreshed: Your configuration was successfully edited, and is ready for testing in the sandbox.
     service_providers_refreshed_new: Your configuration was successfully created, and is ready for testing in the sandbox.
     service_providers_refresh_only: Service provider deployment has been initiated.
