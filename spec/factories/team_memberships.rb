@@ -28,9 +28,5 @@ FactoryBot.define do
     trait :partner_readonly do
       role_name { 'partner_readonly' }
     end
-
-    trait :partner_sample do
-      role_name { %w[partner_admin partner_developer partner_readonly].sample }
-    end
   end
 end

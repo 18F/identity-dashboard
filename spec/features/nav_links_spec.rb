@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Nav links' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:logingov_readonly) { create(:user, :logingov_readonly) }
-  let(:user) { create(:user, :partner_sample, :team_member) }
+  let(:user) { create(:user, :partner_admin) }
 
   context 'on all envs' do
     before do
