@@ -74,23 +74,27 @@
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'Banner messages', banners_path %>
                   </li>
-                  <li class="usa-nav__submenu-item">
-                    <%= link_to 'Your API auth token', auth_tokens_path %>
-                  </li>
+                  <% if current_user.logingov_admin? %>
+                    <li class="usa-nav__submenu-item">
+                      <%= link_to 'Your API auth token', auth_tokens_path %>
+                    </li>
+                  <% end %>
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'Deleted configurations', service_providers_deleted_path %>
                   </li>
                   <li class="usa-nav__submenu-item">
                     <%= link_to 'User permissions report', internal_reports_user_permissions_path(format: 'csv') %>
                   </li>
-                  <% if IdentityConfig.store.prod_like_env %>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'Connect with Airtable', airtable_path %>
-                    </li>
-                  <% else %>
-                    <li class="usa-nav__submenu-item">
-                      <%= link_to 'Configuration extraction', extracts_path %>
-                    </li>
+                  <% if current_user.logingov_admin? %>
+                    <% if IdentityConfig.store.prod_like_env %>
+                      <li class="usa-nav__submenu-item">
+                        <%= link_to 'Connect with Airtable', airtable_path %>
+                      </li>
+                    <% else %>
+                      <li class="usa-nav__submenu-item">
+                        <%= link_to 'Configuration extraction', extracts_path %>
+                      </li>
+                    <% end %>
                   <% end %>
                 </ul>
               </li>
