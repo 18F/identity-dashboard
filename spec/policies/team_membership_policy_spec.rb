@@ -143,7 +143,7 @@ describe TeamMembershipPolicy do
       end
 
       it 'forbids Partner Admins from picking inappropriate roles' do
-        elevated_team_membership = team.team_memberships.build(role_name: ['logingog_admin',
+        elevated_team_membership = team.team_memberships.build(role_name: ['logingov_admin',
                                                                            'partner_admin'].sample)
         expect(described_class).to_not permit(partner_admin, elevated_team_membership)
       end
