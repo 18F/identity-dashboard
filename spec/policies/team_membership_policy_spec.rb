@@ -128,14 +128,25 @@ describe TeamMembershipPolicy do
     end
 
     it 'forbids Partner Admins from picking inappropriate roles' do
-      elevated_team_membership = team.team_memberships.build(role_name: ['partner_admin',
-                                                                         'logingov_admin'].sample)
+      elevated_team_membership = team.team_memberships.build(role_name: 'logingov_admin')
       expect(described_class).to_not permit(partner_admin, elevated_team_membership)
     end
 
     it 'forbids Partner Admins from blanking out the role' do
       blanked_team_membership = team.team_memberships.build(role_name: nil)
       expect(described_class).to_not permit(partner_admin, blanked_team_membership)
+    end
+
+    context 'on production' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      it 'forbids Partner Admins from picking inappropriate roles' do
+        elevated_team_membership = team.team_memberships.build(role_name: ['logingog_admin',
+                                                                           'partner_admin'].sample)
+        expect(described_class).to_not permit(partner_admin, elevated_team_membership)
+      end
     end
   end
 
@@ -184,17 +195,6 @@ describe TeamMembershipPolicy do
         .to eq(expected_roles)
     end
 
-    it 'is everything but Login Staff and Partner Admin for Partner Admins' do
-      team_membership = [partner_developer_membership, partner_readonly_membership].sample
-      expected_roles = Role.all - [
-        Role::LOGINGOV_ADMIN,
-        Role::LOGINGOV_READONLY,
-        Role.find_by(name: 'partner_admin'),
-      ]
-      expect(described_class.new(partner_admin, team_membership).roles_for_edit)
-        .to eq(expected_roles)
-    end
-
     it 'is empty for non-staff when trying to edit the internal team' do
       expect(described_class.new(partner_admin, partner_admin_membership).roles_for_edit).to eq([])
     end
@@ -219,6 +219,39 @@ describe TeamMembershipPolicy do
         partner_developer_membership,
       ).roles_for_edit
       expect(roles_when_readonly_edits_dev).to eq([])
+    end
+
+    context 'on sandbox' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      end
+
+      it 'is everything but Login Staff for Partner Admins' do
+        team_membership = [partner_developer_membership, partner_readonly_membership].sample
+        expected_roles = Role.all - [
+          Role::LOGINGOV_ADMIN,
+          Role::LOGINGOV_READONLY,
+        ]
+        expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+          .to eq(expected_roles)
+      end
+    end
+
+    context 'on production' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      it 'is everything but Login Staff for Partner Admins' do
+        team_membership = [partner_developer_membership, partner_readonly_membership].sample
+        expected_roles = Role.all - [
+          Role::LOGINGOV_ADMIN,
+          Role::LOGINGOV_READONLY,
+          Role.find_by(name: 'partner_admin'),
+        ]
+        expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+          .to eq(expected_roles)
+      end
     end
   end
 end

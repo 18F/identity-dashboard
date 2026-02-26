@@ -488,7 +488,21 @@ describe 'users' do
         end
       end
 
-      it 'does show all roles except for login.gov staff and partner admin roles' do
+      it 'does show all roles except for login.gov staff roles on sandbox' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        visit edit_team_user_path(team, team_member)
+        input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
+        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY])
+        expect(input_item_strings.count).to eq(expected_roles.count)
+        expected_roles.each_with_index do |role, index|
+          expect(input_item_strings[index]).to include(role.friendly_name)
+        end
+        expect(page).to_not have_content(Role::LOGINGOV_ADMIN.friendly_name)
+        expect(page).to_not have_content(Role::LOGINGOV_READONLY.friendly_name)
+      end
+
+      it 'does show all roles except for login.gov staff and partner_admin roles on prod' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
         expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY])
