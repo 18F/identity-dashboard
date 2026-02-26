@@ -1,5 +1,5 @@
-# Seeds test users, teams, and service providers for review app environments.
 module Seeders
+  # Seeds test users, teams, and service providers for review app environments.
   class ReviewAppData < BaseSeeder
     def seed
       return unless Rails.env.development? || ENV['POSTGRES_HOST']&.include?('.review-app')
@@ -54,8 +54,8 @@ module Seeders
 
       TeamMembership.create!(user: user, team: Team.internal_team, role_name: role_name)
       logger.info "Assigned #{user.email} to #{Team.internal_team.name} as #{role_name}"
-    rescue ActiveRecord::RecordInvalid => e
-      raise StandardError, "Failed to assign #{user.email} to internal team: #{e.message}"
+    rescue ActiveRecord::RecordInvalid => err
+      raise StandardError, "Failed to assign #{user.email} to internal team: #{err.message}"
     end
 
     def assign_to_review_teams(user, role_name)
