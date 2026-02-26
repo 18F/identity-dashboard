@@ -35,9 +35,7 @@ SecureHeaders::Configuration.default do |config|
     default_src: ["'self'"],
     frame_src: ["'self'"], # deprecated in CSP 2.0
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
-    # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: form_action.flatten,
-    block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:'],
     media_src: ["'self'"],
