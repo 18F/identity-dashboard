@@ -12,8 +12,8 @@ class ServiceProvidersController < AuthenticatedController
                except: :publish # `#publish` is currently an API call only, so no DB scope required
   before_action :log_change, only: %i[destroy]
 
-  helper_method :parsed_help_text, :localized_help_text, :service_provider, :moved_to_prod?,
-                :edit_button_to_show
+  helper_method :help_text_for_forms, :help_text_to_persist, :friendly_display_help_text,
+                :service_provider, :moved_to_prod?, :edit_button_to_show
 
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
@@ -60,10 +60,13 @@ class ServiceProvidersController < AuthenticatedController
     attach_logo_file if logo_file_param
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
-    unless current_user.logingov_admin?
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
-    end
 
+    help_text_data = if policy(@service_provider).edit_custom_help_text?
+                       help_text_to_persist(from: parsed_help_text)
+                     else
+                       help_text_to_persist(from: parsed_help_text.revert_unless_presets_only)
+                     end
+    service_provider.help_text = help_text_data
     log_change
     validate_and_save_service_provider(:new)
   end
@@ -80,7 +83,7 @@ class ServiceProvidersController < AuthenticatedController
     unless policy(@service_provider).edit_custom_help_text?
       help_text = help_text.revert_unless_presets_only
     end
-    service_provider.help_text = help_text.to_localized_h
+    service_provider.help_text = help_text_to_persist(from: help_text)
     service_provider.agency_id &&= service_provider.agency.id
     log_change
     validate_and_save_service_provider(:edit)
@@ -185,8 +188,16 @@ class ServiceProvidersController < AuthenticatedController
     )
   end
 
-  def localized_help_text
-    @localized_help_text ||= parsed_help_text.to_localized_h
+  def friendly_display_help_text(from: nil)
+    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: true)
+  end
+
+  def help_text_to_persist(from: nil)
+    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: false)
+  end
+
+  def help_text_for_forms(from: nil)
+    (from || parsed_help_text).to_h_with_preset_keys
   end
 
   def validate_and_save_service_provider(initial_action)

@@ -84,7 +84,7 @@ feature 'Service Config Wizard' do
       click_on 'Next' # /logo_and_cert
       click_on 'Next' # /redirects
       click_on 'Next' # /help_text
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           fill_in(
             "wizard_step_help_text_#{context}_#{locale}",
@@ -95,7 +95,7 @@ feature 'Service Config Wizard' do
       click_on 'Create configuration' # details page
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           expect(
             find("#wizard_step_help_text_#{context}_#{locale}").value,
@@ -188,7 +188,7 @@ feature 'Service Config Wizard' do
       fill_in('Return to App URL', with: expected_data['return_to_sp_url'])
       click_on 'Next'
       # Help text
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           fill_in(
             "wizard_step_help_text_#{context}_#{locale}",
@@ -377,7 +377,7 @@ feature 'Service Config Wizard' do
         click_on 'Next' # /logo_and_cert
         click_on 'Next' # /redirects
         click_on 'Next' # /help_text
-        HelpText::CONTEXTS.each do |context|
+        HelpText::UI_CONTEXTS.each do |context|
           HelpText::LOCALES.each do |locale|
             fill_in(
               "wizard_step_help_text_#{context}_#{locale}",
@@ -539,7 +539,7 @@ feature 'Service Config Wizard' do
       click_on 'Edit'
       visit service_config_wizard_path('help_text')
 
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           expect(page).to have_content(custom_help_text[context][locale])
         end

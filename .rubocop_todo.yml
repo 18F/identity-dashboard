@@ -104,7 +104,6 @@ Metrics/AbcSize:
     - 'app/helpers/pagination_helper.rb'
     - 'app/helpers/service_provider_helper.rb'
     - 'app/models/airtable.rb'
-    - 'app/models/help_text.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/team_audit_event.rb'
     - 'app/models/tools/saml_request.rb'
@@ -141,7 +140,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/service_config_wizard_controller.rb'
     - 'app/controllers/teams/users_controller.rb'
     - 'app/controllers/users_controller.rb'
-    - 'app/models/help_text.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/team_membership.rb'
     - 'app/services/service_provider_importer.rb'
@@ -162,7 +160,6 @@ Metrics/MethodLength:
     - 'app/helpers/banner_helper.rb'
     - 'app/helpers/pagination_helper.rb'
     - 'app/models/airtable.rb'
-    - 'app/models/help_text.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/tools/saml_request.rb'
     - 'app/models/wizard_step.rb'
@@ -183,7 +180,6 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'app/controllers/service_config_wizard_controller.rb'
     - 'app/controllers/teams/users_controller.rb'
-    - 'app/models/help_text.rb'
     - 'app/models/service_provider.rb'
     - 'lib/events_documenter.rb'
 
