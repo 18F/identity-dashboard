@@ -22,6 +22,8 @@ class ServiceConfigWizardController < AuthenticatedController
     show_saml_options?
     show_oidc_options?
     show_idv_redirect_urls?
+    help_text_to_persist
+    help_text_for_forms
   ]
 
   def show
@@ -127,9 +129,11 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.agency_id ||= service_provider.agency&.id
     service_provider.user ||= current_user
     if !current_user.logingov_admin?
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
+      service_provider.help_text = help_text_to_persist(
+        from: parsed_help_text.revert_unless_presets_only,
+      )
     elsif parsed_help_text.presets_only?
-      service_provider.help_text = parsed_help_text.to_localized_h
+      service_provider.help_text = help_text_to_persist(from: parsed_help_text)
     end
 
     logo_file = @model.get_step('logo_and_cert').logo_file
@@ -145,7 +149,10 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def parsed_help_text
-    text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
+    if @model.step_name == 'help_text' && params[:wizard_step]
+      text_params = wizard_step_params[:help_text]
+    end
+
     @parsed_help_text ||=
       if text_params.present?
         HelpText.lookup(
@@ -153,7 +160,7 @@ class ServiceConfigWizardController < AuthenticatedController
           service_provider: draft_service_provider,
         )
       else
-        HelpText.new(service_provider: draft_service_provider)
+        HelpText.lookup(service_provider: draft_service_provider)
       end
   end
 
@@ -170,6 +177,18 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   private
+
+  def friendly_display_help_text(from: nil)
+    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: true)
+  end
+
+  def help_text_to_persist(from: nil)
+    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: false)
+  end
+
+  def help_text_for_forms(from: nil)
+    (from || parsed_help_text).to_h_with_preset_keys
+  end
 
   def get_model_for_step
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model
