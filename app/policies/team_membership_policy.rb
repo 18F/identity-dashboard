@@ -36,7 +36,9 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
     return Role.none unless edit?
     return Role.where.not(name: [:logingov_admin, :logingov_readonly]) if user_has_login_admin_role?
 
-    Role.where.not(name: %i[logingov_admin logingov_readonly partner_admin])
+    role_options = %i[logingov_admin logingov_readonly]
+    role_options.push(:partner_admin) if IdentityConfig.store.prod_like_env
+    Role.where.not(name: role_options)
   end
 
   def roles_for_internal_team_edit
