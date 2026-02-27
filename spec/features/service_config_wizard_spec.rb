@@ -306,7 +306,7 @@ feature 'Service Config Wizard' do
       visit service_config_wizard_path('help_text')
       click_on 'Update configuration'
 
-      expect(page).to have_content('configuration has been saved, but the service provider deploy')
+      expect(page).to have_content('Configuration saved, but sandbox deployment')
     end
 
     describe 'and Production gate is enabled' do

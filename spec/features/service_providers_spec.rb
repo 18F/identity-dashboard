@@ -795,7 +795,7 @@ feature 'Service Providers CRUD' do
       fill_in 'Description', with: 'configuration description foobar'
       click_on 'Update'
 
-      expect(page).to have_content('configuration has been saved, but the service provider deploy')
+      expect(page).to have_content('Configuration saved, but sandbox deployment')
     end
 
     context 'when managing certificates' do
