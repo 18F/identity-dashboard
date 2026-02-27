@@ -47,7 +47,7 @@ module ServiceProviderHelper # :nodoc:
   end
 
   # Generate the list for the SP edit form, including a nil entry
-  def redirect_uri_list(service_provider = @service_provider)
+  def redirect_uri_list(service_provider)
     values = service_provider.redirect_uris || []
     values << nil
   end

@@ -1,3 +1,8 @@
+# `HelpTextPresenter` provides methods convienent for views and controlers about the display and
+# perisistence of HelpText class properties.
+#
+# These methods would have been suitable for a helper module except Rails documentation is clear
+# that helper modules should not persist state or use instance variables.
 class HelpTextPresenter
   attr_reader :current_user, :help_text
 
