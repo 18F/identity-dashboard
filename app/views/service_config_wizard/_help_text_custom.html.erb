@@ -21,10 +21,12 @@
             <%= s.input locale,
                   as: :usa_textarea,
                   required: false,
-                  input_html: { value: help_text_to_persist.dig(context, locale) },
+                  # Since this is currently an internal, admin-only control, it's OK
+                  # to show the text how we'll save it in the DB
+                  input_html: { value: help_text_presenter.database_format.dig(context, locale) },
                   label_html: { class: 'usa-input-optional' },
                   label: t("locale_map.#{locale}"),
-                  readonly: readonly_help_text? %>
+                  readonly: help_text_presenter.readonly_help_text? %>
           <% end %>
         <% end %>
       <% end %>

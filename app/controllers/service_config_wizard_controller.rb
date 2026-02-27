@@ -22,8 +22,7 @@ class ServiceConfigWizardController < AuthenticatedController
     show_saml_options?
     show_oidc_options?
     show_idv_redirect_urls?
-    help_text_to_persist
-    help_text_for_forms
+    help_text_presenter
   ]
 
   def show
@@ -128,12 +127,10 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.uuid ||= SecureRandom.uuid
     service_provider.agency_id ||= service_provider.agency&.id
     service_provider.user ||= current_user
-    if !current_user.logingov_admin?
-      service_provider.help_text = help_text_to_persist(
-        from: parsed_help_text.revert_unless_presets_only,
-      )
-    elsif parsed_help_text.presets_only?
-      service_provider.help_text = help_text_to_persist(from: parsed_help_text)
+    if !policy(ServiceProvider).edit_custom_help_text?
+      service_provider.help_text = help_text_presenter.revert_unless_presets_only.database_format
+    elsif help_text_presenter.help_text.presets_only?
+      service_provider.help_text = help_text_presenter.database_format
     end
 
     logo_file = @model.get_step('logo_and_cert').logo_file
@@ -148,20 +145,21 @@ class ServiceConfigWizardController < AuthenticatedController
     redirect_to service_provider_path(service_provider)
   end
 
-  def parsed_help_text
-    if @model.step_name == 'help_text' && params[:wizard_step]
-      text_params = wizard_step_params[:help_text]
-    end
-
-    @parsed_help_text ||=
-      if text_params.present?
-        HelpText.lookup(
-          params: text_params,
-          service_provider: draft_service_provider,
-        )
-      else
-        HelpText.lookup(service_provider: draft_service_provider)
+  def help_text_presenter
+    @help_text_presenter ||= begin
+      if @model.step_name == 'help_text' && params[:wizard_step]
+        text_params = wizard_step_params[:help_text]
       end
+      model = if text_params.present?
+                HelpText.lookup(
+                  params: text_params,
+                  service_provider: draft_service_provider,
+                )
+              else
+                HelpText.lookup(service_provider: draft_service_provider)
+              end
+      HelpTextPresenter.new(model, current_user)
+    end
   end
 
   def show_saml_options?
@@ -177,18 +175,6 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   private
-
-  def friendly_display_help_text(from: nil)
-    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: true)
-  end
-
-  def help_text_to_persist(from: nil)
-    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: false)
-  end
-
-  def help_text_for_forms(from: nil)
-    (from || parsed_help_text).to_h_with_preset_keys
-  end
 
   def get_model_for_step
     # The FINISH_STEP has no data. It's mostly a redirect. It doesn't need a model

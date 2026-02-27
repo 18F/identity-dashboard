@@ -88,21 +88,6 @@ module ServiceProviderHelper # :nodoc:
     current_user.logingov_admin?
   end
 
-  def service_provider_policy
-    Pundit.policy(current_user, @service_provider || ServiceProvider)
-  end
-
-  def readonly_help_text?
-    !service_provider_policy.edit_custom_help_text?
-  end
-
-  def show_minimal_help_text_element?(service_provider)
-    return false if service_provider_policy.edit_custom_help_text?
-
-    text_info = HelpText.lookup(service_provider:)
-    text_info.blank? || text_info.presets_only?
-  end
-
   private
 
   def config_hash(service_provider)

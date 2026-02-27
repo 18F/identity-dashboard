@@ -12,8 +12,7 @@ class ServiceProvidersController < AuthenticatedController
                except: :publish # `#publish` is currently an API call only, so no DB scope required
   before_action :log_change, only: %i[destroy]
 
-  helper_method :help_text_for_forms, :help_text_to_persist, :friendly_display_help_text,
-                :service_provider, :moved_to_prod?, :edit_button_to_show
+  helper_method :service_provider, :help_text_presenter, :moved_to_prod?, :edit_button_to_show
 
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
@@ -61,12 +60,11 @@ class ServiceProvidersController < AuthenticatedController
     service_provider.agency_id &&= service_provider.agency.id
     service_provider.user = current_user
 
-    help_text_data = if policy(@service_provider).edit_custom_help_text?
-                       help_text_to_persist(from: parsed_help_text)
-                     else
-                       help_text_to_persist(from: parsed_help_text.revert_unless_presets_only)
-                     end
-    service_provider.help_text = help_text_data
+    service_provider.help_text = if policy(@service_provider).edit_custom_help_text?
+                                   help_text_presenter.database_format
+                                 else
+                                   help_text_presenter.revert_unless_presets_only.database_format
+                                 end
     log_change
     validate_and_save_service_provider(:new)
   end
@@ -76,14 +74,13 @@ class ServiceProvidersController < AuthenticatedController
     attach_cert(cert)
     remove_certificates
 
-    help_text = parsed_help_text
+    unless help_text_presenter.edit_custom_help_text?
+      @help_text_presenter = help_text_presenter.revert_unless_presets_only
+    end
+
     service_provider.assign_attributes(permitted_attributes(service_provider))
     attach_logo_file if logo_file_param
-
-    unless policy(@service_provider).edit_custom_help_text?
-      help_text = help_text.revert_unless_presets_only
-    end
-    service_provider.help_text = help_text_to_persist(from: help_text)
+    service_provider.help_text = @help_text_presenter.database_format
     service_provider.agency_id &&= service_provider.agency.id
     log_change
     validate_and_save_service_provider(:edit)
@@ -177,27 +174,16 @@ class ServiceProvidersController < AuthenticatedController
     'long_form'
   end
 
-  def parsed_help_text
-    if params.has_key?(:service_provider)
-      text_params = permitted_attributes(service_provider)[:help_text]
+  def help_text_presenter
+    @help_text_presenter ||= begin
+      if params.has_key?(:service_provider)
+        text_params = permitted_attributes(service_provider)[:help_text]
+      end
+      HelpTextPresenter.new(
+        HelpText.lookup(params: text_params, service_provider: service_provider),
+        current_user,
+      )
     end
-    HelpText.lookup(params: nil, service_provider: service_provider)
-    @parsed_help_text ||= HelpText.lookup(
-      params: text_params,
-      service_provider: service_provider,
-    )
-  end
-
-  def friendly_display_help_text(from: nil)
-    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: true)
-  end
-
-  def help_text_to_persist(from: nil)
-    (from || parsed_help_text).to_h_with_localizations(blank_placeholder: false)
-  end
-
-  def help_text_for_forms(from: nil)
-    (from || parsed_help_text).to_h_with_preset_keys
   end
 
   def validate_and_save_service_provider(initial_action)

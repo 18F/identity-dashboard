@@ -340,7 +340,7 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
     <%= form.hint I18n.t('service_provider_form.active') %>
   </div>
 
-  <% if show_minimal_help_text_element?(service_provider) %>
+  <% if help_text_presenter.show_minimal_help_text_element? %>
     <p class="usa-label">Help text</p>
     <p class="text-base">You can choose from the default help text options to alert users of important information at the sign-in, sign-up, and forgot password stages of logging into your app.</p>
     <p class="text-base">If your app requires custom help text, reach out to the <a href="https://logingov.zendesk.com" class="usa-link usa-link--external">partner support help desk</a>. Help text guidance is outlined in the User experience section
