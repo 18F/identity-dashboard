@@ -36,9 +36,12 @@ feature 'TeamMembership CRUD' do
 
     login_as(gov_partner)
     visit new_team_path
+    agency_field = find_field('Agency')
+    agency_default_text = agency_field.find_all('option').first.text
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
+    expect(agency_default_text).to eq('- Select an agency -') 
     select('GSA', from: 'Agency')
 
     click_on 'Create team name'
