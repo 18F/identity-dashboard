@@ -1,4 +1,4 @@
-<fieldset class="usa-fieldset">
+<fieldset class="usa-fieldset border-top border-primary-light">
   <%= form.input :name,
     label: "Name",
     required: true,
@@ -9,6 +9,7 @@
   <%= form.input :agency_id,
                    input_html: { class: 'usa-select', aria: { invalid: false } },
                    collection: @agencies,
+                   prompt: '- Select an agency -',
                    label: 'Agency'.html_safe,
                    label_html: { class: 'usa-input-required'},
                    hint: "The federal agency you would like this team to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
