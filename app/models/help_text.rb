@@ -6,7 +6,7 @@ class HelpText
   LOCALES = %w[en es fr zh].freeze
   # If a preset is set for one locale, it should be the same for all of them.
   # On the off chance that something is unexpected in the database, pick one to be authoritative
-  LOCALE_FOR_PRESETS = 'en'.freeze
+  DEFAULT_LOCALE = 'en'.freeze
 
   # Hash<String,Array<String>> PRESETS A collection of valid preset help texts
   # Hash keys are valid UI_CONTEXTS values. Arrays are a list of keys in the locale YAML files
@@ -161,7 +161,7 @@ class HelpText
   def strings_to_help_text_entries
     @help_text_entries = index_each_possible_entry do |ui_context, locale|
       this_locale_starting_text = @initial_help_text.dig(ui_context, locale)
-      this_locale_starting_text ||= @initial_help_text.dig(ui_context, LOCALE_FOR_PRESETS)
+      this_locale_starting_text ||= @initial_help_text.dig(ui_context, DEFAULT_LOCALE)
 
       entry = HelpText::HelpTextEntry.new
       next entry.make_blank unless this_locale_starting_text.present?

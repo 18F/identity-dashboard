@@ -13,7 +13,7 @@
               sp_name: draft_service_provider['friendly_name'] || '{Application Friendly Name}',
               agency: draft_service_provider.agency&.name || '{Agency}'
               ).to_a.map { |a| [a[1].html_safe, a[0]] },
-            default: help_text_presenter.identifiers_for_forms.dig(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
+            default: help_text_presenter.identifiers_for_forms.dig(context, HelpText::DEFAULT_LOCALE) || 'blank'
           )) %>
         <% end %>
       <% end %>
