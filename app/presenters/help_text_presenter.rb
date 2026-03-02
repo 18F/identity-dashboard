@@ -30,14 +30,20 @@ class HelpTextPresenter
     help_text.blank? || help_text.presets_only?
   end
 
+  # This generates a format suitable to displaying to partners in the portal.
+  # Currently, this is the localized strings but blank text is replaced with the words "Leave blank"
   def friendly_display_format
     help_text.to_h_with_localizations(blank_placeholder: true)
   end
 
+  # This generates the format we currently need in the IdP database.
+  # These are the localized strings that are identitical to what users logging in to IdP will see.
   def database_format
     help_text.to_h_with_localizations(blank_placeholder: false)
   end
 
+  # This generates shorthand placeholders whenever they're applicable, which is equivalent to saying
+  # it uses the values in `HelpText::PRESETS` whenever possible
   def identifiers_for_forms
     help_text.to_h_with_preset_keys
   end
