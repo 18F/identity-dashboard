@@ -3,51 +3,15 @@
     # Since this is currently an internal, admin-only control, it's OK
     # to show the text how we'll save it in the DB
   %>
-  <%= h.fields_for :sign_in do |s| %>
-    <br><legend><span class="text-heavy">Sign-in help text:</span></legend>
-    <%= s.input :en, label: "English", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_in", "en"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= s.input :es, label: "Español", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_in", "es"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= s.input :fr, label: "Français", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_in", "fr"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-  <% end %>
-
-  <%= h.fields_for :sign_up do |s| %>
-    <br><legend><b>Sign-up help text:</b></legend>
-    <%= s.input :en, label: "English", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_up", "en"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= s.input :es, label: "Español", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_up", "es"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= s.input :fr, label: "Français", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("sign_up", "fr"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-  <% end %>
-
-  <%= h.fields_for :forgot_password do |f| %>
-    <br><legend><b>Forgot password help text:</b></legend>
-    <%= f.input  :en, label: "English", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("forgot_password", "en"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= f.input :es, label: "Español", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("forgot_password", "es"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
-    <%= f.input :fr, label: "Français", as: :text, required: false, input_html: {
-          value: help_text_presenter.database_format.dig("forgot_password", "fr"),
-          readonly: help_text_presenter.readonly_help_text?
-        } %>
+  <% HelpText::UI_CONTEXTS.each do |ui_context| %>
+    <%= h.fields_for ui_context do |s| %>
+      <br><legend><span class="text-heavy"><%= t("simple_form.labels.service_provider.help_text.#{ui_context}") %> help text:</span></legend>
+      <% HelpText::LOCALES.each do |locale| %>
+        <%= s.input locale, label: t(:locale_name, locale: ), as: :text, required: false, input_html: {
+              value: help_text_presenter.database_format.dig(ui_context, locale),
+              readonly: help_text_presenter.readonly_help_text?
+            } %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
