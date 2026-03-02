@@ -681,7 +681,7 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails
   capybara (>= 3.39.1)
-  chartkick
+  chartkick (~> 5.2)
   colorize
   connection_pool
   cssbundling-rails
