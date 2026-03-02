@@ -1,5 +1,6 @@
 ---
 en:
+  locale_name: English
   call_to_action:
     ready_to_deploy: Ready to deploy or make an update?
     review_changes: All changes to integrations between Login.gov and your application must be reviewed before being deployed.

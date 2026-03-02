@@ -14,17 +14,19 @@
   <% end %>
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
-      <% HelpText::CONTEXTS.each do |context| %>
+      <% HelpText::UI_CONTEXTS.each do |context| %>
         <%= h.fields_for context do |s| %>
           <h2><%= t("simple_form.labels.service_provider.help_text.#{context}") %> translations</h2>
           <% HelpText::LOCALES.each do |locale| %>
             <%= s.input locale,
                   as: :usa_textarea,
                   required: false,
-                  input_html: { value: view_custom_help_text.fetch(context, locale)&.sub(/\Ablank\z/, '') },
+                  # Since this is currently an internal, admin-only control, it's OK
+                  # to show the text how we'll save it in the DB
+                  input_html: { value: help_text_presenter.database_format.dig(context, locale) },
                   label_html: { class: 'usa-input-optional' },
                   label: t("locale_map.#{locale}"),
-                  readonly: readonly_help_text? %>
+                  readonly: help_text_presenter.readonly_help_text? %>
           <% end %>
         <% end %>
       <% end %>

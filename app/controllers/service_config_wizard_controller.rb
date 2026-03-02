@@ -22,6 +22,7 @@ class ServiceConfigWizardController < AuthenticatedController
     show_saml_options?
     show_oidc_options?
     show_idv_redirect_urls?
+    help_text_presenter
   ]
 
   def show
@@ -126,10 +127,10 @@ class ServiceConfigWizardController < AuthenticatedController
     service_provider.uuid ||= SecureRandom.uuid
     service_provider.agency_id ||= service_provider.agency&.id
     service_provider.user ||= current_user
-    if !current_user.logingov_admin?
-      service_provider.help_text = parsed_help_text.revert_unless_presets_only.to_localized_h
-    elsif parsed_help_text.presets_only?
-      service_provider.help_text = parsed_help_text.to_localized_h
+    if !policy(ServiceProvider).edit_custom_help_text?
+      service_provider.help_text = help_text_presenter.revert_unless_presets_only.database_format
+    elsif help_text_presenter.help_text.presets_only?
+      service_provider.help_text = help_text_presenter.database_format
     end
 
     logo_file = @model.get_step('logo_and_cert').logo_file
@@ -144,17 +145,21 @@ class ServiceConfigWizardController < AuthenticatedController
     redirect_to service_provider_path(service_provider)
   end
 
-  def parsed_help_text
-    text_params = @model.step_name == 'help_text' ? wizard_step_params[:help_text] : nil
-    @parsed_help_text ||=
-      if text_params.present?
-        HelpText.lookup(
-          params: text_params,
-          service_provider: draft_service_provider,
-        )
-      else
-        HelpText.new(service_provider: draft_service_provider)
+  def help_text_presenter
+    @help_text_presenter ||= begin
+      if @model.step_name == 'help_text' && params[:wizard_step]
+        text_params = wizard_step_params[:help_text]
       end
+      model = if text_params.present?
+                HelpText.lookup(
+                  params: text_params,
+                  service_provider: draft_service_provider,
+                )
+              else
+                HelpText.lookup(service_provider: draft_service_provider)
+              end
+      HelpTextPresenter.new(model, current_user)
+    end
   end
 
   def show_saml_options?

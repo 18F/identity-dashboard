@@ -47,7 +47,7 @@ module ServiceProviderHelper # :nodoc:
   end
 
   # Generate the list for the SP edit form, including a nil entry
-  def redirect_uri_list(service_provider = @service_provider)
+  def redirect_uri_list(service_provider)
     values = service_provider.redirect_uris || []
     values << nil
   end
@@ -86,21 +86,6 @@ module ServiceProviderHelper # :nodoc:
 
   def show_analytics_column?
     current_user.logingov_admin?
-  end
-
-  def service_provider_policy
-    Pundit.policy(current_user, @service_provider || ServiceProvider)
-  end
-
-  def readonly_help_text?
-    !service_provider_policy.edit_custom_help_text?
-  end
-
-  def show_minimal_help_text_element?(service_provider)
-    return false if service_provider_policy.edit_custom_help_text?
-
-    text_info = HelpText.lookup(service_provider:)
-    text_info.blank? || text_info.presets_only?
   end
 
   private

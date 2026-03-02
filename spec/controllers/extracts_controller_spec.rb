@@ -141,7 +141,7 @@ describe ExtractsController do
 
       it 'works with fully-translated help text strings' do
         sp1.help_text = { 'sign_up' => { 'en' => 'first_time' } }
-        sp1.help_text = HelpText.lookup(service_provider: sp1).to_localized_h
+        sp1.help_text = HelpText.lookup(service_provider: sp1).to_h_with_localizations
         sp1.save!
 
         post :create, params: params1, format: :gzip

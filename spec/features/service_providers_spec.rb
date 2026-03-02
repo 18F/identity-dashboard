@@ -379,7 +379,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'uses radio buttons when help text is not custom' do
-      help_text_context = HelpText::CONTEXTS.sample
+      help_text_context = HelpText::UI_CONTEXTS.sample
       initial_help_text = { help_text_context => {
         'en' => HelpText::PRESETS[help_text_context].sample,
       } }
@@ -388,7 +388,7 @@ feature 'Service Providers CRUD' do
                                 help_text: initial_help_text)
 
       # The first option does not start out as an empty string
-      expect(service_provider.help_text.fetch(HelpText::CONTEXTS.first, {})['en']).to_not eq('')
+      expect(service_provider.help_text.fetch(HelpText::UI_CONTEXTS.first, {})['en']).to_not eq('')
 
       visit edit_service_provider_path(service_provider)
 
@@ -408,7 +408,7 @@ feature 'Service Providers CRUD' do
       # The database did update
       expect(service_provider.reload.help_text.to_json).to_not eq(initial_help_text.to_json)
       # The first option is now an empty string
-      expect(service_provider.help_text.fetch(HelpText::CONTEXTS.first, {})['en']).to eq('')
+      expect(service_provider.help_text.fetch(HelpText::UI_CONTEXTS.first, {})['en']).to eq('')
 
       # We did not switch to the custom text inputs
       updated_radio_options = find_all('fieldset.custom-help-text input[type=radio]')
@@ -422,7 +422,7 @@ feature 'Service Providers CRUD' do
 
     scenario 'sees read-only text boxes when help text is custom' do
       initial_help_text = {
-        HelpText::CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!' },
+        HelpText::UI_CONTEXTS.sample => { HelpText::LOCALES.sample => 'Hi there!' },
       }
       service_provider = create(:service_provider,
                                 team: team,

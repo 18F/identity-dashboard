@@ -1,7 +1,7 @@
 <div class="wizard-main">
   <%= wizard_form do |form| %>
     <%= form.fields_for :help_text do |h| %>
-      <% HelpText::CONTEXTS.each do |context| %>
+      <% HelpText::UI_CONTEXTS.each do |context| %>
         <%= h.fields_for context.to_s do |s| %>
           <%= render(WizardFieldsetComponent.new(
             form: s,
@@ -13,7 +13,7 @@
               sp_name: draft_service_provider['friendly_name'] || '{Application Friendly Name}',
               agency: draft_service_provider.agency&.name || '{Agency}'
               ).to_a.map { |a| [a[1].html_safe, a[0]] },
-            default: view_parsed_help_text.fetch(context, HelpText::LOCALE_FOR_PRESETS) || 'blank'
+            default: help_text_presenter.identifiers_for_forms.dig(context, HelpText::DEFAULT_LOCALE) || 'blank'
           )) %>
         <% end %>
       <% end %>

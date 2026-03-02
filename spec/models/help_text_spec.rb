@@ -4,15 +4,15 @@ describe HelpText do
   let(:service_provider) { build(:service_provider) }
   let(:subject) { HelpText.lookup(service_provider:) }
   let(:all_presets_help_text) do
-    HelpText::CONTEXTS.each_with_object({}) do |context, result|
-      result[context] = {}
+    HelpText::UI_CONTEXTS.each_with_object({}) do |ui_context, result|
+      result[ui_context] = {}
       HelpText::LOCALES.each do |locale|
-        result[context][locale] = HelpText::PRESETS[context].sample
+        result[ui_context][locale] = HelpText::PRESETS[ui_context].sample
       end
     end
   end
   let(:maybe_presets_help_text) do
-    HelpText::CONTEXTS.each_with_object({}) do |context, result|
+    HelpText::UI_CONTEXTS.each_with_object({}) do |context, result|
       result[context] = {}
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
       HelpText::LOCALES.each do |locale|
@@ -31,38 +31,41 @@ describe HelpText do
     end
   end
   let(:blank_help_text) do
-    HelpText::CONTEXTS.each_with_object({}) do |context, result|
-      result[context] = {}
-      can_be_blank = HelpText::PRESETS[context].include?('blank')
+    HelpText::UI_CONTEXTS.each_with_object({}) do |ui_context, result|
+      result[ui_context] = {}
+      can_be_blank = HelpText::PRESETS[ui_context].include?('blank')
       options = ['', ' ', '     ']
       options += ['blank'] if can_be_blank
       HelpText::LOCALES.each do |locale|
-        result[context][locale] = options.sample
+        result[ui_context][locale] = options.sample
       end
     end
   end
 
-  RSpec::Matchers.matcher :be_a_help_text_preset_for do |context|
+  RSpec::Matchers.matcher :be_a_help_text_preset_for do |ui_context|
     match do |actual|
-      HelpText::PRESETS[context].include?(actual)
+      HelpText::PRESETS[ui_context].include?(actual)
     end
   end
 
   describe '.lookup' do
     it 'does not modify the help text by default' do
-      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+      expect(subject.to_json).to eq(service_provider.help_text.to_json)
     end
 
     it 'does not modify more complicated help text' do
       service_provider.help_text = maybe_presets_help_text
-      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+      # The `maybe_presets_help_text` uses placehol
+      results = subject.to_h_with_localizations(blank_placeholder: true).to_json
+      expect(results).to eq(service_provider.help_text.to_json)
     end
 
     it 'keeps presets as presets' do
       subject = HelpText.lookup(params: all_presets_help_text, service_provider: service_provider)
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
-          expect(subject.fetch(context, locale)).to be_a_help_text_preset_for(context)
+          actual_text = subject.to_h_with_preset_keys.dig(context, locale)
+          expect(actual_text).to be_a_help_text_preset_for(context)
         end
       end
     end
@@ -97,7 +100,7 @@ describe HelpText do
 
     it 'is false for a more complicated example' do
       # Prevent a flaky test: make sure we didn't accidentally RNG into all `'blank'` presets
-      all_presets_help_text[HelpText::CONTEXTS.first][HelpText::LOCALES.sample] = 'first_time'
+      all_presets_help_text[HelpText::UI_CONTEXTS.first][HelpText::LOCALES.sample] = 'first_time'
       service_provider.help_text = all_presets_help_text
       expect(subject).to_not be_blank
     end
@@ -111,14 +114,14 @@ describe HelpText do
 
     it 'is false when one value is not a preset key' do
       one_value_off_help_text = all_presets_help_text.dup
-      one_value_off_help_text[HelpText::CONTEXTS.sample][HelpText::LOCALES.sample] =
+      one_value_off_help_text[HelpText::UI_CONTEXTS.sample][HelpText::LOCALES.sample] =
         'This is definitely not one of our presets'
       service_provider.help_text = one_value_off_help_text
       expect(subject).to_not be_presets_only
     end
 
     it 'is true when some values are the full text of the preset values' do
-      HelpText::CONTEXTS.each do |context|
+      HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           value = all_presets_help_text[context][locale]
           all_presets_help_text[context][locale] = I18n.t(
@@ -134,9 +137,9 @@ describe HelpText do
     end
   end
 
-  describe '#to_localized_h' do
+  describe '#to_h_with_localizations' do
     it 'keeps everything the same with simple options' do
-      expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+      expect(subject.to_json).to eq(service_provider.help_text.to_json)
     end
 
     it 'writes out localized presets' do
@@ -144,12 +147,13 @@ describe HelpText do
       # 'sign_in' and 'sign_up' both have a service provider name substitution and
       # an agency name substitution in their localizations.
       # We can use them to test both format substitution options
-      all_presets_help_text['sign_in']['en'] = 'first_time'
-      all_presets_help_text['sign_up']['en'] = 'agency_email'
+      sample_params = { 'sign_in' => { 'en' => 'first_time' } }
+      sample_params['sign_up'] = { 'en' => 'agency_email' }
+
       results = HelpText.lookup(
-        params: all_presets_help_text,
+        params: sample_params,
         service_provider: service_provider,
-      ).to_localized_h
+      ).to_h_with_localizations
       random_locale = HelpText::LOCALES.sample
       sign_in_first_time_text = I18n.t(
         'service_provider_form.help_text.sign_in.first_time',
@@ -164,19 +168,18 @@ describe HelpText do
         agency: service_provider.agency.name,
       )
 
-      expect(subject.help_text.to_json).to_not eq(service_provider.help_text.to_json)
       expect(results['sign_in'][random_locale]).to eq(sign_in_first_time_text)
       expect(results['sign_up'][random_locale]).to eq(sign_up_agnecy_text)
     end
   end
 
   it 'writes out localized presets even if the presets were not evenly edited' do
-    test_context = HelpText::CONTEXTS.sample
+    test_context = HelpText::UI_CONTEXTS.sample
     all_but_one_preset = all_presets_help_text.dup
     all_but_one_preset[test_context]['en'] = 'I accidentally only updated English'
     expect(all_but_one_preset[test_context]['es']).to be_a_help_text_preset_for(test_context)
     subject = HelpText.lookup(params: all_but_one_preset, service_provider: service_provider)
-    localized_vaules_for_context = subject.to_localized_h[test_context]
+    localized_vaules_for_context = subject.to_h_with_localizations[test_context]
     HelpText::LOCALES.each do |locale|
       expect(localized_vaules_for_context[locale]).to_not be_a_help_text_preset_for(test_context)
     end
@@ -191,15 +194,16 @@ describe HelpText do
       it 'uses the params over the service provider' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
-        expect(subject.help_text.to_json).to eq(params.to_json)
-        expect(subject.help_text.to_json).to_not eq(service_provider.help_text.to_json)
+        expect(subject.to_h_with_preset_keys.to_json).to eq(params.to_json)
+        expect(subject.to_json).to_not eq(service_provider.help_text.to_json)
       end
     end
+
     context 'when the params are not all presets do' do
       let(:params) do
         params = all_presets_help_text
         # Be absolutely sure at least one param is not a preset
-        params[HelpText::CONTEXTS.sample][HelpText::LOCALES.sample] = [
+        params[HelpText::UI_CONTEXTS.sample][HelpText::LOCALES.sample] = [
           'Pruebas con <em>HTML</em>',
           'This is a test!',
         ].sample
@@ -209,8 +213,12 @@ describe HelpText do
       it 'reverts to the service provider and throws away the params' do
         subject = HelpText.lookup(params:, service_provider:)
         subject = subject.revert_unless_presets_only
-        expect(subject.help_text.to_json).to_not eq(params.to_json)
-        expect(subject.help_text.to_json).to eq(service_provider.help_text.to_json)
+        expect(subject.to_json).to_not eq(params.to_json)
+
+        # The test setup uses blanks placeholders for the service provider,
+        # so this test needs them, too.
+        with_leave_blank_placeholder = subject.to_h_with_localizations(blank_placeholder: true)
+        expect(with_leave_blank_placeholder.to_json).to eq(service_provider.help_text.to_json)
       end
     end
   end
