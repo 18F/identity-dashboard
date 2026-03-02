@@ -41,7 +41,7 @@ feature 'TeamMembership CRUD' do
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
-    expect(agency_default_text).to eq('- Select an agency -') 
+    expect(agency_default_text).to eq('- Select an agency -')
     select('GSA', from: 'Agency')
 
     click_on 'Create team name'
