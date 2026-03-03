@@ -236,13 +236,6 @@ Naming/VariableNumber:
     - 'spec/helpers/service_provider_helper_spec.rb'
 
 # Offense count: 2
-# Configuration parameters: MinSize.
-Performance/CollectionLiteralInLoop:
-  Exclude:
-    - 'app/controllers/teams/users_controller.rb'
-    - 'spec/models/help_text_spec.rb'
-
-# Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Performance/MapCompact:
   Exclude:

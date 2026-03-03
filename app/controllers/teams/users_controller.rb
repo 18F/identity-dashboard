@@ -59,8 +59,9 @@ class Teams::UsersController < AuthenticatedController
     flash[:success] = I18n.t('teams.users.create.success', email: member_email)
     redirect_to new_team_user_path
   rescue ActiveRecord::RecordInvalid => err
+    email_taken_error = [:user_id, :taken]
     error_messages = err.record.errors.map do |record_error|
-      if [:user_id, :taken] == [record_error.attribute, record_error.type]
+      if email_taken_error == [record_error.attribute, record_error.type]
         I18n.t(
           'activerecord.errors.models.team_membership.attributes.user_id.taken',
           value: "<strong>#{err.record.user.email}</strong>",
