@@ -16,7 +16,7 @@ feature 'TeamMembership CRUD' do
     fill_in 'Name', with: 'team name'
     select('GSA', from: 'Agency')
 
-    click_on 'Create'
+    click_on 'Create team'
     expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
@@ -36,12 +36,15 @@ feature 'TeamMembership CRUD' do
 
     login_as(gov_partner)
     visit new_team_path
+    agency_field = find_field('Agency')
+    agency_default_text = agency_field.find_all('option').first.text
 
     fill_in 'Description', with: 'department name'
     fill_in 'Name', with: 'team name'
+    expect(agency_default_text).to eq('- Select an agency -')
     select('GSA', from: 'Agency')
 
-    click_on 'Create'
+    click_on 'Create team'
     expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
@@ -54,6 +57,16 @@ feature 'TeamMembership CRUD' do
     visit new_team_path
 
     expect(page).to have_content('Unauthorized')
+  end
+
+  scenario 'Cancel Create' do
+    create(:agency, name: 'GSA')
+
+    login_as(gov_partner)
+    visit new_team_path
+
+    click_on 'Cancel'
+    expect(page).to have_current_path(teams_path)
   end
 
   context 'User already in a team' do

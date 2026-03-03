@@ -5,5 +5,7 @@
     url: teams_path) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>
-  <%= form.button :submit, 'Create', :class => "usa-button" %>
+  <%= form.button :submit, 'Create team', :class => "usa-button" %>
+  <%= link_to t('forms.buttons.cancel'), teams_path, 
+      class: 'usa-button usa-button--unstyled' %>
 <% end %>
