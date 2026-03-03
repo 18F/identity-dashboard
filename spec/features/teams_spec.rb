@@ -16,7 +16,7 @@ feature 'TeamMembership CRUD' do
     fill_in 'Name', with: 'team name'
     select('GSA', from: 'Agency')
 
-    click_on 'Create team name'
+    click_on 'Create team'
     expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
@@ -44,7 +44,7 @@ feature 'TeamMembership CRUD' do
     expect(agency_default_text).to eq('- Select an agency -')
     select('GSA', from: 'Agency')
 
-    click_on 'Create team name'
+    click_on 'Create team'
     expect(page).to have_current_path(team_users_path(Team.last))
     expect(page).to have_content('Success')
     expect(page).to have_content('team name')
