@@ -630,6 +630,33 @@ feature 'Service Config Wizard' do
         )
       end
 
+      it 'can edit post_idv_follow_up_url if it already exists' do
+        starting_idv_url = "https://localhost:#{rand(1..9000)}/"
+        existing_config = create(
+          :service_provider,
+          :ready_to_activate_ial_2,
+          :with_prod_config,
+          team: team,
+          # We want to add `failure_to_proof_url` to the `ready_to_activate_ial_2` trait
+          failure_to_proof_url: "https://login.gov:#{rand(1..9000)}",
+          post_idv_follow_up_url: starting_idv_url,
+        )
+        visit service_provider_path(existing_config)
+        click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
+        visit service_config_wizard_path('redirects')
+        idv_input = find('input#wizard_step_post_idv_follow_up_url')
+        expect(idv_input.value).to eq(starting_idv_url)
+
+        new_url = "https://int-identity-oidc-sinatra.app.cloud.gov:#{rand(1..9000)}/"
+        fill_in 'wizard_step_post_idv_follow_up_url', with: new_url
+        click_on 'Next'
+        expect(page).to have_text('Help text')
+        click_on 'Update configuration'
+        expect(page).to have_current_path(service_provider_path(existing_config))
+        expect(page).to have_text("Post IdV Follow-up URL: #{new_url}")
+      end
+
       context 'localhost URLs' do
         it 'are not allowed to be added' do
           existing_config = create(:service_provider,

@@ -281,6 +281,20 @@ describe ServiceProviderPolicy do
     end
   end
 
+  permissions :edit_idv_follow_up? do
+    context 'by default' do
+      it_behaves_like 'allows login.gov admins only for `object`' do
+        let(:object) { config }
+      end
+    end
+
+    context 'if the follow-up URL is already enabled' do
+      it_behaves_like 'allows all team members except Admin/Partner Readonly for `object`' do
+        let(:object) { create(:service_provider, team: team, post_idv_follow_up_url: 'https://login.gov') }
+      end
+    end
+  end
+
   permissions :see_status? do
     it_behaves_like 'allows login.gov staff only for `object`' do
       let(:object) { config }
