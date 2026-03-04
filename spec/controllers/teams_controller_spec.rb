@@ -105,6 +105,15 @@ describe TeamsController do
         expect(assigns[:audit_events][0].whodunnit).to eq(test_version.whodunnit)
         expect(assigns[:audit_events][0].created_at).to eq(test_version.created_at)
       end
+
+      context 'when team id is invalid' do
+        it 'shows an "unauthorized" error' do
+          get :show, params: { id: 'droptable' }
+
+          expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
+        end
+      end
     end
 
     context 'when a team member not login.gov admin' do
