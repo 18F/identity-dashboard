@@ -54,6 +54,7 @@ class WizardStep < ApplicationRecord
       assertion_consumer_logout_service_url: '',
       block_encryption: DEFAULT_SAML_ENCRYPTION,
       failure_to_proof_url: '',
+      post_idv_follow_up_url: nil,
       push_notification_url: '',
       redirect_uris: [],
       return_to_sp_url: '',
@@ -77,7 +78,6 @@ class WizardStep < ApplicationRecord
       metadata_url: nil,
       service_provider_id: nil,
       service_provider_user_id: nil,
-      post_idv_follow_up_url: nil,
     }),
   }.with_indifferent_access.freeze
 

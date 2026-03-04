@@ -99,6 +99,14 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
     user_has_login_admin_role?
   end
 
+  def edit_idv_follow_up?
+    return true if user_has_login_admin_role?
+
+    return false unless edit?
+
+    record.post_idv_follow_up_url != nil
+  end
+
   def ial_readonly?
     # Passed the class instead of an instance. This usually happens when creating a new one.
     return false if record.instance_of?(Class)
