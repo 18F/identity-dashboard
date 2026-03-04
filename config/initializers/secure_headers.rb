@@ -44,6 +44,7 @@ SecureHeaders::Configuration.default do |config|
     img_src:,
     script_src:,
     style_src:,
+    upgrade_insecure_requests: true,
   }
   # Enable for A11y testing. This allows use of the ANDI tool.
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
