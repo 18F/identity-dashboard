@@ -15,6 +15,7 @@ describe HelpText do
     HelpText::UI_CONTEXTS.each_with_object({}) do |context, result|
       result[context] = {}
       preset = rand(2) == 1 ? HelpText::PRESETS[context].sample : nil
+      not_presets = ['Pruebas con <em>HTML</em>', 'This is a test!']
       HelpText::LOCALES.each do |locale|
         result[context][locale] =
           if preset
@@ -25,7 +26,7 @@ describe HelpText do
               agency: service_provider.agency&.name,
             )
           else
-            ['Pruebas con <em>HTML</em>', 'This is a test!'].sample
+            not_presets.sample
           end
       end
     end
