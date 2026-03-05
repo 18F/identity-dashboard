@@ -1,4 +1,6 @@
 module ApplicationHelper # :nodoc:
+  include Chartkick::Helper 
+  
   def navigation_link_to(text, route)
     link_to text, route, class: [current_page?(route) && 'usa-current', 'usa-nav__link']
   end
