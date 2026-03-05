@@ -42,7 +42,7 @@ SecureHeaders::Configuration.default do |config|
     object_src: ["'none'"],
     base_uri: ["'self'"],
     img_src:,
-    script_src:,
+    script_src: script_src + ["'nonce'"],
     style_src:,
     # only enable in production and staging, since it causes issues with development
     # environments that use http://localhost:3001
