@@ -14,7 +14,8 @@ RSpec.describe ServiceProviderSerializer do
                 ial: 2,
                 default_aal: 3,
                 certs: [build_pem],
-                allow_prompt_login: true)
+                allow_prompt_login: true,
+                post_idv_follow_up_url: 'https://example.com/follow-up')
     sp.logo_file.attach(fixture_file_upload(logo_filename))
     sp.update(logo: logo_filename)
     sp.reload
@@ -38,6 +39,7 @@ RSpec.describe ServiceProviderSerializer do
           eq(service_provider.signed_response_message_requested)
         expect(as_json[:allow_prompt_login]).to be true
         expect(as_json[:pkce]).to eq(false)
+        expect(as_json[:post_idv_follow_up_url]).to eq('https://example.com/follow-up')
       end
     end
 
