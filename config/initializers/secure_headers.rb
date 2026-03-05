@@ -44,7 +44,7 @@ SecureHeaders::Configuration.default do |config|
     img_src:,
     script_src:,
     style_src:,
-    # only enable in production and staging, since it causes issues with development 
+    # only enable in production and staging, since it causes issues with development
     # environments that use http://localhost:3001
     upgrade_insecure_requests: !Rails.env.development?,
   }
