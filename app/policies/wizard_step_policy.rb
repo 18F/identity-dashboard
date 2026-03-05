@@ -32,14 +32,14 @@ class WizardStepPolicy < BasePolicy
   ].freeze
 
   def permitted_attributes
-    return PARAMS unless IdentityConfig.store.prod_like_env
-    return PARAMS if record == WizardStep # Not passed a specific record, passed the whole class
-
     params = PARAMS.dup
+    params.delete(:post_idv_follow_up_url) unless edit_idv_follow_up?
+
+    return params unless IdentityConfig.store.prod_like_env
+
     if existing_config && ServiceProviderPolicy.new(user, existing_config).ial_readonly?
       params.delete(:ial)
     end
-    params.delete(:post_idv_follow_up_url) unless edit_idv_follow_up?
 
     params
   end
@@ -64,6 +64,8 @@ class WizardStepPolicy < BasePolicy
   private
 
   def existing_config
-    record.existing_service_provider? && record.original_service_provider
+    return false if record == WizardStep # the class itself instead of a specific record
+
+    @existing_config ||= record.existing_service_provider? && record.original_service_provider
   end
 end
