@@ -273,8 +273,13 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                  input_html: { class: 'usa-input' },
                  label: 'Push notification URL',
                  hint: I18n.t('service_provider_form.push_notification_url') %>
-
   <%# BEGIN redirect_uris %>
+    <% if policy(form.object).edit_idv_follow_up? %>
+      <%= form.input :post_idv_follow_up_url,
+                    input_html: { class: 'usa-input' },
+                    label: 'Post IdV Follow-up URL',
+                    hint: I18n.t('service_provider_form.post_idv_follow_up_url') %>
+    <% end %>
     <div class="usa-hint oidc-fields">
       <%= form.label :redirect_uris,
                      label: 'Redirect URIs',
