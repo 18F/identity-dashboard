@@ -22,7 +22,7 @@
     "chartkick": "^5.0.1",
     "core-js": "^3.23.4",
     "fast-glob": "^3.3",
-    "webpack": "^5.94.0",
+    "webpack": "^5.105.4",
     "webpack-cli": "^5.1.4"
   },
   "devDependencies": {
