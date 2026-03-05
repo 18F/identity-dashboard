@@ -1,6 +1,25 @@
 <% content_for(:title, 'Add team member') %>
 <h1 class="usa-display">Add new user to <%= @team.name %></h1>
 
+<p class="usa-intro">Enter email address and select access levels for your team members.</p>
+
+<div class="border-top-1px border-base-lighter padding-top-2">
+  <p>You can manage users and change access levels anytime.</p>
+
+  <div class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3">
+    <button class="usa-accordion__button padding-y-1" aria-expanded="false" aria-controls="access-levels-content">
+      <span class="font-body-md text-normal line-height-sans-1">What are the different access levels?</span>
+    </button>
+    <div id="access-levels-content" class="usa-accordion__content">
+      <ul class="usa-list">
+        <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Admin:</strong> Can manage this team's users, configurations, and settings</li>
+        <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Developer:</strong> Can view and edit configurations but cannot publish or manage users</li>
+        <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Viewer:</strong> Can only view configurations (read-only access)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <%= simple_form_for(@user,
     html: { autocomplete: 'off' },
     url: team_users_path(@team)) do |form| %>
