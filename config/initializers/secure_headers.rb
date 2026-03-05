@@ -14,35 +14,41 @@ SecureHeaders::Configuration.default do |config|
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
+  script_src = [
+    "'self'",
+    '*.newrelic.com',
+    '*.nr-data.net',
+    'https://dap.digitalgov.gov',
+    'https://www.google-analytics.com',
+    'https://www.googletagmanager.com',
+  ]
+  style_src = ["'self'"]
+  img_src = ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"]
+
+  if Rails.env.development?
+    script_src.push('*.ssa.gov', 'ajax.googleapis.com')
+    style_src.push("'unsafe-inline'", '*.ssa.gov')
+    img_src.push('*.ssa.gov')
+  end
+
   config.csp = {
     default_src: ["'self'"],
     frame_src: ["'self'"], # deprecated in CSP 2.0
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
-    # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: form_action.flatten,
-    block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"],
     media_src: ["'self'"],
     object_src: ["'none'"],
-    script_src: [
-      "'self'",
-      '*.newrelic.com',
-      '*.nr-data.net',
-      'https://dap.digitalgov.gov',
-      'https://www.google-analytics.com',
-      'https://www.googletagmanager.com',
-    ],
-    style_src: ["'self'"],
     base_uri: ["'self'"],
+    img_src:,
+    script_src:,
+    style_src:,
+    # only enable in production and staging, since it causes issues with development
+    # environments that use http://localhost:3001
+    upgrade_insecure_requests: !Rails.env.development?,
   }
   # Enable for A11y testing. This allows use of the ANDI tool.
-  if Rails.env.development?
-    config.csp.script_src.push('*.ssa.gov', 'ajax.googleapis.com')
-    config.csp.style_src.push("'unsafe-inline'", '*.ssa.gov')
-    config.csp.img_src.push('*.ssa.gov')
-  end
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
