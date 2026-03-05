@@ -11,6 +11,7 @@ gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-s3', '>= 1.208.0', require: false
 gem 'browser'
 gem 'bundler'
+gem 'chartkick', '~> 5.2'
 gem 'colorize'
 gem 'connection_pool'
 gem 'cssbundling-rails'
