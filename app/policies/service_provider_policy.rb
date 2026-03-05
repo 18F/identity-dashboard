@@ -104,7 +104,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
 
     return false unless edit?
 
-    record.post_idv_follow_up_url != nil
+    record.post_idv_follow_up_url.present?
   end
 
   def ial_readonly?

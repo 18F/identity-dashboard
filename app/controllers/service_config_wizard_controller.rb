@@ -202,7 +202,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def wizard_step_params
-    permitted_attributes(WizardStep)
+    permitted_attributes(@model || WizardStep)
   end
 
   # relies on ServiceProvider#certs_are_pems for validation

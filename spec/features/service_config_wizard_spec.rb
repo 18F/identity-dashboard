@@ -655,6 +655,7 @@ feature 'Service Config Wizard' do
         click_on 'Update configuration'
         expect(page).to have_current_path(service_provider_path(existing_config))
         expect(page).to have_text("Post IdV Follow-up URL: #{new_url}")
+        expect(page).to_not have_text(starting_idv_url)
       end
 
       context 'localhost URLs' do

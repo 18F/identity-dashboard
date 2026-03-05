@@ -749,9 +749,13 @@ RSpec.describe ServiceConfigWizardController do
         initial_ial = service_provider.reload.attributes['ial']
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
 
+        expect(logger_double).to receive(:unpermitted_params_attempt).with(
+          ActionController::UnpermittedParameters,
+        )
         put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
+        expect(response).to have_http_status(:unauthorized)
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
-        # fails silently
+        expect(response).to redirect_to(service_provider_path(service_provider))
         updated_ial = service_provider.reload.attributes['ial']
         expect(updated_ial).to eq(initial_ial)
       end
