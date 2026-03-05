@@ -44,7 +44,9 @@ SecureHeaders::Configuration.default do |config|
     img_src:,
     script_src:,
     style_src:,
-    upgrade_insecure_requests: true,
+    # only enable in production and staging, since it causes issues with development 
+    # environments that use http://localhost:3001
+    upgrade_insecure_requests: !Rails.env.development?,
   }
   # Enable for A11y testing. This allows use of the ANDI tool.
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
