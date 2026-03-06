@@ -10,3 +10,12 @@ amazon:
   service: S3
   region: <%= IdentityConfig.store.aws_region %>
   bucket: <%= IdentityConfig.store.aws_logo_bucket %>
+
+reports_local:
+  service: Disk
+  root: <%= Rails.root.join("storage/analytics_reports") %>
+
+reports_amazon:
+  service: S3
+  region: <%= IdentityConfig.store.aws_region %>
+  bucket: <%= IdentityConfig.store.aws_reports_bucket %>
