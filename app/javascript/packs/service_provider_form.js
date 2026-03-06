@@ -35,17 +35,17 @@ function ialOptionSetup() {
     switch (ial) {
       case '1':
         hideElement(failureToProofURL);
-        hideElement(postIdvFollowUpURL);
+        if (postIdvFollowUpURL) { hideElement(postIdvFollowUpURL); }
         toggleIAL1Options();
         break;
       case '2':
         showElement(failureToProofURL);
-        showElement(postIdvFollowUpURL);
+        if (postIdvFollowUpURL) { showElement(postIdvFollowUpURL); }
         toggleIAL2Options();
         break;
       default:
         showElement(failureToProofURL);
-        showElement(postIdvFollowUpURL);
+        if (postIdvFollowUpURL) { showElement(postIdvFollowUpURL); }
         toggleIAL2Options();
     }
   };
