@@ -20,10 +20,10 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
 
   def report_for_issuer(issuer)
     all_reports = AnalyticsReportStorage.fetch(@selected_report)
-    
-    all_reports.flatten.find { |report| 
-    puts report['issuer']
-    report['issuer'] == issuer }
+
+    all_reports.flatten.find do |report|
+      report['issuer'] == issuer
+    end
   end
 
   def service_provider

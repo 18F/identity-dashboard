@@ -1,4 +1,7 @@
+# Defines fetching reports from AWS S3 Buckets on production and local disk in development/test
 class AnalyticsReportStorage
+  ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
+
   def self.list
     new.list
   end
@@ -35,7 +38,7 @@ class AnalyticsReportStorage
     return [] unless root.exist?
 
     root.children.map do |file|
-      OpenStruct.new(key: file.basename.to_s, size: file.size, last_modified: file.mtime)
+      ReportFile.new(key: file.basename.to_s, file_size: file.size, last_modified: file.mtime)
     end
   end
 
