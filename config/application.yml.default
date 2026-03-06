@@ -11,6 +11,7 @@ assets_version: '1.0'
 auto_account_creation_tlds: '.gov,.mil'
 aws_region: us-west-2
 aws_logo_bucket: changeme
+aws_reports_bucket: changeme
 certificate_expiration_warning_period: '60'
 db_pool: '5'
 devise_timeout_minutes: '15'
