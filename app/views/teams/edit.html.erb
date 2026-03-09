@@ -1,5 +1,5 @@
 <%= page_heading 'Edit team' %>
-
+<div class="border-top border-primary-light margin-top-2"></div>
 <%= simple_form_for(@team, html: { autocomplete: 'off', class: 'usa-form usa-form--large' }) do |form| %>
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: false, extra_message: t('headings.teams.temporary_warning_team_user') %>
