@@ -311,9 +311,18 @@ describe ServiceProviderPolicy do
     before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
 
     context 'when not in prod' do
-      it 'allows base attributes for non-admin' do
+      it 'allows base attributes exexpt for IdV follow-up for non-admin' do
         subject = described_class.new(build(:user), ServiceProvider)
+        expected_attributes = described_class::BASE_PARAMS.dup
+        expected_attributes.delete :post_idv_follow_up_url
+        expect(subject.permitted_attributes).to eq(expected_attributes)
+      end
+
+      it 'allows IdV follow-up if URL is already present' do
+        sp = build(:service_provider, team: team, post_idv_follow_up_url: "http://localhost:#{rand(1..9000)}")
+        subject = described_class.new(partner_admin, sp)
         expect(subject.permitted_attributes).to eq(described_class::BASE_PARAMS)
+        expect(subject.permitted_attributes).to include(:post_idv_follow_up_url)
       end
 
       it 'allows extra attributes for login.gov admin' do
@@ -325,6 +334,7 @@ describe ServiceProviderPolicy do
           approved
         ]
         expect(subject.permitted_attributes).to eq(expected_attributes)
+        expect(subject.permitted_attributes).to include(:post_idv_follow_up_url)
       end
     end
 
@@ -332,7 +342,6 @@ describe ServiceProviderPolicy do
       before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
 
       it 'allows extra attributes for login.gov admin' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         subject = described_class.new(logingov_admin, ServiceProvider)
         expected_attributes = described_class::BASE_PARAMS + %i[
           email_nameid_format_allowed
@@ -340,12 +349,24 @@ describe ServiceProviderPolicy do
           approved
         ]
         expect(subject.permitted_attributes).to eq(expected_attributes)
+        expect(subject.permitted_attributes).to include(:post_idv_follow_up_url)
+        expect(subject.permitted_attributes).to include(:ial)
       end
 
-      it 'forbids editing IAL for non-admin' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        subject = described_class.new(build(:user), build(:service_provider, ial: 1))
-        expected_attributes = described_class::BASE_PARAMS.reject { |param| param == :ial }
+      it 'forbids editing IAL & IdV follow-up URL for non-admin' do
+        sp = build(:service_provider, team: team, ial: 1)
+        subject = described_class.new(partner_admin, sp)
+        expected_attributes = described_class::BASE_PARAMS.dup
+        expected_attributes.delete :post_idv_follow_up_url
+        expected_attributes.delete :ial
+        expect(subject.permitted_attributes).to eq(expected_attributes)
+      end
+
+      it 'when relevant attributes exist, forbids IAL edits but allows IdV follow-up edits' do
+        sp = build(:service_provider, team: team, ial: 1, post_idv_follow_up_url: "http://localhost:#{rand(1..9000)}")
+        subject = described_class.new(partner_admin, sp)
+        expected_attributes = described_class::BASE_PARAMS.dup
+        expected_attributes.delete :ial
         expect(subject.permitted_attributes).to eq(expected_attributes)
       end
     end

@@ -94,6 +94,7 @@ feature 'Service Config Wizard' do
       end
       click_on 'Create configuration' # details page
       click_on 'Edit'
+      expect(page).to have_current_path(service_config_wizard_path('settings'))
       visit service_config_wizard_path('help_text')
       HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
@@ -286,6 +287,7 @@ feature 'Service Config Wizard' do
                                help_text: standard_help_text)
       visit service_provider_path(existing_config)
       click_on 'Edit'
+      expect(page).to have_current_path(service_config_wizard_path('settings'))
       visit service_config_wizard_path('help_text')
       click_on 'Update configuration'
       # rubocop:disable Layout/LineLength
@@ -299,8 +301,7 @@ feature 'Service Config Wizard' do
       existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
       click_on 'Edit'
-
-      visit service_config_wizard_path('settings')
+      expect(page).to have_current_path(service_config_wizard_path('settings'))
       fill_in('Friendly name', with: "Edited name #{rand(1..1000)}")
       click_on 'Next'
       visit service_config_wizard_path('help_text')
@@ -334,6 +335,7 @@ feature 'Service Config Wizard' do
                                  team: logingov_admin.teams[0])
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
@@ -464,6 +466,7 @@ feature 'Service Config Wizard' do
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path('redirects')
 
         expect(page).to have_content(t('simple_form.labels.service_provider.failure_to_proof_url'))
@@ -475,6 +478,7 @@ feature 'Service Config Wizard' do
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path('redirects')
 
         expect(page).to_not have_content(
@@ -488,6 +492,7 @@ feature 'Service Config Wizard' do
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path('redirects')
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: '')
@@ -537,6 +542,7 @@ feature 'Service Config Wizard' do
                                team: team)
       visit service_provider_path(existing_config)
       click_on 'Edit'
+      expect(page).to have_current_path(service_config_wizard_path('settings'))
       visit service_config_wizard_path('help_text')
 
       HelpText::UI_CONTEXTS.each do |context|
@@ -555,7 +561,7 @@ feature 'Service Config Wizard' do
 
       visit service_provider_path(existing_config)
       click_on 'Edit'
-      visit service_config_wizard_path('settings')
+      expect(page).to have_current_path(service_config_wizard_path('settings'))
       choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Next'
       visit service_config_wizard_path(WizardStep::STEPS.last)
@@ -621,6 +627,7 @@ feature 'Service Config Wizard' do
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
+        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path(WizardStep::STEPS.last)
         click_on 'Update configuration'
 
@@ -668,6 +675,7 @@ feature 'Service Config Wizard' do
 
           visit service_provider_path(existing_config)
           click_on 'Edit'
+          expect(page).to have_current_path(service_config_wizard_path('settings'))
           visit service_config_wizard_path('redirects')
           fill_in 'wizard_step_push_notification_url', with: 'http://localhost:0000'
           click_on 'Next'

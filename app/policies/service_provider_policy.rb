@@ -18,6 +18,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
     :metadata_url,
     :return_to_sp_url,
     :failure_to_proof_url,
+    :post_idv_follow_up_url,
     :push_notification_url,
     :signed_response_message_requested,
     :sp_initiated_login_url,
@@ -37,9 +38,11 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
 
   def permitted_attributes
     return ADMIN_PARAMS if user_has_login_admin_role?
-    return BASE_PARAMS unless ial_readonly?
 
-    BASE_PARAMS.reject { |param| param == :ial }
+    params = BASE_PARAMS.dup
+    params.delete(:ial) if ial_readonly?
+    params.delete(:post_idv_follow_up_url) unless edit_idv_follow_up?
+    params
   end
 
   def index?
@@ -101,7 +104,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
 
   def edit_idv_follow_up?
     return true if user_has_login_admin_role?
-
+    return false if record == ServiceProvider
     return false unless edit?
 
     record.post_idv_follow_up_url.present?
