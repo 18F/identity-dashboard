@@ -17,9 +17,7 @@ class ExtractsController < AuthenticatedController
     )
 
     if @extract.valid?
-      if @extract.failures.length > 0
-        flash[:warning] = 'Some criteria were invalid. Please check the results.'
-      end
+      flash[@extract.error_level] = @extract.error_message
 
       respond_to do |format|
         format.html { render('results') }
@@ -27,7 +25,7 @@ class ExtractsController < AuthenticatedController
       end and return
     end
 
-    flash[:error] = 'No ServiceProvider rows were returned' if @extract.service_providers.empty?
+    flash[:error] = 'No ServiceProvider rows were returned' if @extract.successes.empty?
 
     render 'index'
   end

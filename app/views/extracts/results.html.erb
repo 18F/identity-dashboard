@@ -4,15 +4,24 @@
 <% if @extract.failures.present? %>
   <h2><%= "#{@extract.failures.length} issuers" %>  were invalid </h2>
   <ul class="usa-list">
-    <% @extract.failures.each do |f| %>
-      <li><%= f %></li>
+    <% @extract.failures.each do |failed_issuer| %>
+      <li><%= failed_issuer %>
+      <% if sp = @extract.service_providers.find {|record| record.issuer == failed_issuer} %>
+        <ul>
+          <% sp.errors.full_messages.each do |error_message| %>
+            <li class="usa-error-message"><%= error_message %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      </li>
     <% end %>
   </ul>
 <% end %>
 
-<h2><%= @extract.service_providers.length %> ServiceProvider rows found</h2>
+<h2><%= @extract.successes.length %> ServiceProvider rows found</h2>
 <ul class="usa-list font-family-mono">
   <% @extract.service_providers.each do |sp| %>
+    <% next unless @extract.successes.include? sp.issuer %>
     <li>service provider <%= sp.group_id %> | <%= sp.issuer %></li>
   <% end %>
 </ul>
@@ -22,7 +31,7 @@
     <li>team <%= team.id %> | <%= team.name %></li>
   <% end %>
 </ul>
-<% if @extract.service_providers.any? %>
+<% if @extract.successes.any? %>
   <p>
     A <%= 'partial' if @extract.failures.any? %> download is ready.
     <%= form_for(@extract, format: :gzip) do |f| %>

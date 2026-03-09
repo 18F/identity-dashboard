@@ -30,6 +30,24 @@ feature 'Extract Download' do
     expect(page).to_not have_link('Download configs')
   end
 
+  it 'will not have a download button if the configs are invalid' do
+    bad_uri = 'ftp:///'
+    sp_to_export.redirect_uris = [bad_uri]
+    # Assertion: this is enough to indvalidate the record
+    expect(sp_to_export).to_not be_valid
+    # Force it to save
+    sp_to_export.save!(validate: false)
+
+    visit extracts_path
+    fill_in 'Ticket number', with: expected_ticket_number
+    fill_in 'extract[criteria_list]', with: sp_to_export.issuer
+    click_on 'Extract configs'
+    expect(page).to have_content('No valid ServiceProvider configs found')
+    expect(page).to have_content("#{bad_uri} is not a valid URI")
+    expect(page).to_not have_button('Download configs')
+    expect(page).to_not have_link('Download configs')
+  end
+
   context 'when downloading' do
     before do
       visit extracts_path
