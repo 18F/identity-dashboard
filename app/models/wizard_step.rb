@@ -339,6 +339,10 @@ class WizardStep < ApplicationRecord
     id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
   end
 
+  def using_idv?
+    ial.to_i > 1
+  end
+
   private
 
   def enforce_valid_data(new_data)
@@ -364,8 +368,7 @@ class WizardStep < ApplicationRecord
   end
 
   def failure_to_proof_url_for_idv
-    using_idv = ial.to_i > 1
-    return unless using_idv
+    return unless using_idv?
 
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end

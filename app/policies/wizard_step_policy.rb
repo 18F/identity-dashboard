@@ -51,7 +51,8 @@ class WizardStepPolicy < BasePolicy
   def edit_idv_follow_up?
     return true if user_has_login_admin_role?
 
-    existing_config && ServiceProviderPolicy.new(user, existing_config).edit_idv_follow_up?
+    existing_config && record.using_idv? &&
+      ServiceProviderPolicy.new(user, existing_config).edit_idv_follow_up?
   end
 
   # WizardStep policy scope

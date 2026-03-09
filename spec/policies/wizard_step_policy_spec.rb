@@ -33,12 +33,12 @@ describe WizardStepPolicy do
       team = create(:team_membership, [:partner_developer, :partner_admin].sample, user:).team
       original_service_provider = create(
         :service_provider,
+        ial: 2,
         post_idv_follow_up_url: "http://localhost:#{rand(1..9000)}",
         team: team,
       )
-      wizard_step_from_sp = create(:wizard_step, step_name: 'hidden', user:, wizard_form_data: {
-        service_provider_id: original_service_provider.id,
-      })
+      wizard_step_from_sp = WizardStep.populate_data(original_service_provider, user).last
+
       subject = described_class.new(user, wizard_step_from_sp)
       expect(subject.permitted_attributes).to eq(described_class::PARAMS.dup)
       expect(subject.permitted_attributes).to include(:ial)
