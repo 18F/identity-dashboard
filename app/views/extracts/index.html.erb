@@ -8,21 +8,8 @@
                   label: 'Ticket number',
                   required: true,
                   hint: t('extracts.ticket_description') %>
-  <fieldset class="usa-fieldset margin-top-4">
-    <legend class="usa-label required usa-input-required">
-      Search by<abbr class="text-secondary-dark" title="required">*</abbr>
-    </legend>
-    <%= form.collection_radio_buttons(:search_by,
-                                     { "Teams" => 'teams', "Issuers" => 'issuers' },
-                                     :last, :first) do |b| %>
-      <div class="usa-radio">
-        <%= b.radio_button(class: "usa-radio__input") %>
-        <%= b.label(class: "usa-radio__label") %>
-      </div>
-    <% end %>
-  </fieldset>
   <fieldset class="usa-form-group usa-fieldset">
-    <label class="usa-label optional" id="criteria-input-label">Teams or issuers file</label>
+    <label class="usa-label optional" id="criteria-input-label">Issuers file</label>
     <p class="usa-hint"><%= t('extracts.file_description') %></p>
     <%= form.file_field :criteria_file,
                         class: "usa-file-input",
@@ -39,7 +26,7 @@
                  as: :usa_textarea,
                  class: 'block col-12 usa-textarea',
                  label_html: { class: 'usa-label' },
-                 label: 'List of teams or issuers',
+                 label: 'List of issuers',
                  hint: t('extracts.list_description') %>
 
   <div class="margin-top-2">

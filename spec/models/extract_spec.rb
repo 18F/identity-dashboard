@@ -10,14 +10,11 @@ describe Extract do
   describe 'Validations' do
     it { should validate_presence_of(:ticket) }
 
-    it { should validate_inclusion_of(:search_by).in_array(%w[teams issuers]) }
-
     it 'should not have errors when file_criteria are valid' do
       create(:service_provider, issuer: 'issuer:one', team:)
 
       with_file = build(:extract, {
         ticket: '1',
-        search_by: 'issuers',
         criteria_file: issuer_file,
       })
 
@@ -28,8 +25,7 @@ describe Extract do
     it 'should not have errors when list_criteria are valid' do
       with_list = build(:extract, {
         ticket: '0',
-        search_by: 'teams',
-        criteria_list: "1,2, #{sp1.team.id}",
+        criteria_list: "1,2, #{sp1.issuer}",
       })
 
       expect(with_list).to be_valid
@@ -39,7 +35,6 @@ describe Extract do
     it 'should return errors when file and list criteria are excluded' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'teams',
         criteria_list: '',
       })
 
@@ -52,7 +47,6 @@ describe Extract do
     it 'should sanitize ticket string' do
       extract = build(:extract, {
         ticket: 'rm -fr /',
-        search_by: 'issuers',
         criteria_list: sp1.issuer,
       })
 
@@ -61,30 +55,9 @@ describe Extract do
   end
 
   describe '#failures' do
-    it 'should return team IDs missing a team or SP' do
-      extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: '0, 9999999',
-      })
-
-      expect(extract.failures).to eq(['0', '9999999'])
-    end
-
-    it 'should return team IDs missing SP even if others are successful' do
-      extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: "#{sp1.group_id} 0",
-      })
-
-      expect(extract.failures).to eq(['0'])
-    end
-
     it 'should return issuers not associated with an SP' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_list: 'fake:issuer:0 fake:issuer:1',
       })
 
@@ -94,7 +67,6 @@ describe Extract do
     it 'should return issuers without SP even if others are successful' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_list: "#{sp2.issuer} fake:issuer:0",
       })
 
@@ -106,7 +78,6 @@ describe Extract do
     it 'should return an empty array when there is no criteria uploaded' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'teams',
         criteria_list: '',
       })
 
@@ -116,7 +87,6 @@ describe Extract do
     it 'should return an array of the issuer strings in the criteria_file' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_file: issuer_file,
       })
 
@@ -125,21 +95,9 @@ describe Extract do
       )
     end
 
-    it 'should return an array of the team ids in the criteria_list' do
-      extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: '1,  2 3
-        4',
-      })
-
-      expect(extract.criteria).to eq(%w[1 2 3 4])
-    end
-
     it 'should concat file and list inputs into an array' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_list: 'list:issuer',
         criteria_file: issuer_file,
       })
@@ -151,20 +109,9 @@ describe Extract do
   end
 
   describe '#teams' do
-    it 'should return existing teams by team ID' do
-      extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: sp1.group_id.to_s,
-      })
-
-      expect(extract.teams).to eq([team])
-    end
-
     it 'should return teams by SP issuer string' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_list: sp1.issuer,
       })
 
@@ -173,20 +120,9 @@ describe Extract do
   end
 
   describe '#service_providers' do
-    it 'should return existing SPs by team ID' do
-      extract = build(:extract, {
-        ticket: '0',
-        search_by: 'teams',
-        criteria_list: sp1.group_id.to_s,
-      })
-
-      expect(extract.service_providers).to eq([sp1])
-    end
-
     it 'should return existing SPs by issuer string' do
       extract = build(:extract, {
         ticket: '0',
-        search_by: 'issuers',
         criteria_list: sp2.issuer,
       })
 
@@ -196,7 +132,7 @@ describe Extract do
 
   describe '#logos' do
     subject(:extract) do
-      Extract.new(ticket: rand(1.1000), search_by: 'issuers', criteria_list: sp1.issuer)
+      Extract.new(ticket: rand(1.1000), criteria_list: sp1.issuer)
     end
 
     it 'is empty if the service provider has no logo' do

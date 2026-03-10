@@ -3,20 +3,17 @@
 class Extract
   include ActiveModel::Model
 
-  attr_accessor :ticket, :search_by, :criteria_file, :criteria_list
+  attr_accessor :ticket, :criteria_file, :criteria_list
 
   validates :ticket, presence: true
-  validates :search_by, inclusion: { in: ['teams', 'issuers'] }
   validate :file_and_or_list
   validates :service_providers, presence: true
 
   # @param [String] ticket identifier used in file name
-  # @param [String('teams', 'issuers')] search_by criteria to use
   # @param [String] criteria_list comma- and/or space-separated string
   # @param [File<text/plain>] criteria_file comma- and/or space-separated plaintext
-  def initialize(ticket: '', search_by: 'teams', criteria_list: '', criteria_file: nil)
+  def initialize(ticket: '', criteria_list: '', criteria_file: nil)
     @ticket = ticket
-    @search_by = search_by
     @criteria_list = criteria_list
     @criteria_file = criteria_file
   end
@@ -37,11 +34,7 @@ class Extract
   def failures
     criteria.reject do |criterion|
       service_providers.find do |config|
-        if extract_by_team?
-          config.group_id.to_s == criterion
-        else
-          config.issuer == criterion
-        end
+        config.issuer == criterion
       end
     end
   end
@@ -70,11 +63,7 @@ class Extract
 
   # @return [Array<ServiceProvider>]
   def service_providers
-    @service_providers ||= if extract_by_team?
-                             ServiceProvider.joins(:team).where(group_id: criteria)
-                           else
-                             ServiceProvider.joins(:team).where(issuer: criteria)
-                           end
+    @service_providers ||= ServiceProvider.joins(:team).where(issuer: criteria)
   end
 
   def valid?
@@ -98,11 +87,6 @@ class Extract
   end
 
   private
-
-  # @return [Boolean]
-  def extract_by_team?
-    search_by == 'teams'
-  end
 
   # @return [nil, ActiveModel::Errors]
   def file_and_or_list
