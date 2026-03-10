@@ -39,6 +39,8 @@ class ServiceProvider < ApplicationRecord
                  attribute: :return_to_sp_url
   validates_with RedirectsValidator,
                  attribute: :assertion_consumer_logout_service_url
+  validates_with RedirectsValidator,
+                 attribute: :post_idv_follow_up_url
 
   STATUSES = %w[pending live rejected moved_to_prod].freeze
 
