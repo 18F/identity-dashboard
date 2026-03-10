@@ -23,10 +23,9 @@ feature 'Extract Download' do
   it 'has no download link with invalid criteria' do
     visit extracts_path
     fill_in 'Ticket number', with: expected_ticket_number
-    choose 'Teams'
-    fill_in 'extract[criteria_list]', with: Team.last.id + rand(10.1000)
+    fill_in 'extract[criteria_list]', with: "#{sp_to_export.issuer}#{rand(10..1000)}"
     click_on 'Extract configs'
-    expect(page).to have_content('No ServiceProvider or Team rows were returned')
+    expect(page).to have_content('No ServiceProvider rows were returned')
     expect(page).to_not have_button('Download configs')
     expect(page).to_not have_link('Download configs')
   end
@@ -35,8 +34,7 @@ feature 'Extract Download' do
     before do
       visit extracts_path
       fill_in 'Ticket number', with: expected_ticket_number
-      choose 'Teams'
-      fill_in 'extract[criteria_list]', with: sp_to_export.team.id
+      fill_in 'extract[criteria_list]', with: sp_to_export.issuer
       click_on 'Extract configs'
       click_on 'Download configs'
     end

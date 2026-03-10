@@ -6,7 +6,6 @@ describe ExtractPolicy do
   let(:extract) do
     build(:extract, {
       ticket: '0',
-      search_by: 'issuers',
       criteria_list: 'fake:issuer',
     })
   end

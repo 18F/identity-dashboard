@@ -12,7 +12,6 @@ class ExtractsController < AuthenticatedController
   def create
     @extract = Extract.new(
       ticket: extracts_params[:ticket],
-      search_by: extracts_params[:search_by],
       criteria_list: extracts_params[:criteria_list],
       criteria_file: extracts_params[:criteria_file],
     )
@@ -28,9 +27,7 @@ class ExtractsController < AuthenticatedController
       end and return
     end
 
-    if @extract.service_providers.empty?
-      flash[:error] = 'No ServiceProvider or Team rows were returned'
-    end
+    flash[:error] = 'No ServiceProvider rows were returned' if @extract.service_providers.empty?
 
     render 'index'
   end
@@ -53,7 +50,6 @@ class ExtractsController < AuthenticatedController
   def extracts_params
     params.require(:extract).permit(
       :ticket,
-      :search_by,
       :criteria_file,
       :criteria_list,
     )
