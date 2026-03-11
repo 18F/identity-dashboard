@@ -1,5 +1,5 @@
 <% content_for(:title, 'Add team member') %>
-<h1 class="usa-display">Add new user to <%= @team.name %></h1>
+<h1 class="usa-display">Add user to <%= @team.name %></h1>
 
 <p class="usa-intro">Enter email address and select access levels for your team members.</p>
 
@@ -23,10 +23,20 @@
 <%= simple_form_for(@user,
     html: { autocomplete: 'off' },
     url: team_users_path(@team)) do |form| %>
-  <%= render 'form', form: form %>
-  <div class="margin-top-2">
-    <%= form.button :submit, 'Add', :class => "usa-button" %>
+  <div class="usa-input__container">
+    <%= render 'form', form: form %>
+  </div>
+  <button type="button"
+          id="add-team-membership-input"
+          class="usa-button usa-button--unstyled">
+    Add another user
+  </button>
+  <div class="margin-y-2">
+    <%= form.button :submit, 'Add to team', :class => "usa-button" %>
     <%= link_to 'Back', team_users_path(@team),
                 class: 'usa-button usa-button--outline' %>
   </div>
+  <%= link_to t('forms.buttons.cancel'), teams_path,
+      class: 'usa-button usa-button--unstyled' %>
 <% end %>
+<%= javascript_include_tag 'team_membership_form' %>

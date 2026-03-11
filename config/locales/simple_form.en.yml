@@ -65,3 +65,6 @@ en:
         name: Name
         service_providers: Service Providers
         users: Users
+      user_team:
+        role: Access level
+        select: "- Select role -"

@@ -121,7 +121,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    roles = policy(team_membership).roles_for_edit
+    roles = policy(team_membership || TeamMembership.new).roles_for_edit
     if IdentityConfig.store.prod_like_env && !Airtable.new(current_user.uuid).has_token?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end

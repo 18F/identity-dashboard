@@ -5,6 +5,7 @@
 @use 'uswds-core' as *;
 
 @forward 'home';
+@forward 'forms';
 @forward 'service_config_wizard';
 @forward 'step-indicator';
 @forward 'footer';

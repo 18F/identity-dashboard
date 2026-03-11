@@ -1,5 +1,33 @@
-<fieldset class="usa-fieldset">
-  <%= form.input :email,
-      input_html: { class: 'usa-input', aria: { invalid: false } },
+<fieldset class="usa-fieldset grid-row grid-gap-2">
+  <label class="grid-col-fill">
+    <div class="usa-label required">
+      <span><%= t('simple_form.labels.user.email') %></span>
+      <abbr class="text-secondary-dark" title="required">*</abbr>
+    </div>
+    <%= text_field_tag 'user[email][]',
+                       '',
+                       id: '',
+                       class: 'block col-12 string email required usa-input',
+                       required: true,
+                       aria: { invalid: false } %>
+    <% @user.errors[:email].each do |error| %>
+      <span class="usa-error-message js-bundle-input-error-message">
+        <%= error %>
+      </span>
+    <% end %>
+  </label>
+
+  <%# form.input :email,
+      wrapper_html: { class: 'grid-col-fill' },
+      input_html: { class: 'usa-input', aria: { invalid: false }, id: '' },
       required: true %>
+  <% form.input :primary_role,
+      as: :usa_collection_select,
+      collection: roles_for_options,
+      required: true,
+      wrapper_html: { class: 'grid-col-fill' },
+      input_html: { id: '' },
+      label: accessible_label(form, t('simple_form.labels.user_team.role'), :primary_role),
+      prompt: t('simple_form.labels.user_team.select') %>
+  <button type="button" class="usa-button grid-col-auto" disabled>Remove</button>
 </fieldset>
