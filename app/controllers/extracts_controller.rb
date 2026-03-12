@@ -25,7 +25,7 @@ class ExtractsController < AuthenticatedController
       end and return
     end
 
-    flash[:error] = 'No ServiceProvider rows were returned' if @extract.successes.empty?
+    flash[:error] = 'No matching Service Providers were found' if @extract.successes.empty?
 
     render 'index'
   end

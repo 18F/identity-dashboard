@@ -79,7 +79,7 @@ describe ExtractsController do
           criteria_list: 'fake:issuer',
         } }
 
-        expect(flash[:error]).to eq('No ServiceProvider rows were returned')
+        expect(flash[:error]).to eq('No matching Service Providers were found')
         expect(response).to render_template 'index'
       end
 

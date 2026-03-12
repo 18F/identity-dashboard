@@ -2,12 +2,12 @@
 <p class="usa-prose">Results file: <%= @extract.filename %></p>
 
 <% if @extract.failures.present? %>
-  <h2><%= "#{@extract.failures.length} issuers" %>  were invalid </h2>
+  <h2><%= pluralize(@extract.failures.length, 'issuer') %> found invalid </h2>
   <ul class="usa-list">
     <% @extract.failures.each do |failed_issuer| %>
       <li><%= failed_issuer %>
       <% if sp = @extract.service_providers.find {|record| record.issuer == failed_issuer} %>
-        <ul>
+        <ul class="usa-list">
           <% sp.errors.full_messages.each do |error_message| %>
             <li class="usa-error-message"><%= error_message %></li>
           <% end %>
@@ -18,14 +18,14 @@
   </ul>
 <% end %>
 
-<h2><%= @extract.successes.length %> ServiceProvider rows found</h2>
+<h2><%= pluralize(@extract.successes.length, 'ServiceProvider') %> found</h2>
 <ul class="usa-list font-family-mono">
   <% @extract.service_providers.each do |sp| %>
     <% next unless @extract.successes.include? sp.issuer %>
     <li>service provider <%= sp.group_id %> | <%= sp.issuer %></li>
   <% end %>
 </ul>
-<h2><%= @extract.teams.length %> Team rows found</h2>
+<h2><%= pluralize(@extract.teams.length, 'Team record') %> found</h2>
 <ul class="usa-list font-family-mono">
   <% @extract.teams.each do |team| %>
     <li>team <%= team.id %> | <%= team.name %></li>
