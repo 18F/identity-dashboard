@@ -25,7 +25,7 @@ feature 'Extract Download' do
     fill_in 'Ticket number', with: expected_ticket_number
     fill_in 'extract[criteria_list]', with: "#{sp_to_export.issuer}#{rand(10..1000)}"
     click_on 'Extract configs'
-    expect(page).to have_content('No ServiceProvider rows were returned')
+    expect(page).to have_content('No matching Service Providers were found')
     expect(page).to_not have_button('Download configs')
     expect(page).to_not have_link('Download configs')
   end
