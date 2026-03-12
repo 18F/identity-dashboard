@@ -34,7 +34,8 @@ class Extract
   def failures
     criteria.reject do |criterion|
       service_providers.find do |config|
-        config.issuer == criterion && config.valid?
+        force_validation(config)
+        config.issuer == criterion && config.errors.none?
       end
     end
   end
@@ -81,9 +82,7 @@ class Extract
 
   # @return [Array<ServiceProvider>]
   def service_providers
-    @service_providers ||= revalidate_configurations(
-      ServiceProvider.joins(:team).where(issuer: criteria),
-    )
+    @service_providers ||= ServiceProvider.joins(:team).where(issuer: criteria)
   end
 
   def valid?
@@ -119,13 +118,10 @@ class Extract
   # This revalidates all service provider attributes except the issuer.
   # This gives us an advanced warning for attributes that we don't always check.
   # The issuer will always fail because it's already taken.
-  def revalidate_configurations(collection)
-    collection.map do |config|
-      config.attributes.each_key do |attr|
-        config.public_send("#{attr}_will_change!")
-      end
-      config.valid?
-      config
+  def force_validation(config)
+    config.attributes.each_key do |attr|
+      config.public_send("#{attr}_will_change!")
     end
+    config.valid?
   end
 end
