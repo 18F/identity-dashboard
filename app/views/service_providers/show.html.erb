@@ -234,7 +234,7 @@
     <%= button_to t('forms.buttons.delete_service_provider'),
       service_provider_path(service_provider),
       class: 'usa-button usa-button--outline float-left',
-      method: :delete, data: { confirm: 'Are you sure you want to delete this app? This cannot be undone.' } %>
+      method: :delete, data: { confirm: t('forms.confirm_service_provider') } %>
   <% end %>
 <% end %>
 
