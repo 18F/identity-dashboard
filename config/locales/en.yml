@@ -38,6 +38,7 @@ en:
   headings:
     welcome: Welcome to the Login.gov Partner Portal
     service_providers:
+      all: All configurations
       edit: Edit configuration
       index: View configurations
       main: My configurations

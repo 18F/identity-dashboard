@@ -1,4 +1,4 @@
-<% content_for(:title, 'All configurations') %>
+<% content_for(:title, t('headings.service_providers.all')) %>
 <% if current_user.logingov_admin? && !IdentityConfig.store.prod_like_env %>
   <%= button_to t('forms.buttons.trigger_idp_refresh'), service_providers_publish_path, method: :post, :class => "usa-button" %>
 <% end %>
