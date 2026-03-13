@@ -163,6 +163,10 @@
   max-width: 33rem;
 }
 
+.usa-accordion__content .usa-list li {
+  max-width: unset;
+}
+
 .usa-link--external {
   &::after {
     margin-top: 0;
