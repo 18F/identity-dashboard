@@ -46,22 +46,44 @@ feature 'Users can access service providers that belong to their team' do
     let(:logingov_admin) { create(:user, :logingov_admin) }
     let(:logingov_readonly) { create(:user, :logingov_readonly) }
 
-    scenario 'login.gov admins can see Publish service providers button' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+    context 'on sandbox' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      end
 
-      login_as(logingov_admin)
-      visit service_providers_all_path
+      scenario 'login.gov admins can see Publish service providers button' do
+        login_as(logingov_admin)
+        visit service_providers_all_path
 
-      expect(page).to have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+        expect(page).to have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
+
+      scenario 'login.gov readonly can not see Publish service providers button' do
+        login_as(logingov_readonly)
+        visit service_providers_all_path
+
+        expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
     end
 
-    scenario 'login.gov readonly can not see Publish service providers button' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+    context 'on production' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
 
-      login_as(logingov_readonly)
-      visit service_providers_all_path
+      scenario 'login.gov admins can not see Publish service providers button' do
+        login_as(logingov_admin)
+        visit service_providers_all_path
 
-      expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+        expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
+
+      scenario 'login.gov readonly can not see Publish service providers button' do
+        login_as(logingov_readonly)
+        visit service_providers_all_path
+
+        expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
     end
   end
 
