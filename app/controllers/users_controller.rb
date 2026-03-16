@@ -24,6 +24,10 @@ class UsersController < ApplicationController
     @users = scope.limit(per_page).offset((@page - 1) * per_page)
   end
 
+  def show
+    raise AbstractController::ActionNotFound
+  end
+
   def new
     @user = policy_scope(User).new
   end
@@ -65,10 +69,6 @@ class UsersController < ApplicationController
 
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
     redirect_to users_path
-  end
-
-  def show
-    raise AbstractController::ActionNotFound
   end
 
   def none; end

@@ -20,6 +20,10 @@ class Teams::UsersController < AuthenticatedController
     @team_memberships ||= []
   end
 
+  def show
+    raise AbstractController::ActionNotFound
+  end
+
   def new
     authorize current_team_membership
     @user = policy_scope(User).new
@@ -107,10 +111,6 @@ class Teams::UsersController < AuthenticatedController
         new_role_name:,
       )
     redirect_to team_users_path(team)
-  end
-
-  def show
-    raise AbstractController::ActionNotFound
   end
 
   def remove_confirm
