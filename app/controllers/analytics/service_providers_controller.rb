@@ -4,6 +4,7 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
   def show
     @issuer = service_provider.issuer
     @friendly_name = service_provider.friendly_name.capitalize
+    @authentication_funnel = Reports::AuthenticationFunnel.new(service_provider.issuer)
   end
 
   private
