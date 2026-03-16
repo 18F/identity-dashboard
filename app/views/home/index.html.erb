@@ -32,4 +32,18 @@
     <% end %>
   </ul>
 </section>
+<% if @available_reports.present? %>
+<section class="grid-container margin-top-4">
+  <h2>Available Reports (<%= @available_reports.length %>)</h2>
+  <ul class="usa-list">
+    <% @available_reports.each do |report| %>
+      <li><%= report.key %> — <%= number_to_human_size(report.file_size) %> — <%= report.last_modified.strftime('%Y-%m-%d %H:%M') %></li>
+    <% end %>
+  </ul>
+</section>
+<% else %>
+<section class="grid-container margin-top-4">
+  <p>No reports found.</p>
+</section>
+<% end %>
 <%= render 'components/logo_banner' %>
