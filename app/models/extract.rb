@@ -34,9 +34,28 @@ class Extract
   def failures
     criteria.reject do |criterion|
       service_providers.find do |config|
-        config.issuer == criterion
+        force_validation(config)
+        config.issuer == criterion && config.errors.none?
       end
     end
+  end
+
+  # @return [Array<String>]
+  def successes
+    service_providers.map(&:issuer) - failures
+  end
+
+  def error_level
+    return :error if successes.count.zero?
+    return :warning if failures.count.positive?
+
+    :success
+  end
+
+  def error_message
+    return 'No valid ServiceProvider configs found' if successes.count.zero?
+
+    'Some criteria were invalid. Please check the results.' if failures.count.positive?
   end
 
   # @return [String]
@@ -94,5 +113,15 @@ class Extract
 
     errors.add(:criteria_file, 'or Criteria List are required.')
     errors.add(:criteria_list, 'or Criteria File are required.')
+  end
+
+  # This revalidates all service provider attributes except the issuer.
+  # This gives us an advanced warning for attributes that we don't always check.
+  # The issuer will always fail because it's already taken.
+  def force_validation(config)
+    config.attributes.each_key do |attr|
+      config.public_send("#{attr}_will_change!")
+    end
+    config.valid?
   end
 end

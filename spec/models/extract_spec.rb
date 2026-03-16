@@ -72,6 +72,39 @@ describe Extract do
 
       expect(extract.failures).to eq(['fake:issuer:0'])
     end
+
+    it 'should include issuers that will always be invalid' do
+      sp2.redirect_uris = ['ftp:///']
+      # Assertion: this is enough to indvalidate the record
+      expect(sp2).to_not be_valid
+      # Force it to save
+      sp2.save!(validate: false)
+
+      extract = build(:extract, {
+        ticket: '0',
+        criteria_list: "#{sp1.issuer} #{sp2.issuer}",
+      })
+      expect(extract.failures).to eq([sp2.issuer])
+    end
+
+    it 'should include issuers that validation problems we do not always check' do
+      big_logo_upload = fixture_file_upload(File.join('..', 'big-logo.png'))
+      sp1.logo = 'big-logo.png'
+      sp1.logo_file.attach(big_logo_upload)
+      # Assertion: this will not be valid unless we force it to save
+      expect(sp1).to_not be_valid
+      # Force it to save
+      sp1.save!(validate: false)
+      sp1.reload
+      # Assertion: we don't revalidate this attribute by default
+      expect(sp1).to be_valid
+
+      extract = build(:extract, {
+        ticket: '0',
+        criteria_list: "#{sp1.issuer} #{sp2.issuer}",
+      })
+      expect(extract.failures).to eq([sp1.issuer])
+    end
   end
 
   describe '#criteria' do
