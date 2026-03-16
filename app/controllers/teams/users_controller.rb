@@ -7,6 +7,10 @@ class Teams::UsersController < AuthenticatedController
 
   helper_method :roles_for_options, :show_actions?
 
+  rescue_from AbstractController::ActionNotFound do
+    render file: 'public/404.html', status: :not_found, layout: false
+  end
+
   def index
     authorize current_team_membership
     @team_memberships = team && team.team_memberships.where
@@ -103,6 +107,10 @@ class Teams::UsersController < AuthenticatedController
         new_role_name:,
       )
     redirect_to team_users_path(team)
+  end
+
+  def show
+    raise AbstractController::ActionNotFound
   end
 
   def remove_confirm

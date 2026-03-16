@@ -2,11 +2,15 @@
 class UsersController < ApplicationController
   include ModelChanges
 
-  before_action -> { authorize User, :manage_users? }, except: %i[index none]
+  before_action -> { authorize User, :manage_users? }, except: %i[index none show]
   before_action -> { authorize User }, only: [:index, :none]
   after_action :verify_authorized
   after_action :verify_policy_scoped, except: [:none]
   attr_reader :user
+
+  rescue_from AbstractController::ActionNotFound do
+    render file: 'public/404.html', status: :not_found, layout: false
+  end
 
   def index
     per_page = IdentityConfig.store.users_per_page
@@ -61,6 +65,10 @@ class UsersController < ApplicationController
 
     flash[:success] = I18n.t('notices.user_deleted', email: user.email)
     redirect_to users_path
+  end
+
+  def show
+    raise AbstractController::ActionNotFound
   end
 
   def none; end
