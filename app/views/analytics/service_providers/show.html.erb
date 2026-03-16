@@ -2,4 +2,11 @@
 <h1>Configuration <%= @friendly_name %> analytics dashboard</h1>
 <h2>Issuer: <code><%= @issuer %> </code> </h2>
 
-<%= bar_chart @authentication_funnel.data %>
+<%# TODO: update charts based on feedback from UX. %>
+<%# These are not charts we actually want. These are charts we can use to detect potential accessibility problems. %>
+<%= area_chart @authentication_funnel.data, curve: false, title: 'Area test chart', download: true %>
+<%= line_chart @authentication_funnel.detailed_data, curve: false %>
+
+<%= bar_chart @authentication_funnel.dramatic_data %>
+<%= column_chart @authentication_funnel.dramatic_data %>
+<%= bar_chart @authentication_funnel.stacked_data, stacked: true, colors: ['#45472f', '#e895b3'] %>

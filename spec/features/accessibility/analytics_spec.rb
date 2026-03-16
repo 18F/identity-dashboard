@@ -13,6 +13,11 @@ feature 'Analytics pages', :js do
 
     it 'is accessible' do
       visit analytics_path(sp)
+      # Assert charts have rendered
+      expect(page.body).to include('Completed IAL1 MFA')
+      # Hover over a chart that currently has the download link enabled
+      find('#chart-1').hover
+
       expect_page_to_have_no_accessibility_violations(page)
     end
   end
