@@ -194,6 +194,13 @@ describe Teams::UsersController do
         end
       end
 
+      describe '#show' do
+        it 'renders an 404 error' do
+          get :show, params: { team_id: team.id, id: '1337' }
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
       describe '#remove_confirm' do
         it 'is allowed for others' do
           get :remove_confirm, params: { team_id: team.id, id: user_to_delete.id }

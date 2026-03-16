@@ -318,6 +318,13 @@ describe UsersController do
     end
   end
 
+  describe '#show' do
+    it 'renders an 404 error' do
+      get :show, params: { id: '1337' }
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe '#none' do
     it 'works' do
       get :none

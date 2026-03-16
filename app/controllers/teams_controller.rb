@@ -80,6 +80,8 @@ class TeamsController < AuthenticatedController
 
   def team
     @team ||= Team.find_by_id_or_uuid(params[:id]) # rubocop:disable Rails/DynamicFindBy
+
+    @team || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
   def team_params

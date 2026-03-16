@@ -7,6 +7,10 @@ class Teams::UsersController < AuthenticatedController
 
   helper_method :roles_for_options, :show_actions?
 
+  rescue_from AbstractController::ActionNotFound do
+    render file: 'public/404.html', status: :not_found, layout: false
+  end
+
   def index
     authorize current_team_membership
     @team_memberships = team && team.team_memberships.where
@@ -14,6 +18,10 @@ class Teams::UsersController < AuthenticatedController
       .includes(:user)
       .order('users.email')
     @team_memberships ||= []
+  end
+
+  def show
+    raise AbstractController::ActionNotFound
   end
 
   def new
