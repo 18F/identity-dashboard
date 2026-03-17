@@ -3,10 +3,7 @@ require 'portal/constants'
 class HomeController < ApplicationController
   def index
     @canonical_url = user_signed_in? ? nil : request.base_url.gsub('portal', 'dashboard')
-    unless user_signed_in?
-      @available_reports = available_reports
-      render :index and return
-    end
+    render :index and return unless user_signed_in?
 
     signed_in_redirect
   end
@@ -15,15 +12,6 @@ class HomeController < ApplicationController
     render 'home/system_use' and return unless user_signed_in?
 
     signed_in_redirect
-  end
-
-  private
-
-  def available_reports
-    AnalyticsReportStorage.list
-      .select { |f| f.key.end_with?('.json') }
-      .sort_by(&:last_modified)
-      .reverse
   end
 
   def signed_in_redirect
