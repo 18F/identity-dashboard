@@ -48,38 +48,11 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def create
-    unless new_team_member.valid?
-      team
-      authorize TeamMembership.new(team:), :create?
-      render(:new) and return
+    if params[:users].present?
+      create_batch
+    else
+      create_single
     end
-
-    new_team_membership = policy_scope(TeamMembership).build(
-      team: team,
-      user: new_team_member,
-    )
-    new_team_membership.set_default_role
-    authorize new_team_membership
-    @team_membership = new_team_membership
-    log_change
-    render :new and return unless new_team_membership.save!
-
-    flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_user_path
-  rescue ActiveRecord::RecordInvalid => err
-    email_taken_error = [:user_id, :taken]
-    error_messages = err.record.errors.map do |record_error|
-      if email_taken_error == [record_error.attribute, record_error.type]
-        I18n.t(
-          'activerecord.errors.models.team_membership.attributes.user_id.taken',
-          value: "<strong>#{err.record.user.email}</strong>",
-        )
-      else
-        record_error
-      end
-    end.join(', ')
-    flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
-    redirect_to new_team_user_path
   end
 
   def update
@@ -129,7 +102,8 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    roles = policy(team_membership).roles_for_edit
+    membership = team_membership || policy_scope(TeamMembership).build(team: team)
+    roles = policy(membership).roles_for_edit
     if IdentityConfig.store.prod_like_env && !Airtable.new(current_user.uuid).has_token?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end
@@ -141,6 +115,117 @@ class Teams::UsersController < AuthenticatedController
   end
 
   private
+
+  def create_batch
+    users_params = params[:users].map { |u| u.permit(:email, :role_name) }
+    @errors = []
+    @users_data = users_params.map(&:to_h)
+    created_memberships = []
+    team # ensure @team is loaded for re-rendering
+    authorize TeamMembership.new(team:), :create?
+
+    users_params.each_with_index do |user_entry, index|
+      membership = build_team_membership(user_entry, index)
+      next unless membership
+
+      if membership.save
+        created_memberships << membership
+      else
+        @errors << { index: index, messages: membership_error_messages(membership) }
+      end
+    end
+
+    render :new and return if @errors.any?
+
+    emails = created_memberships.map { |m| m.user.email }.join(', ')
+    flash[:success] = I18n.t('teams.users.create.success', email: emails)
+    redirect_to team_users_path(team)
+  rescue ActiveRecord::RecordInvalid => err
+    email_taken_error = [:user_id, :taken]
+    error_messages = err.record.errors.map do |record_error|
+      if email_taken_error == [record_error.attribute, record_error.type]
+        I18n.t(
+          'activerecord.errors.models.team_membership.attributes.user_id.taken',
+          value: "<strong>#{err.record.user.email}</strong>",
+        )
+      else
+        record_error
+      end
+    end.join(', ')
+    flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
+    redirect_to new_team_user_path
+  end
+
+  def create_single
+    unless new_team_member.valid?
+      team
+      authorize TeamMembership.new(team:), :create?
+      render(:new) and return
+    end
+
+    new_team_membership = policy_scope(TeamMembership).build(
+      team: team,
+      user: new_team_member,
+    )
+    new_team_membership.set_default_role
+    authorize new_team_membership
+    @team_membership = new_team_membership
+    log_change
+    render :new and return unless new_team_membership.save!
+
+    flash[:success] = I18n.t('teams.users.create.success', email: member_email)
+    redirect_to new_team_user_path
+  rescue ActiveRecord::RecordInvalid => err
+    email_taken_error = [:user_id, :taken]
+    error_messages = err.record.errors.map do |record_error|
+      if email_taken_error == [record_error.attribute, record_error.type]
+        I18n.t(
+          'activerecord.errors.models.team_membership.attributes.user_id.taken',
+          value: "<strong>#{err.record.user.email}</strong>",
+        )
+      else
+        record_error
+      end
+    end.join(', ')
+    flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
+    redirect_to new_team_user_path
+  end
+
+  def build_team_membership(user_entry, index)
+    email = user_entry[:email]&.downcase
+    new_user = User.find_or_create_by(email: email)
+
+    unless new_user.valid?
+      @errors << { index: index, messages: new_user.errors.full_messages }
+      return nil
+    end
+
+    membership = policy_scope(TeamMembership).build(team: team, user: new_user)
+
+    if user_entry[:role_name].present?
+      membership.role_name = user_entry[:role_name]
+    else
+      membership.set_default_role
+    end
+
+    authorize membership
+    @team_membership = membership
+    log_change
+    membership
+  end
+
+  def membership_error_messages(membership)
+    membership.errors.map do |error|
+      if error.attribute == :user_id && error.type == :taken
+        I18n.t(
+          'activerecord.errors.models.team_membership.attributes.user_id.taken',
+          value: membership.user.email,
+        )
+      else
+        error.full_message
+      end
+    end
+  end
 
   def member_email
     user_params[:email]&.downcase

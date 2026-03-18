@@ -167,6 +167,22 @@
   max-width: unset;
 }
 
+abbr.text-no-underline[title] {
+  text-decoration: none;
+}
+
+.remove-row {
+  &:disabled {
+    background-color: $theme-color-base-lighter;
+    color: $theme-color-base-dark;
+  }
+
+  &:not(:disabled) {
+    background-color: $theme-color-secondary;
+    color: $theme-color-base-lightest;
+  }
+}
+
 .usa-link--external {
   &::after {
     margin-top: 0;
