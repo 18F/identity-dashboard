@@ -2,8 +2,8 @@ module Reports
   # This class presents data for displaying on analytics pages.
   # Its responsibility includes formatting auth funnel data for Chartkick.
   class AuthenticationFunnel
-    def initialize(issuer)
-      # TODO: make data depend on issuer
+    def initialize(service_provider)
+      # TODO: make data depend on service_provider
     end
 
     # TODO: delete all the below methods and replace with methods that use data from the bucket
