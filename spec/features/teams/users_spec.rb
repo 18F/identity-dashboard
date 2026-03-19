@@ -271,10 +271,10 @@ describe 'users' do
       expect(page).to have_current_path(new_team_user_path(team.id))
     end
 
-    scenario 'back button goes to team details page' do
+    scenario 'cancel button goes to team details page' do
       login_as partner_admin_team_member
       visit team_users_path(team)
-      click_on 'Back'
+      click_on 'Cancel'
       expect(page).to have_current_path(team_path(team.id))
     end
   end

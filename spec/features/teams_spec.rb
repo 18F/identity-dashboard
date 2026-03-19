@@ -211,7 +211,7 @@ feature 'TeamMembership CRUD' do
       find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
       find("a[href='#{team_remove_confirm_path(team, user)}']").click
       click_on I18n.t('teams.users.remove.button')
-      find('.usa-button', text: 'Back').click
+      find('.usa-button', text: 'Cancel').click
 
       expect(page).to have_current_path(team_path(team))
       # Team UUID is displayed and has Copy button
@@ -342,7 +342,7 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content('copy UUID to clipboard')
 
       find("a[href='#{team_users_path(team)}']", text: 'Manage users').click
-      find('.usa-button', text: 'Back').click
+      find('.usa-button', text: 'Cancel').click
 
       expect(page).to have_current_path(team_path(team))
     end
