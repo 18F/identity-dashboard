@@ -84,6 +84,13 @@ describe Teams::UsersController do
           expect(response).to be_ok
           expect(response).to render_template(:new)
         end
+
+        it 'assigns roles_for_options as a helper' do
+          get :new, params: { team_id: team.id }
+          # roles_for_options is already a helper_method, just verify it's accessible
+          expect(controller.roles_for_options).to be_an(Array)
+          expect(controller.roles_for_options.first).to be_an(Array)
+        end
       end
 
       describe '#create' do
@@ -115,6 +122,62 @@ describe Teams::UsersController do
             expect(logger_double).to have_received(:team_membership_created).with(
               changes: hash_including(changes),
             )
+          end
+        end
+
+        context 'with batch user params' do
+          let(:valid_emails) { ['user1@gsa.gov', 'user2@gsa.gov'] }
+
+          it 'creates multiple users at once' do
+            post :create, params: {
+              team_id: team.id,
+              users: valid_emails.map { |email| { email: email, role_name: 'partner_developer' } },
+            }
+
+            expect(response).to redirect_to(team_users_path(team))
+            saved_emails = team.reload.users.map(&:email)
+            valid_emails.each { |email| expect(saved_emails).to include(email) }
+          end
+
+          it 'assigns the specified role to each user' do
+            post :create, params: {
+              team_id: team.id,
+              users: [
+                { email: 'dev@gsa.gov', role_name: 'partner_developer' },
+                { email: 'readonly@gsa.gov', role_name: 'partner_readonly' },
+              ],
+            }
+
+            dev_membership = TeamMembership.find_by(user: User.find_by(email: 'dev@gsa.gov'),
+                                                    team: team)
+            readonly_membership = TeamMembership.find_by(
+              user: User.find_by(email: 'readonly@gsa.gov'), team: team,
+            )
+            expect(dev_membership.role_name).to eq('partner_developer')
+            expect(readonly_membership.role_name).to eq('partner_readonly')
+          end
+
+          it 'uses set_default_role when no role is specified' do
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: 'norole@gsa.gov', role_name: '' }],
+            }
+
+            membership = TeamMembership.find_by(user: User.find_by(email: 'norole@gsa.gov'),
+                                                team: team)
+            expect(membership).to be_present
+          end
+
+          it 're-renders new with errors when an email is invalid' do
+            post :create, params: {
+              team_id: team.id,
+              users: [
+                { email: 'valid@gsa.gov', role_name: 'partner_developer' },
+                { email: 'invalid', role_name: 'partner_developer' },
+              ],
+            }
+
+            expect(response).to render_template(:new)
           end
         end
       end
