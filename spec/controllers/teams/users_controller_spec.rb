@@ -11,15 +11,21 @@ describe Teams::UsersController do
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
-      post :create, params: { team_id: team.id, user: { email: valid_email } }
+      post :create, params: {
+        team_id: team.id,
+        users: [{ email: valid_email, role_name: 'partner_developer' }],
+      }
 
-      expect(response).to redirect_to(new_team_user_path(team))
+      expect(response).to redirect_to(team_users_path(team))
       saved_user_emails = team.reload.users.map(&:email)
       expect(saved_user_emails).to include(valid_email)
     end
 
     it 'does not save invalid info' do
-      post :create, params: { team_id: team.id, user: { email: invalid_email } }
+      post :create, params: {
+        team_id: team.id,
+        users: [{ email: invalid_email, role_name: 'partner_developer' }],
+      }
 
       saved_user_emails = team.reload.users.map(&:email)
       expect(saved_user_emails).to_not include(invalid_email)
@@ -97,17 +103,12 @@ describe Teams::UsersController do
         before { allow(logger_double).to receive(:team_membership_created) }
         it_behaves_like 'can create valid users'
 
-        it 'renders :new when there is an error saving' do
-          user_validator = instance_double(UserValidator)
-          allow(user_validator).to receive(:validate).and_return(false)
-
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
-          expect(response).to redirect_to(new_team_user_path(team.id))
-        end
-
         context 'logging' do
           it 'calls log.team_membership_created before save' do
-            post :create, params: { team_id: team.id, user: { email: valid_email } }
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: valid_email, role_name: 'partner_developer' }],
+            }
             membership = TeamMembership.find_by(user: User.find_by(email: valid_email), team:)
             # Logging happens before save, so id is nil and attributes are in pending changes format
             changes = {
@@ -178,6 +179,29 @@ describe Teams::UsersController do
             }
 
             expect(response).to render_template(:new)
+          end
+
+          it 're-renders new with errors when an email is blank' do
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: '', role_name: 'partner_developer' }],
+            }
+
+            expect(response).to render_template(:new)
+            expect(assigns(:errors)).to be_present
+          end
+
+          it 'shows already a member error for duplicate team member' do
+            existing_user = create(:team_membership, team: team).user
+
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: existing_user.email, role_name: 'partner_developer' }],
+            }
+
+            expect(response).to render_template(:new)
+            error_messages = assigns(:errors).flat_map { |e| e[:messages] }
+            expect(error_messages.join).to include('is already a member of the team')
           end
         end
       end
@@ -335,7 +359,10 @@ describe Teams::UsersController do
 
       describe '#create' do
         it 'is not allowed' do
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          post :create, params: {
+            team_id: team.id,
+            users: [{ email: valid_email, role_name: 'partner_developer' }],
+          }
           expect(response).to be_unauthorized
           expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
@@ -383,8 +410,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           post :create, params: {
             team_id: team.id,
-            id: user_to_change.id,
-            user: { email: build(:user).email },
+            users: [{ email: build(:user).email, role_name: 'partner_developer' }],
           }
           expect(response).to be_unauthorized
         end

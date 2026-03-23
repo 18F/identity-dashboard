@@ -35,10 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function updateRemoveButtons() {
-    var rows = container.querySelectorAll('.user-row');
-    var buttons = container.querySelectorAll('.remove-row');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].disabled = rows.length <= 1;
-    }
+    var onlyOneRow = container.querySelectorAll('.user-row').length <= 1;
+    container.querySelectorAll('.remove-row').forEach(function (button) {
+      button.disabled = onlyOneRow;
+    });
   }
 });
