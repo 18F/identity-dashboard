@@ -48,7 +48,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def create
-    users_params = params[:users].map { |u| u.permit(:email, :role_name) }
+    users_params = params.require(:users).map { |u| u.permit(:email, :role_name) }
     @errors = []
     @users_data = users_params.map(&:to_h)
     created_memberships = []
