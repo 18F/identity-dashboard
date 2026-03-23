@@ -4,7 +4,7 @@ ENV NODE_MAJOR 22
 # We are running into the issue described in:
 # https://github.com/SeleniumHQ/selenium/issues/15401
 # https://github.com/teamcapybara/capybara/issues/2800
-ENV CHROME_VERSION 146.0.7680.164-1
+ENV CHROME_VERSION 145.0.7632.116-1
 
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
