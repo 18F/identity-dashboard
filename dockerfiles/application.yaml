@@ -30,7 +30,7 @@ spec:
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -103,7 +103,7 @@ spec:
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
               value: "{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -174,7 +174,7 @@ spec:
           patch: |-
             - op: add
               path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
@@ -211,7 +211,7 @@ spec:
           patch: |-
             - op: add
               path: /data/DASHBOARD_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
@@ -321,7 +321,7 @@ spec:
               value: "false"
             - op: add
               path: /data/SAML_SP_ISSUER
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/IDP_URL
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
@@ -330,10 +330,10 @@ spec:
               value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/POST_LOGOUT_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
         - target:
             kind: ConfigMap
             name: dashboard-config-dbsetup
@@ -355,19 +355,19 @@ spec:
               value: "false"
             - op: add
               path: /data/SAML_SP_ISSUER
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/IDP_URL
-              value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/IDP_SP_URL
-              value: "https://{{ENVIRONMENT}}.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/POST_LOGOUT_URL
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
             - op: add
               path: /data/DOMAIN_NAME
-              value: "https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov"
+              value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
         # Patch ConfigMap for Dashboard service_providers.yml
         - target:
             kind: ConfigMap
@@ -384,11 +384,11 @@ spec:
                     logo: '18f.svg'
                     certs:
                       - 'dashboard_sandbox_review_cert'
-                    return_to_sp_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/'
+                    return_to_sp_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/'
                     redirect_uris:
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov'
-                    push_notification_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov'
+                    push_notification_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/api/security_events'
         - target:
             kind: ConfigMap
             name: service-providers-yml-dbsetup
@@ -404,11 +404,11 @@ spec:
                     logo: '18f.svg'
                     certs:
                       - 'dashboard_sandbox_review_cert'
-                    return_to_sp_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/'
+                    return_to_sp_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/'
                     redirect_uris:
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
-                      - 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov'
-                    push_notification_url: 'https://{{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+                      - 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov'
+                    push_notification_url: 'https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov/api/security_events'
         # Patch idp database setup jobs
         - target:
             kind: Job
