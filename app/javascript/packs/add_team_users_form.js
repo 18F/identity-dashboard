@@ -8,6 +8,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   form.setAttribute('novalidate', 'true');
 
+  function showError(input, errorEl, message) {
+    input.classList.add('usa-input--error');
+    input.setAttribute('aria-invalid', 'true');
+    errorEl.textContent = message;
+    errorEl.classList.remove('display-none');
+  }
+
+  function clearError(input, errorEl) {
+    input.classList.remove('usa-input--error');
+    input.setAttribute('aria-invalid', 'false');
+    errorEl.textContent = '';
+    errorEl.classList.add('display-none');
+  }
+
+  function updateRemoveButtons() {
+    const onlyOneRow = container.querySelectorAll('.user-row').length <= 1;
+    container.querySelectorAll('.remove-row').forEach(function (button) {
+      button.disabled = onlyOneRow;
+    });
+  }
+
   form.addEventListener('submit', function (event) {
     let hasErrors = false;
 
@@ -38,27 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
       event.preventDefault();
     }
   });
-
-  function showError(input, errorEl, message) {
-    input.classList.add('usa-input--error');
-    input.setAttribute('aria-invalid', 'true');
-    errorEl.textContent = message;
-    errorEl.classList.remove('display-none');
-  }
-
-  function clearError(input, errorEl) {
-    input.classList.remove('usa-input--error');
-    input.setAttribute('aria-invalid', 'false');
-    errorEl.textContent = '';
-    errorEl.classList.add('display-none');
-  }
-
-  function updateRemoveButtons() {
-    const onlyOneRow = container.querySelectorAll('.user-row').length <= 1;
-    container.querySelectorAll('.remove-row').forEach(function (button) {
-      button.disabled = onlyOneRow;
-    });
-  }
 
   let nextIndex = container.querySelectorAll('.user-row').length;
 
