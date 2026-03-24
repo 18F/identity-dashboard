@@ -18,6 +18,8 @@ class IdentityConfig
       config.add(:aws_region, type: :string)
       config.add(:aws_logo_bucket, type: :string)
       config.add(:aws_reports_bucket, type: :string)
+      # The `aws_reports_filter` value has to agree with what the reports team and platform team set
+      config.add(:aws_reports_filter, type: :string)
       config.add(:db_pool, type: :integer)
       config.add(:devise_timeout_minutes, type: :integer)
       config.add(:dp_reaping_frequency, type: :integer)
