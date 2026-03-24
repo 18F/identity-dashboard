@@ -80,7 +80,7 @@ feature 'Team pages', :js do
             before do
               visit new_team_user_path(team_membership.team)
               fill_in 'Email', with: email
-              click_on 'Add'
+              click_on 'Add to team'
             end
 
             context 'with a good email' do
