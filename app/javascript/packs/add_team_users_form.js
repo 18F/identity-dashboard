@@ -4,6 +4,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (!container || !addButton) { return; }
 
+  const form = container.closest('form');
+
+  form.setAttribute('novalidate', 'true');
+
+  form.addEventListener('submit', function (event) {
+    let hasErrors = false;
+
+    container.querySelectorAll('.user-row').forEach(function (row) {
+      const emailInput = row.querySelector('input[type="email"]');
+      const emailError = emailInput.parentElement.querySelector('.usa-error-message');
+      const select = row.querySelector('select');
+      const selectError = select.parentElement.querySelector('.usa-error-message');
+
+      clearError(emailInput, emailError);
+      clearError(select, selectError);
+
+      if (!emailInput.value.trim()) {
+        showError(emailInput, emailError, 'Email is required');
+        hasErrors = true;
+      } else if (!emailInput.value.match(/^[^@\s]+@[^@\s]+$/)) {
+        showError(emailInput, emailError, 'Enter a valid email address');
+        hasErrors = true;
+      }
+
+      if (!select.value) {
+        showError(select, selectError, 'Access level is required');
+        hasErrors = true;
+      }
+    });
+
+    if (hasErrors) {
+      event.preventDefault();
+    }
+  });
+
+  function showError(input, errorEl, message) {
+    input.classList.add('usa-input--error');
+    input.setAttribute('aria-invalid', 'true');
+    errorEl.textContent = message;
+    errorEl.classList.remove('display-none');
+  }
+
+  function clearError(input, errorEl) {
+    input.classList.remove('usa-input--error');
+    input.setAttribute('aria-invalid', 'false');
+    errorEl.textContent = '';
+    errorEl.classList.add('display-none');
+  }
+
   function updateRemoveButtons() {
     const onlyOneRow = container.querySelectorAll('.user-row').length <= 1;
     container.querySelectorAll('.remove-row').forEach(function (button) {
@@ -30,6 +79,15 @@ document.addEventListener('DOMContentLoaded', function () {
     newRow.querySelector('label[for*="_role_name"]').setAttribute('for', select.id);
 
     newRow.setAttribute('data-row-index', newIndex);
+
+    newRow.querySelectorAll('.usa-error-message').forEach(function (el) {
+      el.textContent = '';
+      el.classList.add('display-none');
+    });
+    newRow.querySelectorAll('.usa-input--error').forEach(function (el) {
+      el.classList.remove('usa-input--error');
+      el.setAttribute('aria-invalid', 'false');
+    });
 
     container.appendChild(newRow);
     updateRemoveButtons();

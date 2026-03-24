@@ -6,7 +6,8 @@
           <%= label_tag 'users_0_email', class: 'usa-label' do %>
             Email <abbr class="text-secondary-dark text-no-underline" title="required">*</abbr>
           <% end %>
-          <%= email_field_tag 'users[][email]', nil, id: 'users_0_email', class: 'usa-input', required: true, 'aria-invalid': false %>
+          <%= email_field_tag 'users[][email]', nil, id: 'users_0_email', class: 'usa-input', 'aria-invalid': false %>
+          <p class="usa-error-message display-none" role="alert"></p>
         </div>
         <div class="grid-col-5">
           <%= label_tag 'users_0_role_name', class: 'usa-label' do %>
@@ -14,7 +15,8 @@
           <% end %>
           <%= select_tag 'users[][role_name]',
               options_for_select([['Select role', '']] + roles_for_options),
-              id: 'users_0_role_name', class: 'usa-select', required: true %>
+              id: 'users_0_role_name', class: 'usa-select' %>
+          <p class="usa-error-message display-none" role="alert"></p>
         </div>
         <div class="grid-col-2 display-flex flex-align-end">
           <button type="button" class="usa-button usa-button--secondary remove-row" disabled>
