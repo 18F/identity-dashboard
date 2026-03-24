@@ -30,7 +30,9 @@ class AnalyticsReportStorage
   end
 
   def service_config
-    Rails.configuration.active_storage.service_configurations[service_name.to_s].symbolize_keys
+    @service_config ||= Rails.configuration.active_storage.service_configurations[
+      service_name.to_s,
+    ].symbolize_keys
   end
 
   def list_local
@@ -43,7 +45,10 @@ class AnalyticsReportStorage
   end
 
   def list_s3
-    s3_client.list_objects_v2(bucket: service_config[:bucket]).contents
+    s3_client.list_objects_v2(
+      bucket: service_config[:bucket],
+      prefix: IdentityConfig.store.aws_reports_filter,
+    ).contents
   end
 
   def fetch_local(key)
