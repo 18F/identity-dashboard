@@ -6,7 +6,7 @@
           <%= label_tag 'users_0_email', class: 'usa-label' do %>
             Email <abbr class="text-secondary-dark text-no-underline" title="required">*</abbr>
           <% end %>
-          <%= email_field_tag 'users[][email]', nil, id: 'users_0_email', class: 'usa-input', required: true %>
+          <%= email_field_tag 'users[][email]', nil, id: 'users_0_email', class: 'usa-input', required: true, 'aria-invalid': false %>
         </div>
         <div class="grid-col-5">
           <%= label_tag 'users_0_role_name', class: 'usa-label' do %>
