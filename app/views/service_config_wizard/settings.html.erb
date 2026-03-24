@@ -23,7 +23,7 @@
           t('simple_form.labels.service_provider.production') => true,
         },
       )) unless prod_like_env? %>
-    
+
     <%= form.hidden_field(:prod_config, value: true) if prod_like_env? %>
 
     <%= form.input :app_name,
