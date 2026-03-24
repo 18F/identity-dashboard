@@ -80,6 +80,7 @@ feature 'Team pages', :js do
             before do
               visit new_team_user_path(team_membership.team)
               fill_in 'Email', with: email
+              select 'Sandbox Team Dev', from: 'Access level'
               click_on 'Add to team'
             end
 
