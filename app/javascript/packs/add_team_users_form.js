@@ -4,11 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (!container || !addButton) return;
 
+  var nextIndex = container.querySelectorAll('.user-row').length;
+
   addButton.addEventListener('click', function () {
     var rows = container.querySelectorAll('.user-row');
     var lastRow = rows[rows.length - 1];
     var newRow = lastRow.cloneNode(true);
-    var newIndex = rows.length;
+    var newIndex = nextIndex++;
 
     var emailInput = newRow.querySelector('input[type="email"]');
     emailInput.value = '';
