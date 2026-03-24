@@ -238,8 +238,9 @@ class ServiceConfigWizardController < AuthenticatedController
   def validate_ial
     return unless policy(draft_service_provider).ial_readonly?
 
-    # reset unpermitted IAL change
-    params[:wizard_step][:ial] = (draft_service_provider[:ial] || 1).to_s
+    # Remove ial from params so it doesn't conflict with strong parameters.
+    # The existing IAL value is preserved in wizard_form_data.
+    params[:wizard_step]&.delete(:ial)
   end
 
   def skippable
