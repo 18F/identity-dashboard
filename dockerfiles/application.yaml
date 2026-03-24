@@ -302,17 +302,17 @@ spec:
         # Patch ConfigMap for Dashboard
         - target:
             kind: ConfigMap
-            name: dashboard-config
+            name: portal-config
           patch: |-
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
             - op: add
               path: /data/POSTGRES_NAME
-              value: "dashboard"
+              value: "portal"
             - op: add
               path: /data/POSTGRES_HOST
-              value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
+              value: "{{ENVIRONMENT}}-portal-pg.review-apps"
             - op: add
               path: /data/POSTGRES_SSLMODE
               value: "prefer"
@@ -336,17 +336,17 @@ spec:
               value: "https://{{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov"
         - target:
             kind: ConfigMap
-            name: dashboard-config-dbsetup
+            name: portal-config-dbsetup
           patch: |-
             - op: add
               path: /data/KUBERNETES_REVIEW_APP
               value: "true"
             - op: add
               path: /data/POSTGRES_NAME
-              value: "dashboard"
+              value: "portal"
             - op: add
               path: /data/POSTGRES_HOST
-              value: "{{ENVIRONMENT}}-dashboard-pg.review-apps"
+              value: "{{ENVIRONMENT}}-portal-pg.review-apps"
             - op: add
               path: /data/POSTGRES_SSLMODE
               value: "prefer"
@@ -456,10 +456,10 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/initContainers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -469,10 +469,10 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/initContainers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -482,10 +482,10 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/initContainers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -578,10 +578,10 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/initContainers/0/image
-              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+              value: {{ECR_REGISTRY}}/identity-portal/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
               value: Always
@@ -615,14 +615,14 @@ spec:
               value: https
         - target:
             kind: Ingress
-            name: dashboard
+            name: portal
           patch: |-
             - op: replace
               path: /metadata/annotations/alb.ingress.kubernetes.io~1group.name
-              value: review-app-dashboard
+              value: review-app-portal
             - op: replace
               path: /spec/rules/0/host
-              value: {{ENVIRONMENT}}-dashboard.reviewapps.identitysandbox.gov
+              value: {{ENVIRONMENT}}-portal.reviewapps.identitysandbox.gov
         - target:
             kind: Ingress
             name: pivcac
