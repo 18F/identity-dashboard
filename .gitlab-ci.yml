@@ -15,7 +15,7 @@ variables:
   PROD_LIKE_ENV: false
 
 default:
-  image: '${ECR_REGISTRY}/dashboard/ci@${DASHBOARD_CI_SHA}'
+  image: '${ECR_REGISTRY}/portal/ci@${DASHBOARD_CI_SHA}'
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
@@ -102,7 +102,7 @@ build-review-image:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
-        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-dashboard/review:main"
+        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-portal/review:main"
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -123,10 +123,10 @@ build-review-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/dashboard_review_app.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-dashboard/review:${CI_COMMIT_SHA}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/portal_review_app.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-portal/review:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
-      --cache-repo="${ECR_REGISTRY}/identity-dashboard/review/cache"
+      --cache-repo="${ECR_REGISTRY}/identity-portal/review/cache"
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
@@ -147,7 +147,7 @@ build-ci-image:
       changes:
         compare_to: 'refs/heads/main'
         paths:
-          - dockerfiles/dashboard_ci.Dockerfile
+          - dockerfiles/portal_ci.Dockerfile
   script:
     - mkdir -p /kaniko/.docker
     - |-
@@ -160,9 +160,9 @@ build-ci-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/dashboard_ci.Dockerfile"
-      --destination "${ECR_REGISTRY}/dashboard/ci:latest"
-      --destination "${ECR_REGISTRY}/dashboard/ci:${CI_COMMIT_SHA}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/portal_ci.Dockerfile"
+      --destination "${ECR_REGISTRY}/portal/ci:latest"
+      --destination "${ECR_REGISTRY}/portal/ci:${CI_COMMIT_SHA}"
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 lint:
@@ -307,7 +307,7 @@ review-app:
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
   script:
@@ -334,16 +334,16 @@ review-app:
     - echo "View your applications deployment progress at https://argocd.reviewapp.identitysandbox.gov/applications/argocd/${CI_ENVIRONMENT_SLUG}?view=tree&resource="
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
-    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-dashboard -n review-apps -- /bin/sh"
+    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-portal -n review-apps -- /bin/sh"
     - echo "Address of IDP review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
-    - echo "Address of Dashboard review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
+    - echo "Address of Portal review app:"
+    - echo https://$CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
@@ -352,7 +352,7 @@ review-app:
       when: never
 
 stop-review-app:
-  resource_group: $CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
@@ -429,7 +429,7 @@ ecr-scan-review-app:
     - job: build-review-image
   stage: scan
   variables:
-    ecr_repo: identity-dashboard/review
+    ecr_repo: identity-portal/review
 
 ecr-scan-ci:
   extends: .container_scan_template
@@ -438,12 +438,12 @@ ecr-scan-ci:
       changes:
         compare_to: 'refs/heads/main'
         paths:
-          - dockerfiles/dashboard_ci.Dockerfile
+          - dockerfiles/portal_ci.Dockerfile
   needs:
     - job: build-ci-image
   stage: scan
   variables:
-    ecr_repo: dashboard/ci
+    ecr_repo: portal/ci
 
 .container_scan_template:
   interruptible: true
@@ -583,7 +583,7 @@ deploy_eks:
     branch: main
   stage: deploy_eks
   variables:
-    APP: dashboard
+    APP: portal
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
