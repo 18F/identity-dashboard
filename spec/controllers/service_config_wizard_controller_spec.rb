@@ -745,15 +745,15 @@ RSpec.describe ServiceConfigWizardController do
         put :create, params: { service_provider: service_provider }
       end
 
-      it 'does not allow Partners to update IAL on existing configs' do
+      it 'allows Partner to proceed with IAL disabled' do
         initial_ial = service_provider.reload.attributes['ial']
         default_help_text_data = build(:wizard_step, step_name: 'help_text').wizard_form_data
 
-        expect(logger_double).to receive(:unpermitted_params_attempt).with(
-          ActionController::UnpermittedParameters,
-        )
-        put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
-        expect(response).to have_http_status(:unauthorized)
+        put :update, params: {
+          id: 'authentication',
+          wizard_step: { ial: '2', default_aal: '0', attribute_bundle: [] },
+        }
+        expect(response).to_not have_http_status(:unauthorized)
         put :update, params: { id: 'help_text', wizard_step: default_help_text_data }
         expect(response).to redirect_to(service_provider_path(service_provider))
         updated_ial = service_provider.reload.attributes['ial']
@@ -765,7 +765,6 @@ RSpec.describe ServiceConfigWizardController do
           put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
         }.to raise_error(ActionController::ParameterMissing)
       end
-
 
       it 'does not attempt to publish configs' do
         allow(controller).to receive(:publish_service_provider)
