@@ -263,17 +263,17 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def verify_airtable_connection
-    if IdentityConfig.store.prod_like_env && current_user.logingov_admin?
-      airtable_api = Airtable.new(current_user.uuid)
-      if airtable_api.has_token?
-        @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
-      else
-        @remove_partner_admin = true
-        airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+    return unless IdentityConfig.store.prod_like_env && current_user.logingov_admin?
 
-        base_url = "#{request.protocol}#{request.host_with_port}"
-        @oauth_url = airtable_api.generate_oauth_url(base_url)
-      end
+    airtable_api = Airtable.new(current_user.uuid)
+    if airtable_api.has_token?
+      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
+    else
+      @remove_partner_admin = true
+      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+
+      base_url = "#{request.protocol}#{request.host_with_port}"
+      @oauth_url = airtable_api.generate_oauth_url(base_url)
     end
   end
 end
