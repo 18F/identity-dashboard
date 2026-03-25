@@ -761,9 +761,9 @@ RSpec.describe ServiceConfigWizardController do
       end
 
       it 'raises ParameterMissing when only ial is submitted' do
-        expect {
+        expect do
           put :update, params: { id: 'authentication', wizard_step: { ial: '2' } }
-        }.to raise_error(ActionController::ParameterMissing)
+        end.to raise_error(ActionController::ParameterMissing)
       end
 
       it 'does not attempt to publish configs' do
