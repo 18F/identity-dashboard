@@ -2,64 +2,48 @@
 class AnalyticsReportStorage
   ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
 
-  def self.list
-    new.list
+  attr_reader :backend
+
+  delegate :list, to: :backend
+
+  def self.list(criteria = [])
+    new.list(Array(criteria))
   end
 
-  def self.fetch(key)
-    new.fetch(key)
+  def self.fetch(issuer, date)
+    new.fetch(issuer, date)
   end
 
-  def list
-    disk_storage? ? list_local : list_s3
+  def initialize
+    @backend = if use_s3?
+                 AnalyticsReportStorage::S3.new(s3_config)
+               else
+                 AnalyticsReportStorage::Disk.new(disk_config)
+               end
   end
 
-  def fetch(key)
-    content = disk_storage? ? fetch_local(key) : fetch_s3(key)
-    JSON.parse(content)
+  def fetch(issuer, date)
+    JSON.parse(backend.fetch(build_key(issuer, date)))
   end
 
   private
 
-  def disk_storage?
-    service_config[:service] == 'Disk'
+  def build_key(qualifier, date)
+    "#{qualifier}/monthly/#{date}.json"
   end
 
-  def service_name
-    Rails.env.production? ? :reports_amazon : :reports_local
+  def s3_config
+    {
+      bucket: IdentityConfig.store.aws_reports_bucket,
+      prefix: IdentityConfig.store.aws_reports_path,
+    }
   end
 
-  def service_config
-    @service_config ||= Rails.configuration.active_storage.service_configurations[
-      service_name.to_s,
-    ].symbolize_keys
+  def disk_config
+    { root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports') }
   end
 
-  def list_local
-    root = Pathname.new(service_config[:root])
-    return [] unless root.exist?
-
-    root.children.map do |file|
-      ReportFile.new(key: file.basename.to_s, file_size: file.size, last_modified: file.mtime)
-    end
-  end
-
-  def list_s3
-    s3_client.list_objects_v2(
-      bucket: service_config[:bucket],
-      prefix: IdentityConfig.store.aws_reports_filter,
-    ).contents
-  end
-
-  def fetch_local(key)
-    File.read(Pathname.new(service_config[:root]).join(key))
-  end
-
-  def fetch_s3(key)
-    s3_client.get_object(bucket: service_config[:bucket], key: key).body.read
-  end
-
-  def s3_client
-    @s3_client ||= Aws::S3::Client.new(region: service_config[:region])
+  def use_s3?
+    s3_config[:bucket] && s3_config[:prefix]
   end
 end

@@ -2,14 +2,10 @@
 class AnalyticPolicy < BasePolicy
   def index?
     return false unless user
+    return true if user_has_login_admin_role?
 
-    IdentityConfig.store.prod_like_env && user_has_login_admin_role?
+    true if IdentityConfig.store.prod_like_env && user_has_login_staff_role?
   end
 
-  class Scope < BasePolicy::Scope # :nodoc:
-    # NOTE: Be explicit about which records you allow access to!
-    def resolve
-      user_has_login_admin_role? ? scope.all : scope.none
-    end
-  end
+  # Analytic is not currently a db-backed model, so we can skip the Scope child class for now
 end

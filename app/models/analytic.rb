@@ -2,19 +2,7 @@
 class Analytic
   include ActiveModel::Model
 
-  def init
-    nil
-  end
+  attr_accessor :date, :config
 
-  def team
-    nil
-  end
-
-  def friendly_name
-    nil
-  end
-
-  def date
-    nil
-  end
+  delegate :team, :friendly_name, to: :config
 end

@@ -180,5 +180,31 @@ en:
   omniauth:
     logout_fail: Logout failed
     logout_ok: Successfully logged out
+  reports:
+    count_address_other_not_found: Address / Other / Not Found
+    count_blocked_by_ipp_fraud: Blocked by Failed IPP
+    count_friction_during_otp: Friction during OTP
+    count_dob_incorrect: DOB Incorrect
+    count_doc_auth_processing_issue: Doc. Auth. Processing Issue
+    count_doc_auth_technical_issue: Doc. Auth. Technical Issue
+    count_doc_auth_ux: Doc Auth UX Issue
+    count_facial_mismatch: Facial Mismatch
+    count_fraud_alert: Fraud Alert Detected
+    count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
+    count_identity_not_found: Identity Not Found
+    count_inauthentic_doc: Inauthentic Doc.
+    count_lack_phone_ownership: Lacking Phone Ownership
+    count_pass_online_finalization: Pass Online
+    count_pass_ipp_online_portion: Pass IPP (Online Portion)
+    count_pass_via_letter: Pass via Letter
+    count_pass_via_lg99: Pass via LG-99 Redress
+    count_pending_lg99_likely_fraud: Pending LG-99 (Fraud)
+    count_resolution_technical_issues: Technical Issues
+    count_selfie_ux: Selfie UX Issue
+    count_ssn_dob_deceased: Rejected for SSN, DOB, or Deceased
+    count_ssn_incorrect: SSN Incorrect
+    count_stayed_blocked: Stayed Blocked By LG-99
+    count_suspicious_phone: Suspicious Phone
+    count_wrong_phone_type: Wrong Phone Type
   shared:
     official_site: An official website of the United States government

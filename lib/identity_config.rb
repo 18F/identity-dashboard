@@ -18,8 +18,8 @@ class IdentityConfig
       config.add(:aws_region, type: :string)
       config.add(:aws_logo_bucket, type: :string)
       config.add(:aws_reports_bucket, type: :string)
-      # The `aws_reports_filter` value has to agree with what the reports team and platform team set
-      config.add(:aws_reports_filter, type: :string)
+      # The `aws_reports_path` value has to agree with what the reports team and platform team set
+      config.add(:aws_reports_path, type: :string, allow_nil: true)
       config.add(:db_pool, type: :integer)
       config.add(:devise_timeout_minutes, type: :integer)
       config.add(:dp_reaping_frequency, type: :integer)
@@ -28,6 +28,10 @@ class IdentityConfig
       config.add(:event_log_filename, type: :string)
       config.add(:idp_sp_url, type: :string)
       config.add(:idp_url, type: :string)
+      # The local_reports_folder is mainly for local developer environments
+      # or other non-prod environments where we want to test the reports feature without
+      # requiring a new S3 bucket. In production, it should not be set.
+      config.add(:local_reports_folder, type: :string, allow_nil: true)
       config.add(:mailer_domain, type: :string)
       config.add(:newrelic_license_key, type: :string)
       config.add(:prod_like_env, type: :boolean)

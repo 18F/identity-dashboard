@@ -25,7 +25,9 @@
     </div>
   </div>
   <div class="data-graph--container">
-    <p class="data-graph__title"><span class="data-graph__headline">Active users</span> • 3-month</p>
-    <div class="data-graph" id="active-users"></div>
+    <p class="data-graph__title"><span class="data-graph__headline">Identity Validation Activity</span> • 3-month</p>
+      <% @graphs.each do |graph| %>
+        <div class="grid-col flex-1" style="width: 35rem"><%= public_send(graph[:type], graph[:data], **graph[:options]) %></div>
+      <% end %>
   </div>
 </section>
