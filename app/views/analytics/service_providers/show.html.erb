@@ -12,6 +12,7 @@ Track usage, fraud signals, and more — updated weekly.
 <%# TODO: update charts based on feedback from UX. %>
 <%# These are not charts we actually want. These are charts we can use to detect potential accessibility problems. %>
 <h3>Usage</h3>
+<%= javascript_include_tag 'chart-config' %>
 <% @graph_rows.each do |graph_row| %>
   <div class="grid-row">
     <% graph_row.each do |graph| %>

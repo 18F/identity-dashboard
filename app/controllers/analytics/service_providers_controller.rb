@@ -5,7 +5,15 @@ class Analytics::ServiceProvidersController < ApplicationController # :nodoc:
     @issuer = service_provider.issuer
     @friendly_name = service_provider.friendly_name.capitalize
     @graph_rows = []
-    two_column_options = { download: true, width: '30rem' }
+
+    two_column_options = { download: true, width: '30rem',
+                           options: {
+                             plugins: {
+                               a11y_legend: {
+                                 margin: 0,
+                               },
+                             },
+                           } }
     @graph_rows.push([
                        { type: :line_chart, data: trends.active_users,
                          options: two_column_options },
