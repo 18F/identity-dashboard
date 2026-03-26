@@ -40,6 +40,7 @@ RSpec.describe ServiceProviderSerializer do
         expect(as_json[:allow_prompt_login]).to be true
         expect(as_json[:pkce]).to eq(false)
         expect(as_json[:post_idv_follow_up_url]).to eq('https://example.com/follow-up')
+        expect(as_json[:in_person_proofing_enabled]).to be(true)
       end
     end
 
@@ -59,6 +60,14 @@ RSpec.describe ServiceProviderSerializer do
 
       it 'passes the pkce attribute through' do
         expect(as_json[:pkce]).to be false
+      end
+    end
+
+    context 'in a prod-like env' do
+      before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
+
+      it 'does not include in_person_proofing_enabled' do
+        expect(as_json.keys).to_not include :in_person_proofing_enabled
       end
     end
   end

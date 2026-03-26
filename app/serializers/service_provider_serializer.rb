@@ -29,12 +29,22 @@ class ServiceProviderSerializer < ActiveModel::Serializer
     :pkce,
   )
 
+  attribute :in_person_proofing_enabled, if: :ipp_override
+
   # these are attributes that should only be passed to the show
   # endpoint
   attribute :protocol, if: :show
 
   def show
     instance_options[:action] == :show
+  end
+
+  def ipp_override
+    !IdentityConfig.store.prod_like_env
+  end
+
+  def in_person_proofing_enabled
+    true
   end
 
   def agency
