@@ -1,3 +1,5 @@
+require 'net/http'
+
 # These accessibility matchers have been copied over from the IdP, with some
 # fine-tuning for relevancy on the Dashboard.
 # https://github.com/18F/identity-idp/blob/main/spec/support/matchers/accessibility.rb
@@ -74,16 +76,18 @@ end
 RSpec::Matchers.define :have_valid_markup do
   def page_html
     # ChromeDriver repairs most invalid HTML, thus defeating the purpose of this test
-    # Switching drivers does not preserve the original session, hence the cookie management
-    # This fix mirrors the IdP's implementation
+    # Use a direct HTTP request to get the raw, un-repaired HTML instead of switching
+    # Capybara drivers, which is significantly faster
     cookies = page.driver.browser.send(:bridge).cookies
     session_value = cookies.find { |c| c['name'] == '_identity-dashboard_session' }&.[]('value')
-    original_path_with_params = URI.parse(current_url).request_uri
-    Capybara.using_driver(:accessibility_driver) do
-      page.driver.browser.set_cookie "_identity-dashboard_session=#{session_value}" if session_value
-      page.driver.get(original_path_with_params)
-      page.html
-    end
+    uri = URI.parse(current_url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request['Cookie'] = "_identity-dashboard_session=#{session_value}" if session_value
+    request['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
+                            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                            'Chrome/58.0.3029.110 Safari/537.36'
+    http.request(request).body
   end
 
   def page_markup_syntax_errors
