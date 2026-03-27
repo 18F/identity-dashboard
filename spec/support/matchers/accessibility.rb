@@ -1,5 +1,3 @@
-require 'net/http'
-
 # These accessibility matchers have been copied over from the IdP, with some
 # fine-tuning for relevancy on the Dashboard.
 # https://github.com/18F/identity-idp/blob/main/spec/support/matchers/accessibility.rb
@@ -76,18 +74,18 @@ end
 RSpec::Matchers.define :have_valid_markup do
   def page_html
     # ChromeDriver repairs most invalid HTML, thus defeating the purpose of this test
-    # Use a direct HTTP request to get the raw, un-repaired HTML instead of switching
-    # Capybara drivers, which is significantly faster
+    # Use Rack::Test directly for an in-process request without the overhead of
+    # switching Capybara drivers
     cookies = page.driver.browser.send(:bridge).cookies
     session_value = cookies.find { |c| c['name'] == '_identity-dashboard_session' }&.[]('value')
-    uri = URI.parse(current_url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request['Cookie'] = "_identity-dashboard_session=#{session_value}" if session_value
-    request['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
-                            'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                            'Chrome/58.0.3029.110 Safari/537.36'
-    http.request(request).body
+    original_path_with_params = URI.parse(current_url).request_uri
+    session = Rack::Test::Session.new(Rack::MockSession.new(Rails.application))
+    session.set_cookie("_identity-dashboard_session=#{session_value}") if session_value
+    session.header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
+                                 'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                                 'Chrome/58.0.3029.110 Safari/537.36')
+    session.get(original_path_with_params)
+    session.last_response.body
   end
 
   def page_markup_syntax_errors
