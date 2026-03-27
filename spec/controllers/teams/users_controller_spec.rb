@@ -11,15 +11,21 @@ describe Teams::UsersController do
 
   shared_examples_for 'can create valid users' do
     it 'saves valid info' do
-      post :create, params: { team_id: team.id, user: { email: valid_email } }
+      post :create, params: {
+        team_id: team.id,
+        users: [{ email: valid_email, role_name: 'partner_developer' }],
+      }
 
-      expect(response).to redirect_to(new_team_user_path(team))
+      expect(response).to redirect_to(team_users_path(team))
       saved_user_emails = team.reload.users.map(&:email)
       expect(saved_user_emails).to include(valid_email)
     end
 
     it 'does not save invalid info' do
-      post :create, params: { team_id: team.id, user: { email: invalid_email } }
+      post :create, params: {
+        team_id: team.id,
+        users: [{ email: invalid_email, role_name: 'partner_developer' }],
+      }
 
       saved_user_emails = team.reload.users.map(&:email)
       expect(saved_user_emails).to_not include(invalid_email)
@@ -84,23 +90,25 @@ describe Teams::UsersController do
           expect(response).to be_ok
           expect(response).to render_template(:new)
         end
+
+        it 'assigns roles_for_options as a helper' do
+          get :new, params: { team_id: team.id }
+          # roles_for_options is already a helper_method, just verify it's accessible
+          expect(controller.roles_for_options).to be_an(Array)
+          expect(controller.roles_for_options.first).to be_an(Array)
+        end
       end
 
       describe '#create' do
         before { allow(logger_double).to receive(:team_membership_created) }
         it_behaves_like 'can create valid users'
 
-        it 'renders :new when there is an error saving' do
-          user_validator = instance_double(UserValidator)
-          allow(user_validator).to receive(:validate).and_return(false)
-
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
-          expect(response).to redirect_to(new_team_user_path(team.id))
-        end
-
         context 'logging' do
           it 'calls log.team_membership_created before save' do
-            post :create, params: { team_id: team.id, user: { email: valid_email } }
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: valid_email, role_name: 'partner_developer' }],
+            }
             membership = TeamMembership.find_by(user: User.find_by(email: valid_email), team:)
             # Logging happens before save, so id is nil and attributes are in pending changes format
             changes = {
@@ -115,6 +123,85 @@ describe Teams::UsersController do
             expect(logger_double).to have_received(:team_membership_created).with(
               changes: hash_including(changes),
             )
+          end
+        end
+
+        context 'with batch user params' do
+          let(:valid_emails) { ['user1@gsa.gov', 'user2@gsa.gov'] }
+
+          it 'creates multiple users at once' do
+            post :create, params: {
+              team_id: team.id,
+              users: valid_emails.map { |email| { email: email, role_name: 'partner_developer' } },
+            }
+
+            expect(response).to redirect_to(team_users_path(team))
+            saved_emails = team.reload.users.map(&:email)
+            valid_emails.each { |email| expect(saved_emails).to include(email) }
+          end
+
+          it 'assigns the specified role to each user' do
+            post :create, params: {
+              team_id: team.id,
+              users: [
+                { email: 'dev@gsa.gov', role_name: 'partner_developer' },
+                { email: 'readonly@gsa.gov', role_name: 'partner_readonly' },
+              ],
+            }
+
+            dev_membership = TeamMembership.find_by(user: User.find_by(email: 'dev@gsa.gov'),
+                                                    team: team)
+            readonly_membership = TeamMembership.find_by(
+              user: User.find_by(email: 'readonly@gsa.gov'), team: team,
+            )
+            expect(dev_membership.role_name).to eq('partner_developer')
+            expect(readonly_membership.role_name).to eq('partner_readonly')
+          end
+
+          it 'uses set_default_role when no role is specified' do
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: 'norole@gsa.gov', role_name: '' }],
+            }
+
+            membership = TeamMembership.find_by(user: User.find_by(email: 'norole@gsa.gov'),
+                                                team: team)
+            expect(membership).to be_present
+          end
+
+          it 're-renders new with errors when an email is invalid' do
+            post :create, params: {
+              team_id: team.id,
+              users: [
+                { email: 'valid@gsa.gov', role_name: 'partner_developer' },
+                { email: 'invalid', role_name: 'partner_developer' },
+              ],
+            }
+
+            expect(response).to render_template(:new)
+          end
+
+          it 're-renders new with errors when an email is blank' do
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: '', role_name: 'partner_developer' }],
+            }
+
+            expect(response).to render_template(:new)
+            expect(assigns(:errors)).to be_present
+          end
+
+          it 'shows already a member error for duplicate team member' do
+            existing_user = create(:team_membership, team: team).user
+
+            post :create, params: {
+              team_id: team.id,
+              users: [{ email: existing_user.email, role_name: 'partner_developer' }],
+            }
+
+            expect(response).to render_template(:new)
+            error_messages = assigns(:errors).flat_map { |e| e[:messages] }
+            expect(error_messages.join).to include('is already a member of the team')
           end
         end
       end
@@ -272,7 +359,10 @@ describe Teams::UsersController do
 
       describe '#create' do
         it 'is not allowed' do
-          post :create, params: { team_id: team.id, user: { email: valid_email } }
+          post :create, params: {
+            team_id: team.id,
+            users: [{ email: valid_email, role_name: 'partner_developer' }],
+          }
           expect(response).to be_unauthorized
           expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
@@ -320,8 +410,7 @@ describe Teams::UsersController do
         it 'is not allowed' do
           post :create, params: {
             team_id: team.id,
-            id: user_to_change.id,
-            user: { email: build(:user).email },
+            users: [{ email: build(:user).email, role_name: 'partner_developer' }],
           }
           expect(response).to be_unauthorized
         end

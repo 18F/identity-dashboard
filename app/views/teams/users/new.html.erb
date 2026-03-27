@@ -6,6 +6,12 @@
 <div class="border-top-1px border-base-lighter padding-top-2">
   <p class="margin-bottom-5">You can manage users and change access levels anytime.</p>
 
+  <% if IdentityConfig.store.prod_like_env && @remove_partner_admin %>
+    <p class="margin-bottom-5">In order to give <strong><%=
+      t('role_names.production.partner_admin')
+    %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
+  <% end %>
+  
   <div class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3">
     <button class="usa-accordion__button padding-y-1" aria-expanded="false" aria-controls="access-levels-content">
       <span class="font-body-md text-normal line-height-sans-1">What are the different access levels?</span>
@@ -20,13 +26,14 @@
   </div>
 </div>
 
-<%= simple_form_for(@user,
-    html: { autocomplete: 'off' },
-    url: team_users_path(@team)) do |form| %>
-  <%= render 'form', form: form %>
-  <div class="margin-top-2">
-    <%= form.button :submit, 'Add', :class => "usa-button" %>
-    <%= link_to 'Back', team_users_path(@team),
-                class: 'usa-button usa-button--outline' %>
+<% if @errors&.any? %>
+  <div class="usa-alert usa-alert--error margin-bottom-2">
+    <div class="usa-alert__body">
+      <% @errors.each do |error| %>
+        <p class="usa-alert__text"><%= error[:messages].join(', ') %></p>
+      <% end %>
+    </div>
   </div>
 <% end %>
+
+<%= render 'form' %>

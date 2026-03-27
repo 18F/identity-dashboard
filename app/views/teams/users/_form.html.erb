@@ -1,5 +1,46 @@
 <fieldset class="usa-fieldset">
-  <%= form.input :email,
-      input_html: { class: 'usa-input', aria: { invalid: false } },
-      required: true %>
+  <%= form_with url: team_users_path(@team), method: :post, local: true, html: { autocomplete: 'off' } do %>
+    <div id="user-rows">
+      <div class="user-row grid-row grid-gap margin-bottom-2" data-row-index="0">
+        <div class="grid-col-5">
+          <%= label_tag 'users_0_email', class: 'usa-label' do %>
+            Email <abbr class="text-secondary-dark text-no-underline" title="required">*</abbr>
+          <% end %>
+          <%= email_field_tag 'users[][email]', nil, id: 'users_0_email', class: 'usa-input', 'aria-invalid': false %>
+          <p class="usa-error-message display-none" role="alert"></p>
+        </div>
+        <div class="grid-col-5">
+          <%= label_tag 'users_0_role_name', class: 'usa-label' do %>
+            Access level <abbr class="text-secondary-dark text-no-underline" title="required">*</abbr>
+          <% end %>
+          <%= select_tag 'users[][role_name]',
+              options_for_select([['Select role', '']] + roles_for_options),
+              id: 'users_0_role_name', class: 'usa-select' %>
+          <p class="usa-error-message display-none" role="alert"></p>
+        </div>
+        <div class="grid-col-2 display-flex flex-align-end">
+          <button type="button" class="usa-button usa-button--secondary remove-row" disabled>
+            <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+              <use href="<%= asset_path 'sprite.svg#remove_circle' %>"></use>
+            </svg>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="usa-button usa-button--unstyled" id="add-user-row">
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use href="<%= asset_path 'sprite.svg#add_circle' %>"></use>
+      </svg>
+      Add another user
+    </button>
+
+    <div class="margin-top-4">
+      <%= submit_tag 'Add to team', class: 'usa-button' %>
+      <%= link_to 'Cancel', team_users_path(@team), class: 'usa-button usa-button--unstyled margin-left-2' %>
+    </div>
+  <% end %>
 </fieldset>
+
+<%= javascript_include_tag 'add_team_users_form' %>

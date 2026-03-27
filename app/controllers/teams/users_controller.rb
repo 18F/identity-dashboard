@@ -25,47 +25,43 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def new
+    verify_airtable_connection
+
     authorize current_team_membership
     @user = policy_scope(User).new
   end
 
   def edit
-    if IdentityConfig.store.prod_like_env && current_user.logingov_admin?
-      airtable_api = Airtable.new(current_user.uuid)
-      if airtable_api.has_token?
-        @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
-      else
-        @remove_partner_admin = true
-        airtable_api.refresh_token if airtable_api.needs_refreshed_token?
-
-        base_url = "#{request.protocol}#{request.host_with_port}"
-        @oauth_url = airtable_api.generate_oauth_url(base_url)
-      end
-    end
+    verify_airtable_connection
 
     authorize team_membership
     @user = team_membership.user
   end
 
   def create
-    unless new_team_member.valid?
-      team
-      authorize TeamMembership.new(team:), :create?
-      render(:new) and return
+    users_params = params.require(:users).map { |u| u.permit(:email, :role_name) }
+    @errors = []
+    @users_data = users_params.map(&:to_h)
+    created_memberships = []
+    team
+    authorize TeamMembership.new(team:), :create?
+
+    users_params.each do |user_entry|
+      membership = build_team_membership(user_entry)
+      next unless membership
+
+      if membership.save
+        created_memberships << membership
+      else
+        @errors << { messages: membership_error_messages(membership) }
+      end
     end
 
-    new_team_membership = policy_scope(TeamMembership).build(
-      team: team,
-      user: new_team_member,
-    )
-    new_team_membership.set_default_role
-    authorize new_team_membership
-    @team_membership = new_team_membership
-    log_change
-    render :new and return unless new_team_membership.save!
+    render :new and return if @errors.any?
 
-    flash[:success] = I18n.t('teams.users.create.success', email: member_email)
-    redirect_to new_team_user_path
+    emails = created_memberships.map { |m| m.user.email }.join(', ')
+    flash[:success] = I18n.t('teams.users.create.success', email: emails)
+    redirect_to team_users_path(team)
   rescue ActiveRecord::RecordInvalid => err
     email_taken_error = [:user_id, :taken]
     error_messages = err.record.errors.map do |record_error|
@@ -129,7 +125,8 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def roles_for_options
-    roles = policy(team_membership).roles_for_edit
+    membership = team_membership || policy_scope(TeamMembership).build(team: team)
+    roles = policy(membership).roles_for_edit
     if IdentityConfig.store.prod_like_env && !Airtable.new(current_user.uuid).has_token?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end
@@ -142,13 +139,40 @@ class Teams::UsersController < AuthenticatedController
 
   private
 
-  def member_email
-    user_params[:email]&.downcase
+  def build_team_membership(user_entry)
+    email = user_entry[:email]&.downcase
+    new_user = User.find_or_create_by(email: email)
+
+    unless new_user.valid?
+      @errors << { messages: new_user.errors.full_messages }
+      return nil
+    end
+
+    membership = policy_scope(TeamMembership).build(team: team, user: new_user)
+
+    if user_entry[:role_name].present?
+      membership.role_name = user_entry[:role_name]
+    else
+      membership.set_default_role
+    end
+
+    authorize membership
+    @team_membership = membership
+    log_change
+    membership
   end
 
-  def new_team_member
-    @new_team_member ||= User.find_or_create_by(email: member_email)
-    @user = @new_team_member
+  def membership_error_messages(membership)
+    membership.errors.map do |error|
+      if error.attribute == :user_id && error.type == :taken
+        I18n.t(
+          'activerecord.errors.models.team_membership.attributes.user_id.taken',
+          value: membership.user.email,
+        )
+      else
+        error.full_message
+      end
+    end
   end
 
   def user
@@ -157,10 +181,6 @@ class Teams::UsersController < AuthenticatedController
 
   def user_present_not_current_user(user)
     user.present? && user != current_user
-  end
-
-  def user_params
-    params.require(:user).permit(:email)
   end
 
   def team_membership_params
@@ -240,5 +260,20 @@ class Teams::UsersController < AuthenticatedController
       return true unless verified_partner_admin?
     end
     false
+  end
+
+  def verify_airtable_connection
+    return unless IdentityConfig.store.prod_like_env && current_user.logingov_admin?
+
+    airtable_api = Airtable.new(current_user.uuid)
+    if airtable_api.has_token?
+      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
+    else
+      @remove_partner_admin = true
+      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+
+      base_url = "#{request.protocol}#{request.host_with_port}"
+      @oauth_url = airtable_api.generate_oauth_url(base_url)
+    end
   end
 end

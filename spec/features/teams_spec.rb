@@ -90,7 +90,7 @@ feature 'TeamMembership CRUD' do
       click_on 'Manage users'
       click_on 'Add user'
       fill_in 'Email', with: user.email
-      click_on 'Add'
+      click_on 'Add to team'
       expect(user.teams).to include(team1, team2)
     end
   end
@@ -243,7 +243,7 @@ feature 'TeamMembership CRUD' do
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
-        click_on 'Add'
+        click_on 'Add to team'
 
         expect(user.teams).to include(team)
         membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
@@ -261,7 +261,7 @@ feature 'TeamMembership CRUD' do
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
-        click_on 'Add'
+        click_on 'Add to team'
 
         membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
         expect(membership).to be_truthy
@@ -280,7 +280,7 @@ feature 'TeamMembership CRUD' do
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
-        click_on 'Add'
+        click_on 'Add to team'
 
         membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
         expect(membership).to be_truthy
@@ -299,7 +299,7 @@ feature 'TeamMembership CRUD' do
         click_on 'Manage users'
         click_on 'Add user'
         fill_in 'Email', with: user.email
-        click_on 'Add'
+        click_on 'Add to team'
 
         membership = user.team_memberships.find_by(group_id: team.id, user_id: user.id)
         expect(membership).to be_truthy

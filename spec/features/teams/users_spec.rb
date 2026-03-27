@@ -66,7 +66,7 @@ describe 'users' do
     scenario 'team member adds new user' do
       email_to_add = 'new_user@example.com'
       fill_in 'Email', with: email_to_add
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
       new_team_membership = TeamMembership.find_by(user: User.find_by(email: email_to_add),
                                                    team: team)
@@ -75,19 +75,19 @@ describe 'users' do
 
     scenario 'team member adds user with blank email' do
       fill_in 'Email', with: ''
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content("Email can't be blank")
     end
 
     scenario 'team member add user with invalid email' do
       fill_in 'Email', with: 'invalid'
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content('Email is invalid')
     end
 
     scenario 'team member adds existing member of team' do
       fill_in 'Email', with: other_team_member.email
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content(
         "#{other_team_member.email} is already a member of the team",
       )
@@ -95,7 +95,7 @@ describe 'users' do
 
     scenario 'team member adds existing user not member of team' do
       fill_in 'Email', with: user.email
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
       new_team_membership = TeamMembership.find_by(user: User.find_by(email: user.email),
                                                    team: team)
@@ -105,10 +105,19 @@ describe 'users' do
     scenario 'add a user not yet in the system' do
       random_email = "random_user_#{rand(1..1000)}@gsa.gov"
       fill_in 'Email', with: random_email
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
       team_member_emails = team.reload.users.map(&:email)
       expect(team_member_emails).to include(random_email)
+    end
+
+    scenario 'team member selects a role for new user' do
+      fill_in 'Email', with: 'newuser@gsa.gov'
+      select 'Sandbox Team Dev', from: 'users_0_role_name'
+      click_on 'Add to team'
+
+      membership = TeamMembership.find_by(user: User.find_by(email: 'newuser@gsa.gov'), team: team)
+      expect(membership.role_name).to eq('partner_developer')
     end
 
     context 'when Login.gov Admin' do
@@ -118,9 +127,8 @@ describe 'users' do
         visit new_team_user_path(Team.find(team_member.teams.first.id))
         random_email = "random_user_#{rand(1..1000)}@gsa.gov"
         fill_in 'Email', with: random_email
-        click_on 'Add'
+        click_on 'Add to team'
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
-        click_on 'Back'
         expect(find('tr', text: random_email))
           .to have_content(I18n.t('role_names.sandbox.partner_readonly'))
         new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
@@ -132,9 +140,8 @@ describe 'users' do
         visit new_team_user_path(Team.find(team_member.teams.first.id))
         random_email = "random_user_#{rand(1..1000)}@gsa.gov"
         fill_in 'Email', with: random_email
-        click_on 'Add'
+        click_on 'Add to team'
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
-        click_on 'Back'
         expect(
           find('tr', text: random_email),
         ).to have_content(I18n.t('role_names.sandbox.partner_developer'))
@@ -156,9 +163,8 @@ describe 'users' do
       expect(empty_team.users.count).to be 0
       random_email = "random_user_#{rand(1..1000)}@gsa.gov"
       fill_in 'Email', with: random_email
-      click_on 'Add'
+      click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
-      click_on 'Back'
       expect(find('tr', text: random_email))
         .to have_content(I18n.t('role_names.sandbox.partner_admin'))
       new_team_membership = TeamMembership.find_by(
