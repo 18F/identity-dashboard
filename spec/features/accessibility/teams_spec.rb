@@ -93,7 +93,7 @@ feature 'Team pages', :js do
 
               describe 'returning after adding the user', :versioning do
                 before do
-                  click_on 'Back'
+                  click_on 'Cancel'
                 end
 
                 it 'is accessible' do
