@@ -39,9 +39,9 @@
 </ul>
 
 <% if policy(@team).edit? %>
-  <%= link_to "Edit team", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+  <%= link_to "Edit team", edit_team_path, class: 'usa-button margin-top-4' %>
 <% end %>
-  <%= link_to "View my teams", teams_path, :class => 'usa-button usa-button--outline' %>
+<%= link_to "View my teams", teams_path, class: 'usa-button usa-button--outline' %>
 
 <% if policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @audit_events %>
