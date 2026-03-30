@@ -1,7 +1,7 @@
 <% content_for(:title, 'Team details') %>
 
 <h1 class="usa-display">Team details for "<%= @team.name %>" </h1>
-<p class="border-bottom-1px border-primary-light padding-bottom-2">Update informatoin, view history, and more</p>
+<p class="border-bottom-1px border-primary-light padding-bottom-2">Update information, view history, and more</p>
 
 <% if current_user.logingov_staff? %>
   <%= render 'uuid_with_copy' %>
