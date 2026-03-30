@@ -17,9 +17,8 @@ feature 'TeamMembership CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create team'
-    expect(page).to have_current_path(team_users_path(Team.last))
-    expect(page).to have_content('Success')
-    expect(page).to have_content('team name')
+    expect(page).to have_current_path(team_path(Team.last))
+    expect(page).to have_content('You have created team name')
   end
 
   scenario 'Create (Login.gov Readonly)' do
@@ -45,9 +44,8 @@ feature 'TeamMembership CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create team'
-    expect(page).to have_current_path(team_users_path(Team.last))
-    expect(page).to have_content('Success')
-    expect(page).to have_content('team name')
+    expect(page).to have_current_path(team_path(Team.last))
+    expect(page).to have_content('You have created team name')
   end
 
   scenario 'Create (commercial user)' do
@@ -355,7 +353,7 @@ feature 'TeamMembership CRUD' do
 
       visit team_path(team)
 
-      expect(page).to_not have_button('Edit')
+      expect(page).to_not have_link('Edit team')
       expect(page).to_not have_link('Manage users')
 
       visit edit_team_path(team)
