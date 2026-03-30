@@ -1,9 +1,7 @@
 <% content_for(:title, 'Team details') %>
-<ul class="usa-list usa-list--unstyled">
-  <li><%= link_to "View teams", teams_path, :class => 'usa-link' %> </li>
-</ul>
 
 <h1 class="usa-display">Team details for "<%= @team.name %>" </h1>
+<p class="border-bottom-1px border-primary-light padding-bottom-2">Update informatoin, view history, and more</p>
 
 <% if current_user.logingov_staff? %>
   <%= render 'uuid_with_copy' %>
@@ -26,7 +24,7 @@
   <%= link_to(
     "Manage users",
     team_users_path(@team),
-    class: 'margin-y-1 usa-link',
+    class: 'margin-y-1 usa-button usa-button--outline',
   ) %>
 <% end %>
 
@@ -41,8 +39,9 @@
 </ul>
 
 <% if policy(@team).edit? %>
-  <%= button_to "Edit", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
+  <%= link_to "Edit team", edit_team_path, class: 'usa-button margin-top-4', method: :get %>
 <% end %>
+  <%= link_to "View my teams", teams_path, :class => 'usa-button usa-button--outline' %>
 
 <% if policy(PaperTrail::Version).can_view_papertrail? %>
   <%= render 'components/version_history', versions: @audit_events %>
