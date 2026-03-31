@@ -11,11 +11,13 @@
 <% end %>
 
 
-<h2 class="margin-bottom-0">
-  <label for="identity_protocol">Portal Configuration:</label>
-  <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Production' : 'Sandbox' %></span>
-</h2>
-<hr>
+<% if !prod_like_env? %>
+  <h2 class="margin-bottom-0">
+    <label for="identity_protocol">Portal Configuration:</label>
+    <span class="font-mono-xs margin-left-5"><%= service_provider.prod_config ? 'Production' : 'Sandbox' %></span>
+  </h2>
+  <hr>
+<% end %>
 <% if @show_status_indicator %>
   <h2 class="margin-bottom-0">
     Portal Production Status:
