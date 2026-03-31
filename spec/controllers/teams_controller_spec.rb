@@ -185,7 +185,7 @@ describe TeamsController do
         # rubocop:enable Layout/LineLength
 
         it 'redirects' do
-          expect(response).to redirect_to(team_users_path(team))
+          expect(response).to redirect_to(team_path(team))
         end
 
         it 'logs before save' do
@@ -217,7 +217,7 @@ describe TeamsController do
           expect(team).to_not be_nil
           expect(team.uuid).to match(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}/)
           expect(team.users).to eq([])
-          expect(response).to redirect_to(team_users_path(team))
+          expect(response).to redirect_to(team_path(team))
         end
       end
       # rubocop:enable Layout/LineLength
