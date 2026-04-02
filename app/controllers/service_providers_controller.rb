@@ -256,13 +256,10 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def build_service_provider_array(prod_apps, sandbox_apps)
-    prod_hash = { type: 'Production', apps: prod_apps }
-    sandbox_hash = { type: 'Sandbox', apps: sandbox_apps }
-
     if IdentityConfig.store.prod_like_env
-      [prod_hash]
+      [{ type: 'Production', apps: prod_apps + sandbox_apps }]
     else
-      [prod_hash, sandbox_hash]
+      [{ type: 'Production', apps: prod_apps }, { type: 'Sandbox', apps: sandbox_apps }]
     end
   end
 

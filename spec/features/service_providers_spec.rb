@@ -1008,11 +1008,16 @@ feature 'Service Providers CRUD' do
     end
     let(:user_to_log_in_as) { logingov_admin }
 
-    it 'shows for Login.gov Admin for a prod configuration in a prod-like env' do
+    it 'shows production status for Login.gov Admin for a prod configuration in a prod-like env' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       visit service_provider_path(config)
-      expect(page).to have_content('Portal Configuration: Production')
       expect(page).to have_content("Portal Production Status: #{config.status.capitalize}")
+    end
+
+    it 'does not show portal configuration in a prod-like env' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit service_provider_path(config)
+      expect(page).to_not have_content('Portal Configuration')
     end
 
     it 'does not show if the env is not prod-like' do
@@ -1026,7 +1031,6 @@ feature 'Service Providers CRUD' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       login_as user
       visit service_provider_path(config)
-      expect(page).to have_content('Portal Configuration: Production')
       expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
 
@@ -1035,7 +1039,6 @@ feature 'Service Providers CRUD' do
       config.save!
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       visit service_provider_path(config)
-      expect(page).to have_content('Portal Configuration: Sandbox')
       expect(page).to_not have_content("Portal Production Status: #{config.status.capitalize}")
     end
   end

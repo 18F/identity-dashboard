@@ -23,7 +23,7 @@ feature 'Users can access service providers that belong to their team' do
       expect(page).to_not have_content(other_config.friendly_name)
     end
 
-    scenario 'prod users can only see production configs for their team' do
+    scenario 'prod users can see all configs for their team' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user2)
       members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user2)
@@ -34,7 +34,7 @@ feature 'Users can access service providers that belong to their team' do
       visit service_providers_path
 
       expect(page).to have_content(members_prod_config.friendly_name)
-      expect(page).to_not have_content(members_sandbox_config.friendly_name)
+      expect(page).to have_content(members_sandbox_config.friendly_name)
       expect(page).to_not have_content(no_longer_a_member_config.friendly_name)
       expect(page).to_not have_content(other_config.friendly_name)
     end
