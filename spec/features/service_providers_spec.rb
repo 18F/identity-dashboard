@@ -1014,7 +1014,7 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content("Portal Production Status: #{config.status.capitalize}")
     end
 
-    it 'does now show portal configuration in a prod-like env' do
+    it 'does not show portal configuration in a prod-like env' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       visit service_provider_path(config)
       expect(page).to_not have_content('Portal Configuration')
