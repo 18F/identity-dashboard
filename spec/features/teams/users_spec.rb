@@ -120,6 +120,21 @@ describe 'users' do
       expect(membership.role_name).to eq('partner_developer')
     end
 
+    scenario 'submit button is disabled until a role is selected', js: true do
+      login_as partner_admin_team_member
+      visit new_team_user_path(Team.find(team_member.teams.first.id))
+
+      submit_button = find('input[type="submit"][value="Add to team"]')
+      expect(submit_button).to be_disabled
+
+      fill_in 'Email', with: 'newuser@gsa.gov'
+      select 'Sandbox Team Dev', from: 'users_0_role_name'
+      expect(submit_button).not_to be_disabled
+
+      click_on 'Add to team'
+      expect(page).to have_content(I18n.t('teams.users.create.success', email: 'newuser@gsa.gov'))
+    end
+
     context 'when Login.gov Admin' do
       scenario 'user defaults to Partner Readonly in prod-like envs' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
