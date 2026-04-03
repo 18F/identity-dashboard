@@ -129,7 +129,7 @@ describe 'users' do
 
       fill_in 'Email', with: 'newuser@gsa.gov'
       select 'Sandbox Team Dev', from: 'users_0_role_name'
-      expect(submit_button).not_to be_disabled
+      expect(submit_button).to_not be_disabled
 
       click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: 'newuser@gsa.gov'))
