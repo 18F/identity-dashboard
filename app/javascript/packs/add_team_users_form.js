@@ -22,6 +22,15 @@ document.addEventListener('DOMContentLoaded', function () {
     errorEl.classList.add('display-none');
   }
 
+  const submitButton = form.querySelector('input[type="submit"]');
+
+  function updateSubmitButton() {
+    const missingRole = Array.from(container.querySelectorAll('.user-row')).some(function (row) {
+      return !row.querySelector('select').value;
+    });
+    submitButton.disabled = missingRole;
+  }
+
   function updateRemoveButtons() {
     const onlyOneRow = container.querySelectorAll('.user-row').length <= 1;
     container.querySelectorAll('.remove-row').forEach(function (button) {
@@ -57,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (hasErrors) {
       event.preventDefault();
+      event.stopPropagation();
     }
   });
 
@@ -91,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     container.appendChild(newRow);
     updateRemoveButtons();
+    updateSubmitButton();
   });
 
   container.addEventListener('click', function (event) {
@@ -99,5 +110,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     removeButton.closest('.user-row').remove();
     updateRemoveButtons();
+    updateSubmitButton();
   });
+
+  container.addEventListener('change', function (event) {
+    if (event.target.matches('select')) {
+      updateSubmitButton();
+    }
+  });
+
+  updateSubmitButton();
 });
