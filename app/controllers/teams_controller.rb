@@ -18,11 +18,13 @@ class TeamsController < AuthenticatedController
         scope: policy_scope(PaperTrail::Version),
       ),
     )
+    @show_wizard = params[:wizard].present?
   end
 
   def new
     @team = Team.new
     @agencies = Agency.order(:name)
+    @show_wizard = true
   end
 
   def edit
