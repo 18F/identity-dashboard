@@ -42,6 +42,7 @@ class TeamsController < AuthenticatedController
       flash[:success] = "You have created #{@team.name}"
       redirect_to new_team_user_path(@team, wizard: true)
     else
+      @show_wizard = true
       @agencies = Agency.order(:name)
       render :new
     end

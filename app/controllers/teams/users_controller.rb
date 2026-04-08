@@ -58,7 +58,10 @@ class Teams::UsersController < AuthenticatedController
       end
     end
 
-    render :new and return if @errors.any?
+    if @errors.any?
+      @show_wizard = params[:wizard].present?
+      render :new and return
+    end
 
     emails = created_memberships.map { |m| m.user.email }.join(', ')
     flash[:success] = I18n.t('teams.users.create.success', email: emails)

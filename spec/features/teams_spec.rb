@@ -85,6 +85,16 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_content('Step 2 of 3')
     end
 
+    scenario 'persists on new team page when validation fails' do
+      login_as(logingov_admin)
+      visit new_team_path
+
+      click_on 'Create team'
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--current', text: 'New team')
+    end
+
     scenario 'does not show on team show page without wizard param' do
       team = create(:team)
 
