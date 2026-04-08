@@ -91,7 +91,7 @@ feature 'TeamMembership CRUD' do
       login_as(logingov_admin)
       visit team_path(team)
 
-      expect(page).not_to have_css('.lg-step-indicator')
+      expect(page).to_not have_css('.lg-step-indicator')
     end
   end
 
