@@ -56,6 +56,10 @@ en:
     error_notification:
       default_message: <div class='usa-alert__body'><p class='usa-alert__text'>Please review the problems below:</p></div>
   teams:
+    wizard_steps:
+      new_team: New team
+      add_users: Add users
+      team_details: Team details
     users:
       update:
         success_html: <p class="usa-alert__text">You've updated the role for <strong>%{email}</strong> to <strong>%{new_role_name}</strong></p>

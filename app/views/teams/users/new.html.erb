@@ -1,4 +1,13 @@
 <% content_for(:title, 'Add team member') %>
+<% if @show_wizard %>
+  <%= render partial: 'components/step_progress',
+      locals: {
+        steps: [:new_team, :add_users, :team_details],
+        current_step_index: 1,
+        localization_base: 'teams.wizard_steps',
+      }
+  %>
+<% end %>
 <h1 class="usa-display">Add new user to <%= @team.name %></h1>
 
 <p class="usa-intro">Enter email address and select access levels for your team members.</p>
