@@ -38,7 +38,7 @@ class TeamsController < AuthenticatedController
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = "You have created #{@team.name}"
-      redirect_to team_path(@team.id)
+      redirect_to new_team_user_path(@team, wizard: true)
     else
       @agencies = Agency.order(:name)
       render :new
