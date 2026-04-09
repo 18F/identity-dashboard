@@ -288,7 +288,7 @@ class Teams::UsersController < AuthenticatedController
       @oauth_url = airtable_api.generate_oauth_url(base_url)
     end
   end
-  
+
   def wizard_steps
     TeamsController::WIZARD_STEPS
   end
