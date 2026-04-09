@@ -30,7 +30,7 @@ class Teams::UsersController < AuthenticatedController
     authorize current_team_membership
     @user = policy_scope(User).new
     @show_wizard = params[:wizard].present?
-    @steps = wizard_steps
+    @steps = TeamsController::WIZARD_STEPS
   end
 
   def edit
@@ -61,7 +61,7 @@ class Teams::UsersController < AuthenticatedController
 
     if @errors.any?
       @show_wizard = params[:wizard].present?
-      @steps = wizard_steps
+      @steps = TeamsController::WIZARD_STEPS
       render :new and return
     end
 
@@ -285,9 +285,5 @@ class Teams::UsersController < AuthenticatedController
       base_url = "#{request.protocol}#{request.host_with_port}"
       @oauth_url = airtable_api.generate_oauth_url(base_url)
     end
-  end
-
-  def wizard_steps
-    TeamsController::WIZARD_STEPS
   end
 end

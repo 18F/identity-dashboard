@@ -2,7 +2,7 @@
 class TeamsController < AuthenticatedController
   include ModelChanges
 
-  WIZARD_STEPS = [:new_team, :add_users, :team_details].freeze
+  WIZARD_STEPS = %i[new_team add_users team_details].freeze
 
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
@@ -28,7 +28,7 @@ class TeamsController < AuthenticatedController
     @team = Team.new
     @agencies = Agency.order(:name)
     @show_wizard = true
-    @steps = wizard_steps
+    @steps = WIZARD_STEPD
   end
 
   def edit
@@ -47,7 +47,7 @@ class TeamsController < AuthenticatedController
       redirect_to new_team_user_path(@team, wizard: true)
     else
       @show_wizard = true
-      @steps = wizard_steps
+      @steps = WIZARD_STEPS
       @agencies = Agency.order(:name)
       render :new
     end
@@ -131,9 +131,5 @@ class TeamsController < AuthenticatedController
 
   def update_return_path(path_suffix)
     session[:team_return] = path_suffix
-  end
-
-  def wizard_steps
-    WIZARD_STEPS
   end
 end
