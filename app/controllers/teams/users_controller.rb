@@ -85,8 +85,6 @@ class Teams::UsersController < AuthenticatedController
       end
     end.join(', ')
     flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
-    @show_wizard = params[:wizard].present?
-    @steps = wizard_steps
     redirect_to new_team_user_path
   end
 
