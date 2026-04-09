@@ -11,7 +11,7 @@ class AnalyticsController < ApplicationController # :nodoc:
       [sp.friendly_name, sp.id]
     end
     @dates = %w[Today Tomorrow Yesterday]
-    @graph_rows = []
+    # @graph_rows = []
     # two_column_options = { download: true, width: '30rem' }
     # @graph_rows.push([
     #                    { type: :line_chart, data: trends.active_users,
@@ -33,7 +33,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     # @graph_rows.push([type: :bar_chart, data: funnel.stacked_data, options: {
     #   stacked: true, colors: ['#45472f', '#e895b3']
     # }])
-    @report ||= Analytic.new
+    @report = Analytic.new
   end
 
   private

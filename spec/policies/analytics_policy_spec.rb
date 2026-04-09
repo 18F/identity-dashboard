@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe AnalyticsPolicy, type: :policy do
   let(:user) { User.new }
   let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
 
   permissions :index? do
     context 'on production envs' do
@@ -14,8 +15,9 @@ RSpec.describe AnalyticsPolicy, type: :policy do
         expect(AnalyticsPolicy).to_not permit(user)
       end
 
-      it 'allows login.gov admins' do
+      it 'allows login.gov staff' do
         expect(AnalyticsPolicy).to permit(logingov_admin)
+        expect(AnalyticsPolicy).to permit(logingov_readonly)
       end
     end
 
@@ -28,8 +30,9 @@ RSpec.describe AnalyticsPolicy, type: :policy do
         expect(AnalyticsPolicy).to_not permit(user)
       end
 
-      it 'denies login.gov admins' do
+      it 'denies login.gov staff' do
         expect(AnalyticsPolicy).to_not permit(logingov_admin)
+        expect(AnalyticsPolicy).to_not permit(logingov_readonly)
       end
     end
   end

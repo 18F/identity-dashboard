@@ -172,6 +172,17 @@ feature 'Nav links' do
         end
       end
     end
+
+    context 'when loging.gov readonly' do
+      before do
+        login_as(logingov_readonly)
+        visit root_path
+      end
+
+      scenario 'should see a Reports link' do
+        expect(page).to have_link('Reports')
+      end
+    end
   end
 
   context 'on sandbox environments' do
@@ -197,6 +208,17 @@ feature 'Nav links' do
         scenario 'should not show a Connect with Airtable link' do
           expect(page).to_not have_link('Connect with Airtable')
         end
+      end
+    end
+
+    context 'when logingov_readonly' do
+      before do
+        login_as(logingov_readonly)
+        visit root_path
+      end
+
+      scenario 'should not see a Reports link' do
+        expect(page).to_not have_link('Reports')
       end
     end
   end
