@@ -30,6 +30,7 @@ class Teams::UsersController < AuthenticatedController
     authorize current_team_membership
     @user = policy_scope(User).new
     @show_wizard = params[:wizard].present?
+    @steps = [:new_team, :add_users, :team_details]
   end
 
   def edit

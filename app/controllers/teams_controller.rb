@@ -32,7 +32,6 @@ class TeamsController < AuthenticatedController
   def edit
     get_return_path
     @agencies = Agency.order(:name)
-    @steps = wizard_steps
   end
 
   def create
@@ -40,6 +39,7 @@ class TeamsController < AuthenticatedController
     @team.uuid = SecureRandom.uuid
 
     log_change
+    @steps = wizard_steps
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = "You have created #{@team.name}"
@@ -131,7 +131,7 @@ class TeamsController < AuthenticatedController
     session[:team_return] = path_suffix
   end
 
-  def wizard_steps 
+  def wizard_steps
     [:new_team, :add_users, :team_details]
   end
 end
