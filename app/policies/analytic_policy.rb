@@ -1,6 +1,6 @@
 # Permission policy for Analytics dashboard
-class AnalyticsPolicy < BasePolicy
-  def show?
+class AnalyticPolicy < BasePolicy
+  def index?
     user_has_login_admin_role?
   end
 

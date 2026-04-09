@@ -48,7 +48,6 @@ SecureHeaders::Configuration.default do |config|
     # environments that use http://localhost:3001
     upgrade_insecure_requests: !Rails.env.development?,
   }
-  # Enable for A11y testing. This allows use of the ANDI tool.
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
