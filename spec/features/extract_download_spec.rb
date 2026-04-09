@@ -48,6 +48,17 @@ feature 'Extract Download' do
     expect(page).to_not have_link('Download configs')
   end
 
+  it 'will only download the logo once' do
+    expect(sp_to_export).to receive(:pending_or_current_logo_data).once
+    allow(ServiceProvider).to receive_message_chain(:joins, :where) { [sp_to_export] }
+    visit extracts_path
+    fill_in 'Ticket number', with: expected_ticket_number
+    fill_in 'extract[criteria_list]', with: sp_to_export.issuer
+    click_on 'Extract configs'
+    expect(body).to include('1 ServiceProvider found')
+    expect(body).to include(sp_to_export.issuer)
+  end
+
   context 'when downloading' do
     before do
       visit extracts_path
