@@ -21,7 +21,7 @@ class TeamsController < AuthenticatedController
       ),
     )
     @show_wizard = params[:wizard].present?
-    @steps = wizard_steps
+    @steps = WIZARD_STEPD
   end
 
   def new
