@@ -5,7 +5,7 @@
                  collection: @teams,
                  label: 'Team',
                  label_html: { class: 'usa-input-required' },
-                 selected: @teams.first,
+                 prompt: '- All Teams-',
                  required: true %>
   <%= form.input :friendly_name,
                  wrapper_html: { class: 'grid-col-4'},
@@ -13,7 +13,7 @@
                  collection: @friendly_names,
                  label: 'Service Provider',
                  label_html: { class: 'usa-input-required' },
-                 selected: @friendly_names.first,
+                 prompt: '- All SPs-',
                  required: true %>
   <%= form.input :date,
                  wrapper_html: { class: 'grid-col-4'},
@@ -21,6 +21,6 @@
                  collection: @dates,
                  label: 'Date of report',
                  label_html: { class: 'usa-input-required' },
-                 selected: @dates[0],
+                 prompt: '- All Reports-',
                  required: true %>
 </fieldset>
