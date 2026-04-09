@@ -1,7 +1,7 @@
 <% if @show_wizard %>
   <%= render partial: 'components/step_progress',
       locals: {
-        steps: [:new_team, :add_users, :team_details],
+        steps: @steps,
         current_step_index: 0,
         localization_base: 'teams.wizard_steps',
       }

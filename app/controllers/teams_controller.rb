@@ -19,17 +19,20 @@ class TeamsController < AuthenticatedController
       ),
     )
     @show_wizard = params[:wizard].present?
+    @steps = wizard_steps
   end
 
   def new
     @team = Team.new
     @agencies = Agency.order(:name)
     @show_wizard = true
+    @steps = wizard_steps
   end
 
   def edit
     get_return_path
     @agencies = Agency.order(:name)
+    @steps = wizard_steps
   end
 
   def create
@@ -126,5 +129,9 @@ class TeamsController < AuthenticatedController
 
   def update_return_path(path_suffix)
     session[:team_return] = path_suffix
+  end
+
+  def wizard_steps 
+    [:new_team, :add_users, :team_details]
   end
 end
