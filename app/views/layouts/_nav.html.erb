@@ -29,6 +29,12 @@
               <%= navigation_link_to 'Teams', teams_path %>
             </li>
             <% if current_user.logingov_admin? %>
+              <% if IdentityConfig.store.prod_like_env %>
+                <li class="usa-nav__primary-item">
+                  <%= navigation_link_to 'Reports',
+                    analytics_path %>
+                </li>
+              <% end %>
               <li class="usa-nav__primary-item">
                 <%= navigation_link_to 'Security Events', security_events_path %>
               </li>

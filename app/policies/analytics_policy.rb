@@ -1,7 +1,7 @@
 # Permission policy for Analytics dashboard
-class AnalyticPolicy < BasePolicy
+class AnalyticsPolicy < BasePolicy
   def index?
-    user_has_login_admin_role?
+    IdentityConfig.store.prod_like_env && user_has_login_admin_role?
   end
 
   class Scope < BasePolicy::Scope # :nodoc:

@@ -1,19 +1,16 @@
 class AnalyticsController < ApplicationController # :nodoc:
-  before_action -> { authorize User, policy_class: AnalyticPolicy }
+  before_action -> { authorize User, policy_class: AnalyticsPolicy }
   # /reports
   def index
     teams = current_user.teams
-    sps = teams.map do |team|
-      team.service_providers
-    end
+    sps = teams.map(&:service_providers)
     @teams = teams.map do |team|
       [team.name, team.id]
     end
     @friendly_names = sps.to_a.flatten.map do |sp|
       [sp.friendly_name, sp.id]
     end
-    @dates = ['Today', 'Tomorrow', 'Yesterday']
-    @report = nil
+    @dates = %w[Today Tomorrow Yesterday]
     @graph_rows = []
     # two_column_options = { download: true, width: '30rem' }
     # @graph_rows.push([

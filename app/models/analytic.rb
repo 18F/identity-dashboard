@@ -1,21 +1,20 @@
+# The Analtyic tool is used for compiling SP Report data
 class Analytic
   include ActiveModel::Model
 
   def init
-    {
-      'hello' => 'world'
-    }
+    nil
   end
 
   def team
-    return
+    nil
   end
 
   def friendly_name
-    return
+    nil
   end
 
   def date
-    return
+    nil
   end
 end
