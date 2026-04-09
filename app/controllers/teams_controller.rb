@@ -2,6 +2,8 @@
 class TeamsController < AuthenticatedController
   include ModelChanges
 
+  WIZARD_STEPS = [:new_team, :add_users, :team_details].freeze
+
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
 
@@ -39,13 +41,13 @@ class TeamsController < AuthenticatedController
     @team.uuid = SecureRandom.uuid
 
     log_change
-    @steps = wizard_steps
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = "You have created #{@team.name}"
       redirect_to new_team_user_path(@team, wizard: true)
     else
       @show_wizard = true
+      @steps = wizard_steps
       @agencies = Agency.order(:name)
       render :new
     end
@@ -132,6 +134,6 @@ class TeamsController < AuthenticatedController
   end
 
   def wizard_steps
-    [:new_team, :add_users, :team_details]
+    WIZARD_STEPS
   end
 end
