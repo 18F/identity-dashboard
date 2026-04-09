@@ -95,6 +95,19 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_css('.step-indicator__step--current', text: 'New team')
     end
 
+    scenario 'shows on team details page with wizard param' do
+      team = create(:team)
+
+      login_as(logingov_admin)
+      visit team_path(team, wizard: true)
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--complete', text: 'New team')
+      expect(page).to have_css('.step-indicator__step--complete', text: 'Add users')
+      expect(page).to have_css('.step-indicator__step--current', text: 'Team details')
+      expect(page).to have_content('Step 3 of 3')
+    end
+
     scenario 'does not show on team show page without wizard param' do
       team = create(:team)
 
