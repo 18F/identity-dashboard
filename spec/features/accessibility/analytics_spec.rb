@@ -8,6 +8,7 @@ feature 'Analytics page', :js do
 
     # Currently analytics are only availble to Login.gov Admins
     before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       login_as(logingov_admin)
     end
 
