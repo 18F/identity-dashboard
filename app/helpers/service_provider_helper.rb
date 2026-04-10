@@ -84,10 +84,6 @@ module ServiceProviderHelper # :nodoc:
     end.sort.join(', ')
   end
 
-  def show_analytics_column?
-    current_user.logingov_admin?
-  end
-
   private
 
   def config_hash(service_provider)

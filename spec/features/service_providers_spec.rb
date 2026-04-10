@@ -650,17 +650,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
     end
 
-    scenario 'can see and visit link to analytics path' do
-      team = user_to_log_in_as.teams.first
-      sp = create(:service_provider, team:)
-      visit service_providers_path
-      data_link = "#{sp.friendly_name} data"
-      expect(page).to have_content(data_link)
-      click_on data_link
-      expect(page).to have_content('Analytics Dashboard')
-      expect(page).to have_content(sp.issuer)
-    end
-
     scenario 'can enable prompt=login for a service provider' do
       sp = create(:service_provider, :with_team)
 

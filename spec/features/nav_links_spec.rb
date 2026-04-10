@@ -158,6 +158,10 @@ feature 'Nav links' do
         visit root_path
       end
 
+      scenario 'should see a Reports link' do
+        expect(page).to have_link('Reports')
+      end
+
       describe('the Admin menu') do
         scenario 'should show a Connect with Airtable link' do
           expect(page).to have_link('Connect with Airtable')
@@ -166,6 +170,17 @@ feature 'Nav links' do
         scenario 'should not show a Configuration extraction link' do
           expect(page).to_not have_link('Configuration extraction')
         end
+      end
+    end
+
+    context 'when loging.gov readonly' do
+      before do
+        login_as(logingov_readonly)
+        visit root_path
+      end
+
+      scenario 'should see a Reports link' do
+        expect(page).to have_link('Reports')
       end
     end
   end
@@ -181,6 +196,10 @@ feature 'Nav links' do
         visit root_path
       end
 
+      scenario 'should not see a Reports link' do
+        expect(page).to_not have_link('Reports')
+      end
+
       describe('the Admin menu') do
         scenario 'should show a Configuration extraction link' do
           expect(page).to have_link('Configuration extraction')
@@ -189,6 +208,17 @@ feature 'Nav links' do
         scenario 'should not show a Connect with Airtable link' do
           expect(page).to_not have_link('Connect with Airtable')
         end
+      end
+    end
+
+    context 'when logingov_readonly' do
+      before do
+        login_as(logingov_readonly)
+        visit root_path
+      end
+
+      scenario 'should not see a Reports link' do
+        expect(page).to_not have_link('Reports')
       end
     end
   end
@@ -206,6 +236,10 @@ feature 'Nav links' do
 
     scenario 'should see a teams page link' do
       expect(page).to have_link('Teams')
+    end
+
+    scenario 'should not see a Reports link' do
+      expect(page).to_not have_link('Reports')
     end
 
     scenario 'should not see a security events page link' do
