@@ -17,7 +17,7 @@ feature 'TeamMembership CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create team'
-    expect(page).to have_current_path(team_path(Team.last))
+    expect(page).to have_current_path(new_team_user_path(Team.last, wizard: true))
     expect(page).to have_content('You have created team name')
   end
 
@@ -44,7 +44,7 @@ feature 'TeamMembership CRUD' do
     select('GSA', from: 'Agency')
 
     click_on 'Create team'
-    expect(page).to have_current_path(team_path(Team.last))
+    expect(page).to have_current_path(new_team_user_path(Team.last, wizard: true))
     expect(page).to have_content('You have created team name')
   end
 
@@ -55,6 +55,67 @@ feature 'TeamMembership CRUD' do
     visit new_team_path
 
     expect(page).to have_content('Unauthorized')
+  end
+
+  describe 'step indicator' do
+    scenario 'shows on new team page' do
+      create(:agency, name: 'GSA')
+
+      login_as(logingov_admin)
+      visit new_team_path
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--current', text: 'New team')
+      expect(page).to have_content('Step 1 of 3')
+    end
+
+    scenario 'shows on add users page after creating a team' do
+      create(:agency, name: 'GSA')
+
+      login_as(logingov_admin)
+      visit new_team_path
+
+      fill_in 'Name', with: 'wizard test team'
+      select('GSA', from: 'Agency')
+      click_on 'Create team'
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--complete', text: 'New team')
+      expect(page).to have_css('.step-indicator__step--current', text: 'Add users')
+      expect(page).to have_content('Step 2 of 3')
+    end
+
+    scenario 'persists on new team page when validation fails' do
+      login_as(logingov_admin)
+      visit new_team_path
+
+      click_on 'Create team'
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--current', text: 'New team')
+    end
+
+    scenario 'shows on team details page with wizard param' do
+      team = create(:team)
+
+      login_as(logingov_admin)
+      visit team_path(team, wizard: true)
+
+      expect(page).to have_css('.lg-step-indicator')
+      expect(page).to have_css('.step-indicator__step--complete', text: 'New team')
+      expect(page).to have_css('.step-indicator__step--complete', text: 'Add users')
+      expect(page).to have_css('.step-indicator__step--current', text: 'Team details')
+      expect(page).to have_content('Step 3 of 3')
+    end
+
+    scenario 'does not show on team show page without wizard param' do
+      team = create(:team)
+
+      login_as(logingov_admin)
+      visit team_path(team)
+
+      expect(page).to_not have_css('.lg-step-indicator')
+    end
   end
 
   scenario 'Cancel Create' do

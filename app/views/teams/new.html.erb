@@ -1,3 +1,12 @@
+<% if @show_wizard %>
+  <%= render partial: 'components/step_progress',
+      locals: {
+        steps: @steps,
+        current_step_index: 0,
+        localization_base: 'teams.wizard_steps',
+      }
+  %>
+<% end %>
 <%= page_heading 'New team' %>
 <p class="usa-intro">Create a new team and start creating configurations.</p>
 <div class="border-top border-primary-light margin-top-2"></div>

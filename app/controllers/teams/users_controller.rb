@@ -29,6 +29,8 @@ class Teams::UsersController < AuthenticatedController
 
     authorize current_team_membership
     @user = policy_scope(User).new
+    @show_wizard = params[:wizard].present?
+    @steps = TeamsController::WIZARD_STEPS
   end
 
   def edit
@@ -57,11 +59,19 @@ class Teams::UsersController < AuthenticatedController
       end
     end
 
-    render :new and return if @errors.any?
+    if @errors.any?
+      @show_wizard = params[:wizard].present?
+      @steps = TeamsController::WIZARD_STEPS
+      render :new and return
+    end
 
     emails = created_memberships.map { |m| m.user.email }.join(', ')
     flash[:success] = I18n.t('teams.users.create.success', email: emails)
-    redirect_to team_users_path(team)
+    if params[:wizard].present?
+      redirect_to team_path(team, wizard: true)
+    else
+      redirect_to team_users_path(team)
+    end
   rescue ActiveRecord::RecordInvalid => err
     email_taken_error = [:user_id, :taken]
     error_messages = err.record.errors.map do |record_error|
