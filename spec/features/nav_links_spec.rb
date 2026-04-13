@@ -179,8 +179,8 @@ feature 'Nav links' do
         visit root_path
       end
 
-      scenario 'should see a Reports link' do
-        expect(page).to have_link('Reports')
+      scenario 'should not see a Reports link' do
+        expect(page).to_not have_link('Reports')
       end
     end
   end

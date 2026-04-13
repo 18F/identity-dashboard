@@ -15,9 +15,12 @@ RSpec.describe AnalyticsPolicy, type: :policy do
         expect(AnalyticsPolicy).to_not permit(user)
       end
 
-      it 'allows login.gov staff' do
+      it 'allows login.gov admin' do
         expect(AnalyticsPolicy).to permit(logingov_admin)
-        expect(AnalyticsPolicy).to permit(logingov_readonly)
+      end
+
+      it 'denies login.gov readonly' do
+        expect(AnalyticsPolicy).to_not permit(logingov_readonly)
       end
     end
 
