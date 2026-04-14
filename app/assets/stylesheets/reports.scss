@@ -1,0 +1,35 @@
+@use 'uswds-core' as *;
+
+.data-summary--container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: {
+    left: -0.5rem;
+    right: -0.5rem;
+  }
+}
+
+.data-summary {
+  flex: 1 0 auto;
+  margin: 1rem 0.5rem;
+  padding: 0 1rem;
+  outline: 1px solid $theme-color-primary-light;
+  border-radius: 4px;
+
+  &__title {
+    @include u-font('mono', 'xs');
+    @include u-text('uppercase');
+  }
+
+  &__number {
+    @include u-font('sans', 'xl');
+    @include u-text(700);
+    margin: 0;
+  }
+
+  &__description {
+    margin: 0.5rem 0 1rem;
+  }
+}
