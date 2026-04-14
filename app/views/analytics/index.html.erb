@@ -1,6 +1,6 @@
 <% content_for(:title, 'Analytics dashboard') %>
 <h1 class="margin-top-0">Reports</h1>
-<p class="usa-prose font-body-lg">Track usage, fraud signals, and more &mdash; Updated weekly</p>
+<p class="usa-intro font-body-lg line-height-sans-4">Track usage, fraud signals, and more &mdash; Updated weekly</p>
 <section id="filter">
   <%= simple_form_for(@report, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
     <%= form.error_notification %>
@@ -8,9 +8,9 @@
   <% end %>
 </section>
 <section id="service-activity">
-  <div class="display-flex flex-row flex-justify border-bottom border-primary-light">
+  <div class="report-section__title">
     <h2 class="margin-y-2">Service activity</h2>
-    <button class="usa-button flex-align-self-center"><%= image_tag(asset_path('download.svg'), size: "16", "aria-hidden" => "true") %>Download CSV</button>
+    <button class="usa-button flex-align-self-center "><%= image_tag(asset_path('download.svg'), size: "16", "aria-hidden" => "true") %>Download CSV</button>
   </div>
   <div class="data-summary--container">
     <div class="data-summary">

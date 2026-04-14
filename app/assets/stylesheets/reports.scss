@@ -1,18 +1,28 @@
 @use 'uswds-core' as *;
 
+.report-section__title {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-bottom: 1px solid $theme-color-primary-light;
+
+  & > button {
+    flex: 0 1 auto;
+  }
+}
+
 .data-summary--container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: {
-    left: -0.5rem;
-    right: -0.5rem;
-  }
+  margin: inherit -0.5rem;
 }
 
 .data-summary {
   flex: 1 0 auto;
+  max-width: calc(100% - 1rem);
   margin: 1rem 0.5rem;
   padding: 0 1rem;
   outline: 1px solid $theme-color-primary-light;

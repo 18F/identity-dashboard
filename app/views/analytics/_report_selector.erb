@@ -1,6 +1,6 @@
 <fieldset class="usa-fieldset usa_collection_select grid-row grid-gap-2">
   <%= form.input :team,
-                 wrapper_html: { class: 'grid-col-4'},
+                 wrapper_html: { class: 'tablet:grid-col-4'},
                  input_html: { class: 'usa-select', aria: { invalid: false } },
                  collection: @teams,
                  label: 'Team',
@@ -8,7 +8,7 @@
                  prompt: '- All Teams-',
                  required: true %>
   <%= form.input :friendly_name,
-                 wrapper_html: { class: 'grid-col-4'},
+                 wrapper_html: { class: 'tablet:grid-col-4'},
                  input_html: { class: 'usa-select', aria: { invalid: false } },
                  collection: @friendly_names,
                  label: 'Service Provider',
@@ -16,7 +16,7 @@
                  prompt: '- All SPs-',
                  required: true %>
   <%= form.input :date,
-                 wrapper_html: { class: 'grid-col-4'},
+                 wrapper_html: { class: 'tablet:grid-col-4'},
                  input_html: { class: 'usa-select', aria: { invalid: false } },
                  collection: @dates,
                  label: 'Date of report',
