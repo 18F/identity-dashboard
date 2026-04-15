@@ -14,8 +14,9 @@ feature 'Analytics page', :js do
 
     it 'is accessible' do
       visit analytics_path
+      expect(page).to have_button('Download CSV')
+
       # Assert charts have rendered
-      expect(page.body).to include('Reports')
 
       expect_page_to_have_no_accessibility_violations(page)
     end
