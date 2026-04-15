@@ -1,5 +1,5 @@
 <fieldset class="usa-fieldset">
-  <%= form_with url: team_users_path(@team), method: :post, local: true, html: { autocomplete: 'off' } do %>
+  <%= form_with url: team_users_path(@team, wizard: @show_wizard.presence), method: :post, local: true, html: { autocomplete: 'off' } do %>
     <div id="user-rows">
       <div class="user-row grid-row grid-gap margin-bottom-2" data-row-index="0">
         <div class="grid-col-5">

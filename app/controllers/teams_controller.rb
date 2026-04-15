@@ -2,6 +2,8 @@
 class TeamsController < AuthenticatedController
   include ModelChanges
 
+  WIZARD_STEPS = %i[new_team add_users team_details].freeze
+
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
 
@@ -18,11 +20,15 @@ class TeamsController < AuthenticatedController
         scope: policy_scope(PaperTrail::Version),
       ),
     )
+    @show_wizard = params[:wizard].present?
+    @steps = WIZARD_STEPS
   end
 
   def new
     @team = Team.new
     @agencies = Agency.order(:name)
+    @show_wizard = true
+    @steps = WIZARD_STEPS
   end
 
   def edit
@@ -38,8 +44,10 @@ class TeamsController < AuthenticatedController
     if @team.save
       current_user.grant_team_membership(@team, 'partner_admin')
       flash[:success] = "You have created #{@team.name}"
-      redirect_to team_path(@team.id)
+      redirect_to new_team_user_path(@team, wizard: true)
     else
+      @show_wizard = true
+      @steps = WIZARD_STEPS
       @agencies = Agency.order(:name)
       render :new
     end
