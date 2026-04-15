@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AnalyticsPolicy, type: :policy do
+RSpec.describe AnalyticPolicy, type: :policy do
   let(:user) { User.new }
   let(:logingov_admin) { create(:logingov_admin) }
   let(:logingov_readonly) { create(:logingov_readonly) }
@@ -12,15 +12,15 @@ RSpec.describe AnalyticsPolicy, type: :policy do
       end
 
       it 'denies users by default' do
-        expect(AnalyticsPolicy).to_not permit(user)
+        expect(described_class).to_not permit(user)
       end
 
       it 'allows login.gov admin' do
-        expect(AnalyticsPolicy).to permit(logingov_admin)
+        expect(described_class).to permit(logingov_admin)
       end
 
       it 'denies login.gov readonly' do
-        expect(AnalyticsPolicy).to_not permit(logingov_readonly)
+        expect(described_class).to_not permit(logingov_readonly)
       end
     end
 
@@ -30,12 +30,12 @@ RSpec.describe AnalyticsPolicy, type: :policy do
       end
 
       it 'denies users by default' do
-        expect(AnalyticsPolicy).to_not permit(user)
+        expect(described_class).to_not permit(user)
       end
 
       it 'denies login.gov staff' do
-        expect(AnalyticsPolicy).to_not permit(logingov_admin)
-        expect(AnalyticsPolicy).to_not permit(logingov_readonly)
+        expect(described_class).to_not permit(logingov_admin)
+        expect(described_class).to_not permit(logingov_readonly)
       end
     end
   end

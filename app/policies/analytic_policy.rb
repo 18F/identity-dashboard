@@ -1,6 +1,8 @@
 # Permission policy for Analytics dashboard
-class AnalyticsPolicy < BasePolicy
+class AnalyticPolicy < BasePolicy
   def index?
+    return false unless user
+
     IdentityConfig.store.prod_like_env && user_has_login_admin_role?
   end
 
