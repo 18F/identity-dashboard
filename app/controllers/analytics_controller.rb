@@ -15,19 +15,7 @@ class AnalyticsController < ApplicationController # :nodoc:
       [sp.friendly_name, sp.id]
     end
     @dates = available_report_dates
-
-    @graphs = [
-      {
-        type: :bar_chart,
-        data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
-      },
-      {
-        type: :bar_chart,
-        data: identity_report.data_other,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Other Interactions'),
-      },
-    ]
+    @graphs = default_graphs
   end
 
   private
@@ -62,5 +50,20 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def id
     @id ||= params[:id]
+  end
+
+  def default_graphs
+    [
+      {
+        type: :bar_chart,
+        data: identity_report.fraud_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
+      },
+      {
+        type: :bar_chart,
+        data: identity_report.data_other,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Other Interactions'),
+      },
+    ]
   end
 end
