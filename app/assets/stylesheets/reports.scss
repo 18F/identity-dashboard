@@ -7,8 +7,12 @@
   justify-content: space-between;
   border-bottom: 1px solid $theme-color-primary-light;
 
+  & > h2 {
+    margin-right: 2rem;
+  }
+
   & > button {
-    flex: 0 1 auto;
+    max-width: max-content;
   }
 }
 
@@ -17,13 +21,16 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: inherit -0.5rem;
+  margin: {
+    right: -0.5rem;
+    left: -0.5rem;
+  };
 }
 
 .data-summary {
   flex: 1 0 auto;
   max-width: calc(100% - 1rem);
-  margin: 1rem 0.5rem;
+  margin: 1rem 0.5rem 0;
   padding: 0 1rem;
   outline: 1px solid $theme-color-primary-light;
   border-radius: 4px;
@@ -41,5 +48,23 @@
 
   &__description {
     margin: 0.5rem 0 1rem;
+  }
+}
+
+.data-graph--container {
+  display: grid; // this allows use of <p> margin
+  margin: 1rem 0;
+  padding: 0 1rem;
+  outline: 1px solid $theme-color-primary-light;
+  border-radius: 4px;
+}
+
+.data-graph {
+  &__title {
+    @include u-text('uppercase');
+  }
+
+  &__headline {
+    @include u-text(700);
   }
 }
