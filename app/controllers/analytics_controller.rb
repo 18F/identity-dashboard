@@ -5,7 +5,8 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   before_action -> { authorize analytic }
   after_action :verify_authorized
-  after_action :verify_policy_scoped,
+  after_action :verify_policy_scoped
+
   # /reports
   def index
     @teams_collection = teams.map do |team|
