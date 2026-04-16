@@ -1,0 +1,71 @@
+@use 'uswds-core' as *;
+
+.report-section__title {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $theme-color-primary-light;
+
+  & > h2 {
+    margin-right: 2rem;
+  }
+
+  & > button {
+    max-width: max-content;
+  }
+}
+
+.data-summary--container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: {
+    right: -0.5rem;
+    left: -0.5rem;
+  };
+}
+
+.data-summary {
+  flex: 1 0 auto;
+  max-width: calc(100% - 1rem);
+  margin: 1rem 0.5rem 0;
+  padding: 0 1rem;
+  outline: 1px solid $theme-color-primary-light;
+  border-radius: 4px;
+
+  &__title {
+    @include u-font('mono', 'xs');
+    @include u-text('uppercase');
+  }
+
+  &__number {
+    @include u-font('sans', 'xl');
+    @include u-text(700);
+    margin: 0;
+  }
+
+  &__description {
+    margin: 0.5rem 0 1rem;
+  }
+}
+
+.data-graph--container {
+  display: grid; // this allows use of <p> margin
+  margin: 1rem 0 0;
+  padding: 0 1rem;
+  outline: 1px solid $theme-color-primary-light;
+  border-radius: 4px;
+}
+
+.data-graph {
+  &__title {
+    @include u-text('uppercase');
+  }
+
+  &__headline {
+    @include u-text(700);
+  }
+}

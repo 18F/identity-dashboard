@@ -1,11 +1,31 @@
 <% content_for(:title, 'Analytics dashboard') %>
-<h1>Reports</h1>
-<p class="usa-prose font-body-lg">Track usage, fraud signals, and more &mdash; Updated weekly</p>
-<hr>
-<%= simple_form_for(@report, html: { class: '' }) do |form| %>
-  <%= form.error_notification %>
-  <%= render 'report_selector', form: form %>
-  <%= form.button :submit, 'Filter', :class => "usa-button margin-top-3" %>
-<% end %>
-<h2>Service activity</h2>
-<hr>
+<h1 class="margin-top-0">Reports</h1>
+<p class="usa-intro font-body-lg line-height-sans-4">Track usage, fraud signals, and more &mdash; Updated weekly</p>
+<section id="filter">
+  <%= simple_form_for(@report, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
+    <%= form.error_notification %>
+    <%= render 'report_selector', form: form %>
+  <% end %>
+</section>
+<section id="service-activity">
+  <div class="report-section__title">
+    <h2 class="margin-y-1">Service activity</h2>
+    <button class="usa-button flex-align-self-center "><%= image_tag(asset_path('download.svg'), size: "16", "aria-hidden" => "true") %>Download CSV</button>
+  </div>
+  <div class="data-summary--container">
+    <div class="data-summary">
+      <p class="data-summary__title">Users that accessed your services through Login.gov</p>
+      <p class="data-summary__number">247,391</p>
+      <p class="data-summary__description">Unique users accessing source • Current month</p>
+    </div>
+    <div class="data-summary">
+      <p class="data-summary__title">Suspected fraud</p>
+      <p class="data-summary__number">18,204</p>
+      <p class="data-summary__description">IdV and Authentication users combined • Current month</p>
+    </div>
+  </div>
+  <div class="data-graph--container">
+    <p class="data-graph__title"><span class="data-graph__headline">Active users</span> • 3-month</p>
+    <div class="data-graph" id="active-users"></div>
+  </div>
+</section>

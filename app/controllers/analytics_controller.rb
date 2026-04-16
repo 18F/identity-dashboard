@@ -1,5 +1,5 @@
 class AnalyticsController < ApplicationController # :nodoc:
-  before_action -> { authorize User, policy_class: AnalyticsPolicy }
+  before_action -> { authorize User, policy_class: AnalyticPolicy }
   # /reports
   def index
     teams = current_user.teams

@@ -55,9 +55,10 @@ describe AnalyticsController do
       end
 
       context '#index' do
-        it 'has GET access' do
+        it 'does not have GET access' do
           get :index
-          expect(response).to be_ok
+          expect(response).to be_unauthorized
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
         end
       end
     end
