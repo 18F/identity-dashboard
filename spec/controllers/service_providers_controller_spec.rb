@@ -865,6 +865,33 @@ describe ServiceProvidersController do
         expect(assigns(:service_provider)).to eq(sp_with_uuid)
       end
     end
+
+    describe 'when an invalid id is presented' do
+      let(:invalid_id) { 'droptable' }
+
+      context 'by a logingov_admin' do
+        before do
+          sign_in(logingov_admin)
+        end
+
+        it 'returns a 404' do
+          get :show, params: { id: invalid_id }
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      context 'by a partner' do
+        before do
+          sign_in(user)
+        end
+
+        it 'returns a 401' do
+          get :show, params: { id: invalid_id }
+          expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
+        end
+      end
+    end
   end
 
   describe '#edit' do

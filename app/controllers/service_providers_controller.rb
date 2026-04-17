@@ -14,6 +14,10 @@ class ServiceProvidersController < AuthenticatedController
 
   helper_method :service_provider, :help_text_presenter, :moved_to_prod?, :edit_button_to_show
 
+  rescue_from ActiveRecord::RecordNotFound do
+    render file: 'public/404.html', status: :not_found, layout: false
+  end
+
   def index
     skip_policy_scope # The #scoped_service_providers scope is good enough for now
     all_apps = current_user.scoped_service_providers
@@ -153,13 +157,14 @@ class ServiceProvidersController < AuthenticatedController
   private
 
   def service_provider
-    # TODO: improve the 404 page and let this be a `find` that raises a `NotFound` error,
-    # removing the `not_authorized` error
     # rubocop:disable Rails/DynamicFindBy
     @service_provider ||= policy_scope(ServiceProvider).find_by_id_or_uuid(params[:id])
     # rubocop:enable Rails/DynamicFindBy
+    return @service_provider if @service_provider
 
-    @service_provider || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
+    raise(ActiveRecord::RecordNotFound) if current_user.logingov_staff?
+
+    raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
   def moved_to_prod?

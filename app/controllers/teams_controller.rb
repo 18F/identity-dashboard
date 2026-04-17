@@ -7,6 +7,10 @@ class TeamsController < AuthenticatedController
   before_action -> { authorize Team }, only: %i[index create new all]
   before_action -> { authorize team }, only: %i[edit update destroy show]
 
+  rescue_from ActiveRecord::RecordNotFound do
+    render file: 'public/404.html', status: :not_found, layout: false
+  end
+
   def index
     includes = %i[users service_providers agency]
     @teams = current_user.teams.includes(*includes).all
@@ -89,7 +93,11 @@ class TeamsController < AuthenticatedController
   def team
     @team ||= Team.find_by_id_or_uuid(params[:id]) # rubocop:disable Rails/DynamicFindBy
 
-    @team || raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
+    return @team if @team
+
+    raise(ActiveRecord::RecordNotFound) if current_user.logingov_staff?
+
+    raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
   def team_params
