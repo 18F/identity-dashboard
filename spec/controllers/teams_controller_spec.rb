@@ -110,8 +110,7 @@ describe TeamsController do
         it 'shows and "unauthorized" error' do
           get :show, params: { id: 'droptable' }
 
-          expect(response).to have_http_status(:unauthorized)
-          expect(logger_double).to have_received(:unauthorized_access_attempt)
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
@@ -119,6 +118,15 @@ describe TeamsController do
     context 'when a team member not login.gov admin' do
       before do
         team.users << user
+      end
+
+      context 'when team id is invalid' do
+        it 'shows and "unauthorized" error' do
+          get :show, params: { id: 'droptable' }
+
+          expect(response).to have_http_status(:unauthorized)
+          expect(logger_double).to have_received(:unauthorized_access_attempt)
+        end
       end
 
       it 'shows the team template' do
