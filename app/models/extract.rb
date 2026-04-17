@@ -32,7 +32,7 @@ class Extract
 
   # @return [Array<String>]
   def failures
-    criteria.reject do |criterion|
+    @failures ||= criteria.reject do |criterion|
       service_providers.find do |config|
         force_validation(config)
         config.issuer == criterion && config.errors.none?

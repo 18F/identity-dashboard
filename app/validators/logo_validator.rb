@@ -17,12 +17,13 @@ class LogoValidator < ActiveModel::Validator
 
   def validate(record)
     @record = record
-    return unless record.pending_or_current_logo_data
+    logo_data = record.pending_or_current_logo_data
+    return unless logo_data
 
     logo_is_less_than_max_size
     logo_file_mime_type
     logo_file_ext_matches_type
-    validate_logo_svg
+    validate_logo_svg(logo_data)
   end
 
   def logo_is_less_than_max_size
@@ -63,10 +64,10 @@ class LogoValidator < ActiveModel::Validator
     )
   end
 
-  def validate_logo_svg
+  def validate_logo_svg(logo_data)
     return unless mime_type_svg?
 
-    svg = ValidatingSvg.new(record.pending_or_current_logo_data)
+    svg = ValidatingSvg.new(logo_data)
 
     unless svg.has_viewbox?
       record.errors.add(
