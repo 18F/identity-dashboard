@@ -40,7 +40,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def identity_report
-    Reports::Identity.new(analytic)
+    @identity_report ||= Reports::Identity.new(analytic)
   end
 
   def analytic

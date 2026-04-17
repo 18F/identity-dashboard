@@ -44,7 +44,19 @@ module Reports
       @issuer = analytic.config&.issuer
       @chosen_date = DateTime.parse(analytic.date) if analytic.date.present?
       @chosen_date ||= DateTime.now
-      @raw_data = AnalyticsReportStorage.fetch(issuer, chosen_date_as_string)
+      @storage = AnalyticsReportStorage.new(issuer, chosen_date_as_string)
+      @raw_data = @storage.fetch
+    end
+
+    def time_intervals
+      1
+    end
+
+    def time_interval_size
+      return 'month' if @storage.time_interval == 'monthly'
+      return 'week' if @storage.time_interval == 'weekly'
+
+      raise ArgumentError
     end
 
     def data

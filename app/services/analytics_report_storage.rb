@@ -2,7 +2,7 @@
 class AnalyticsReportStorage
   ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
 
-  attr_reader :backend
+  attr_reader :backend, :issuer, :date
 
   delegate :list, to: :backend
 
@@ -11,10 +11,11 @@ class AnalyticsReportStorage
   end
 
   def self.fetch(issuer, date)
-    new.fetch(issuer, date)
+    new(issuer, date).fetch
   end
 
-  def initialize
+  def initialize(issuer = nil, date = nil)
+    (@issuer, @date) = issuer, date
     @backend = if use_s3?
                  AnalyticsReportStorage::S3.new(s3_config)
                else
@@ -22,8 +23,12 @@ class AnalyticsReportStorage
                end
   end
 
-  def fetch(issuer, date)
+  def fetch
     JSON.parse(backend.fetch(build_key(issuer, date)))
+  end
+
+  def time_interval
+    build_key(issuer, date).split('/')[1]
   end
 
   private
