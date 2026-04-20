@@ -1,3 +1,5 @@
+OmniAuth.config.failure_raise_out_environments = []
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :login_dot_gov,
            client_id: Rails.configuration.oidc['client_id'],

@@ -107,6 +107,31 @@ describe Users::OmniauthController do
     end
   end
 
+  describe '#failure' do
+    context 'when the user cancelled at the IdP' do
+      it 'redirects back to the portal' do
+        get :failure, params: {
+          message: 'callback_access_denied',
+          origin: 'http://test.host/system-use?',
+          strategy: 'logindotgov',
+        }
+
+        expect(response).to redirect_to('http://test.host/system-use?')
+      end
+    end
+
+    context 'when the origin is an invalid URI' do
+      it 'redirects to root' do
+        get :failure, params: {
+          origin: 'http://[invalid',
+          strategy: 'logindotgov',
+        }
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
   describe '#callback (allowed tld)' do
     let(:uuid) { '123-asdf-qwerty' }
     let(:email) { 'test@gsa.gov' }

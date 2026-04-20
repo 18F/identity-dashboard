@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     get '/users/logout' => 'users/sessions#destroy', as: :destroy_user_session
   end
   get '/auth/logindotgov/callback' => 'users/omniauth#callback'
+  get '/auth/failure' => 'users/omniauth#failure'
   get 'users/none' => 'users#none'
   delete '/delete_unconfirmed_users' => 'unconfirmed_users#destroy'
   get '/env' => 'env#index'
