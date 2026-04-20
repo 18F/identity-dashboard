@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe AnalyticsReportStorage::Disk do
   describe '#list' do
     it 'returns an empty array if the folder is missing' do
-      missing_path = "garbage_folder_name #{rand(100.1000)}"
+      missing_path = "garbage_folder_name #{rand(100..1000)}"
       expect(Dir.exist?(missing_path)).to be(false)
       subject = described_class.new({
-        root: "garbage_folder_name #{rand(100.1000)}",
+        root: "garbage_folder_name #{rand(100..1000)}",
       })
       expect(subject.list).to eq([])
     end
