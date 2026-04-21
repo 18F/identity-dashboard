@@ -1,52 +1,70 @@
 class AnalyticsController < ApplicationController # :nodoc:
-  before_action -> { authorize User, policy_class: AnalyticPolicy }
+  AVAILABLE_REPORTS = [Reports::Identity].freeze
+  DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
+  TEMP_HARDCODED_ISSUER_FOR_MVP = 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb'.freeze
+
+  before_action -> { authorize analytic }
+  after_action :verify_authorized
+  after_action :verify_policy_scoped
+
   # /reports
   def index
-    teams = current_user.teams
-    sps = teams.map(&:service_providers)
-    @teams = teams.map do |team|
+    @teams_collection = teams.map do |team|
       [team.name, team.id]
     end
     @friendly_names = sps.to_a.flatten.map do |sp|
       [sp.friendly_name, sp.id]
     end
-    @dates = %w[Today Tomorrow Yesterday]
-    # @graph_rows = []
-    # two_column_options = { download: true, width: '30rem' }
-    # @graph_rows.push([
-    #                    { type: :line_chart, data: trends.active_users,
-    #                      options: two_column_options },
-    #                    { type: :line_chart, data: trends.active_applications,
-    #                      options: two_column_options },
-    #                  ])
-    # @graph_rows.push([
-    #                    { type: :line_chart, data: trends.active_applications,
-    #                      options: two_column_options },
-    #                    { type: :line_chart, data: trends.active_users,
-    #                      options: two_column_options },
-    #                  ])
-    # @graph_rows.push([
-    #                    { type: :area_chart, data: funnel.data, options: two_column_options },
-    #                    { type: :bar_chart, data: funnel.dramatic_data,
-    #                      options: two_column_options },
-    #                  ])
-    # @graph_rows.push([type: :bar_chart, data: funnel.stacked_data, options: {
-    #   stacked: true, colors: ['#45472f', '#e895b3']
-    # }])
-    @report = Analytic.new
+    @dates = available_report_dates
+    @graphs = default_graphs
   end
 
   private
 
-  def trends
-    @trends ||= Reports::Trends.new(service_provider)
+  def teams
+    @teams ||= current_user.teams
   end
 
-  def funnel
-    @funnel ||= Reports::AuthenticationFunnel.new(service_provider)
+  def temporary_hardcoded_scope_for_testing_mvp(scope)
+    scope.where(issuer: TEMP_HARDCODED_ISSUER_FOR_MVP)
+  end
+
+  def sps
+    @sps ||= policy_scope(
+      temporary_hardcoded_scope_for_testing_mvp(ServiceProvider),
+    ).where(team: teams)
+  end
+
+  def available_report_dates
+    Reports::Identity.available_dates(sps)
+  end
+
+  def identity_report
+    @identity_report ||= Reports::Identity.new(analytic)
+  end
+
+  def analytic
+    return Analytic.new unless current_user
+
+    @analytic ||= Analytic.new(config: sps.first, date: available_report_dates.last)
   end
 
   def id
     @id ||= params[:id]
+  end
+
+  def default_graphs
+    [
+      {
+        type: :bar_chart,
+        data: identity_report.fraud_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
+      },
+      {
+        type: :bar_chart,
+        data: identity_report.data_other,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Other Interactions'),
+      },
+    ]
   end
 end

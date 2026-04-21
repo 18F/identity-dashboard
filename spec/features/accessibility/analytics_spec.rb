@@ -4,7 +4,13 @@ require 'axe-rspec'
 feature 'Analytics page', :js do
   context 'with analytics available' do
     let(:logingov_admin) { create(:user, :logingov_admin) }
-    let(:sp) { create(:service_provider) }
+    let(:sp) do
+      create(
+        :service_provider,
+        issuer: AnalyticsController::TEMP_HARDCODED_ISSUER_FOR_MVP,
+        team: logingov_admin.teams.sample,
+      )
+    end
 
     # Currently analytics are only availble to Login.gov Admins
     before do
@@ -13,6 +19,7 @@ feature 'Analytics page', :js do
     end
 
     it 'is accessible' do
+      expect(sp).to be_valid
       visit analytics_path
       expect(page).to have_button('Download CSV')
 

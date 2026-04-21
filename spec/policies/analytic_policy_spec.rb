@@ -19,7 +19,7 @@ RSpec.describe AnalyticPolicy, type: :policy do
         expect(described_class).to permit(logingov_admin)
       end
 
-      it 'denies login.gov readonly' do
+      it 'denies login.gov read-only' do
         expect(described_class).to_not permit(logingov_readonly)
       end
     end
@@ -33,8 +33,11 @@ RSpec.describe AnalyticPolicy, type: :policy do
         expect(described_class).to_not permit(user)
       end
 
-      it 'denies login.gov staff' do
-        expect(described_class).to_not permit(logingov_admin)
+      it 'allows login.gov admin' do
+        expect(described_class).to permit(logingov_admin)
+      end
+
+      it 'denies login.gov read-only' do
         expect(described_class).to_not permit(logingov_readonly)
       end
     end
