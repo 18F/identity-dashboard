@@ -17,23 +17,11 @@ module Users
     end
 
     def failure
-      redirect_to safe_origin_or_root
+      redirect_to root_path
     end
 
     def store_id_token
       session[:id_token] = request.env.dig('omniauth.auth', 'credentials', 'id_token')
-    end
-
-    private
-
-    def safe_origin_or_root
-      origin = params[:origin].presence
-      return root_path unless origin
-
-      uri = URI.parse(origin)
-      uri.host == request.host ? origin : root_path
-    rescue URI::InvalidURIError
-      root_path
     end
   end
 end
