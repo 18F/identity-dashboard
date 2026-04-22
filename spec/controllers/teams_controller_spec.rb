@@ -418,7 +418,7 @@ describe TeamsController do
         end
 
         it 'deploys changes to associated IdP configs' do
-          expect(ServiceProviderUpdater).to have_received(:post_update).with(anything).times(2)
+          expect(ServiceProviderUpdater).to have_received(:post_update).with(anything).twice
           expect(ServiceProviderSerializer).to have_received(:new).with(sp1)
           expect(ServiceProviderSerializer).to have_received(:new).with(sp2)
         end
@@ -431,6 +431,22 @@ describe TeamsController do
             'id' => team.id, 
           }
           expect(logger_double).to have_received(:team_updated).with({changes:})
+        end
+      end
+
+      context 'agency changes are unable to be deployed' do
+        let(:new_agency) { create(:agency) }
+        let(:new_team_data) { { name: 'new name', description: 'new desc', agency_id: new_agency.id } }
+        before do
+          sp1; sp2
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+          allow(ServiceProviderUpdater).to receive(:post_update).with(anything).and_return(500)
+          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return('sps_test')
+          patch :update, params: { id: team.id, team: new_team_data }
+        end
+
+        it 'flashes an error' do
+          expect(flash[:error]).to eq(I18n.t('notices.agency_update_sp_refresh_failed'))
         end
       end
     end
