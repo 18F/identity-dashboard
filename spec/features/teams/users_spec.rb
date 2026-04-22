@@ -537,15 +537,38 @@ describe 'users' do
         expect(page).to_not have_content('Can add and delete users and teams')
       end
 
-      it 'shows a status message when succesfully changing a role' do
-        new_role = %w[partner_developer partner_readonly].sample
-        new_role_description = I18n.t("role_names.sandbox.#{new_role}")
-        visit edit_team_user_path(team, team_member)
-        choose new_role_description
-        click_on 'Update'
-        expect(page).to have_content(
-          "You've updated the role for #{team_member.email} to #{new_role_description}",
-        )
+      describe 'on production' do
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        end
+
+        it 'shows a status message when succesfully changing a role' do
+          new_role = %w[partner_developer partner_readonly].sample
+          new_role_description = I18n.t("role_names.production.#{new_role}")
+          visit edit_team_user_path(team, team_member)
+          choose new_role_description
+          click_on 'Update'
+          expect(page).to have_content(
+            "You've updated the role for #{team_member.email} to #{new_role_description}",
+          )
+        end
+      end
+
+      describe 'on sandbox' do
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        end
+
+        it 'shows a status message when succesfully changing a role' do
+          new_role = %w[partner_developer partner_readonly].sample
+          new_role_description = I18n.t("role_names.sandbox.#{new_role}")
+          visit edit_team_user_path(team, team_member)
+          choose new_role_description
+          click_on 'Update'
+          expect(page).to have_content(
+            "You've updated the role for #{team_member.email} to #{new_role_description}",
+          )
+        end
       end
     end
 

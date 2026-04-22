@@ -109,7 +109,9 @@ class Teams::UsersController < AuthenticatedController
       @user = team_membership.user
       render :edit
     end
-    new_role_name = t("role_names.sandbox.#{team_membership.role_name}")
+    new_role_name = t("role_names.#{
+      IdentityConfig.store.prod_like_env ? 'production' : 'sandbox'
+    }.#{team_membership.role_name}")
     flash[:success] =
       I18n.t(
         'teams.users.update.success_html',
