@@ -121,11 +121,11 @@ class TeamsController < AuthenticatedController
     return if IdentityConfig.store.prod_like_env || !team.saved_change_to_agency_id
 
     team.service_providers.each do |sp|
-      if ServiceProviderUpdater.post_update(
-           { service_provider: ServiceProviderSerializer.new(sp) },
-         ) != 200
-        flash[:error] = I18n.t('notices.agency_update_sp_refresh_failed')
-      end
+      next unless ServiceProviderUpdater.post_update(
+        { service_provider: ServiceProviderSerializer.new(sp) },
+      ) != 200
+
+      flash[:error] = I18n.t('notices.agency_update_sp_refresh_failed')
     end
   end
 

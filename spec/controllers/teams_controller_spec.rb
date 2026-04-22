@@ -363,6 +363,7 @@ describe TeamsController do
       let(:team) { create(:team, name: 'original name', description: 'original description') }
       let(:sp1) { create(:service_provider, :ready_to_activate, team: team) }
       let(:sp2) { create(:service_provider, :ready_to_activate, team: team) }
+
       before do
         create(:team_membership, :partner_admin, user:, team:)
       end
@@ -392,12 +393,18 @@ describe TeamsController do
 
       context 'when changes are made on sandbox' do
         let(:new_agency) { create(:agency) }
-        let(:new_team_data) { { name: 'new name', description: 'new desc', agency_id: new_agency.id } }
+        let(:new_team_data) do
+          { name: 'new name', description: 'new desc', agency_id: new_agency.id }
+        end
+
         before do
-          sp1; sp2
+          sp1
+          sp2
           allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
           allow(ServiceProviderUpdater).to receive(:post_update).with(anything).and_return(200)
-          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return('sps_test')
+          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return(
+            'sps_test',
+          )
           patch :update, params: { id: team.id, team: new_team_data }
         end
 
@@ -424,24 +431,31 @@ describe TeamsController do
         end
 
         it 'logs' do
-          changes = { 
+          changes = {
             'name' => { 'old' => 'original name', 'new' => new_team_data[:name] },
-            'description' => { 'old' => 'original description', 'new' => new_team_data[:description] },
+            'description' => { 'old' => 'original description',
+                               'new' => new_team_data[:description] },
             'agency_id' => { 'old' => team.agency_id, 'new' => new_agency.id },
-            'id' => team.id, 
+            'id' => team.id,
           }
-          expect(logger_double).to have_received(:team_updated).with({changes:})
+          expect(logger_double).to have_received(:team_updated).with({ changes: })
         end
       end
 
       context 'agency changes are unable to be deployed' do
         let(:new_agency) { create(:agency) }
-        let(:new_team_data) { { name: 'new name', description: 'new desc', agency_id: new_agency.id } }
+        let(:new_team_data) do
+          { name: 'new name', description: 'new desc', agency_id: new_agency.id }
+        end
+
         before do
-          sp1; sp2
+          sp1
+          sp2
           allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
           allow(ServiceProviderUpdater).to receive(:post_update).with(anything).and_return(500)
-          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return('sps_test')
+          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return(
+            'sps_test',
+          )
           patch :update, params: { id: team.id, team: new_team_data }
         end
 
