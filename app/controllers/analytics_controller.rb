@@ -58,7 +58,17 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         type: :bar_chart,
         data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
+        options: DEFAULT_GRAPH_OPTIONS.merge(
+          title: 'Fraud Counts',
+          library: {
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Fraud Counts</h2>',
+              },
+            },
+          },
+          colors: ['#205493'],
+        ),
       },
       {
         type: :bar_chart,
