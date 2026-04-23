@@ -259,7 +259,7 @@ GEM
     dumb_delegator (1.1.0)
     enum_help (0.0.19)
       activesupport (>= 3.0.0)
-    erb (5.0.2)
+    erb (6.0.4)
     erubi (1.13.1)
     execjs (2.10.0)
     factory_bot (6.5.0)
