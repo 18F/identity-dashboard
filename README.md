@@ -128,12 +128,18 @@ You can see the YARD docs for yourself by running `bin/yard` and then opening [d
 # Local Development Troubleshooting
 
 ## Data Visualization (Reports)
-This repo contains test reports for specs, which can also be used for manual testing. These are stored in `spec/fixtures/reports`.
+This repo contains test reports for specs, which can also be used for manual testing. These are stored in [`spec/fixtures/reports`](../../spec/fixtures/reports).
 You can alternatively add custom reports, in JSON format, and add the location of your folder to `local_reports_folder` in `application.yml`. Note the folder structure in the fixtures reports folder.
 
-- In `application.yml`, comment out `aws_reports_bucket` and/or `aws_reports_path`, as these will cause the Portal to attempt to retrieve data from AWS instead of your local.
+- In `application.yml`, comment the `aws_reports` values to prevent calling AWS, and set the env to Prod:
+
+```
+prod_like_env: true
+# aws_reports_bucket: changeme
+# aws_reports_path: changeme 
+```
 - Create a configuration with the issuer of the test data, and assign it to a team of which you are a member.
-- Sign in as Login.gov Admin with the `prod_like_env` flag set to `true`, and navigate to `/reports`.
+- Navigate to `/reports`.
 
 # License
 
