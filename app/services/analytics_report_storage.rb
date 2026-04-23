@@ -17,7 +17,7 @@ class AnalyticsReportStorage
   def initialize(issuer = nil, date = nil)
     (@issuer, @date) = issuer, date
     @backend = if use_s3?
-                 AnalyticsReportStorage::S3.new(s3_config)
+                 AnalyticsReportStorage::S3.new
                else
                  AnalyticsReportStorage::Disk.new(disk_config)
                end
@@ -41,6 +41,7 @@ class AnalyticsReportStorage
     {
       bucket: IdentityConfig.store.aws_reports_bucket,
       prefix: IdentityConfig.store.aws_reports_path,
+      region: IdentityConfig.store.aws_region,
     }
   end
 
@@ -49,6 +50,6 @@ class AnalyticsReportStorage
   end
 
   def use_s3?
-    s3_config[:bucket] && s3_config[:prefix]
+    S3.default_config[:bucket] && S3.default_config[:prefix]
   end
 end

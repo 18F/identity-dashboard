@@ -1,17 +1,17 @@
 module Reports
   # A per-month IdV funnel report
   class Identity
-    FRICTION_KEYS = %w[
-      doc_auth_ux
-      doc_auth_technical_issue
-      doc_auth_processing_issue
-      selfie_ux
-      false_rejection_inauthentic_doc
-      dob_incorrect
-      ssn_incorrect
-      identity_not_found
-      friction_during_otp
+    AUTH_KEYS = %w[
+      auth_successful
+      auth_failure
+      desktop_successful
+      mobile_successful
     ].map { |key| "count_#{key}" }.freeze
+
+    USAGE_KEYS = %w[
+      count_newly_created_accounts
+      count_existing_accounts
+    ].freeze
 
     FRAUD_KEYS = %w[
       inauthentic_doc
@@ -26,6 +26,32 @@ module Reports
       stayed_blocked
       blocked_by_ipp_fraud
       pending_lg99_likely_fraud
+    ].map { |key| "count_#{key}" }.freeze
+
+    # Types of MFE used — `webauthn_platform` is face/touch where `webauthn` is a security key that isn't face/touch
+    MFA_KEYS = %w[
+      totp_successful
+      piv_cac_successful
+      sms_successful
+      voice_successful
+      backup_code_successful
+      personal_key_successful
+      webauthn_platform_successful
+      webauthn_successful
+    ].map { |key| "count_#{key}" }.freeze
+
+    IDV_KEYS = %w[]
+
+    FRICTION_KEYS = %w[
+      doc_auth_ux
+      doc_auth_technical_issue
+      doc_auth_processing_issue
+      selfie_ux
+      false_rejection_inauthentic_doc
+      dob_incorrect
+      ssn_incorrect
+      identity_not_found
+      friction_during_otp
     ].map { |key| "count_#{key}" }.freeze
 
     attr_reader :issuer, :chosen_date
@@ -83,7 +109,70 @@ module Reports
       @report_information || @raw_data[0][0]['report_information']
     end
 
+    def grand_total
+      if usage_data_available?
+        USAGE_KEYS.sum { |key| inner_data[key].to_i }
+      else
+        data_other.sum { |(_key, value)| value.to_i }
+      end
+    end
+
+    def fraud_total
+      inner_data.reduce(0) do |sum, (key, value)|
+        next sum unless FRAUD_KEYS.include? key
+
+        sum + value.to_i
+      end
+    end
+
+    def fraud_data
+      to_chartkick_with_i18n_labels(inner_data.keys.select { |key| FRAUD_KEYS.include? key })
+    end
+
+    def active_users
+      return [] unless usage_data_available?
+
+      usage_data = ['Active Users', grand_total]
+
+      usage_data + to_chartkick_with_i18n_labels(
+        :count_newly_created_accounts, :count_existing_accounts
+      )
+    end
+
+    def idv_total
+    end
+
+    def provider_information
+      return {} unless has_raw_data?
+
+      @provider_information || @raw_data[0][0]['provider_information']
+    end
+
+    def report_information
+      return {} unless has_raw_data?
+
+      @report_information || @raw_data[0][0]['report_information']
+    end
+
+    def grand_total
+      inner_data.reduce(0) do |sum, (_key, value)|
+        sum + value.to_i
+      end
+    end
+
+    def fraud_total
+      inner_data.reduce(0) do |sum, (key, value)|
+        next sum unless FRAUD_KEYS.include? key
+
+        sum + value.to_i
+      end
+    end
+
     private
+
+    def usage_data_available?
+      USAGE_KEYS.any? { |key| inner_data[key].present? }
+    end
 
     def chosen_date_as_string
       chosen_date.beginning_of_month.strftime('%F %T')

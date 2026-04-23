@@ -63,14 +63,25 @@ class AnalyticsController < ApplicationController # :nodoc:
     [
       {
         type: :bar_chart,
-        data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
+        data: identity_report.usage_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Usage'),
       },
       {
         type: :bar_chart,
-        data: identity_report.data_other,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Other Interactions'),
+        data: identity_report.fraud_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Prevention'),
       },
+      {
+        type: :bar_chart,
+        data: identity_report.auth_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Authentication'),
+      },
+      {
+        type: :bar_chart,
+        data: identity_report.idv_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Identity Verification'),
+      },
+
     ]
   end
 end
