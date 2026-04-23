@@ -1,5 +1,6 @@
 import Rails from '@rails/ujs';
-import "chartkick/chart.js";
+import "chartkick/highcharts";
+import highchartsAccessibility from "highcharts/modules/accessibility";
 
 Rails.start();
 
