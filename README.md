@@ -125,6 +125,15 @@ To run locally: `npm run herb:lint`
 
 You can see the YARD docs for yourself by running `bin/yard` and then opening [doc/yard/index.html] in a browser. Doing so should show you this README with links to documented classes. Currently, we aren't including YARD doc generation in our build process and then committing them, though this may change later.
 
+# Local Stubs
+## Data Visualization (Reports)
+This repo contains test reports for specs, which can also be used for manual testing. These are stored in `spec/fixtures/reports`.
+You can alternatively add custom reports, in JSON format, and add the location of your folder to `local_reports_folder` in `application.yml`. Note the folder structure in the fixtures reports folder.
+
+- In `application.yml`, comment out `aws_reports_bucket` and/or `aws_reports_path`, as these will cause the Portal to attempt to retrieve data from AWS instead of your local.
+- Create a configuration with the issuer of the test data, and assign it to a team of which you are a member.
+- Sign in as Login.gov Admin with the `prod_like_env` flag set to `true`, and navigate to `/reports`.
+
 # License
 
 [The project is in the public domain](LICENSE.md), and all contributions will also be released in the public domain. By submitting a pull request, you are agreeing to waive all rights to your contribution under the terms of the [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/).
