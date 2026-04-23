@@ -61,6 +61,7 @@ class TeamsController < AuthenticatedController
     @team.assign_attributes(update_params_with_current_user)
     log_change
     if @team.save
+      deploy_sandbox_agency_change
       flash[:success] = 'Success'
       redirect_to get_return_path
     else
@@ -113,6 +114,18 @@ class TeamsController < AuthenticatedController
       team_params
     else
       team_params.merge(user_ids: (existing_user_ids + [current_user.id.to_s]).uniq)
+    end
+  end
+
+  def deploy_sandbox_agency_change
+    return if IdentityConfig.store.prod_like_env || !team.saved_change_to_agency_id
+
+    team.service_providers.each do |sp|
+      next unless ServiceProviderUpdater.post_update(
+        { service_provider: ServiceProviderSerializer.new(sp) },
+      ) != 200
+
+      flash[:error] = I18n.t('notices.agency_update_sp_refresh_failed')
     end
   end
 

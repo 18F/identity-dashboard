@@ -360,8 +360,12 @@ describe TeamsController do
     end
 
     context 'when user is not login.gov admin but a member of the team' do
+      let(:team) { create(:team, name: 'original name', description: 'original description') }
+      let(:sp1) { create(:service_provider, :ready_to_activate, team: team) }
+      let(:sp2) { create(:service_provider, :ready_to_activate, team: team) }
+
       before do
-        team.users << user
+        create(:team_membership, :partner_admin, user:, team:)
       end
 
       context 'when no update is made' do
@@ -384,6 +388,79 @@ describe TeamsController do
             user_ids: "#{user.id} #{user1.id} #{user2.id}",
           }
           expect(team.users.count).to eq 3
+        end
+      end
+
+      context 'when changes are made on sandbox' do
+        let(:new_agency) { create(:agency) }
+        let(:new_team_data) do
+          { name: 'new name', description: 'new desc', agency_id: new_agency.id }
+        end
+
+        before do
+          sp1
+          sp2
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+          allow(ServiceProviderUpdater).to receive(:post_update).with(anything).and_return(200)
+          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return(
+            'sps_test',
+          )
+          patch :update, params: { id: team.id, team: new_team_data }
+        end
+
+        it 'has a redirect response' do
+          expect(response).to have_http_status(:found)
+        end
+
+        it 'saves data to the team' do
+          team_check = Team.find(team.id)
+          expect(team_check.name).to eq(new_team_data[:name])
+          expect(team_check.description).to eq(new_team_data[:description])
+          expect(team_check.agency_id).to eq(new_agency.id)
+        end
+
+        it 'updates associated configs with new agency' do
+          expect(sp1.agency.id).to eq(new_agency.id)
+          expect(sp2.agency.id).to eq(new_agency.id)
+        end
+
+        it 'deploys changes to associated IdP configs' do
+          expect(ServiceProviderUpdater).to have_received(:post_update).with(anything).twice
+          expect(ServiceProviderSerializer).to have_received(:new).with(sp1)
+          expect(ServiceProviderSerializer).to have_received(:new).with(sp2)
+        end
+
+        it 'logs' do
+          changes = {
+            'name' => { 'old' => 'original name', 'new' => new_team_data[:name] },
+            'description' => { 'old' => 'original description',
+                               'new' => new_team_data[:description] },
+            'agency_id' => { 'old' => team.agency_id, 'new' => new_agency.id },
+            'id' => team.id,
+          }
+          expect(logger_double).to have_received(:team_updated).with({ changes: })
+        end
+      end
+
+      context 'agency changes are unable to be deployed' do
+        let(:new_agency) { create(:agency) }
+        let(:new_team_data) do
+          { name: 'new name', description: 'new desc', agency_id: new_agency.id }
+        end
+
+        before do
+          sp1
+          sp2
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+          allow(ServiceProviderUpdater).to receive(:post_update).with(anything).and_return(500)
+          allow(ServiceProviderSerializer).to receive(:new).with(ServiceProvider).and_return(
+            'sps_test',
+          )
+          patch :update, params: { id: team.id, team: new_team_data }
+        end
+
+        it 'flashes an error' do
+          expect(flash[:error]).to eq(I18n.t('notices.agency_update_sp_refresh_failed'))
         end
       end
     end
