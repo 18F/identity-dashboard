@@ -125,6 +125,22 @@ To run locally: `npm run herb:lint`
 
 You can see the YARD docs for yourself by running `bin/yard` and then opening [doc/yard/index.html] in a browser. Doing so should show you this README with links to documented classes. Currently, we aren't including YARD doc generation in our build process and then committing them, though this may change later.
 
+# Local Development Troubleshooting
+
+## Data Visualization (Reports)
+This repo contains test reports for specs, which can also be used for manual testing. These are stored in [`spec/fixtures/reports`](../../spec/fixtures/reports).
+You can alternatively add custom reports, in JSON format, and add the location of your folder to `local_reports_folder` in `application.yml`. Note the folder structure in the fixtures reports folder.
+
+- In `application.yml`, comment the `aws_reports` values to prevent calling AWS, and set the env to Prod:
+
+```
+prod_like_env: true
+# aws_reports_bucket: changeme
+# aws_reports_path: changeme 
+```
+- Create a configuration with the issuer of the test data, and assign it to a team of which you are a member.
+- Navigate to `/reports`.
+
 # License
 
 [The project is in the public domain](LICENSE.md), and all contributions will also be released in the public domain. By submitting a pull request, you are agreeing to waive all rights to your contribution under the terms of the [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/).
