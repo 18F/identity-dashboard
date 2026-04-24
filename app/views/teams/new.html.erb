@@ -16,7 +16,8 @@
   <%= form.error_notification %>
   <%= render 'form', form: form, agency_required: true, extra_message: nil %>
   <%= form.button :submit, 'Create team', :class => "usa-button" %>
-  <br>
-  <%= link_to t('forms.buttons.cancel'), teams_path, 
-      class: 'usa-button usa-button--unstyled' %>
+  <div>
+    <%= link_to t('forms.buttons.cancel'), teams_path, 
+        class: 'usa-button usa-button--unstyled' %>
+  </div>
 <% end %>

@@ -5,7 +5,7 @@
   %>
   <% HelpText::UI_CONTEXTS.each do |ui_context| %>
     <%= h.fields_for ui_context do |s| %>
-      <br><legend><span class="text-heavy"><%= t("simple_form.labels.service_provider.help_text.#{ui_context}") %> help text:</span></legend>
+      <legend class="margin-top-2"><span class="text-heavy"><%= t("simple_form.labels.service_provider.help_text.#{ui_context}") %> help text:</span></legend>
       <% HelpText::LOCALES.each do |locale| %>
         <%= s.input locale, label: t(:locale_name, locale: ), as: :text, required: false, input_html: {
               value: help_text_presenter.database_format.dig(ui_context, locale),

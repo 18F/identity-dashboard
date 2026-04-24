@@ -12,9 +12,11 @@
         </h2>
         <p>
           We could not decode your SAML request. Make sure it is encoded correctly, as described in
-          <a href="/documentation?destination=saml/#auth-request" target="_blank" class="usa-link usa-link--external">our documentation</a>.<br>
-          Also note that all other URL parameters need to be properly URL-encoded.
-          Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
+          <a href="/documentation?destination=saml/#auth-request" target="_blank" class="usa-link usa-link--external">our documentation</a>.
+          <span class="display-block">
+            Also note that all other URL parameters need to be properly URL-encoded.
+            Read more about URL encoding <a href="https://en.wikipedia.org/wiki/Percent-encoding" target="_blank">here</a>
+          </span>
         </p>
       </div>
     </div>
@@ -67,8 +69,10 @@
               </li>
               <li>
                 <span class="text-heavy">Wrong certificate:</span>
-                  If you've pasted a certificate, the certificate may not match the private key used by your application.<br>
+                  If you've pasted a certificate, the certificate may not match the private key used by your application.
+                <span class="display-block">
                   Otherwise, you need to add the public certificate to your Login.gov configuration that belongs to the private key used by your application.
+                </span>
               </li>
             </ul>
         <% end %>

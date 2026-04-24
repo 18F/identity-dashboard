@@ -11,7 +11,7 @@
     </div>
   <% end %>
 
-  <fieldset class="usa-fieldset">
+  <fieldset class="usa-fieldset margin-bottom-2">
     <%= 
       form.input :message, 
         input_html: { class: 'usa-input' },
@@ -38,7 +38,6 @@
         input_html: { class: 'usa-select' }
     %>
 
-    </fieldset>
-  <br>
+  </fieldset>
   <%= form.button :submit, 'Save', :class => "usa-button" %>
 <% end %>

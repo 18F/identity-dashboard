@@ -17,21 +17,19 @@
           <%= team.description %>
         </p>
         <p class="margin-y-2">
-          <strong>
+          <strong class="display-block">
             <%= 'Configuration'.pluralize(team.service_providers.count) %>
             <%= "[#{team.service_providers.count}]:" %>
           </strong>
-          <br>
           <% team.service_providers.each do |service_provider| %>
             <%= link_to service_provider.friendly_name, service_provider, class: "usa-button usa-button--inverse usa-button--tiny margin-top-1" %>
           <% end %>
         </p>
         <p class="margin-y-2">
-          <strong>
+          <strong class="display-block">
             <%= 'User'.pluralize(team.users.count) %>
             <%= "[#{team.users.count}]" if team.users.count > 1 %><%= ":" if team.users.count > 1 && current_user.logingov_admin? %>
           </strong>
-          <br>
           <% if current_user.logingov_staff? %>
             <%= team.users.map{ |user| user.email}.join(", ") %>
           <% end %>
