@@ -71,7 +71,7 @@
     }
 
     .usa-label {
-      margin-top: unset;
+      margin: unset;
     }
 
     .input-file:focus ~ .usa-button {
@@ -141,6 +141,7 @@
 
   .usa-error-message {
     line-height: 1.5;
+    margin-top: 0;
   }
 
   #promote_accordion ul ul {
