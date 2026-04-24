@@ -72,9 +72,11 @@ en:
         button: Remove user
         confirm_title: Remove user
         confirm_html:
+          <p class="usa-prose">
           Are you sure you want to remove <span class="text-bold">%{email}</span> from <span class="text-bold">%{team}</span>?
-          <br/><br/>
+          </p><p class="usa-prose margin-bottom-0">
           If you remove this user, they will no longer be able to see configurations associated with the team using this email address.
+          </p>
   users:
     rbac_description: Select which access level this user will have. Users with the admin role will be able to make changes to user permissions and access. 
   team_memberships:
@@ -166,10 +168,6 @@ en:
     service_provider_saved: <p class="usa-alert__text margin-left-3">You have saved <span class="text-bold">%{issuer}</span></p>
     service_provider_help_text_html: For assistance, please reach out to the <a href="https://zendesk.login.gov" class="usa-link usa-link--external" target="_blank">partner support help desk</a>. Help text guidance is provided in the <a href="/documentation?destination=user-experience/help-text/" class="usa-link" target="_blank">User experience section of the developer docs</a>. Please review the guidance before requesting support.
     service_provider_help_text_no_permission_html: You do not have permissions to adjust the help text. Please reach out to your team admin or the <a href='https://zendesk.login.gov/' class='usa-link usa-link--external'>partner support help desk</a>.
-    service_provider_iaa_notice:
-        All configuration changes or new configurations must be promoted to production following the process outlined in the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a>. <b>Please allow two weeks for integration launch or change requests.</b>
-        <br/><br/>
-        Please also note that you will need a signed Inter-Agency Agreement with Login.gov in order to go live in production. Visit the <a href='/documentation?destination=production' target='_blank' class='usa-link usa-link--external'>Login.gov Developer Docs</a> for more details or email <a href='mailto:partners@login.gov' class='usa-link'>partners@login.gov</a> with any questions.
     service_providers_refresh_failed: '<p>Configuration saved, but <a href="/documentation?destination=production/#sandbox-deployment-could-not-be-initiated" class="usa-link">sandbox deployment could not be initiated</a>.</p>'
     service_providers_refreshed: Your configuration was successfully edited, and is ready for testing in the sandbox.
     service_providers_refreshed_new: Your configuration was successfully created, and is ready for testing in the sandbox.
