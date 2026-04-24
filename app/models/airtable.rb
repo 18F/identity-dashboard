@@ -34,7 +34,7 @@ class Airtable
   end
 
   def new_partner_admin_in_airtable?(email, record)
-    record['fields']['Partner Portal Admin Email'].include?(email)
+    record.dig('fields', 'Partner Portal Admin Email')&.include?(email) || false
   end
 
   def request_token(code, redirect_uri)

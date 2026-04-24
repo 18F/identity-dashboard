@@ -131,6 +131,12 @@ RSpec.describe Airtable, type: :model do
       expect(airtable.new_partner_admin_in_airtable?('not_admin@example.com', sample_record))
         .to eq(false)
     end
+
+    it 'returns false if the record has no Partner Portal Admin Email field' do
+      sample_record['fields'].delete('Partner Portal Admin Email')
+      expect(airtable.new_partner_admin_in_airtable?(sample_email, sample_record))
+        .to eq(false)
+    end
   end
 
   describe '#request_token' do
