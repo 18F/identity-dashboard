@@ -19,6 +19,12 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = default_graphs
   end
 
+  # /reports/download
+  def download
+    redirect_to analytics_path
+    # render renderaable: AnalyticsReportCsv.new('hello')
+  end
+
   private
 
   def teams
