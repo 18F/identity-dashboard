@@ -17,7 +17,7 @@ class AnalyticsReportCsv
 
   def report_data_csv
     CSV.generate do |csv|
-      csv << 'Test Data'
+      csv << ['Test Data']
       csv << ['some data']
     end
   end

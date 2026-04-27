@@ -21,8 +21,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports/download
   def download
-    redirect_to analytics_path
-    # render renderaable: AnalyticsReportCsv.new('hello')
+    render renderable: AnalyticsReportCsv.new('hello')
   end
 
   private
