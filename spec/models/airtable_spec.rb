@@ -76,6 +76,26 @@ RSpec.describe Airtable, type: :model do
       expect(records).to eq([])
     end
 
+    it 'handles a nil records response gracefully' do
+      issuers = ['Issuer 1']
+
+      response_body = { 'error' => { 'type' => 'INVALID_REQUEST' } }.to_json
+
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
+        .with(headers: {
+          'Authorization' => "Bearer #{user_token}",
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby',
+        })
+        .to_return(status: 200, body: response_body, headers: {})
+
+      records = airtable.get_matching_records(issuers)
+
+      expect(records).to eq([])
+    end
+
     it 'handles records with nil Issuer String field gracefully' do
       issuers = ['Issuer 1']
 
