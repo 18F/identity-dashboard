@@ -117,6 +117,8 @@ class Airtable
   end
 
   def filter_records_by_issuers(records, issuers)
+    return [] if records.nil?
+
     records.select do |record|
       issuer_string = record.dig('fields', 'Issuer String')
       issuer_string && issuers.any? { |issuer| issuer_string.include?(issuer) }
