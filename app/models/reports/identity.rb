@@ -71,6 +71,18 @@ module Reports
       to_chartkick_with_i18n_labels(inner_data.keys.select { |key| FRAUD_KEYS.include? key })
     end
 
+    def provider_information
+      return {} unless has_raw_data?
+
+      @provider_information || @raw_data[0][0]['provider_information']
+    end
+
+    def report_information
+      return {} unless has_raw_data?
+
+      @report_information || @raw_data[0][0]['report_information']
+    end
+
     private
 
     def chosen_date_as_string
@@ -78,7 +90,7 @@ module Reports
     end
 
     def inner_data
-      return {} unless @raw_data.present? && @raw_data[0][0].any?
+      return {} unless has_raw_data?
 
       @inner_data ||= @raw_data[0][0]['data']
     end
@@ -93,6 +105,10 @@ module Reports
 
         results.push([label, inner_data[key]])
       end
+    end
+
+    def has_raw_data?
+      @raw_data.present? && @raw_data[0][0].any?
     end
   end
 end

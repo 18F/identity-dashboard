@@ -21,7 +21,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports/download
   def download
-    render renderable: AnalyticsReportCsv.new('hello')
+    render renderable: AnalyticsReportCsv.new(identity_report)
   end
 
   private
