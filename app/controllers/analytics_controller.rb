@@ -21,7 +21,8 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports/download
   def download
-    render renderable: AnalyticsReportCsv.new(identity_report)
+    report = AnalyticsReportCsv.new(identity_report)
+    send_data report.report_data_csv, filename: report.filename
   end
 
   private
