@@ -21,7 +21,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports/download
   def download
-    report = AnalyticsReportCsv.new(identity_report)
+    report = AnalyticsReportCsv.new(identity_report.raw_data_object)
     send_data report.report_data_csv, filename: report.filename
   end
 
