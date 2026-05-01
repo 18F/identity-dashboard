@@ -68,13 +68,19 @@ module Reports
     end
 
     def fraud_data
-      to_chartkick_with_i18n_labels(inner_data.keys&.select { |key| FRAUD_KEYS.include? key })
+      to_chartkick_with_i18n_labels(inner_data.keys.select { |key| FRAUD_KEYS.include? key })
     end
 
-    def raw_data_object
+    def provider_information
       return {} unless has_raw_data?
 
-      @raw_data[0][0]
+      @provider_information || @raw_data[0][0]['provider_information']
+    end
+
+    def report_information
+      return {} unless has_raw_data?
+
+      @report_information || @raw_data[0][0]['report_information']
     end
 
     private
@@ -86,7 +92,7 @@ module Reports
     def inner_data
       return {} unless has_raw_data?
 
-      @inner_data ||= raw_data_object['data']
+      @inner_data ||= @raw_data[0][0]['data']
     end
 
     def to_chartkick_with_i18n_labels(keys)

@@ -21,7 +21,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports/download
   def download
-    report = AnalyticsReportCsv.new(identity_report.raw_data_object)
+    report = AnalyticsReportCsv.new(identity_report)
     send_data report.report_data_csv, filename: report.filename
   end
 
@@ -64,7 +64,17 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         type: :bar_chart,
         data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Counts'),
+        options: DEFAULT_GRAPH_OPTIONS.merge(
+          title: 'Fraud Counts',
+          library: {
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Fraud Counts</h2>',
+              },
+            },
+          },
+          colors: ['#205493'],
+        ),
       },
       {
         type: :bar_chart,
