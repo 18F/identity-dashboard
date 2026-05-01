@@ -10,7 +10,12 @@
 <section id="service-activity">
   <div class="report-section__title">
     <h2 class="margin-y-1">Service activity</h2>
-    <button class="usa-button flex-align-self-center "><%= image_tag(asset_path('download.svg'), size: "16", "aria-hidden" => "true") %>Download CSV</button>
+    <a href="<%= analytics_download_path %>" class="usa-button flex-align-self-center" id="download-csv">
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use href="<%= asset_path('download.svg') %>"></use>
+      </svg>
+      <span>Download CSV</span>
+    </a>
   </div>
   <div class="data-summary--container">
     <div class="data-summary">

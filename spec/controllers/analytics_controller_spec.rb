@@ -27,6 +27,27 @@ describe AnalyticsController do
           expect(response).to be_ok
         end
       end
+
+      context '#download' do
+        before do
+          create(:service_provider,
+            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb',
+            team: logingov_admin.teams.first)
+          get :download
+        end
+
+        it 'returns a valid CSV' do
+          expect(response).to be_ok
+          expect(response.content_type).to eq('text/csv')
+        end
+
+        it 'uses the correct filename' do
+          expect(response).to be_ok
+          expect(response.headers['content-disposition']).to match(
+            'filename="logingov_dol_lost_and_found_database_20251201.csv',
+          )
+        end
+      end
     end
 
     context 'on sandbox environments' do

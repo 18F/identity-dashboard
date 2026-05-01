@@ -19,6 +19,12 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = default_graphs
   end
 
+  # /reports/download
+  def download
+    report = AnalyticsReportCsv.new(identity_report)
+    send_data report.report_data_csv, filename: report.filename
+  end
+
   private
 
   def teams
