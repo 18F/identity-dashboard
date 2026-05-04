@@ -51,7 +51,6 @@
   &__links {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
 
     @include at-media('desktop') {
       @include u-margin-y(0);
