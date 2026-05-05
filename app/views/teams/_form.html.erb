@@ -7,13 +7,17 @@
   %>
 
   <%= form.input :agency_id,
-                   input_html: { class: 'usa-select', aria: { invalid: false } },
-                   collection: @agencies,
-                   prompt: '- Select an agency -',
-                   label: 'Agency'.html_safe,
-                   label_html: { class: 'usa-input-required'},
-                   hint: "The federal agency you would like this team to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
-                   required: agency_required %>
+                 input_html: { class: 'usa-select usa-input--error', aria: { invalid: false } },
+                 collection: @agencies,
+                 prompt: '- Select an agency -',
+                 label: 'Agency'.html_safe,
+                 label_html: { class: 'usa-input-required'},
+                 hint: "The federal agency you would like this team to be assigned to.<p class='margin-0'>#{ extra_message }".html_safe,
+                 error: 'Agency must be selected',
+                 required: agency_required %>
 
-  <%= form.input :description, label: "Description".html_safe, label_html: { class: 'usa-label margin-top-2' }, input_html: { class: 'usa-textarea' } %>
+  <%= form.input :description,
+                 label: "Description".html_safe,
+                 label_html: { class: 'usa-label margin-top-2' },
+                 input_html: { class: 'usa-textarea' } %>
 </fieldset>

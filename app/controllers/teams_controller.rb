@@ -30,9 +30,7 @@ class TeamsController < AuthenticatedController
 
   def new
     @team = Team.new
-    @agencies = Agency.order(:name)
-    @show_wizard = true
-    @steps = WIZARD_STEPS
+    update_agency_and_wizard_vars
   end
 
   def edit
@@ -50,9 +48,8 @@ class TeamsController < AuthenticatedController
       flash[:success] = "You have created #{@team.name}"
       redirect_to new_team_user_path(@team, wizard: true)
     else
-      @show_wizard = true
-      @steps = WIZARD_STEPS
-      @agencies = Agency.order(:name)
+      update_errors
+      update_agency_and_wizard_vars
       render :new
     end
   end
@@ -115,6 +112,19 @@ class TeamsController < AuthenticatedController
     else
       team_params.merge(user_ids: (existing_user_ids + [current_user.id.to_s]).uniq)
     end
+  end
+
+  def update_errors
+    return unless @team.errors[:agency].present?
+
+    @team.errors.add(:agency_id, @team.errors[:agency])
+    @team.errors.delete(:agency)
+  end
+
+  def update_agency_and_wizard_vars
+    @show_wizard = true
+    @steps = WIZARD_STEPS
+    @agencies = Agency.order(:name)
   end
 
   def deploy_sandbox_agency_change

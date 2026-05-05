@@ -57,6 +57,18 @@ feature 'TeamMembership CRUD' do
     expect(page).to have_content('Unauthorized')
   end
 
+  scenario 'Create invalid' do
+    login_as(gov_partner)
+    visit new_team_path
+
+    fill_in 'Description', with: 'name and agency missing'
+
+    click_on 'Create team'
+    expect(page).to have_current_path(teams_path)
+    expect(page).to have_content('Name can\'t be blank')
+    expect(page).to have_content('Agency must be selected')
+  end
+
   describe 'step indicator' do
     scenario 'shows on new team page' do
       create(:agency, name: 'GSA')
@@ -173,6 +185,22 @@ feature 'TeamMembership CRUD' do
     expect(page).to have_content('USDS')
     expect(page).to have_content('updated department')
     expect(page).to have_content('updated team')
+  end
+
+  scenario 'Update invalid' do
+    org = create(:team)
+    login_as(logingov_admin)
+
+    visit teams_all_path
+    find("a[href='#{edit_team_path(org)}']").click
+    expect(page).to have_current_path(edit_team_path(org))
+
+    fill_in 'Name', with: ''
+    fill_in 'Description', with: 'name and agency missing'
+
+    click_on 'Update'
+    expect(page).to have_current_path(team_path(org))
+    expect(page).to have_content('Name can\'t be blank')
   end
 
   describe 'Index' do
