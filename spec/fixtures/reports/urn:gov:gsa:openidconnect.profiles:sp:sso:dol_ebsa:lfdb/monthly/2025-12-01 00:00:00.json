@@ -9,9 +9,22 @@
       },
       "report_information": {
         "month_start_date_actual": "2025-12-01 00:00:00",
-        "month_start_calendar_id": "20251201"
+        "month_start_calendar_id": "20251201",
+        "report_cadence": "monthly"
       },
       "data": {
+        "count_active_users": 622,
+        "count_newly_created_accounts": 1173,
+        "count_existing_accounts": 346,
+        "count_newly_proofed_users": 0,
+        "count_preverified_users": 0,
+        "count_authentications": 1435,
+        "count_pass_sum": 0,
+        "count_newly_verified_sum": 0,
+        "count_deadend_sum": 0,
+        "count_friction_sum": 0,
+        "count_abandon_sum": 1,
+        "count_fraud_sum": 0,
         "count_inauthentic_doc": "475",
         "count_facial_mismatch": "82",
         "count_invalid_attributes_dl_dos": "500",
@@ -36,7 +49,22 @@
         "count_friction_during_otp": "59",
         "count_doc_auth_technical_issue": "0",
         "count_resolution_technical_issues": "0",
-        "count_doc_auth_processing_issue": "2"
+        "count_doc_auth_processing_issue": "2",
+        "count_auth_successful": 1282,
+        "count_auth_failure": 40,
+        "count_desktop_successful": 1244,
+        "count_mobile_successful": 38,
+        "count_webauthn_platform_successful": 38,
+        "count_totp_successful": 71,
+        "count_piv_cac_successful": 93,
+        "count_sms_successful": 284,
+        "count_voice_successful": 4,
+        "count_backup_code_successful": 2,
+        "count_webauthn_successful": 8,
+        "count_personal_key_successful": 0,
+        "count_creation_successful": 37,
+        "count_creation_failed": 0,
+        "count_registered_blocked_fraud": 1
       }
     }
   ]
