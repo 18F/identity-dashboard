@@ -1,4 +1,13 @@
 <% content_for(:title, 'Analytics dashboard') %>
+<% content_for(:post_js_include) do %>
+  <%=
+    if IdentityConfig.store.use_highcharts
+      javascript_include_tag 'chartkick_highcharts'
+    else
+      javascript_include_tag 'chartkick_chart'
+    end
+  %>
+<% end %>
 <h1 class="margin-top-0">Reports</h1>
 <p class="usa-intro font-body-lg line-height-sans-4">Track usage, fraud signals, and more &mdash; Updated weekly</p>
 <section id="filter">

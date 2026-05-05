@@ -49,6 +49,7 @@ class IdentityConfig
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:api_token_required_enabled, type: :boolean)
       config.add(:edit_button_uses_service_config_wizard, type: :boolean, allow_nil: true)
+      config.add(:use_highcharts, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
     # rubocop:enable Metrics/BlockLength
