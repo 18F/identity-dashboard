@@ -30,9 +30,7 @@ class TeamsController < AuthenticatedController
 
   def new
     @team = Team.new
-    @agencies = Agency.order(:name)
-    @show_wizard = true
-    @steps = WIZARD_STEPS
+    update_agency_and_wizard_vars
   end
 
   def edit
@@ -51,9 +49,7 @@ class TeamsController < AuthenticatedController
       redirect_to new_team_user_path(@team, wizard: true)
     else
       update_errors
-      @show_wizard = true
-      @steps = WIZARD_STEPS
-      @agencies = Agency.order(:name)
+      update_agency_and_wizard_vars
       render :new
     end
   end
@@ -66,7 +62,6 @@ class TeamsController < AuthenticatedController
       flash[:success] = 'Success'
       redirect_to get_return_path
     else
-      update_errors
       @agencies = Agency.order(:name)
       render :edit
     end
@@ -124,6 +119,12 @@ class TeamsController < AuthenticatedController
 
     @team.errors.add(:agency_id, @team.errors[:agency])
     @team.errors.delete(:agency)
+  end
+
+  def update_agency_and_wizard_vars
+    @show_wizard = true
+    @steps = WIZARD_STEPS
+    @agencies = Agency.order(:name)
   end
 
   def deploy_sandbox_agency_change
