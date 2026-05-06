@@ -56,13 +56,13 @@ describe 'reporting feature basics' do
 
       expect(response_headers['content-type']).to start_with('text/csv')
       csv_response = CSV.parse(body)
-      expect(csv_response.length).to eq(37)
+      expect(csv_response.length).to eq(39)
       expect(csv_response[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
       expect(csv_response[1]).to eq(['Start Date', '', '2025-12-01 00:00:00', ''])
       expect(csv_response[2]).to eq(['Newly Created Accounts', '', '1173', ''])
-      expect(csv_response[4]).to eq(['Inauthentic Doc.', '', '475', ''])
-      expect(csv_response[28]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
-      expect(csv_response[36]).to eq(['Personal Key', '', '0', ''])
+      expect(csv_response[6]).to eq(['Inauthentic Doc.', '', '475', ''])
+      expect(csv_response[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
+      expect(csv_response[38]).to eq(['Personal Key', '', '0', ''])
     end
   end
 end

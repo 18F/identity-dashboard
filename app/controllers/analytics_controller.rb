@@ -76,7 +76,7 @@ class AnalyticsController < ApplicationController # :nodoc:
         data: identity_report.fraud_data,
         options: DEFAULT_GRAPH_OPTIONS.merge(
           title: 'Fraud Prevention',
-          ytitle: 'Users blocked per outcome type',
+          xtitle: 'Users blocked per outcome type',
         ),
       },
       {
@@ -84,7 +84,7 @@ class AnalyticsController < ApplicationController # :nodoc:
         data: identity_report.fraud_redress,
         options: DEFAULT_GRAPH_OPTIONS.merge(
           title: 'Fraud Review Activity',
-          ytitle: '"Adjudicated as legitimate” reflects cases where Login.gov reviewed the case ' \
+          xtitle: '"Adjudicated as legitimate" reflects cases where Login.gov reviewed the case ' \
                   'and reversed the block.',
         ),
       },

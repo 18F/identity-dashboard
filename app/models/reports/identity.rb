@@ -86,8 +86,10 @@ module Reports
     end
 
     def fraud_redress
-      [['Pending Review', inner_data['count_pending_lg99_likely_fraud']],
-       ['Adjudicated as Legitimate', inner_data['count_pass_via_lg99']]]
+      [[I18n.t('reports.count_pending_lg99_likely_fraud'),
+        inner_data['count_pending_lg99_likely_fraud']],
+       [I18n.t('reports.count_pass_via_lg99'),
+        inner_data['count_pass_via_lg99']]]
     end
 
     def mfa_data
@@ -95,8 +97,10 @@ module Reports
     end
 
     def idv_data
-      [['Newly Proofed', inner_data['count_newly_proofed_users']],
-       ['Previously Verified', inner_data['count_preverified_users']]]
+      [[I18n.t('reports.count_newly_proofed_users'),
+        inner_data['count_newly_proofed_users']],
+       [I18n.t('reports.count_preverified_users'),
+        inner_data['count_preverified_users']]]
     end
 
     def data

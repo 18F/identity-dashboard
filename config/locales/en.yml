@@ -196,13 +196,15 @@ en:
     count_inauthentic_doc: Inauthentic Doc.
     count_lack_phone_ownership: Lacking Phone Ownership
     count_newly_created_accounts: Newly Created Accounts
+    count_newly_proofed_users: Newly Proofed
     count_pass_online_finalization: Pass Online
     count_pass_ipp_online_portion: Pass IPP (Online Portion)
     count_pass_via_letter: Pass via Letter
-    count_pass_via_lg99: Pass via Redress with Login.gov Support
-    count_piv_cac_successful: PIV / CAC
-    count_pending_lg99_likely_fraud: Pending, Likely Fraud
+    count_pass_via_lg99: Adjudicated as Legitimate
+    count_pending_lg99_likely_fraud: Pending Fraud Review
     count_personal_key_successful: Personal Key
+    count_piv_cac_successful: PIV / CAC
+    count_preverified_users: Previously Verified
     count_resolution_technical_issues: Other Technical Issues
     count_selfie_ux: Selfie UX Issue
     count_sms_successful: SMS
