@@ -78,8 +78,6 @@ module Reports
     end
 
     def usage_data
-      return unless usage_data_available?
-
       to_chartkick_with_i18n_labels(inner_data.keys.select { |key| USAGE_KEYS.include? key })
     end
 
@@ -106,11 +104,7 @@ module Reports
     end
 
     def grand_total
-      if usage_data_available?
-        USAGE_KEYS.sum { |key| inner_data[key].to_i }
-      else
-        data_other.sum { |(_key, value)| value.to_i }
-      end
+      USAGE_KEYS.sum { |key| inner_data[key].to_i }
     end
 
     def fraud_total
@@ -134,10 +128,6 @@ module Reports
     end
 
     private
-
-    def usage_data_available?
-      USAGE_KEYS.any? { |key| inner_data[key].present? }
-    end
 
     def chosen_date_as_string
       chosen_date.beginning_of_month.strftime('%F %T')
