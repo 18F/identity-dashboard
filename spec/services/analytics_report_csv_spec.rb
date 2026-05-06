@@ -14,7 +14,11 @@ class MockReportIdentity
   end
 
   def data
-    @test_data['data'].to_a.map { |d| [I18n.t("reports.#{d[0]}"), d[1]] }
+    @test_data['data'].to_a.filter_map do |d|
+      [I18n.t("reports.#{d[0]}"), d[1]]
+    rescue I18n::MissingTranslationData
+      next
+    end
   end
 end
 
@@ -33,11 +37,13 @@ describe AnalyticsReportCsv do
 
     it 'outputs expected data' do
       csv = CSV.parse(exported_csv)
-      expect(csv.length).to eq(27)
+      expect(csv.length).to eq(37)
       expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
       expect(csv[1]).to eq(['Start Date', '', '2025-12-01 00:00:00', ''])
-      expect(csv[2]).to eq(['Inauthentic Doc.', '', '475', ''])
-      expect(csv[26]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
+      expect(csv[2]).to eq(['Newly Created Accounts', '', '1173', ''])
+      expect(csv[4]).to eq(['Inauthentic Doc.', '', '475', ''])
+      expect(csv[28]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
+      expect(csv[36]).to eq(['Personal Key', '', '0', ''])
     end
   end
 
