@@ -37,14 +37,6 @@ class AnalyticsReportStorage
     "#{qualifier}/monthly/#{date}.json"
   end
 
-  def s3_config
-    {
-      bucket: IdentityConfig.store.aws_reports_bucket,
-      prefix: IdentityConfig.store.aws_reports_path,
-      region: IdentityConfig.store.aws_region,
-    }
-  end
-
   def disk_config
     { root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports') }
   end

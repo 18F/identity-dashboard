@@ -27,19 +27,16 @@ describe 'reporting feature basics' do
       expect(selection_texts).to include(test_sp.friendly_name)
     end
 
-    context 'testing charts in-browser' do
+    context 'testing charts in-browser', :js do
       before do
-        allow(IdentityConfig.store).to receive(:use_highcharts).and_return(true)
         expect(test_sp).to be_valid
         visit analytics_path
-        skip('Highcharts not found') unless find_all('.highcharts-root').present?
       end
 
-      it 'has appropriate reports', :js do
-        expect(page).to have_content('Usage')
-        expect(page).to have_content('Fraud Prevention')
-        expect(page).to have_content('Authentication')
-        expect(page).to have_content('Identity Verification')
+      it 'tries to display each chart' do
+        expect(page).to have_content('Service activity')
+        expect(find_all('canvas').count).to eq(5)
+        expect(page).to_not have_content('No data')
       end
     end
 

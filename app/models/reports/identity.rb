@@ -121,16 +121,6 @@ module Reports
       end
     end
 
-    def active_users
-      return [] unless usage_data_available?
-
-      usage_data = ['Active Users', grand_total]
-
-      usage_data + to_chartkick_with_i18n_labels(
-        :count_newly_created_accounts, :count_existing_accounts
-      )
-    end
-
     def provider_information
       return {} unless has_raw_data?
 
