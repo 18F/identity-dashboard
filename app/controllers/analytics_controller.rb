@@ -62,26 +62,37 @@ class AnalyticsController < ApplicationController # :nodoc:
   def default_graphs
     [
       {
-        type: :bar_chart,
+        type: :column_chart,
         data: identity_report.usage_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Usage'),
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Active Users'),
+      },
+      {
+        type: :column_chart,
+        data: identity_report.idv_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Identity Verified Users'),
       },
       {
         type: :bar_chart,
         data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Fraud Prevention'),
+        options: DEFAULT_GRAPH_OPTIONS.merge(
+          title: 'Fraud Prevention',
+          ytitle: 'Users blocked per outcome type',
+        ),
       },
       {
         type: :bar_chart,
-        data: identity_report.auth_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Authentication'),
+        data: identity_report.fraud_redress,
+        options: DEFAULT_GRAPH_OPTIONS.merge(
+          title: 'Fraud Review Activity',
+          ytitle: '"Adjudicated as legitimate” reflects cases where Login.gov reviewed the case ' \
+                  'and reversed the block.',
+        ),
       },
       {
         type: :bar_chart,
-        data: identity_report.idv_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Identity Verification'),
+        data: identity_report.mfa_data,
+        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Authentication by MFA Type'),
       },
-
     ]
   end
 end
