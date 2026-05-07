@@ -5,13 +5,13 @@
   " urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:and-one-starts-with-a-space": {
     "id": 251
   },
-    "0277e7ae-6d5c-448d-b65a-0dd87395088": {
+  "0277e7ae-6d5c-448d-b65a-0dd87395088": {
     "id": 3620
   },
   "0277e7ae-6d5c-448d-b65a-0dd87395088f": {
     "id": 3622
   },
-    "2025-12-10:Howard:test": {
+  "2025-12-10:Howard:test": {
     "id": 6797
   },
   "2026-02:Helptext:test:oidc": {
@@ -47,7 +47,7 @@
   "issuerconfig": {
     "id": 6609
   },
-  "urn:amazon:cognito:sp:us-east-1_AbCd0123AbCd": {
+  "urn:amazon:cognito:sp:us-east-1_AbCd01234": {
     "id": 3062
   },
   "urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:WebVendor_Test": {
@@ -65,17 +65,14 @@
   "urn:gov:gsa:openidconnect.profiles:sp:sso:DrupalDev:GeneralServiceAdministrationLoginGov_Demo": {
     "id": 4622
   },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:FCS-CC-Test": {
-    "id": 4201
-  },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:FCS-CC-Test-SAML": {
-    "id": 4528
-  },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:oidc_test_app": {
     "id": 3177
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:sample": {
     "id": 2967
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb": {
+    "id": 4388
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:challenge_test_app": {
     "id": 575
@@ -108,7 +105,7 @@
     "id": 1212
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo": {
-    "id": 193
+    "id": 1939
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathans_demo": {
     "id": 194
@@ -118,9 +115,6 @@
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:test.sam": {
     "id": 101
-  },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:tts-pic-demo": {
-    "id": 6578
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa_sam:dev.sam": {
     "id": 66
