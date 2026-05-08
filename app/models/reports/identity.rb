@@ -131,6 +131,12 @@ module Reports
       @report_information || @raw_data[0][0]['report_information']
     end
 
+    def successful_auths
+      return unless has_raw_data?
+
+      inner_data['count_auth_successful']
+    end
+
     private
 
     def chosen_date_as_string

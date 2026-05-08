@@ -17,6 +17,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     end
     @dates = available_report_dates
     @graphs = default_graphs
+    @application_count = AnalyticsReportStorage.new.issuers.count
   end
 
   # /reports/download
@@ -71,28 +72,28 @@ class AnalyticsController < ApplicationController # :nodoc:
         data: identity_report.idv_data,
         options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Identity Verified Users'),
       },
-      {
-        type: :bar_chart,
-        data: identity_report.fraud_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(
-          title: 'Fraud Prevention',
-          xtitle: 'Users blocked per outcome type',
-        ),
-      },
-      {
-        type: :bar_chart,
-        data: identity_report.fraud_redress,
-        options: DEFAULT_GRAPH_OPTIONS.merge(
-          title: 'Fraud Review Activity',
-          xtitle: '"Adjudicated as legitimate" reflects cases where Login.gov reviewed the case ' \
-                  'and reversed the block.',
-        ),
-      },
-      {
-        type: :bar_chart,
-        data: identity_report.mfa_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Authentication by MFA Type'),
-      },
+      # {
+      #   type: :bar_chart,
+      #   data: identity_report.fraud_data,
+      #   options: DEFAULT_GRAPH_OPTIONS.merge(
+      #     title: 'Fraud Prevention',
+      #     xtitle: 'Users blocked per outcome type',
+      #   ),
+      # },
+      # {
+      #   type: :bar_chart,
+      #   data: identity_report.fraud_redress,
+      #   options: DEFAULT_GRAPH_OPTIONS.merge(
+      #     title: 'Fraud Review Activity',
+      #     xtitle: '"Adjudicated as legitimate" reflects cases where Login.gov reviewed the case '\
+      #             'and reversed the block.',
+      #   ),
+      # },
+      # {
+      #   type: :bar_chart,
+      #   data: identity_report.mfa_data,
+      #   options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Authentication by MFA Type'),
+      # },
     ]
   end
 end
