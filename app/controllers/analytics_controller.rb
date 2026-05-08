@@ -17,7 +17,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     end
     @dates = available_report_dates
     @graphs = default_graphs
-    @application_count = AnalyticsReportStorage.new.issuers.count
+    @application_count = AnalyticsReportStorage.new.all_issuers.count
   end
 
   # /reports/download

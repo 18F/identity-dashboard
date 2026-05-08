@@ -29,8 +29,8 @@ class AnalyticsReportStorage
     build_key(issuer, date).split('/')[1]
   end
 
-  def issuers
-    use_s3? ? S3.issuer_map.keys : Disk.new(disk_config).list(['/']).filter_map(&:issuer).uniq
+  def all_issuers
+    @backend.all_issuers
   end
 
   private

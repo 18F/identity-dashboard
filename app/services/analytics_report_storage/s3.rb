@@ -10,20 +10,12 @@ class AnalyticsReportStorage
         region: IdentityConfig.store.aws_region }
     end
 
-    def self.issuer_map
-      @issuer_map ||= begin
-        map_fetcher = new
-        map_object = map_fetcher.list([]).find do |object|
-          object.key.include?("#{map_fetcher.service_config[:prefix]}/issuer")
-        end
-        JSON.parse(map_fetcher.fetch(map_object.key)).transform_values do |v|
-          v['id']
-        end
-      end
-    end
-
     def initialize(service_config = nil)
       @service_config = service_config || S3.default_config
+    end
+
+    def all_issuers
+      issuer_to_id_map.keys
     end
 
     def list(criteria)
@@ -43,6 +35,21 @@ class AnalyticsReportStorage
 
     def s3_client
       @s3_client ||= Aws::S3::Client.new(region: service_config[:region])
+    end
+  end
+
+  private
+
+  def issuer_to_id_map
+    @issuer_to_id_map ||= begin
+      # We'll probably want more aggresive caching of and parsing this map for performance reasons.
+      # Caching should be easy here since we don't expect it to change more than daily.
+      mapping_object = list([]).find do |object|
+        object.key.include?("#{service_config[:prefix]}/issuer")
+      end
+      JSON.parse(fetch(mapping_object.key)).transform_values do |v|
+        v['id']
+      end
     end
   end
 end
