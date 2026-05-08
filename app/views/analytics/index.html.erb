@@ -20,12 +20,12 @@
   <div class="data-summary--container">
     <div class="data-summary">
       <p class="data-summary__title">Users that accessed your services through Login.gov</p>
-      <p class="data-summary__number">247,391</p>
+      <p class="data-summary__number"><%= number_with_delimiter @identity_report.grand_total %></p>
       <p class="data-summary__description">Unique users accessing source • Current month</p>
     </div>
     <div class="data-summary">
       <p class="data-summary__title">Suspected fraud</p>
-      <p class="data-summary__number">18,204</p>
+      <p class="data-summary__number"><%= number_with_delimiter @identity_report.fraud_total %></p>
       <p class="data-summary__description">IdV and Authentication users combined • Current month</p>
     </div>
   </div>

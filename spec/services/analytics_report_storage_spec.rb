@@ -59,7 +59,7 @@ RSpec.describe AnalyticsReportStorage do
         result = described_class.fetch(real_issuer, test_date)
 
         expect(result[0][0]['issuer']).to eq(real_issuer)
-        expect(result[0][0]['data'].keys.count).to eq(25)
+        expect(result[0][0]['data'].keys.count).to eq(52)
       end
 
       it 'returns an empty result for a  non-existent file' do

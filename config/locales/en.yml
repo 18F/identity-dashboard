@@ -181,29 +181,41 @@ en:
     logout_ok: Successfully logged out
   reports:
     count_address_other_not_found: Address / Not Found / Other
+    count_backup_code_successful: Backup Code
     count_blocked_by_ipp_fraud: Failed In-Person and Blocked
     count_friction_during_otp: Friction during OTP
     count_dob_incorrect: DOB Incorrect
     count_doc_auth_processing_issue: Doc. Auth. Processing Issue
     count_doc_auth_technical_issue: Doc. Auth. Technical Issue
     count_doc_auth_ux: Doc. Auth. UX Issue
+    count_existing_accounts: Existing Accounts
     count_facial_mismatch: Facial Mismatch
     count_fraud_alert: Fraud Alert Detected
     count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
     count_identity_not_found: Identity Not Found
     count_inauthentic_doc: Inauthentic Doc.
     count_lack_phone_ownership: Lacking Phone Ownership
+    count_newly_created_accounts: Newly Created Accounts
+    count_newly_proofed_users: Newly Proofed
     count_pass_online_finalization: Pass Online
     count_pass_ipp_online_portion: Pass IPP (Online Portion)
     count_pass_via_letter: Pass via Letter
-    count_pass_via_lg99: Pass via Redress with Login.gov Support
-    count_pending_lg99_likely_fraud: Pending, Likely Fraud
+    count_pass_via_lg99: Adjudicated as Legitimate
+    count_pending_lg99_likely_fraud: Pending Fraud Review
+    count_personal_key_successful: Personal Key
+    count_piv_cac_successful: PIV / CAC
+    count_preverified_users: Previously Verified
     count_resolution_technical_issues: Other Technical Issues
     count_selfie_ux: Selfie UX Issue
+    count_sms_successful: SMS
     count_ssn_dob_deceased: Rejected for Invalid SSN / DOB, or Deceased
     count_ssn_incorrect: SSN Incorrect
     count_stayed_blocked: Stayed Blocked After Suspected Fraud
     count_suspicious_phone: Suspicious Phone
+    count_totp_successful: Authenticator App
+    count_voice_successful: Voice
+    count_webauthn_successful: Security Key
+    count_webauthn_platform_successful: Face / Touch
     count_wrong_phone_type: Wrong Phone Type
   shared:
     official_site: An official website of the United States government
