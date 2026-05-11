@@ -4,5 +4,11 @@ class Analytic
 
   attr_accessor :date, :config
 
-  delegate :team, :friendly_name, to: :config
+  def team
+    config&.team || ''
+  end
+
+  def friendly_name
+    config&.friendly_name || ''
+  end
 end

@@ -97,6 +97,8 @@ module Reports
     end
 
     def idv_data
+      return [] if inner_data.blank?
+
       [[I18n.t('reports.count_newly_proofed_users'),
         inner_data['count_newly_proofed_users']],
        [I18n.t('reports.count_preverified_users'),
@@ -140,7 +142,7 @@ module Reports
     private
 
     def chosen_date_as_string
-      chosen_date.beginning_of_month.strftime('%F %T')
+      chosen_date.beginning_of_month.strftime('%F')
     end
 
     def inner_data
@@ -162,7 +164,7 @@ module Reports
     end
 
     def has_raw_data?
-      @raw_data.present? && @raw_data[0][0].any?
+      @raw_data.present? && @raw_data.any?
     end
   end
 end

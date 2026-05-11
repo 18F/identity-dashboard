@@ -3,20 +3,25 @@ class AnalyticsReportStorage
   class Disk
     attr_reader :service_config
 
-    def initialize(service_config)
-      @service_config = service_config
+    def self.default_config
+      { root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports') }
     end
 
-    def list(criteria = [])
+    def initialize(service_config = nil)
+      @service_config = service_config || Disk.default_config
+    end
+
+    def list(criteria = ['/'])
       root = Pathname.new(path)
       return [] unless root.exist?
 
-      Dir.glob("#{root}/**/*").filter_map do |filename|
+      Dir.glob('**/*', base: root).filter_map do |filename|
+        fully_qualified_filename = File.join(root, filename)
         # Skip directories
-        next if Dir.exist? filename
-        next unless criteria.any? { |criterion| filename.include?(criterion) }
+        next if Dir.exist?(fully_qualified_filename)
+        next unless criteria.any? { |criterion| filename.include?(criterion.to_s) }
 
-        file = File.new(filename)
+        file = File.new(fully_qualified_filename)
 
         next unless file.size.positive?
 

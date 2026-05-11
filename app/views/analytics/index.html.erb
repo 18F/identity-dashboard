@@ -2,9 +2,15 @@
 <h1 class="margin-top-0">Reports</h1>
 <p class="usa-intro font-body-lg line-height-sans-4">Track usage, fraud signals, and more &mdash; Updated weekly</p>
 <section id="filter">
+  <% if @no_reports %>
+    <p class="usa-error-message">You do not belong to any team that has a service provider configuration with reported data.</p>
+  <% end %>
   <%= simple_form_for(@analytic, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
     <%= form.error_notification %>
     <%= render 'report_selector', form: form %>
+    <div class="grid-row flex-justify-end margin-y-1">
+    <%= form.submit 'Filter', class: 'usa-button', disabled: @no_reports %>
+    </div>
   <% end %>
 </section>
 <section id="service-activity">

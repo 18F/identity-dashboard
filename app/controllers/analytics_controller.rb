@@ -14,9 +14,11 @@ class AnalyticsController < ApplicationController # :nodoc:
     @friendly_names = sps.to_a.flatten.map do |sp|
       [sp.friendly_name, sp.id]
     end
+    @no_reports = @teams_collection.blank? || @friendly_names.blank?
     @dates = available_report_dates
     @graphs = default_graphs
-    @application_count = AnalyticsReportStorage.new.all_issuers.count
+    @application_count = sps.count
+    analytic.valid?
   end
 
   # /reports/download
@@ -33,11 +35,14 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def sps
     # TODO: remove .reverse once we account for missing SP data
-    @sps ||= policy_scope(ServiceProvider.all).reverse
+    @sps ||= policy_scope(ServiceProvider).where(
+      team: teams,
+      issuer: AnalyticsReportStorage.new.all_issuers,
+    )
   end
 
   def available_report_dates
-    Reports::Identity.available_dates(sps)
+    Reports::Identity.available_dates(sps).uniq
   end
 
   def identity_report

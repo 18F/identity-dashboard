@@ -7,7 +7,7 @@ feature 'Analytics page', :js do
     let(:sp) do
       create(
         :service_provider,
-        issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb',
+        issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
         team: logingov_admin.teams.sample,
       )
     end

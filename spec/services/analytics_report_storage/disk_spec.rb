@@ -17,10 +17,11 @@ RSpec.describe AnalyticsReportStorage::Disk do
       subject = described_class.new({
         root: valid_path,
       })
-      results = subject.list ['urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb']
+      # The number '4388' is the ID for the DoL test data
+      results = subject.list ['4388']
       expect(results.count).to be 1
-      file = File.new results.first.key
-      expect(file.size).to be_positive
+      data = described_class.new.fetch(results.first.key)
+      expect(JSON.parse(data).size).to be_positive
     end
 
     context 'with empty folders and empty files' do
@@ -49,7 +50,7 @@ RSpec.describe AnalyticsReportStorage::Disk do
           root: valid_path,
         })
         result = subject.list([missing_upload1, missing_upload2, valid_upload])
-        expect(result.map(&:key)).to contain_exactly(filename_with_data)
+        expect(result.map(&:key)).to contain_exactly("#{valid_upload}.json")
       end
     end
   end

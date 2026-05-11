@@ -1,7 +1,7 @@
 [
   [
     {
-      "issuer": "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb",
+      "issuer": "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test",
       "provider_information": {
         "service_provider_name": "DOL Lost and Found Database",
         "agency_name": "Department of Labor",
