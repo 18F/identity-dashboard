@@ -35,8 +35,13 @@ describe 'reporting feature basics' do
 
       it 'tries to display each chart' do
         expect(page).to have_content('Service activity')
-        expect(find_all('canvas').count).to eq(5)
+        expect(find_all('canvas').count).to eq(2)
         expect(page).to_not have_content('No data')
+      end
+
+      it 'displays additional data' do
+        expect(page.text).to match(/successful authentications\s*1,282/i)
+        expect(page.text).to match(/applications\s*1/i)
       end
     end
 

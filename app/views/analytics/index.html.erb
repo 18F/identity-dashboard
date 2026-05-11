@@ -29,13 +29,25 @@
       <p class="data-summary__description">IdV and Authentication users combined • Current month</p>
     </div>
   </div>
-    <div class="data-graph--container">
-      <p class="data-graph__title">
-        <span class="data-graph__headline">Identity Validation Activity</span> •
-        <%= pluralize(@identity_report.time_intervals, @identity_report.time_interval_size) %>
-      </p>
-      <% @graphs.each do |graph| %>
-        <div class="grid-col flex-1"><%= public_send(graph[:type], graph[:data], **graph[:options]) %></div>
-      <% end %>
+  <div class="data-graph--container">
+    <p class="data-graph__title">
+      <span class="data-graph__headline">Identity Validation Activity</span> •
+      <%= pluralize(@identity_report.time_intervals, @identity_report.time_interval_size) %>
+    </p>
+    <% @graphs.each do |graph| %>
+      <div class="grid-col flex-1"><%= public_send(graph[:type], graph[:data], **graph[:options]) %></div>
+    <% end %>
+  </div>
+  <div class="data-summary--container">
+    <div class="data-summary">
+      <p class="data-summary__title">Successful authentications</p>
+      <p class="data-summary__number"><%= number_with_delimiter @identity_report.successful_auths %></p>
+      <p class="data-summary__description">Total times users signed in through Login.gov</p>
     </div>
+    <div class="data-summary">
+      <p class="data-summary__title">Applications</p>
+      <p class="data-summary__number"><%= number_with_delimiter(@application_count) %></p>
+      <p class="data-summary__description">Active applications on this team with sign-in activity</p>
+    </div>
+  </div>
 </section>

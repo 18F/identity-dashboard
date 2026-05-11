@@ -1,7 +1,5 @@
 # Defines fetching reports from AWS S3 Buckets on production and local disk in development/test
 class AnalyticsReportStorage
-  ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
-
   attr_reader :backend, :issuer, :date
 
   delegate :list, to: :backend
@@ -29,6 +27,10 @@ class AnalyticsReportStorage
 
   def time_interval
     build_key(issuer, date).split('/')[1]
+  end
+
+  def all_issuers
+    @backend.all_issuers
   end
 
   private

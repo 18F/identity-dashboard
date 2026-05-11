@@ -24,6 +24,10 @@ class AnalyticsReportStorage
       end
     end
 
+    def all_issuers
+      list(['/']).filter_map(&:sp_identifier).uniq
+    end
+
     # @return [String] JSON data — may be '[]' if no data found
     def fetch(key)
       File.read(Pathname.new(path).join(key))
