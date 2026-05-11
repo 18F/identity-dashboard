@@ -25,7 +25,7 @@ class AnalyticsReportStorage
     end
 
     def all_issuers
-      list(['/']).filter_map(&:issuer_id).uniq
+      list(['/']).filter_map(&:sp_identifier).uniq
     end
 
     # @return [String] JSON data — may be '[]' if no data found
