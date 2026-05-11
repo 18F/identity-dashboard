@@ -16,7 +16,7 @@ RSpec.describe AnalyticsReportStorage::S3 do
     allow(Aws::S3::Client).to receive(:new).and_return(client_with_stubs)
   end
 
-  describe '.all_issuers' do
+  describe '#all_issuers' do
     it 'returns a mapping when data present' do
       client_with_stubs.stub_responses(:list_objects_v2, contents: [
                                          { key: mapping_object_path },
