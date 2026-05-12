@@ -1,7 +1,6 @@
 class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
-  TEMP_HARDCODED_ISSUER_FOR_MVP = 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb'.freeze
 
   before_action -> { authorize analytic }
   after_action :verify_authorized
@@ -29,17 +28,11 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def teams
-    @teams ||= current_user.teams
-  end
-
-  def temporary_hardcoded_scope_for_testing_mvp(scope)
-    scope.where(issuer: TEMP_HARDCODED_ISSUER_FOR_MVP)
+    @teams ||= policy_scope(Team.all)
   end
 
   def sps
-    @sps ||= policy_scope(
-      temporary_hardcoded_scope_for_testing_mvp(ServiceProvider),
-    ).where(team: teams)
+    @sps ||= policy_scope(ServiceProvider.all).reverse
   end
 
   def available_report_dates
