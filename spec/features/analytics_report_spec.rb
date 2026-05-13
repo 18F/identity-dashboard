@@ -22,7 +22,7 @@ describe 'reporting feature basics' do
       # this order matters until we can specify an SP on /reports
       other_sp
       test_sp
-      teams = (1..4).to_a.map { |a| create(:team) }
+      (1..4).to_a.map { |_a| create(:team) }
 
       login_as logingov_admin
       visit analytics_path
@@ -37,8 +37,6 @@ describe 'reporting feature basics' do
     end
 
     it 'can view appropriate service provider options' do
-      team_select = find('#analytic_team')
-      team_opts = team_select.find_all('option')
       sp_select = find('#analytic_friendly_name')
       sp_opts = sp_select.find_all('option')
 
