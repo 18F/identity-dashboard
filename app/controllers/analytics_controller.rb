@@ -6,15 +6,13 @@ class AnalyticsController < ApplicationController # :nodoc:
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
+  helper_method :teams_collection_for_select
+  helper_method :service_providers_collection_for_select
+
   # /reports
   def index
-    @teams_collection = teams.map do |team|
-      [team.name, team.id]
-    end
-    @friendly_names = sps.to_a.flatten.map do |sp|
-      [sp.friendly_name, sp.id]
-    end
-    @no_reports = @teams_collection.blank? || @friendly_names.blank?
+    @no_reports = teams_collection_for_select.blank? ||
+                  service_providers_collection_for_select.blank?
     @dates = available_report_dates
     @graphs = default_graphs
     @application_count = sps.count
@@ -31,6 +29,18 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def teams
     @teams ||= current_user.scoped_teams
+  end
+
+  def teams_collection_for_select
+    teams.map do |team|
+      [team.name, team.id]
+    end
+  end
+
+  def service_providers_collection_for_select
+    sps.to_a.flatten.map do |sp|
+      [sp.friendly_name, sp.id]
+    end
   end
 
   def sps
