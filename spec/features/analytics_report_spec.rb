@@ -5,6 +5,9 @@ describe 'reporting feature basics' do
   let(:hardcoded_issuer_for_testing_mvp) do
     'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb'
   end
+  # make some teams and a service_provider
+  let(:other_team) { create(:team) }
+  let(:other_sp) { create(:service_provider, issuer: '6797', team: other_team) }
   let(:test_sp) do
     create(
       :service_provider,
@@ -16,9 +19,11 @@ describe 'reporting feature basics' do
 
   context 'as logingov_admin' do
     before do
-      # make some teams and a service_provider
-      teams = (1..5).to_a.map { |a| create(:team) }
+      # this order matters until we can specify an SP on /reports
+      other_sp
       test_sp
+      teams = (1..4).to_a.map { |a| create(:team) }
+
       login_as logingov_admin
       visit analytics_path
     end
@@ -37,8 +42,9 @@ describe 'reporting feature basics' do
       sp_select = find('#analytic_friendly_name')
       sp_opts = sp_select.find_all('option')
 
-      expect(sp_opts.count).to eq(1)
+      expect(sp_opts.count).to eq(2)
       expect(sp_select.text).to include(test_sp.friendly_name)
+      expect(sp_select.text).to include(other_sp.friendly_name)
     end
 
     context 'testing charts in-browser', :js do

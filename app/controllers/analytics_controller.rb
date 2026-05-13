@@ -46,7 +46,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   def analytic
     return Analytic.new unless current_user
 
-    @analytic ||= Analytic.new(config: sps.first, date: available_report_dates.last)
+    @analytic ||= Analytic.new(config: sps.first, date: available_report_dates.first)
   end
 
   def id
