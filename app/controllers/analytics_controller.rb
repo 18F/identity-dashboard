@@ -44,10 +44,12 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def sps
-    # TODO: remove .reverse once we account for missing SP data
+    available_issuers = ServiceProvider.pluck(:issuer).intersection(
+      AnalyticsReportStorage.new.all_issuers,
+    )
     @sps ||= policy_scope(ServiceProvider).where(
       team: teams,
-      issuer: AnalyticsReportStorage.new.all_issuers,
+      issuer: available_issuers,
     )
   end
 
