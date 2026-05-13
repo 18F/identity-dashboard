@@ -16,15 +16,29 @@ describe 'reporting feature basics' do
 
   context 'as logingov_admin' do
     before do
+      # make some teams and a service_provider
+      teams = (1..5).to_a.map { |a| create(:team) }
+      test_sp
       login_as logingov_admin
+      visit analytics_path
     end
 
-    it 'can view appropriate team and issuer options' do
-      expect(test_sp).to be_valid
-      visit analytics_path
-      selection_texts = find_all('select').map(&:text)
-      expect(selection_texts).to include(logingov_admin.teams.first.name)
-      expect(selection_texts).to include(test_sp.friendly_name)
+    it 'can view appropriate team options' do
+      team_select = find('#analytic_team')
+      team_opts = team_select.find_all('option')
+
+      expect(team_opts.count).to eq(Team.count)
+      expect(team_select.text).to include(logingov_admin.teams.first.name)
+    end
+
+    it 'can view appropriate service provider options' do
+      team_select = find('#analytic_team')
+      team_opts = team_select.find_all('option')
+      sp_select = find('#analytic_friendly_name')
+      sp_opts = sp_select.find_all('option')
+
+      expect(sp_opts.count).to eq(1)
+      expect(sp_select.text).to include(test_sp.friendly_name)
     end
 
     context 'testing charts in-browser', :js do
@@ -41,19 +55,15 @@ describe 'reporting feature basics' do
 
       it 'displays additional data' do
         expect(page.text).to match(/successful authentications\s*1,282/i)
-        expect(page.text).to match(/applications\s*1/i)
+        expect(page.text).to match(/applications\s*8/i)
       end
     end
 
     it 'contains a link to download a CSV' do
-      expect(test_sp).to be_valid
-      visit analytics_path
       expect(page).to have_link('Download CSV', href: analytics_download_path)
     end
 
     it 'can download a CSV with report data' do
-      expect(test_sp).to be_valid
-      visit analytics_path
       select(test_sp.team.name, from: 'Team')
       select(test_sp.friendly_name, from: 'Service Provider')
       download_button = find '#download-csv'
