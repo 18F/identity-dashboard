@@ -7,7 +7,7 @@ feature 'Analytics page', :js do
     let(:sp) do
       create(
         :service_provider,
-        issuer: AnalyticsController::TEMP_HARDCODED_ISSUER_FOR_MVP,
+        issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb',
         team: logingov_admin.teams.sample,
       )
     end
