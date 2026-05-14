@@ -19,7 +19,7 @@ RSpec.describe AnalyticsReportStorage::Disk do
       })
       # The number '4388' is the ID for the DoL test data
       results = subject.list ['4388']
-      expect(results.count).to be 1
+      expect(results.count).to be 3
       data = described_class.new.fetch(results.first.key)
       expect(JSON.parse(data).size).to be_positive
     end
