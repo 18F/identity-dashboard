@@ -32,6 +32,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def sps
+    # TODO remove .reverse once we account for missing SP data
     @sps ||= policy_scope(ServiceProvider.all).reverse
   end
 
