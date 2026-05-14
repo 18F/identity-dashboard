@@ -51,7 +51,7 @@ class AnalyticsReportStorage
   end
 
   def issuer_to_id_map
-    # We'll probably want more aggresive caching of and parsing this map for performance reasons
+    # We'll probably want more aggressive caching of and parsing this map for performance reasons
     # Caching should be easy here since we don't expect it to change more than daily.
     @issuer_to_id_map ||= begin
       mapping_object = find_id_map

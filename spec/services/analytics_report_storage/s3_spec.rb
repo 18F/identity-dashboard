@@ -5,7 +5,7 @@ RSpec.describe AnalyticsReportStorage::S3 do
   let(:mapping_object_path) { "#{s3_path}/issuer_service_provider_ids.json" }
   let(:data_object_path) { "#{s3_path}/monthly/2025-12-01 00:00:00.json" }
   let(:test_issuer) { "test:issuer:#{rand(10..1000)}" }
-  let(:test_id) { rand(10.1000) }
+  let(:test_id) { rand(10..1000) }
   let(:client_with_stubs) do
     Aws::S3::Client.new(stub_responses: true)
   end
