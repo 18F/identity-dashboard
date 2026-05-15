@@ -1,7 +1,11 @@
-@forward 'uswds' with(
+@forward 'uswds' with (
   $theme-font-path: '/fonts',
   $theme-image-path: '',
+  $theme-utility-breakpoints: (
+    "tablet-lg": true,
+  )
 );
+
 @use 'uswds-core' as *;
 
 @forward 'home';

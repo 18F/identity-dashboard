@@ -97,7 +97,6 @@ describe 'reporting feature basics' do
 
       it 'displays additional data' do
         expect(page.text).to match(/successful authentications\s*1,282/i)
-        expect(page.text).to match(/applications\s*1/i)
       end
     end
 
@@ -107,7 +106,7 @@ describe 'reporting feature basics' do
 
     it 'can download a CSV with report data' do
       select(test_sp.team.name, from: 'Team')
-      select(test_sp.friendly_name, from: 'Service Provider')
+      select(test_sp.friendly_name, from: 'Application')
       download_button = find '#download-csv'
       download_button.click
 

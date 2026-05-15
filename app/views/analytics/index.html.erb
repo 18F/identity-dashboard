@@ -38,15 +38,15 @@
       <p class="usa-alert__text"><%= t('reports.info_alert') %></p>
     </div>
   </div>
-  <div class="grid-row grid-gap margin-2"> 
-    <div class="tablet:grid-col-6">
+  <div class="grid-row grid-gap tablet-lg:margin-2"> 
+    <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary">
         <p class="data-summary__title">Users that accessed your services through Login.gov</p>
         <p class="data-summary__number"><%= number_with_delimiter @identity_report.grand_total %></p>
         <p class="data-summary__description">Unique users accessing source • Current month</p>
       </div>
      </div>
-     <div class="tablet:grid-col-6">
+     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary">
         <p class="data-summary__title">Suspected fraud</p>
         <p class="data-summary__number"><%= number_with_delimiter @identity_report.fraud_total %></p>
@@ -54,8 +54,8 @@
       </div>
     </div>
   </div>
-  <div class="grid-row grid-gap margin-2">
-    <div class="tablet:grid-col-6">
+  <div class="grid-row grid-gap tablet-lg:margin-2">
+    <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-graph--container">
         <p class="data-graph__title">
           <span class="data-graph__headline">Active Users</span> •
@@ -66,7 +66,7 @@
         <p>New accounts reflect account creation during this window. Existing accounts reflecting account created ahead of this window.</p>
       </div>
     </div>
-    <div class="tablet:grid-col-6">
+    <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-graph--container">
         <p class="data-graph__title">
           <span class="data-graph__headline">Identity Verified Users</span> •
@@ -79,7 +79,7 @@
     </div>
   </div>
   <div class="grid-row grid-gap margin-2">
-    <div class="tablet:grid-col-6">
+    <div class="tablet-lg:grid-col-6">
       <div class="data-summary">
         <p class="data-summary__title">Successful authentications</p>
         <p class="data-summary__number"><%= number_with_delimiter @identity_report.successful_auths %></p>
@@ -87,5 +87,4 @@
       </div>
     </div>
   </div>
-</div>
 
