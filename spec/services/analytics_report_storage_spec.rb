@@ -72,8 +72,8 @@ RSpec.describe AnalyticsReportStorage do
         real_issuer = 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test'
         result = described_class.fetch(real_issuer, test_date)
 
-        expect(result[0][0]['issuer']).to eq(real_issuer)
-        expect(result[0][0]['data'].keys.count).to eq(52)
+        expect(result['issuer']).to eq(real_issuer)
+        expect(result['data'].keys.count).to eq(52)
       end
 
       it 'returns an empty result for a  non-existent file' do
@@ -83,7 +83,7 @@ RSpec.describe AnalyticsReportStorage do
   end
 
   describe 'S3 storage' do
-    let(:s3_client) { instance_double(Aws::S3::Client) }
+    let(:s3_client_with_stubs) { Aws::S3::Client.new(stub_responses: true) }
     let(:bucket_name) { 'test-reports-bucket' }
     let(:bucket_prefix) { 'int/portal' }
 
@@ -92,7 +92,10 @@ RSpec.describe AnalyticsReportStorage do
         aws_reports_bucket: bucket_name,
         aws_reports_path: bucket_prefix,
       )
-      allow(Aws::S3::Client).to receive(:new).and_return(s3_client)
+      s3_client_with_stubs.stub_responses(:get_object, body: File.read(
+        File.join(file_fixture_path, '..', 'reports', 'issuers_service_provider_id.json'),
+      ))
+      allow(Aws::S3::Client).to receive(:new).and_return(s3_client_with_stubs)
     end
 
     describe '.list' do
@@ -104,7 +107,7 @@ RSpec.describe AnalyticsReportStorage do
       end
 
       before do
-        allow(s3_client).to receive(:list_objects_v2)
+        allow(s3_client_with_stubs).to receive(:list_objects_v2)
           .with(bucket: bucket_name, prefix: "#{bucket_prefix}/")
           .and_return(double(contents: s3_objects))
       end
@@ -118,7 +121,7 @@ RSpec.describe AnalyticsReportStorage do
       it 'calls S3 with correct bucket' do
         described_class.list
 
-        expect(s3_client).to have_received(:list_objects_v2).with(
+        expect(s3_client_with_stubs).to have_received(:list_objects_v2).with(
           bucket: bucket_name, prefix: "#{bucket_prefix}/",
         ).at_least(:once)
       end
@@ -132,7 +135,7 @@ RSpec.describe AnalyticsReportStorage do
         let(:expected_s3_key) { "#{test_issuer_id}/monthly/#{test_date}.json" }
 
         before do
-          allow(s3_client).to receive(:list_objects_v2).with(
+          allow(s3_client_with_stubs).to receive(:list_objects_v2).with(
             bucket: 'test-reports-bucket', prefix: 'int/portal/',
           ).and_return(double(
             contents: [
@@ -140,15 +143,18 @@ RSpec.describe AnalyticsReportStorage do
               AnalyticsReportStorage::ReportFile.new(key: expected_s3_key),
             ],
           ))
-          allow(s3_client).to receive(:get_object)
-            .with(bucket: bucket_name, key: 'issuers_service_provider_id.json')
+          allow(s3_client_with_stubs).to receive(:get_object).with(any_args) do |args|
+            flunk(['Unexpected arguments', args])
+          end
+          allow(s3_client_with_stubs).to receive(:get_object)
+            .with(bucket: bucket_name, key: 'int/portal/issuers_service_provider_id.json')
             .and_return(double(body: double(
               read: <<~JSON,
                 {"#{test_issuer}": {"id": #{test_issuer_id}}}
               JSON
             )))
-          allow(s3_client).to receive(:get_object)
-            .with(bucket: bucket_name, key: expected_s3_key)
+          allow(s3_client_with_stubs).to receive(:get_object)
+            .with(bucket: bucket_name, key: "int/portal/#{expected_s3_key}")
             .and_return(double(body: s3_body))
         end
 
@@ -161,8 +167,9 @@ RSpec.describe AnalyticsReportStorage do
         it 'calls S3 only once with correct bucket and key' do
           described_class.fetch(test_issuer, test_date)
 
-          expect(s3_client).to have_received(:get_object).with(bucket: bucket_name,
-                                                               key: expected_s3_key).once
+          expect(s3_client_with_stubs).to have_received(:get_object)
+            .with(bucket: bucket_name, key: "int/portal/#{expected_s3_key}")
+            .once
         end
       end
     end
@@ -183,7 +190,7 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:fetch_id_map).and_return
+      expect(mock_backend).to receive(:fetch_id_map).and_return('[]')
       expect(described_class.new.all_issuers).to eq([])
     end
   end

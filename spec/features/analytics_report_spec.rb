@@ -25,7 +25,8 @@ describe 'reporting feature basics' do
       login_as logingov_admin
       visit analytics_path
       expect(page).to have_content(
-        'You do not belong to any team that has a service provider configuration with reported data.',
+        'You do not belong to any team that has a service provider configuration ' \
+          'with reported data.',
       )
       sp_options = find_all('select#analytic_friendly_name > option')
       expect(sp_options.count).to be(1)

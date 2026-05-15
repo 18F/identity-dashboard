@@ -2,7 +2,7 @@ require 'rails_helper'
 
 class MockReportIdentity
   def initialize(file_name)
-    @test_data = JSON.parse(File.read(file_name))[0][0]
+    @test_data = JSON.parse(File.read(file_name))
   end
 
   def report_information

@@ -124,13 +124,13 @@ module Reports
     def provider_information
       return {} unless has_raw_data?
 
-      @provider_information || @raw_data[0][0]['provider_information']
+      @provider_information || @raw_data['provider_information']
     end
 
     def report_information
       return {} unless has_raw_data?
 
-      @report_information || @raw_data[0][0]['report_information']
+      @report_information || @raw_data['report_information']
     end
 
     def successful_auths
@@ -148,7 +148,7 @@ module Reports
     def inner_data
       return {} unless has_raw_data?
 
-      @inner_data ||= @raw_data[0][0]['data']
+      @inner_data ||= @raw_data['data']
     end
 
     def to_chartkick_with_i18n_labels(keys)
