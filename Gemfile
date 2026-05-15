@@ -56,7 +56,7 @@ gem 'saml_idp', github: '18F/saml_idp', tag: '0.23.5-18f'
 gem 'secure_headers', '~> 6'
 gem 'simple_form', '~> 5.3', '>= 5.3.0'
 gem 'uglifier'
-gem 'view_component', '~> 3.21'
+gem 'view_component', '>= 4.9.0'
 gem 'wicked', '~> 2.0'
 
 group :deploy do
@@ -89,7 +89,7 @@ group :development, :test do
   gem 'rubocop-rails', '>= 2.9', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
-  gem 'yard', require: false
+  gem 'yard', '>= 0.9.42', require: false
 end
 
 group :test do
