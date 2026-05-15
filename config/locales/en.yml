@@ -217,5 +217,6 @@ en:
     count_webauthn_successful: Security Key
     count_webauthn_platform_successful: Face / Touch
     count_wrong_phone_type: Wrong Phone Type
+    info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
   shared:
     official_site: An official website of the United States government

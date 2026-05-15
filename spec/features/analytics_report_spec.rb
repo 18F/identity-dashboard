@@ -45,6 +45,16 @@ describe 'reporting feature basics' do
       expect(sp_select.text).to include(other_sp.friendly_name)
     end
 
+    it 'displays an alert about billing details' do
+      info_alert = find('.usa-alert--info')
+
+      # rubocop:disable Layout/LineLength
+      expect(info_alert.text).to eq(
+        'The report is not representative of billed usage. For billing details refer to the monthly invoice.',
+      )
+      # rubocop:enable Layout/LineLength
+    end
+
     context 'testing charts in-browser', :js do
       before do
         expect(test_sp).to be_valid
