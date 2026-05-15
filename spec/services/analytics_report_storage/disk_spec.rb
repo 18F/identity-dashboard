@@ -54,4 +54,13 @@ RSpec.describe AnalyticsReportStorage::Disk do
       end
     end
   end
+
+  describe '#fetch_id_map' do
+    it 'grabs expected data by defualt' do
+      expected_text = Rails.root.join(
+        'spec/fixtures/reports/issuers_service_provider_id.json',
+      ).read
+      expect(described_class.new.fetch_id_map).to eq(expected_text)
+    end
+  end
 end

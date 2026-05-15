@@ -54,20 +54,14 @@ class AnalyticsReportStorage
     # We'll probably want more aggressive caching of and parsing this map for performance reasons
     # Caching should be easy here since we don't expect it to change more than daily.
     @issuer_to_id_map ||= begin
-      mapping_object = find_id_map
+      mapping_data = @backend.fetch_id_map
       if mapping_object
-        JSON.parse(@backend.fetch(mapping_object.key)).transform_values do |v|
+        JSON.parse(mapping_data).transform_values do |v|
           v['id']
         end
       else
         {}
       end
-    end
-  end
-
-  def find_id_map
-    @backend.list(['']).find do |object|
-      object.key.include?('service_provider_id.json')
     end
   end
 end

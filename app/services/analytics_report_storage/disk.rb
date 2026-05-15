@@ -31,6 +31,10 @@ class AnalyticsReportStorage
       list(['/']).filter_map(&:sp_identifier).uniq
     end
 
+    def fetch_id_map
+      fetch 'issuers_service_provider_id.json'
+    end
+
     # @param key [String] the relative file path.
     # We use the relative file path here so that it looks just like
     # the arguments we also pass to S3.
