@@ -1,7 +1,7 @@
 <fieldset class="<%= "wizard-field #{input_type} wizard_step_#{html_key}" %>" >
   <% if input_type != 'multi-text' %>
     <legend class="usa-sr-only" id="<%= html_key %>">
-      <%= accessible_label(form, t("simple_form.labels.service_provider.#{label_translation_key}"), model_method) %>
+      <%= helpers.accessible_label(form, t("simple_form.labels.service_provider.#{label_translation_key}"), model_method) %>
     </legend>
   <% end %>
   <div class="usa-label__group">

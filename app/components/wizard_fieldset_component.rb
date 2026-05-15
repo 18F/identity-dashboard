@@ -5,8 +5,6 @@ class WizardFieldsetComponent < ViewComponent::Base
   attr_reader :form, :input_type, :required, :model_method, :param_name, :description_key,
               :inputs, :label_translation_key, :default, :disabled
 
-  use_helper :accessible_label, from: ServiceConfigWizardHelper
-
   INPUT_TYPES = %w[radio checkbox multi-text].freeze
 
   # @param form [Method] such that form is a valid instance of wizard_form
