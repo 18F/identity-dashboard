@@ -1,0 +1,9 @@
+<ul class="usa-tab-list">
+  <% tabs.each do |tab| %>
+    <li class="usa-tab__item">
+      <a class="usa-tab__anchor" href="#<%= tab[:anchor] %>"><%=
+        tab[:name] 
+      %></a>
+    </li>
+  <% end %>
+</ul>
