@@ -1,0 +1,143 @@
+{
+  "\turn:gov:gsa:openidconnect.profiles:yes-one-actually-starts-with-a-tab-somehow": {
+    "id": 255
+  },
+  " urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:and-one-starts-with-a-space": {
+    "id": 251
+  },
+  "0277e7ae-6d5c-448d-b65a-0dd87395088": {
+    "id": 3620
+  },
+  "0277e7ae-6d5c-448d-b65a-0dd87395088f": {
+    "id": 3622
+  },
+  "2025-12-10:Howard:test": {
+    "id": 6797
+  },
+  "2026-02:Helptext:test:oidc": {
+    "id": 6936
+  },
+    "24": {
+    "id": 2248
+  },
+  "Issuer:urn:jacobs:jacobs:openidconnect.profiles:sp:sso:Jacobs:JacobsTestApplication": {
+    "id": 624
+  },
+  "http://192.168.125.121:8080/openid-connect-server-webapp/": {
+    "id": 142
+  },
+  "http://localhost:9165/": {
+    "id": 3218
+  },
+  "https://[0000:0000:0000:0000::0000:0001]/cas": {
+    "id": 6004
+  },
+  "https://192.168.99.100:30182/auth/realms/keycloak": {
+    "id": 87
+  },
+  "https://dev-ffffffff.okta.com": {
+    "id": 4614
+  },
+  "https://login.microsoftonline.us/ffffffff-ffff-ffff-ffff-ffffffffffff": {
+    "id": 3761
+  },
+  "https://www.okta.com/saml2/service-provider/0123abcd0123zyxw9876": {
+    "id": 2904
+  },
+  "issuerconfig": {
+    "id": 6609
+  },
+  "urn:amazon:cognito:sp:us-east-1_AbCd01234": {
+    "id": 3062
+  },
+  "urn:gov:gsa:SAML:2.0.profiles:sp:sso:GSA:WebVendor_Test": {
+    "id": 4539
+  },
+  "urn:gov:gsa:SAML:2.0.profiles:sp:sso:gsa:deleteme": {
+    "id": 6236
+  },
+  "urn:gov:gsa:SAML:2.0.profiles:sp:sso:https://gsatest.servicenowservices.com": {
+    "id": 4333
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:DrupalDev:GSA.gov_Demo": {
+    "id": 4607
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:DrupalDev:GeneralServiceAdministrationLoginGov_Demo": {
+    "id": 4622
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:oidc_test_app": {
+    "id": 3177
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:sample": {
+    "id": 2967
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb": {
+    "id": 4388
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:challenge_test_app": {
+    "id": 575
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard": {
+    "id": 22
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard:dev": {
+    "id": 4391
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:davida-test-2": {
+    "id": 4170
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:davida-test-3": {
+    "id": 4244
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:davida_test": {
+    "id": 4941
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:demo_app_10_23_2020": {
+    "id": 1520
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:fun_demo": {
+    "id": 1519
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:gsa-ai-sandbox-ada": {
+    "id": 5747
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jmax_search_dev": {
+    "id": 1212
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo": {
+    "id": 1939
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathans_demo": {
+    "id": 194
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:search": {
+    "id": 407
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:test.sam": {
+    "id": 101
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa_sam:dev.sam": {
+    "id": 66
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa_sam:sam_dev_local_5080": {
+    "id": 72
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa_sam:sam_dev_local_8080": {
+    "id": 71
+  },
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsafcs:gsa_login_gov_test_app": {
+    "id": 4213
+  },
+  "urn:gov:gsa:openidconnect:openid:lambda": {
+    "id": 428
+  },
+  "urn:gov:gsa:sp:sso:agency_name:ecs": {
+    "id": 3640
+  },
+  "whoa": {
+    "id": 2926
+  },
+  "you-shouldn't-let-people-pick-their-client-id-you-know": {
+    "id": 1071
+  }
+}
