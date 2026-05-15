@@ -173,11 +173,7 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:list).and_return(
-        [AnalyticsReportStorage::ReportFile.new(key: 'issuers_service_provider_id.json')],
-      )
-      expect(mock_backend).to receive(:fetch)
-        .with('issuers_service_provider_id.json')
+      expect(mock_backend).to receive(:fetch_id_map)
         .and_return(%({"#{test_issuer}": {"id": 123}}))
 
       expect(described_class.new.all_issuers).to eq([test_issuer])
@@ -187,7 +183,7 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:list).and_return([])
+      expect(mock_backend).to receive(:fetch_id_map).and_return
       expect(described_class.new.all_issuers).to eq([])
     end
   end

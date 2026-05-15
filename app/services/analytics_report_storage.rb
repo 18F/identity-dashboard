@@ -55,7 +55,7 @@ class AnalyticsReportStorage
     # Caching should be easy here since we don't expect it to change more than daily.
     @issuer_to_id_map ||= begin
       mapping_data = @backend.fetch_id_map
-      if mapping_object
+      if mapping_data.present?
         JSON.parse(mapping_data).transform_values do |v|
           v['id']
         end

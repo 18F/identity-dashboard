@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe AnalyticsReportStorage::S3 do
   let(:s3_path) { 'test/portal' }
-  let(:mapping_object_path) { "#{s3_path}/issuer_service_provider_ids.json" }
   let(:data_object_path) { "#{s3_path}/monthly/2025-12-01 00:00:00.json" }
   let(:test_issuer) { "test:issuer:#{rand(10..1000)}" }
   let(:test_id) { rand(10..1000) }
@@ -19,7 +18,6 @@ RSpec.describe AnalyticsReportStorage::S3 do
   describe '#list' do
     before do
       client_with_stubs.stub_responses(:list_objects_v2, contents: [
-                                         { key: mapping_object_path },
                                          { key: data_object_path },
                                        ])
     end
@@ -44,14 +42,14 @@ RSpec.describe AnalyticsReportStorage::S3 do
     it 'calls S3 based on the config options' do
       # described_class#list returns data that includes the prefix already
       # so #fetch will accept those keys without needing or applying further formatting
-      key = "#{described_class.default_config[:prefix]}/random_key#{rand(10..1000)}"
+      test_key = "random_key#{rand(10..1000)}"
 
       expect(client_with_stubs).to receive(:get_object).with(
         bucket: described_class.default_config[:bucket],
-        key: key,
+        key: "#{described_class.default_config[:prefix]}/#{test_key}",
       ).and_call_original
 
-      described_class.new.fetch(key)
+      described_class.new.fetch(test_key)
     end
   end
 

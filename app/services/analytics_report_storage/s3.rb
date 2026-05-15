@@ -27,11 +27,15 @@ class AnalyticsReportStorage
     end
 
     def fetch_id_map
-      fetch "#{service_config[:prefix]}/issuers_service_provider_id.json"
+      fetch 'issuers_service_provider_id.json'
     end
 
+    # @param key [String] example: '1234/monthly/2026-04-01.json'
     def fetch(key)
-      s3_client.get_object(bucket: service_config[:bucket], key: key).body.read
+      s3_client.get_object(
+        bucket: service_config[:bucket],
+        key: "#{service_config[:prefix]}/#{key}",
+      ).body.read
     end
 
     def s3_client
