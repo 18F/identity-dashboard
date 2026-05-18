@@ -26,6 +26,22 @@ describe AnalyticsController do
           get :index
           expect(response).to be_ok
         end
+
+        it 'populates dates from S3 when reports exist' do
+          create(:service_provider,
+            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            team: logingov_admin.teams.first)
+          get :index
+          expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
+        end
+
+        it 'falls back to monthly dates when no reports exist' do
+          get :index
+          dates = assigns(:dates)
+          expect(dates).to include('2025-10-01')
+          expect(dates.first).to eq(Date.current.beginning_of_month.strftime('%F'))
+          expect(dates.last).to eq('2025-10-01')
+        end
       end
 
       context '#download' do
