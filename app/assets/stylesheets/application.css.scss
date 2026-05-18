@@ -12,6 +12,7 @@
 @forward 'service_config_wizard';
 @forward 'step-indicator';
 @forward 'reports';
+@forward 'tab_component';
 @forward 'footer';
 
 @mixin text-wrap-mixin {

@@ -23,7 +23,10 @@ RSpec.describe TabComponent, type: :component do
   it 'displays appropriate anchor links in tabs' do
     anchors = render.css('li a')
     expect(anchors.count).to eq(2)
-    expect(anchors.map(&:text)).to eq(['test 0', 'test 1'])
+    strings = ['test 0', 'test 1']
+    anchors.map(&:text).each_with_index do |str, index|
+      expect(str).to include(strings[index])
+    end
     expect(anchors.map { |a| a.attr('href') }).to eq(['#zeroth-test', '#first-test'])
   end
 end

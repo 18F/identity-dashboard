@@ -1,0 +1,63 @@
+@use 'uswds-core' as *;
+
+.usa-tab {
+  &-list {
+    display: flex;
+    align-items: flex-start;
+    padding-left: 0;
+    list-style-type: none;
+    border-bottom: 1px solid $theme-color-primary-light;
+
+    &__small {
+      @include at-media('tablet') {
+        display: none;
+      }
+
+      &:focus, &:hover {
+        .usa-icon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+
+  &__item {
+    flex: 1 1 auto;
+    @include u-text('center');
+
+    &.is-active {
+      align-self: stretch;
+    }
+
+    &.is-active .usa-tab__anchor:after,
+    & .usa-tab__anchor:hover:after,
+    & .usa-tab__anchor:focus:after {
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      border-bottom: 4px solid $theme-color-secondary;
+    }
+  }
+
+  &__anchor {
+    display: block;
+    min-width: 140px;
+    position: relative;
+    padding: 16px 0 12px;
+    @include u-font('sans', 7);
+    @include u-text(700, 'no-underline');
+    color: $theme-color-primary-dark;
+
+    &:focus, &:hover {
+      background-color: $theme-color-primary-lighter;
+    }
+
+    &:focus {
+      z-index: 9;
+      outline: 2px solid $theme-color-primary;
+      outline-offset: 0;
+    }
+  }
+}
