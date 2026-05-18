@@ -154,7 +154,11 @@ module Reports
     def inner_data
       return {} unless has_raw_data?
 
-      @inner_data ||= @raw_data['data']
+      @inner_data ||= if @raw_data.is_a?(Array)
+                        @raw_data.dig(0, 0, 'data') || {}
+                      else
+                        @raw_data['data'] || {}
+                      end
     end
 
     def to_chartkick_with_i18n_labels(keys)
