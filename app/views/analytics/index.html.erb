@@ -5,13 +5,14 @@
   <% if @no_reports %>
     <p class="usa-error-message">You do not belong to any team that has a service provider configuration with reported data.</p>
   <% end %>
-  <%= simple_form_for(@analytic, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
+  <%= simple_form_for(@analytic, url: analytics_path, method: :get, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
     <%= form.error_notification %>
     <%= render 'report_selector', form: form %>
     <div class="grid-row flex-justify-end margin-y-1">
     </div>
   <% end %>
 </section>
+<%= javascript_include_tag 'analytics_report_filter' %>
 <section id="service-activity">
   <div class="report-section__title">
     <h2 class="margin-y-1">Service activity</h2>
