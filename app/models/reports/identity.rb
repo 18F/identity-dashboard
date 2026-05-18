@@ -139,6 +139,12 @@ module Reports
       inner_data['count_auth_successful']
     end
 
+    # Public so the view can check if report data was found
+    # and display "Data not available for this month" when it wasn't
+    def has_raw_data?
+      @raw_data.present? && @raw_data.any?
+    end
+
     private
 
     def chosen_date_as_string
@@ -161,10 +167,6 @@ module Reports
 
         results.push([label, inner_data[key]])
       end
-    end
-
-    def has_raw_data?
-      @raw_data.present? && @raw_data.any?
     end
   end
 end

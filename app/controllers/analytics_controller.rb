@@ -53,8 +53,23 @@ class AnalyticsController < ApplicationController # :nodoc:
     )
   end
 
+  EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
+
   def available_report_dates
-    Reports::Identity.available_dates(sps).uniq
+    dates = Reports::Identity.available_dates(sps).uniq
+    return dates if dates.present?
+
+    fallback_report_dates
+  end
+
+  def fallback_report_dates
+    current = Date.current.beginning_of_month
+    dates = []
+    while current >= EARLIEST_REPORT_DATE
+      dates << current.strftime('%F')
+      current = current.prev_month
+    end
+    dates
   end
 
   def identity_report
