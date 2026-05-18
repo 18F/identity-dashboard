@@ -1,6 +1,7 @@
 class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
+  EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
 
   before_action -> { authorize analytic }
   after_action :verify_authorized
@@ -26,6 +27,16 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   private
+
+  def analytic_params
+    return {} unless params[:analytic]
+
+    params.require(:analytic).permit(:team, :friendly_name, :date)
+  end
+
+  def selected_date
+    analytic_params[:date].presence
+  end
 
   def teams
     @teams ||= current_user.scoped_teams
@@ -54,7 +65,20 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def available_report_dates
-    Reports::Identity.available_dates(sps).uniq
+    dates = Reports::Identity.available_dates(sps).uniq
+    return dates if dates.present?
+
+    fallback_report_dates
+  end
+
+  def fallback_report_dates
+    current = Date.current.beginning_of_month
+    dates = []
+    while current >= EARLIEST_REPORT_DATE
+      dates << current.strftime('%F')
+      current = current.prev_month
+    end
+    dates
   end
 
   def identity_report
@@ -64,7 +88,8 @@ class AnalyticsController < ApplicationController # :nodoc:
   def analytic
     return Analytic.new unless current_user
 
-    @analytic ||= Analytic.new(config: sps.first, date: available_report_dates.first)
+    @analytic ||= Analytic.new(config: sps.first,
+                               date: selected_date || available_report_dates.last)
   end
 
   def id

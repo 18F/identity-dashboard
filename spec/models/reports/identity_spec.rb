@@ -47,4 +47,64 @@ describe Reports::Identity do
       [[I18n.t('reports.count_stayed_blocked'), expected_count]],
     )
   end
+
+  describe '#unwrap' do
+    let(:analytic) { Analytic.new(date: '2025-12-01', config: sp) }
+    let(:report_hash) { { 'data' => { 'count_newly_created_accounts' => 42 } } }
+    let(:storage_mock) { instance_double(AnalyticsReportStorage) }
+
+    before do
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+    end
+
+    it 'unwraps double-nested arrays' do
+      allow(storage_mock).to receive(:fetch).and_return([[report_hash]])
+      subject = described_class.new(analytic)
+      expect(subject.grand_total).to eq(42)
+    end
+
+    it 'unwraps single-nested arrays' do
+      allow(storage_mock).to receive(:fetch).and_return([report_hash])
+      subject = described_class.new(analytic)
+      expect(subject.grand_total).to eq(42)
+    end
+
+    it 'handles a flat hash' do
+      allow(storage_mock).to receive(:fetch).and_return(report_hash)
+      subject = described_class.new(analytic)
+      expect(subject.grand_total).to eq(42)
+    end
+
+    it 'handles nil gracefully' do
+      allow(storage_mock).to receive(:fetch).and_return(nil)
+      subject = described_class.new(analytic)
+      expect(subject.has_raw_data?).to be false
+    end
+  end
+
+  describe '#has_raw_data?' do
+    it 'returns true when report data is present' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'data' => { 'count_stayed_blocked' => 1 } }]],
+      )
+      expect(described_class.new(analytic).has_raw_data?).to be true
+    end
+
+    it 'returns false when no report data is found' do
+      analytic = Analytic.new(date: '2025-10-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-10-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(nil)
+      expect(described_class.new(analytic).has_raw_data?).to be false
+    end
+  end
 end

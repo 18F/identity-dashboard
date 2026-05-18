@@ -1,0 +1,71 @@
+[
+  [
+    {
+      "issuer": "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test",
+      "provider_information": {
+        "service_provider_name": "DOL Lost and Found Database",
+        "agency_name": "Department of Labor",
+        "start_service_provider_id": "4388"
+      },
+      "report_information": {
+        "month_start_date_actual": "2025-08-01 00:00:00",
+        "month_start_calendar_id": "20250801",
+        "report_cadence": "monthly"
+      },
+      "data": {
+        "count_active_users": 1345,
+        "count_newly_created_accounts": 287,
+        "count_existing_accounts": 1923,
+        "count_newly_proofed_users": 651,
+        "count_preverified_users": 1478,
+        "count_authentications": 394,
+        "count_pass_sum": 1812,
+        "count_newly_verified_sum": 563,
+        "count_deadend_sum": 147,
+        "count_friction_sum": 1689,
+        "count_abandon_sum": 834,
+        "count_fraud_sum": 1256,
+        "count_inauthentic_doc": "718",
+        "count_facial_mismatch": "1963",
+        "count_invalid_attributes_dl_dos": "245",
+        "count_ssn_dob_deceased": "1587",
+        "count_address_other_not_found": "932",
+        "count_pending_lg99_likely_fraud": "1104",
+        "count_stayed_blocked": "476",
+        "count_fraud_alert": "1835",
+        "count_suspicious_phone": "309",
+        "count_lack_phone_ownership": "1741",
+        "count_wrong_phone_type": "58",
+        "count_blocked_by_ipp_fraud": "1423",
+        "count_pass_via_lg99": "697",
+        "count_pass_online_finalization": "1158",
+        "count_pass_ipp_online_portion": "823",
+        "count_pass_via_letter": "1576",
+        "count_doc_auth_ux": "342",
+        "count_selfie_ux": "1897",
+        "count_dob_incorrect": "513",
+        "count_ssn_incorrect": "1764",
+        "count_identity_not_found": "129",
+        "count_friction_during_otp": "1451",
+        "count_doc_auth_technical_issue": "678",
+        "count_resolution_technical_issues": "1932",
+        "count_doc_auth_processing_issue": "415",
+        "count_auth_successful": 1793,
+        "count_auth_failure": 268,
+        "count_desktop_successful": 1547,
+        "count_mobile_successful": 731,
+        "count_webauthn_platform_successful": 1184,
+        "count_totp_successful": 456,
+        "count_piv_cac_successful": 1872,
+        "count_sms_successful": 593,
+        "count_voice_successful": 1346,
+        "count_backup_code_successful": 217,
+        "count_webauthn_successful": 1698,
+        "count_personal_key_successful": 485,
+        "count_creation_successful": 1923,
+        "count_creation_failed": 764,
+        "count_registered_blocked_fraud": 1531
+      }
+    }
+  ]
+]
