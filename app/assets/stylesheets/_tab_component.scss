@@ -1,23 +1,51 @@
 @use 'uswds-core' as *;
 
 .usa-tab {
-  &-list {
-    display: flex;
+  @include u-margin-y(2);
+
+  &__small {
+    position: relative;
+    text-align: center;
+    border-bottom: 4px solid $theme-color-secondary;
+    @include u-text(700);
+
+    @include at-media('tablet') {
+      display: none;
+    }
+
+    &:hover {
+      @include u-text('no-underline')
+    }
+
+    &:focus, &:hover {
+
+
+      .usa-icon {
+        transform: rotate(180deg);
+      }
+    }
+
+    & .usa-icon {
+      vertical-align: bottom;
+    }
+  }
+
+  &__active {
+    margin: 0;
+  }
+
+  &__list {
+    display: none;
+    flex-direction: column;
     align-items: flex-start;
     padding-left: 0;
+    margin: 0;
     list-style-type: none;
     border-bottom: 1px solid $theme-color-primary-light;
 
-    &__small {
-      @include at-media('tablet') {
-        display: none;
-      }
-
-      &:focus, &:hover {
-        .usa-icon {
-          transform: rotate(180deg);
-        }
-      }
+    @include at-media('tablet') {
+      display: flex;
+      flex-direction: row;
     }
   }
 
@@ -28,30 +56,56 @@
     &.is-active {
       align-self: stretch;
     }
+  }
 
-    &.is-active .usa-tab__anchor:after,
-    & .usa-tab__anchor:hover:after,
-    & .usa-tab__anchor:focus:after {
-      content: '';
-      display: block;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      border-bottom: 4px solid $theme-color-secondary;
-    }
+  &__small:hover:after,
+  &__small:focus:after,
+  &__item.is-active .usa-tab__anchor:after,
+  &__item .usa-tab__anchor:hover:after,
+  &__item .usa-tab__anchor:focus:after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  &__item.is-active .usa-tab__anchor:after,
+  &__item .usa-tab__anchor:hover:after,
+  &__item .usa-tab__anchor:focus:after {
+    border-bottom: 4px solid $theme-color-secondary;
+  }
+
+  &__small:hover + .usa-tab__list,
+  &__small:focus + .usa-tab__list,
+  &__list:hover,
+  &__list:focus {
+    display: flex;
   }
 
   &__anchor {
     display: block;
-    min-width: 140px;
     position: relative;
+
+    @include at-media('tablet') {
+      @include u-text(700);
+    }
+  }
+
+  &__small,
+  &__anchor {
+    min-width: 140px;
     padding: 16px 0 12px;
     @include u-font('sans', 7);
-    @include u-text(700, 'no-underline');
+    @include u-text('no-underline');
     color: $theme-color-primary-dark;
+    background-color: $theme-color-primary-lighter;
 
-    &:focus, &:hover {
-      background-color: $theme-color-primary-lighter;
+    @include at-media('tablet') {
+      background-color: transparent;
+
+      &:focus, &:hover {
+        background-color: $theme-color-primary-lighter;   
+      }
     }
 
     &:focus {
@@ -59,5 +113,8 @@
       outline: 2px solid $theme-color-primary;
       outline-offset: 0;
     }
+  }
+  button.usa-tab__small:focus {
+    outline-offset: 0;
   }
 }
