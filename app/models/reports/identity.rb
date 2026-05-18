@@ -63,7 +63,7 @@ module Reports
       @chosen_date = DateTime.parse(analytic.date) if analytic.date.present?
       @chosen_date ||= DateTime.now
       @storage = AnalyticsReportStorage.new(issuer, chosen_date_as_string)
-      @raw_data = @storage.fetch
+      @raw_data = unwrap(@storage.fetch)
     end
 
     def time_intervals
@@ -154,11 +154,14 @@ module Reports
     def inner_data
       return {} unless has_raw_data?
 
-      @inner_data ||= if @raw_data.is_a?(Array)
-                        @raw_data.dig(0, 0, 'data') || {}
-                      else
-                        @raw_data['data'] || {}
-                      end
+      @inner_data ||= @raw_data['data'] || {}
+    end
+
+    # Unwrap nested arrays from report JSON:
+    # [[{hash}]] or [{hash}] -> {hash}
+    def unwrap(data)
+      data = data[0] while data.is_a?(Array)
+      data || {}
     end
 
     def to_chartkick_with_i18n_labels(keys)
