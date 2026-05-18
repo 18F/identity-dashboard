@@ -1,5 +1,6 @@
 class AnalyticsReportStorage
   # Pull analytics reports from S3
+  # This class does not know about the mapping between the issuer string and the issuer ID,
   class S3
     attr_reader :service_config
 
@@ -14,10 +15,6 @@ class AnalyticsReportStorage
       @service_config = service_config || S3.default_config
     end
 
-    def all_issuers
-      issuer_to_id_map.keys
-    end
-
     def list(criteria)
       s3_criteria = criteria
       s3_criteria = [''] if s3_criteria.blank?
@@ -29,27 +26,20 @@ class AnalyticsReportStorage
       end
     end
 
+    def fetch_id_map
+      fetch 'issuers_service_provider_id.json'
+    end
+
+    # @param key [String] example: '1234/monthly/2026-04-01.json'
     def fetch(key)
-      s3_client.get_object(bucket: service_config[:bucket], key: key).body.read
+      s3_client.get_object(
+        bucket: service_config[:bucket],
+        key: "#{service_config[:prefix]}/#{key}",
+      ).body.read
     end
 
     def s3_client
       @s3_client ||= Aws::S3::Client.new(region: service_config[:region])
-    end
-
-    private
-
-    def issuer_to_id_map
-      @issuer_to_id_map ||= begin
-        # We'll probably want more aggresive caching of and parsing this map for performance reasons
-        # Caching should be easy here since we don't expect it to change more than daily.
-        mapping_object = list([]).find do |object|
-          object.key.include?("#{service_config[:prefix]}/issuer")
-        end
-        JSON.parse(fetch(mapping_object.key)).transform_values do |v|
-          v['id']
-        end
-      end
     end
   end
 end

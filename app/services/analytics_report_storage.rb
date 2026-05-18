@@ -1,8 +1,11 @@
 # Defines fetching reports from AWS S3 Buckets on production and local disk in development/test
+#
+# This class abstracts away having to map between the issuer string and the
+# issuer/service_provider ID. You should give this class the issuer string, and it will try to find
+# a mapping file to look up the corresponding IDs.
+# It will then use the IDs to tell the backend (S3 or Disk) which filename to fetch.
 class AnalyticsReportStorage
   attr_reader :backend, :issuer, :date
-
-  delegate :list, to: :backend
 
   def self.list(criteria = [])
     new.list(Array(criteria))
@@ -17,12 +20,12 @@ class AnalyticsReportStorage
     @backend = if use_s3?
                  AnalyticsReportStorage::S3.new
                else
-                 AnalyticsReportStorage::Disk.new(disk_config)
+                 AnalyticsReportStorage::Disk.new
                end
   end
 
   def fetch
-    JSON.parse(backend.fetch(build_key(issuer, date)))
+    JSON.parse(backend.fetch(build_key(issuer_to_id_map[issuer], date)))
   end
 
   def time_interval
@@ -30,7 +33,11 @@ class AnalyticsReportStorage
   end
 
   def all_issuers
-    @backend.all_issuers
+    issuer_to_id_map.keys
+  end
+
+  def list(criteria)
+    backend.list(issuer_to_id_map.values_at(*criteria).compact)
   end
 
   private
@@ -39,11 +46,22 @@ class AnalyticsReportStorage
     "#{qualifier}/monthly/#{date}.json"
   end
 
-  def disk_config
-    { root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports') }
-  end
-
   def use_s3?
     S3.default_config[:bucket] && S3.default_config[:prefix]
+  end
+
+  def issuer_to_id_map
+    # We'll probably want more aggressive caching of and parsing this map for performance reasons
+    # Caching should be easy here since we don't expect it to change more than daily.
+    @issuer_to_id_map ||= begin
+      mapping_data = JSON.parse(@backend.fetch_id_map)
+      if mapping_data.present?
+        mapping_data.transform_values do |v|
+          v['id']
+        end
+      else
+        {}
+      end
+    end
   end
 end

@@ -17,10 +17,11 @@ RSpec.describe AnalyticsReportStorage::Disk do
       subject = described_class.new({
         root: valid_path,
       })
-      results = subject.list ['urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb']
+      # The number '4388' is the ID for the DoL test data
+      results = subject.list ['4388']
       expect(results.count).to be 1
-      file = File.new results.first.key
-      expect(file.size).to be_positive
+      data = described_class.new.fetch(results.first.key)
+      expect(JSON.parse(data).size).to be_positive
     end
 
     context 'with empty folders and empty files' do
@@ -49,8 +50,26 @@ RSpec.describe AnalyticsReportStorage::Disk do
           root: valid_path,
         })
         result = subject.list([missing_upload1, missing_upload2, valid_upload])
-        expect(result.map(&:key)).to contain_exactly(filename_with_data)
+        expect(result.map(&:key)).to contain_exactly("#{valid_upload}.json")
       end
+    end
+  end
+
+  describe '#fetch_id_map' do
+    it 'grabs expected data by defualt' do
+      expected_text = Rails.root.join(
+        'spec/fixtures/reports/issuers_service_provider_id.json',
+      ).read
+      expect(described_class.new.fetch_id_map).to eq(expected_text)
+    end
+  end
+
+  describe '#fetch' do
+    it 'pulls the expected file' do
+      test_key = '4388/monthly/2025-12-01.json'
+      expected_data = Rails.root.join(described_class.default_config[:root], test_key).read
+
+      expect(described_class.new.fetch(test_key)).to eq(expected_data)
     end
   end
 end

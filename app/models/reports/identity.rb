@@ -97,6 +97,8 @@ module Reports
     end
 
     def idv_data
+      return [] if inner_data.blank?
+
       [[I18n.t('reports.count_newly_proofed_users'),
         inner_data['count_newly_proofed_users']],
        [I18n.t('reports.count_preverified_users'),
@@ -122,13 +124,13 @@ module Reports
     def provider_information
       return {} unless has_raw_data?
 
-      @provider_information || @raw_data[0][0]['provider_information']
+      @provider_information || @raw_data['provider_information']
     end
 
     def report_information
       return {} unless has_raw_data?
 
-      @report_information || @raw_data[0][0]['report_information']
+      @report_information || @raw_data['report_information']
     end
 
     def successful_auths
@@ -140,13 +142,13 @@ module Reports
     private
 
     def chosen_date_as_string
-      chosen_date.beginning_of_month.strftime('%F %T')
+      chosen_date.beginning_of_month.strftime('%F')
     end
 
     def inner_data
       return {} unless has_raw_data?
 
-      @inner_data ||= @raw_data[0][0]['data']
+      @inner_data ||= @raw_data['data']
     end
 
     def to_chartkick_with_i18n_labels(keys)
@@ -162,7 +164,7 @@ module Reports
     end
 
     def has_raw_data?
-      @raw_data.present? && @raw_data[0][0].any?
+      @raw_data.present? && @raw_data.any?
     end
   end
 end

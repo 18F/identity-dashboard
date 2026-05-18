@@ -2,8 +2,11 @@ require 'rails_helper'
 
 describe 'reporting feature basics' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
-  let(:hardcoded_issuer_for_testing_mvp) do
-    'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb'
+  let(:issuer_with_lots_of_test_data) do
+    'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test'
+  end
+  let(:issuer_with_a_little_test_data) do
+    'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo'
   end
   # make some teams and a service_provider
   let(:other_team) { create(:team) }
@@ -11,13 +14,27 @@ describe 'reporting feature basics' do
   let(:test_sp) do
     create(
       :service_provider,
-      issuer: hardcoded_issuer_for_testing_mvp,
+      issuer: issuer_with_lots_of_test_data,
       user: logingov_admin,
       team: logingov_admin.teams.first,
     )
   end
 
-  context 'as logingov_admin' do
+  context 'without configs that have reports' do
+    it 'shows an error message' do
+      login_as logingov_admin
+      visit analytics_path
+      expect(page).to have_content(
+        'You do not belong to any team that has a service provider configuration ' \
+          'with reported data.',
+      )
+      sp_options = find_all('select#analytic_friendly_name > option')
+      expect(sp_options.count).to be(1)
+      expect(sp_options[0].text).to eq('- All SPs-')
+    end
+  end
+
+  context 'as logingov_admin with configs that have reports' do
     before do
       # this order matters until we can specify an SP on /reports
       other_sp
@@ -36,13 +53,24 @@ describe 'reporting feature basics' do
       expect(team_select.text).to include(logingov_admin.teams.first.name)
     end
 
-    it 'can view appropriate service provider options' do
-      sp_select = find('#analytic_friendly_name')
-      sp_opts = sp_select.find_all('option')
+    it 'can view appropriate team and issuer options' do
+      second_sp = create(:service_provider,
+        issuer: issuer_with_a_little_test_data,
+        user: logingov_admin,
+        team: logingov_admin.teams.first)
+      visit analytics_path
+      selection_texts = find_all('select > option').map(&:text)
+      expect(selection_texts).to include(logingov_admin.teams.first.name)
+      expect(selection_texts).to include(test_sp.friendly_name)
 
-      expect(sp_opts.count).to eq(2)
-      expect(sp_select.text).to include(test_sp.friendly_name)
-      expect(sp_select.text).to include(other_sp.friendly_name)
+      service_provider_internal_id = 'analytic_friendly_name'
+      service_provider_dropdown = find("select##{service_provider_internal_id}")
+      service_provider_label = find("label[for=#{service_provider_internal_id}]")
+      expect(service_provider_label.text).to start_with('Service Provider')
+      sp_options = service_provider_dropdown.find_all('option')
+      expect(sp_options.count).to be(2)
+      expect(sp_options.map(&:text)).to eq([test_sp.friendly_name, second_sp.friendly_name])
+      select test_sp.friendly_name, from: 'Service Provider'
     end
 
     it 'displays an alert about billing details' do
@@ -69,7 +97,7 @@ describe 'reporting feature basics' do
 
       it 'displays additional data' do
         expect(page.text).to match(/successful authentications\s*1,282/i)
-        expect(page.text).to match(/applications\s*8/i)
+        expect(page.text).to match(/applications\s*1/i)
       end
     end
 

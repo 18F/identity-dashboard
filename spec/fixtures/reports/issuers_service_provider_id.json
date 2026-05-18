@@ -71,7 +71,7 @@
   "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:sample": {
     "id": 2967
   },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb": {
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test": {
     "id": 4388
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:challenge_test_app": {

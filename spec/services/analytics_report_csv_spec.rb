@@ -2,7 +2,7 @@ require 'rails_helper'
 
 class MockReportIdentity
   def initialize(file_name)
-    @test_data = JSON.parse(File.read(file_name))[0][0]
+    @test_data = JSON.parse(File.read(file_name))
   end
 
   def report_information
@@ -25,9 +25,7 @@ end
 describe AnalyticsReportCsv do
   let(:monthly_report) do
     MockReportIdentity.new(
-      # rubocop:disable Layout/LineLength
-      'spec/fixtures/reports/urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb/monthly/2025-12-01 00:00:00.json',
-      # rubocop:enable Layout/LineLength
+      'spec/fixtures/reports/4388/monthly/2025-12-01.json',
     )
   end
   let(:subject) { described_class.new(monthly_report) }

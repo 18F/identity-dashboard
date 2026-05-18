@@ -31,7 +31,7 @@ describe AnalyticsController do
       context '#download' do
         before do
           create(:service_provider,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_ebsa:lfdb',
+            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
             team: logingov_admin.teams.first)
           get :download
         end
