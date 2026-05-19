@@ -204,7 +204,7 @@ en:
     count_pending_lg99_likely_fraud: Pending Fraud Review
     count_personal_key_successful: Personal Key
     count_piv_cac_successful: PIV / CAC
-    count_preverified_users: Previously Verified
+    count_preverified_users: Preverified
     count_resolution_technical_issues: Other Technical Issues
     count_selfie_ux: Selfie UX Issue
     count_sms_successful: SMS

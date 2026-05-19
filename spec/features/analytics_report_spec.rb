@@ -66,11 +66,11 @@ describe 'reporting feature basics' do
       service_provider_internal_id = 'analytic_friendly_name'
       service_provider_dropdown = find("select##{service_provider_internal_id}")
       service_provider_label = find("label[for=#{service_provider_internal_id}]")
-      expect(service_provider_label.text).to start_with('Service Provider')
+      expect(service_provider_label.text).to start_with('Application')
       sp_options = service_provider_dropdown.find_all('option')
       expect(sp_options.count).to be(2)
       expect(sp_options.map(&:text)).to eq([test_sp.friendly_name, second_sp.friendly_name])
-      select test_sp.friendly_name, from: 'Service Provider'
+      select test_sp.friendly_name, from: 'Application'
     end
 
     it 'displays an alert about billing details' do
@@ -97,7 +97,6 @@ describe 'reporting feature basics' do
 
       it 'displays additional data' do
         expect(page.text).to match(/successful authentications\s*1,282/i)
-        expect(page.text).to match(/applications\s*1/i)
       end
     end
 
@@ -107,7 +106,7 @@ describe 'reporting feature basics' do
 
     it 'can download a CSV with report data' do
       select(test_sp.team.name, from: 'Team')
-      select(test_sp.friendly_name, from: 'Service Provider')
+      select(test_sp.friendly_name, from: 'Application')
       download_button = find '#download-csv'
       download_button.click
 

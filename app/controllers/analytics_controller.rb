@@ -101,12 +101,12 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         type: :column_chart,
         data: identity_report.usage_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Active Users'),
+        options: DEFAULT_GRAPH_OPTIONS,
       },
       {
         type: :column_chart,
         data: identity_report.idv_data,
-        options: DEFAULT_GRAPH_OPTIONS.merge(title: 'Identity Verified Users'),
+        options: DEFAULT_GRAPH_OPTIONS,
       },
     ]
   end
