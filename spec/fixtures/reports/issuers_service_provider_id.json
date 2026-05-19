@@ -104,10 +104,10 @@
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jmax_search_dev": {
     "id": 1212
   },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo": {
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:fdms_sandbox_dev": {
     "id": 1939
   },
-  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathans_demo": {
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo": {
     "id": 194
   },
   "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:search": {
