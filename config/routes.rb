@@ -41,8 +41,7 @@ Rails.application.routes.draw do
   post '/security_events/search' => 'security_events#search'
   resources :security_events, only: %i[index show]
 
-  get '/reports' => 'analytics#index', as: :analytics
-  get '/reports/download' => 'analytics#download', as: :analytics_download
+  get '/reports(/:service_provider_id/:date)' => 'analytics#show', as: :analytics
 
   post '/api/security_events' => 'api/security_events#create'
   get '/api/service_providers' => 'api/service_providers#index'

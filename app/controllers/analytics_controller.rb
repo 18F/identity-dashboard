@@ -11,27 +11,46 @@ class AnalyticsController < ApplicationController # :nodoc:
   helper_method :service_providers_collection_for_select
 
   # /reports
-  def index
+  def show
+    respond_to do |format|
+      format.html do
+        populate_data_for_html
+      end
+      format.csv do
+        report = AnalyticsReportCsv.new(identity_report)
+        send_data report.report_data_csv, filename: report.filename
+      end
+    end
+  end
+
+  private
+
+  def populate_data_for_html
     @no_reports = teams_collection_for_select.blank? ||
                   service_providers_collection_for_select.blank?
     @dates = available_report_dates
     @graphs = default_graphs
     @application_count = sps.count
-    analytic.valid?
   end
-
-  # /reports/download
-  def download
-    report = AnalyticsReportCsv.new(identity_report)
-    send_data report.report_data_csv, filename: report.filename
-  end
-
-  private
 
   def analytic_params
     return {} unless params[:analytic]
 
-    params.require(:analytic).permit(:team, :friendly_name, :date)
+    params.require(:analytic).permit(:service_provider_id, :date)
+  end
+
+  def analytic
+    return Analytic.new unless current_user
+
+    if analytic_params.present?
+      @analytic = Analytic.new(
+        config: service_provider,
+        date: analytic_params[:date],
+      )
+    end
+
+    @analytic ||= Analytic.new(config: sps.first,
+                               date: available_report_dates.last)
   end
 
   def selected_date
@@ -54,6 +73,12 @@ class AnalyticsController < ApplicationController # :nodoc:
     end
   end
 
+  def service_provider
+    return sps.first unless analytic_params.present?
+
+    ServiceProvider.find analytic_params[:service_provider_id]
+  end
+
   def sps
     available_issuers = ServiceProvider.pluck(:issuer).intersection(
       AnalyticsReportStorage.new.all_issuers,
@@ -65,7 +90,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def available_report_dates
-    dates = Reports::Identity.available_dates(sps).uniq
+    dates = Reports::Identity.available_dates([service_provider])
     return dates if dates.present?
 
     fallback_report_dates
@@ -83,13 +108,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def identity_report
     @identity_report ||= Reports::Identity.new(analytic)
-  end
-
-  def analytic
-    return Analytic.new unless current_user
-
-    @analytic ||= Analytic.new(config: sps.first,
-                               date: selected_date || available_report_dates.last)
   end
 
   def id
