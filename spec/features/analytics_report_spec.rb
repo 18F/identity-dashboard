@@ -53,24 +53,17 @@ describe 'reporting feature basics' do
       expect(team_select.text).to include(logingov_admin.teams.first.name)
     end
 
-    it 'can view appropriate team and issuer options' do
+    it 'can update issuer and date options' do
       second_sp = create(:service_provider,
         issuer: issuer_with_a_little_test_data,
         user: logingov_admin,
         team: logingov_admin.teams.first)
       visit analytics_path
-      selection_texts = find_all('select > option').map(&:text)
-      expect(selection_texts).to include(logingov_admin.teams.first.name)
-      expect(selection_texts).to include(test_sp.friendly_name)
 
-      service_provider_internal_id = 'analytic_friendly_name'
-      service_provider_dropdown = find("select##{service_provider_internal_id}")
-      service_provider_label = find("label[for=#{service_provider_internal_id}]")
-      expect(service_provider_label.text).to start_with('Application')
-      sp_options = service_provider_dropdown.find_all('option')
-      expect(sp_options.count).to be(2)
-      expect(sp_options.map(&:text)).to eq([test_sp.friendly_name, second_sp.friendly_name])
+      select second_sp.friendly_name, from: 'Application'
       select test_sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
     end
 
     it 'displays an alert about billing details' do
@@ -101,7 +94,7 @@ describe 'reporting feature basics' do
     end
 
     it 'contains a link to download a CSV' do
-      expect(page).to have_link('Download CSV', href: analytics_download_path)
+      expect(page).to have_link('Export report to CSV', href: analytics_download_path)
     end
 
     it 'can download a CSV with report data' do

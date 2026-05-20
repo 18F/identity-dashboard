@@ -21,7 +21,7 @@ feature 'Analytics page', :js do
     it 'is accessible' do
       expect(sp).to be_valid
       visit analytics_path
-      expect(page).to have_link('Download CSV')
+      expect(page).to have_link('Export report to CSV')
 
       # Assert charts have rendered
 

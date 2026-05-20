@@ -6,6 +6,10 @@ class AnalyticPolicy < BasePolicy
     true if user_has_login_admin_role?
   end
 
+  def create?
+    index?
+  end
+
   def download?
     return false unless user
 
