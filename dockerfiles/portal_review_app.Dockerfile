@@ -1,4 +1,4 @@
-FROM ruby:3.4.5-slim
+FROM public.ecr.aws/docker/library/ruby:3.4.5-slim
 
 # Set environment variables
 ENV RAILS_ROOT /dashboard
