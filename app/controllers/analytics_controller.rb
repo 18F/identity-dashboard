@@ -19,7 +19,6 @@ class AnalyticsController < ApplicationController # :nodoc:
         send_data report.report_data_csv, filename: report.filename
       end
     end
-    analytic.valid?
   end
 
   def create
@@ -27,7 +26,6 @@ class AnalyticsController < ApplicationController # :nodoc:
       redirect_to analytics_path(uuid: analytic.config.uuid, date: analytic.date) and return
     end
 
-    flash[:error] = analytic.full_error_messages
     redirect_to analytics_path
   end
 
@@ -40,15 +38,25 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = default_graphs
     @application_count = available_service_providers.count
     @disable_download = identity_report.data.empty?
+
+    error_if_invalid_url
+  end
+
+  def error_if_invalid_url
+    return if analytic.valid? || analytic_params.blank?
+
+    flash.now[:error] = analytic.errors.full_messages.join(' ')
   end
 
   def analytic_params
-    return { uuid: params[:uuid], date: params[:date] } unless params[:analytic]
+    return params.permit(:uuid, :date, :format) unless params[:analytic]
 
     params.require(:analytic).permit(:uuid, :date)
   end
 
   def analytic
+    return @analytic if @analytic
+
     @analytic = Analytic.new
     return @analytic unless current_user
 
@@ -62,7 +70,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     policy_scope(ServiceProvider).find_by(
       uuid: analytic_params[:uuid],
-    ) || available_service_providers.first
+    )
   end
 
   def teams

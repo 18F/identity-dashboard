@@ -46,10 +46,11 @@ describe AnalyticsController do
 
       context '#download' do
         before do
-          create(:service_provider,
+          sp = create(:service_provider,
+            :ready_to_activate,
             issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
             team: logingov_admin.teams.first)
-          get :download
+          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
         end
 
         it 'returns a valid CSV' do

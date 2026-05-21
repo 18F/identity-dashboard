@@ -80,9 +80,29 @@ describe 'reporting feature basics' do
       # rubocop:enable Layout/LineLength
     end
 
+    it 'does something reasonable when given invalid parameters' do
+      visit analytics_path(
+        uuid: 'INVALID-UUID',
+        date: '2025-12-01',
+      )
+      expect(page).to have_content('The link for that report was not valid. ' \
+        'You can select a different report from the options below.')
+
+      visit analytics_path(
+        uuid: test_sp.uuid,
+        date: 'NOT-A-DATE',
+      )
+      expect(page).to have_content('Date is invalid')
+
+      visit analytics_path
+      expect(page).to_not have_content('The link for that report was not valid. ' \
+        'You can select a different report from the options below.')
+    end
+
     context 'with a report loaded' do
       before do
         visit analytics_path
+        select test_sp.friendly_name, from: 'Application'
         select '2025-12-01', from: 'Date of report'
         click_on 'View report'
       end

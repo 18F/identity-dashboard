@@ -27,10 +27,6 @@ class AnalyticsReportStorage
       end
     end
 
-    def all_issuers
-      list(['/']).filter_map(&:sp_identifier).uniq
-    end
-
     def fetch_id_map
       fetch 'issuers_service_provider_id.json'
     end
