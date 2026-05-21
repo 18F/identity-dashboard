@@ -91,7 +91,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def available_service_providers
     @available_service_providers ||= begin
-      available_issuers = ServiceProvider.pluck(:issuer).intersection(
+      available_issuers = policy_scope(ServiceProvider).pluck(:issuer).intersection(
         AnalyticsReportStorage.new.all_issuers,
       )
 
