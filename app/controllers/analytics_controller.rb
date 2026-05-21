@@ -44,7 +44,7 @@ class AnalyticsController < ApplicationController # :nodoc:
                      service_providers_collection_for_select.blank?
     @dates = available_report_dates
     @graphs = default_graphs
-    @application_count = sps.count
+    @application_count = available_service_providers.count
     @disable_download = identity_report.data.empty?
   end
 
@@ -64,9 +64,11 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def service_provider
-    return sps.first unless analytic_params.present?
+    return available_service_providers.first unless analytic_params.present?
 
-    policy_scope(ServiceProvider).find_by(uuid: analytic_params[:uuid]) || sps.first
+    policy_scope(ServiceProvider).find_by(
+      uuid: analytic_params[:uuid],
+    ) || available_service_providers.first
   end
 
   def teams
@@ -80,26 +82,27 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def service_providers_collection_for_select
-    sps.to_a.flatten.map do |sp|
+    available_service_providers.to_a.flatten.map do |sp|
       [sp.friendly_name, sp.uuid]
     end
   end
 
-  def sps
-    available_issuers = ServiceProvider.pluck(:issuer).intersection(
-      AnalyticsReportStorage.new.all_issuers,
-    )
-    @sps ||= policy_scope(ServiceProvider).where(
-      team: teams,
-      issuer: available_issuers,
-    )
+  def available_service_providers
+    @available_service_providers ||= begin
+      available_issuers = ServiceProvider.pluck(:issuer).intersection(
+        AnalyticsReportStorage.new.all_issuers,
+      )
+
+      policy_scope(ServiceProvider).where(
+        team: teams,
+        issuer: available_issuers,
+      )
+    end
   end
 
   def available_report_dates
-    dates = Reports::Identity.available_dates(sps).uniq
-    return dates if dates.present?
-
-    fallback_report_dates
+    dates = Reports::Identity.available_dates(available_service_providers).uniq
+    dates.presence || fallback_report_dates
   end
 
   def fallback_report_dates
