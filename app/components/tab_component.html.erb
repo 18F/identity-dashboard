@@ -1,22 +1,47 @@
-<div class="usa-tab">
-  <button type="button"
-          class="usa-tab__accordion usa-button--unstyled"
-          aria-controls="usa-tab-list"
-          aria-expanded="false"
-  >
-    <p class="usa-tab__active"><%= tabs[0][:name] %>
-      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-        <use href="/assets/img/sprite.svg#expand_more"></use>
-      </svg>
-    </p>
-  </button>
-  <ul class="usa-tab__list" id="usa-tab-list">
-    <% tabs.each_with_index do |tab, i| %>
-      <li class="usa-tab__item <%= 'is-active' if i == 0 %>" role="presentation">
-        <a class="usa-tab__anchor" href="#<%= tab[:anchor] %>"><%=
-          tab[:name] 
-        %></a>
-      </li>
+<%# expected locals:
+  [Object] opts (optional)
+  [Object] tab_data {
+    title: 'String',
+    id: 'String',
+    content: 'HTML/Partial',
+  }
+%>
+<section class="usa-tab__section<%= "#{opts[:class_name]}" || '' %>">
+  <div class="usa-tab">
+    <button type="button"
+            class="usa-tab__accordion usa-button--unstyled"
+            aria-controls="usa-tab-list"
+            aria-expanded="false"
+    >
+      <p class="usa-tab__active"><%= tab_data[0][:title] %>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use href="/assets/img/sprite.svg#expand_more"></use>
+        </svg>
+      </p>
+    </button>
+    <ul class="usa-tab__list" id="usa-tab-list" role="tablist">
+      <% tab_data.each_with_index do |tab, i| %>
+        <li class="usa-tab__item <%= 'is-active' if i == 0 %>">
+          <a class="usa-tab__anchor"
+             id="usa-tab-<%= tab[:id] %>"
+             href="#<%= tab[:id] %>"
+             role="tab"
+             aria-controls="<%= tab[:id] %>"
+             aria-selected="<%= i == 0 %>"><%=
+            tab[:title] 
+          %></a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="usa-tab__display">
+    <% tab_data.each do |panel| %>
+      <div class="usa-tab__panel"
+           id="<%= panel[:id] %>"
+           role="tabpanel"
+           aria-labelledby="usa-tab-<%= panel[:id] %>">
+        <%= panel[:content] %>
+      </div>
     <% end %>
-  </ul>
-</div>
+  </div>
+</section>
