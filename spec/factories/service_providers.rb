@@ -36,6 +36,7 @@ FactoryBot.define do
       send %i[saml with_oidc_jwt with_oidc_pkce].sample
       default_aal { [1, 2, 3].sample }
       active { false }
+      uuid { SecureRandom.uuid }
     end
 
     trait :ready_to_activate_ial_1 do

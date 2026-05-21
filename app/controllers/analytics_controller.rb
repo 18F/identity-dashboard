@@ -31,12 +31,6 @@ class AnalyticsController < ApplicationController # :nodoc:
     redirect_to analytics_path
   end
 
-  # /reports/download
-  def download
-    report = AnalyticsReportCsv.new(identity_report)
-    send_data report.report_data_csv, filename: report.filename
-  end
-
   private
 
   def populate_data_for_html
@@ -117,10 +111,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def identity_report
     @identity_report ||= Reports::Identity.new(analytic)
-  end
-
-  def id
-    @id ||= params[:id]
   end
 
   def default_graphs

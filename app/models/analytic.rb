@@ -6,14 +6,6 @@ class Analytic
 
   validates :config, presence: true
 
-  def team
-    config&.team || ''
-  end
-
-  def friendly_name
-    config&.friendly_name || ''
-  end
-
   def uuid
     config&.uuid
   end
