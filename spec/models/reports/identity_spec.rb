@@ -48,6 +48,21 @@ describe Reports::Identity do
     )
   end
 
+  describe '.available_dates' do
+    it 'calls list once with all issuers' do
+      sp1 = build(:service_provider, issuer: 'issuer_one')
+      sp2 = build(:service_provider, issuer: 'issuer_two')
+
+      allow(AnalyticsReportStorage).to receive(:list)
+        .with(%w[issuer_one issuer_two])
+        .and_return([])
+
+      described_class.available_dates([sp1, sp2])
+
+      expect(AnalyticsReportStorage).to have_received(:list).once
+    end
+  end
+
   describe '#unwrap' do
     let(:analytic) { Analytic.new(date: '2025-12-01', config: sp) }
     let(:report_hash) { { 'data' => { 'count_newly_created_accounts' => 42 } } }

@@ -175,6 +175,22 @@ RSpec.describe AnalyticsReportStorage do
     end
   end
 
+  describe '#issuer_to_id_map caching' do
+    it 'fetches the mapping file once across multiple instances' do
+      mock_backend = instance_double(AnalyticsReportStorage::Disk)
+      allow(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
+      allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
+      allow(mock_backend).to receive(:fetch_id_map)
+        .and_return(%({"#{test_issuer}": {"id": 123}}))
+
+      Rails.cache.clear
+      described_class.new.all_issuers
+      described_class.new.all_issuers
+
+      expect(mock_backend).to have_received(:fetch_id_map).once
+    end
+  end
+
   describe '.all_issuers' do
     it 'returns a list when mapping data is present' do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
