@@ -12,30 +12,65 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   # /reports
   def index
-    @no_reports = teams_collection_for_select.blank? ||
-                  service_providers_collection_for_select.blank?
-    @dates = available_report_dates
-    @graphs = default_graphs
-    @application_count = sps.count
-    analytic.valid?
+    respond_to do |format|
+      format.html { populate_data_for_html }
+      format.csv do
+        report = AnalyticsReportCsv.new(identity_report)
+        send_data report.report_data_csv, filename: report.filename
+      end
+    end
   end
 
-  # /reports/download
-  def download
-    report = AnalyticsReportCsv.new(identity_report)
-    send_data report.report_data_csv, filename: report.filename
+  def create
+    if analytic.valid?
+      redirect_to analytics_path(uuid: analytic.config.uuid, date: analytic.date) and return
+    end
+
+    error_if_invalid_url
+    redirect_to analytics_path
   end
 
   private
 
-  def analytic_params
-    return {} unless params[:analytic]
+  def populate_data_for_html
+    @no_selections = teams_collection_for_select.blank? ||
+                     service_providers_collection_for_select.blank?
+    @dates = available_report_dates
+    @graphs = default_graphs
+    @application_count = available_service_providers.count
 
-    params.require(:analytic).permit(:team, :friendly_name, :date)
+    error_if_invalid_url
   end
 
-  def selected_date
-    analytic_params[:date].presence
+  def error_if_invalid_url
+    return if analytic.valid? || analytic_params.blank?
+
+    flash.now[:error] = analytic.errors.full_messages.join(' ')
+  end
+
+  def analytic_params
+    return params.permit(:uuid, :date, :format) unless params[:analytic]
+
+    params.require(:analytic).permit(:uuid, :date)
+  end
+
+  def analytic
+    return @analytic if @analytic
+
+    @analytic = Analytic.new
+    return @analytic unless current_user
+
+    @analytic.config = service_provider
+    @analytic.date = analytic_params[:date] || available_report_dates.last
+    @analytic
+  end
+
+  def service_provider
+    return available_service_providers.first unless analytic_params.present?
+
+    policy_scope(ServiceProvider).find_by(
+      uuid: analytic_params[:uuid],
+    )
   end
 
   def teams
@@ -49,26 +84,27 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def service_providers_collection_for_select
-    sps.to_a.flatten.map do |sp|
-      [sp.friendly_name, sp.id]
+    available_service_providers.to_a.flatten.map do |sp|
+      [sp.friendly_name, sp.uuid]
     end
   end
 
-  def sps
-    available_issuers = ServiceProvider.pluck(:issuer).intersection(
-      AnalyticsReportStorage.new.all_issuers,
-    )
-    @sps ||= policy_scope(ServiceProvider).where(
-      team: teams,
-      issuer: available_issuers,
-    )
+  def available_service_providers
+    @available_service_providers ||= begin
+      available_issuers = policy_scope(ServiceProvider).pluck(:issuer).intersection(
+        AnalyticsReportStorage.new.all_issuers,
+      )
+
+      policy_scope(ServiceProvider).where(
+        team: teams,
+        issuer: available_issuers,
+      )
+    end
   end
 
   def available_report_dates
-    dates = Reports::Identity.available_dates(sps).uniq
-    return dates if dates.present?
-
-    fallback_report_dates
+    dates = Reports::Identity.available_dates(available_service_providers).uniq
+    dates.presence || fallback_report_dates
   end
 
   def fallback_report_dates
@@ -83,17 +119,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def identity_report
     @identity_report ||= Reports::Identity.new(analytic)
-  end
-
-  def analytic
-    return Analytic.new unless current_user
-
-    @analytic ||= Analytic.new(config: sps.first,
-                               date: selected_date || available_report_dates.last)
-  end
-
-  def id
-    @id ||= params[:id]
   end
 
   def default_graphs

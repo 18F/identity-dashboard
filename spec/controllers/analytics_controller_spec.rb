@@ -44,12 +44,37 @@ describe AnalyticsController do
         end
       end
 
-      context '#download' do
-        before do
+      describe '#create' do
+        let(:sp_with_data) do
           create(:service_provider,
+            :ready_to_activate,
             issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
             team: logingov_admin.teams.first)
-          get :download
+        end
+
+        it 'handles bad post parameters' do
+          post :create, params: { uuid: sp_with_data.uuid, date: '9999-99-99' }
+          expect(response).to redirect_to(analytics_path)
+          expect(flash[:error]).to match('The link for that report was not valid.')
+        end
+
+        it 'handles good post parameters' do
+          post :create, params: { uuid: sp_with_data.uuid, date: '2025-12-01' }
+          expect(response).to redirect_to(analytics_path(
+            uuid: sp_with_data.uuid,
+            date: '2025-12-01',
+          ))
+          expect(flash[:error]).to be_blank
+        end
+      end
+
+      describe 'format: csv' do
+        before do
+          sp = create(:service_provider,
+            :ready_to_activate,
+            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            team: logingov_admin.teams.first)
+          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
         end
 
         it 'returns a valid CSV' do

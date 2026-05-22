@@ -1,5 +1,5 @@
 <fieldset class="usa-fieldset usa_collection_select grid-row grid-gap-2">
-  <%= form.input :team,
+  <%#= form.input :team,
                  wrapper_html: { class: 'tablet:grid-col-4'},
                  input_html: { class: 'usa-select', aria: { invalid: false } },
                  collection: teams_collection_for_select,
@@ -7,13 +7,13 @@
                  label_html: { class: 'usa-input-required' },
                  prompt: '- All Teams-',
                  required: true %>
-  <%= form.input :friendly_name,
+  <%= form.input :uuid,
                  wrapper_html: { class: 'tablet:grid-col-4'},
                  input_html: { class: 'usa-select', aria: { invalid: false } },
                  collection: service_providers_collection_for_select,
                  label: 'Application',
                  label_html: { class: 'usa-input-required' },
-                 prompt: '- All SPs-',
+                 prompt: '- All Applications-',
                  required: true %>
   <%= form.input :date,
                  wrapper_html: { class: 'tablet:grid-col-4'},
