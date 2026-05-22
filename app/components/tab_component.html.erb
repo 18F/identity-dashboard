@@ -21,13 +21,13 @@
     </button>
     <ul class="usa-tab__list" id="usa-tab-list" role="tablist">
       <% tab_data.each_with_index do |tab, i| %>
-        <li class="usa-tab__item <%= 'is-active' if i == 0 %>">
+        <li class="usa-tab__item" id="usa-tab-item__<%= tab[:id] %>">
           <a class="usa-tab__anchor"
-             id="usa-tab-<%= tab[:id] %>"
+             id="usa-tab__<%= tab[:id] %>"
              href="#<%= tab[:id] %>"
              role="tab"
              aria-controls="<%= tab[:id] %>"
-             aria-selected="<%= i == 0 %>"><%=
+             aria-selected="false"><%=
             tab[:title] 
           %></a>
         </li>
@@ -45,3 +45,5 @@
     <% end %>
   </div>
 </section>
+<%= javascript_include_tag 'tab_component' %>
+<%= stylesheet_link_tag 'tab_component' %>
