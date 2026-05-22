@@ -62,7 +62,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     return @analytic unless current_user
 
     @analytic.config = service_provider
-    @analytic.date = analytic_params[:date] || available_report_dates.last
+    @analytic.date = analytic_params[:date].presence || available_report_dates.last
     @analytic
   end
 
@@ -75,9 +75,8 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def selected_date_range
-    date_string = selected_date || available_report_dates.last
-    end_date = Date.parse(date_string).end_of_month
-    "#{date_string} to #{end_date.strftime('%F')}"
+    end_date = Date.parse(@analytic.date).end_of_month
+    "#{@analytic.date} to #{end_date.strftime('%F')}"
   end
 
   def teams
