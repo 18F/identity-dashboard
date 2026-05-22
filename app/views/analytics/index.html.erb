@@ -8,7 +8,7 @@
   <div class="grid-row grid-gap">
     <div class="grid-col-fill">
       <section id="filter">
-          <%= simple_form_for(@analytic, url: analytics_path, html: { class: 'border-top-1px border-primary-light margin-bottom-3' }) do |form| %>
+          <%= simple_form_for(@analytic, url: analytics_path, html: { class: 'border-top-1px border-primary-light margin-bottom-2' }) do |form| %>
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>
@@ -18,7 +18,7 @@
                   date: @analytic.date,
                   format: 'csv'
                 ) %>"
-                class="usa-button usa-button--outline margin-y-2 margin-right-0 mobile-lg:margin-right-0"
+                class="usa-button usa-button--outline margin-bottom-2 margin-right-0 mobile-lg:margin-right-0 mobile-lg:margin-top-2"
                 id="download-csv">
                 Export report to CSV
               </a>
