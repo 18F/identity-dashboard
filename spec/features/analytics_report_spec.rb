@@ -120,12 +120,12 @@ describe 'reporting feature basics' do
       end
 
       it 'can download a CSV with report data' do
-        expect(page).to have_link('Export report to CSV', href: analytics_path(
+        expect(page).to have_link('Export report as CSV', href: analytics_path(
           uuid: test_sp.uuid,
           date: '2025-12-01',
           format: 'csv',
         ))
-        click_on 'Export report to CSV'
+        click_on 'Export report as CSV'
 
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
