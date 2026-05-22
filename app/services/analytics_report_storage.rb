@@ -51,14 +51,10 @@ class AnalyticsReportStorage
   end
 
   def issuer_to_id_map
-    # We'll probably want more aggressive caching of and parsing this map for performance reasons
-    # Caching should be easy here since we don't expect it to change more than daily.
-    @issuer_to_id_map ||= begin
-      mapping_data = JSON.parse(@backend.fetch_id_map)
+    @issuer_to_id_map ||= Rails.cache.fetch('analytics_issuer_to_id_map', expires_in: 1.hour) do
+      mapping_data = JSON.parse(backend.fetch_id_map)
       if mapping_data.present?
-        mapping_data.transform_values do |v|
-          v['id']
-        end
+        mapping_data.transform_values { |v| v['id'] }
       else
         {}
       end
