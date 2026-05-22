@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Reports::Identity do
+  before { Rails.cache.clear }
+
   let(:sp) { build(:service_provider) }
 
   context 'using local files for test data' do
