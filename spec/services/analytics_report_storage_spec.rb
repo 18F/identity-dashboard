@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AnalyticsReportStorage do
+  before { Rails.cache.clear }
+
   let(:test_issuer) { 'test:issuer' }
   let(:test_date) { '2025-12-01' }
 
