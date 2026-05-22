@@ -26,6 +26,7 @@ class AnalyticsController < ApplicationController # :nodoc:
       redirect_to analytics_path(uuid: analytic.config.uuid, date: analytic.date) and return
     end
 
+    error_if_invalid_url
     redirect_to analytics_path
   end
 
@@ -37,7 +38,6 @@ class AnalyticsController < ApplicationController # :nodoc:
     @dates = available_report_dates
     @graphs = default_graphs
     @application_count = available_service_providers.count
-    @disable_download = identity_report.data.empty?
 
     error_if_invalid_url
   end

@@ -43,6 +43,14 @@ describe AnalyticsReportCsv do
       expect(csv[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
       expect(csv[38]).to eq(['Personal Key', '', '0', ''])
     end
+
+    it 'only outputs headers with blank data' do
+      blank_report = Reports::Identity.new(Analytic.new)
+      blank_subject = described_class.new(blank_report)
+      csv = CSV.parse(blank_subject.report_data_csv)
+      expect(csv.length).to be(1)
+      expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
+    end
   end
 
   describe '#filename' do

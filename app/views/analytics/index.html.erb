@@ -12,22 +12,16 @@
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>
-              <% if @disable_download %>
-                <button class="usa-button usa-button--outline margin-y-2 margin-right-0 mobile-lg:margin-right-0" aria-disabled="true" >
-                  Export disabled due to lack of data
-                </button>
-              <% else %>
-                <a
-                  href="<%= analytics_path(
-                    uuid: @analytic.uuid,
-                    date: @analytic.date,
-                    format: 'csv'
-                  ) %>"
-                  class="usa-button usa-button--outline margin-y-2 margin-right-0 mobile-lg:margin-right-0"
-                  id="download-csv">
-                  Export report to CSV
-                </a>
-              <% end %>
+              <a
+                href="<%= analytics_path(
+                  uuid: @analytic.uuid,
+                  date: @analytic.date,
+                  format: 'csv'
+                ) %>"
+                class="usa-button usa-button--outline margin-y-2 margin-right-0 mobile-lg:margin-right-0"
+                id="download-csv">
+                Export report to CSV
+              </a>
             </div>
             <% end %>
       </section>

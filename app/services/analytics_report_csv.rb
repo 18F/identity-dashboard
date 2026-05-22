@@ -8,6 +8,8 @@ class AnalyticsReportCsv
   end
 
   def report_data_csv
+    return headers_only if report_data.report_information.blank?
+
     month = report_data.report_information['month_start_date_actual']
 
     CSV.generate(headers: true) do |csv|
@@ -24,5 +26,13 @@ class AnalyticsReportCsv
     friendly_name = report_data.provider_information['service_provider_name']
 
     "logingov_#{friendly_name.parameterize.underscore}_#{month_id}.csv"
+  end
+
+  private
+
+  def headers_only
+    CSV.generate(headers: true) do |csv|
+      csv << HEADER_ROW
+    end
   end
 end
