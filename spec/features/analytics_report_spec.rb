@@ -109,7 +109,7 @@ describe 'reporting feature basics' do
 
       context 'with charts rendering', :js do
         it 'tries to display each chart' do
-          expect(page).to have_content('Service activity')
+          expect(page).to have_content('Date range')
           expect(find_all('canvas').count).to eq(2)
           expect(page).to_not have_content('No data')
         end
