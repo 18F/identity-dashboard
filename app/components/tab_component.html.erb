@@ -39,7 +39,9 @@
       <div class="usa-tab__panel"
            id="<%= panel[:id] %>"
            role="tabpanel"
-           aria-labelledby="usa-tab-<%= panel[:id] %>">
+           aria-labelledby="usa-tab-<%= panel[:id] %>"
+           <%= 'tabindex=0' unless panel[:focusable] %>
+           >
         <%= panel[:content] %>
       </div>
     <% end %>
