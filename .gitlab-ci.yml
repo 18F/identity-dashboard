@@ -70,9 +70,7 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "schedule"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
@@ -589,3 +587,29 @@ deploy_eks:
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+## Scheduled/auditing tasks
+
+audit_packages_scheduled:
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *npm_cache
+  script:
+    - *bundle_install
+    - *npm_install
+    - make audit
+  after_script:
+    - |-
+      if [ "$CI_JOB_STATUS" != "success" ]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:"  \
+          --username "gitlab-notify" \
+          --channel "#login-appdev" \
+          --webhook "${SLACK_WEBHOOK}" \
+          --raise \
+          --text "$(printf "Dependencies audit in GitLab failed.\nBuild Results: ${CI_JOB_URL}\nCheck results locally with 'make audit'")"
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"

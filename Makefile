@@ -33,6 +33,12 @@ test:
 test_basic:
 	COVERAGE=true bundle exec rspec --exclude-pattern "spec/features/accessibility/**/*_spec.rb"
 
+audit: ## Checks packages for vulnerabilities
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
+	@echo "--- npm audit ---"
+	npm audit --audit-level=high
+
 run:
 	foreman start -p $(PORT)
 
