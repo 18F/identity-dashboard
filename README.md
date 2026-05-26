@@ -93,9 +93,9 @@ Our strategy is that permissions are additive, ie. a user with a Login.gov Reado
 
 # Security
 
-Our code standards and testing proceses are part of our controls to help ensure this software is secure. Additionally, we regularly check for dependency vulnerabilities. This is currently secheduled daily in GitLab and uses the `make audit` task in this repo, which you can also run at any time in a local dev environment.
+Our code standards and testing processes are part of our controls to help ensure this software is secure. Additionally, we regularly check for dependency vulnerabilities. This is currently scheduled daily in GitLab and uses the `make audit` task in this repo, which you can also run at any time in a local dev environment.
 
-If you notice something is out-of-date, a first attempt at updating dependancy vulnerabilities should usually be
+If you notice something is out-of-date, a first attempt at updating dependency vulnerabilities should usually be
 
 * `npm audit --fix` for Node.js packages
 * `bundle update <gem-name> <additional-gem-names-if-any> --conservative` for Ruby gems
