@@ -32,7 +32,12 @@
       <p class="usa-alert__text"><%= t('reports.info_alert') %></p>
     </div>
   </div>
-  <div class="grid-row grid-gap tablet-lg:margin-2"> 
+   <div class="grid-row grid-gap">
+    <div class="grid-col-fill">
+      <h2 class="margin-bottom-0">Date range: <%= selected_date_range %></h2>
+    </div>
+  </div>
+  <div class="grid-row grid-gap tablet-lg:margin-bottom-2"> 
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary padding-x-1 padding-y-05">
         <p class="data-summary__title">Users that accessed your services through Login.gov</p>
