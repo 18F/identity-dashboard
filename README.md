@@ -91,6 +91,17 @@ To add an admin-only action: check `app/policies/*Policy.rb` for authorization a
 
 Our strategy is that permissions are additive, ie. a user with a Login.gov Readonly global role and a Partner Admin Team role will have general Readonly perms, plus the permissions of a Partner Admin for that team.
 
+# Security
+
+Our code standards and testing proceses are part of our controls to help ensure this software is secure. Additionally, we regularly check for dependency vulnerabilities. This is currently secheduled daily in GitLab and uses the `make audit` task in this repo, which you can also run at any time in a local dev environment.
+
+If you notice something is out-of-date, a first attempt at updating dependancy vulnerabilities should usually be
+
+* `npm audit --fix` for Node.js packages
+* `bundle update <gem-name> <additional-gem-names-if-any> --conservative` for Ruby gems
+
+We have an on-call team rotation where the on-call team member is also responsible for checking the results of `make audit` during their rotation and updating dependancies using these commands. If the on-call team member is unable to resolve dependency security vulnerabilities through the commands above alone or some equally simple fix, they must create a high-priority on our team backlog to address the problem.
+
 # Debugging
 
 In order to see what you are typing when debugging with `binding.pry` , use `rails s -p 3001` instead of `make run`
