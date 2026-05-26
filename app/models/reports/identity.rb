@@ -49,10 +49,8 @@ module Reports
     attr_reader :issuer, :chosen_date
 
     def self.available_dates(configs)
-      reports = configs.flat_map do |config|
-        AnalyticsReportStorage.list(config.issuer)
-      end
-
+      issuers = configs.map(&:issuer)
+      reports = AnalyticsReportStorage.list(issuers)
       reports.map do |report|
         File.basename(report.key, File.extname(report.key))
       end

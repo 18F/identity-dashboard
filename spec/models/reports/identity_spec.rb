@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Reports::Identity do
+  before { Rails.cache.clear }
+
   let(:sp) { build(:service_provider) }
 
   context 'using local files for test data' do
@@ -46,6 +48,21 @@ describe Reports::Identity do
     expect(subject.fraud_data).to eq(
       [[I18n.t('reports.count_stayed_blocked'), expected_count]],
     )
+  end
+
+  describe '.available_dates' do
+    it 'calls list once with all issuers' do
+      sp1 = build(:service_provider, issuer: 'issuer_one')
+      sp2 = build(:service_provider, issuer: 'issuer_two')
+
+      allow(AnalyticsReportStorage).to receive(:list)
+        .with(%w[issuer_one issuer_two])
+        .and_return([])
+
+      described_class.available_dates([sp1, sp2])
+
+      expect(AnalyticsReportStorage).to have_received(:list).once
+    end
   end
 
   describe '#unwrap' do

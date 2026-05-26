@@ -100,7 +100,6 @@ class AnalyticsController < ApplicationController # :nodoc:
       available_issuers = policy_scope(ServiceProvider).pluck(:issuer).intersection(
         AnalyticsReportStorage.new.all_issuers,
       )
-
       policy_scope(ServiceProvider).where(
         team: teams,
         issuer: available_issuers,
@@ -109,8 +108,10 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def available_report_dates
-    dates = Reports::Identity.available_dates(available_service_providers).uniq
-    dates.presence || fallback_report_dates
+    @available_report_dates ||= begin
+      dates = Reports::Identity.available_dates(available_service_providers).uniq
+      dates.presence || fallback_report_dates
+    end
   end
 
   def fallback_report_dates
