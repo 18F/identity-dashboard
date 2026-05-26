@@ -34,7 +34,9 @@
   </div>
    <div class="grid-row grid-gap">
     <div class="grid-col-fill">
-      <h2 class="margin-bottom-0">Date range: <%= selected_date_range %></h2>
+      <% if @analytic.valid? %>
+        <h2 class="margin-bottom-0">Date range: <%= selected_date_range %></h2>
+      <% end %>
     </div>
   </div>
   <div class="grid-row grid-gap tablet-lg:margin-bottom-2"> 
