@@ -54,7 +54,7 @@ const onTabSelect = (ev) => {
 
   const allPanels = document.querySelectorAll('.usa-tab__panel');
   const allItems = document.querySelectorAll('.usa-tab__item');
-  const mobileActive = document.querySelector('.usa-tab__active');
+  const mobileTabTitle = document.getElementById('usa-tab__title');
 
   const selectedPanel = ev?.currentTarget !== window &&
     ev?.currentTarget.getAttribute('aria-controls');
@@ -71,7 +71,7 @@ const onTabSelect = (ev) => {
     const isActiveAnchor = anchor.id == `usa-tab__${currentPanelId}`;
 
     anchor.setAttribute('aria-selected', isActiveAnchor);
-    if (isActiveAnchor) mobileActive.innerText = anchor.innerText;
+    if (isActiveAnchor) mobileTabTitle.innerText = anchor.innerText;
   });
   allItems.forEach(item => {
     if (item.id == `usa-tab-item__${currentPanelId}`) {

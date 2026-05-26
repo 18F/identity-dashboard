@@ -13,7 +13,8 @@
             aria-controls="usa-tab-list"
             aria-expanded="false"
     >
-      <p class="usa-tab__active"><%= tab_data[0][:title] %>
+      <p class="usa-tab__active">
+        <span id="usa-tab__title"><%= tab_data[0][:title] %></span>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
           <use href="/assets/img/sprite.svg#expand_more"></use>
         </svg>
