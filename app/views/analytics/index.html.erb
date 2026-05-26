@@ -27,33 +27,31 @@
       </section>
     </div>
   </div>
-  <div class="grid-row grid-gap">
-    <div class="grid-col-fill">
-      <section id="service-activity">
-      <div class="report-section__title">
-        <h2 class="margin-y-1">Service activity</h2>
-      </div>
-      </section>
-    </div>
-  </div>
   <div class="usa-alert usa-alert--info">
     <div class="usa-alert__body">
       <p class="usa-alert__text"><%= t('reports.info_alert') %></p>
     </div>
   </div>
-  <div class="grid-row grid-gap tablet-lg:margin-2"> 
+   <div class="grid-row grid-gap">
+    <div class="grid-col-fill">
+      <% if @analytic.valid? %>
+        <h2 class="margin-bottom-0">Date range: <%= selected_date_range %></h2>
+      <% end %>
+    </div>
+  </div>
+  <div class="grid-row grid-gap tablet-lg:margin-bottom-2"> 
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary padding-x-1 padding-y-05">
         <p class="data-summary__title">Users that accessed your services through Login.gov</p>
         <p class="data-summary__number"><%= number_with_delimiter @identity_report.grand_total %></p>
-        <p class="data-summary__description">Unique users accessing source • Current month</p>
+        <p class="data-summary__description">Unique users accessing source</p>
       </div>
      </div>
      <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary padding-x-1 padding-y-05">
-        <p class="data-summary__title">Suspected fraud</p>
+        <p class="data-summary__title">Blocked Users</p>
         <p class="data-summary__number"><%= number_with_delimiter @identity_report.fraud_total %></p>
-        <p class="data-summary__description">IdV and Authentication users combined • Current month</p>
+        <p class="data-summary__description">Users suspected of fraud, triggering fraud signals and/or experiencing difficulties making it through the authentication or verification process.</p>
       </div>
     </div>
   </div>
@@ -61,23 +59,21 @@
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-graph--container">
         <p class="data-graph__title">
-          <span class="data-graph__headline">Active Users</span> •
-          <%= pluralize(@identity_report.time_intervals, @identity_report.time_interval_size) %>
+          <span class="data-graph__headline">Active Users</span>
         </p>
         <p class="padding-bottom-2">Unique users who signed into your service</p> 
           <div class="flex-1"><%= public_send(@graphs[0][:type], @graphs[0][:data], **@graphs[0][:options]) %></div>
-        <p>New accounts reflect account creation during this window. Existing accounts reflecting account created ahead of this window.</p>
+        <p>New accounts reflect account creation during this window. Existing accounts reflect accounts created ahead of this window.</p>
       </div>
     </div>
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-graph--container">
         <p class="data-graph__title">
-          <span class="data-graph__headline">Identity Verified Users</span> •
-          <%= pluralize(@identity_report.time_intervals, @identity_report.time_interval_size) %>
+          <span class="data-graph__headline">Identity Verified Users</span>
         </p>
         <p class="padding-bottom-2">Unique users who completed identity verification</p>
           <div class="flex-1"><%= public_send(@graphs[1][:type], @graphs[1][:data], **@graphs[1][:options]) %></div>
-        <p>Newly proofed completed verification during this window. Preverified had already completed verification ahead of this window.</p>
+        <p>Newly proofed are net new users who verified during this window. Preverified are users who had already completed verification at another service provider during this window.</p>
       </div>
     </div>
   </div>

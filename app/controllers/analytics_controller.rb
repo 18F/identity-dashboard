@@ -9,6 +9,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   helper_method :teams_collection_for_select
   helper_method :service_providers_collection_for_select
+  helper_method :selected_date_range
 
   # /reports
   def index
@@ -61,7 +62,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     return @analytic unless current_user
 
     @analytic.config = service_provider
-    @analytic.date = analytic_params[:date] || available_report_dates.last
+    @analytic.date = analytic_params[:date].presence || available_report_dates.last
     @analytic
   end
 
@@ -71,6 +72,11 @@ class AnalyticsController < ApplicationController # :nodoc:
     policy_scope(ServiceProvider).find_by(
       uuid: analytic_params[:uuid],
     )
+  end
+
+  def selected_date_range
+    end_date = Date.parse(@analytic.date).end_of_month
+    "#{@analytic.date} to #{end_date.strftime('%F')}"
   end
 
   def teams
