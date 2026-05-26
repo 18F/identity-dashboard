@@ -95,12 +95,12 @@ Our strategy is that permissions are additive, ie. a user with a Login.gov Reado
 
 Our code standards and testing processes are part of our controls to help ensure this software is secure. Additionally, we regularly check for dependency vulnerabilities. This is currently scheduled daily in GitLab and uses the `make audit` task in this repo, which you can also run at any time in a local dev environment.
 
-If you notice something is out-of-date, a first attempt at updating dependency vulnerabilities should usually be
+If you notice something is out-of-date, try performing the following commands first:
 
 * `npm audit --fix` for Node.js packages
 * `bundle update <gem-name> <additional-gem-names-if-any> --conservative` for Ruby gems
 
-We have an on-call team rotation where the on-call team member is also responsible for checking the results of `make audit` during their rotation and updating dependancies using these commands. If the on-call team member is unable to resolve dependency security vulnerabilities through the commands above alone or some equally simple fix, they must create a high-priority on our team backlog to address the problem.
+We have an on-call team rotation where the on-call team member is also responsible for checking the results of `make audit` during their rotation and updating dependancies using these commands. If the on-call team member is unable to resolve dependency security vulnerabilities through the commands above alone or some equally simple fix, they must create a high-priority issue on the [Team FIE Daily board](https://gitlab.login.gov/lg-teams/FIE/team-fie-daily/-/issues) for address the problem.
 
 # Debugging
 
