@@ -8,7 +8,6 @@ const arrayMod = (a, b) => {
 };
 
 const onEvent = (ev) => {
-  console.log('click', ev.currentTarget);
   ev.preventDefault();
   history.replaceState(
     null,
