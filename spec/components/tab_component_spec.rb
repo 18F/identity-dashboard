@@ -8,9 +8,9 @@ RSpec.describe TabComponent, type: :component do
   let(:render) do
     render_inline(
       described_class.new(tabs: [
-        { name: 'test 0', anchor: 'zeroth-test' },
-        { name: 'test 1', anchor: 'first-test' },
-      ]),
+                            { name: 'test 0', anchor: 'zeroth-test' },
+                            { name: 'test 1', anchor: 'first-test' },
+                          ]),
     )
   end
 

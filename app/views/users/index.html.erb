@@ -18,7 +18,32 @@
     </button>
   <% end %>
 </section>
-
+<%= render(TabComponent.new(tab_data: [
+    { title: 'Tab 1',
+      id: 'tab1',
+      content: render('components/feature_card', {
+        icon: 'accessible_forward',
+        title: 'footer.performance',
+        body: 'forms.confirm_service_provider'}),
+      focusable: false,
+    },
+    { title: 'Tab 2',
+      id: 'tab2',
+      content: render('components/feature_card', {
+        icon: 'assessment',
+        title: 'footer.no_fear_act',
+        body: 'team_memberships.rbac_description'}),
+      focusable: false,
+    },
+    { title: 'Tab 3',
+      id: 'tab3',
+      content: render('components/feature_card', {
+        icon: 'electrical_services',
+        title: 'footer.status',
+        body: 'footer.disclaimer_html'}),
+      focusable: true,
+    },
+  ], opts: { class_name: 'test-me' })) %>
 <div class="display-flex">
   <% if current_user.logingov_admin? %>
     <%= button_to t('headings.users.new_user'),
