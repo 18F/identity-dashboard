@@ -70,7 +70,7 @@ const onTabSelect = (ev) => {
     const isActiveAnchor = anchor.id == `usa-tab__${currentPanelId}`;
 
     anchor.setAttribute('aria-selected', isActiveAnchor);
-    if (isActiveAnchor) mobileTabTitle.innerText = anchor.innerText;
+    if (isActiveAnchor) { mobileTabTitle.innerText = anchor.innerText; }
   });
   allItems.forEach(item => {
     if (item.id == `usa-tab-item__${currentPanelId}`) {
