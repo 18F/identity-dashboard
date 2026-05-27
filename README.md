@@ -100,7 +100,7 @@ If you notice something is out-of-date, try performing the following commands fi
 * `npm audit --fix` for Node.js packages
 * `bundle update <gem-name> <additional-gem-names-if-any> --conservative` for Ruby gems
 
-We have an on-call team rotation where the on-call team member is also responsible for checking the results of `make audit` during their rotation and updating dependancies using these commands. If the on-call team member is unable to resolve dependency security vulnerabilities through the commands above alone or some equally simple fix, they must create a high-priority issue on the [Team FIE Daily board](https://gitlab.login.gov/lg-teams/FIE/team-fie-daily/-/issues) for address the problem.
+We have an on-call team rotation where the on-call team member is also responsible for checking the results of `make audit` during their rotation and updating dependencies using these commands. If the on-call team member is unable to resolve dependency security vulnerabilities through the commands above alone or some equally simple fix, they must create a high-priority issue on the [Team FIE Daily board](https://gitlab.login.gov/lg-teams/FIE/team-fie-daily/-/issues) to address the problem.
 
 # Debugging
 
