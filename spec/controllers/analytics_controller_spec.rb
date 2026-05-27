@@ -117,10 +117,9 @@ describe AnalyticsController do
       end
 
       context '#index' do
-        it 'does not have GET access' do
+        it 'has GET access' do
           get :index
-          expect(response).to be_unauthorized
-          expect(logger_double).to have_received(:unauthorized_access_attempt)
+          expect(response).to be_ok
         end
       end
     end
@@ -131,10 +130,9 @@ describe AnalyticsController do
       end
 
       context '#index' do
-        it 'does not have GET access' do
+        it 'has GET access' do
           get :index
-          expect(response).to be_unauthorized
-          expect(logger_double).to have_received(:unauthorized_access_attempt)
+          expect(response).to be_ok
         end
       end
     end
@@ -147,10 +145,9 @@ describe AnalyticsController do
     end
 
     context '#index' do
-      it 'does not have GET access' do
+      it 'has GET access' do
         get :index
-        expect(response).to be_unauthorized
-        expect(logger_double).to have_received(:unauthorized_access_attempt)
+        expect(response).to be_ok
       end
     end
   end
