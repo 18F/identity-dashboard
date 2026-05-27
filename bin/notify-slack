@@ -107,10 +107,6 @@ class NotifySlack
   def notify(webhook:, channel:, username:, text:, icon:)
     url = URI(webhook)
 
-    $stderr.puts "Webhook is #{webhook.length} long"
-    $stderr.puts "Webhook is of type #{url.class}"
-    $stderr.puts "Webhook hostname is '#{url.hostname}'"
-
     req = Net::HTTP::Post.new(url)
     req.form_data = {
       'payload' => {
