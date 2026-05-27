@@ -7,9 +7,19 @@ RSpec.describe TabComponent, type: :component do
 
   let(:render) do
     render_inline(
-      described_class.new(tabs: [
-                            { name: 'test 0', anchor: 'zeroth-test' },
-                            { name: 'test 1', anchor: 'first-test' },
+      described_class.new(tab_data: [
+                            { title: 'test 0',
+                              id: 'zeroth-test',
+                              content: render_inline('components/logo_banner'),
+                              focusable: false },
+                            { title: 'test 1',
+                              id: 'first-test',
+                              content: render_inline({partial: 'components/step_progress', locals: {
+                                steps: ['edit','index'],
+                                current_step_index: 0,
+                                localization_base: 'headings.service_providers'
+                              }}),
+                              focusable: false },
                           ]),
     )
   end
@@ -21,7 +31,7 @@ RSpec.describe TabComponent, type: :component do
   end
 
   it 'displays appropriate anchor links in tabs' do
-    anchors = render.css('li a')
+    anchors = render.css('.usa-tab__anchor')
     expect(anchors.count).to eq(2)
     strings = ['test 0', 'test 1']
     anchors.map(&:text).each_with_index do |str, index|
