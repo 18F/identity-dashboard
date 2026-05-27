@@ -52,13 +52,11 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_2'))
     end
 
-    scenario 'cannot see or visit link to analytics path' do
+    scenario 'can see and visit link to analytics path' do
       team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
-      sp = create(:service_provider, team: team_membership.team)
+      create(:service_provider, team: team_membership.team)
       visit service_providers_path
-      expect(page).to_not have_content('Analytics')
-      visit analytics_path(sp.id)
-      expect(page).to have_content('Unauthorized')
+      expect(page).to have_link('Reports')
     end
 
     scenario 'partner cannot change configuration to prod-ready with localhost URLs' do
