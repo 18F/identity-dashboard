@@ -27,16 +27,16 @@
       </section>
     </div>
   </div>
+    <div class="grid-row grid-gap">
+    <div class="grid-col-fill">
+      <% if @analytic.valid? %>
+        <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">Date range: <%= selected_date_range %></h2>
+      <% end %>
+    </div>
+  </div>
   <div class="usa-alert usa-alert--info">
     <div class="usa-alert__body">
       <p class="usa-alert__text"><%= t('reports.info_alert') %></p>
-    </div>
-  </div>
-   <div class="grid-row grid-gap">
-    <div class="grid-col-fill">
-      <% if @analytic.valid? %>
-        <h2 class="margin-bottom-0">Date range: <%= selected_date_range %></h2>
-      <% end %>
     </div>
   </div>
   <div class="grid-row grid-gap tablet-lg:margin-bottom-2"> 
