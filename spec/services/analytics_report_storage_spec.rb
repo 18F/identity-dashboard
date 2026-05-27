@@ -9,6 +9,12 @@ RSpec.describe AnalyticsReportStorage do
   describe 'local disk storage' do
     let(:storage_root) { Rails.root.join('tmp/test_analytics_reports') }
 
+    before(:all) do
+      # Clear the cache once before starting this entire block of tests
+      # since the tests use a different storage location
+      Rails.cache.delete 'analytics_issuer_to_id_map'
+    end
+
     before do
       FileUtils.mkdir_p(storage_root)
       allow(IdentityConfig.store).to receive(:local_reports_folder).and_return(storage_root)
@@ -16,6 +22,8 @@ RSpec.describe AnalyticsReportStorage do
 
     after do
       FileUtils.rm_rf(storage_root)
+      # Also clear the cache after each test in this block
+      Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
     describe '.list' do
@@ -24,6 +32,7 @@ RSpec.describe AnalyticsReportStorage do
           { root: storage_root },
         )
       end
+
       context 'when directory is empty' do
         it 'returns an empty array' do
           expect(described_class.list).to eq([])
@@ -89,6 +98,12 @@ RSpec.describe AnalyticsReportStorage do
     let(:bucket_name) { 'test-reports-bucket' }
     let(:bucket_prefix) { 'int/portal' }
 
+    before(:all) do
+      # Clear the cache once before starting this entire block of tests
+      # since the tests use a different storage location
+      Rails.cache.delete 'analytics_issuer_to_id_map'
+    end
+
     before do
       allow(IdentityConfig.store).to receive_messages(
         aws_reports_bucket: bucket_name,
@@ -101,6 +116,8 @@ RSpec.describe AnalyticsReportStorage do
     end
 
     after do
+      # Also clear the cache after each test in this block
+
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 

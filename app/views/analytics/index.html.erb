@@ -12,26 +12,27 @@
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>
-              <a
-                href="<%= analytics_path(
-                  uuid: @analytic.uuid,
-                  date: @analytic.date,
-                  format: 'csv'
-                ) %>"
-                class="usa-button usa-button--outline margin-bottom-2 margin-right-0 mobile-lg:margin-right-0 mobile-lg:margin-top-2"
-                id="download-csv">
-                Export report as CSV
-              </a>
+              <% if @analytic.valid? && @graphs.any? %>
+                <a
+                  href="<%= analytics_path(
+                    uuid: @analytic.uuid,
+                    date: @analytic.date,
+                    format: 'csv'
+                  ) %>"
+                  class="usa-button usa-button--outline margin-bottom-2 margin-right-0 mobile-lg:margin-right-0 mobile-lg:margin-top-2"
+                  id="download-csv">
+                  Export report as CSV
+                </a>
+              <% end %>
             </div>
             <% end %>
       </section>
     </div>
   </div>
+<% if @analytic.valid? && @graphs.any? %>
     <div class="grid-row grid-gap">
     <div class="grid-col-fill">
-      <% if @analytic.valid? %>
         <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">Date range: <%= selected_date_range %></h2>
-      <% end %>
     </div>
   </div>
   <div class="usa-alert usa-alert--info">
@@ -86,4 +87,4 @@
       </div>
     </div>
   </div>
- 
+<% end %>

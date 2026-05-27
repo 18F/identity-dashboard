@@ -7,6 +7,7 @@ feature 'Analytics page', :js do
     let(:sp) do
       create(
         :service_provider,
+        :ready_to_activate,
         issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
         team: logingov_admin.teams.sample,
       )
@@ -21,10 +22,13 @@ feature 'Analytics page', :js do
     it 'is accessible' do
       expect(sp).to be_valid
       visit analytics_path
+      expect_page_to_have_no_accessibility_violations(page)
+      select sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
+
       expect(page).to have_link('Export report as CSV')
-
-      # Assert charts have rendered
-
+      # TODO: Assert charts have rendered after we switch to Highcharts
       expect_page_to_have_no_accessibility_violations(page)
     end
   end

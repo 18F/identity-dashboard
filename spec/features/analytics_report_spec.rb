@@ -51,6 +51,12 @@ describe 'reporting feature basics' do
     #   expect(team_opts.count).to eq(Team.count)
     #   expect(team_select.text).to include(logingov_admin.teams.first.name)
     # end
+    it 'does not show a report automatically' do
+      visit analytics_path
+      expect(page).to have_content('Choose from the dropdowns to see a report.')
+      expect(page).to_not have_content('Date range')
+      expect(page).to_not have_link('Export report as CSV')
+    end
 
     it 'can update issuer and date options' do
       second_sp = create(:service_provider,
@@ -67,17 +73,6 @@ describe 'reporting feature basics' do
         uuid: test_sp.uuid,
         date: '2025-12-01',
       ), ignore_query: true)
-    end
-
-    it 'displays an alert about billing details' do
-      visit analytics_path
-      info_alert = find('.usa-alert--info')
-
-      # rubocop:disable Layout/LineLength
-      expect(info_alert.text).to eq(
-        'The report is not representative of billed usage. For billing details refer to the monthly invoice.',
-      )
-      # rubocop:enable Layout/LineLength
     end
 
     it 'does something reasonable when given invalid parameters' do
@@ -105,6 +100,16 @@ describe 'reporting feature basics' do
         select test_sp.friendly_name, from: 'Application'
         select '2025-12-01', from: 'Date of report'
         click_on 'View report'
+      end
+
+      it 'displays an alert about billing details' do
+        info_alert = find('.usa-alert--info')
+
+        # rubocop:disable Layout/LineLength
+        expect(info_alert.text).to eq(
+          'The report is not representative of billed usage. For billing details refer to the monthly invoice.',
+        )
+        # rubocop:enable Layout/LineLength
       end
 
       context 'with charts rendering', :js do

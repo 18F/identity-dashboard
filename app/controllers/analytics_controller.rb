@@ -37,7 +37,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     @no_selections = teams_collection_for_select.blank? ||
                      service_providers_collection_for_select.blank?
     @dates = available_report_dates
-    @graphs = default_graphs
+    @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
 
     error_if_invalid_url
@@ -46,7 +46,11 @@ class AnalyticsController < ApplicationController # :nodoc:
   def error_if_invalid_url
     return if analytic.valid? || analytic_params.blank?
 
-    flash.now[:error] = analytic.errors.full_messages.join(' ')
+    # Our preference is to use `flash.now` whenever possible,
+    # but `flash.now` doesn't work immediately before a redirect.
+    # Rubocop is unable to detect that this flash is getting set before a redirect
+    # because setting the flash and the redirect happen in different methods.
+    flash[:error] = analytic.errors.full_messages.join(' ') # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 
   def analytic_params
@@ -101,7 +105,6 @@ class AnalyticsController < ApplicationController # :nodoc:
         AnalyticsReportStorage.new.all_issuers,
       )
       policy_scope(ServiceProvider).where(
-        team: teams,
         issuer: available_issuers,
       )
     end
