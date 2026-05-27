@@ -3,7 +3,7 @@ class AnalyticPolicy < BasePolicy
   def index?
     return false unless user
 
-    true if user_has_login_admin_role?
+    true
   end
 
   def create?
