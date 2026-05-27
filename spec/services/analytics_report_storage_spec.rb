@@ -100,6 +100,10 @@ RSpec.describe AnalyticsReportStorage do
       allow(Aws::S3::Client).to receive(:new).and_return(s3_client_with_stubs)
     end
 
+    after do
+      Rails.cache.delete 'analytics_issuer_to_id_map'
+    end
+
     describe '.list' do
       let(:s3_objects) do
         [
