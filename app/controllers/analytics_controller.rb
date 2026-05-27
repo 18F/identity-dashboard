@@ -46,6 +46,10 @@ class AnalyticsController < ApplicationController # :nodoc:
   def error_if_invalid_url
     return if analytic.valid? || analytic_params.blank?
 
+    # Our preference is to use `flash.now` whenever possible,
+    # but `flash.now` doesn't work immediately before a redirect.
+    # Rubocop is unable to detect that this flash is getting set before a redirect
+    # because setting the flash and the redirect happen in different methods.
     flash[:error] = analytic.errors.full_messages.join(' ') # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 
