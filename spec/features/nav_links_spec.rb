@@ -179,8 +179,8 @@ feature 'Nav links' do
         visit root_path
       end
 
-      scenario 'should see a Reports link' do
-        expect(page).to have_link('Reports')
+      scenario 'should not see a Reports link' do
+        expect(page).to_not have_link('Reports')
       end
     end
   end
@@ -238,15 +238,7 @@ feature 'Nav links' do
       expect(page).to have_link('Teams')
     end
 
-    scenario 'should see a Reports link on production' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      visit root_path
-      expect(page).to have_link('Reports')
-    end
-
-    scenario 'should not see a Reports link on sandbox' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      visit root_path
+    scenario 'should not see a Reports link' do
       expect(page).to_not have_link('Reports')
     end
 
