@@ -132,24 +132,38 @@ RSpec.describe AnalyticsReportStorage do
         ]
       end
 
-      before do
-        allow(s3_client_with_stubs).to receive(:list_objects_v2)
-          .with(bucket: bucket_name, prefix: "#{bucket_prefix}/")
-          .and_return(double(contents: s3_objects))
+      describe 'success' do
+        before do
+          allow(s3_client_with_stubs).to receive(:list_objects_v2)
+            .with(bucket: bucket_name, prefix: "#{bucket_prefix}/")
+            .and_return(double(contents: s3_objects))
+        end
+
+        it 'returns objects from S3 bucket' do
+          result = described_class.list
+
+          expect(result.map(&:key)).to contain_exactly('report1.json', 'report2.json')
+        end
+
+        it 'calls S3 with correct bucket' do
+          described_class.list
+
+          expect(s3_client_with_stubs).to have_received(:list_objects_v2).with(
+            bucket: bucket_name, prefix: "#{bucket_prefix}/",
+          ).at_least(:once)
+        end
       end
 
-      it 'returns objects from S3 bucket' do
-        result = described_class.list
+      describe 'error' do
+        before do
+          allow(Aws::S3::Client).to receive(:new).and_raise(s3_nosuchkey_error)
+        end
 
-        expect(result.map(&:key)).to contain_exactly('report1.json', 'report2.json')
-      end
+        it 'handles missing data files' do
+          result = described_class.list
 
-      it 'calls S3 with correct bucket' do
-        described_class.list
-
-        expect(s3_client_with_stubs).to have_received(:list_objects_v2).with(
-          bucket: bucket_name, prefix: "#{bucket_prefix}/",
-        ).at_least(:once)
+          expect(result).to eq([])
+        end
       end
     end
 

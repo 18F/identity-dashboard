@@ -38,12 +38,12 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
 
-    if identity_report.usage_data.empty? and identity_report.idv_data.empty?
-      @error = t('reports.errors.no_data')
-      @graphs = []
-    elsif teams_collection_for_select.blank? ||
+    if teams_collection_for_select.blank? ||
           service_providers_collection_for_select.blank?
       @error = t('reports.errors.no_team')
+    elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
+      @error = t('reports.errors.no_data')
+      @graphs = []
     end
 
     error_if_invalid_url
