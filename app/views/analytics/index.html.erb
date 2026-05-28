@@ -2,13 +2,17 @@
 
 <h1 class="margin-top-0">Reports<span class="usa-tag usa-tag--big margin-left-105 bg-accent-cool-dark padding-x-105 radius-lg text-light text-ttop">Beta</span></h1>
 <p class="usa-intro font-body-lg line-height-sans-4">Track usage, fraud signals, and more &mdash; Updated monthly</p>
-  <% if @no_selections %>
-    <p class="usa-error-message">You do not belong to any team that has a service provider configuration with reported data.</p>
-  <% end %>
-  <div class="grid-row grid-gap">
+  <div class="grid-row grid-gap border-top-1px border-primary-light">
     <div class="grid-col-fill">
+      <% if @error %>
+        <div class="usa-alert usa-alert--error margin-top-2">
+          <div class="usa-alert__body">
+            <p class="usa-alert__text"><%= @error %></p>
+          </div>
+        </div>
+      <% end %>
       <section id="filter">
-          <%= simple_form_for(@analytic, url: analytics_path, html: { class: 'border-top-1px border-primary-light margin-bottom-2' }) do |form| %>
+          <%= simple_form_for(@analytic, url: analytics_path, html: { class: 'margin-bottom-2' }) do |form| %>
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>

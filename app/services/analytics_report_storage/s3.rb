@@ -24,6 +24,8 @@ class AnalyticsReportStorage
           prefix: "#{service_config[:prefix]}/#{criterion}",
         ).contents
       end
+    rescue Aws::S3::Errors::NoSuchKey
+      []
     end
 
     def fetch_id_map
@@ -36,6 +38,8 @@ class AnalyticsReportStorage
         bucket: service_config[:bucket],
         key: "#{service_config[:prefix]}/#{key}",
       ).body.read
+    rescue Aws::S3::Errors::NoSuchKey
+      '{}'
     end
 
     def s3_client
