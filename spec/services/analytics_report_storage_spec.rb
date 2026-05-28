@@ -95,9 +95,6 @@ RSpec.describe AnalyticsReportStorage do
 
   describe 'S3 storage' do
     let(:s3_client_with_stubs) { Aws::S3::Client.new(stub_responses: true) }
-    let(:s3_nosuchkey_error) do
-      Aws::S3::Errors::NoSuchKey.new('key', 'The specified key does not exist.')
-    end
     let(:bucket_name) { 'test-reports-bucket' }
     let(:bucket_prefix) { 'int/portal' }
 

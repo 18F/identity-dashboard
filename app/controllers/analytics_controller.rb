@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
@@ -38,15 +39,18 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
 
+    check_for_data_error
+    error_if_invalid_url
+  end
+
+  def check_for_data_error
     if teams_collection_for_select.blank? ||
-          service_providers_collection_for_select.blank?
+       service_providers_collection_for_select.blank?
       @error = t('reports.errors.no_team')
     elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
       @error = t('reports.errors.no_data')
       @graphs = []
     end
-
-    error_if_invalid_url
   end
 
   def error_if_invalid_url
@@ -152,3 +156,4 @@ class AnalyticsController < ApplicationController # :nodoc:
     ]
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -37,11 +37,7 @@ class AnalyticsReportStorage
   end
 
   def list(criteria)
-    begin
-      backend.list(issuer_to_id_map.values_at(*criteria).compact)
-    rescue Aws::S3::Errors::NoSuchKey
-      []
-    end
+    backend.list(issuer_to_id_map.values_at(*criteria).compact)
   end
 
   private
