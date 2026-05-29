@@ -30,6 +30,16 @@ feature 'Extract Download' do
     expect(page).to_not have_link('Download configs')
   end
 
+  it 'shows issuer not found for unmatched criteria' do
+    visit extracts_path
+    fill_in 'Ticket number', with: expected_ticket_number
+    fill_in 'extract[criteria_list]',
+            with: "#{sp_to_export.issuer} urn:gov:gsa:openidconnect:fake_issuer"
+    click_on 'Extract configs'
+    expect(page).to have_content('Issuer not found')
+    expect(page).to have_content('urn:gov:gsa:openidconnect:fake_issuer')
+  end
+
   it 'will not have a download button if the configs are invalid' do
     bad_uri = 'ftp:///'
     sp_to_export.redirect_uris = [bad_uri]
