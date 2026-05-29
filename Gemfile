@@ -76,6 +76,7 @@ end
 
 group :development, :test do
   gem 'bullet', '>= 7.0.5'
+  gem 'bundler-audit', '~> 0.9.3', require: false
   gem 'factory_bot_rails', '~> 6.3', '>= 6.3.0'
   gem 'i18n-tasks', '>= 1.0.13'
   gem 'pry-byebug'

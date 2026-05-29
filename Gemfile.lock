@@ -197,6 +197,9 @@ GEM
     bummr (1.1.0)
       rainbow
       thor
+    bundler-audit (0.9.3)
+      bundler (>= 1.2.0)
+      thor (~> 1.0)
     byebug (12.0.0)
     capistrano (3.19.1)
       airbrussh (>= 1.0.0)
@@ -367,7 +370,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.5.9)
+    net-imap (0.6.4)
       date
       net-protocol
     net-pop (0.1.2)
@@ -678,6 +681,7 @@ DEPENDENCIES
   bullet (>= 7.0.5)
   bummr
   bundler
+  bundler-audit (~> 0.9.3)
   capistrano
   capistrano-npm
   capistrano-passenger
