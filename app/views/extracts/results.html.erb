@@ -12,6 +12,10 @@
             <li class="usa-error-message"><%= error_message %></li>
           <% end %>
         </ul>
+      <% else %>
+        <ul class="usa-list">
+          <li class="usa-error-message">Issuer not found</li>
+        </ul>
       <% end %>
       </li>
     <% end %>
