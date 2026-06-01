@@ -20,20 +20,18 @@
         </svg>
       </p>
     </button>
-    <ul class="usa-tab__list" id="usa-tab-list" role="tablist">
+    <div class="usa-tab__list default-active" id="usa-tab-list" role="tablist" tabindex="0">
       <% tab_data.each_with_index do |tab, i| %>
-        <li class="usa-tab__item" id="usa-tab-item__<%= tab[:id] %>">
-          <a class="usa-tab__anchor"
-             id="usa-tab__<%= tab[:id] %>"
-             href="#<%= tab[:id] %>"
-             role="tab"
-             aria-controls="<%= tab[:id] %>"
-             aria-selected="false"><%=
-            tab[:title] 
-          %></a>
-        </li>
+        <a class="usa-tab__item"
+           id="usa-tab__<%= tab[:id] %>"
+           href="#<%= tab[:id] %>"
+           role="tab"
+           aria-controls="<%= tab[:id] %>"
+           aria-selected="false"><%=
+          tab[:title] 
+        %></a>
       <% end %>
-    </ul>
+    </div>
   </div>
   <div class="usa-tab__display">
     <% tab_data.each do |panel| %>

@@ -15,43 +15,6 @@
     @include u-margin(0);
   }
 
-  ul {
-    @include add-list-reset;
-  }
-
-  &__list {
-    @include u-display('none');
-    @include u-flex('column', 'align-start');
-    @include add-list-reset;
-    @include u-margin(0, 0, 0, '1rem');
-    @include u-border('1px', 'solid', 'primary-light');
-    @include u-radius('05');
-
-    @include at-media('tablet') {
-      @include u-display('block');
-      @include u-flex('row');
-      @include u-margin-left(0);
-      @include u-border('1px', 0, 0);
-    }
-  }
-
-  &__item {
-    @include u-padding-x(2);
-    @include u-text('left');
-    @include u-bg('primary-lighter');
-
-    @include at-media('tablet') {
-      @include u-display('inline-block');
-      @include u-padding-x(0);
-      @include u-text('center');
-      @include u-bg('transparent');
-
-      &.is-active {
-        @include u-flex('align-self-stretch');
-      }
-    }
-  }
-
   @mixin active-after {
     content: '';
     @include u-display('block');
@@ -64,39 +27,8 @@
     @include u-border-bottom('05', 'solid', 'secondary');
   }
 
-  &__accordion:hover:after,
-  &__accordion:focus:after {
-    @include active-after;
-  }
-
-  &__item .usa-tab__anchor:hover:after,
-  &__item .usa-tab__anchor:focus:after {
-    @include active-after;
-    @include active-after-underline;
-  }
-
-  &__item.is-active .usa-tab__anchor:after {
-    @include at-media('tablet') {
-      @include active-after;
-      @include active-after-underline;
-    }
-  }
-
-  &__accordion:hover + .usa-tab__list,
-  &__accordion:focus + .usa-tab__list,
-  &__list:hover,
-  &__list:focus {
-    @include at-media-max('tablet') {
-      @include u-display('inline-flex');
-      @include u-position('relative');
-      @include u-z(200);
-      @include u-margin-top('neg-05');
-      @include u-margin-left(2);
-    }
-  }
-
   &__accordion,
-  &__anchor {
+  &__item {
     @include u-width('full');
     @include u-minw(15);
     @include u-padding(2, 0, 105);
@@ -117,6 +49,7 @@
       @include reset-outline-offset;
     }
   }
+  // this must override a later, 0-2-0 specificity style
   button.usa-tab__accordion:focus {
     @include reset-outline-offset;
   }
@@ -136,6 +69,10 @@
     }
 
     &:focus, &:hover {
+      &:after {
+        @include active-after;
+      }
+
       .usa-icon {
         @include flip;
       }
@@ -146,14 +83,63 @@
     }
   }
 
-  &__anchor {
-    @include u-display('block');
+  &__list {
+    @include u-display('none');
+    @include u-flex('column', 'align-start');
+    @include u-margin(0, 0, 0, '1rem');
+    @include u-border('1px', 'solid', 'primary-light');
+    @include u-radius('05');
+
+    @include at-media('tablet') {
+      @include u-display('flex');
+      @include u-flex('row');
+      @include u-margin-left(0);
+      @include u-border('1px', 0, 0);
+    }
+
+    @include at-media-max('tablet') {
+      &.default-active,
+      &.is-active {
+        @include u-display('inline-flex');
+        @include u-position('absolute');
+        @include u-z(200);
+        @include u-margin-top('neg-05');
+        @include u-margin-left(2);
+      }
+
+      &.default-active {
+        @include u-position('relative');
+      }
+    }
+  }
+
+  &__item {
+    @include u-display('inline-block');
     @include u-position('relative');
+    @include u-padding-x(2);
+    @include u-text('left');
     @include u-bg('primary-lighter');
 
     @include at-media('tablet') {
+      @include u-padding-x(0);
+      @include u-text('center');
       @include u-text(700);
       @include u-bg('transparent');
+
+      &.is-active {
+        @include u-flex('align-self-stretch');
+
+        &:after {
+          @include active-after;
+          @include active-after-underline;
+        }
+      }
+    }
+
+    &:hover:after,
+    &:focus:after {
+      @include active-after;
+      @include active-after-underline;
     }
   }
 }

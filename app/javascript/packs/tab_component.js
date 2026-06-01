@@ -21,26 +21,26 @@ const validHash = (hash, panels) => {
 };
 
 const onTabSelect = (ev) => {
-  const allAnchors = document.querySelectorAll('.usa-tab__anchor');
+  const allItems = document.querySelectorAll('.usa-tab__item');
 
   if (ev?.type == 'keydown') {
-    let anchors, currentIndex, newTarget;
+    let items, currentIndex, newTarget;
     switch (ev.key) {
       case ' ':
       case 'Enter':
         onEvent(ev);
         break;
       case 'ArrowRight':
-        anchors = new Array(...allAnchors);
-        currentIndex = anchors.indexOf(ev.currentTarget);
-        newTarget = anchors[arrayMod(currentIndex + 1, anchors.length)];
+        items = new Array(...allItems);
+        currentIndex = items.indexOf(ev.currentTarget);
+        newTarget = items[arrayMod(currentIndex + 1, items.length)];
         newTarget.focus();
         newTarget.click();
         return true;
       case 'ArrowLeft':
-        anchors = new Array(...allAnchors);
-        currentIndex = anchors.indexOf(ev.currentTarget);
-        newTarget = anchors[arrayMod(currentIndex - 1, anchors.length)];
+        items = new Array(...allItems);
+        currentIndex = items.indexOf(ev.currentTarget);
+        newTarget = items[arrayMod(currentIndex - 1, items.length)];
         newTarget.focus();
         newTarget.click();
         return true;
@@ -52,7 +52,6 @@ const onTabSelect = (ev) => {
   }
 
   const allPanels = document.querySelectorAll('.usa-tab__panel');
-  const allItems = document.querySelectorAll('.usa-tab__item');
   const mobileTabTitle = document.getElementById('usa-tab__title');
 
   const selectedPanel = ev?.currentTarget !== window &&
@@ -66,14 +65,12 @@ const onTabSelect = (ev) => {
   allPanels.forEach(panel => {
     panel.style.display = (panel.id == currentPanelId) ? '' : 'none';
   });
-  allAnchors.forEach(anchor => {
-    const isActiveAnchor = anchor.id == `usa-tab__${currentPanelId}`;
-
-    anchor.setAttribute('aria-selected', isActiveAnchor);
-    if (isActiveAnchor) { mobileTabTitle.innerText = anchor.innerText; }
-  });
   allItems.forEach(item => {
-    if (item.id == `usa-tab-item__${currentPanelId}`) {
+    const isActiveItem = item.id == `usa-tab__${currentPanelId}`;
+
+    item.setAttribute('aria-selected', isActiveItem);
+    if (isActiveItem) {
+      mobileTabTitle.innerText = item.innerText;
       item.classList.add('is-active');
     } else {
       item.classList.remove('is-active');
@@ -82,11 +79,14 @@ const onTabSelect = (ev) => {
 };
 
 addEventListener('DOMContentLoaded', () => {
-  const anchors = document.querySelectorAll('.usa-tab__anchor');
+  const items = document.querySelectorAll('.usa-tab__item');
+  const list = document.querySelector('.usa-tab__list');
 
-  anchors.forEach(anchor => {
-    anchor.addEventListener('click', onTabSelect);
-    anchor.addEventListener('keydown', onTabSelect);
+  list.classList.remove('default-active');
+
+  items.forEach(item => {
+    item.addEventListener('click', onTabSelect);
+    item.addEventListener('keydown', onTabSelect);
   });
 
   addEventListener('hashchange', onTabSelect);
