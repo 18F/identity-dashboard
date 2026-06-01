@@ -14,24 +14,27 @@ RSpec.describe TabComponent, type: :component do
                               focusable: false },
                             { title: 'test 1',
                               id: 'first-test',
-                              content: render_inline({partial: 'components/step_progress', locals: {
-                                steps: ['edit','index'],
-                                current_step_index: 0,
-                                localization_base: 'headings.service_providers'
-                              }}),
+                              content: render_inline({
+                                partial: 'components/step_progress',
+                                locals: {
+                                  steps: ['edit', 'index'],
+                                  current_step_index: 0,
+                                  localization_base: 'headings.service_providers',
+                                },
+                              }),
                               focusable: false },
                           ]),
     )
   end
 
-  it 'displays an unordered list of tabs' do
-    expect(render.css('ul').count).to eq(1)
-    list_items = render.css('li')
+  it 'displays a set of tabs' do
+    expect(render.css('[role="tablist"]').count).to eq(1)
+    list_items = render.css('[role="tab"]')
     expect(list_items.count).to eq(2)
   end
 
   it 'displays appropriate anchor links in tabs' do
-    anchors = render.css('.usa-tab__anchor')
+    anchors = render.css('a.usa-tab__item')
     expect(anchors.count).to eq(2)
     strings = ['test 0', 'test 1']
     anchors.map(&:text).each_with_index do |str, index|

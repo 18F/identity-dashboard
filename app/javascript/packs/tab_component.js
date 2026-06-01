@@ -22,7 +22,7 @@ const validHash = (hash, panels) => {
   return new Array(...panels).some(p => p.id == hash);
 };
 
-const onButtonSelect = (ev) => {
+const onButtonSelect = () => {
   list.classList.toggle('is-active');
 }
 
