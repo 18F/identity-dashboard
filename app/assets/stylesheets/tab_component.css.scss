@@ -9,6 +9,7 @@
 }
 
 .usa-tab {
+  @include u-position('relative');
   @include u-margin-y(2);
 
   &__active {
@@ -101,14 +102,16 @@
       &.default-active,
       &.is-active {
         @include u-display('inline-flex');
-        @include u-position('absolute');
+        @include u-position('relative');
         @include u-z(200);
-        @include u-margin-top('neg-05');
+        @include u-margin-top('neg-1');
         @include u-margin-left(2);
       }
 
-      &.default-active {
-        @include u-position('relative');
+      &.is-active {
+        @include u-position('absolute');
+        @include u-left(0);
+        @include u-top('full');
       }
     }
   }

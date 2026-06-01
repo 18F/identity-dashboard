@@ -1,3 +1,5 @@
+let allItems, list, button;
+
 const arrayMod = (a, b) => {
   const mod = a % b;
   if (mod < 0) {
@@ -19,6 +21,10 @@ const onEvent = (ev) => {
 const validHash = (hash, panels) => {
   return new Array(...panels).some(p => p.id == hash);
 };
+
+const onButtonSelect = (ev) => {
+  list.classList.toggle('is-active');
+}
 
 const onTabSelect = (ev) => {
   const allItems = document.querySelectorAll('.usa-tab__item');
@@ -76,15 +82,20 @@ const onTabSelect = (ev) => {
       item.classList.remove('is-active');
     }
   });
+  // hide mobile dropdown;
+  list.classList.remove('is-active');
 };
 
 addEventListener('DOMContentLoaded', () => {
-  const items = document.querySelectorAll('.usa-tab__item');
-  const list = document.querySelector('.usa-tab__list');
+  allItems = document.querySelectorAll('.usa-tab__item');
+  list = document.getElementById('usa-tab-list');
+  button = document.getElementById('usa-tab-button');
 
   list.classList.remove('default-active');
 
-  items.forEach(item => {
+  button.addEventListener('click', onButtonSelect);
+
+  allItems.forEach(item => {
     item.addEventListener('click', onTabSelect);
     item.addEventListener('keydown', onTabSelect);
   });

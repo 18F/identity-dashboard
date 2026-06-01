@@ -9,6 +9,7 @@
 <section class="usa-tab__section<%= "#{opts[:class_name]}" || '' %>">
   <div class="usa-tab">
     <button type="button"
+            id="usa-tab-button"
             class="usa-tab__accordion usa-button--unstyled"
             aria-controls="usa-tab-list"
             aria-expanded="false"
@@ -20,7 +21,7 @@
         </svg>
       </p>
     </button>
-    <div class="usa-tab__list default-active" id="usa-tab-list" role="tablist" tabindex="0">
+    <div class="usa-tab__list default-active" id="usa-tab-list" role="tablist">
       <% tab_data.each_with_index do |tab, i| %>
         <a class="usa-tab__item"
            id="usa-tab__<%= tab[:id] %>"
