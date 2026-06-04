@@ -58,7 +58,7 @@ feature 'Service Providers CRUD' do
       visit service_providers_path
       expect(page).to_not have_content('Analytics')
       visit analytics_path(sp.id)
-      expect(page).to have_content('Unauthorized')
+      expect(page).to have_content('Access denied')
     end
 
     scenario 'partner cannot change configuration to prod-ready with localhost URLs' do

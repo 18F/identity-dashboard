@@ -130,7 +130,7 @@ feature 'Team pages', :js do
           end
 
           it 'is accessible even when unauthorized' do
-            expect(page).to have_text('Unauthorized')
+            expect(page).to have_text('Access denied')
             expect_page_to_have_no_accessibility_violations(page)
           end
         end
