@@ -150,6 +150,16 @@ describe Extract do
 
       expect(extract.teams).to eq([team])
     end
+
+    it 'should deduplicate teams shared by multiple service providers' do
+      sp3 = create(:service_provider, :ready_to_activate, team:)
+      extract = build(:extract, {
+        ticket: '0',
+        criteria_list: "#{sp1.issuer} #{sp3.issuer}",
+      })
+
+      expect(extract.teams).to eq([team])
+    end
   end
 
   describe '#service_providers' do
