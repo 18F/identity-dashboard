@@ -42,4 +42,23 @@ RSpec.describe TabComponent, type: :component do
     end
     expect(anchors.map { |a| a.attr('href') }).to eq(['#zeroth-test', '#first-test'])
   end
+
+  context '#add_tab' do
+    let(:tab) do
+      described_class.new(tab_data: [], opts: { class: 'test' })
+    end
+    let(:test_data) do
+      { title: 'new', id: "id_#{rand(10..1000)}", content: 'test' }
+    end
+
+    it 'adds an object to the tab_data array' do
+      tab.add_tab(
+        title: test_data[:title],
+        id: test_data[:id],
+        content: test_data[:content],
+      )
+
+      expect(tab.tab_data[-1]).to eq(test_data)
+    end
+  end
 end
