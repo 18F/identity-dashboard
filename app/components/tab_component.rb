@@ -2,24 +2,25 @@
 #
 # @example render a basic 3-tab component. Only final render should use <%=.
 # <% tab_component = TabComponent.new(
-#              opts: { class_name: 'test-me' }
-#            ).add_tab(title: 'Tab One', id: 'tab1') do %>
+#      opts: { class_name: 'test-me' }
+#    ).add_tab(title: 'Tab One', id: 'tab1') do %>
 #      <% render('components/feature_card', {
-#           icon: 'accessible_forward',
-#           title: 'footer.performance',
-#           body: 'forms.confirm_service_provider'}) %>
+#        icon: 'accessible_forward',
+#        title: 'footer.performance',
+#        body: 'forms.confirm_service_provider'}) %>
 # <% end %>
-# <% tab_component.add_tab(title: 'Tab Two', id: 'tab2') do %>
-#     <% render('components/feature_card', {
-#           icon: 'assessment',
-#           title: 'footer.no_fear_act',
-#           body: 'team_memberships.rbac_description'}) %>
+# <% tab_component.add_tab(title: 'Tab Two', id: 'tab2', focusable: true) do %>
+#   <% capture do %>
+#     <p class="usa-prose">This is the…</p>
+#     <p class="usa-prose">second tab panel!</p>
+#     <a class="usa-link" href="#tab3">Go to tab 3</a>
+#   <% end %>
 # <% end %>
-# <% tab_component.add_tab(title: 'Tab Three', id: 'tab', focusable: true) do %>
-#     <% render('components/feature_card', {
-#           icon: 'electrical_services',
-#           title: 'footer.status',
-#           body: 'footer.disclaimer_html'}) %>
+# <% tab_component.add_tab(title: 'Tab Three', id: 'tab3', focusable: true) do %>
+#   <% render('components/feature_card', {
+#     icon: 'electrical_services',
+#     title: 'footer.status',
+#     body: 'footer.disclaimer_html'}) %>
 # <% end %>
 # <%= render tab_component %>
 class TabComponent < ViewComponent::Base
@@ -39,7 +40,6 @@ class TabComponent < ViewComponent::Base
   end
 
   # @param [Object] tab_options any of tab_data options (see above)
-  # @yield [block] Tab panel contents (optional)
   def add_tab(**tab_options)
     tab_options[:content] = yield if block_given?
     tab_data.push(tab_options)
