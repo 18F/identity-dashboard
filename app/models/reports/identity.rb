@@ -164,12 +164,9 @@ module Reports
 
     def to_chartkick_with_i18n_labels(keys)
       keys.each_with_object([]) do |key, results|
-        begin
-          label = I18n.t("reports.#{key}")
-        rescue I18n::MissingTranslationData
-          next
-        end
+        next unless I18n.exists?("reports.#{key}")
 
+        label = I18n.t("reports.#{key}")
         results.push([label, inner_data[key]])
       end
     end
