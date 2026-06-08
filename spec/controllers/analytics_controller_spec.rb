@@ -69,11 +69,14 @@ describe AnalyticsController do
       end
 
       describe 'format: csv' do
-        before do
-          sp = create(:service_provider,
+        let(:sp) do
+          create(:service_provider,
             :ready_to_activate,
             issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
             team: logingov_admin.teams.first)
+        end
+
+        before do
           get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
         end
 
@@ -87,6 +90,23 @@ describe AnalyticsController do
           expect(response.headers['content-disposition']).to match(
             'filename="logingov_dol_lost_and_found_database_20251201.csv',
           )
+        end
+
+        it 'does not include extra data' do
+          storage_double = AnalyticsReportStorage::Disk.new
+          data_modified = JSON.parse(storage_double.fetch('4388/monthly/2025-12-01.json'))
+          data_modified['data']['invalid_key'] = rand(1..1000)
+          allow(storage_double).to receive(:fetch).and_call_original
+          allow(storage_double).to receive(:fetch)
+            .with('4388/monthly/2025-12-01.json')
+            .and_return(data_modified.to_json)
+          allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(storage_double)
+          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
+          expect(response.body).to_not include('invalid_key')
+          csv_data = CSV.parse(response.body)
+          row_headers = csv_data.map {|row| row[0]}
+          expect(row_headers).to include(I18n.t('reports.count_dob_incorrect'))
+          expect(row_headers.select {|header| header.match /translation/i}).to be_empty
         end
       end
     end

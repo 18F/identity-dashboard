@@ -23,7 +23,7 @@ class AnalyticsReportCsv
 
   def filename
     month_id = report_data.report_information['month_start_calendar_id']
-    friendly_name = report_data.provider_information['service_provider_name']
+    friendly_name = report_data.provider_information['service_provider_name'].to_s
 
     "logingov_#{friendly_name.parameterize.underscore}_#{month_id}.csv"
   end

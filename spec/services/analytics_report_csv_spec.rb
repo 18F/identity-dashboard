@@ -15,9 +15,9 @@ class MockReportIdentity
 
   def data
     @test_data['data'].to_a.filter_map do |d|
+      next unless I18n.exists?("reports.#{d[0]}")
+
       [I18n.t("reports.#{d[0]}"), d[1]]
-    rescue I18n::MissingTranslationData
-      next
     end
   end
 end
