@@ -38,7 +38,7 @@ gem 'paper_trail', '~>16'
 gem 'pg'
 gem 'propshaft'
 gem 'pry-rails'
-gem 'puma', '>= 6.4.3'
+gem 'puma', '>= 8.0.2'
 gem 'pundit', '>= 2.3.1'
 gem 'rack-canonical-host', '>= 1.2.0'
 gem 'rack-timeout', require: false
