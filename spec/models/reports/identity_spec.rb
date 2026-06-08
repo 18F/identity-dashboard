@@ -20,7 +20,7 @@ describe Reports::Identity do
       subject = described_class.new(analytic)
       expect(subject.grand_total).to be(1519)
       expect(subject.idv_data).to eq(
-        [['Newly Proofed', 17], ['Preverified', 30]],
+        [['Newly Proofed', 17], ['Previously Proofed', 30]],
       )
     end
   end
