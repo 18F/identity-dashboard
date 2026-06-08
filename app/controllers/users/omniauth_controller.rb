@@ -10,7 +10,7 @@ module Users
       if @user && (can_edit_teams?(@user) || can_create_teams?(@user))
         sign_in @user
         store_id_token
-        redirect_to session[:requested_url]
+        redirect_to root_path
       else
         redirect_to users_none_url
       end
