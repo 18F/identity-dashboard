@@ -23,32 +23,35 @@ describe Users::OmniauthController do
     context 'when a user exists and is on a team or allowed to create teams' do
       it 'signs the user in' do
         user = create(:team_member, email:)
+        session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
 
         get :callback
 
         expect(user.reload.uuid).to eq(uuid)
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(service_providers_url)
       end
     end
 
     context 'when a user is not on a team, but is a login.gov admin' do
       it 'signs the user in' do
         user = create(:user, :logingov_admin, email:)
+        session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
 
         get :callback
 
         expect(user.reload.uuid).to eq(uuid)
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(service_providers_url)
       end
     end
 
     context 'when a user exists but is on no team and not allowed to create teams' do
       it 'redirects to the empty user path' do
         create(:user, email:)
+        session[:requested_url] = service_providers_url
 
         expect(subject).to_not receive(:sign_in)
 
@@ -67,6 +70,22 @@ describe Users::OmniauthController do
         get :callback
 
         expect(response).to redirect_to(users_none_url)
+      end
+    end
+
+    context 'when a user signs in twice' do
+      it 'does not redirect again to the first requested url' do
+        user = create(:team_member, email:)
+        session[:requested_url] = service_providers_url
+
+        get :callback
+
+        expect(subject).to receive(:sign_in).with(user)
+
+        get :callback
+
+        expect(user.reload.uuid).to eq(uuid)
+        expect(response).to redirect_to(root_path)
       end
     end
 
@@ -91,13 +110,14 @@ describe Users::OmniauthController do
       context 'when a user exists and is on a team or allowed to create teams' do
         it 'signs the user in' do
           user = create(:team_member, email:)
+          session[:requested_url] = service_providers_url
 
           expect(subject).to receive(:sign_in).with(user)
 
           get :callback
 
           expect(user.reload.uuid).to eq(uuid)
-          expect(response).to redirect_to(root_path)
+          expect(response).to redirect_to(service_providers_url)
         end
       end
     end
@@ -137,13 +157,14 @@ describe Users::OmniauthController do
     context 'when a user exists but is on no team' do
       it 'signs the user in' do
         user = create(:user, email:)
+        session[:requested_url] = service_providers_url
 
         expect(subject).to receive(:sign_in).with(user)
 
         get :callback
 
         expect(user.reload.uuid).to eq(uuid)
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(service_providers_url)
       end
     end
   end
