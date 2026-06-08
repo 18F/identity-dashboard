@@ -65,7 +65,7 @@ class Extract
 
   # @return [Array<Team>]
   def teams
-    @teams ||= service_providers.map(&:team) || []
+    @teams ||= service_providers.map(&:team).uniq || []
   end
 
   def to_json
