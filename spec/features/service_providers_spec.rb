@@ -54,8 +54,8 @@ feature 'Service Providers CRUD' do
 
     scenario 'cannot see link to analytics path' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
-      create(:service_provider, team: team_membership.team)
+      partner_developer = create(:user, :partner_developer)
+      login_as partner_developer
       visit service_providers_path
       expect(page).to_not have_link('Reports')
     end
