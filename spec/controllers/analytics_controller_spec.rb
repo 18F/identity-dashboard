@@ -7,6 +7,7 @@ describe AnalyticsController do
   let(:partner_developer) { create(:user, :partner_developer) }
   let(:partner_readonly) { create(:user, :partner_readonly) }
   let(:logger_double) { instance_double(EventLogger) }
+  let(:issuer) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo' }
 
   before do
     allow(logger_double).to receive(:unauthorized_access_attempt)
@@ -31,10 +32,10 @@ describe AnalyticsController do
 
         it 'populates dates from S3 when reports exist' do
           create(:service_provider,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
           get :index
-          expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
+          expect(assigns(:dates)).to include('2025-04-01', '2025-08-01')
         end
 
         it 'falls back to monthly dates when no reports exist' do
@@ -50,7 +51,7 @@ describe AnalyticsController do
         let(:sp_with_data) do
           create(:service_provider,
             :ready_to_activate,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
         end
 
@@ -61,10 +62,10 @@ describe AnalyticsController do
         end
 
         it 'handles good post parameters' do
-          post :create, params: { uuid: sp_with_data.uuid, date: '2025-12-01' }
+          post :create, params: { uuid: sp_with_data.uuid, date: '2025-04-01' }
           expect(response).to redirect_to(analytics_path(
             uuid: sp_with_data.uuid,
-            date: '2025-12-01',
+            date: '2025-04-01',
           ))
           expect(flash[:error]).to be_blank
         end
@@ -74,12 +75,12 @@ describe AnalyticsController do
         let(:sp) do
           create(:service_provider,
             :ready_to_activate,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
         end
 
         before do
-          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
+          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-04-01' }
         end
 
         it 'returns a valid CSV' do
@@ -90,20 +91,20 @@ describe AnalyticsController do
         it 'uses the correct filename' do
           expect(response).to be_ok
           expect(response.headers['content-disposition']).to match(
-            'filename="logingov_dol_lost_and_found_database_20251201.csv',
+            'filename="logingov_sandbox_dev_20250401.csv',
           )
         end
 
         it 'does not include extra data' do
           storage_double = AnalyticsReportStorage::Disk.new
-          data_modified = JSON.parse(storage_double.fetch('4388/monthly/2025-12-01.json'))
+          data_modified = JSON.parse(storage_double.fetch('1939/monthly/2025-04-01.json'))
           data_modified['data']['invalid_key'] = rand(1..1000)
           allow(storage_double).to receive(:fetch).and_call_original
           allow(storage_double).to receive(:fetch)
-            .with('4388/monthly/2025-12-01.json')
+            .with('1939/monthly/2025-04-01.json')
             .and_return(data_modified.to_json)
           allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(storage_double)
-          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
+          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-04-01' }
           expect(response.body).to_not include('invalid_key')
           csv_data = CSV.parse(response.body)
           row_headers = csv_data.map { |row| row[0] }

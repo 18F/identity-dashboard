@@ -37,7 +37,7 @@ describe AnalyticsReportCsv do
       csv = CSV.parse(exported_csv)
       expect(csv.length).to eq(39)
       expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
-      expect(csv[1]).to eq(['Start Date', '', '20260401', ''])
+      expect(csv[1]).to eq(['Start Date', '', '20250401', ''])
       expect(csv[2]).to eq(['Newly Created Accounts', '', '39', ''])
       expect(csv[6]).to eq(['Inauthentic Doc.', '', nil, ''])
       expect(csv[30]).to eq(['Doc. Auth. Processing Issue', '', nil, ''])
@@ -55,7 +55,7 @@ describe AnalyticsReportCsv do
 
   describe '#filename' do
     it 'provides a filename based on report contents' do
-      expect(subject.filename).to eq('logingov_fdms_sandbox_dev_20260401.csv')
+      expect(subject.filename).to eq('logingov_sandbox_dev_20250401.csv')
     end
   end
 end
