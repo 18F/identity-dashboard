@@ -35,7 +35,7 @@ class TabComponent < ViewComponent::Base
   #  }],
   # @param [Object] opts options to be passed into HTML
   #  { class_name: String class name }
-  def initialize(tab_data: [], opts: {})
+  def initialize(tab_data:, opts: {})
     @tab_data, @opts = tab_data, opts
   end
 

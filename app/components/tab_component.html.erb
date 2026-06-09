@@ -1,10 +1,10 @@
 <%# expected locals:
   [Object] opts (optional)
-  [Object] tab_data {
+  [Object] tab_data [{
     title: 'String',
     id: 'String',
     content: 'HTML/Partial',
-  }
+  }]
 %>
 <section class="usa-tab__section<%= " #{opts[:class_name]}" || '' %>">
   <div class="usa-tab">
@@ -15,7 +15,7 @@
             aria-expanded="false"
     >
       <p class="usa-tab__active">
-        <span id="usa-tab__title"><%= tab_data[0]&[:title] %></span>
+        <span id="usa-tab__title"><%= tab_data[0][:title] %></span>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
           <use href="/assets/img/sprite.svg#expand_more"></use>
         </svg>
