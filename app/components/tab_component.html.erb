@@ -15,7 +15,7 @@
             aria-expanded="false"
     >
       <p class="usa-tab__active">
-        <span id="usa-tab__title"><%= tab_data[0][:title] %></span>
+        <span id="usa-tab__title"><%= tab_data[0]&[:title] %></span>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
           <use href="/assets/img/sprite.svg#expand_more"></use>
         </svg>
@@ -39,7 +39,7 @@
       <div class="usa-tab__panel"
            id="<%= panel[:id] %>"
            role="tabpanel"
-           aria-labelledby="usa-tab-<%= panel[:id] %>"
+           aria-labelledby="usa-tab__<%= panel[:id] %>"
            <%= 'tabindex=0' unless panel[:focusable] %>
            >
         <%= panel[:content] %>

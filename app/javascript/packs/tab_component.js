@@ -27,8 +27,6 @@ const onButtonSelect = () => {
 }
 
 const onTabSelect = (ev) => {
-  const allItems = document.querySelectorAll('.usa-tab__item');
-
   if (ev?.type == 'keydown') {
     let items, currentIndex, newTarget;
     switch (ev.key) {
