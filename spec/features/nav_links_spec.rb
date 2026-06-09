@@ -4,6 +4,8 @@ feature 'Nav links' do
   let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:logingov_readonly) { create(:user, :logingov_readonly) }
   let(:user) { create(:user, :partner_admin) }
+  let(:partner_developer) { create(:user, :partner_developer) }
+  let(:partner_readonly) { create(:user, :partner_readonly) }
 
   context 'on all envs' do
     before do
@@ -304,6 +306,32 @@ feature 'Nav links' do
 
     scenario 'should see a sign out page link' do
       expect(page).to have_link('Sign out')
+    end
+  end
+
+  context 'when signed in as a partner developer' do
+    before do
+      login_as(partner_developer)
+      visit root_path
+    end
+
+    scenario 'should not see a Reports link on production' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit root_path
+      expect(page).to_not have_link('Reports')
+    end
+  end
+
+  context 'when signed in as a partner readonly' do
+    before do
+      login_as(partner_readonly)
+      visit root_path
+    end
+
+    scenario 'should not see a Reports link on production' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visit root_path
+      expect(page).to_not have_link('Reports')
     end
   end
 end

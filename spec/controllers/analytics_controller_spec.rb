@@ -4,6 +4,8 @@ describe AnalyticsController do
   let(:logingov_admin) { create(:user, :logingov_admin) }
   let(:logingov_readonly) { create(:user, :logingov_readonly) }
   let(:partner_admin) { create(:user, :partner_admin) }
+  let(:partner_developer) { create(:user, :partner_developer) }
+  let(:partner_readonly) { create(:user, :partner_readonly) }
   let(:logger_double) { instance_double(EventLogger) }
 
   before do
@@ -168,6 +170,34 @@ describe AnalyticsController do
       it 'has GET access' do
         get :index
         expect(response).to be_ok
+      end
+    end
+  end
+
+  describe 'Partner developer user' do
+    before do
+      sign_in partner_developer
+    end
+
+    context '#index' do
+      it 'does not have GET access' do
+        get :index
+        expect(response).to be_unauthorized
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
+      end
+    end
+  end
+
+  describe 'Partner readonly user' do
+    before do
+      sign_in partner_readonly
+    end
+
+    context '#index' do
+      it 'does not have GET access' do
+        get :index
+        expect(response).to be_unauthorized
+        expect(logger_double).to have_received(:unauthorized_access_attempt)
       end
     end
   end

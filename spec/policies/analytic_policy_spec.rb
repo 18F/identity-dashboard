@@ -25,12 +25,12 @@ RSpec.describe AnalyticPolicy, type: :policy do
       expect(described_class).to permit(partner_admin)
     end
 
-    it 'allows partner developer' do
-      expect(described_class).to permit(partner_developer)
+    it 'denies partner developer' do
+      expect(described_class).to_not permit(partner_developer)
     end
 
-    it 'allows partner readonly' do
-      expect(described_class).to permit(partner_readonly)
+    it 'denies partner readonly' do
+      expect(described_class).to_not permit(partner_readonly)
     end
   end
 end

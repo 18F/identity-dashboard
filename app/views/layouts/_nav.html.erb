@@ -28,7 +28,7 @@
             <li class="usa-nav__primary-item">
               <%= navigation_link_to 'Teams', teams_path %>
             </li>
-            <% if IdentityConfig.store.prod_like_env %>
+            <% if IdentityConfig.store.prod_like_env && policy(:analytic).index? %>
               <li class="usa-nav__primary-item">
                 <%= navigation_link_to 'Reports',
                   analytics_path %>

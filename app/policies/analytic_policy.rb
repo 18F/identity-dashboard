@@ -3,7 +3,7 @@ class AnalyticPolicy < BasePolicy
   def index?
     return false unless user
 
-    true
+    user.logingov_staff? || user.team_memberships.exists?(role_name: 'partner_admin')
   end
 
   def create?
