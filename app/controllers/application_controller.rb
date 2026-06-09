@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base # :nodoc:
   end
 
   def set_requested_url
-    return if session[:requested_url]
+    return if current_user || session[:requested_url]
 
     session[:requested_url] = request.original_url
   end

@@ -73,6 +73,22 @@ describe Users::OmniauthController do
       end
     end
 
+    context 'when a user signs in twice' do
+      it 'does not redirect again to the first requested url' do
+        user = create(:team_member, email:)
+        session[:requested_url] = service_providers_url
+
+        get :callback
+
+        expect(subject).to receive(:sign_in).with(user)
+
+        get :callback
+
+        expect(user.reload.uuid).to eq(uuid)
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
     context 'in a prod_like_env' do
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
