@@ -37,7 +37,7 @@ describe AnalyticsReportCsv do
       csv = CSV.parse(exported_csv)
       expect(csv.length).to eq(39)
       expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
-      expect(csv[1]).to eq(['Start Date', '', '2025-12-01 00:00:00', ''])
+      expect(csv[1]).to eq(['Start Date', '', '2025-12-01', ''])
       expect(csv[2]).to eq(['Newly Created Accounts', '', '1173', ''])
       expect(csv[6]).to eq(['Inauthentic Doc.', '', '475', ''])
       expect(csv[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])

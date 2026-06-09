@@ -7,6 +7,7 @@ describe AnalyticsController do
   let(:partner_developer) { create(:user, :partner_developer) }
   let(:partner_readonly) { create(:user, :partner_readonly) }
   let(:logger_double) { instance_double(EventLogger) }
+  let(:issuer) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test' }
 
   before do
     allow(logger_double).to receive(:unauthorized_access_attempt)
@@ -31,7 +32,7 @@ describe AnalyticsController do
 
         it 'populates dates from S3 when reports exist' do
           create(:service_provider,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
           get :index
           expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
@@ -50,7 +51,7 @@ describe AnalyticsController do
         let(:sp_with_data) do
           create(:service_provider,
             :ready_to_activate,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
         end
 
@@ -74,7 +75,7 @@ describe AnalyticsController do
         let(:sp) do
           create(:service_provider,
             :ready_to_activate,
-            issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test',
+            issuer:,
             team: logingov_admin.teams.first)
         end
 

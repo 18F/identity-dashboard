@@ -10,11 +10,12 @@ class AnalyticsReportCsv
   def report_data_csv
     return headers_only if report_data.report_information.blank?
 
-    month = report_data.report_information['month_start_date_actual']
+    period_start_date = report_data.report_information['period_start_date']
+    start_date = Date.parse(period_start_date).strftime('%Y-%m-%d')
 
     CSV.generate(headers: true) do |csv|
       csv << HEADER_ROW
-      csv << ['Start Date', '', month, '']
+      csv << ['Start Date', '', start_date, '']
       report_data.data.each do |arr|
         csv << [arr[0], '', arr[1], '']
       end
@@ -22,10 +23,10 @@ class AnalyticsReportCsv
   end
 
   def filename
-    month_id = report_data.report_information['month_start_calendar_id']
+    period_id = report_data.report_information['period_calendar_id']
     friendly_name = report_data.provider_information['service_provider_name'].to_s
 
-    "logingov_#{friendly_name.parameterize.underscore}_#{month_id}.csv"
+    "logingov_#{friendly_name.parameterize.underscore}_#{period_id}.csv"
   end
 
   private
