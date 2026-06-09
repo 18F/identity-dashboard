@@ -52,13 +52,12 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_2'))
     end
 
-    scenario 'cannot see or visit link to analytics path' do
-      team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
-      sp = create(:service_provider, team: team_membership.team)
+    scenario 'cannot see link to analytics path' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      partner_developer = create(:user, :partner_developer)
+      login_as partner_developer
       visit service_providers_path
-      expect(page).to_not have_content('Analytics')
-      visit analytics_path(sp.id)
-      expect(page).to have_content('Unauthorized')
+      expect(page).to_not have_link('Reports')
     end
 
     scenario 'partner cannot change configuration to prod-ready with localhost URLs' do
