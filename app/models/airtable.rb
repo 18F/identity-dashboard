@@ -121,7 +121,7 @@ class Airtable
 
     records.select do |record|
       issuer_string = record.dig('fields', 'Issuer String')
-      issuer_string && issuers.any? { |issuer| issuer_string.include?(issuer) }
+      issuer_string && issuers.any?(issuer_string)
     end
   end
 

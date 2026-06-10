@@ -251,8 +251,9 @@ class Teams::UsersController < AuthenticatedController
     return false if matched_records.empty?
 
     matched_records.each do |record|
-      airtable_api.new_partner_admin_in_airtable?(user.email, record)
+      return true if airtable_api.new_partner_admin_in_airtable?(user.email, record)
     end
+    false
   end
 
   def partner_admin_confirmation_needed?
@@ -282,7 +283,7 @@ class Teams::UsersController < AuthenticatedController
       @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
     else
       @remove_partner_admin = true
-      airtable_api.refresh_token if airtable_api.needs_refreshed_token?
+      airtable_api.refresh_token(request.fullpath) if airtable_api.needs_refreshed_token?
 
       base_url = "#{request.protocol}#{request.host_with_port}"
       @oauth_url = airtable_api.generate_oauth_url(base_url)
