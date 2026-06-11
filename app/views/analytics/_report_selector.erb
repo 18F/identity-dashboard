@@ -1,9 +1,9 @@
 <fieldset class="usa-fieldset usa_collection_select">
-  <% if @graphs.none? %>
+    <% if @graphs.none? %>
     <p class="margin-bottom-0">Choose from the dropdowns to see a report.</p>
-  <% end %>
-  <div  class='grid-row grid-gap-2'>
-    <%#= form.input :team,
+    <% end %>
+    <div class='grid-row grid-gap-2'>
+        <%#= form.input nil,
                   wrapper_html: { class: 'tablet:grid-col-4'},
                   input_html: { class: 'usa-select', aria: { invalid: false } },
                   collection: teams_collection_for_select,
@@ -11,21 +11,34 @@
                   label_html: { class: 'usa-input-required' },
                   prompt: '- All Teams-',
                   required: true %>
-    <%= form.input :uuid,
+        <div class="wizard-field select analytic_team tablet:grid-col-4">
+          <div class="usa-label__group">
+            <label class="usa-label select" for="analytic_team">Team</label>
+          </div>
+          <div class="usa-input__container">
+            <select class="block col-12 select usa-select" aria-invalid="false" name="analytic[team]" id="analytic_team">
+              <option selected="selected" value="">- All Teams -</option>
+              <% teams_collection_for_select.each do |team| %>
+                <option value="<%= team[1] %>"><%= team[0] %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <%= form.input :uuid,
                   wrapper_html: { class: 'tablet:grid-col-4'},
                   input_html: { class: 'usa-select', aria: { invalid: false } },
                   collection: service_providers_collection_for_select,
                   label: 'Application',
                   label_html: { class: 'usa-input-required' },
-                  prompt: '- All Applications-',
+                  prompt: '- All Applications -',
                   required: true %>
-    <%= form.input :date,
+        <%= form.input :date,
                   wrapper_html: { class: 'tablet:grid-col-4'},
                   input_html: { class: 'usa-select', aria: { invalid: false } },
                   collection: @dates,
                   label: 'Date of report',
                   label_html: { class: 'usa-input-required' },
-                  prompt: '- All Reports-',
+                  prompt: '- All Reports -',
                   required: true %>
-  </div>
+    </div>
 </fieldset>
