@@ -203,6 +203,8 @@ RSpec.describe AnalyticsReportStorage do
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       allow(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
+      # Clear the cache to ensure the new value of `fetch_id_map` gets used
+      Rails.cache.delete 'analytics_issuer_to_id_map'
       allow(mock_backend).to receive(:fetch_id_map)
         .and_return(%({"#{test_issuer}": {"id": 123}}))
 
@@ -211,6 +213,9 @@ RSpec.describe AnalyticsReportStorage do
       described_class.new.all_issuers
 
       expect(mock_backend).to have_received(:fetch_id_map).once
+
+      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      Rails.cache.delete 'analytics_issuer_to_id_map'
     end
   end
 
@@ -221,8 +226,13 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
       expect(mock_backend).to receive(:fetch_id_map)
         .and_return(%({"#{test_issuer}": {"id": 123}}))
+      # Clear the cache to ensure the new value of `fetch_id_map` gets used
+      Rails.cache.delete 'analytics_issuer_to_id_map'
 
       expect(described_class.new.all_issuers).to eq([test_issuer])
+
+      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
     it 'returns an empty list when the mapping data is missing' do
