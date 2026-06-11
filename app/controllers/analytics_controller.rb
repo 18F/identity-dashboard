@@ -76,7 +76,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     return @analytic unless current_user
 
     @analytic.config = service_provider
-    @analytic.date = analytic_params[:date].presence || available_report_dates.last
+    @analytic.date = analytic_params[:date].presence || available_report_dates.first
     @analytic
   end
 
