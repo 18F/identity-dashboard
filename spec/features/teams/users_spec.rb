@@ -41,19 +41,19 @@ describe 'users' do
     scenario 'access denied to login.gov readonly' do
       login_as logingov_readonly
       visit new_team_user_path(team)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
     end
 
     scenario 'access denied to partner read-only' do
       login_as readonly_team_member
       visit new_team_user_path(team)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
     end
 
     scenario 'access denied to non-team member' do
       login_as user
       visit new_team_user_path(team)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
     end
   end
 
@@ -227,7 +227,7 @@ describe 'users' do
     scenario 'access denied to non-team member' do
       login_as user
       visit team_users_path(team)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
     end
 
     scenario 'access permitted to login.gov admin' do

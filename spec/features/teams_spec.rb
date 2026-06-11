@@ -27,7 +27,7 @@ feature 'TeamMembership CRUD' do
     login_as(logingov_readonly)
     visit new_team_path
 
-    expect(page).to have_content('Access denied')
+    expect(page).to have_content('Not authorized')
   end
 
   scenario 'Create (gov user is not yet on a team)' do
@@ -54,7 +54,7 @@ feature 'TeamMembership CRUD' do
     login_as(contractor)
     visit new_team_path
 
-    expect(page).to have_content('Access denied')
+    expect(page).to have_content('Not authorized')
   end
 
   scenario 'Create invalid' do
@@ -447,7 +447,7 @@ feature 'TeamMembership CRUD' do
       expect(page).to have_link('View my teams')
 
       visit edit_team_path(team)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
 
       visit teams_all_path
       expect(page).to_not have_button('Edit')
@@ -463,7 +463,7 @@ feature 'TeamMembership CRUD' do
       visit team_path(team)
 
       expect(page).to_not have_content(team.name)
-      expect(page).to have_content('Access denied')
+      expect(page).to have_content('Not authorized')
     end
 
     scenario 'regular user views own team' do
@@ -475,7 +475,7 @@ feature 'TeamMembership CRUD' do
       visit team_path(team)
 
       expect(page).to have_content(team.name)
-      expect(page).to_not have_content('Access denied')
+      expect(page).to_not have_content('Not authorized')
       # Team UUID is not displayed
       expect(page).to_not have_content(team.uuid)
       expect(page).to_not have_content('copy UUID to clipboard')
