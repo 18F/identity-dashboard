@@ -18,9 +18,8 @@ class ApplicationController < ActionController::Base # :nodoc:
   end
 
   def render_401
-    # Not specifying the layout can cause problems when the `rescue_from` is triggered
-    # from a controller that uses a different layout
-    render layout: 'application', file: 'public/401.html', status: :unauthorized
+    # Layout can now be false because 401.html is a complete standalone HTML document
+    render layout: false, file: 'public/401.html', status: :unauthorized
   end
 
   def log_not_auth_and_render_401(exception)

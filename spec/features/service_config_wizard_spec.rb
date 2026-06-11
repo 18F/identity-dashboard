@@ -602,7 +602,7 @@ feature 'Service Config Wizard' do
                                  team:)
         visit service_provider_path(existing_config)
         click_on 'Edit'
-        expect(page).to_not have_content('Unauthorized')
+        expect(page).to_not have_content('Access denied')
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
@@ -711,7 +711,7 @@ feature 'Service Config Wizard' do
     it 'displays an unauthorized page' do
       login_as user
       visit new_service_config_wizard_path
-      expect(page).to have_content('Unauthorized')
+      expect(page).to have_content('Access denied')
       expect(page).to_not have_content('Next')
     end
   end
