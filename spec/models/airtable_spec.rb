@@ -53,7 +53,7 @@ RSpec.describe Airtable, type: :model do
     it 'does not retrieve similar but not exact matches' do
       issuers = ['one']
 
-      response.body = {
+      response_body = {
         'records' => [
           { 'fields' => { 'Issuer String' => 'one:issuer' } },
           { 'fields' => { 'Issuer String' => 'one' } },
