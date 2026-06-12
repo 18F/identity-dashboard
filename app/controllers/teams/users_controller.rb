@@ -240,7 +240,9 @@ class Teams::UsersController < AuthenticatedController
   def verified_partner_admin?
     airtable_api = Airtable.new(current_user.uuid)
     redirect_uri = airtable_api.build_redirect_uri(request)
-    airtable_api.refresh_token(redirect_uri) if airtable_api.needs_refreshed_token?
+    if airtable_api.needs_refreshed_token?
+      airtable_api.refresh_token(airtable_api.build_redirect_uri(redirect_uri))
+    end
     issuers = []
     ServiceProvider.where(team: team).each do |sp|
       issuers.push(sp.issuer)
@@ -250,8 +252,8 @@ class Teams::UsersController < AuthenticatedController
 
     return false if matched_records.empty?
 
-    matched_records.each do |record|
-      return true if airtable_api.new_partner_admin_in_airtable?(user.email, record)
+    matched_records.any? do |record|
+      airtable_api.new_partner_admin_in_airtable?(user.email, record)
     end
     false
   end
@@ -283,7 +285,9 @@ class Teams::UsersController < AuthenticatedController
       @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
     else
       @remove_partner_admin = true
-      airtable_api.refresh_token(request.fullpath) if airtable_api.needs_refreshed_token?
+      if airtable_api.needs_refreshed_token?
+        airtable_api.refresh_token(airtable_api.build_redirect_uri(request.fullpath))
+      end
 
       base_url = "#{request.protocol}#{request.host_with_port}"
       @oauth_url = airtable_api.generate_oauth_url(base_url)
