@@ -25,7 +25,8 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def create
     if analytic.valid?
-      redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid, date: analytic.date) and return
+      redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
+                                 date: analytic.date) and return
     end
 
     error_if_invalid_url
@@ -103,7 +104,7 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         name: team.name,
         id: team.id,
-        apps: team.service_providers.map{ |sp| sp.uuid }.join(',')
+        apps: team.service_providers.map(&:uuid).join(','),
       }
     end
   end
