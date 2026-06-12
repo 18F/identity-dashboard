@@ -8,16 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('analytic_team').addEventListener('change', (event) => {
     const opt = event.currentTarget.selectedOptions[0];
     const appIds = opt.dataset.apps.split(',');
-    const invalidOptions = [];
-    const validOptions = [];
     let appNeedsSetting = true;
 
-    appOptions.forEach(option => {
-      if(appIds.indexOf(option.value) < 0) {
+    appOptions.forEach((option) => {
+      if (appIds.indexOf(option.value) < 0) {
         option.setAttribute('hidden', true);
       } else {
         option.removeAttribute('hidden');
-        if(appNeedsSetting) {
+        if (appNeedsSetting) {
           appNeedsSetting = false;
           appSelect.value = option.value;
         }

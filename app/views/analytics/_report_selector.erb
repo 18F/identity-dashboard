@@ -9,7 +9,7 @@
       </div>
       <div class="usa-input__container">
         <select class="block col-12 select usa-select" aria-invalid="false" name="analytic[team]" id="analytic_team">
-          <option value="">- All Teams -</option>
+          <option value="">- All Teams-</option>
           <% teams_collection_for_select.each do |team| %>
             <option value="<%= team[:id] %>"
                     <%= 'selected' if @team == team[:id].to_s %>
@@ -24,7 +24,7 @@
               collection: service_providers_collection_for_select,
               label: 'Application',
               label_html: { class: 'usa-input-required' },
-              prompt: '- All Applications -',
+              prompt: '- All Applications-',
               required: true %>
     <%= form.input :date,
               wrapper_html: { class: 'tablet:grid-col-4'},
@@ -32,7 +32,7 @@
               collection: @dates,
               label: 'Date of report',
               label_html: { class: 'usa-input-required' },
-              prompt: '- All Reports -',
+              prompt: '- All Reports-',
               required: true %>
   </div>
 </fieldset>

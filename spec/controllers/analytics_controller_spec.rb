@@ -57,13 +57,13 @@ describe AnalyticsController do
         end
 
         it 'handles bad post parameters' do
-          post :create, params: {team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
+          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
           expect(response).to redirect_to(analytics_path)
           expect(flash[:error]).to match('The link for that report was not valid.')
         end
 
         it 'handles good post parameters' do
-          post :create, params: {team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
+          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
           expect(response).to redirect_to(analytics_path(
             team: admin_team.id,
             uuid: sp_with_data.uuid,
@@ -82,7 +82,7 @@ describe AnalyticsController do
         end
 
         before do
-          get :index, as: 'csv', params: {team: admin_team.id, uuid: sp.uuid, date: '2025-12-01' }
+          get :index, as: 'csv', params: { team: admin_team.id, uuid: sp.uuid, date: '2025-12-01' }
         end
 
         it 'returns a valid CSV' do
