@@ -10,16 +10,7 @@ class AnalyticsReportCsv
   def report_data_csv
     return headers_only if report_data.report_information.blank?
 
-    period_start_date = report_data.report_information['period_start_date']
-    start_date = Date.parse(period_start_date).strftime('%Y-%m-%d')
-
-    CSV.generate(headers: true) do |csv|
-      csv << HEADER_ROW
-      csv << ['Start Date', '', start_date, '']
-      report_data.data.each do |arr|
-        csv << [arr[0], '', arr[1], '']
-      end
-    end
+    full_csv
   end
 
   def filename
@@ -34,6 +25,20 @@ class AnalyticsReportCsv
   def headers_only
     CSV.generate(headers: true) do |csv|
       csv << HEADER_ROW
+    end
+  end
+
+  def full_csv
+    start_date = Date.parse(
+      report_data.report_information['period_start_date'],
+    ).strftime('%Y-%m-%d')
+
+    CSV.generate(headers: true) do |csv|
+      csv << HEADER_ROW
+      csv << ['Start Date', '', start_date, '']
+      report_data.data.each do |arr|
+        csv << [arr[0], '', arr[1], '']
+      end
     end
   end
 end
