@@ -24,7 +24,7 @@ const validHash = (hash, panels) => {
 
 const onButtonSelect = () => {
   list.classList.toggle('is-active');
-}
+};
 
 const onTabSelect = (ev) => {
   if (ev?.type == 'keydown') {
