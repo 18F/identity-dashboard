@@ -299,6 +299,38 @@ RSpec.describe Airtable, type: :model do
     end
   end
 
+  describe '#refresh_token_if_needed' do
+    let(:user_uuid) { 'test-user-uuid' }
+    let(:airtable) { Airtable.new(user_uuid) }
+    let(:request) { double('Request') }
+
+    before do
+      allow(airtable).to receive(:build_redirect_uri).and_return('/test')
+      allow(airtable).to receive(:refresh_token).and_return(double)
+    end
+
+    it 'checks if the token is needed' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(false)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to have_received(:needs_refreshed_token?).once
+    end
+
+    it 'refreshes the token if needed' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(true)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to have_received(:refresh_token).once
+    end
+
+    it 'does not refresh the token if unneccessary' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(false)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to_not have_received(:refresh_token)
+    end
+  end
+
   describe '#has_token?' do
     it 'checks if a token exists' do
       allow(Rails.cache).to receive(:read).with("#{user_uuid}.airtable_oauth_token")
