@@ -602,9 +602,8 @@ Style/LineEndConcatenation:
 #   Enabled: true
 #   IncludeSemanticChanges: false
 
-# Style/NumericLiteralPrefix:
-#   Enabled: true
-#   EnforcedOctalStyle: zero_with_o
+Style/NumericLiterals:
+  Enabled: false
 
 Style/ParallelAssignment:
   Enabled: false

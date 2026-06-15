@@ -1,7 +1,6 @@
 # The Airtable model handles the OAuth connection with Airtable
 # as well as sending requests to the Airtable API and managing
 # the returned data
-
 class Airtable
   include ActiveModel::Model
 
@@ -72,8 +71,7 @@ class Airtable
   end
 
   def refresh_token_if_needed(request)
-    redirect_uri = build_redirect_uri(request)
-    refresh_token(redirect_uri) if needs_refreshed_token?
+    refresh_token(build_redirect_uri(request)) if needs_refreshed_token?
   end
 
   def has_token?
