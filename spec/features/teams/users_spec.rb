@@ -493,6 +493,7 @@ describe 'users' do
           allow(airtable_double).to receive(:has_token?).and_return(true)
           allow(airtable_double).to receive(:build_redirect_uri).and_return('some/path/')
           allow(airtable_double).to receive(:needs_refreshed_token?).and_return(false)
+          allow(airtable_double).to receive(:refresh_token_if_needed).and_return(true)
           allow(airtable_double).to receive(:get_matching_records).and_return({ test: true })
           allow_any_instance_of(Teams::UsersController)
         end
