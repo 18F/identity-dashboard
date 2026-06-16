@@ -104,9 +104,13 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         name: team.name,
         id: team.id,
-        apps: team.service_providers.map(&:uuid).join(','),
+        apps: app_options_string(team),
       }
     end
+  end
+
+  def app_options_string(team)
+    team.service_providers.map(&:uuid).join(',')
   end
 
   def service_providers_collection_for_select
