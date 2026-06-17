@@ -22,7 +22,10 @@
   <% tab_component = TabComponent.new(
        opts: { class_name: 'test-me' }
      ).add_tab(title: 'Tab One', id: 'tab1') do %>
-       <% render('components/logo_banner') %>
+        <% render('components/step_progress', {
+          steps: ['all', 'edit', 'index', 'main'],
+          current_step_index: 3,
+          localization_base: 'headings.service_providers'}) %>
   <% end %>
   <% tab_component.add_tab(title: 'Tab Two', id: 'tab2', focusable: true) do %>
     <% capture do %>
