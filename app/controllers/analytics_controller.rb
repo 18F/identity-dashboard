@@ -25,7 +25,8 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def create
     if analytic.valid?
-      redirect_to analytics_path(uuid: analytic.config.uuid, date: analytic.date) and return
+      redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
+                                 date: analytic.date) and return
     end
 
     error_if_invalid_url
@@ -35,6 +36,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def populate_data_for_html
+    @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
@@ -64,9 +66,9 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def analytic_params
-    return params.permit(:uuid, :date, :format) unless params[:analytic]
+    return params.permit(:team, :uuid, :date, :format) unless params[:analytic]
 
-    params.require(:analytic).permit(:uuid, :date)
+    params.require(:analytic).permit(:team, :uuid, :date)
   end
 
   def analytic
@@ -76,7 +78,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     return @analytic unless current_user
 
     @analytic.config = service_provider
-    @analytic.date = analytic_params[:date].presence || available_report_dates.last
+    @analytic.date = analytic_params[:date].presence || available_report_dates.first
     @analytic
   end
 
@@ -99,8 +101,16 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def teams_collection_for_select
     teams.map do |team|
-      [team.name, team.id]
+      {
+        name: team.name,
+        id: team.id,
+        apps: app_options_string(team),
+      }
     end
+  end
+
+  def app_options_string(team)
+    team.service_providers.map(&:uuid).join(',')
   end
 
   def service_providers_collection_for_select

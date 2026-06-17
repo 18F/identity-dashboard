@@ -58,6 +58,20 @@ describe 'reporting feature basics' do
       expect(page).to_not have_link('Export report as CSV')
     end
 
+    it 'can filter apps by team' do
+      second_team = create(:team)
+      second_sp = create(:service_provider,
+        issuer: 'this:one:has:no:data',
+        user: logingov_admin,
+        team: second_team)
+      visit analytics_path
+
+      select logingov_admin.teams.first.name, from: 'Team'
+
+      expect(page).to have_content(test_sp.friendly_name)
+      expect(page).to_not have_content(second_sp.friendly_name)
+    end
+
     it 'can update issuer and date options' do
       second_sp = create(:service_provider,
         issuer: issuer_with_a_little_test_data,
@@ -70,6 +84,7 @@ describe 'reporting feature basics' do
       select '2025-12-01', from: 'Date of report'
       click_on 'View report'
       expect(page).to have_current_path(analytics_path(
+        team: test_sp.team.id,
         uuid: test_sp.uuid,
         date: '2025-12-01',
       ), ignore_query: true)
@@ -77,6 +92,14 @@ describe 'reporting feature basics' do
 
     it 'does something reasonable when given invalid parameters' do
       visit analytics_path(
+        team: 'A',
+        uuid: test_sp.uuid,
+        date: '2025-12-01',
+      )
+      expect(page).to have_content('- All Teams-')
+
+      visit analytics_path(
+        team: test_sp.team.id,
         uuid: 'INVALID-UUID',
         date: '2025-12-01',
       )
@@ -84,6 +107,7 @@ describe 'reporting feature basics' do
         'You can select a different report from the options below.')
 
       visit analytics_path(
+        team: test_sp.team.id,
         uuid: test_sp.uuid,
         date: 'NOT-A-DATE',
       )
@@ -97,6 +121,7 @@ describe 'reporting feature basics' do
     context 'with a report loaded' do
       before do
         visit analytics_path
+        select test_sp.team.name, from: 'Team'
         select test_sp.friendly_name, from: 'Application'
         select '2025-12-01', from: 'Date of report'
         click_on 'View report'
@@ -126,6 +151,7 @@ describe 'reporting feature basics' do
 
       it 'can download a CSV with report data' do
         expect(page).to have_link('Export report as CSV', href: analytics_path(
+          team: test_sp.team.id,
           uuid: test_sp.uuid,
           date: '2025-12-01',
           format: 'csv',

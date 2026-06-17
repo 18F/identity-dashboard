@@ -8,6 +8,7 @@ describe AnalyticsController do
   let(:partner_readonly) { create(:user, :partner_readonly) }
   let(:logger_double) { instance_double(EventLogger) }
   let(:issuer) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test' }
+  let(:admin_team) { logingov_admin.teams.first }
 
   before do
     allow(logger_double).to receive(:unauthorized_access_attempt)
@@ -33,7 +34,7 @@ describe AnalyticsController do
         it 'populates dates from S3 when reports exist' do
           create(:service_provider,
             issuer:,
-            team: logingov_admin.teams.first)
+            team: admin_team)
           get :index
           expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
         end
@@ -52,18 +53,19 @@ describe AnalyticsController do
           create(:service_provider,
             :ready_to_activate,
             issuer:,
-            team: logingov_admin.teams.first)
+            team: admin_team)
         end
 
         it 'handles bad post parameters' do
-          post :create, params: { uuid: sp_with_data.uuid, date: '9999-99-99' }
+          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
           expect(response).to redirect_to(analytics_path)
           expect(flash[:error]).to match('The link for that report was not valid.')
         end
 
         it 'handles good post parameters' do
-          post :create, params: { uuid: sp_with_data.uuid, date: '2025-12-01' }
+          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
           expect(response).to redirect_to(analytics_path(
+            team: admin_team.id,
             uuid: sp_with_data.uuid,
             date: '2025-12-01',
           ))
@@ -76,11 +78,11 @@ describe AnalyticsController do
           create(:service_provider,
             :ready_to_activate,
             issuer:,
-            team: logingov_admin.teams.first)
+            team: admin_team)
         end
 
         before do
-          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
+          get :index, as: 'csv', params: { team: admin_team.id, uuid: sp.uuid, date: '2025-12-01' }
         end
 
         it 'returns a valid CSV' do
