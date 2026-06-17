@@ -97,7 +97,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def teams
-    @teams ||= current_user.scoped_teams
+    @teams ||= current_user.scoped_teams.includes(:service_providers)
   end
 
   def teams_collection_for_select
@@ -129,14 +129,9 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def available_service_providers
-    @available_service_providers ||= begin
-      available_issuers = policy_scope(ServiceProvider).pluck(:issuer).intersection(
-        AnalyticsReportStorage.new.all_issuers,
-      )
-      policy_scope(ServiceProvider).where(
-        issuer: available_issuers,
-      )
-    end
+    @available_service_providers ||= policy_scope(ServiceProvider).where(
+      issuer: AnalyticsReportStorage.new.all_issuers,
+    )
   end
 
   def available_report_dates
