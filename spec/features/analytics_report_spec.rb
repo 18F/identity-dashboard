@@ -58,18 +58,36 @@ describe 'reporting feature basics' do
       expect(page).to_not have_link('Export report as CSV')
     end
 
-    it 'can filter apps by team' do
-      second_team = create(:team)
-      second_sp = create(:service_provider,
-        issuer: 'this:one:has:no:data',
-        user: logingov_admin,
-        team: second_team)
-      visit analytics_path
+    context 'Filter', :js do
+      let(:second_team) { create(:team) }
+      let(:second_sp) {
+        create(:service_provider,
+                issuer: issuer_with_a_little_test_data,
+                user: logingov_admin,
+                team: second_team)
+      }
 
-      select logingov_admin.teams.first.name, from: 'Team'
+      before {
+        second_team and second_sp
+        visit analytics_path
+      }
 
-      expect(page).to have_content(test_sp.friendly_name)
-      expect(page).to_not have_content(second_sp.friendly_name)
+      it 'shows the correct apps for a chosen team' do
+        select second_team.name, from: 'Team'
+
+        expect(page).to have_css('#analytic_uuid .display-none')
+        expect(page).to have_content(test_sp.friendly_name)
+        expect(page).to have_content(second_sp.friendly_name)
+      end
+
+      it 'shows the correct apps when reselecting All teams' do
+        select second_team.name, from: 'Team'
+        select '- All Teams-', from: 'Team'
+
+        expect(page).to_not have_css('#analytic_uuid .display_none')
+        expect(page).to have_content(test_sp.friendly_name)
+        expect(page).to have_content(second_sp.friendly_name)
+      end
     end
 
     it 'can update issuer and date options' do

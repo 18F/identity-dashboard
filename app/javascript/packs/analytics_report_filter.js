@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     appOptions.forEach((option) => {
       if (appIds.indexOf(option.value) < 0) {
-        option.setAttribute('hidden', true);
+        option.classList.add('display-none');
       } else {
-        option.removeAttribute('hidden');
+        option.classList.remove('display-none');
         if (appNeedsSetting) {
           appNeedsSetting = false;
           appSelect.value = option.value;

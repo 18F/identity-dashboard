@@ -8,6 +8,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
+  helper_method :all_app_options_string
   helper_method :teams_collection_for_select
   helper_method :service_providers_collection_for_select
   helper_method :selected_date_range
@@ -111,6 +112,14 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def app_options_string(team)
     team.service_providers.map(&:uuid).join(',')
+  end
+
+  def all_app_options_string
+    all_options = ''
+    teams.each do |team|
+      all_options += app_options_string(team) + ','
+    end
+    all_options
   end
 
   def service_providers_collection_for_select
