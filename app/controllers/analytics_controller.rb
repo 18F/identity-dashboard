@@ -117,7 +117,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   def all_app_options_string
     all_options = ''
     teams.each do |team|
-      all_options += app_options_string(team) + ','
+      all_options += "#{app_options_string(team)},"
     end
     all_options
   end

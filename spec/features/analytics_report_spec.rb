@@ -60,17 +60,17 @@ describe 'reporting feature basics' do
 
     context 'Filter', :js do
       let(:second_team) { create(:team) }
-      let(:second_sp) {
+      let(:second_sp) do
         create(:service_provider,
                 issuer: issuer_with_a_little_test_data,
                 user: logingov_admin,
                 team: second_team)
-      }
+      end
 
-      before {
+      before do
         second_team and second_sp
         visit analytics_path
-      }
+      end
 
       it 'shows the correct apps for a chosen team' do
         select second_team.name, from: 'Team'
