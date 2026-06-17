@@ -73,6 +73,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     @analytic.config = service_provider
     @analytic.date = analytic_params[:date].presence || available_report_dates.first
+    @analytic.data = identity_report.data
     @analytic
   end
 

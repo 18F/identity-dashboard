@@ -2,19 +2,42 @@
 class Analytic
   include ActiveModel::Model
 
-  attr_accessor :date, :config
+  attr_accessor :date, :config, :data
 
-  validate :config_valid?
-  validate :valid_date?
+  validate :is_valid?
 
   def uuid
     config&.uuid
   end
 
+  def is_valid?
+    if errors.present?
+      return false
+    elsif not config_valid?
+      return false
+    elsif not valid_date?
+      return false
+    else
+      data_valid?
+    end
+  end
+
+  private
+
   def config_valid?
     return true if uuid
 
     add_generic_error
+    false
+  end
+
+  def data_valid?
+    values = data.map(&:second)
+    existing_values = values.filter(&:present?)
+
+    return true if existing_values.present?
+
+    add_data_error
     false
   end
 
@@ -31,13 +54,11 @@ class Analytic
     true
   end
 
-  private
+  def add_data_error
+    errors.add(:base, I18n.t('reports.errors.no_data'))
+  end
 
   def add_generic_error
-    errors.add(
-      :base,
-      'The link for that report was not valid. ' \
-        'You can select a different report from the options below.',
-    )
+    errors.add(:base, I18n.t('reports.errors.generic'))
   end
 end

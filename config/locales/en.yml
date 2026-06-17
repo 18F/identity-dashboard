@@ -219,6 +219,7 @@ en:
     count_wrong_phone_type: Wrong Phone Type
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
     errors:
+      generic: The link for that report was not valid. You can select a different report from the options below.
       no_data: We couldn't retrieve data matching your application and date. We're continually adding new data, so check back soon.
       no_team: You do not belong to any team that has a service provider configuration with reported data.
   shared:
