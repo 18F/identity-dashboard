@@ -1,0 +1,51 @@
+<%# expected locals:
+  [Object] opts (optional)
+  [Object] tab_data [{
+    title: 'String',
+    id: 'String',
+    content: 'HTML/Partial',
+  }]
+%>
+<section class="usa-tab__section <%= opts[:class_name] %>">
+  <div class="usa-tab">
+    <button type="button"
+            id="usa-tab-button"
+            class="usa-tab__accordion usa-button--unstyled"
+            aria-controls="usa-tab-list"
+            aria-expanded="false"
+    >
+      <p class="usa-tab__active">
+        <span id="usa-tab__title"><%= tab_data[0][:title] %></span>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use href="/assets/img/sprite.svg#expand_more"></use>
+        </svg>
+      </p>
+    </button>
+    <div class="usa-tab__list default-active" id="usa-tab-list" role="tablist">
+      <% tab_data.each do |tab| %>
+        <a class="usa-tab__item"
+           id="usa-tab__<%= tab[:id] %>"
+           href="#<%= tab[:id] %>"
+           role="tab"
+           aria-controls="<%= tab[:id] %>"
+           aria-selected="false"><%=
+          tab[:title] 
+        %></a>
+      <% end %>
+    </div>
+  </div>
+  <div class="usa-tab__display">
+    <% tab_data.each do |panel| %>
+      <div class="usa-tab__panel"
+           id="<%= panel[:id] %>"
+           role="tabpanel"
+           aria-labelledby="usa-tab__<%= panel[:id] %>"
+           <%= 'tabindex=0' unless panel[:focusable] %>
+           >
+        <%= panel[:content] %>
+      </div>
+    <% end %>
+  </div>
+</section>
+<%= javascript_include_tag 'tab_component' %>
+<%= stylesheet_link_tag 'tab_component' %>
