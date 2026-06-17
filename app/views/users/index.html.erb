@@ -22,10 +22,7 @@
   <% tab_component = TabComponent.new(
        opts: { class_name: 'test-me' }
      ).add_tab(title: 'Tab One', id: 'tab1') do %>
-       <% render('components/feature_card', {
-         icon: 'accessible_forward',
-         title: 'footer.performance',
-         body: 'forms.confirm_service_provider'}) %>
+       <% render('components/logo_banner') %>
   <% end %>
   <% tab_component.add_tab(title: 'Tab Two', id: 'tab2', focusable: true) do %>
     <% capture do %>
@@ -35,10 +32,10 @@
     <% end %>
   <% end %>
   <% tab_component.add_tab(title: 'Tab Three', id: 'tab3', focusable: true) do %>
-    <% render('components/feature_card', {
-      icon: 'electrical_services',
-      title: 'footer.status',
-      body: 'footer.disclaimer_html'}) %>
+    <% render('components/step_progress', {
+      steps: ['en', 'es', 'fr', 'zh'],
+      current_step_index: 0,
+      localization_base: 'locale_map'}) %>
   <% end %>
   <%= render tab_component %>
 <% end %>
