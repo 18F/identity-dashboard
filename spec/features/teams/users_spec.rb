@@ -483,6 +483,63 @@ describe 'users' do
         )
         expect(membership.reload.role_name).to eq('partner_admin')
       end
+
+      context('mock Airtable response') do
+        let(:airtable_double) { instance_double(Airtable) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+          allow(Airtable).to receive(:new).and_return(airtable_double)
+          allow(airtable_double).to receive(:has_token?).and_return(true)
+          allow(airtable_double).to receive(:build_redirect_uri).and_return('some/path/')
+          allow(airtable_double).to receive(:needs_refreshed_token?).and_return(false)
+          allow(airtable_double).to receive(:refresh_token_if_needed).and_return(true)
+          allow(airtable_double).to receive(:get_matching_records).and_return({ test: true })
+          allow_any_instance_of(Teams::UsersController)
+        end
+
+        it 'does not require confirmation when email is in Airtable' do
+          allow(airtable_double).to receive(:new_partner_admin_in_airtable?).and_return(true)
+
+          create(:service_provider, team:)
+          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
+          visit team_users_path(team)
+          within('tr', text: readonly_team_member.email) do
+            click_on 'Edit'
+          end
+          partner_admin_role = Role.find_by!(name: 'partner_admin')
+          choose partner_admin_role.friendly_name
+          click_on 'Update'
+
+          expect(page).to have_current_path(team_users_path(team))
+          expect(page).to_not have_content(
+            'Please verify with the appropriate Account Manager that this user should',
+          )
+          expect(membership.reload.role_name).to eq('partner_admin')
+        end
+
+        it 'does requires confirmation when email is missing from Airtable' do
+          allow(airtable_double).to receive(:new_partner_admin_in_airtable?).and_return(false)
+
+          create(:service_provider, team:)
+          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
+          visit team_users_path(team)
+          within('tr', text: readonly_team_member.email) do
+            click_on 'Edit'
+          end
+          partner_admin_role = Role.find_by!(name: 'partner_admin')
+          choose partner_admin_role.friendly_name
+          click_on 'Update'
+
+          expect(page).to have_current_path(
+            edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
+          )
+          expect(page).to have_content(
+            'Please verify with the appropriate Account Manager that this user should',
+          )
+          expect(membership.reload.role_name).to eq('partner_readonly')
+        end
+      end
     end
 
     context 'when partner admin' do

@@ -1,30 +1,36 @@
 require 'rails_helper'
 
-class MockReportIdentity
-  def initialize(file_name)
-    @test_data = JSON.parse(File.read(file_name))
+class MockAnalytic
+  def initialize(data)
+    @data = data
   end
 
-  def report_information
-    @test_data['report_information']
+  def config
+    MockAnalytic.new(@data)
   end
 
-  def provider_information
-    @test_data['provider_information']
+  def issuer
+    @data['issuer']
   end
 
-  def data
-    @test_data['data'].to_a.filter_map do |d|
-      next unless I18n.exists?("reports.#{d[0]}")
-
-      [I18n.t("reports.#{d[0]}"), d[1]]
-    end
+  def date
+    @data['report_information']['period_start_date']
   end
+
+  def valid_date?
+    /\d{4}-\d{2}-\d{2}/.match? date
+  end
+end
+
+def mock_report_identity(file_name)
+  test_data = JSON.parse(File.read(file_name))
+
+  Reports::Identity.new(MockAnalytic.new(test_data))
 end
 
 describe AnalyticsReportCsv do
   let(:monthly_report) do
-    MockReportIdentity.new(
+    mock_report_identity(
       'spec/fixtures/reports/4388/monthly/2025-12-01.json',
     )
   end

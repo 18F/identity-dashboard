@@ -70,6 +70,10 @@ class Airtable
     save_token(refresh_response)
   end
 
+  def refresh_token_if_needed(request)
+    refresh_token(build_redirect_uri(request)) if needs_refreshed_token?
+  end
+
   def has_token?
     Rails.cache.read("#{@user_uuid}.airtable_oauth_token").present?
   end
@@ -121,7 +125,7 @@ class Airtable
 
     records.select do |record|
       issuer_string = record.dig('fields', 'Issuer String')
-      issuer_string && issuers.any? { |issuer| issuer_string.include?(issuer) }
+      issuer_string && issuers.any?(issuer_string)
     end
   end
 

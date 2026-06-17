@@ -124,4 +124,72 @@ describe Reports::Identity do
       expect(described_class.new(analytic).has_raw_data?).to be false
     end
   end
+
+  describe '#service_provider_name' do
+    it 'returns the service provider name' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'provider_information' => { 'service_provider_name' => sp.friendly_name } }]],
+      )
+      expect(described_class.new(analytic).service_provider_name).to eq(sp.friendly_name)
+    end
+  end
+
+  describe '#report_information_present?' do
+    it 'returns false when the report does not have header info' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'report_information' => nil }]],
+      )
+      expect(described_class.new(analytic).report_information_present?).to be_falsey
+    end
+
+    it 'returns true when the report has header info' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'report_information' => { period_calendar_id: 20251201 } }]],
+      )
+      expect(described_class.new(analytic).report_information_present?).to be_truthy
+    end
+  end
+
+  describe '#formatted_period_start_date' do
+    it 'returns the period start date in proper format' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'report_information' => { 'period_start_date' => '2025-12-01 00:00:00 UTC' } }]],
+      )
+      expect(described_class.new(analytic).formatted_period_start_date).to eq('2025-12-01')
+    end
+  end
+
+  describe '#period_calendar_id' do
+    it 'returns the calendar ID for the selected period' do
+      analytic = Analytic.new(date: '2025-12-01', config: sp)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(sp.issuer, '2025-12-01')
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        [[{ 'report_information' => { 'period_calendar_id' => 20251201 } }]],
+      )
+      expect(described_class.new(analytic).period_calendar_id).to eq(20251201)
+    end
+  end
 end

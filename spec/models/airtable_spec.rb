@@ -50,6 +50,33 @@ RSpec.describe Airtable, type: :model do
       expect(records.first['fields']['Issuer String']).to eq('Issuer 1')
     end
 
+    it 'does not retrieve similar but not exact matches' do
+      issuers = ['one']
+
+      response_body = {
+        'records' => [
+          { 'fields' => { 'Issuer String' => 'one:issuer' } },
+          { 'fields' => { 'Issuer String' => 'one' } },
+        ],
+        'offset' => nil,
+      }.to_json
+
+      stub_request(:get, "https://api.airtable.com/v0/#{app_id}/#{table_id}?offset=")
+        .with(headers: {
+          'Authorization' => "Bearer #{user_token}",
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby',
+        })
+        .to_return(status: 200, body: response_body, headers: {})
+
+      records = airtable.get_matching_records(issuers)
+
+      expect(records.size).to eq(1)
+      expect(records.first['fields']['Issuer String']).to eq('one')
+    end
+
     it 'returns an empty array when no records match' do
       issuers = ['urn:gov:gsa:app:one', 'urn:gov:gsa:app:two']
 
@@ -269,6 +296,38 @@ RSpec.describe Airtable, type: :model do
     it 'refreshes the token and calls save_token' do
       airtable.refresh_token('https://example.com')
       expect(airtable).to have_received(:save_token)
+    end
+  end
+
+  describe '#refresh_token_if_needed' do
+    let(:user_uuid) { 'test-user-uuid' }
+    let(:airtable) { Airtable.new(user_uuid) }
+    let(:request) { double('Request') }
+
+    before do
+      allow(airtable).to receive(:build_redirect_uri).and_return('/test')
+      allow(airtable).to receive(:refresh_token).and_return(double)
+    end
+
+    it 'checks if the token is needed' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(false)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to have_received(:needs_refreshed_token?).once
+    end
+
+    it 'refreshes the token if needed' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(true)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to have_received(:refresh_token).once
+    end
+
+    it 'does not refresh the token if unneccessary' do
+      allow(airtable).to receive(:needs_refreshed_token?).and_return(false)
+
+      airtable.refresh_token_if_needed(request)
+      expect(airtable).to_not have_received(:refresh_token)
     end
   end
 

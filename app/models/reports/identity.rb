@@ -64,10 +64,6 @@ module Reports
       @raw_data = unwrap(@storage.fetch)
     end
 
-    def time_intervals
-      1
-    end
-
     def time_interval_size
       return 'month' if @storage.time_interval == 'monthly'
       return 'week' if @storage.time_interval == 'weekly'
@@ -119,18 +115,6 @@ module Reports
       end
     end
 
-    def provider_information
-      return {} unless has_raw_data?
-
-      @provider_information || @raw_data['provider_information']
-    end
-
-    def report_information
-      return {} unless has_raw_data?
-
-      @report_information || @raw_data['report_information']
-    end
-
     def successful_auths
       return unless has_raw_data?
 
@@ -143,7 +127,37 @@ module Reports
       @raw_data.present? && @raw_data.any?
     end
 
+    def service_provider_name
+      provider_information['service_provider_name'].to_s
+    end
+
+    # rubocop:disable Rails/Delegate
+    def report_information_present?
+      report_information.present?
+    end
+    # rubocop:enable Rails/Delegate
+
+    def formatted_period_start_date
+      Date.parse(report_information['period_start_date']).strftime('%Y-%m-%d')
+    end
+
+    def period_calendar_id
+      report_information['period_calendar_id']
+    end
+
     private
+
+    def provider_information
+      return {} unless has_raw_data?
+
+      @provider_information || @raw_data['provider_information']
+    end
+
+    def report_information
+      return {} unless has_raw_data?
+
+      @report_information || @raw_data['report_information']
+    end
 
     def chosen_date_as_string
       chosen_date.beginning_of_month.strftime('%F')
