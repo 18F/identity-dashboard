@@ -26,7 +26,7 @@ describe AnalyticsHelper do
         let(:stringified_uuid_list) { '' }
 
         it 'returns an empty string for the apps key' do
-          expect(teams_collection_for_select([team])).to eq(result)
+          expect(teams_collection_for_select([team])).to eq([])
         end
       end
 
@@ -35,7 +35,15 @@ describe AnalyticsHelper do
         let(:stringified_uuid_list) { sp.uuid.to_s }
 
         it 'returns the single uuid as a string' do
-          expect(teams_collection_for_select([sp.team])).to eq result
+          expect(teams_collection_for_select([sp.team])).to eq([])
+        end
+
+        describe 'when the service provider has a uuid' do
+          let!(:sp) { create(:service_provider, :ready_to_activate, team:) }
+
+          it 'returns the single uuid as a string' do
+            expect(teams_collection_for_select([sp.team])).to eq result
+          end
         end
       end
 
@@ -74,35 +82,6 @@ describe AnalyticsHelper do
             },
           ]
         end
-      end
-    end
-  end
-
-  describe '#uuid_list' do
-    describe 'when no team is passed in' do
-      let(:team) { nil }
-
-      it 'returns an empty string' do
-        expect(uuid_list(team)).to eq ''
-      end
-    end
-
-    describe 'when a team with no sps is passed in' do
-      let(:team) { create(:team) }
-
-      it 'returns an empty string' do
-        expect(uuid_list(team)).to eq ''
-      end
-    end
-
-    describe 'when a team with multiple sps is passed in' do
-      let(:team) { create(:team) }
-      let!(:sp) { create(:service_provider, :consistent, team:) }
-      let!(:sp1) { create(:service_provider, :consistent, team:) }
-      let(:stringified_uuid_list) { "#{sp.uuid},#{sp1.uuid}" }
-
-      it 'returns a string of all the uuids' do
-        expect(uuid_list(team)).to eq stringified_uuid_list
       end
     end
   end
@@ -150,6 +129,59 @@ describe AnalyticsHelper do
         it 'returns the end of the month correctly' do
           range_text = '2024-02-12 to 2024-02-29'
           expect(selected_date_range(date)).to eq range_text
+        end
+      end
+    end
+  end
+
+  describe '#all_app_options_string' do
+    describe 'when no team is passed in' do
+      let(:team) { nil }
+
+      it 'returns No Date Range selected' do
+        expect(all_app_options_string(team)).to eq ''
+      end
+    end
+
+    describe 'when teams are passed in' do
+      let(:team) { create(:team) }
+
+      describe 'only one team' do
+        describe 'with no service providers' do
+          it 'returns an empty string' do
+            expect(all_app_options_string([team])).to eq ''
+          end
+        end
+
+        describe 'with one service provider' do
+          let!(:sp) { create(:service_provider, :ready_to_activate, team:) }
+
+          it 'returns the uuid in a string' do
+            expect(all_app_options_string([team])).to eq sp.uuid.to_s
+          end
+        end
+
+        describe 'with two service provider' do
+          let!(:sp) { create(:service_provider, :ready_to_activate, team:) }
+          let!(:sp1) { create(:service_provider, :ready_to_activate, team:) }
+
+          it 'returns the uuid in a string' do
+            expect(all_app_options_string([team])).to eq "#{sp.uuid},#{sp1.uuid}"
+          end
+        end
+      end
+
+      describe 'when multiple teams are passed in' do
+        let(:team1) { create(:team) }
+        let(:team2) { create(:team) }
+        let!(:sp) { create(:service_provider, :ready_to_activate, team:) }
+        let!(:sp1) { create(:service_provider, :ready_to_activate, team: team1) }
+        let!(:sp2) { create(:service_provider, :ready_to_activate, team: team2) }
+
+        it 'joins all the available uuids' do
+          expected_result = "#{sp.uuid},#{sp1.uuid},#{sp2.uuid}"
+
+          expect(all_app_options_string([team, team1, team2])).to eq expected_result
         end
       end
     end

@@ -2,20 +2,14 @@
 module AnalyticsHelper
   def teams_collection_for_select(teams)
     teams.filter_map do |team|
-      if uuid_list(team).present?
+      if team.uuids_string.present?
         {
           name: team.name,
           id: team.id,
-          apps: uuid_list(team),
+          apps: team.uuids_string,
         }
       end
     end
-  end
-
-  def uuid_list(team)
-    return '' if team.blank?
-
-    team.service_providers.map(&:uuid).join(',')
   end
 
   def service_providers_collection_for_select(sps)
@@ -31,5 +25,11 @@ module AnalyticsHelper
 
     end_date = Date.parse(date).end_of_month
     "#{date} to #{end_date.strftime('%F')}"
+  end
+
+  def all_app_options_string(teams)
+    return '' if teams.blank?
+
+    teams.map(&:uuids_string).join(',')
   end
 end

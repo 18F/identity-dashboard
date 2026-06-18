@@ -116,4 +116,30 @@ describe Team do
       expect(user).to be_valid
     end
   end
+
+  describe '#uuids_string' do
+    describe 'with no associated service providers' do
+      it 'returns an empty string' do
+        expect(team.uuids_string).to eq ''
+      end
+    end
+
+    describe 'with an associated service providers' do
+      let!(:sp) { create(:service_provider, :ready_to_activate, :with_team, team:) }
+
+      it 'returns the uuid as a string' do
+        expect(team.uuids_string).to eq sp.uuid.to_s
+      end
+    end
+
+    describe 'with multiple associated service providers' do
+      let!(:sp) { create(:service_provider, :ready_to_activate, :with_team, team:) }
+      let!(:sp1) { create(:service_provider, :ready_to_activate, :with_team, team:) }
+      let!(:sp2) { create(:service_provider, :ready_to_activate, :with_team, team:) }
+
+      it 'returns the uuid as a comma-separated string' do
+        expect(team.uuids_string).to eq "#{sp.uuid},#{sp1.uuid},#{sp2.uuid}"
+      end
+    end
+  end
 end

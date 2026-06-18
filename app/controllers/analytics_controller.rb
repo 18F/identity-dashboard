@@ -7,8 +7,6 @@ class AnalyticsController < ApplicationController # :nodoc:
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
-  helper_method :all_app_options_string
-
   # /reports
   def index
     respond_to do |format|
@@ -88,14 +86,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def teams
     @teams ||= current_user.scoped_teams.includes(:service_providers)
-  end
-
-  def all_app_options_string
-    all_options = ''
-    teams.each do |team|
-      all_options += "#{app_options_string(team)},"
-    end
-    all_options
   end
 
   def available_service_providers
