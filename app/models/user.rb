@@ -32,6 +32,12 @@ class User < ApplicationRecord
     scope.where(id: service_providers).order('lower(friendly_name)')
   end
 
+  def scoped_report_service_providers
+    scoped_service_providers.where(
+      issuer: AnalyticsReportStorage.new.all_issuers,
+    )
+  end
+
   def user_deletion_history
     PaperTrail::Version
       .where(event: 'destroy', item_type: TeamAuditEvent::TEAM_MEMBERSHIP_EVENT_TYPES)
