@@ -9,7 +9,7 @@
       </div>
       <div class="usa-input__container">
         <select class="block col-12 select usa-select" aria-invalid="false" name="analytic[team]" id="analytic_team">
-          <option value="">- All Teams-</option>
+          <option value="" data-apps="<%= all_app_options_string %>">- All Teams-</option>
           <% teams_collection_for_select.each do |team| %>
             <option value="<%= team[:id] %>"
                     <%= 'selected' if @team == team[:id].to_s %>

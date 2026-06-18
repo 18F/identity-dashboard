@@ -44,13 +44,15 @@ describe 'reporting feature basics' do
       login_as logingov_admin
     end
 
-    # it 'can view appropriate team options' do
-    #   team_select = find('#analytic_team')
-    #   team_opts = team_select.find_all('option')
+    it 'can view appropriate team options' do
+      visit analytics_path
+      team_select = find('#analytic_team')
+      team_opts = team_select.find_all('option')
+      # options are each team plus All Teams
+      expect(team_opts.count).to eq(Team.count + 1)
+      expect(team_select.text).to include(logingov_admin.teams.first.name)
+    end
 
-    #   expect(team_opts.count).to eq(Team.count)
-    #   expect(team_select.text).to include(logingov_admin.teams.first.name)
-    # end
     it 'does not show a report automatically' do
       visit analytics_path
       expect(page).to have_content('Choose from the dropdowns to see a report.')
@@ -58,18 +60,36 @@ describe 'reporting feature basics' do
       expect(page).to_not have_link('Export report as CSV')
     end
 
-    it 'can filter apps by team' do
-      second_team = create(:team)
-      second_sp = create(:service_provider,
-        issuer: 'this:one:has:no:data',
-        user: logingov_admin,
-        team: second_team)
-      visit analytics_path
+    context 'Filter', :js do
+      let(:second_team) { create(:team) }
+      let(:second_sp) do
+        create(:service_provider,
+                issuer: issuer_with_a_little_test_data,
+                user: logingov_admin,
+                team: second_team)
+      end
 
-      select logingov_admin.teams.first.name, from: 'Team'
+      before do
+        second_team and second_sp
+        visit analytics_path
+      end
 
-      expect(page).to have_content(test_sp.friendly_name)
-      expect(page).to_not have_content(second_sp.friendly_name)
+      it 'shows the correct apps for a chosen team' do
+        select second_team.name, from: 'Team'
+
+        expect(page).to have_css('#analytic_uuid .display-none')
+        expect(page).to have_content(test_sp.friendly_name)
+        expect(page).to have_content(second_sp.friendly_name)
+      end
+
+      it 'shows the correct apps when reselecting All teams' do
+        select second_team.name, from: 'Team'
+        select '- All Teams-', from: 'Team'
+
+        expect(page).to_not have_css('#analytic_uuid .display_none')
+        expect(page).to have_content(test_sp.friendly_name)
+        expect(page).to have_content(second_sp.friendly_name)
+      end
     end
 
     it 'can update issuer and date options' do
