@@ -44,13 +44,15 @@ describe 'reporting feature basics' do
       login_as logingov_admin
     end
 
-    # it 'can view appropriate team options' do
-    #   team_select = find('#analytic_team')
-    #   team_opts = team_select.find_all('option')
+    it 'can view appropriate team options' do
+      visit analytics_path
+      team_select = find('#analytic_team')
+      team_opts = team_select.find_all('option')
+      # options are each team plus All Teams
+      expect(team_opts.count).to eq(Team.count + 1)
+      expect(team_select.text).to include(logingov_admin.teams.first.name)
+    end
 
-    #   expect(team_opts.count).to eq(Team.count)
-    #   expect(team_select.text).to include(logingov_admin.teams.first.name)
-    # end
     it 'does not show a report automatically' do
       visit analytics_path
       expect(page).to have_content('Choose from the dropdowns to see a report.')
