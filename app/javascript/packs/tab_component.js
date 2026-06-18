@@ -19,7 +19,7 @@ const onEvent = (ev) => {
 };
 
 const validHash = (hash, panels) => {
-  return new Array(...panels).some(p => p.id == hash);
+  return new Array(...panels).some(p => p.id === hash);
 };
 
 const onButtonSelect = () => {
@@ -27,7 +27,7 @@ const onButtonSelect = () => {
 };
 
 const onTabSelect = (ev) => {
-  if (ev?.type == 'keydown') {
+  if (ev?.type === 'keydown') {
     let items, currentIndex, newTarget;
     switch (ev.key) {
       case ' ':
@@ -51,7 +51,7 @@ const onTabSelect = (ev) => {
       default:
         return false;
     }
-  } else if (ev?.type == 'click') {
+  } else if (ev?.type === 'click') {
     onEvent(ev);
   }
 
@@ -67,10 +67,14 @@ const onTabSelect = (ev) => {
   const currentPanelId = selectedPanel || hashPanel || defaultPanel;
 
   allPanels.forEach(panel => {
-    panel.style.display = (panel.id == currentPanelId) ? '' : 'none';
+    if (panel.id === currentPanelId) {
+      panel.classList.remove('display-none');
+    } else {
+      panel.classList.add('display-none');
+    }
   });
   allItems.forEach(item => {
-    const isActiveItem = item.id == `usa-tab__${currentPanelId}`;
+    const isActiveItem = item.id === `usa-tab__${currentPanelId}`;
 
     item.setAttribute('aria-selected', isActiveItem);
     if (isActiveItem) {

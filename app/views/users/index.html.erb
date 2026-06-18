@@ -18,6 +18,30 @@
     </button>
   <% end %>
 </section>
+<% if current_user.logingov_admin? %>
+  <% tab_component = TabComponent.new(
+       opts: { class_name: 'test-me' }
+     ).add_tab(title: 'Tab One', id: 'tab1') do %>
+        <% render('components/step_progress', {
+          steps: ['all', 'edit', 'index', 'main'],
+          current_step_index: 3,
+          localization_base: 'headings.service_providers'}) %>
+  <% end %>
+  <% tab_component.add_tab(title: 'Tab Two', id: 'tab2', focusable: true) do %>
+    <% capture do %>
+      <p class="usa-prose">This is the…</p>
+      <p class="usa-prose">second tab panel!</p>
+      <a class="usa-link" href="#tab3">Go to tab 3</a>
+    <% end %>
+  <% end %>
+  <% tab_component.add_tab(title: 'Tab Three', id: 'tab3', focusable: true) do %>
+    <% render('components/step_progress', {
+      steps: ['en', 'es', 'fr', 'zh'],
+      current_step_index: 0,
+      localization_base: 'locale_map'}) %>
+  <% end %>
+  <%= render tab_component %>
+<% end %>
 
 <div class="display-flex">
   <% if current_user.logingov_admin? %>
