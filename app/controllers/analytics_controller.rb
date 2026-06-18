@@ -19,13 +19,9 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def create
-    if analytic.valid?
-      redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
-                                 date: analytic.date) and return
-    end
-
     error_if_invalid_url
-    redirect_to analytics_path
+    redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
+                                 date: analytic.date) and return
   end
 
   private
@@ -36,27 +32,13 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
 
-    check_for_data_error
-    error_if_invalid_url unless analytic.valid?
-  end
-
-  def check_for_data_error
-    if teams.blank? || available_service_providers.blank?
-      @error = t('reports.errors.no_team')
-    elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
-      @error = t('reports.errors.no_data')
-      @graphs = []
-    end
+    error_if_invalid_url
   end
 
   def error_if_invalid_url
-    return if analytic_params.blank?
+    return if analytic.valid? || analytic_params.blank?
 
-    # Our preference is to use `flash.now` whenever possible,
-    # but `flash.now` doesn't work immediately before a redirect.
-    # Rubocop is unable to detect that this flash is getting set before a redirect
-    # because setting the flash and the redirect happen in different methods.
-    flash[:error] = analytic.errors.full_messages.join(' ') # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    @error = analytic.errors.full_messages.join(' ')
   end
 
   def analytic_params

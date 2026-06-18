@@ -2,11 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#filter form');
   if (!form) { return; }
 
+  const teamSelect = document.getElementById('analytic_team');
   const appSelect = form.querySelector('#analytic_uuid');
   const appOptions = appSelect.querySelectorAll('option');
 
-  document.getElementById('analytic_team').addEventListener('change', (event) => {
-    const opt = event.currentTarget.selectedOptions[0];
+  const onTeamChange = () => {
+    const opt = teamSelect.selectedOptions[0];
     const appIds = opt.dataset.apps.split(',');
     let appNeedsSetting = true;
 
@@ -21,5 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
-  });
+  };
+
+  document.getElementById('analytic_team').addEventListener('change', onTeamChange);
+  onTeamChange();
 });
