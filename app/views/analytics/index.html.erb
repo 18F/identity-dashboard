@@ -16,7 +16,7 @@
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>
-              <% if @analytic.valid? && @graphs.any? %>
+              <% if @analytic.errors.empty? && @graphs.any? %>
                 <a
                   href="<%= analytics_path(
                     uuid: @analytic.uuid,
@@ -33,7 +33,7 @@
       </section>
     </div>
   </div>
-<% if @analytic.valid? && @graphs.any? %>
+<% if @analytic.errors.empty? && @graphs.any? %>
     <div class="grid-row grid-gap">
     <div class="grid-col-fill">
         <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">

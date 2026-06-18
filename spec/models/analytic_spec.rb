@@ -29,9 +29,13 @@ RSpec.describe Analytic, type: :model do
       analytic.config = service_provider
       analytic.date = period_start
       analytic.data = report_data
+
+      allow(analytic).to receive(:config_valid?).and_return(true)
+      allow(analytic).to receive(:valid_date?).and_return(true)
+      allow(analytic).to receive(:data_valid?).and_return(true)
     end
 
-    it 'calls #is_valid?' do
+    it 'calls #is_valid? when #valid? is called' do
       allow(analytic).to receive(:is_valid?).and_return(false)
       analytic.valid?
 

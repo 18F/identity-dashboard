@@ -11,9 +11,7 @@ class Analytic
   end
 
   def is_valid?
-    if errors.present?
-      return false
-    elsif not config_valid?
+    if not config_valid?
       return false
     elsif not valid_date?
       return false
@@ -21,8 +19,6 @@ class Analytic
       data_valid?
     end
   end
-
-  private
 
   def config_valid?
     return true if uuid
@@ -53,6 +49,8 @@ class Analytic
 
     true
   end
+
+  private
 
   def add_data_error
     errors.add(:base, I18n.t('reports.errors.no_data'))

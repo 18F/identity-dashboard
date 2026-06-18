@@ -37,7 +37,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     @application_count = available_service_providers.count
 
     check_for_data_error
-    error_if_invalid_url
+    error_if_invalid_url unless analytic.valid?
   end
 
   def check_for_data_error
@@ -50,7 +50,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def error_if_invalid_url
-    return if analytic.valid? || analytic_params.blank?
+    return if analytic_params.blank?
 
     # Our preference is to use `flash.now` whenever possible,
     # but `flash.now` doesn't work immediately before a redirect.
