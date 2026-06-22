@@ -36,7 +36,10 @@ class Analytic
   end
 
   def valid_date?
-    errors.add(:date, :invalid) and return false unless /\d{4}-\d{2}-\d{2}/.match? date
+    unless /\d{4}-\d{2}-\d{2}/.match? date
+      errors.add(:date, :invalid) unless errors.added?(:date, :invalid)
+      return false
+    end
 
     begin
       Date.parse date
