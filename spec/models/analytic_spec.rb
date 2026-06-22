@@ -35,21 +35,14 @@ RSpec.describe Analytic do
       allow(analytic).to receive(:data_valid?).and_return(true)
     end
 
-    it 'calls #is_valid? when #valid? is called' do
-      allow(analytic).to receive(:is_valid?).and_return(false)
-      analytic.valid?
-
-      expect(analytic).to have_received(:is_valid?).once
-    end
-
     it 'returns true when all checks pass' do
-      expect(analytic.is_valid?).to be_truthy
+      expect(analytic.valid?).to be_truthy
     end
 
     it 'makes minimal checks when the config is invalid' do
       allow(analytic).to receive(:config_valid?).and_return(false)
 
-      expect(analytic.is_valid?).to be_falsey
+      expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
       expect(analytic).to_not have_received(:valid_date?)
@@ -59,7 +52,7 @@ RSpec.describe Analytic do
     it 'makes minimal checks when the date is invalid' do
       allow(analytic).to receive(:valid_date?).and_return(false)
 
-      expect(analytic.is_valid?).to be_falsey
+      expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
       expect(analytic).to have_received(:valid_date?).once
@@ -69,7 +62,7 @@ RSpec.describe Analytic do
     it 'makes correct checks when the data is invalid' do
       allow(analytic).to receive(:data_valid?).and_return(false)
 
-      expect(analytic.is_valid?).to be_falsey
+      expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
       expect(analytic).to have_received(:valid_date?).once

@@ -63,7 +63,7 @@ describe AnalyticsController do
             uuid: sp_with_data.uuid,
             date: '9999-99-99',
           ))
-          expect(flash[:error]).to match('The link for that report was not valid.')
+          expect(assigns(:error)).to match('The link for that report was not valid.')
         end
 
         it 'handles good post parameters' do
@@ -74,6 +74,7 @@ describe AnalyticsController do
             date: '2025-12-01',
           ))
           expect(flash[:error]).to be_blank
+          expect(assigns(:error)).to be_blank
         end
       end
 
