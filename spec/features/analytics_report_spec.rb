@@ -162,8 +162,8 @@ describe 'reporting feature basics' do
         uuid: null_data_sp.uuid,
         date: '2025-08-01',
       )
-      expect(page).to have_content("We couldn't retrieve data matching your application" \
-          " and date. We're continually adding new data, so check back soon.")
+      expect(page).to have_content("We couldn't retrieve data matching your application " \
+        "and date. We're continually adding new data, so check back soon.")
       expect(page).to_not have_button('Export report as CSV')
     end
 

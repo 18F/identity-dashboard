@@ -19,9 +19,13 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def create
-    error_if_invalid_url
-    redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
-                                 date: analytic.date) and return
+    compile_errors
+    # TODO: This needs to change to disable or remove the View report button
+    return redirect_to analytics_path unless analytic.config
+
+    redirect_to analytics_path(team: analytic.config.team,
+                               uuid: analytic.config.uuid,
+                               date: analytic.date) and return
   end
 
   private
@@ -32,10 +36,11 @@ class AnalyticsController < ApplicationController # :nodoc:
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
 
-    error_if_invalid_url
+    compile_errors
+    flash[:error] = I18n.t('reports.errors.no_team') if @application_count.zero?
   end
 
-  def error_if_invalid_url
+  def compile_errors
     return if analytic.valid? || analytic_params.blank?
 
     @error = analytic.errors.full_messages.join(' ')

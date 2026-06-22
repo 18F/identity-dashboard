@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Analytic, type: :model do
+RSpec.describe Analytic do
   let(:analytic) { Analytic.new }
-  let(:service_provider) {}
-  let(:period_start) {}
-  let(:report_data) {}
+  let(:service_provider) { nil }
+  let(:period_start) { nil }
+  let(:report_data) { nil }
 
   describe '#uuid' do
     before do

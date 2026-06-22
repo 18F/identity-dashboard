@@ -58,7 +58,11 @@ describe AnalyticsController do
 
         it 'handles bad post parameters' do
           post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
-          expect(response).to redirect_to(analytics_path)
+          expect(response).to redirect_to(analytics_path(
+            team: admin_team.id,
+            uuid: sp_with_data.uuid,
+            date: '9999-99-99',
+          ))
           expect(flash[:error]).to match('The link for that report was not valid.')
         end
 

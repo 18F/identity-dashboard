@@ -4,17 +4,15 @@ class Analytic
 
   attr_accessor :date, :config, :data
 
-  validate :is_valid?
+  validate :valid?
 
   def uuid
     config&.uuid
   end
 
-  def is_valid?
-    if not config_valid?
-      return false
-    elsif not valid_date?
-      return false
+  def valid?
+    if !config_valid? || !valid_date?
+      false
     else
       data_valid?
     end
@@ -33,7 +31,7 @@ class Analytic
 
     return true if existing_values.present?
 
-    add_data_error
+    errors.add(:base, I18n.t('reports.errors.no_data'))
     false
   end
 
@@ -51,10 +49,6 @@ class Analytic
   end
 
   private
-
-  def add_data_error
-    errors.add(:base, I18n.t('reports.errors.no_data'))
-  end
 
   def add_generic_error
     errors.add(:base, I18n.t('reports.errors.generic'))
