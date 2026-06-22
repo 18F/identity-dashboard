@@ -63,35 +63,32 @@ describe AnalyticsHelper do
     end
 
     describe 'when multiple teams are passed in' do
-      describe 'when both teams have app options' do
-        let(:team) { create(:team) }
+      let(:team) { create(:team) }
+      let(:team2) { create(:team) }
+      let!(:sp) { create(:service_provider, :consistent, team:) }
+      let!(:sp1) { create(:service_provider, :consistent, team:) }
+      let!(:sp3) { create(:service_provider, :consistent, team: team2) }
+      let!(:sp4) { create(:service_provider, :consistent, team: team2) }
+      let(:stringified_uuid_list) { "#{sp.uuid},#{sp1.uuid}" }
+      let(:team2_stringified_uuid_list) { "#{sp3.uuid},#{sp4.uuid}" }
 
-        let(:team2) { create(:team) }
-        let!(:sp) { create(:service_provider, :consistent, team:) }
-        let!(:sp1) { create(:service_provider, :consistent, team:) }
-        let!(:sp3) { create(:service_provider, :consistent, team: team2) }
-        let!(:sp4) { create(:service_provider, :consistent, team: team2) }
-        let(:stringified_uuid_list) { "#{sp.uuid},#{sp1.uuid}" }
-        let(:team2_stringified_uuid_list) { "#{sp3.uuid},#{sp4.uuid}" }
+      let(:result) do
+        [
+          {
+            name: team.name,
+            id: team.id,
+            apps: stringified_uuid_list,
+          },
+          {
+            name: team2.name,
+            id: team2.id,
+            apps: team2_stringified_uuid_list,
+          },
+        ]
+      end
 
-        let(:result) do
-          [
-            {
-              name: team.name,
-              id: team.id,
-              apps: stringified_uuid_list,
-            },
-            {
-              name: team2.name,
-              id: team2.id,
-              apps: team2_stringified_uuid_list,
-            },
-          ]
-        end
-
-        it 'returns the sp uuids as a comma-separated string' do
-          expect(teams_collection_for_select([team, team2])).to eq result
-        end
+      it 'returns the sp uuids as a comma-separated string' do
+        expect(teams_collection_for_select([team, team2])).to eq result
       end
     end
   end
