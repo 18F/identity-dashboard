@@ -1,14 +1,12 @@
 # Helper for Analytics view to handle selection logic
 module AnalyticsHelper
   def teams_collection_for_select(teams)
-    teams.filter_map do |team|
-      if team.uuids_string.present?
-        {
-          name: team.name,
-          id: team.id,
-          apps: team.uuids_string,
-        }
-      end
+    teams.map do |team|
+      {
+        name: team.name,
+        id: team.id,
+        apps: team.uuids_string,
+      }
     end
   end
 

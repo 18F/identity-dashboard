@@ -26,7 +26,7 @@ describe AnalyticsHelper do
         let(:stringified_uuid_list) { '' }
 
         it 'returns an empty string for the apps key' do
-          expect(teams_collection_for_select([team])).to eq([])
+          expect(teams_collection_for_select([team])).to eq(result)
         end
       end
 
@@ -34,8 +34,12 @@ describe AnalyticsHelper do
         let!(:sp) { create(:service_provider, :consistent, team:) }
         let(:stringified_uuid_list) { sp.uuid.to_s }
 
-        it 'returns the single uuid as a string' do
-          expect(teams_collection_for_select([sp.team])).to eq([])
+        describe 'with no uuid' do
+          let(:stringified_uuid_list) { '' }
+
+          it 'returns the single uuid as a string' do
+            expect(teams_collection_for_select([sp.team])).to eq(result)
+          end
         end
 
         describe 'when the service provider has a uuid' do
