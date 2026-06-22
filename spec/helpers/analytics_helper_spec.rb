@@ -64,6 +64,8 @@ describe AnalyticsHelper do
 
     describe 'when multiple teams are passed in' do
       describe 'when both teams have app options' do
+        let(:team) { create(:team) }
+
         let(:team2) { create(:team) }
         let!(:sp) { create(:service_provider, :consistent, team:) }
         let!(:sp1) { create(:service_provider, :consistent, team:) }
@@ -85,6 +87,10 @@ describe AnalyticsHelper do
               apps: team2_stringified_uuid_list,
             },
           ]
+        end
+
+        it 'returns the sp uuids as a comma-separated string' do
+          expect(teams_collection_for_select([team, team2])).to eq result
         end
       end
     end
