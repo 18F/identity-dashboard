@@ -44,6 +44,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     if teams.blank? || available_service_providers.blank?
       @error = t('reports.errors.no_team')
     elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
+      @no_data = true
       @error = t('reports.errors.no_data')
       @graphs = []
     end
