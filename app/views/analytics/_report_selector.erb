@@ -2,15 +2,15 @@
   <% if @graphs.none? %>
     <p class="margin-bottom-0">Choose from the dropdowns to see a report.</p>
   <% end %>
-  <div class='grid-row grid-gap-2'>
+  <div class="grid-row grid-gap-2">
     <div class="wizard-field select analytic_team tablet:grid-col-4">
       <div class="usa-label__group">
         <label class="usa-label select" for="analytic_team">Team</label>
       </div>
       <div class="usa-input__container">
         <select class="block col-12 select usa-select" aria-invalid="false" name="analytic[team]" id="analytic_team">
-          <option value="" data-apps="<%= all_app_options_string %>">- All Teams-</option>
-          <% teams_collection_for_select.each do |team| %>
+          <option value="" data-apps="<%= all_app_options_string(@teams) %>">- All Teams-</option>
+          <% teams_collection_for_select(@teams).each do |team| %>
             <option value="<%= team[:id] %>"
                     <%= 'selected' if @team == team[:id].to_s %>
                     data-apps="<%= team[:apps] %>"><%= team[:name] %></option>
@@ -21,7 +21,7 @@
     <%= form.input :uuid,
               wrapper_html: { class: 'tablet:grid-col-4'},
               input_html: { class: 'usa-select', aria: { invalid: false } },
-              collection: service_providers_collection_for_select,
+              collection: service_providers_collection_for_select(@available_service_providers),
               label: 'Application',
               label_html: { class: 'usa-input-required' },
               prompt: '- All Applications-',

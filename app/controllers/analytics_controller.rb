@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
@@ -7,11 +6,6 @@ class AnalyticsController < ApplicationController # :nodoc:
   before_action -> { authorize analytic }
   after_action :verify_authorized
   after_action :verify_policy_scoped
-
-  helper_method :all_app_options_string
-  helper_method :teams_collection_for_select
-  helper_method :service_providers_collection_for_select
-  helper_method :selected_date_range
 
   # /reports
   def index
@@ -47,8 +41,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def check_for_data_error
-    if teams_collection_for_select.blank? ||
-       service_providers_collection_for_select.blank?
+    if teams.blank? || available_service_providers.blank?
       @error = t('reports.errors.no_team')
     elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
       @error = t('reports.errors.no_data')
@@ -91,52 +84,14 @@ class AnalyticsController < ApplicationController # :nodoc:
     )
   end
 
-  def selected_date_range
-    end_date = Date.parse(@analytic.date).end_of_month
-    "#{@analytic.date} to #{end_date.strftime('%F')}"
-  end
-
   def teams
-    @teams ||= current_user.scoped_teams
-  end
-
-  def teams_collection_for_select
-    teams.map do |team|
-      {
-        name: team.name,
-        id: team.id,
-        apps: app_options_string(team),
-      }
-    end
-  end
-
-  def app_options_string(team)
-    team.service_providers.map(&:uuid).join(',')
-  end
-
-  def all_app_options_string
-    all_options = ''
-    teams.each do |team|
-      all_options += "#{app_options_string(team)},"
-    end
-    all_options
-  end
-
-  def service_providers_collection_for_select
-    available_service_providers.to_a.flatten.map do |sp|
-      [sp.friendly_name, sp.uuid]
-    end
+    @teams ||= current_user.scoped_teams.includes(:service_providers)
   end
 
   def available_service_providers
-    @available_service_providers ||= begin
-      available_issuers = policy_scope(ServiceProvider).pluck(:issuer).intersection(
-        AnalyticsReportStorage.new.all_issuers,
-      )
-      policy_scope(ServiceProvider).where(
-        issuer: available_issuers,
-      )
-    end
+    @available_service_providers ||= policy_scope(ServiceProvider).where(
+      issuer: AnalyticsReportStorage.new.all_issuers,
+    )
   end
 
   def available_report_dates
@@ -175,4 +130,3 @@ class AnalyticsController < ApplicationController # :nodoc:
     ]
   end
 end
-# rubocop:enable Metrics/ClassLength

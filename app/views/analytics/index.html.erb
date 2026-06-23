@@ -36,7 +36,9 @@
 <% if @analytic.valid? && @graphs.any? %>
     <div class="grid-row grid-gap">
     <div class="grid-col-fill">
-        <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">Date range: <%= selected_date_range %></h2>
+        <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">
+          Date range: <%= selected_date_range(@analytic.date) %>
+          </h2>
     </div>
   </div>
   <div class="usa-alert usa-alert--info">

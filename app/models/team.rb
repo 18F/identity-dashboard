@@ -69,6 +69,10 @@ class Team < ApplicationRecord
     end
   end
 
+  def uuids_string
+    service_providers.map(&:uuid).join(',')
+  end
+
   # Every team should have a partner_admin, but regularly we'll want to create a team before we know
   # who the partner_admin should be.
   def missing_a_partner_admin?
