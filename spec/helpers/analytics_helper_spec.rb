@@ -63,8 +63,8 @@ describe AnalyticsHelper do
     end
 
     describe 'when multiple teams are passed in' do
-      let(:team) { create(:team) }
-      let(:team2) { create(:team) }
+      let(:team) { create(:team, name: 'Zebra Team') }
+      let(:team2) { create(:team, name: 'Alpha Team') }
       let!(:sp) { create(:service_provider, :consistent, team:) }
       let!(:sp1) { create(:service_provider, :consistent, team:) }
       let!(:sp3) { create(:service_provider, :consistent, team: team2) }
@@ -75,19 +75,19 @@ describe AnalyticsHelper do
       let(:result) do
         [
           {
-            name: team.name,
-            id: team.id,
-            apps: stringified_uuid_list,
-          },
-          {
             name: team2.name,
             id: team2.id,
             apps: team2_stringified_uuid_list,
           },
+          {
+            name: team.name,
+            id: team.id,
+            apps: stringified_uuid_list,
+          },
         ]
       end
 
-      it 'returns the sp uuids as a comma-separated string' do
+      it 'returns the teams as a comma-separated string in alphabetical order' do
         expect(teams_collection_for_select([team, team2])).to eq result
       end
     end
@@ -106,6 +106,20 @@ describe AnalyticsHelper do
       it 'returns an array where the first element is the sp name and uuid' do
         expect(service_providers_collection_for_select([sp])).to eq(
           [
+            [sp.friendly_name, sp.uuid],
+          ],
+        )
+      end
+    end
+
+    describe 'multiple sps are passed in' do
+      let(:sp) { create(:service_provider, :ready_to_activate, friendly_name: 'Zebra Service') }
+      let(:sp1) { create(:service_provider, :ready_to_activate, friendly_name: 'Alpha Service') }
+
+      it 'returns an array of sps sorted alphabetically ' do
+        expect(service_providers_collection_for_select([sp, sp1])).to eq(
+          [
+            [sp1.friendly_name, sp1.uuid],
             [sp.friendly_name, sp.uuid],
           ],
         )

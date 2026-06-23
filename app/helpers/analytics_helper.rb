@@ -1,7 +1,7 @@
 # Helper for Analytics view to handle selection logic
 module AnalyticsHelper
   def teams_collection_for_select(teams)
-    teams.map do |team|
+    sort_alphabetically(teams, :name).map do |team|
       {
         name: team.name,
         id: team.id,
@@ -13,7 +13,7 @@ module AnalyticsHelper
   def service_providers_collection_for_select(sps)
     return [] if sps.blank?
 
-    sps.to_a.flatten.map do |sp|
+    sort_alphabetically(sps.to_a.flatten, :friendly_name).map do |sp|
       [sp.friendly_name, sp.uuid]
     end
   end
@@ -29,5 +29,11 @@ module AnalyticsHelper
     return '' if teams.blank?
 
     teams.map(&:uuids_string).join(',')
+  end
+
+  private
+
+  def sort_alphabetically(collection, attribute)
+    collection.sort_by { |item| item.send(attribute).to_s.downcase }
   end
 end
