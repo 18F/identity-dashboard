@@ -26,9 +26,11 @@ SecureHeaders::Configuration.default do |config|
   img_src = ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"]
 
   if Rails.env.development?
-    script_src.push('*.ssa.gov', 'ajax.googleapis.com')
-    style_src.push("'unsafe-inline'", '*.ssa.gov')
-    img_src.push('*.ssa.gov')
+    script_src.push('ajax.googleapis.com')
+    # uncomment for ANDI manual A11y testing
+    # script_src.push('*.ssa.gov')
+    # style_src.push("'unsafe-inline'", '*.ssa.gov')
+    # img_src.push('*.ssa.gov')
   end
 
   config.csp = {
