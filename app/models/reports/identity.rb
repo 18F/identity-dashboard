@@ -94,7 +94,8 @@ module Reports
 
     def idv_data
       return [] if inner_data.blank?
-      if inner_data['count_newly_proofed_users'].blank? && inner_data['count_preverified_users'].blank?
+      if inner_data['count_newly_proofed_users'].blank? &&
+         inner_data['count_preverified_users'].blank?
         return []
       end
 

@@ -37,12 +37,6 @@ module AnalyticsHelper
     number_with_delimiter(number)
   end
 
-  def data_unavailable_or_show_graph(attributes)
-    return I18n.t('reports.errors.unavailable_data') if attributes[:data].blank?
-
-    public_send(attributes[:type], attributes[:data], **attributes[:options])
-  end
-
   private
 
   def sort_alphabetically(collection, attribute)
