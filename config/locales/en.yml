@@ -221,5 +221,6 @@ en:
     errors:
       no_data: We couldn't retrieve data matching your application and date. We're continually adding new data, so check back soon.
       no_team: You do not belong to any team that has a service provider configuration with reported data.
+      unavailable_data: Data is currently not available
   shared:
     official_site: An official website of the United States government
