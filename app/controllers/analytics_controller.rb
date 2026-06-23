@@ -4,13 +4,17 @@ class AnalyticsController < ApplicationController # :nodoc:
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
 
   before_action -> { authorize analytic }
+  before_action :validate_and_compile_errors
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
   # /reports
   def index
     respond_to do |format|
-      format.html { populate_data_for_html }
+      format.html do
+        populate_data_for_html
+        flash[:error] = I18n.t('reports.errors.no_team') if @application_count.zero?
+      end
       format.csv do
         report = AnalyticsReportCsv.new(identity_report)
         send_data report.report_data_csv, filename: report.filename
@@ -19,7 +23,6 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def create
-    compile_errors
     # TODO: This needs to change to disable or remove the View report button
     return redirect_to analytics_path unless analytic.config
 
@@ -36,12 +39,9 @@ class AnalyticsController < ApplicationController # :nodoc:
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
-
-    compile_errors
-    flash[:error] = I18n.t('reports.errors.no_team') if @application_count.zero?
   end
 
-  def compile_errors
+  def validate_and_compile_errors
     return if analytic.valid? || analytic_params.blank?
 
     @error = analytic.errors.full_messages.join(' ')

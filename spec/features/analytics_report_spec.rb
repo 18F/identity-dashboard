@@ -72,6 +72,13 @@ describe 'reporting feature basics' do
       expect(page).to_not have_link('Export report as CSV')
     end
 
+    it 'does not show a report error message before selecting a report' do
+      visit analytics_path
+      expect(page).to_not have_content(
+        'We couldn\'t retrieve data matching your application and date.',
+      )
+    end
+
     context 'Filter', :js do
       let(:second_team) { create(:team) }
       let(:second_sp) do

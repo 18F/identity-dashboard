@@ -4,8 +4,6 @@ class Analytic
 
   attr_accessor :date, :config, :data
 
-  validate :valid?
-
   def uuid
     config&.uuid
   end
