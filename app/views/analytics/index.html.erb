@@ -64,32 +64,10 @@
   </div>
   <div class="grid-row grid-gap tablet-lg:margin-2">
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
-      <div class="data-graph--container">
-        <p class="data-graph__title">
-          <span class="data-graph__headline">All Active Users</span>
-        </p>
-        <p class="padding-bottom-2">Unique users who accessed a service</p>
-          <div class="grid-row flex-column flex-justify-center flex-align-center bg-primary-lightest height-mobile">
-            <div>
-              <%= data_unavailable_or_show_graph @graphs[0] %>
-            </div>
-          </div>
-        <p>New accounts reflect account creation during this window. Existing accounts reflect accounts created ahead of this window.</p>
-      </div>
+      <%= render(ChartComponent.new(**@graphs[0])) %>
     </div>
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
-      <div class="data-graph--container">
-        <p class="data-graph__title">
-          <span class="data-graph__headline">Active Identity Verified Users</span>
-        </p>
-        <p class="padding-bottom-2">Unique users who accessed a service requiring verification</p>
-          <div class="grid-row flex-column flex-justify-center flex-align-center height-mobile">
-            <div>
-              <%= data_unavailable_or_show_graph @graphs[1] %>
-            </div>
-          </div>
-        <p>Newly proofed are net new users who verified during this window. Previously proofed are users who completed verification ahead of this window.</p>
-      </div>
+      <%= render(ChartComponent.new(**@graphs[1])) %>
     </div>
   </div>
   <div class="grid-row grid-gap margin-2">

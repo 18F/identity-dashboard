@@ -105,12 +105,22 @@ class AnalyticsController < ApplicationController # :nodoc:
       {
         type: :column_chart,
         data: identity_report.usage_data,
-        options: DEFAULT_GRAPH_OPTIONS,
+        title: 'All Active Users',
+        options: DEFAULT_GRAPH_OPTIONS.merge({
+          top_description: 'Unique users who accessed a service',
+          bottom_description: 'New accounts reflect account creation during this window. ' \
+            'Existing accounts reflect accounts created ahead of this window.',
+        }),
       },
       {
         type: :column_chart,
         data: identity_report.idv_data,
-        options: DEFAULT_GRAPH_OPTIONS,
+        title: 'Active Identity Verified Users',
+        options: DEFAULT_GRAPH_OPTIONS.merge({
+          top_description: 'Unique users who accessed a service requiring verification',
+          bottom_description: 'Newly proofed are net new users who verified during this window. ' \
+            'Previously proofed are users who completed verification ahead of this window,',
+        }),
       },
     ]
   end

@@ -1,0 +1,16 @@
+<div class="data-graph--container">
+  <p class="data-graph__title">
+    <span class="data-graph__headline"><%= title %></span>
+  </p>
+  <p class="padding-bottom-2"><%= top_description %></p>
+      <% if data_unavailable? %>
+        <div class="grid-row flex-row bg-primary-lightest chart-sized">
+          <div class="flex-align-self-center text-center">
+            <%= t('reports.errors.unavailable_data') %>
+          </div>
+        </div>
+      <% else %>
+        <%= public_send(type, data, **options) %>
+      <% end %>
+  <p><%= bottom_description %></p>
+</div>
