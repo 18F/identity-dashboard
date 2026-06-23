@@ -124,14 +124,16 @@ describe Users::OmniauthController do
   end
 
   describe '#failure' do
-    it 'redirects to root' do
+    it 'redirects to IdP 503 page' do
       get :failure, params: {
         message: 'callback_access_denied',
         origin: 'http://test.host/system-use?',
         strategy: 'logindotgov',
       }
 
-      expect(response).to redirect_to(root_path)
+      expect(response.status).to eq(503)
+      expect(response.redirect?).to be_falsey
+      expect(response.body).to include('Login.gov IdP is unavailable. (503)')
     end
   end
 

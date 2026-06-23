@@ -15,7 +15,7 @@ module Users
     end
 
     def failure
-      redirect_to root_path
+      render layout: false, file: 'public/idp_503.html', status: :service_unavailable
     end
 
     def store_id_token
