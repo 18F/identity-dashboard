@@ -131,9 +131,9 @@ describe Users::OmniauthController do
         strategy: 'logindotgov',
       }
 
-      expect(response.status).to eq(503)
+      expect(response).to have_http_status(:service_unavailable)
       expect(response.redirect?).to be_falsey
-      expect(response.body).to include('Login.gov IdP is unavailable. (503)')
+      expect(response.body).to include('Login.gov is unavailable. (503)')
     end
   end
 
