@@ -31,6 +31,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def populate_data_for_html
+    @teams = current_user.scoped_teams.includes(:service_providers)
     @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
@@ -70,10 +71,6 @@ class AnalyticsController < ApplicationController # :nodoc:
     policy_scope(ServiceProvider).find_by(
       uuid: analytic_params[:uuid],
     )
-  end
-
-  def teams
-    @teams ||= current_user.scoped_teams.includes(:service_providers)
   end
 
   def available_service_providers
