@@ -232,7 +232,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (1.1.0)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     crack (1.0.0)
       bigdecimal
@@ -271,7 +271,7 @@ GEM
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
     fakefs (2.5.0)
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -387,7 +387,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (9.15.0)
     nio4r (2.7.4)
-    nokogiri (1.19.3)
+    nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     omniauth (2.1.2)
@@ -697,7 +697,7 @@ DEPENDENCIES
   enum_help
   factory_bot_rails (~> 6.3, >= 6.3.0)
   fakefs
-  faraday
+  faraday (>= 2.14.3)
   i18n-tasks (>= 1.0.13)
   identity-hostdata!
   identity-logging!
@@ -710,7 +710,7 @@ DEPENDENCIES
   lru_redux
   minitar (~> 1.1)
   newrelic_rpm (>= 6.14.0)
-  nokogiri (~> 1.19.1)
+  nokogiri (~> 1.19.4)
   omniauth-rails_csrf_protection (>= 2.0.0)
   omniauth_login_dot_gov!
   paper_trail (~> 16)
