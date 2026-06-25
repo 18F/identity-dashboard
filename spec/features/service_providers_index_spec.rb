@@ -9,9 +9,15 @@ feature 'Users can access service providers that belong to their team' do
     let(:user1) { create(:user, teams: [team0]) }
     let(:not_a_member_team) { create(:team) }
     let(:user2) { create(:user) }
-    let!(:members_prod_config) { create(:service_provider, :with_prod_config, team: team0, user: user2) }
-    let!(:members_sandbox_config) { create(:service_provider, :with_sandbox, team: team0, user: user2) }
-    let!(:no_longer_a_member_config) { create(:service_provider, user: user1, team: not_a_member_team) }
+    let!(:members_prod_config) do
+      create(:service_provider, :with_prod_config, team: team0, user: user2)
+    end
+    let!(:members_sandbox_config) do
+      create(:service_provider, :with_sandbox, team: team0, user: user2)
+    end
+    let!(:no_longer_a_member_config) do
+      create(:service_provider, user: user1, team: not_a_member_team)
+    end
     let!(:other_config) { create(:service_provider) }
 
     before { login_as user1 }
@@ -75,8 +81,12 @@ feature 'Users can access service providers that belong to their team' do
   context 'All' do
     let(:team0) { create(:team) }
     let(:user1) { create(:user, teams: [team0]) }
-    let!(:members_prod_config) { create(:service_provider, :with_prod_config, team: team0, user: user1) }
-    let!(:members_sandbox_config) { create(:service_provider, :with_sandbox, team: team0, user: user1) }
+    let!(:members_prod_config) do
+      create(:service_provider, :with_prod_config, team: team0, user: user1)
+    end
+    let!(:members_sandbox_config) do
+      create(:service_provider, :with_sandbox, team: team0, user: user1)
+    end
 
     context 'on sandbox' do
       before do
