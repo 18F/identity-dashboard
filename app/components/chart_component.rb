@@ -22,9 +22,7 @@ class ChartComponent < ViewComponent::Base
     data.blank?
   end
 
-  def data_unavailable_or_number_with_delimiter(number)
-    return I18n.t('reports.errors.unavailable_data') if number.blank?
-
-    number_with_delimiter(number)
+  def data_unavailable?
+    data.blank?
   end
 end

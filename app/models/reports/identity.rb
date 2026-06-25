@@ -72,7 +72,7 @@ module Reports
     end
 
     def usage_data
-      return [] unless inner_data.values_at(USAGE_KEYS).any?
+      return [] unless inner_data.values_at(*USAGE_KEYS).any?
 
       to_chartkick_with_i18n_labels(inner_data.keys.select { |key| USAGE_KEYS.include? key })
     end
