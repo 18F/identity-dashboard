@@ -3,7 +3,7 @@
     <th scope="col">Friendly name</th>
     <th scope="col">Issuer</th>
     <th scope="col">IAL</th>
-    <% if !is_prod %>
+    <% if !is_prod && !IdentityConfig.store.prod_like_env %>
       <th scope="col"><abbr title="Accessible in the Integration environment">Accessible</abbr></th>
     <% end %>
     <th scope="col">Cert Exp</th>
