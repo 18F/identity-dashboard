@@ -1,50 +1,82 @@
 require 'rails_helper'
 
 feature 'Users can access service providers that belong to their team' do
+  let(:logingov_admin) { create(:user, :logingov_admin) }
+  let(:logingov_readonly) { create(:user, :logingov_readonly) }
+
   context 'Index' do
     let(:team0) { create(:team) }
     let(:user1) { create(:user, teams: [team0]) }
     let(:not_a_member_team) { create(:team) }
     let(:user2) { create(:user) }
+    let!(:members_prod_config) { create(:service_provider, :with_prod_config, team: team0, user: user2) }
+    let!(:members_sandbox_config) { create(:service_provider, :with_sandbox, team: team0, user: user2) }
+    let!(:no_longer_a_member_config) { create(:service_provider, user: user1, team: not_a_member_team) }
+    let!(:other_config) { create(:service_provider) }
 
-    scenario 'sandbox users can see all configs for their team' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
-      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user2)
-      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user2)
-      no_longer_a_member_config = create(:service_provider, user: user1, team: not_a_member_team)
-      other_config = create(:service_provider)
+    before { login_as user1 }
 
-      login_as(user1)
-      visit service_providers_path
+    context 'sandbox users' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+        visit service_providers_path
+      end
 
-      expect(page).to have_content(members_prod_config.friendly_name)
-      expect(page).to have_content(members_sandbox_config.friendly_name)
-      expect(page).to_not have_content(no_longer_a_member_config.friendly_name)
-      expect(page).to_not have_content(other_config.friendly_name)
+      scenario 'can see all configs for their team' do
+        expect(page).to have_content(members_prod_config.friendly_name)
+        expect(page).to have_content(members_sandbox_config.friendly_name)
+        expect(page).to_not have_content(no_longer_a_member_config.friendly_name)
+        expect(page).to_not have_content(other_config.friendly_name)
+      end
+
+      scenario 'see the correct table columns' do
+        tables = page.find_all('.usa-table')
+        prod_thead = tables[0].find('thead')
+        sandbox_thead = tables[1].find('thead')
+
+        expect(prod_thead).to have_content('Friendly name')
+        expect(prod_thead).to have_content('Issuer')
+        expect(prod_thead).to have_content('IAL')
+        expect(prod_thead).to have_content('Cert Exp')
+
+        expect(sandbox_thead).to have_content('Friendly name')
+        expect(sandbox_thead).to have_content('Issuer')
+        expect(sandbox_thead).to have_content('Accessible')
+        expect(sandbox_thead).to have_content('IAL')
+        expect(sandbox_thead).to have_content('Cert Exp')
+      end
     end
 
-    scenario 'prod users can see all configs for their team' do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      members_prod_config = create(:service_provider, :with_prod_config, team: team0, user: user2)
-      members_sandbox_config = create(:service_provider, :with_sandbox, team: team0, user: user2)
-      no_longer_a_member_config = create(:service_provider, user: user1, team: not_a_member_team)
-      other_config = create(:service_provider)
+    context 'prod users' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        visit service_providers_path
+      end
 
-      login_as(user1)
-      visit service_providers_path
+      scenario 'can see all configs for their team' do
+        expect(page).to have_content(members_prod_config.friendly_name)
+        expect(page).to have_content(members_sandbox_config.friendly_name)
+        expect(page).to_not have_content(no_longer_a_member_config.friendly_name)
+        expect(page).to_not have_content(other_config.friendly_name)
+      end
 
-      expect(page).to have_content(members_prod_config.friendly_name)
-      expect(page).to have_content(members_sandbox_config.friendly_name)
-      expect(page).to_not have_content(no_longer_a_member_config.friendly_name)
-      expect(page).to_not have_content(other_config.friendly_name)
+      scenario 'see the correct table columns' do
+        tables = page.find('.usa-table')
+        prod_thead = tables.find('thead')
+
+        expect(prod_thead).to have_content('Friendly name')
+        expect(prod_thead).to have_content('Issuer')
+        expect(prod_thead).to have_content('IAL')
+        expect(prod_thead).to have_content('Cert Exp')
+      end
     end
   end
 
   context 'All' do
     let(:team0) { create(:team) }
     let(:user1) { create(:user, teams: [team0]) }
-    let(:logingov_admin) { create(:user, :logingov_admin) }
-    let(:logingov_readonly) { create(:user, :logingov_readonly) }
+    let!(:members_prod_config) { create(:service_provider, :with_prod_config, team: team0, user: user1) }
+    let!(:members_sandbox_config) { create(:service_provider, :with_sandbox, team: team0, user: user1) }
 
     context 'on sandbox' do
       before do
@@ -63,6 +95,26 @@ feature 'Users can access service providers that belong to their team' do
         visit service_providers_all_path
 
         expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
+
+      scenario 'Login staff sees the correct table columns' do
+        login_as(logingov_readonly)
+        visit service_providers_all_path
+
+        tables = page.find_all('.usa-table')
+        prod_thead = tables[0].find('thead')
+        sandbox_thead = tables[1].find('thead')
+
+        expect(prod_thead).to have_content('Friendly name')
+        expect(prod_thead).to have_content('Issuer')
+        expect(prod_thead).to have_content('IAL')
+        expect(prod_thead).to have_content('Cert Exp')
+
+        expect(sandbox_thead).to have_content('Friendly name')
+        expect(sandbox_thead).to have_content('Issuer')
+        expect(sandbox_thead).to have_content('Accessible')
+        expect(sandbox_thead).to have_content('IAL')
+        expect(sandbox_thead).to have_content('Cert Exp')
       end
     end
 
@@ -83,6 +135,20 @@ feature 'Users can access service providers that belong to their team' do
         visit service_providers_all_path
 
         expect(page).to_not have_button(I18n.t('forms.buttons.trigger_idp_refresh'))
+      end
+
+      scenario 'Login staff sees the correct table columns' do
+        login_as(logingov_readonly)
+        visit service_providers_all_path
+
+        tables = page.find('.usa-table')
+        prod_thead = tables.find('thead')
+
+        expect(prod_thead).to have_content('Friendly name')
+        expect(prod_thead).to have_content('Issuer')
+        expect(prod_thead).to have_content('IAL')
+        expect(prod_thead).to have_content('Cert Exp')
+        expect(prod_thead).to have_content('Created')
       end
     end
   end
