@@ -10,7 +10,9 @@
           </div>
         </div>
       <% else %>
-        <%= public_send(type, data, **options) %>
+        <%# Chartkick needs to keep track of a unique ID sequence, so it needs to be called from
+          # a shared context (`helpers`) instead of included in the component class directly %>
+        <%= helpers.public_send(type, data, **options) %>
       <% end %>
   <p><%= bottom_description %></p>
 </div>
