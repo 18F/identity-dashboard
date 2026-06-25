@@ -4,7 +4,7 @@
   </th>
   <td class="text-wrap"><%= app.issuer %></td>
   <td><%= app.ial_friendly %></td>
-  <% if !app.prod_config && !IdentityConfig.store.prod_like_env %>
+  <% unless app.prod_config || IdentityConfig.store.prod_like_env %>
     <% if app.active? %>
       <td><%= image_tag 'alerts/success.svg', alt: 'Accessible', title: 'Accessible', height: '27', width: '27', class: 'text-bottom' %> Yes</td>
     <% else %>
