@@ -1,6 +1,6 @@
 module Reports
   # A per-month IdV funnel report
-  class Identity
+  class Identity # rubocop:disable Metrics/ClassLength -- TODO: I plan to fix this in a fast-follow MR
     USAGE_KEYS = %w[
       count_newly_created_accounts
       count_existing_accounts
