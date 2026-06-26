@@ -28,14 +28,14 @@
             <% end %>
     >
       <% if defined?(prompt) && prompt %>
-        <option value="" data-apps="<%= all_controls if defined? all_controls %>">
+        <option value="" data-controls="<%= all_controls if defined? all_controls %>">
           <%= prompt %>
         </option>
       <% end %>
       <% collection.each do |col| %>
         <option value="<%= col[:id] %>"
                 <%= 'selected' if defined?(selected) && selected == col[:id].to_s %>
-                data-apps="<%= col[:controls] %>">
+                data-controls="<%= col[:controls] %>">
           <%= col[:title] %>
         </option>
       <% end %>
