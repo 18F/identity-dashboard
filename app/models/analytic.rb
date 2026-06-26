@@ -9,7 +9,7 @@ class Analytic
   end
 
   def valid?
-    if !config_valid? || !valid_date?
+    if !config_valid? || !date_valid?
       false
     else
       data_valid?
@@ -33,7 +33,7 @@ class Analytic
     false
   end
 
-  def valid_date?
+  def date_valid?
     unless /\d{4}-\d{2}-\d{2}/.match? date
       errors.add(:date, :invalid) unless errors.added?(:date, :invalid)
       return false

@@ -31,7 +31,7 @@ RSpec.describe Analytic do
       analytic.data = report_data
 
       allow(analytic).to receive(:config_valid?).and_return(true)
-      allow(analytic).to receive(:valid_date?).and_return(true)
+      allow(analytic).to receive(:date_valid?).and_return(true)
       allow(analytic).to receive(:data_valid?).and_return(true)
     end
 
@@ -45,17 +45,17 @@ RSpec.describe Analytic do
       expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
-      expect(analytic).to_not have_received(:valid_date?)
+      expect(analytic).to_not have_received(:date_valid?)
       expect(analytic).to_not have_received(:data_valid?)
     end
 
     it 'makes minimal checks when the date is invalid' do
-      allow(analytic).to receive(:valid_date?).and_return(false)
+      allow(analytic).to receive(:date_valid?).and_return(false)
 
       expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
-      expect(analytic).to have_received(:valid_date?).once
+      expect(analytic).to have_received(:date_valid?).once
       expect(analytic).to_not have_received(:data_valid?)
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Analytic do
       expect(analytic.valid?).to be_falsey
 
       expect(analytic).to have_received(:config_valid?).once
-      expect(analytic).to have_received(:valid_date?).once
+      expect(analytic).to have_received(:date_valid?).once
       expect(analytic).to have_received(:data_valid?).once
     end
   end
