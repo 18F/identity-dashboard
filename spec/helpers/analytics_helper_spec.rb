@@ -103,10 +103,10 @@ describe AnalyticsHelper do
     describe 'a single sp is passed in' do
       let(:sp) { create(:service_provider, :ready_to_activate) }
 
-      it 'returns an array where the first element is the sp name and uuid' do
+      it 'returns an array where the first object contains the sp name, uuid, and valid dates' do
         expect(service_providers_collection_for_select([sp])).to eq(
           [
-            [sp.friendly_name, sp.uuid],
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end
@@ -116,11 +116,11 @@ describe AnalyticsHelper do
       let(:sp) { create(:service_provider, :ready_to_activate, friendly_name: 'Zebra Service') }
       let(:sp1) { create(:service_provider, :ready_to_activate, friendly_name: 'Alpha Service') }
 
-      it 'returns an array of sps sorted alphabetically ' do
+      it 'returns an array of objecs sorted alphabetically by friendly_name' do
         expect(service_providers_collection_for_select([sp, sp1])).to eq(
           [
-            [sp1.friendly_name, sp1.uuid],
-            [sp.friendly_name, sp.uuid],
+            { title: sp1.friendly_name, id: sp1.uuid, controls: '' },
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end

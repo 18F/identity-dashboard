@@ -24,8 +24,8 @@
       collection: service_providers_collection_for_select(@available_service_providers),
       # all_controls: ,
       required: true,
-      selected: @analytic.config.uuid,
-      prompt: '- Select an Application-',
+      selected: @analytic.config&.uuid,
+      prompt: @application_count.zero? ? '- All Applications-' : nil,
     } %>
     <%# <%= form.input :uuid,
               wrapper_html: { class: 'tablet:grid-col-4'},

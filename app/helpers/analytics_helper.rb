@@ -14,13 +14,11 @@ module AnalyticsHelper
     return [] if sps.blank?
 
     sort_alphabetically(sps.to_a.flatten, :friendly_name).map do |sp|
-      report_id = AnalyticsReportStorage.list(sp.issuer)[0]
       {
         title: sp.friendly_name,
         id: sp.uuid,
-        controls: Reports::Identity.available_dates([sp]).uniq,
+        controls: Reports::Identity.available_dates([sp]).uniq.join(','),
       }
-      # [sp.friendly_name, sp.uuid]
     end
   end
 

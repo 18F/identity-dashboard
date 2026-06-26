@@ -27,9 +27,11 @@
               aria-required="true"
             <% end %>
     >
-      <option value="" data-apps="<%= all_controls if defined? all_controls %>">
-        <%= prompt if defined? prompt %>
-      </option>
+      <% if defined? prompt %>
+        <option value="" data-apps="<%= all_controls if defined? all_controls %>">
+          <%= prompt %>
+        </option>
+      <% end %>
       <% collection.each do |col| %>
         <option value="<%= col[:id] %>"
                 <%= 'selected' if defined?(selected) && selected == col[:id].to_s %>
