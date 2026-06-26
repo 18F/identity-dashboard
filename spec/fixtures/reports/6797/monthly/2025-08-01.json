@@ -11,8 +11,8 @@
     "report_cadence": "monthly"
   },
   "data": {
-    "count_active_users": null,
-    "count_newly_created_accounts": null,
+    "count_active_users": 0,
+    "count_newly_created_accounts": 0,
     "count_existing_accounts": null,
     "count_newly_proofed_users": null,
     "count_preverified_users": null,
