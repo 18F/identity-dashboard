@@ -27,7 +27,7 @@
               aria-required="true"
             <% end %>
     >
-      <% if defined? prompt %>
+      <% if defined?(prompt) && prompt %>
         <option value="" data-apps="<%= all_controls if defined? all_controls %>">
           <%= prompt %>
         </option>
