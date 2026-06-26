@@ -12,6 +12,12 @@ class Reports
       USAGE_KEYS.sum { |key| data[key].to_i }
     end
 
+    def successful_auths
+      return unless data['count_auth_successful'].present?
+
+      data['count_auth_successful']
+    end
+
     def chart(chart_options = {})
       {
         type: :column_chart,
@@ -25,18 +31,12 @@ class Reports
       }
     end
 
-    def successful_auths
-      return unless data['count_auth_successful'].present?
-
-      data['count_auth_successful']
-    end
-
     private
 
     def usage_data
-      return [] unless data.values_at(USAGE_KEYS).any?
+      return [] unless data.values_at(*USAGE_KEYS).any?
 
-      to_chartkick_with_i18n_labels(data.keys.select { |key| USAGE_KEYS.include? key })
+      as_array_with_i18n_labels(data.keys.select { |key| USAGE_KEYS.include? key })
     end
   end
 end

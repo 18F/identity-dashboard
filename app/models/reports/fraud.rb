@@ -17,9 +17,9 @@ class Reports
     ].map { |key| "count_#{key}" }.freeze
 
     def total
-      return unless inner_data.values_at(*FRAUD_KEYS).any?
+      return unless data.values_at(*FRAUD_KEYS).any?
 
-      inner_data.reduce(0) do |sum, (key, value)|
+      data.reduce(0) do |sum, (key, value)|
         next sum unless FRAUD_KEYS.include? key
 
         sum + value.to_i

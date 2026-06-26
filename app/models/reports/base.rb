@@ -7,9 +7,11 @@ class Reports
       @data = reports.data
     end
 
-    private
+    def chart
+      raise NotImplementedError
+    end
 
-    def to_chartkick_with_i18n_labels(keys = nil)
+    def as_array_with_i18n_labels(keys = nil)
       keys ||= data.keys
       keys.each_with_object([]) do |key, results|
         next unless I18n.exists?("reports.#{key}")

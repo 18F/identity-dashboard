@@ -42,7 +42,9 @@ class Reports
   end
 
   def data
-    inner_data
+    return {} unless has_raw_data?
+
+    @data ||= @raw_data['data'] || {}
   end
 
   def fraud
@@ -97,12 +99,6 @@ class Reports
 
   def chosen_date_as_string
     chosen_date.beginning_of_month.strftime('%F')
-  end
-
-  def inner_data
-    return {} unless has_raw_data?
-
-    @inner_data ||= @raw_data['data'] || {}
   end
 
   # Unwrap nested arrays from report JSON:
