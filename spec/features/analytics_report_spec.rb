@@ -43,7 +43,7 @@ describe 'reporting feature basics' do
       )
       sp_options = find_all('select#analytic_uuid > option')
       expect(sp_options.count).to be(1)
-      expect(sp_options[0].text).to eq('- All Applications-')
+      expect(sp_options[0].text).to eq('- No Applications-')
     end
   end
 

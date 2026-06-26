@@ -16,7 +16,6 @@
       name: 'uuid',
       label: 'Application',
       collection: service_providers_collection_for_select(@available_service_providers),
-      # all_controls: ,
       required: true,
       selected: @analytic.config&.uuid,
       prompt: @application_count.zero? ? '- No Applications-' : nil,
@@ -30,3 +29,5 @@
     } %>
   </div>
 </fieldset>
+
+<%# TODO filter date by app %>
