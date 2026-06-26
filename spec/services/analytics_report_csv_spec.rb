@@ -17,7 +17,7 @@ class MockAnalytic
     @data['report_information']['period_start_date']
   end
 
-  def valid_date?
+  def date_valid?
     /\d{4}-\d{2}-\d{2}/.match? date
   end
 end

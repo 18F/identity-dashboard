@@ -58,7 +58,7 @@ module Reports
 
     def initialize(analytic)
       @issuer = analytic.config&.issuer
-      @chosen_date = DateTime.parse(analytic.date) if analytic.valid_date?
+      @chosen_date = DateTime.parse(analytic.date) if analytic.date_valid?
       @chosen_date ||= DateTime.now
       @storage = AnalyticsReportStorage.new(issuer, chosen_date_as_string)
       @raw_data = unwrap(@storage.fetch)

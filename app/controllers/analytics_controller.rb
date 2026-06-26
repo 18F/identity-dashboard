@@ -4,13 +4,17 @@ class AnalyticsController < ApplicationController # :nodoc:
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
 
   before_action -> { authorize analytic }
+  before_action :validate_and_compile_errors
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
   # /reports
   def index
     respond_to do |format|
-      format.html { populate_data_for_html }
+      format.html do
+        populate_data_for_html
+        flash[:error] = I18n.t('reports.errors.no_team') if @application_count.zero?
+      end
       format.csv do
         report = AnalyticsReportCsv.new(identity_report)
         send_data report.report_data_csv, filename: report.filename
@@ -19,44 +23,28 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def create
-    if analytic.valid?
-      redirect_to analytics_path(team: analytic.config.team, uuid: analytic.config.uuid,
-                                 date: analytic.date) and return
-    end
+    # TODO: This needs to change to disable or remove the View report button
+    return redirect_to analytics_path unless analytic.config
 
-    error_if_invalid_url
-    redirect_to analytics_path
+    redirect_to analytics_path(team: analytic.config.team,
+                               uuid: analytic.config.uuid,
+                               date: analytic.date) and return
   end
 
   private
 
   def populate_data_for_html
+    @teams = current_user.scoped_teams.includes(:service_providers)
     @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
     @application_count = available_service_providers.count
-
-    check_for_data_error
-    error_if_invalid_url
   end
 
-  def check_for_data_error
-    if teams.blank? || available_service_providers.blank?
-      @error = t('reports.errors.no_team')
-    elsif identity_report.usage_data.empty? && identity_report.idv_data.empty?
-      @error = t('reports.errors.no_data')
-      @graphs = []
-    end
-  end
-
-  def error_if_invalid_url
+  def validate_and_compile_errors
     return if analytic.valid? || analytic_params.blank?
 
-    # Our preference is to use `flash.now` whenever possible,
-    # but `flash.now` doesn't work immediately before a redirect.
-    # Rubocop is unable to detect that this flash is getting set before a redirect
-    # because setting the flash and the redirect happen in different methods.
-    flash[:error] = analytic.errors.full_messages.join(' ') # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    @error = analytic.errors.full_messages.join(' ')
   end
 
   def analytic_params
@@ -73,6 +61,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     @analytic.config = service_provider
     @analytic.date = analytic_params[:date].presence || available_report_dates.first
+    @analytic.data = identity_report.data
     @analytic
   end
 
@@ -82,10 +71,6 @@ class AnalyticsController < ApplicationController # :nodoc:
     policy_scope(ServiceProvider).find_by(
       uuid: analytic_params[:uuid],
     )
-  end
-
-  def teams
-    @teams ||= current_user.scoped_teams.includes(:service_providers)
   end
 
   def available_service_providers

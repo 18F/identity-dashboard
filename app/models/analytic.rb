@@ -2,13 +2,18 @@
 class Analytic
   include ActiveModel::Model
 
-  attr_accessor :date, :config
-
-  validate :config_valid?
-  validate :valid_date?
+  attr_accessor :date, :config, :data
 
   def uuid
     config&.uuid
+  end
+
+  def valid?
+    if !config_valid? || !date_valid?
+      false
+    else
+      data_valid?
+    end
   end
 
   def config_valid?
@@ -18,8 +23,21 @@ class Analytic
     false
   end
 
-  def valid_date?
-    errors.add(:date, :invalid) and return false unless /\d{4}-\d{2}-\d{2}/.match? date
+  def data_valid?
+    values = data.map(&:second)
+    existing_values = values.filter(&:present?)
+
+    return true if existing_values.present?
+
+    errors.add(:base, I18n.t('reports.errors.no_data'))
+    false
+  end
+
+  def date_valid?
+    unless /\d{4}-\d{2}-\d{2}/.match? date
+      errors.add(:date, :invalid) unless errors.added?(:date, :invalid)
+      return false
+    end
 
     begin
       Date.parse date
@@ -34,10 +52,6 @@ class Analytic
   private
 
   def add_generic_error
-    errors.add(
-      :base,
-      'The link for that report was not valid. ' \
-        'You can select a different report from the options below.',
-    )
+    errors.add(:base, I18n.t('reports.errors.generic'))
   end
 end

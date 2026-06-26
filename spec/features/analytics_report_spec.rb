@@ -8,6 +8,9 @@ describe 'reporting feature basics' do
   let(:issuer_with_a_little_test_data) do
     'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo'
   end
+  let(:issuer_with_null_test_data) do
+    '2025-12-10:Howard:test'
+  end
   # make some teams and a service_provider
   let(:other_team) { create(:team) }
   let(:other_sp) { create(:service_provider, issuer: '6797', team: other_team) }
@@ -18,6 +21,15 @@ describe 'reporting feature basics' do
       issuer: issuer_with_lots_of_test_data,
       user: logingov_admin,
       team: logingov_admin.teams.first,
+    )
+  end
+  let(:null_data_sp) do
+    create(
+      :service_provider,
+      :ready_to_activate,
+      issuer: issuer_with_null_test_data,
+      user: logingov_admin,
+      team: other_team,
     )
   end
 
@@ -58,6 +70,13 @@ describe 'reporting feature basics' do
       expect(page).to have_content('Choose from the dropdowns to see a report.')
       expect(page).to_not have_content('Date range')
       expect(page).to_not have_link('Export report as CSV')
+    end
+
+    it 'does not show a report error message before selecting a report' do
+      visit analytics_path
+      expect(page).to_not have_content(
+        'We couldn\'t retrieve data matching your application and date.',
+      )
     end
 
     context 'Filter', :js do
@@ -110,32 +129,49 @@ describe 'reporting feature basics' do
       ), ignore_query: true)
     end
 
-    it 'does something reasonable when given invalid parameters' do
-      visit analytics_path(
-        team: 'A',
-        uuid: test_sp.uuid,
-        date: '2025-12-01',
-      )
-      expect(page).to have_content('- All Teams-')
+    context 'when given invalid parameters' do
+      it 'handles a bad team param' do
+        visit analytics_path(
+          team: 'A',
+          uuid: test_sp.uuid,
+          date: '2025-12-01',
+        )
+        expect(page).to have_content('- All Teams-')
+      end
 
-      visit analytics_path(
-        team: test_sp.team.id,
-        uuid: 'INVALID-UUID',
-        date: '2025-12-01',
-      )
-      expect(page).to have_content('The link for that report was not valid. ' \
-        'You can select a different report from the options below.')
+      it 'handles a bad config UUID param' do
+        visit analytics_path(
+          team: test_sp.team.id,
+          uuid: 'INVALID-UUID',
+          date: '2025-12-01',
+        )
+        expect(page).to have_content('The link for that report was not valid. ' \
+          'You can select a different report from the options below.')
+      end
 
-      visit analytics_path(
-        team: test_sp.team.id,
-        uuid: test_sp.uuid,
-        date: 'NOT-A-DATE',
-      )
-      expect(page).to have_content('Date is invalid')
+      it 'handles a bad date param' do
+        visit analytics_path(
+          team: test_sp.team.id,
+          uuid: test_sp.uuid,
+          date: 'NOT-A-DATE',
+        )
+        expect(page).to have_content('Date is invalid')
 
-      visit analytics_path
-      expect(page).to_not have_content('The link for that report was not valid. ' \
-        'You can select a different report from the options below.')
+        visit analytics_path
+        expect(page).to_not have_content('The link for that report was not valid. ' \
+          'You can select a different report from the options below.')
+      end
+    end
+
+    it 'handles existing datasets with null values' do
+      visit analytics_path(
+        team: other_team.id,
+        uuid: null_data_sp.uuid,
+        date: '2025-08-01',
+      )
+      expect(page).to have_content("We couldn't retrieve data matching your application " \
+        "and date. We're continually adding new data, so check back soon.")
+      expect(page).to_not have_button('Export report as CSV')
     end
 
     context 'with a report loaded' do
