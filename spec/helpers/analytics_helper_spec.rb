@@ -52,9 +52,9 @@ describe AnalyticsHelper do
       end
 
       describe 'when there are multiple service_providers' do
-        let!(:sp) { create(:service_provider, :consistent, team:) }
-        let!(:sp1) { create(:service_provider, :consistent, team:) }
-        let(:stringified_uuid_list) { "#{sp.uuid},#{sp1.uuid}" }
+        let!(:sp) { create(:service_provider, :ready_to_activate, team:, uuid: 'bbbb') }
+        let!(:sp1) { create(:service_provider, :ready_to_activate, team:, uuid: 'aaaa') }
+        let(:stringified_uuid_list) { "#{sp1.uuid},#{sp.uuid}" }
 
         it 'returns the sp uuids as a comma-separated string' do
           expect(teams_collection_for_select([team])).to eq result
@@ -65,10 +65,10 @@ describe AnalyticsHelper do
     describe 'when multiple teams are passed in' do
       let(:team) { create(:team, name: 'Zebra Team') }
       let(:team2) { create(:team, name: 'Alpha Team') }
-      let!(:sp) { create(:service_provider, :consistent, team:) }
-      let!(:sp1) { create(:service_provider, :consistent, team:) }
-      let!(:sp3) { create(:service_provider, :consistent, team: team2) }
-      let!(:sp4) { create(:service_provider, :consistent, team: team2) }
+      let!(:sp) { create(:service_provider, :consistent, team:, uuid: 'aa') }
+      let!(:sp1) { create(:service_provider, :consistent, team:, uuid: 'bb') }
+      let!(:sp3) { create(:service_provider, :consistent, team: team2, uuid: 'cc') }
+      let!(:sp4) { create(:service_provider, :consistent, team: team2, uuid: 'dd') }
       let(:stringified_uuid_list) { "#{sp.uuid},#{sp1.uuid}" }
       let(:team2_stringified_uuid_list) { "#{sp3.uuid},#{sp4.uuid}" }
 
@@ -183,8 +183,8 @@ describe AnalyticsHelper do
         end
 
         describe 'with two service provider' do
-          let!(:sp) { create(:service_provider, :ready_to_activate, team:) }
-          let!(:sp1) { create(:service_provider, :ready_to_activate, team:) }
+          let!(:sp) { create(:service_provider, :ready_to_activate, team:, uuid: 'aaaa') }
+          let!(:sp1) { create(:service_provider, :ready_to_activate, team:, uuid: 'bbbb') }
 
           it 'returns the uuid in a string' do
             expect(all_app_options_string([team])).to eq "#{sp.uuid},#{sp1.uuid}"

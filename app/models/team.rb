@@ -70,7 +70,7 @@ class Team < ApplicationRecord
   end
 
   def uuids_string
-    service_providers.map(&:uuid).join(',')
+    service_providers.filter_map(&:uuid).sort.join(',')
   end
 
   # Every team should have a partner_admin, but regularly we'll want to create a team before we know

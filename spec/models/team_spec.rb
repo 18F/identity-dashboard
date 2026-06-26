@@ -133,12 +133,12 @@ describe Team do
     end
 
     describe 'with multiple associated service providers' do
-      let!(:sp) { create(:service_provider, :ready_to_activate, :with_team, team:) }
-      let!(:sp1) { create(:service_provider, :ready_to_activate, :with_team, team:) }
-      let!(:sp2) { create(:service_provider, :ready_to_activate, :with_team, team:) }
+      let!(:sp) { create(:service_provider, :ready_to_activate, :with_team, team:, uuid: 'aaaaaa') }
+      let!(:sp1) { create(:service_provider, :ready_to_activate, :with_team, team:, uuid: 'ccccc') }
+      let!(:sp2) { create(:service_provider, :ready_to_activate, :with_team, team:, uuid: 'bbbbb') }
 
       it 'returns the uuid as a comma-separated string' do
-        expect(team.uuids_string).to eq "#{sp.uuid},#{sp1.uuid},#{sp2.uuid}"
+        expect(team.uuids_string).to eq "#{sp.uuid},#{sp2.uuid},#{sp1.uuid}"
       end
     end
   end
