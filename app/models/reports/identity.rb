@@ -48,6 +48,7 @@ module Reports
 
     attr_reader :issuer, :chosen_date
 
+    # @param configs [Array] of ServiceProvider records
     def self.available_dates(configs)
       issuers = configs.map(&:issuer)
       reports = AnalyticsReportStorage.list(issuers)
