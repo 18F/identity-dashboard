@@ -15,9 +15,9 @@ describe AnalyticsHelper do
       let(:result) do
         [
           {
-            name: team.name,
+            title: team.name,
             id: team.id,
-            apps: stringified_uuid_list,
+            controls: stringified_uuid_list,
           },
         ]
       end
@@ -75,14 +75,14 @@ describe AnalyticsHelper do
       let(:result) do
         [
           {
-            name: team2.name,
+            title: team2.name,
             id: team2.id,
-            apps: team2_stringified_uuid_list,
+            controls: team2_stringified_uuid_list,
           },
           {
-            name: team.name,
+            title: team.name,
             id: team.id,
-            apps: stringified_uuid_list,
+            controls: stringified_uuid_list,
           },
         ]
       end
