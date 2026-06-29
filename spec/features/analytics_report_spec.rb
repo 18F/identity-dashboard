@@ -261,7 +261,7 @@ describe 'reporting feature basics' do
       # This issuer has mostly null data, but a few zeroes
       let(:issuer) { '2025-12-10:Howard:test' }
 
-      it 'will dislay charts and unavailable messages', :js do
+      it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
         select '2025-08-01', from: 'Date of report'
         click_on 'View report'
