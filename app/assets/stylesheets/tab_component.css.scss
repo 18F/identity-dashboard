@@ -11,6 +11,7 @@
 .usa-tab {
   @include u-position('relative');
   @include u-margin-y(2);
+  @include u-border-bottom('1px', 'solid', 'primary-light');
 
   &__active {
     @include u-margin(0);
@@ -87,8 +88,7 @@
   &__list {
     @include u-display('none');
     @include u-flex('column', 'align-start');
-    @include u-margin(0, 0, 0, '1rem');
-    @include u-border('1px', 'solid', 'primary-light');
+    @include u-margin(0, 0, 0, 0);
     @include u-radius('05');
 
     @include at-media('tablet') {
