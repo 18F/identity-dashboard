@@ -193,3 +193,8 @@ abbr.text-no-underline[title] {
     margin-top: 0;
   }
 }
+
+// TODO: We'll need to revisit this when adding Highcharts
+.chart-sized {
+  height: 10.5rem;
+}

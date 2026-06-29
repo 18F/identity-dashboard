@@ -126,7 +126,7 @@ describe 'reporting feature basics' do
         team: test_sp.team.id,
         uuid: test_sp.uuid,
         date: '2025-12-01',
-      ), ignore_query: true)
+      ))
     end
 
     context 'when given invalid parameters' do
@@ -161,17 +161,6 @@ describe 'reporting feature basics' do
         expect(page).to_not have_content('The link for that report was not valid. ' \
           'You can select a different report from the options below.')
       end
-    end
-
-    it 'handles existing datasets with null values' do
-      visit analytics_path(
-        team: other_team.id,
-        uuid: null_data_sp.uuid,
-        date: '2025-08-01',
-      )
-      expect(page).to have_content("We couldn't retrieve data matching your application " \
-        "and date. We're continually adding new data, so check back soon.")
-      expect(page).to_not have_button('Export report as CSV')
     end
 
     context 'with a report loaded' do
@@ -223,6 +212,52 @@ describe 'reporting feature basics' do
         expect(csv_response[6]).to eq(['Inauthentic Doc.', '', '475', ''])
         expect(csv_response[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
         expect(csv_response[38]).to eq(['Personal Key', '', '0', ''])
+      end
+    end
+  end
+
+  context 'as a partner admin' do
+    let(:partner_admin) { create(:team_membership, :partner_admin).user }
+    let(:issuer) { issuer_with_lots_of_test_data }
+    let!(:partner_sp) do
+      create(
+        :service_provider,
+        :ready_to_activate,
+        user: partner_admin,
+        team: partner_admin.teams.first,
+        issuer:,
+      )
+    end
+
+    before do
+      login_as partner_admin
+      visit analytics_path
+    end
+
+    it 'can display charts', :js do
+      select partner_sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
+      expect(page).to have_current_path(analytics_path(
+        team: partner_sp.team.id,
+        uuid: partner_sp.uuid,
+        date: '2025-12-01',
+      ))
+      expect(find_all('canvas').count).to eq(2)
+    end
+
+    context 'with mostly missing data' do
+      # This issuer has mostly null data, but a few zeroes
+      let(:issuer) { '2025-12-10:Howard:test' }
+
+      it 'will display charts and unavailable messages', :js do
+        select partner_sp.friendly_name, from: 'Application'
+        select '2025-08-01', from: 'Date of report'
+        click_on 'View report'
+        expect(find_all('canvas').count).to eq(1)
+        expect(page.text).to match(/BLOCKED USERS\s*Data is currently not available/)
+        expect(page.text).to match(/requiring verification\sData is currently not available/)
+        expect(page).to_not have_button('Export report as CSV')
       end
     end
   end

@@ -1,6 +1,6 @@
 module Reports
   # A per-month IdV funnel report
-  class Identity
+  class Identity # rubocop:disable Metrics/ClassLength -- TODO: I plan to fix this in a fast-follow MR
     USAGE_KEYS = %w[
       count_newly_created_accounts
       count_existing_accounts
@@ -72,6 +72,8 @@ module Reports
     end
 
     def usage_data
+      return [] unless inner_data.values_at(*USAGE_KEYS).any?
+
       to_chartkick_with_i18n_labels(inner_data.keys.select { |key| USAGE_KEYS.include? key })
     end
 
@@ -92,6 +94,10 @@ module Reports
 
     def idv_data
       return [] if inner_data.blank?
+      if inner_data['count_newly_proofed_users'].blank? &&
+         inner_data['count_preverified_users'].blank?
+        return []
+      end
 
       [[I18n.t('reports.count_newly_proofed_users'),
         inner_data['count_newly_proofed_users']],
@@ -104,10 +110,14 @@ module Reports
     end
 
     def grand_total
+      return unless inner_data.values_at(*USAGE_KEYS).any?
+
       USAGE_KEYS.sum { |key| inner_data[key].to_i }
     end
 
     def fraud_total
+      return unless inner_data.values_at(*FRAUD_KEYS).any?
+
       inner_data.reduce(0) do |sum, (key, value)|
         next sum unless FRAUD_KEYS.include? key
 
