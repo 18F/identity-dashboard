@@ -2,7 +2,7 @@
   <p class="data-graph__title">
     <span class="data-graph__headline"><%= title %></span>
   </p>
-  <p class="padding-bottom-2"><%= top_description %></p>
+  <p class="padding-bottom-2"><%= subtitle %></p>
       <% if data_unavailable? %>
         <div class="grid-row flex-row bg-primary-lightest chart-sized maxw-full">
           <div class="flex-fill flex-align-self-center text-center">
@@ -14,5 +14,5 @@
           # a shared context (`helpers`) instead of included in the component class directly %>
         <%= helpers.public_send(type, data, **options) %>
       <% end %>
-  <p><%= bottom_description %></p>
+  <p><%= description %></p>
 </div>

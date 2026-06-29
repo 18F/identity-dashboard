@@ -107,8 +107,8 @@ class AnalyticsController < ApplicationController # :nodoc:
         data: identity_report.usage_data,
         title: 'All Active Users',
         options: DEFAULT_GRAPH_OPTIONS.merge({
-          top_description: 'Unique users who accessed a service',
-          bottom_description: 'New accounts reflect account creation during this window. ' \
+          subtitle: 'Unique users who accessed a service',
+          description: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
         }),
       },
@@ -117,8 +117,8 @@ class AnalyticsController < ApplicationController # :nodoc:
         data: identity_report.idv_data,
         title: 'Active Identity Verified Users',
         options: DEFAULT_GRAPH_OPTIONS.merge({
-          top_description: 'Unique users who accessed a service requiring verification',
-          bottom_description: 'Newly proofed are net new users who verified during this window. ' \
+          subtitle: 'Unique users who accessed a service requiring verification',
+          description: 'Newly proofed are net new users who verified during this window. ' \
             'Previously proofed are users who completed verification ahead of this window,',
         }),
       },
