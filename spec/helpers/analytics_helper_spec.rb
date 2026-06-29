@@ -209,4 +209,30 @@ describe AnalyticsHelper do
       end
     end
   end
+
+  describe '#permitted_teams' do
+    let(:logingov_admin) { create(:user, :logingov_admin) }
+    let(:user0) { create(:user) }
+    let(:team0) { create(:team) }
+    let(:team1) { create(:team) }
+    let(:team2) { create(:team) }
+    let!(:sp0) { create(:service_provider, :ready_to_activate, team: team0) }
+    let!(:sp1) { create(:service_provider, :ready_to_activate, team: team1) }
+
+    it 'returns all teams with configs for Login Admins' do
+      current_user = logingov_admin
+
+      expect(permitted_teams(current_user)).to include(team0, team1)
+    end
+
+    it 'returns all teams with configs where partner is Partner Admin' do
+      current_user = user0
+
+      create(:team_membership, :partner_admin, user: user0, team: team0)
+      create(:team_membership, :partner_admin, user: user0, team: team2)
+      create(:team_membership, :partner_developer, user: user0, team: team1)
+
+      expect(permitted_teams(current_user)).to eq([team0])
+    end
+  end
 end

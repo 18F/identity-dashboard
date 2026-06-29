@@ -54,6 +54,15 @@ module AnalyticsHelper
     number_with_delimiter(number)
   end
 
+  def permitted_teams(user)
+    teams = user.scoped_teams.filter do |team|
+      team.service_providers.present?
+    end
+    return teams if user.logingov_staff?
+
+    user.team_memberships.where(role: 'partner_admin', team: [teams]).map(&:team)
+  end
+
   private
 
   def sort_alphabetically(collection, attribute)

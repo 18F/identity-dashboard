@@ -2,6 +2,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
+  include AnalyticsHelper
 
   before_action -> { authorize analytic }
   before_action :validate_and_compile_errors
@@ -34,7 +35,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def populate_data_for_html
-    @teams = current_user.scoped_teams.includes(:service_providers)
+    @teams = permitted_teams(current_user)
     @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
