@@ -5,7 +5,11 @@ class ChartComponent < ViewComponent::Base
 
   # @param title [String]
   # @param type [Symbol|String] a valid Chartkick chart type
-  # @param data data appropriate for the Chartkick chart type chosen
+  # @param data data appropriate for the Chartkick chart type chosen.
+  #     We're currently using an arrays that look like
+  #       `[["field name 1", data], ["field name 2", data] ["field name 3", data]]`
+  #     so specifically arrays of two-dimensional arrays. Chartkick will accept other formats, so
+  #     this method will too since it passes the data to Chartkick unmodified.
   # @param options [Hash] additional options; any not listed below will go through to Chartkick
 
   # @option options [String] :top_description a description that will show up just under the title
