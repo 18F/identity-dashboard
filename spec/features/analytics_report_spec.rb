@@ -163,17 +163,6 @@ describe 'reporting feature basics' do
       end
     end
 
-    it 'handles existing datasets with null values' do
-      visit analytics_path(
-        team: other_team.id,
-        uuid: null_data_sp.uuid,
-        date: '2025-08-01',
-      )
-      expect(page).to have_content("We couldn't retrieve data matching your application " \
-        "and date. We're continually adding new data, so check back soon.")
-      expect(page).to_not have_button('Export report as CSV')
-    end
-
     context 'with a report loaded' do
       before do
         visit analytics_path
@@ -268,6 +257,7 @@ describe 'reporting feature basics' do
         expect(find_all('canvas').count).to eq(1)
         expect(page.text).to match(/BLOCKED USERS\s*Data is currently not available/)
         expect(page.text).to match(/requiring verification\sData is currently not available/)
+        expect(page).to_not have_button('Export report as CSV')
       end
     end
   end
