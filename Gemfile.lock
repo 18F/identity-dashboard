@@ -237,7 +237,7 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
     csv (3.3.0)
@@ -662,7 +662,7 @@ GEM
       railties (>= 3.0.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.43)
+    yard (0.9.44)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -758,7 +758,7 @@ DEPENDENCIES
   webmock
   websocket-driver (= 0.7.3)
   wicked (~> 2.0)
-  yard (>= 0.9.42)
+  yard (>= 0.9.44)
 
 RUBY VERSION
    ruby 3.4.5p51
