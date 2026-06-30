@@ -27,7 +27,7 @@
     </button>
     <div id="access-levels-content" class="usa-accordion__content">
       <ul class="usa-list">
-        <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Admin:</strong> Can manage this team's users, configurations, and settings</li>
+        <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Admin:</strong> Can add and delete users on teams; grant and rescind permissions; edit and delete existing configs; view reports for existing configs</li>
         <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Developer:</strong> Can view and edit configurations but cannot publish or manage users</li>
         <li><strong><%= IdentityConfig.store.prod_like_env ? 'Production' : 'Sandbox' %> Viewer:</strong> Can only view configurations (read-only access)</li>
       </ul>
