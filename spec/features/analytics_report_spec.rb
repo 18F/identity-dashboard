@@ -118,7 +118,7 @@ describe 'reporting feature basics' do
         expect(all_hidden_apps.count).to eq(0)
       end
 
-      it 'shows the correct dates for a chosen team' do
+      it 'shows the correct dates for a chosen application' do
         select second_sp.friendly_name, from: 'Application'
 
         all_hidden_dates = page.find_all('#analytic_date .display-none')

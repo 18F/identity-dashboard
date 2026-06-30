@@ -116,7 +116,7 @@ describe AnalyticsHelper do
       let(:sp) { create(:service_provider, :ready_to_activate, friendly_name: 'Zebra Service') }
       let(:sp1) { create(:service_provider, :ready_to_activate, friendly_name: 'Alpha Service') }
 
-      it 'returns an array of objecs sorted alphabetically by friendly_name' do
+      it 'returns an array of objects sorted alphabetically by friendly_name' do
         expect(service_providers_collection_for_select([sp, sp1])).to eq(
           [
             { title: sp1.friendly_name, id: sp1.uuid, controls: '' },

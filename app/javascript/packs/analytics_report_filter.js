@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (optNeedsSetting) {
           optNeedsSetting = false;
           nextSelect.value = option.value;
-          if (nextSelect == appSelect) {
+          if (nextSelect === appSelect) {
             nextSelect.dispatchEvent(new Event('change'));
           }
         }
