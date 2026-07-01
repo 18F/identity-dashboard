@@ -6,7 +6,7 @@ class Reports
       count_existing_accounts
     ].freeze
 
-    def grand_total
+    def total
       return unless data.values_at(*USAGE_KEYS).any?
 
       USAGE_KEYS.sum { |key| data[key].to_i }
@@ -24,8 +24,8 @@ class Reports
         data: usage_data,
         title: 'All Active Users',
         options: chart_options.merge({
-          top_description: 'Unique users who accessed a service',
-          bottom_description: 'New accounts reflect account creation during this window. ' \
+          subtitle: 'Unique users who accessed a service',
+          description: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
         }),
       }

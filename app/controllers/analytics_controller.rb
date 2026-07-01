@@ -41,9 +41,9 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def validate_and_compile_errors
-    return if analytic.valid? || analytic_params.blank?
+    return if analytic_params.blank? || (analytic.valid? && reports.valid?)
 
-    @error = analytic.errors.full_messages.join(' ')
+    @error = [analytic.errors.full_messages + reports.errors.full_messages].join(' ')
   end
 
   def analytic_params
@@ -60,7 +60,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     @analytic.config = service_provider
     @analytic.date = analytic_params[:date].presence || available_report_dates.first
-    @analytic.data = identity_report.data
     @analytic
   end
 

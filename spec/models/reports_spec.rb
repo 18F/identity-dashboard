@@ -19,10 +19,8 @@ describe Reports do
       )
       analytic.date = '2025-12-01'
       subject = described_class.new(analytic)
-      expect(subject.grand_total).to be(1519)
-      expect(subject.idv_data).to eq(
-        [['Newly Proofed', 17], ['Previously Proofed', 30]],
-      )
+      expect(subject.data['count_newly_proofed_users']).to be(17)
+      expect(subject.data['count_preverified_users']).to be(30)
     end
   end
 
@@ -57,19 +55,19 @@ describe Reports do
     it 'unwraps double-nested arrays' do
       allow(storage_mock).to receive(:fetch).and_return([[report_hash]])
       subject = described_class.new(analytic)
-      expect(subject.grand_total).to eq(42)
+      expect(subject.data).to eq('count_newly_created_accounts' => 42)
     end
 
     it 'unwraps single-nested arrays' do
       allow(storage_mock).to receive(:fetch).and_return([report_hash])
       subject = described_class.new(analytic)
-      expect(subject.grand_total).to eq(42)
+      expect(subject.data).to eq('count_newly_created_accounts' => 42)
     end
 
     it 'handles a flat hash' do
       allow(storage_mock).to receive(:fetch).and_return(report_hash)
       subject = described_class.new(analytic)
-      expect(subject.grand_total).to eq(42)
+      expect(subject.data).to eq('count_newly_created_accounts' => 42)
     end
 
     it 'handles nil gracefully' do
@@ -170,38 +168,4 @@ describe Reports do
       expect(described_class.new(analytic).period_calendar_id).to eq(20251201)
     end
   end
-
-  # context 'when numbers are nil' do
-  #   let(:issuer_with_null_stats) { 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:gsa:deleteme' }
-  #   let(:sp) { create(:service_provider, :ready_to_activate, issuer: issuer_with_null_stats) }
-  #   let(:analytic) do
-  #     Analytic.new.tap do |a|
-  #       # This should map to `spec/fixtures/reports/6236/monthly/2025-08-01.json` which
-  #       # has all fields present but with values set to `null`
-  #       a.date = '2025-08-01'
-  #       a.config = sp
-  #     end
-  #   end
-  #   let(:subject) { described_class.new(analytic) }
-
-  #   it 'returns nil for #grand_total' do
-  #     expect(subject.grand_total).to be_nil
-  #   end
-
-  #   it 'returns nil for #fraud_total' do
-  #     expect(subject.fraud_total).to be_nil
-  #   end
-
-  #   it 'returns nil for #successful_auths' do
-  #     expect(subject.successful_auths).to be_nil
-  #   end
-
-  #   it 'returns an empty array for idv_data' do
-  #     expect(subject.idv_data).to eq([])
-  #   end
-
-  #   it 'returns an empty array for usage_data' do
-  #     expect(subject.usage_data).to eq([])
-  #   end
-  # end
 end

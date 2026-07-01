@@ -7,8 +7,8 @@ class Reports
         data: idv_data,
         title: 'Active Identity Verified Users',
         options: chart_options.merge({
-          top_description: 'Unique users who accessed a service requiring verification',
-          bottom_description: 'Newly proofed are net new users who verified during this window. ' \
+          subtitle: 'Unique users who accessed a service requiring verification',
+          description: 'Newly proofed are net new users who verified during this window. ' \
             'Previously proofed are users who completed verification ahead of this window,',
         }),
       }

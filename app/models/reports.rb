@@ -4,6 +4,9 @@
 # It then passes off to child classes any calculating or derived statistics, handling of mapping
 # field names to friendly names, and other concerns about prepping the data to be ready to display.
 class Reports
+  # This is here to enable errors
+  include ActiveModel::Model
+
   attr_reader :issuer, :chosen_date
 
   # @param configs [Array] of ServiceProvider records
@@ -28,7 +31,7 @@ class Reports
 
   def initialize(analytic)
     @issuer = analytic.config&.issuer
-    @chosen_date = DateTime.parse(analytic.date) if analytic.valid_date?
+    @chosen_date = DateTime.parse(analytic.date) if analytic.date_valid?
     @chosen_date ||= DateTime.now
     @storage = AnalyticsReportStorage.new(issuer, chosen_date_as_string)
     @raw_data = unwrap(@storage.fetch)
@@ -45,6 +48,13 @@ class Reports
     return {} unless has_raw_data?
 
     @data ||= @raw_data['data'] || {}
+  end
+
+  def data_valid?
+    return true if data.keys.any?
+
+    errors.add(:base, I18n.t('reports.errors.no_data'))
+    false
   end
 
   def fraud
