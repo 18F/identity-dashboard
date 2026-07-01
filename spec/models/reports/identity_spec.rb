@@ -58,13 +58,13 @@ describe Reports::Identity do
       sp2 = create(:service_provider, team:, issuer: 'issuer_two')
       create(:team_membership, user: logingov_admin, team:, role_name: 'partner_admin')
 
-      allow(AnalyticsReportStorage).to receive(:list)
+      allow(AnalyticsReportStorage).to receive(:list_by_issuer)
         .with(%w[issuer_one issuer_two])
-        .and_return([])
+        .and_return({})
 
       described_class.available_dates([sp1, sp2], logingov_admin)
 
-      expect(AnalyticsReportStorage).to have_received(:list).once
+      expect(AnalyticsReportStorage).to have_received(:list_by_issuer).once
     end
   end
 

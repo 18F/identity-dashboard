@@ -80,16 +80,16 @@ describe 'reporting feature basics' do
     end
 
     context 'Filter', :js do
-      let(:second_team) { create(:team) }
-      let(:second_sp) do
+      let!(:second_team) { create(:team) }
+      let!(:second_sp) do
         create(:service_provider,
+                :ready_to_activate,
                 issuer: issuer_with_a_little_test_data,
                 user: logingov_admin,
                 team: second_team)
       end
 
       before do
-        second_team and second_sp
         visit analytics_path
       end
 
@@ -129,8 +129,8 @@ describe 'reporting feature basics' do
 
         expect(all_hidden_dates.count).to eq(1)
         expect(all_hidden_dates.map(&:text)).to_not include('2025-04-01')
-        expect(all_hidden_dates.map(&:text)).to_not include('2025-08-01')
-        expect(all_hidden_dates.map(&:text)).to include('2025-12-01')
+        expect(all_hidden_dates.map(&:text)).to include('2025-08-01')
+        expect(all_hidden_dates.map(&:text)).to_not include('2025-12-01')
       end
     end
 
