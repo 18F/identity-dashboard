@@ -81,8 +81,8 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def available_report_dates
     @available_report_dates ||= begin
-      dates = Reports::Identity.available_dates(available_service_providers).uniq
-      dates.presence || fallback_report_dates
+      dates = Reports::Identity.available_dates(available_service_providers, current_user)
+      dates.values.flatten.uniq.presence || fallback_report_dates
     end
   end
 

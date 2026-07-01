@@ -94,6 +94,8 @@ describe AnalyticsHelper do
   end
 
   describe '#service_providers_collection_for_select' do
+    let(:current_user) { create(:user, :logingov_admin) }
+
     describe 'no sps are passed in' do
       it 'returns an empty array' do
         expect(service_providers_collection_for_select([])).to eq([])
