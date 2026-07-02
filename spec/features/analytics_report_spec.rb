@@ -60,8 +60,8 @@ describe 'reporting feature basics' do
       visit analytics_path
       team_select = find('#analytic_team')
       team_opts = team_select.find_all('option')
-      # options are each team plus All Teams
-      expect(team_opts.count).to eq(Team.count + 1)
+      # options are each team with a config, plus All Teams
+      expect(team_opts.count).to eq(2 + 1)
       expect(team_select.text).to include(logingov_admin.teams.first.name)
     end
 
