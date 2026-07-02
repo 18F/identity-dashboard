@@ -108,7 +108,7 @@ describe AnalyticsHelper do
       it 'returns an array where the first object contains the sp name, uuid, and valid dates' do
         expect(service_providers_collection_for_select([sp])).to eq(
           [
-            { title: sp.friendly_name, id: sp.uuid, controls: nil },
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end
@@ -121,8 +121,8 @@ describe AnalyticsHelper do
       it 'returns an array of objects sorted alphabetically by friendly_name' do
         expect(service_providers_collection_for_select([sp, sp1])).to eq(
           [
-            { title: sp1.friendly_name, id: sp1.uuid, controls: nil },
-            { title: sp.friendly_name, id: sp.uuid, controls: nil },
+            { title: sp1.friendly_name, id: sp1.uuid, controls: '' },
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end

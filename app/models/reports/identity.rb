@@ -62,10 +62,8 @@ module Reports
     end
 
     def self.list_all_reports(user)
-      return @all_reports if @all_reports.present?
-
       issuers = user.scoped_service_providers.map(&:issuer)
-      @all_reports = AnalyticsReportStorage.list_by_issuer(issuers)
+      AnalyticsReportStorage.list_by_issuer(issuers)
     end
 
     private_class_method :list_all_reports

@@ -129,8 +129,8 @@ describe 'reporting feature basics' do
 
         expect(all_hidden_dates.count).to eq(1)
         expect(all_hidden_dates.map(&:text)).to_not include('2025-04-01')
-        expect(all_hidden_dates.map(&:text)).to include('2025-08-01')
-        expect(all_hidden_dates.map(&:text)).to_not include('2025-12-01')
+        expect(all_hidden_dates.map(&:text)).to_not include('2025-08-01')
+        expect(all_hidden_dates.map(&:text)).to include('2025-12-01')
       end
     end
 
