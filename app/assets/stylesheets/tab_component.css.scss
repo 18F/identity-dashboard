@@ -74,10 +74,10 @@
       &:after {
         @include active-after;
       }
+    }
 
-      .usa-icon {
-        @include flip;
-      }
+    &[aria-expanded="true"] .usa-icon {
+      @include flip;
     }
 
     & .usa-icon {

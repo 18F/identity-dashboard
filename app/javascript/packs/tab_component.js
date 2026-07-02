@@ -23,7 +23,8 @@ const validHash = (hash, panels) => {
 };
 
 const onButtonSelect = () => {
-  list.classList.toggle('is-active');
+  const isActive = list.classList.toggle('is-active');
+  button.setAttribute('aria-expanded', isActive);
 };
 
 const onTabSelect = (ev) => {
@@ -86,6 +87,7 @@ const onTabSelect = (ev) => {
   });
   // hide mobile dropdown;
   list.classList.remove('is-active');
+  button.setAttribute('aria-expanded', false);
 };
 
 addEventListener('DOMContentLoaded', () => {
