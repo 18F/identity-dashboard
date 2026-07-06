@@ -34,7 +34,7 @@ RSpec.describe AnalyticPolicy, type: :policy do
     end
   end
 
-  permissions :create? do
+  permissions :fetch? do
     it 'denies when there is no user' do
       expect(described_class).to_not permit(nil)
     end

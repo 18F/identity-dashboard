@@ -59,7 +59,7 @@ describe AnalyticsController do
         end
       end
 
-      describe '#create' do
+      describe '#fetch' do
         let(:sp_with_data) do
           create(:service_provider,
             :ready_to_activate,
@@ -68,7 +68,7 @@ describe AnalyticsController do
         end
 
         it 'handles bad post parameters' do
-          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
+          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
           expect(response).to redirect_to(analytics_path(
             team: admin_team.id,
             uuid: sp_with_data.uuid,
@@ -78,7 +78,7 @@ describe AnalyticsController do
         end
 
         it 'handles good post parameters' do
-          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
+          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
           expect(response).to redirect_to(analytics_path(
             team: admin_team.id,
             uuid: sp_with_data.uuid,

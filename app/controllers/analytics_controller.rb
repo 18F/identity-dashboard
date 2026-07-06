@@ -23,7 +23,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     end
   end
 
-  def create
+  def fetch
     # TODO: This needs to change to disable or remove the View report button
     return redirect_to analytics_path unless analytic.config
 

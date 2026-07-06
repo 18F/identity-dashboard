@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   resources :security_events, only: %i[index show]
 
   get '/reports(/:team/:uuid/:date)' => 'analytics#index', as: :analytics
-  post '/reports' => 'analytics#create'
+  post '/reports' => 'analytics#fetch'
 
   get '/reports/download' => 'analytics#download', as: :analytics_download
 
