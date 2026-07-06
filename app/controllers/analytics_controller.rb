@@ -35,7 +35,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def populate_data_for_html
-    @teams = permitted_teams(current_user)
+    @teams = permitted_teams
     @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
@@ -72,6 +72,18 @@ class AnalyticsController < ApplicationController # :nodoc:
     policy_scope(ServiceProvider).find_by(
       uuid: analytic_params[:uuid],
     )
+  end
+
+  def permitted_teams
+    teams = current_user.scoped_teams.filter do |team|
+      team.service_providers.present?
+    end
+    return teams if current_user.logingov_staff?
+
+    current_user.team_memberships.where(
+      role: 'partner_admin',
+      team: [teams],
+    ).map(&:team)
   end
 
   def available_service_providers
