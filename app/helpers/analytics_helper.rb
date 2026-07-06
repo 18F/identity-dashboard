@@ -13,7 +13,7 @@ module AnalyticsHelper
   def service_providers_collection_for_select(sps)
     return [] if sps.blank?
 
-    all_available_dates = Reports::Identity.available_dates(sps, current_user)
+    all_available_dates = Reports.available_dates(sps, current_user)
     sort_alphabetically(sps.to_a.flatten, :friendly_name).map do |sp|
       {
         title: sp.friendly_name,
