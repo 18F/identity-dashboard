@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::Usage do
+describe Report::Usage do
   let(:mock_reports) do
     mock = instance_double(Reports)
     allow(mock).to receive(:data).and_return(test_data)

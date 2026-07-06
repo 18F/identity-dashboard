@@ -3,8 +3,8 @@ This diagram represents the expected workflow of using reports
 ```mermaid
 sequenceDiagram
   participant Control as AnalyticsController
-  participant Usage as Reports::Usage
-  participant Fraud as Reports::Fraud
+  participant Usage as Report::Usage
+  participant Fraud as Report::Fraud
   participant Reports
   participant Storage as ReportStorage
   participant S3 as ReportStorage::S3 (or Disk)
@@ -18,7 +18,7 @@ sequenceDiagram
   Reports->>Reports: cache the issuer_id map
   Reports->>Control: issuers and dates
   Control->>Reports: reports_for(service_provider)
-  Reports->>Control: {usage: Reports::Usage.new(issuer), fraud: Reports::Fraud.new(issuer)}
+  Reports->>Control: {usage: Report::Usage.new(issuer), fraud: Report::Fraud.new(issuer)}
   Control->>Usage: grand_total
   Usage->>Reports: fetch
   Reports->>Reports: report file cache miss

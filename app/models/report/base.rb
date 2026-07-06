@@ -1,4 +1,4 @@
-class Reports
+module Report
   # This base class accepts an instance of Reports and allows for standard manipulation of its data
   class Base
     attr_reader :data
@@ -8,6 +8,10 @@ class Reports
     end
 
     def chart
+      raise NotImplementedError
+    end
+
+    def total
       raise NotImplementedError
     end
 

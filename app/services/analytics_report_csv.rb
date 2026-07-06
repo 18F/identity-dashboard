@@ -1,5 +1,5 @@
 # Creates and renders a CSV of Analytics data for an Issuer by Month
-class AnalyticsReportCsv < Reports::Base
+class AnalyticsReportCsv < Report::Base
   HEADER_ROW = ['', 'Quarterly', 'Monthly', 'Weekly'].freeze
   attr_reader :report_data
 

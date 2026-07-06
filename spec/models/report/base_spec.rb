@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::Base do
+describe Report::Base do
   describe 'integrated with a report' do
     let(:analytic) do
       analytic = Analytic.new

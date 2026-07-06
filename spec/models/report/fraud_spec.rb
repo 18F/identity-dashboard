@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::Fraud do
+describe Report::Fraud do
   let(:test_data) do
     {
       'count_ssn_dob_deceased' => rand(1..1000),

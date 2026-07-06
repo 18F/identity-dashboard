@@ -1,6 +1,6 @@
-class Reports
+module Report
   # Partner reporting for Identity Validation data
-  class IdV < Reports::Base
+  class IdV < Report::Base
     def chart(chart_options = {})
       {
         type: :column_chart,

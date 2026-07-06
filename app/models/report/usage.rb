@@ -1,6 +1,6 @@
-class Reports
+module Report
   # Partner reporting for general usage not covered in other classes
-  class Usage < Reports::Base
+  class Usage < Report::Base
     USAGE_KEYS = %w[
       count_newly_created_accounts
       count_existing_accounts

@@ -58,15 +58,15 @@ class Reports
   end
 
   def fraud
-    @fraud ||= Reports::Fraud.new(self)
+    @fraud ||= Report::Fraud.new(self)
   end
 
   def usage
-    @usage ||= Reports::Usage.new(self)
+    @usage ||= Report::Usage.new(self)
   end
 
   def idv
-    @idv ||= Reports::IdV.new(self)
+    @idv ||= Report::IdV.new(self)
   end
 
   # Public so the view can check if report data was found

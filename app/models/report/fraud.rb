@@ -1,4 +1,4 @@
-class Reports
+module Report
   # Partner reporting for fraud statistics
   class Fraud < Base
     FRAUD_KEYS = %w[
