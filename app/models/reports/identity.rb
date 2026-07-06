@@ -48,13 +48,25 @@ module Reports
 
     attr_reader :issuer, :chosen_date
 
-    def self.available_dates(configs)
+    # @param configs [Array] of ServiceProvider records
+    # @param user [User] usually the `current_user`
+    def self.available_dates(configs, user)
       issuers = configs.map(&:issuer)
-      reports = AnalyticsReportStorage.list(issuers)
-      reports.map do |report|
-        File.basename(report.key, File.extname(report.key))
-      end
+      reports = list_all_reports(user).filter { |key| issuers.include?(key) }
+
+      reports.transform_values do |values|
+        values.map do |report|
+          File.basename(report.key, File.extname(report.key))
+        end
+      end.to_h
     end
+
+    def self.list_all_reports(user)
+      issuers = user.scoped_service_providers.map(&:issuer)
+      AnalyticsReportStorage.list_by_issuer(issuers)
+    end
+
+    private_class_method :list_all_reports
 
     def initialize(analytic)
       @issuer = analytic.config&.issuer

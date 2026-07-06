@@ -11,6 +11,10 @@ class AnalyticsReportStorage
     new.list(Array(criteria))
   end
 
+  def self.list_by_issuer(criteria = [])
+    new.list_by_issuer(Array(criteria))
+  end
+
   def self.fetch(issuer, date)
     new(issuer, date).fetch
   end
@@ -38,6 +42,20 @@ class AnalyticsReportStorage
 
   def list(criteria)
     backend.list(issuer_to_id_map.values_at(*criteria).compact)
+  end
+
+  def list_by_issuer(criteria)
+    # create a hash of issuer string => empty Array
+    issuer_to_file_map = criteria.index_with { |_c| [] }
+    # list files and associate with issuer in the above map
+    list(criteria).each do |file|
+      file_map_key = issuer_to_file_map[
+        issuer_to_id_map.key(file.sp_identifier.to_i),
+      ]
+      file_map_key&.push(file)
+    end
+
+    issuer_to_file_map
   end
 
   private

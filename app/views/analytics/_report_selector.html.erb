@@ -1,0 +1,31 @@
+<fieldset class="usa-fieldset usa_collection_select" id="reports_form">
+  <% if @graphs.none? %>
+    <p class="margin-bottom-0">Choose from the dropdowns to see a report.</p>
+  <% end %>
+  <div class="grid-row grid-gap-2">
+    <%= render partial: 'report_select_input', locals: {
+      name: 'team',
+      label: 'Team',
+      collection: teams_collection_for_select(@teams),
+      all_controls: all_app_options_string(@teams),
+      required: false,
+      selected: @team,
+      prompt: '- All Teams-',
+    } %>
+    <%= render partial: 'report_select_input', locals: {
+      name: 'uuid',
+      label: 'Application',
+      collection: service_providers_collection_for_select(@available_service_providers),
+      required: true,
+      selected: @analytic.config&.uuid,
+      prompt: @application_count.zero? ? '- No Applications-' : nil,
+    } %>
+    <%= render partial: 'report_select_input', locals: {
+      name: 'date',
+      label: 'Date of report',
+      collection: dates_collection_for_select(@dates),
+      required: true,
+      selected: @analytic.date,
+    } %>
+  </div>
+</fieldset>

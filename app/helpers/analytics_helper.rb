@@ -3,9 +3,9 @@ module AnalyticsHelper
   def teams_collection_for_select(teams)
     sort_alphabetically(teams, :name).map do |team|
       {
-        name: team.name,
+        title: team.name,
         id: team.id,
-        apps: team.uuids_string,
+        controls: team.uuids_string,
       }
     end
   end
@@ -13,8 +13,25 @@ module AnalyticsHelper
   def service_providers_collection_for_select(sps)
     return [] if sps.blank?
 
+    all_available_dates = Reports::Identity.available_dates(sps, current_user)
     sort_alphabetically(sps.to_a.flatten, :friendly_name).map do |sp|
-      [sp.friendly_name, sp.uuid]
+      {
+        title: sp.friendly_name,
+        id: sp.uuid,
+        controls: all_available_dates[sp.issuer]&.uniq&.join(','),
+      }
+    end
+  end
+
+  def dates_collection_for_select(dates)
+    return [] if dates.blank?
+
+    dates.sort.map do |date|
+      {
+        title: date,
+        id: date,
+        controls: '',
+      }
     end
   end
 

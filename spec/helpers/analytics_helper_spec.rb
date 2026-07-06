@@ -15,9 +15,9 @@ describe AnalyticsHelper do
       let(:result) do
         [
           {
-            name: team.name,
+            title: team.name,
             id: team.id,
-            apps: stringified_uuid_list,
+            controls: stringified_uuid_list,
           },
         ]
       end
@@ -75,14 +75,14 @@ describe AnalyticsHelper do
       let(:result) do
         [
           {
-            name: team2.name,
+            title: team2.name,
             id: team2.id,
-            apps: team2_stringified_uuid_list,
+            controls: team2_stringified_uuid_list,
           },
           {
-            name: team.name,
+            title: team.name,
             id: team.id,
-            apps: stringified_uuid_list,
+            controls: stringified_uuid_list,
           },
         ]
       end
@@ -94,6 +94,8 @@ describe AnalyticsHelper do
   end
 
   describe '#service_providers_collection_for_select' do
+    let(:current_user) { create(:user, :logingov_admin) }
+
     describe 'no sps are passed in' do
       it 'returns an empty array' do
         expect(service_providers_collection_for_select([])).to eq([])
@@ -103,10 +105,10 @@ describe AnalyticsHelper do
     describe 'a single sp is passed in' do
       let(:sp) { create(:service_provider, :ready_to_activate) }
 
-      it 'returns an array where the first element is the sp name and uuid' do
+      it 'returns an array where the first object contains the sp name, uuid, and valid dates' do
         expect(service_providers_collection_for_select([sp])).to eq(
           [
-            [sp.friendly_name, sp.uuid],
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end
@@ -116,11 +118,11 @@ describe AnalyticsHelper do
       let(:sp) { create(:service_provider, :ready_to_activate, friendly_name: 'Zebra Service') }
       let(:sp1) { create(:service_provider, :ready_to_activate, friendly_name: 'Alpha Service') }
 
-      it 'returns an array of sps sorted alphabetically ' do
+      it 'returns an array of objects sorted alphabetically by friendly_name' do
         expect(service_providers_collection_for_select([sp, sp1])).to eq(
           [
-            [sp1.friendly_name, sp1.uuid],
-            [sp.friendly_name, sp.uuid],
+            { title: sp1.friendly_name, id: sp1.uuid, controls: '' },
+            { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
       end

@@ -4,6 +4,7 @@ describe Reports::Identity do
   before { Rails.cache.clear }
 
   let(:sp) { build(:service_provider) }
+  let(:logingov_admin) { create(:user, :logingov_admin) }
 
   context 'using local files for test data' do
     before do
@@ -52,16 +53,18 @@ describe Reports::Identity do
 
   describe '.available_dates' do
     it 'calls list once with all issuers' do
-      sp1 = build(:service_provider, issuer: 'issuer_one')
-      sp2 = build(:service_provider, issuer: 'issuer_two')
+      team = create(:team)
+      sp1 = create(:service_provider, team:, issuer: 'issuer_one')
+      sp2 = create(:service_provider, team:, issuer: 'issuer_two')
+      create(:team_membership, user: logingov_admin, team:, role_name: 'partner_admin')
 
-      allow(AnalyticsReportStorage).to receive(:list)
+      allow(AnalyticsReportStorage).to receive(:list_by_issuer)
         .with(%w[issuer_one issuer_two])
-        .and_return([])
+        .and_return({})
 
-      described_class.available_dates([sp1, sp2])
+      described_class.available_dates([sp1, sp2], logingov_admin)
 
-      expect(AnalyticsReportStorage).to have_received(:list).once
+      expect(AnalyticsReportStorage).to have_received(:list_by_issuer).once
     end
   end
 

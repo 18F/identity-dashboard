@@ -43,7 +43,7 @@ describe 'reporting feature basics' do
       )
       sp_options = find_all('select#analytic_uuid > option')
       expect(sp_options.count).to be(1)
-      expect(sp_options[0].text).to eq('- All Applications-')
+      expect(sp_options[0].text).to eq('- No Applications-')
     end
   end
 
@@ -80,34 +80,57 @@ describe 'reporting feature basics' do
     end
 
     context 'Filter', :js do
-      let(:second_team) { create(:team) }
-      let(:second_sp) do
+      let!(:second_team) { create(:team) }
+      let!(:second_sp) do
         create(:service_provider,
+                :ready_to_activate,
                 issuer: issuer_with_a_little_test_data,
                 user: logingov_admin,
                 team: second_team)
       end
 
       before do
-        second_team and second_sp
         visit analytics_path
       end
 
       it 'shows the correct apps for a chosen team' do
         select second_team.name, from: 'Team'
 
-        expect(page).to have_css('#analytic_uuid .display-none')
+        all_hidden_apps = page.find_all('#analytic_uuid .display-none')
+
         expect(page).to have_content(test_sp.friendly_name)
         expect(page).to have_content(second_sp.friendly_name)
+
+        expect(all_hidden_apps.count).to eq(1)
+        expect(all_hidden_apps.map(&:text)).to include(test_sp.friendly_name)
+        expect(all_hidden_apps.map(&:text)).to_not include(second_sp.friendly_name)
       end
 
       it 'shows the correct apps when reselecting All teams' do
         select second_team.name, from: 'Team'
         select '- All Teams-', from: 'Team'
 
-        expect(page).to_not have_css('#analytic_uuid .display_none')
+        all_hidden_apps = page.find_all('#analytic_uuid .display-none')
+
         expect(page).to have_content(test_sp.friendly_name)
         expect(page).to have_content(second_sp.friendly_name)
+
+        expect(all_hidden_apps.count).to eq(0)
+      end
+
+      it 'shows the correct dates for a chosen application' do
+        select second_sp.friendly_name, from: 'Application'
+
+        all_hidden_dates = page.find_all('#analytic_date .display-none')
+
+        expect(page).to have_content('2025-04-01')
+        expect(page).to have_content('2025-08-01')
+        expect(page).to have_content('2025-12-01')
+
+        expect(all_hidden_dates.count).to eq(1)
+        expect(all_hidden_dates.map(&:text)).to_not include('2025-04-01')
+        expect(all_hidden_dates.map(&:text)).to_not include('2025-08-01')
+        expect(all_hidden_dates.map(&:text)).to include('2025-12-01')
       end
     end
 
