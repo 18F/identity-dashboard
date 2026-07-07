@@ -2,7 +2,6 @@ class AnalyticsController < ApplicationController # :nodoc:
   AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
-  include AnalyticsHelper
 
   before_action -> { authorize analytic }
   before_action :validate_and_compile_errors
