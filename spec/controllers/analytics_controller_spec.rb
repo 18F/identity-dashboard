@@ -8,6 +8,7 @@ describe AnalyticsController do
   let(:partner_readonly) { create(:user, :partner_readonly) }
   let(:logger_double) { instance_double(EventLogger) }
   let(:issuer) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test' }
+  let(:issuer0) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo' }
   let(:admin_team) { logingov_admin.teams.first }
 
   before do
@@ -32,9 +33,7 @@ describe AnalyticsController do
         end
 
         it 'populates dates from S3 when reports exist' do
-          create(:service_provider,
-            issuer:,
-            team: admin_team)
+          create(:service_provider, issuer:, team: admin_team)
           get :index
           expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
         end
@@ -46,9 +45,21 @@ describe AnalyticsController do
           expect(dates.first).to eq(Date.current.beginning_of_month.strftime('%F'))
           expect(dates.last).to eq('2025-10-01')
         end
+
+        it 'includes all teams with configs' do
+          team0 = create(:team)
+          team1 = create(:team)
+          create(:service_provider, issuer:, team: admin_team)
+          create(:service_provider, issuer: issuer0, team: team1)
+
+          get :index
+          teams = assigns(:teams)
+          expect(teams).to include(admin_team, team1)
+          expect(teams).to_not include(team0)
+        end
       end
 
-      describe '#create' do
+      describe '#fetch' do
         let(:sp_with_data) do
           create(:service_provider,
             :ready_to_activate,
@@ -57,7 +68,7 @@ describe AnalyticsController do
         end
 
         it 'handles bad post parameters' do
-          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
+          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
           expect(response).to redirect_to(analytics_path(
             team: admin_team.id,
             uuid: sp_with_data.uuid,
@@ -67,7 +78,7 @@ describe AnalyticsController do
         end
 
         it 'handles good post parameters' do
-          post :create, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
+          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
           expect(response).to redirect_to(analytics_path(
             team: admin_team.id,
             uuid: sp_with_data.uuid,
@@ -175,9 +186,43 @@ describe AnalyticsController do
     end
 
     context '#index' do
+      let(:team0) { create(:team) }
+      let(:team1) { create(:team) }
+      let(:team2) { create(:team) }
+      let!(:sp0) do
+        create(:service_provider,
+                        :ready_to_activate,
+                        team: team0,
+                        issuer:)
+      end
+      let!(:sp1) do
+        create(:service_provider,
+                        :ready_to_activate,
+                        team: team1,
+                        issuer: issuer0)
+      end
+
+      before do
+        create(:team_membership, :partner_admin, user: partner_admin, team: team0)
+        create(:team_membership, :partner_admin, user: partner_admin, team: team2)
+        create(:team_membership, :partner_developer, user: partner_admin, team: team1)
+      end
+
       it 'has GET access' do
         get :index
         expect(response).to be_ok
+      end
+
+      it 'returns all teams with configs where partner is an Admin' do
+        get :index
+        teams = assigns(:teams)
+        expect(teams).to eq([team0])
+      end
+
+      it 'returns all apps with reports where partner has Admin role' do
+        get :index
+        apps = assigns(:available_service_providers)
+        expect(apps).to eq([sp0])
       end
     end
   end

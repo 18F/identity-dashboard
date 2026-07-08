@@ -22,7 +22,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     end
   end
 
-  def create
+  def fetch
     # TODO: This needs to change to disable or remove the View report button
     return redirect_to analytics_path unless analytic.config
 
@@ -34,7 +34,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   private
 
   def populate_data_for_html
-    @teams = current_user.scoped_teams.includes(:service_providers)
+    @teams = permitted_teams
     @team = analytic_params[:team].presence
     @dates = available_report_dates
     @graphs = analytic_params.present? ? default_graphs : []
@@ -73,10 +73,25 @@ class AnalyticsController < ApplicationController # :nodoc:
     )
   end
 
+  def permitted_teams
+    teams = current_user.scoped_teams.filter do |team|
+      team.service_providers.present?
+    end
+    return teams if current_user.logingov_staff?
+
+    current_user.team_memberships.where(
+      role: 'partner_admin',
+      team: [teams],
+    ).map(&:team)
+  end
+
   def available_service_providers
-    @available_service_providers ||= policy_scope(ServiceProvider).where(
+    return @available_service_providers if @available_service_providers
+
+    service_providers ||= policy_scope(ServiceProvider).where(
       issuer: AnalyticsReportStorage.new.all_issuers,
     )
+    @available_service_providers = service_providers.where(team: permitted_teams)
   end
 
   def available_report_dates
