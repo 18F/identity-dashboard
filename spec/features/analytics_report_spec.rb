@@ -289,7 +289,8 @@ describe 'reporting feature basics' do
 
     it 'does not display charts when the user does not have permission', :js do
       partner_readonly = create(:user)
-      create(:team_membership, :partner_readonly, user: partner_readonly, team: partner_admin.teams.first)
+      create(:team_membership, :partner_readonly, user: partner_readonly,
+                                                  team: partner_admin.teams.first)
       create(:team_membership, :partner_admin, user: partner_readonly, team: other_team)
 
       login_as partner_readonly
