@@ -186,24 +186,41 @@ describe AnalyticsController do
     end
 
     context '#index' do
+      let(:team0) { create(:team) }
+      let(:team1) { create(:team) }
+      let(:team2) { create(:team) }
+      let!(:sp0) { create(:service_provider,
+                        :ready_to_activate,
+                        team: team0,
+                        issuer:,
+                ) }
+      let!(:sp1) { create(:service_provider,
+                        :ready_to_activate,
+                        team: team1,
+                        issuer: issuer0,
+                ) }
+
+      before do
+        create(:team_membership, :partner_admin, user: partner_admin, team: team0)
+        create(:team_membership, :partner_admin, user: partner_admin, team: team2)
+        create(:team_membership, :partner_developer, user: partner_admin, team: team1)
+      end
+
       it 'has GET access' do
         get :index
         expect(response).to be_ok
       end
 
       it 'returns all teams with configs where partner is an Admin' do
-        team0 = create(:team)
-        team1 = create(:team)
-        team2 = create(:team)
-        create(:service_provider, :ready_to_activate, team: team0)
-        create(:service_provider, :ready_to_activate, team: team1)
-        create(:team_membership, :partner_admin, user: partner_admin, team: team0)
-        create(:team_membership, :partner_admin, user: partner_admin, team: team2)
-        create(:team_membership, :partner_developer, user: partner_admin, team: team1)
-
         get :index
         teams = assigns(:teams)
         expect(teams).to eq([team0])
+      end
+
+      it 'returns all apps with reports where partner has Admin role' do
+        get :index
+        apps = assigns(:available_service_providers)
+        expect(apps).to eq([sp0])
       end
     end
   end
