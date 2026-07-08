@@ -252,12 +252,10 @@ describe 'reporting feature basics' do
       )
     end
 
-    before do
+    it 'can display charts', :js do
       login_as partner_admin
       visit analytics_path
-    end
 
-    it 'can display charts', :js do
       select partner_sp.friendly_name, from: 'Application'
       select '2025-12-01', from: 'Date of report'
       click_on 'View report'
@@ -273,6 +271,11 @@ describe 'reporting feature basics' do
       # This issuer has mostly null data, but a few zeroes
       let(:issuer) { '2025-12-10:Howard:test' }
 
+      before do
+        login_as partner_admin
+        visit analytics_path
+      end
+
       it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
         select '2025-08-01', from: 'Date of report'
@@ -282,6 +285,22 @@ describe 'reporting feature basics' do
         expect(page.text).to match(/requiring verification\sData is currently not available/)
         expect(page).to_not have_button('Export report as CSV')
       end
+    end
+
+    it 'does not display charts when the user does not have permission', :js do
+      partner_readonly = create(:user)
+      create(:team_membership, :partner_readonly, user: partner_readonly, team: partner_admin.teams.first)
+      create(:team_membership, :partner_admin, user: partner_readonly, team: other_team)
+
+      login_as partner_readonly
+      visit analytics_path(
+        team: partner_sp.team.id,
+        uuid: partner_sp.uuid,
+        date: '2025-08-01',
+      )
+
+      expect(find_all('canvas').count).to eq(0)
+      expect(page.text).to match(I18n.t('reports.errors.generic'))
     end
   end
 end
