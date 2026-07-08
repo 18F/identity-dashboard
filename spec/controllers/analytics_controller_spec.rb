@@ -189,16 +189,18 @@ describe AnalyticsController do
       let(:team0) { create(:team) }
       let(:team1) { create(:team) }
       let(:team2) { create(:team) }
-      let!(:sp0) { create(:service_provider,
+      let!(:sp0) do
+        create(:service_provider,
                         :ready_to_activate,
                         team: team0,
-                        issuer:,
-                ) }
-      let!(:sp1) { create(:service_provider,
+                        issuer:)
+      end
+      let!(:sp1) do
+        create(:service_provider,
                         :ready_to_activate,
                         team: team1,
-                        issuer: issuer0,
-                ) }
+                        issuer: issuer0)
+      end
 
       before do
         create(:team_membership, :partner_admin, user: partner_admin, team: team0)
