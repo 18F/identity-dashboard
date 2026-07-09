@@ -36,6 +36,10 @@ describe AnalyticsReportCsv do
   end
   let(:subject) { described_class.new(monthly_report) }
 
+  before do
+    Rails.cache.delete('analytics_issuer_to_id_map')
+  end
+
   describe '#report_data_csv' do
     let(:exported_csv) { subject.report_data_csv }
 
