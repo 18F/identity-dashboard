@@ -1,5 +1,4 @@
 class AnalyticsController < ApplicationController # :nodoc:
-  AVAILABLE_REPORTS = [Reports::Identity].freeze
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
 
@@ -16,7 +15,7 @@ class AnalyticsController < ApplicationController # :nodoc:
         flash[:error] = I18n.t('reports.errors.no_team') if @application_count.zero?
       end
       format.csv do
-        report = AnalyticsReportCsv.new(identity_report)
+        report = AnalyticsReportCsv.new(reports)
         send_data report.report_data_csv, filename: report.filename
       end
     end
@@ -37,14 +36,14 @@ class AnalyticsController < ApplicationController # :nodoc:
     @teams = permitted_teams
     @team = analytic_params[:team].presence
     @dates = available_report_dates
-    @graphs = analytic_params.present? ? default_graphs : []
+    @graphs_ready = analytic_params.present? && @analytic.errors.empty?
     @application_count = available_service_providers.count
   end
 
   def validate_and_compile_errors
-    return if analytic.valid? || analytic_params.blank?
+    return if analytic_params.blank? || (analytic.valid? && reports.valid?)
 
-    @error = analytic.errors.full_messages.join(' ')
+    @error = [analytic.errors.full_messages + reports.errors.full_messages].join(' ')
   end
 
   def analytic_params
@@ -61,7 +60,6 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     @analytic.config = service_provider
     @analytic.date = analytic_params[:date].presence || available_report_dates.first
-    @analytic.data = identity_report.data
     @analytic
   end
 
@@ -96,7 +94,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def available_report_dates
     @available_report_dates ||= begin
-      dates = Reports::Identity.available_dates(available_service_providers, current_user)
+      dates = Reports.available_dates(available_service_providers, current_user)
       dates.values.flatten.uniq.presence || fallback_report_dates
     end
   end
@@ -111,32 +109,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     dates
   end
 
-  def identity_report
-    @identity_report ||= Reports::Identity.new(analytic)
-  end
-
-  def default_graphs
-    [
-      {
-        type: :column_chart,
-        data: identity_report.usage_data,
-        title: 'All Active Users',
-        options: DEFAULT_GRAPH_OPTIONS.merge({
-          subtitle: 'Unique users who accessed a service',
-          description: 'New accounts reflect account creation during this window. ' \
-            'Existing accounts reflect accounts created ahead of this window.',
-        }),
-      },
-      {
-        type: :column_chart,
-        data: identity_report.idv_data,
-        title: 'Active Identity Verified Users',
-        options: DEFAULT_GRAPH_OPTIONS.merge({
-          subtitle: 'Unique users who accessed a service requiring verification',
-          description: 'Newly proofed are net new users who verified during this window. ' \
-            'Previously proofed are users who completed verification ahead of this window,',
-        }),
-      },
-    ]
+  def reports
+    @reports ||= Reports.new(analytic)
   end
 end

@@ -280,9 +280,10 @@ describe 'reporting feature basics' do
         select partner_sp.friendly_name, from: 'Application'
         select '2025-08-01', from: 'Date of report'
         click_on 'View report'
+
         expect(find_all('canvas').count).to eq(1)
         expect(page.text).to match(/BLOCKED USERS\s*Data is currently not available/)
-        expect(page.text).to match(/requiring verification\sData is currently not available/)
+        expect(page.text).to match(/requiring verification\s*Data is currently not available/)
         expect(page).to_not have_button('Export report as CSV')
       end
     end

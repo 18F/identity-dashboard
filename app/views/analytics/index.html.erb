@@ -16,7 +16,7 @@
            <%= render 'report_selector', form: form %>
            <div class="grid-row margin-y-1">
               <%= form.submit 'View report', class: 'usa-button margin-y-2 margin-right-0 mobile-lg:margin-right-1' %>
-              <% if @analytic.errors.empty? && @graphs.any? %>
+              <% if @graphs_ready %>
                 <a
                   href="<%= analytics_path(
                     uuid: @analytic.uuid,
@@ -33,7 +33,7 @@
       </section>
     </div>
   </div>
-<% if @analytic.errors.empty? && @graphs.any? %>
+<% if @graphs_ready %>
     <div class="grid-row grid-gap">
     <div class="grid-col-fill">
         <h2 class="margin-bottom-0 border-bottom-1px border-primary-light padding-bottom-1">
@@ -50,31 +50,31 @@
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary padding-x-1 padding-y-05">
         <p class="data-summary__title">Active Users</p>
-        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @identity_report.grand_total %></p>
+        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @reports.usage.total %></p>
         <p class="data-summary__description">Unique users successfully accessing your service.</p>
       </div>
      </div>
      <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
       <div class="data-summary padding-x-1 padding-y-05">
         <p class="data-summary__title">Blocked Users</p>
-        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @identity_report.fraud_total %></p>
+        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @reports.fraud.total %></p>
         <p class="data-summary__description">Unique users blocked due to suspected fraud signals.</p>
       </div>
     </div>
   </div>
   <div class="grid-row grid-gap tablet-lg:margin-2">
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
-      <%= render(ChartComponent.new(**@graphs[0])) %>
+      <%= render(ChartComponent.new(**@reports.usage.chart)) %>
     </div>
     <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
-      <%= render(ChartComponent.new(**@graphs[1])) %>
+      <%= render(ChartComponent.new(**@reports.idv.chart)) %>
     </div>
   </div>
   <div class="grid-row grid-gap margin-2">
     <div class="tablet-lg:grid-col-6">
       <div class="data-summary padding-x-1 padding-y-05">
         <p class="data-summary__title">Successful authentications</p>
-        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @identity_report.successful_auths %></p>
+        <p class="data-summary__number"><%= data_unavailable_or_number_with_delimiter @reports.usage.successful_auths %></p>
         <p class="data-summary__description">Total times users signed in through Login.gov.</p>
       </div>
     </div>
