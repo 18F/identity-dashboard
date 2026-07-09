@@ -68,7 +68,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   def service_provider
     return available_service_providers.first unless analytic_params.present?
 
-    policy_scope(ServiceProvider).find_by(
+    available_service_providers.find_by(
       uuid: analytic_params[:uuid],
     )
   end
