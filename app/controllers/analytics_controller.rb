@@ -36,7 +36,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     @teams = permitted_teams
     @team = analytic_params[:team].presence
     @dates = available_report_dates
-    @params_present = analytic_params.present?
+    @graphs_ready = analytic_params.present? && @analytic.errors.empty?
     @application_count = available_service_providers.count
   end
 

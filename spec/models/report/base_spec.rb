@@ -37,8 +37,30 @@ describe Report::Base do
       expect(subject.as_array_with_i18n_labels).to eq(expected_data)
     end
 
+    it '#as_array_with_i18n_labels skips invalid keys' do
+      expected_count = rand(1..10000)
+      storage_mock = instance_double(AnalyticsReportStorage)
+      allow(AnalyticsReportStorage).to receive(:new)
+        .with(analytic.config.issuer, analytic.date)
+        .and_return(storage_mock)
+      allow(storage_mock).to receive(:fetch).and_return(
+        { 'data' => {
+          'count_stayed_blocked' => expected_count,
+          'invalid_key' => rand(100..10_000),
+          'count_other_invalid_key' => rand(10..1000),
+        } },
+      )
+      expect(subject.as_array_with_i18n_labels).to eq(
+        [[I18n.t('reports.count_stayed_blocked'), expected_count]],
+      )
+    end
+
     it 'raises a NotImplementedError for #chart' do
       expect { subject.chart }.to raise_error(NotImplementedError)
+    end
+
+    it 'raises a NotImplementedError for #total' do
+      expect { subject.total }.to raise_error(NotImplementedError)
     end
   end
 end
