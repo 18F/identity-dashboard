@@ -131,6 +131,32 @@ To run locally: `npm run herb:lint`
 
 `make lint`
 
+# Changelog
+
+CI enforces that every branch merging into `main` includes at least one commit with a changelog line. The `check_changelog` job runs `bin/changelog_check.rb` and will fail the pipeline if none of your commits have one.
+
+Add a line to a commit message in the form of:
+
+```
+changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
+```
+
+Valid categories are:
+
+- `User-Facing Improvements`
+- `Bug Fixes`
+- `Internal`
+- `Upcoming Features`
+
+Examples:
+
+```
+changelog: User-Facing Improvements, Reports, Add partner report policy filter
+changelog: Bug Fixes, Analytics, Fix incorrect team filtering on the analytics#fetch endpoint
+```
+
+If a change doesn't warrant a changelog entry (e.g. a typo fix or CI config change), include `[skip changelog]` anywhere in a commit message on the branch instead.
+
 # Documentation
 * YARD docs to ensure they have no warnings and also we enforce that the `LogEvents` class has YARD documentation for all its methods
 

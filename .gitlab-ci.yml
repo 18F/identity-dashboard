@@ -187,6 +187,26 @@ lint:
     reports:
       junit: rubocop.xml
 
+check_changelog:
+  stage: test
+  needs: []
+  variables:
+    GIT_DEPTH: 100
+  script:
+    - |
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
+      then
+        git fetch origin --quiet
+        ./bin/changelog_check.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+      elif [ "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" == "main" ]
+      then
+        git fetch origin --quiet
+        ./bin/changelog_check.rb -b origin/"${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME}"
+      else
+        echo "Skipping because this is not a PR or is not targeting main"
+        exit 0
+      fi
+
 migrate:
   stage: test
   needs:
