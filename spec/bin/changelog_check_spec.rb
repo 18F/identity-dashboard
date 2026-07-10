@@ -54,7 +54,8 @@ RSpec.describe 'bin/changelog_check.rb' do
   describe '#generate_invalid_changes' do
     it 'returns titles of commits missing a valid changelog line' do
       git_log = [
-        commit_log(title: 'Add partner report policy filter (#123)', body: ['changelog: Bug Fixes, Reports, Fix filter']),
+        commit_log(title: 'Add partner report policy filter (#123)',
+                   body: ['changelog: Bug Fixes, Reports, Fix filter']),
         commit_log(title: 'Fix typo'),
       ].join("\n")
 
