@@ -38,6 +38,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     @dates = available_report_dates
     @graphs_ready = analytic_params.present? && @analytic.errors.empty?
     @application_count = available_service_providers.count
+    @show_tabs = current_user.logingov_admin?
   end
 
   def validate_and_compile_errors
