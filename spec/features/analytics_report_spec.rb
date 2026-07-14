@@ -264,10 +264,12 @@ describe 'reporting feature basics' do
       )
     end
 
-    it 'can display charts', :js do
+    before do
       login_as partner_admin
       visit analytics_path
+    end
 
+    it 'can display charts', :js do
       select partner_sp.friendly_name, from: 'Application'
       select '2025-12-01', from: 'Date of report'
       click_on 'View report'
@@ -280,17 +282,16 @@ describe 'reporting feature basics' do
     end
 
     it 'does not show tabs', :js do
+      select partner_sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
+      expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
       expect(page).to_not have_content 'Fraud Prevention'
     end
 
     context 'with mostly missing data' do
       # This issuer has mostly null data, but a few zeroes
       let(:issuer) { '2025-12-10:Howard:test' }
-
-      before do
-        login_as partner_admin
-        visit analytics_path
-      end
 
       it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
