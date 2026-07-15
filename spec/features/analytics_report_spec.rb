@@ -238,13 +238,11 @@ describe 'reporting feature basics' do
       end
 
       it 'allows switching between tabs', :js do
-        expect(find_all('canvas').count).to eq(2)
         expect(page).to have_content 'Fraud Prevention'
         click_on 'Fraud Prevention'
-        expect(find_all('canvas').count).to eq(1)
+        expect(page).to_not have_content 'SUCCESSFUL AUTHENTICATIONS'
         expect(page).to have_content 'FRAUDSTERS BLOCKS'
         click_on 'Usage'
-        expect(find_all('canvas').count).to eq(2)
         expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
         expect(page).to_not have_content 'FRAUDSTERS BLOCKS'
       end

@@ -13,8 +13,9 @@ module Report
       lack_phone_ownership
       wrong_phone_type
       blocked_by_ipp_fraud
-      pending_lg99_likely_fraud
     ].map { |key| "count_#{key}" }.freeze
+
+    FRAUD_QUEUE_KEYS = ['count_pending_lg99_likely_fraud', 'count_pass_via_lg99'].freeze
 
     def total
       return unless data.values_at(*FRAUD_KEYS).any?
@@ -37,12 +38,33 @@ module Report
       }
     end
 
+    def review_queue_chart(chart_options = {})
+      {
+        type: :bar_chart,
+        data: review_queue_data,
+        title: 'Redress - Identity Verification',
+        options: chart_options.merge({
+          subtitle: 'Users who requested redress during this period',
+          description: '"Adjudicated as legitimate" reflects cases where ' \
+            'Login.gov reviewed the case and reversed the block.',
+          # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
+          colors: ['#ff580a', '#719f2a'],
+        }),
+      }
+    end
+
     private
 
     def fraud_data
       return [] unless data.values_at(*FRAUD_KEYS).any?
 
       as_array_with_i18n_labels(data.keys.select { |key| FRAUD_KEYS.include? key })
+    end
+
+    def review_queue_data
+      return [] unless data.values_at(*FRAUD_QUEUE_KEYS).any?
+
+      as_array_with_i18n_labels(FRAUD_QUEUE_KEYS)
     end
   end
 end

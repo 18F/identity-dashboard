@@ -89,6 +89,9 @@
           <div class="padding-x-1 mobile-lg:margin-top-2">
             <%= render(ChartComponent.new(**@reports.fraud.chart)) %>
           </div>
+          <div class="padding-x-1 padding-bottom-1 mobile-lg:margin-top-2">
+            <%= render(ChartComponent.new(**@reports.fraud.review_queue_chart)) %>
+          </div>
       <% end %>
     <% end %>
     <%= render tab_component %>
