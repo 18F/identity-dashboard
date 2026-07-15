@@ -25,5 +25,24 @@ module Report
         sum + value.to_i
       end
     end
+
+    def chart(chart_options = {})
+      {
+        type: :bar_chart,
+        data: fraud_data,
+        title: 'Fraudsters Blocks',
+        options: chart_options.merge({
+          subtitle: 'Users blocked per outcome type',
+        }),
+      }
+    end
+
+    private
+
+    def fraud_data
+      return [] unless data.values_at(*FRAUD_KEYS).any?
+
+      as_array_with_i18n_labels(data.keys.select { |key| FRAUD_KEYS.include? key })
+    end
   end
 end
