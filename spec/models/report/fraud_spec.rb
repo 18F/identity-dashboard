@@ -33,19 +33,20 @@ describe Report::Fraud do
   it 'can return #chart options with correct data' do
     expect(subject.chart).to eq({
       type: :bar_chart,
+      title: 'Fraudsters Blocks',
       data: [
+        ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
         ['Rejected for Invalid SSN / DOB, or Deceased', test_data['count_ssn_dob_deceased']],
         ['Suspicious Phone', test_data['count_suspicious_phone']],
-        ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
       ],
-      title: 'Fraudsters Blocks',
       options: { subtitle: 'Users blocked per outcome type' },
     })
   end
 
   it 'can return an accurate #review_queue_chart' do
     expect(subject.review_queue_chart).to eq({
-      title: 'Redress - Identity Verification', type: :bar_chart,
+      type: :bar_chart,
+      title: 'Redress – Identity Verification',
       data: [
         ['Pending Fraud Review', test_data['count_pending_lg99_likely_fraud']],
         ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
@@ -55,8 +56,22 @@ describe Report::Fraud do
           'Login.gov reviewed the case and reversed the block.',
         subtitle: 'Users who requested redress during this period',
         colors: ['#ff580a', '#719f2a'],
-      }
+      },
     })
+  end
+
+  describe 'with lots of data' do
+    let(:test_data) do
+      JSON.parse(Rails.root.join(
+        'spec/fixtures/reports/4388/monthly/2025-04-01.json',
+      ).read)['data']
+    end
+
+    it 'sorts #chart items in the same order as in FRAUD_KEYS' do
+      expect(subject.chart[:data].map(&:first)).to eq(
+        described_class::FRAUD_KEYS.map { |key| I18n.t("reports.#{key}") },
+      )
+    end
   end
 
   describe 'when numbers are nil' do
@@ -73,14 +88,16 @@ describe Report::Fraud do
     it 'has a #chart with empty data' do
       expect(subject.chart).to eq({
         type: :bar_chart,
-        data: [],
         title: 'Fraudsters Blocks',
+        data: [],
         options: { subtitle: 'Users blocked per outcome type' },
       })
     end
 
     it 'has a #review_queue_chart with empty data' do
       expect(subject.review_queue_chart).to eq({
+        type: :bar_chart,
+        title: 'Redress – Identity Verification',
         data: [],
         options: {
           description: '"Adjudicated as legitimate" reflects cases where ' \
@@ -88,7 +105,6 @@ describe Report::Fraud do
           subtitle: 'Users who requested redress during this period',
           colors: ['#ff580a', '#719f2a'],
         },
-        title: 'Redress - Identity Verification', type: :bar_chart
       })
     end
   end

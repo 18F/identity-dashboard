@@ -42,7 +42,7 @@ module Report
       {
         type: :bar_chart,
         data: review_queue_data,
-        title: 'Redress - Identity Verification',
+        title: 'Redress – Identity Verification',
         options: chart_options.merge({
           subtitle: 'Users who requested redress during this period',
           description: '"Adjudicated as legitimate" reflects cases where ' \
@@ -58,7 +58,7 @@ module Report
     def fraud_data
       return [] unless data.values_at(*FRAUD_KEYS).any?
 
-      as_array_with_i18n_labels(data.keys.select { |key| FRAUD_KEYS.include? key })
+      as_array_with_i18n_labels(FRAUD_KEYS.select { |key| data.key?(key) })
     end
 
     def review_queue_data
