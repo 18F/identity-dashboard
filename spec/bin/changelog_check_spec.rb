@@ -74,8 +74,8 @@ RSpec.describe 'bin/changelog_check.rb' do
   describe '#main' do
     def run_main(args = [])
       main(args)
-    rescue SystemExit => e
-      e.status
+    rescue SystemExit => err
+      err.status
     end
 
     context 'when a commit has a valid changelog line' do
