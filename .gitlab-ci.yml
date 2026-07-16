@@ -194,7 +194,10 @@ check_changelog:
     GIT_DEPTH: 100
   script:
     - |
-      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "stages/prod" ] || [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "stages/int" ] || [ "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" == "stages/prod" ] || [ "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" == "stages/int" ]
+      then
+        echo "Skipping because this MR/PR targets a release branch"
+      elif [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
       then
         git fetch origin --quiet
         ./bin/changelog_check.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
