@@ -39,7 +39,6 @@ class IdentityConfig
       config.add(:rack_timeout_service_timeout_seconds, type: :integer)
       config.add(:redis_pool_size, type: :integer)
       config.add(:redis_url, type: :string)
-      config.add(:salesforce_api_enabled, type: :boolean)
       config.add(:saml_sp_issuer, type: :string)
       config.add(:saml_sp_private_key, type: :string)
       config.add(:saml_sp_private_key_password, type: :string)
@@ -50,6 +49,7 @@ class IdentityConfig
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:api_token_required_enabled, type: :boolean)
       config.add(:edit_button_uses_service_config_wizard, type: :boolean, allow_nil: true)
+      config.add(:salesforce_api_enabled, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
     # rubocop:enable Metrics/BlockLength
