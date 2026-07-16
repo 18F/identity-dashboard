@@ -27,6 +27,7 @@ production:
   api_token_required_enabled: true
   edit_button_uses_service_config_wizard: true
   prod_like_env: false
+  salesforce_api_enabled: false
 
   # Dummy Key Should not be used in PROD
   saml_sp_private_key: |
