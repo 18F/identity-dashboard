@@ -68,8 +68,17 @@ class ApplicationController < ActionController::Base # :nodoc:
 
   def set_requested_url
     return if current_user || session[:requested_url]
+    return if discard_logout_redirect_url?
 
     session[:requested_url] = request.original_url
+  end
+
+  def discard_logout_redirect_url?
+    return false if URI(request.original_url).query.nil?
+
+    # the logout redirect was setting the session[:requested_url]
+    # as http://localhost:3001/?state=LdQPMB...
+    CGI.parse(URI(request.original_url).query).key?('state')
   end
 
   def get_banner_messages
