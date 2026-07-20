@@ -489,6 +489,7 @@ describe 'users' do
 
         before do
           allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+          allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
           allow(Airtable).to receive(:new).and_return(airtable_double)
           allow(airtable_double).to receive(:has_token?).and_return(true)
           allow(airtable_double).to receive(:build_redirect_uri).and_return('some/path/')

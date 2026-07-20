@@ -7,9 +7,10 @@ RSpec.describe AirtableController, type: :controller do
     sign_in logingov_admin
   end
 
-  context 'in prod_like_env' do
+  context 'in prod_like_env with salesforce disabled' do
     before do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
     end
 
     describe 'GET #index' do
@@ -107,6 +108,23 @@ RSpec.describe AirtableController, type: :controller do
     end
   end
 
+  context 'in prod_like_env with salesforce_api enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+    end
+
+    describe 'GET #index' do
+      let(:airtable_api) { Airtable.new(logingov_admin.uuid) }
+
+      it 'is unauthorized' do
+        get :index
+
+        expect(response).to be_unauthorized
+      end
+    end
+  end
+
   context 'in non prod_like_env' do
     before do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
@@ -115,7 +133,7 @@ RSpec.describe AirtableController, type: :controller do
     describe 'GET #index' do
       let(:airtable_api) { Airtable.new(logingov_admin.uuid) }
 
-      it 'refreshes the token and generates the oauth url' do
+      it 'is unauthorized' do
         get :index
 
         expect(response).to be_unauthorized

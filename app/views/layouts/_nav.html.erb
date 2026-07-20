@@ -92,7 +92,7 @@
                     <%= link_to 'User permissions report', internal_reports_user_permissions_path(format: 'csv') %>
                   </li>
                   <% if current_user.logingov_admin? %>
-                    <% if IdentityConfig.store.prod_like_env %>
+                    <% if IdentityConfig.store.prod_like_env && !IdentityConfig.store.salesforce_api_enabled %>
                       <li class="usa-nav__submenu-item">
                         <%= link_to 'Connect with Airtable', airtable_path %>
                       </li>

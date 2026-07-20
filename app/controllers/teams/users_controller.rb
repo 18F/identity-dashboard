@@ -274,7 +274,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def verify_airtable_connection
-    return unless IdentityConfig.store.prod_like_env && current_user.logingov_admin?
+    return unless airtable_enabled?
 
     airtable_api = Airtable.new(current_user.uuid)
     if airtable_api.has_token?
@@ -286,5 +286,9 @@ class Teams::UsersController < AuthenticatedController
       base_url = "#{request.protocol}#{request.host_with_port}"
       @oauth_url = airtable_api.generate_oauth_url(base_url)
     end
+  end
+
+  def airtable_enabled?
+    IdentityConfig.store.prod_like_env && !IdentityConfig.store.salesforce_api_enabled && current_user.logingov_admin?
   end
 end

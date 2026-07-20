@@ -11,7 +11,7 @@
 <%= simple_form_for(@team_membership, url: team_user_path(@team_membership.team, @user), html: { autocomplete: 'off' }) do |form| %>
   <%= form.error_notification %>
   <fieldset class="usa-fieldset margin-y-3">
-    <% if IdentityConfig.store.prod_like_env && @remove_partner_admin %>
+    <% if airtable_enabled? && @remove_partner_admin %>
       <p>In order to give <strong><%=
         t('role_names.production.partner_admin')
       %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
