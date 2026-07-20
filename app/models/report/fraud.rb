@@ -67,7 +67,7 @@ module Report
     end
 
     def review_queue_data
-      return [] unless data.values_at(*FRAUD_QUEUE_KEYS).any?
+      return [] unless data.values_at(*FRAUD_QUEUE_KEYS).all?
 
       # This chart has only two categories, so we want to show a blank category as being zero
       # even if we have no data for it

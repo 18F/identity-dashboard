@@ -107,4 +107,28 @@ describe Report::Fraud do
       })
     end
   end
+
+  describe 'when passed review exists and pending fraud review is missing' do
+    let(:test_data) do
+      {
+        'count_pass_via_lg99' => rand(1..1000),
+      }
+    end
+
+    it 'returns an empty #review_queue_chart' do
+      expect(subject.review_queue_chart[:data]).to eq([])
+    end
+  end
+
+  describe 'when only passed review is missing and pending fraud review exists' do
+    let(:test_data) do
+      {
+        'count_pending_lg99_likely_fraud' => rand(1..1000),
+      }
+    end
+
+    it 'returns an empty #review_queue_chart' do
+      expect(subject.review_queue_chart[:data]).to eq([])
+    end
+  end
 end
