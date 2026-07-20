@@ -1,6 +1,8 @@
 class AirtablePolicy < BasePolicy # :nodoc: all
   def index?
-    IdentityConfig.store.prod_like_env && user_has_login_admin_role? && !IdentityConfig.store.salesforce_api_enabled
+    prod_like = IdentityConfig.store.prod_like_env
+    salesforce_disabled = !IdentityConfig.store.salesforce_api_enabled
+    user_has_login_admin_role? && prod_like && salesforce_disabled
   end
 
   alias oauth_redirect? index?
