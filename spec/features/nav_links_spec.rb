@@ -157,7 +157,7 @@ feature 'Nav links' do
 
     scenario 'should not see an Airtable link' do
       expect(page).to_not have_link('Connect with Airtable')
-     end
+    end
   end
 
   context 'on production environments' do
