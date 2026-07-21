@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, uuid: SecureRandom.uuid) }
   let(:trace_id) { 'some-trace-id-abcdef' }
 
   before do
@@ -50,7 +50,7 @@ RSpec.describe ApplicationController do
     end
 
     context 'when there is no current_user' do
-      let(:current_user) { nil }
+      let(:user) { nil }
 
       it 'logs a nil user_uuid' do
         controller.append_info_to_payload(payload)
@@ -83,6 +83,54 @@ RSpec.describe ApplicationController do
         controller.log_unperm_params_and_render_401 'exception'
 
         expect(logger_double).to have_received(:unpermitted_params_attempt).with('exception')
+      end
+    end
+  end
+
+  context '#set_requested_url' do
+    controller do
+      def index
+        render plain: 'Test'
+      end
+    end
+
+    context 'when there is a current user' do
+      it 'does not update the session' do
+        get :index
+        expect(controller.session[:requested_url]).to be nil
+      end
+    end
+
+    context 'when there is no user' do
+      let(:user) { nil }
+      let(:requested_url) { 'http://localhost:3001/service_providers/1' }
+
+      context 'when a session[:requested_url] is set' do
+        before { controller.session[:requested_url] = requested_url }
+        it 'does not update the session' do
+          get :index
+          expect(controller.session[:requested_url]).to eq requested_url
+        end
+      end
+
+      context 'when there is no requested_url set' do
+        it 'updates the session' do
+          get :index
+          expect(controller.session[:requested_url]).to_not be nil
+          expect(controller.session[:requested_url]).to eq request.original_url
+        end
+
+        context 'when the request.original_url is the logged out state' do
+          # the logout path returns a state param
+          before do
+            request.env['QUERY_STRING'] = 'state=whatever'
+          end
+
+          it 'does not update the session' do
+            get :index
+            expect(controller.session[:requested_url]).to be nil
+          end
+        end
       end
     end
   end
