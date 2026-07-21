@@ -63,7 +63,7 @@
     </div>
   </div>
   <% if @show_tabs %>
-    <% tab_component = TabComponent.new.add_tab(title: 'Usage', id: 'tab1') do %>
+    <% tab_component = TabComponent.new.add_tab(title: 'Usage', id: 'usage') do %>
       <% capture do %>
         <div class="grid-row grid-gap padding-x-1 tablet-lg:margin-2">
           <div class="tablet-lg:grid-col-6 mobile-lg:margin-top-2">
@@ -84,10 +84,13 @@
         </div>
       <% end %>
     <% end %>
-    <% tab_component.add_tab(title: 'Fraud Prevention', id: 'tab2') do %>
+    <% tab_component.add_tab(title: 'Fraud Prevention', id: 'fraud-prevention') do %>
       <% capture do %>
           <div class="padding-x-1 mobile-lg:margin-top-2">
             <%= render(ChartComponent.new(**@reports.fraud.chart)) %>
+          </div>
+          <div class="padding-x-1 padding-bottom-1 mobile-lg:margin-top-2">
+            <%= render(ChartComponent.new(**@reports.fraud.review_queue_chart)) %>
           </div>
       <% end %>
     <% end %>

@@ -30,6 +30,9 @@ feature 'Analytics page', :js do
       expect(page).to have_link('Export report as CSV')
       # TODO: Assert charts have rendered after we switch to Highcharts
       expect_page_to_have_no_accessibility_violations(page)
+
+      click_on('Fraud Prevention')
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 end

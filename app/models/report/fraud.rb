@@ -13,8 +13,9 @@ module Report
       lack_phone_ownership
       wrong_phone_type
       blocked_by_ipp_fraud
-      pending_lg99_likely_fraud
     ].map { |key| "count_#{key}" }.freeze
+
+    FRAUD_QUEUE_KEYS = ['count_pending_lg99_likely_fraud', 'count_pass_via_lg99'].freeze
 
     def total
       return unless data.values_at(*FRAUD_KEYS).any?
@@ -37,12 +38,40 @@ module Report
       }
     end
 
+    def review_queue_chart(chart_options = {})
+      # Only explain the "adjudicated" column if we have data
+      if review_queue_data.present?
+        chart_options = chart_options.merge(description:
+          '"Adjudicated as legitimate" reflects cases where ' \
+            'Login.gov reviewed the case and reversed the block.')
+      end
+      {
+        type: :bar_chart,
+        data: review_queue_data,
+        title: 'Redress – Identity Verification',
+        options: chart_options.merge({
+          subtitle: 'Users who requested redress during this period',
+          # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
+          colors: ['#ff580a', '#719f2a'],
+        }),
+      }
+    end
+
     private
 
     def fraud_data
       return [] unless data.values_at(*FRAUD_KEYS).any?
 
-      as_array_with_i18n_labels(data.keys.select { |key| FRAUD_KEYS.include? key })
+      # This chart has lots of categories, so we don't want to show categories that have no data
+      as_array_with_i18n_labels(FRAUD_KEYS.select { |key| data.key?(key) })
+    end
+
+    def review_queue_data
+      return [] unless data.values_at(*FRAUD_QUEUE_KEYS).all?
+
+      # This chart has only two categories, so we want to show a blank category as being zero
+      # even if we have no data for it
+      as_array_with_i18n_labels(FRAUD_QUEUE_KEYS)
     end
   end
 end

@@ -6,6 +6,9 @@ describe Report::Fraud do
       'count_ssn_dob_deceased' => rand(1..1000),
       'count_suspicious_phone' => rand(1..1000),
       'count_inauthentic_doc' => rand(1..1000),
+      # fraud review queue keys
+      'count_pending_lg99_likely_fraud' => rand(1..1000),
+      'count_pass_via_lg99' => rand(1..1000),
       # A valid key that is not a fraud key, so should get skipped over
       'count_preverified_users' => rand(1..1000),
     }
@@ -18,22 +21,57 @@ describe Report::Fraud do
 
   subject { described_class.new(mock_reports) }
 
-  it '#total sums all and only fraud data' do
-    expected_total = test_data.values.sum - test_data['count_preverified_users']
+  it '#total sums the fraud event data and nothing else' do
+    expected_total = test_data.values_at(
+      'count_ssn_dob_deceased',
+      'count_suspicious_phone',
+      'count_inauthentic_doc',
+    ).sum
     expect(subject.total).to be(expected_total)
   end
 
   it 'can return #chart options with correct data' do
     expect(subject.chart).to eq({
       type: :bar_chart,
+      title: 'Fraudsters Blocks',
       data: [
+        ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
         ['Rejected for Invalid SSN / DOB, or Deceased', test_data['count_ssn_dob_deceased']],
         ['Suspicious Phone', test_data['count_suspicious_phone']],
-        ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
       ],
-      title: 'Fraudsters Blocks',
       options: { subtitle: 'Users blocked per outcome type' },
     })
+  end
+
+  it 'can return an accurate #review_queue_chart' do
+    expect(subject.review_queue_chart).to eq({
+      type: :bar_chart,
+      title: 'Redress – Identity Verification',
+      data: [
+        ['Pending Fraud Review', test_data['count_pending_lg99_likely_fraud']],
+        ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
+      ],
+      options: {
+        subtitle: 'Users who requested redress during this period',
+        description: '"Adjudicated as legitimate" reflects cases where ' \
+          'Login.gov reviewed the case and reversed the block.',
+        colors: ['#ff580a', '#719f2a'],
+      },
+    })
+  end
+
+  describe 'with lots of data' do
+    let(:test_data) do
+      JSON.parse(Rails.root.join(
+        'spec/fixtures/reports/4388/monthly/2025-04-01.json',
+      ).read)['data']
+    end
+
+    it 'sorts #chart items in the same order as in FRAUD_KEYS' do
+      expect(subject.chart[:data].map(&:first)).to eq(
+        described_class::FRAUD_KEYS.map { |key| I18n.t("reports.#{key}") },
+      )
+    end
   end
 
   describe 'when numbers are nil' do
@@ -43,17 +81,54 @@ describe Report::Fraud do
       ).read)['data']
     end
 
-    it 'returns nil' do
+    it 'returns a nil #total' do
       expect(subject.total).to be_nil
     end
 
     it 'has a #chart with empty data' do
       expect(subject.chart).to eq({
         type: :bar_chart,
-        data: [],
         title: 'Fraudsters Blocks',
+        data: [],
         options: { subtitle: 'Users blocked per outcome type' },
       })
+    end
+
+    it 'has a #review_queue_chart with empty data' do
+      expect(subject.review_queue_chart).to eq({
+        type: :bar_chart,
+        title: 'Redress – Identity Verification',
+        data: [],
+        options: {
+          subtitle: 'Users who requested redress during this period',
+          # We skip the "adjudicated as legit" text when there's no "adjudicated" line in the chart
+          colors: ['#ff580a', '#719f2a'],
+        },
+      })
+    end
+  end
+
+  describe 'when passed review exists and pending fraud review is missing' do
+    let(:test_data) do
+      {
+        'count_pass_via_lg99' => rand(1..1000),
+      }
+    end
+
+    it 'returns an empty #review_queue_chart' do
+      expect(subject.review_queue_chart[:data]).to eq([])
+    end
+  end
+
+  describe 'when only passed review is missing and pending fraud review exists' do
+    let(:test_data) do
+      {
+        'count_pending_lg99_likely_fraud' => rand(1..1000),
+      }
+    end
+
+    it 'returns an empty #review_queue_chart' do
+      expect(subject.review_queue_chart[:data]).to eq([])
     end
   end
 end
