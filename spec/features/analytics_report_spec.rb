@@ -57,10 +57,14 @@ describe 'reporting feature basics' do
     end
 
     it 'can view appropriate team options' do
+      # Issuer for `null_data_sp` is in the issuers_service_provider_id.json
+      # Adding it here so we have a more thorough test.
+      null_data_sp
+
       visit analytics_path
       team_select = find('#analytic_team')
       team_opts = team_select.find_all('option')
-      # options are each team with a config, plus All Teams
+      # Each team with a config referenced in the issuers_service_provider_id.json, plus "All Teams"
       expect(team_opts.count).to eq(2 + 1)
       expect(team_select.text).to include(logingov_admin.teams.first.name)
     end
@@ -318,6 +322,18 @@ describe 'reporting feature basics' do
 
       expect(find_all('canvas').count).to eq(0)
       expect(page.text).to match(I18n.t('reports.errors.generic'))
+    end
+
+    it 'does not include teams that have no eligible data' do
+      create(:team_membership, :partner_admin, user: partner_admin, team: other_team)
+      inelegible_config = create(:service_provider, :ready_to_activate, team: other_team)
+      expect(other_team.service_providers.count).to be(1)
+
+      visit analytics_path
+
+      team_options = find_all('#analytic_team > option')
+      expect(team_options.map(&:text)).to include(partner_sp.team.name)
+      expect(team_options.map(&:text)).to_not include(inelegible_config.team.name)
     end
   end
 end
