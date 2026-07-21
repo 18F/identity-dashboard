@@ -85,12 +85,9 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def available_service_providers
-    return @available_service_providers if @available_service_providers
-
-    service_providers = policy_scope(ServiceProvider).where(
+    @available_service_providers ||= policy_scope(ServiceProvider).where(
       issuer: AnalyticsReportStorage.new.all_issuers,
-    )
-    @available_service_providers = service_providers.where(team: permitted_teams)
+    ).where(team: permitted_teams)
   end
 
   def available_report_dates
