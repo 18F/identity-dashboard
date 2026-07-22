@@ -68,9 +68,13 @@ class AnalyticsReportStorage
     S3.default_config[:bucket] && S3.default_config[:prefix]
   end
 
+  def fetch_id_map
+    backend.fetch 'issuers_service_provider_id.json'
+  end
+
   def issuer_to_id_map
     @issuer_to_id_map ||= Rails.cache.fetch('analytics_issuer_to_id_map', expires_in: 1.hour) do
-      mapping_data = JSON.parse(backend.fetch_id_map)
+      mapping_data = JSON.parse(fetch_id_map)
       if mapping_data.present?
         mapping_data.transform_values { |v| v['id'] }
       else

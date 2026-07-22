@@ -88,7 +88,7 @@ RSpec.describe AnalyticsReportStorage do
       end
 
       it 'returns an empty result for a  non-existent file' do
-        expect(described_class.fetch('fake', test_date)).to eq([])
+        expect(described_class.fetch('fake', test_date)).to eq({})
       end
     end
   end
@@ -205,16 +205,16 @@ RSpec.describe AnalyticsReportStorage do
       allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
       # Clear the cache to ensure the new value of `fetch_id_map` gets used
       Rails.cache.delete 'analytics_issuer_to_id_map'
-      allow(mock_backend).to receive(:fetch_id_map)
+      allow(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
         .and_return(%({"#{test_issuer}": {"id": 123}}))
 
       Rails.cache.clear
       described_class.new.all_issuers
       described_class.new.all_issuers
 
-      expect(mock_backend).to have_received(:fetch_id_map).once
+      expect(mock_backend).to have_received(:fetch).once
 
-      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      # Since we populated the cache with `fetch_id_map`, we now have to clear the cache
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
   end
@@ -224,14 +224,14 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:fetch_id_map)
+      expect(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
         .and_return(%({"#{test_issuer}": {"id": 123}}))
       # Clear the cache to ensure the new value of `fetch_id_map` gets used
       Rails.cache.delete 'analytics_issuer_to_id_map'
 
       expect(described_class.new.all_issuers).to eq([test_issuer])
 
-      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      # Since we populated the cache with `fetch_id_map`, we now have to clear the cache
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
@@ -239,7 +239,7 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:fetch_id_map).and_return('[]')
+      expect(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json').and_return('[]')
       expect(described_class.new.all_issuers).to eq([])
     end
   end

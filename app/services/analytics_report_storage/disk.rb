@@ -27,20 +27,16 @@ class AnalyticsReportStorage
       end
     end
 
-    def fetch_id_map
-      fetch 'issuers_service_provider_id.json'
-    end
-
     # @param key [String] the relative file path.
     # We use the relative file path here so that it looks just like
     # the arguments we also pass to S3. Example: '1234/monthly/2026-04-01.json'
 
-    # @return [String] JSON data — may be '[]' if no data found
+    # @return [String] JSON data — may be '{}' if no data found
     def fetch(key)
       File.read(Pathname.new(root_path).join(key))
     rescue SystemCallError => err
       Rails.logger.warn(err.message)
-      '[]'
+      '{}'
     end
 
     private
