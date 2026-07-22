@@ -40,16 +40,16 @@ class AnalyticsReportStorage
     issuer_to_id_map.keys
   end
 
-  # @param Array of Strings criteria to limit list results
-  # @returns Array<Object> AWS object metadata
+  # @param criteria [Array<String>] to limit list results
+  # @return [Array<Object>] AWS object metadata
   def list(criteria)
     backend.list(issuer_to_id_map.values_at(*criteria).compact)
   end
 
-  # @param Array<String> criteria to limit list results
-  # @returns Hash<String,Array<Object>> [issuer, Array of file metadata objects]
+  # @param criteria [Array<String>] to limit list results
+  # @return [Hash<String,Array<Object>>] (issuer, list of file metadata objects)
   def list_by_issuer(criteria)
-    # create a hash of issuer string => empty Array
+    # create a hash of issuer string => empty array
     issuer_to_file_map = criteria.index_with { |_c| [] }
     # list files and associate with issuer in the above map
     list(criteria).each do |file|
