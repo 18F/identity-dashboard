@@ -93,9 +93,11 @@
                   </li>
                   <% if current_user.logingov_admin? %>
                     <% if IdentityConfig.store.prod_like_env %>
-                      <li class="usa-nav__submenu-item">
-                        <%= link_to 'Connect with Airtable', airtable_path %>
-                      </li>
+                      <% if policy(:airtable).index? %>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'Connect with Airtable', airtable_path %>
+                        </li>
+                      <% end %>
                     <% else %>
                       <li class="usa-nav__submenu-item">
                         <%= link_to 'Configuration extraction', extracts_path %>

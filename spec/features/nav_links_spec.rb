@@ -149,6 +149,17 @@ feature 'Nav links' do
     end
   end
 
+  context 'on production environments with salesforce enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+    end
+
+    scenario 'should not see an Airtable link' do
+      expect(page).to_not have_link('Connect with Airtable')
+    end
+  end
+
   context 'on production environments' do
     before do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)

@@ -274,7 +274,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def verify_airtable_connection
-    return unless IdentityConfig.store.prod_like_env && current_user.logingov_admin?
+    return unless policy(:airtable).index?
 
     airtable_api = Airtable.new(current_user.uuid)
     if airtable_api.has_token?

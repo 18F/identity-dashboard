@@ -15,7 +15,7 @@
 <div class="border-top-1px border-base-lighter padding-top-2">
   <p class="margin-bottom-5">You can manage users and change access levels anytime.</p>
 
-  <% if IdentityConfig.store.prod_like_env && @remove_partner_admin %>
+  <% if policy(:airtable).index? && @remove_partner_admin %>
     <p class="margin-bottom-5">In order to give <strong><%=
       t('role_names.production.partner_admin')
     %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
