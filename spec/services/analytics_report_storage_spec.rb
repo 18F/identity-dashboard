@@ -162,8 +162,8 @@ RSpec.describe AnalyticsReportStorage do
             bucket: 'test-reports-bucket', prefix: 'int/portal/',
           ).and_return(double(
             contents: [
-              AnalyticsReportStorage::ReportFile.new(key: 'issuers_service_provider_id.json'),
-              AnalyticsReportStorage::ReportFile.new(key: expected_s3_key),
+              AnalyticsReportStorage::Disk::ReportFile.new(key: 'issuers_service_provider_id.json'),
+              AnalyticsReportStorage::Disk::ReportFile.new(key: expected_s3_key),
             ],
           ))
           allow(s3_client_with_stubs).to receive(:get_object).with(any_args) do |args|

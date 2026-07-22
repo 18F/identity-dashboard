@@ -3,6 +3,8 @@ class AnalyticsReportStorage
   class Disk
     attr_reader :service_config
 
+    ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
+
     def self.default_config
       {
         root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports'),
