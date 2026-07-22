@@ -43,7 +43,7 @@ describe 'reporting feature basics' do
       )
       sp_options = find_all('select#analytic_uuid > option')
       expect(sp_options.count).to be(1)
-      expect(sp_options[0].text).to eq('- No Applications-')
+      expect(sp_options[0].text).to eq('- All Applications-')
     end
   end
 
@@ -60,8 +60,8 @@ describe 'reporting feature basics' do
       visit analytics_path
       team_select = find('#analytic_team')
       team_opts = team_select.find_all('option')
-      # options are each team with a config, plus All Teams
-      expect(team_opts.count).to eq(2 + 1)
+      # options are each team plus All Teams
+      expect(team_opts.count).to eq(Team.count + 1)
       expect(team_select.text).to include(logingov_admin.teams.first.name)
     end
 
@@ -80,57 +80,34 @@ describe 'reporting feature basics' do
     end
 
     context 'Filter', :js do
-      let!(:second_team) { create(:team) }
-      let!(:second_sp) do
+      let(:second_team) { create(:team) }
+      let(:second_sp) do
         create(:service_provider,
-                :ready_to_activate,
                 issuer: issuer_with_a_little_test_data,
                 user: logingov_admin,
                 team: second_team)
       end
 
       before do
+        second_team and second_sp
         visit analytics_path
       end
 
       it 'shows the correct apps for a chosen team' do
         select second_team.name, from: 'Team'
 
-        all_hidden_apps = page.find_all('#analytic_uuid .display-none')
-
+        expect(page).to have_css('#analytic_uuid .display-none')
         expect(page).to have_content(test_sp.friendly_name)
         expect(page).to have_content(second_sp.friendly_name)
-
-        expect(all_hidden_apps.count).to eq(1)
-        expect(all_hidden_apps.map(&:text)).to include(test_sp.friendly_name)
-        expect(all_hidden_apps.map(&:text)).to_not include(second_sp.friendly_name)
       end
 
       it 'shows the correct apps when reselecting All teams' do
         select second_team.name, from: 'Team'
         select '- All Teams-', from: 'Team'
 
-        all_hidden_apps = page.find_all('#analytic_uuid .display-none')
-
+        expect(page).to_not have_css('#analytic_uuid .display_none')
         expect(page).to have_content(test_sp.friendly_name)
         expect(page).to have_content(second_sp.friendly_name)
-
-        expect(all_hidden_apps.count).to eq(0)
-      end
-
-      it 'shows the correct dates for a chosen application' do
-        select second_sp.friendly_name, from: 'Application'
-
-        all_hidden_dates = page.find_all('#analytic_date .display-none')
-
-        expect(page).to have_content('2025-04-01')
-        expect(page).to have_content('2025-08-01')
-        expect(page).to have_content('2025-12-01')
-
-        expect(all_hidden_dates.count).to eq(1)
-        expect(all_hidden_dates.map(&:text)).to_not include('2025-04-01')
-        expect(all_hidden_dates.map(&:text)).to_not include('2025-08-01')
-        expect(all_hidden_dates.map(&:text)).to include('2025-12-01')
       end
     end
 
@@ -252,10 +229,12 @@ describe 'reporting feature basics' do
       )
     end
 
-    it 'can display charts', :js do
+    before do
       login_as partner_admin
       visit analytics_path
+    end
 
+    it 'can display charts', :js do
       select partner_sp.friendly_name, from: 'Application'
       select '2025-12-01', from: 'Date of report'
       click_on 'View report'
@@ -271,38 +250,15 @@ describe 'reporting feature basics' do
       # This issuer has mostly null data, but a few zeroes
       let(:issuer) { '2025-12-10:Howard:test' }
 
-      before do
-        login_as partner_admin
-        visit analytics_path
-      end
-
       it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
         select '2025-08-01', from: 'Date of report'
         click_on 'View report'
-
         expect(find_all('canvas').count).to eq(1)
         expect(page.text).to match(/BLOCKED USERS\s*Data is currently not available/)
-        expect(page.text).to match(/requiring verification\s*Data is currently not available/)
+        expect(page.text).to match(/requiring verification\sData is currently not available/)
         expect(page).to_not have_button('Export report as CSV')
       end
-    end
-
-    it 'does not display charts when the user does not have permission', :js do
-      partner_readonly = create(:user)
-      create(:team_membership, :partner_readonly, user: partner_readonly,
-                                                  team: partner_admin.teams.first)
-      create(:team_membership, :partner_admin, user: partner_readonly, team: other_team)
-
-      login_as partner_readonly
-      visit analytics_path(
-        team: partner_sp.team.id,
-        uuid: partner_sp.uuid,
-        date: '2025-08-01',
-      )
-
-      expect(find_all('canvas').count).to eq(0)
-      expect(page.text).to match(I18n.t('reports.errors.generic'))
     end
   end
 end

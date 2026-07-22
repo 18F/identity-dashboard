@@ -1,21 +1,35 @@
-# The Analtyic represents the user's choices of which report to view
+# The Analtyic tool is used for compiling SP Report data
 class Analytic
   include ActiveModel::Model
 
-  attr_accessor :date, :config
+  attr_accessor :date, :config, :data
 
   def uuid
     config&.uuid
   end
 
   def valid?
-    config_valid? && date_valid?
+    if !config_valid? || !date_valid?
+      false
+    else
+      data_valid?
+    end
   end
 
   def config_valid?
     return true if uuid
 
     add_generic_error
+    false
+  end
+
+  def data_valid?
+    values = data.map(&:second)
+    existing_values = values.filter(&:present?)
+
+    return true if existing_values.present?
+
+    errors.add(:base, I18n.t('reports.errors.no_data'))
     false
   end
 

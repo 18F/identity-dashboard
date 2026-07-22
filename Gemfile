@@ -106,7 +106,7 @@ group :test do
   gem 'sinatra', '~> 4.2.0'
   gem 'timecop'
   gem 'webmock'
-  gem 'websocket-driver', '>= 0.8.2'
+  gem 'websocket-driver', '= 0.7.3'
 end
 
 group :production do

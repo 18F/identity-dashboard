@@ -6,7 +6,7 @@ class AnalyticPolicy < BasePolicy
     user.logingov_staff? || user.team_memberships.exists?(role_name: 'partner_admin')
   end
 
-  def fetch?
+  def create?
     index?
   end
 

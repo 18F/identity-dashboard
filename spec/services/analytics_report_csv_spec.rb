@@ -25,7 +25,7 @@ end
 def mock_report_identity(file_name)
   test_data = JSON.parse(File.read(file_name))
 
-  Reports.new(MockAnalytic.new(test_data))
+  Reports::Identity.new(MockAnalytic.new(test_data))
 end
 
 describe AnalyticsReportCsv do
@@ -35,10 +35,6 @@ describe AnalyticsReportCsv do
     )
   end
   let(:subject) { described_class.new(monthly_report) }
-
-  before do
-    Rails.cache.delete('analytics_issuer_to_id_map')
-  end
 
   describe '#report_data_csv' do
     let(:exported_csv) { subject.report_data_csv }
@@ -55,7 +51,7 @@ describe AnalyticsReportCsv do
     end
 
     it 'only outputs headers with blank data' do
-      blank_report = Reports.new(Analytic.new)
+      blank_report = Reports::Identity.new(Analytic.new)
       blank_subject = described_class.new(blank_report)
       csv = CSV.parse(blank_subject.report_data_csv)
       expect(csv.length).to be(1)

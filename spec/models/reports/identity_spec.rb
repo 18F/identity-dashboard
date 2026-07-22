@@ -1,10 +1,9 @@
 require 'rails_helper'
 
-describe Reports do
+describe Reports::Identity do
   before { Rails.cache.clear }
 
   let(:sp) { build(:service_provider) }
-  let(:logingov_admin) { create(:user, :logingov_admin) }
 
   context 'using local files for test data' do
     before do
@@ -19,25 +18,50 @@ describe Reports do
       )
       analytic.date = '2025-12-01'
       subject = described_class.new(analytic)
-      expect(subject.data['count_newly_proofed_users']).to be(17)
-      expect(subject.data['count_preverified_users']).to be(30)
+      expect(subject.grand_total).to be(1519)
+      expect(subject.idv_data).to eq(
+        [['Newly Proofed', 17], ['Previously Proofed', 30]],
+      )
     end
+  end
+
+  it 'skips invalid keys' do
+    analytic = Analytic.new
+    analytic.date = '2025-12-01'
+    analytic.config = sp
+    expected_count = rand(10..1000)
+    storage_mock = instance_double(AnalyticsReportStorage)
+    allow(AnalyticsReportStorage).to receive(:new)
+      .with(sp.issuer, analytic.date)
+      .and_return(storage_mock)
+    allow(storage_mock).to receive(:fetch).and_return(
+      { 'data' => {
+        'count_stayed_blocked' => expected_count,
+        'invalid_key' => rand(100..10_000),
+        'count_other_invalid_key' => rand(10..1000),
+      } },
+    )
+    subject = described_class.new(analytic)
+    expect(subject.data).to eq(
+      [[I18n.t('reports.count_stayed_blocked'), expected_count]],
+    )
+    expect(subject.fraud_data).to eq(
+      [[I18n.t('reports.count_stayed_blocked'), expected_count]],
+    )
   end
 
   describe '.available_dates' do
     it 'calls list once with all issuers' do
-      team = create(:team)
-      sp1 = create(:service_provider, team:, issuer: 'issuer_one')
-      sp2 = create(:service_provider, team:, issuer: 'issuer_two')
-      create(:team_membership, user: logingov_admin, team:, role_name: 'partner_admin')
+      sp1 = build(:service_provider, issuer: 'issuer_one')
+      sp2 = build(:service_provider, issuer: 'issuer_two')
 
-      allow(AnalyticsReportStorage).to receive(:list_by_issuer)
+      allow(AnalyticsReportStorage).to receive(:list)
         .with(%w[issuer_one issuer_two])
-        .and_return({})
+        .and_return([])
 
-      described_class.available_dates([sp1, sp2], logingov_admin)
+      described_class.available_dates([sp1, sp2])
 
-      expect(AnalyticsReportStorage).to have_received(:list_by_issuer).once
+      expect(AnalyticsReportStorage).to have_received(:list).once
     end
   end
 
@@ -55,19 +79,19 @@ describe Reports do
     it 'unwraps double-nested arrays' do
       allow(storage_mock).to receive(:fetch).and_return([[report_hash]])
       subject = described_class.new(analytic)
-      expect(subject.data).to eq('count_newly_created_accounts' => 42)
+      expect(subject.grand_total).to eq(42)
     end
 
     it 'unwraps single-nested arrays' do
       allow(storage_mock).to receive(:fetch).and_return([report_hash])
       subject = described_class.new(analytic)
-      expect(subject.data).to eq('count_newly_created_accounts' => 42)
+      expect(subject.grand_total).to eq(42)
     end
 
     it 'handles a flat hash' do
       allow(storage_mock).to receive(:fetch).and_return(report_hash)
       subject = described_class.new(analytic)
-      expect(subject.data).to eq('count_newly_created_accounts' => 42)
+      expect(subject.grand_total).to eq(42)
     end
 
     it 'handles nil gracefully' do
@@ -166,6 +190,40 @@ describe Reports do
         [[{ 'report_information' => { 'period_calendar_id' => 20251201 } }]],
       )
       expect(described_class.new(analytic).period_calendar_id).to eq(20251201)
+    end
+  end
+
+  context 'when numbers are nil' do
+    let(:issuer_with_null_stats) { 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:gsa:deleteme' }
+    let(:sp) { create(:service_provider, :ready_to_activate, issuer: issuer_with_null_stats) }
+    let(:analytic) do
+      Analytic.new.tap do |a|
+        # This should map to `spec/fixtures/reports/6236/monthly/2025-08-01.json` which
+        # has all fields present but with values set to `null`
+        a.date = '2025-08-01'
+        a.config = sp
+      end
+    end
+    let(:subject) { described_class.new(analytic) }
+
+    it 'returns nil for #grand_total' do
+      expect(subject.grand_total).to be_nil
+    end
+
+    it 'returns nil for #fraud_total' do
+      expect(subject.fraud_total).to be_nil
+    end
+
+    it 'returns nil for #successful_auths' do
+      expect(subject.successful_auths).to be_nil
+    end
+
+    it 'returns an empty array for idv_data' do
+      expect(subject.idv_data).to eq([])
+    end
+
+    it 'returns an empty array for usage_data' do
+      expect(subject.usage_data).to eq([])
     end
   end
 end
