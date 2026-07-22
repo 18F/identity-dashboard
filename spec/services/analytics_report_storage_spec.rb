@@ -26,7 +26,7 @@ RSpec.describe AnalyticsReportStorage do
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
-    describe '.list' do
+    describe '#list' do
       before do
         expect(AnalyticsReportStorage::Disk).to receive(:default_config).and_return(
           { root: storage_root },
@@ -73,7 +73,7 @@ RSpec.describe AnalyticsReportStorage do
       end
     end
 
-    describe '.fetch' do
+    describe '#fetch' do
       it 'returns parsed JSON content' do
         mock_data_location = File.join(file_fixture_path, '..', 'reports')
         allow(IdentityConfig.store).to receive(:local_reports_folder).and_return(
@@ -88,7 +88,7 @@ RSpec.describe AnalyticsReportStorage do
       end
 
       it 'returns an empty result for a  non-existent file' do
-        expect(described_class.fetch('fake', test_date)).to eq([])
+        expect(described_class.fetch('fake', test_date)).to eq({})
       end
     end
   end
@@ -121,7 +121,7 @@ RSpec.describe AnalyticsReportStorage do
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
-    describe '.list' do
+    describe '#list' do
       let(:s3_objects) do
         [
           double(key: 'report1.json', size: 1024, last_modified: Time.current),
@@ -150,7 +150,34 @@ RSpec.describe AnalyticsReportStorage do
       end
     end
 
-    describe '.fetch' do
+    describe '#list_by_issuer' do
+      let(:ars) { AnalyticsReportStorage.new }
+      let(:s3_objects) do
+        [
+          double(key: '6797/monthly/2025-08-01.json', size: 1024, last_modified: Time.current),
+          double(key: '3062/monthly/2025-08-01.json', size: 2048, last_modified: 1.day.ago),
+        ]
+      end
+      let(:issuer_list) { ['2025-12-10:Howard:test', 'urn:amazon:cognito:sp:us-east-1_AbCd01234'] }
+
+      before do
+        allow(ars).to receive(:list).with(issuer_list)
+          .and_return(s3_objects)
+      end
+
+      it 'returns a hash with arrays of S3 metadata objects' do
+        list_hash = ars.list_by_issuer(issuer_list)
+
+        expected_result = {}
+        [0, 1].each do |i|
+          expected_result[issuer_list[i]] = [s3_objects[i]]
+        end
+
+        expect(list_hash).to eq(expected_result)
+      end
+    end
+
+    describe '#fetch' do
       context 'via S3' do
         let(:report_data) { [{ 'a_json_key' => 'a_json_value' }] }
         let(:s3_body) { double(read: report_data.to_json) }
@@ -162,8 +189,8 @@ RSpec.describe AnalyticsReportStorage do
             bucket: 'test-reports-bucket', prefix: 'int/portal/',
           ).and_return(double(
             contents: [
-              AnalyticsReportStorage::ReportFile.new(key: 'issuers_service_provider_id.json'),
-              AnalyticsReportStorage::ReportFile.new(key: expected_s3_key),
+              AnalyticsReportStorage::Disk::ReportFile.new(key: 'issuers_service_provider_id.json'),
+              AnalyticsReportStorage::Disk::ReportFile.new(key: expected_s3_key),
             ],
           ))
           allow(s3_client_with_stubs).to receive(:get_object).with(any_args) do |args|
@@ -205,33 +232,33 @@ RSpec.describe AnalyticsReportStorage do
       allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
       # Clear the cache to ensure the new value of `fetch_id_map` gets used
       Rails.cache.delete 'analytics_issuer_to_id_map'
-      allow(mock_backend).to receive(:fetch_id_map)
+      allow(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
         .and_return(%({"#{test_issuer}": {"id": 123}}))
 
       Rails.cache.clear
       described_class.new.all_issuers
       described_class.new.all_issuers
 
-      expect(mock_backend).to have_received(:fetch_id_map).once
+      expect(mock_backend).to have_received(:fetch).once
 
-      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      # Since we populated the cache with `fetch_id_map`, we now have to clear the cache
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
   end
 
-  describe '.all_issuers' do
+  describe '#all_issuers' do
     it 'returns a list when mapping data is present' do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:fetch_id_map)
+      expect(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
         .and_return(%({"#{test_issuer}": {"id": 123}}))
       # Clear the cache to ensure the new value of `fetch_id_map` gets used
       Rails.cache.delete 'analytics_issuer_to_id_map'
 
       expect(described_class.new.all_issuers).to eq([test_issuer])
 
-      # Since we mocked `fetch_id_map`, we now have to clear the cache
+      # Since we populated the cache with `fetch_id_map`, we now have to clear the cache
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
@@ -239,7 +266,8 @@ RSpec.describe AnalyticsReportStorage do
       expect(AnalyticsReportStorage::S3).to receive(:default_config).and_return({})
       mock_backend = instance_double(AnalyticsReportStorage::Disk)
       expect(AnalyticsReportStorage::Disk).to receive(:new).and_return(mock_backend)
-      expect(mock_backend).to receive(:fetch_id_map).and_return('[]')
+      expect(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
+        .and_return('[]')
       expect(described_class.new.all_issuers).to eq([])
     end
   end

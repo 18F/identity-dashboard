@@ -79,19 +79,4 @@ RSpec.describe AnalyticsReportStorage::S3 do
       end
     end
   end
-
-  describe '#fetch_id_map' do
-    it 'calls S3 to get the expected file' do
-      expected_text = Rails.root.join(
-        'spec/fixtures/reports/issuers_service_provider_id.json',
-      ).read
-      expect(client_with_stubs).to receive(:get_object).with(
-        bucket: described_class.default_config[:bucket],
-        key: "#{described_class.default_config[:prefix]}/issuers_service_provider_id.json",
-      ).and_call_original
-      client_with_stubs.stub_responses(:get_object, body: expected_text)
-
-      expect(described_class.new.fetch_id_map).to eq(expected_text)
-    end
-  end
 end

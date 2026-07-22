@@ -40,17 +40,21 @@ class AnalyticsReportStorage
     issuer_to_id_map.keys
   end
 
+  # @param criteria [Array<String>] to limit list results
+  # @return [Array<Object>] AWS object metadata
   def list(criteria)
     backend.list(issuer_to_id_map.values_at(*criteria).compact)
   end
 
+  # @param criteria [Array<String>] to limit list results
+  # @return [Hash<String,Array<Object>>] (issuer, list of file metadata objects)
   def list_by_issuer(criteria)
-    # create a hash of issuer string => empty Array
+    # create a hash of issuer string => empty array
     issuer_to_file_map = criteria.index_with { |_c| [] }
     # list files and associate with issuer in the above map
     list(criteria).each do |file|
       file_map_key = issuer_to_file_map[
-        issuer_to_id_map.key(file.sp_identifier.to_i),
+        issuer_to_id_map.key(sp_identifier(file)),
       ]
       file_map_key&.push(file)
     end
@@ -68,14 +72,23 @@ class AnalyticsReportStorage
     S3.default_config[:bucket] && S3.default_config[:prefix]
   end
 
+  def fetch_id_map
+    backend.fetch 'issuers_service_provider_id.json'
+  end
+
   def issuer_to_id_map
     @issuer_to_id_map ||= Rails.cache.fetch('analytics_issuer_to_id_map', expires_in: 1.hour) do
-      mapping_data = JSON.parse(backend.fetch_id_map)
+      mapping_data = JSON.parse(fetch_id_map)
       if mapping_data.present?
         mapping_data.transform_values { |v| v['id'] }
       else
         {}
       end
     end
+  end
+
+  def sp_identifier(file)
+    match = /(\d*)\/monthly\/.*\.json/.match(file.key)
+    match && match[1].to_i
   end
 end
