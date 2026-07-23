@@ -3,8 +3,12 @@
 
 require_relative 'changelog_check'
 require 'io/console'
+require 'date'
+require 'yaml'
 
 Commit = Struct.new(:sha, :title, :commit_messages, keyword_init: true)
+
+RELEASE_NOTES_FILE = File.expand_path('../config/release_notes.yml', __dir__)
 
 def previous_tag
   tag = `git tag --sort=-creatordate`.lines[1]
@@ -109,6 +113,36 @@ def print_release_notes(entries)
   end
 end
 
+def build_release_entry(today, entries)
+  categories = CATEGORIES.filter_map do |category|
+    category_entries = entries.select { |entry| entry.category == category }
+    next if category_entries.empty?
+
+    { 'name' => category, 'items' => category_entries.map(&:change) }
+  end
+
+  { 'date' => today, 'categories' => categories }
+end
+
+def update_release_notes_yaml(entries)
+  data = YAML.load_file(RELEASE_NOTES_FILE)
+  data['releases'].unshift(build_release_entry(Date.today.strftime('%Y-%m-%d'), entries))
+  File.write(RELEASE_NOTES_FILE, data.to_yaml)
+end
+
+def update_dashboard_release_notes(entries)
+  public_entries = entries.reject { |entry| entry.category == 'Internal' }
+  return if public_entries.empty?
+
+  print "\nUpdate config/release_notes.yml with these release notes? (y/n): "
+  return unless $stdin.gets.to_s.strip.casecmp('y').zero?
+
+  update_release_notes_yaml(public_entries)
+
+  puts "\nUpdated #{RELEASE_NOTES_FILE}."
+  puts 'Review the changes and commit them when ready.'
+end
+
 def main
   tag = previous_tag
   commits = commits_since(tag)
@@ -120,6 +154,7 @@ def main
   selected_commits = prompt_selection(commits, tag)
   entries = build_entries(selected_commits)
   print_release_notes(entries)
+  update_dashboard_release_notes(entries)
 end
 
 main if __FILE__ == $0
