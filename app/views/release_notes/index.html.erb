@@ -1,0 +1,35 @@
+<% content_for(:title, 'Release Notes') %>
+<div class="<%= 'grid-container' unless user_signed_in? %>">
+  <div class="usa-prose usa-content">
+    <div class="margin-bottom-3 border-bottom-1px border-base-lighter">
+      <h1>Release Notes</h1>
+    </div>
+    <p>See what's new in the Login.gov Partner Portal.</p>
+
+    <div class="usa-accordion usa-accordion--bordered">
+      <% @releases.each_with_index do |release, index| %>
+        <% content_id = "release-notes-#{release['date']}" %>
+        <h2 class="usa-accordion__heading">
+          <button
+            type="button"
+            class="usa-accordion__button"
+            aria-expanded="<%= index.zero? %>"
+            aria-controls="<%= content_id %>"
+          >
+            <%= release['date'] %>
+          </button>
+        </h2>
+        <div id="<%= content_id %>" class="usa-accordion__content">
+          <% release['categories'].each do |category| %>
+            <h3 class="margin-bottom-1"><%= category['name'] %></h3>
+            <ul class="usa-list">
+              <% category['items'].each do |item| %>
+                <li><%= item %></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
