@@ -29,7 +29,7 @@ class AnalyticsReportStorage
   end
 
   def fetch
-    JSON.parse(backend.fetch(build_key(issuer_to_id_map[issuer], date)))
+    JSON.parse(backend.fetch("v2/#{build_key(issuer_to_id_map[issuer], date)}"))
   end
 
   def time_interval
