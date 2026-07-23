@@ -1,0 +1,19 @@
+releases:
+  - date: '2026-07-23'
+    categories:
+      - name: 'Bug Fixes'
+        items:
+          - 'Align Disk and S3 sources and replace non-existent method call'
+          - 'Fixes requested_url handling'
+      - name: 'Upcoming Features'
+        items:
+          - "Show 'no data' in the fraud queue chart when any data field is missing"
+          - 'Issue 546: Add feature flag for salesforce api'
+
+  - date: '2026-07-15'
+    categories:
+      - name: 'Upcoming Features'
+        items:
+          - 'Report MVP: Dropdown filtering reports - Service Provider Part 2b'
+          - 'Refactor analytic reports code'
+          - 'Partner Admins on one team can see reports for all their teams'
