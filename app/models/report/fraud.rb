@@ -18,13 +18,7 @@ module Report
     FRAUD_QUEUE_KEYS = ['count_pending_lg99_likely_fraud', 'count_pass_via_lg99'].freeze
 
     def total
-      return unless data.values_at(*FRAUD_KEYS).any?
-
-      data.reduce(0) do |sum, (key, value)|
-        next sum unless FRAUD_KEYS.include? key
-
-        sum + value.to_i
-      end
+      data['count_blocked_attempted_fraud'].presence
     end
 
     def chart(chart_options = {})
