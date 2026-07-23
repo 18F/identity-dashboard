@@ -1,0 +1,125 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative 'changelog_check'
+require 'io/console'
+
+Commit = Struct.new(:sha, :title, :commit_messages, keyword_init: true)
+
+def previous_tag
+  tag = `git tag --sort=-creatordate`.lines[1]
+  raise 'Fewer than two tags found' unless tag
+  tag.strip
+end
+
+def commits_since(tag)
+  format = '--pretty=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
+  log = `git log #{format} #{tag}..main`
+  raise 'git log failed' unless $?.success?
+
+  log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map do |chunk|
+    sha_line, rest = chunk.split("\ntitle:", 2)
+    title, body = rest.split("\nbody:", 2)
+    Commit.new(
+      sha: sha_line.delete_prefix('sha:').strip,
+      title: title.strip,
+      commit_messages: body.to_s.split(/[\r\n]/).filter { |line| line != '' },
+    )
+  end
+end
+
+def render_commit_list(commits, checked, cursor, first_render)
+  print "\e[#{commits.length}A" unless first_render
+
+  commits.each_with_index do |commit, index|
+    pointer = index == cursor ? '>' : ' '
+    checkbox = checked[index] ? '[x]' : '[ ]'
+    print "\e[2K\r#{pointer} #{checkbox} #{commit.sha[0, 8]} #{commit.title}\n"
+  end
+end
+
+def read_key
+  key = $stdin.getch
+  return key unless key == "\e"
+
+  key << $stdin.getch
+  key << $stdin.getch if key == "\e["
+  key
+end
+
+def prompt_selection(commits, tag)
+  puts "Commits since #{tag}:\n\n"
+  puts "Up/down to move, space to toggle, 'a' to toggle all, enter to confirm, q to quit.\n\n"
+
+  checked = Array.new(commits.length, false)
+  cursor = 0
+  render_commit_list(commits, checked, cursor, true)
+
+  loop do
+    case read_key
+    when "\e[A" then cursor = (cursor - 1) % commits.length
+    when "\e[B" then cursor = (cursor + 1) % commits.length
+    when ' ' then checked[cursor] = !checked[cursor]
+    when 'a'
+      target = !checked.all?
+      checked.map! { target }
+    when "\r", "\n" then break
+    when 'q', "\u0003" then abort("\nAborted.")
+    end
+    render_commit_list(commits, checked, cursor, false)
+  end
+
+  puts
+  commits.select.with_index { |_, index| checked[index] }
+end
+
+def build_entries(commits)
+  commits.filter_map do |commit|
+    change = build_changelog_from_commit(commit)
+    next unless change
+
+    category = closest_change_category(change)
+    next unless category
+
+    ChangelogEntry.new(
+      category: category,
+      subcategory: change[:subcategory].strip.sub(/./, &:upcase),
+      change: change[:change].strip.sub(/./, &:upcase),
+    )
+  end
+end
+
+def print_release_notes(entries)
+  if entries.empty?
+    puts "\nNo changelog entries found in the selected commits."
+    return
+  end
+
+  puts "\nRelease Notes\n#{'=' * 13}"
+  CATEGORIES.each do |category|
+    category_entries = entries.select { |entry| entry.category == category }
+    next if category_entries.empty?
+
+    puts "\n#{category}"
+    puts '-' * category.length
+    category_entries.group_by(&:subcategory).each do |subcategory, subcategory_entries|
+      puts "  #{subcategory}:"
+      subcategory_entries.each { |entry| puts "    - #{entry.change}" }
+    end
+  end
+end
+
+def main
+  tag = previous_tag
+  commits = commits_since(tag)
+  if commits.empty?
+    puts 'No commits found since the latest tag.'
+    return
+  end
+
+  selected_commits = prompt_selection(commits, tag)
+  entries = build_entries(selected_commits)
+  print_release_notes(entries)
+end
+
+main if __FILE__ == $0
