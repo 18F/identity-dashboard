@@ -10,8 +10,15 @@ Commit = Struct.new(:sha, :title, :commit_messages, keyword_init: true)
 
 RECENT_TAG_COUNT = 3
 
+def run_git(*args)
+  output, status = Open3.capture2('git', *args)
+  raise "git #{args.join(' ')} failed" unless status.success?
+
+  output
+end
+
 def recent_tags
-  `git tag --sort=-creatordate`.lines.first(RECENT_TAG_COUNT).map(&:strip)
+  run_git('tag', '--sort=-creatordate').lines.first(RECENT_TAG_COUNT).map(&:strip)
 end
 
 def commit_range(selected_tags, all_tags)
@@ -23,8 +30,7 @@ end
 
 def commits_since(range)
   format = '--pretty=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
-  log = `git log #{format} #{range}`
-  raise 'git log failed' unless $?.success?
+  log = run_git('log', format, range)
 
   log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map do |chunk|
     sha_line, rest = chunk.split("\ntitle:", 2)
@@ -166,11 +172,8 @@ module DevDocs
 
   module_function
 
-  def git(*args)
-    output, status = Open3.capture2('git', '-C', DIR, *args)
-    raise "git #{args.join(' ')} failed" unless status.success?
-
-    output
+  def git(...)
+    run_git('-C', DIR, ...)
   end
 
   def accordion_content(entries)
@@ -202,7 +205,8 @@ module DevDocs
   end
 
   def commit_release_notes(today)
-    branch = "#{`whoami`.strip}/release-notes/rc-#{today}"
+    username, = Open3.capture2('whoami')
+    branch = "#{username.strip}/release-notes/rc-#{today}"
     git('checkout', '-b', branch)
     git('add', '_pages/release-notes.md')
     git('commit', '-m', "Release Notes for RC #{today}")
@@ -233,7 +237,7 @@ def publish_release_notes(entries)
   DevDocs.push_branch(branch)
 end
 
-def main
+def run_release_notes
   tags = recent_tags
   abort('No tags found') if tags.empty?
 
@@ -251,4 +255,4 @@ def main
   publish_release_notes(entries)
 end
 
-main if __FILE__ == $0
+run_release_notes if __FILE__ == $0
