@@ -4,21 +4,26 @@
 require_relative 'changelog_check'
 require 'io/console'
 require 'date'
-require 'yaml'
+require 'open3'
 
 Commit = Struct.new(:sha, :title, :commit_messages, keyword_init: true)
 
-RELEASE_NOTES_FILE = File.expand_path('../config/release_notes.yml', __dir__)
+RECENT_TAG_COUNT = 3
 
-def previous_tag
-  tag = `git tag --sort=-creatordate`.lines[1]
-  raise 'Fewer than two tags found' unless tag
-  tag.strip
+def recent_tags
+  `git tag --sort=-creatordate`.lines.first(RECENT_TAG_COUNT).map(&:strip)
 end
 
-def commits_since(tag)
+def commit_range(selected_tags, all_tags)
+  return "#{selected_tags.first}..main" if selected_tags.length == 1
+
+  newer, older = selected_tags.sort_by { |tag| all_tags.index(tag) }
+  "#{older}^..#{newer}"
+end
+
+def commits_since(range)
   format = '--pretty=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
-  log = `git log #{format} #{tag}..main`
+  log = `git log #{format} #{range}`
   raise 'git log failed' unless $?.success?
 
   log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map do |chunk|
@@ -32,14 +37,22 @@ def commits_since(tag)
   end
 end
 
-def render_commit_list(commits, checked, cursor, first_render)
-  print "\e[#{commits.length}A" unless first_render
+def render_selectable_list(items, checked, cursor, first_render)
+  print "\e[#{items.length}A" unless first_render
 
-  commits.each_with_index do |commit, index|
+  items.each_with_index do |item, index|
     pointer = index == cursor ? '>' : ' '
     checkbox = checked[index] ? '[x]' : '[ ]'
-    print "\e[2K\r#{pointer} #{checkbox} #{commit.sha[0, 8]} #{commit.title}\n"
+    print "\e[2K\r#{pointer} #{checkbox} #{yield item}\n"
   end
+end
+
+def render_commit_list(commits, checked, cursor, first_render)
+  render_selectable_list(commits, checked, cursor, first_render) { |commit| "#{commit.sha[0, 8]} #{commit.title}" }
+end
+
+def render_tag_list(tags, checked, cursor, first_render)
+  render_selectable_list(tags, checked, cursor, first_render, &:itself)
 end
 
 def read_key
@@ -51,8 +64,40 @@ def read_key
   key
 end
 
-def prompt_selection(commits, tag)
-  puts "Commits since #{tag}:\n\n"
+def prompt_tag_selection(tags)
+  puts "Most recent tags:\n\n"
+  puts "Up/down to move, space to toggle (max 2), enter to confirm, q to quit.\n\n"
+  puts 'Select one tag to gather commits from it to now, or two tags for the commits between them.'
+  puts
+
+  checked = Array.new(tags.length, false)
+  cursor = 0
+  render_tag_list(tags, checked, cursor, true)
+
+  loop do
+    case read_key
+    when "\e[A" then cursor = (cursor - 1) % tags.length
+    when "\e[B" then cursor = (cursor + 1) % tags.length
+    when ' '
+      if checked[cursor]
+        checked[cursor] = false
+      elsif checked.count(true) < 2
+        checked[cursor] = true
+      end
+    when "\r", "\n" then break
+    when 'q', "" then abort("\nAborted.")
+    end
+    render_tag_list(tags, checked, cursor, false)
+  end
+
+  puts
+  selected = tags.select.with_index { |_, index| checked[index] }
+  abort('Select at least one tag.') if selected.empty?
+  selected
+end
+
+def prompt_selection(commits, range)
+  puts "Commits in #{range}:\n\n"
   puts "Up/down to move, space to toggle, 'a' to toggle all, enter to confirm, q to quit.\n\n"
 
   checked = Array.new(commits.length, false)
@@ -68,7 +113,7 @@ def prompt_selection(commits, tag)
       target = !checked.all?
       checked.map! { target }
     when "\r", "\n" then break
-    when 'q', "\u0003" then abort("\nAborted.")
+    when 'q', "" then abort("\nAborted.")
     end
     render_commit_list(commits, checked, cursor, false)
   end
@@ -113,48 +158,97 @@ def print_release_notes(entries)
   end
 end
 
-def build_release_entry(today, entries)
-  categories = CATEGORIES.filter_map do |category|
-    category_entries = entries.select { |entry| entry.category == category }
-    next if category_entries.empty?
+# Assumes identity-dev-docs is in the same directory as identity-dashboard.
+module DevDocs
+  DIR = File.expand_path('../../identity-dev-docs', __dir__)
+  RELEASE_NOTES_FILE = File.join(DIR, '_pages/release-notes.md')
+  ACCORDION_LIST_START = /(<dl class="usa-accordion usa-accordion--bordered">\n\n)/
 
-    { 'name' => category, 'items' => category_entries.map(&:change) }
+  module_function
+
+  def git(*args)
+    output, status = Open3.capture2('git', '-C', DIR, *args)
+    raise "git #{args.join(' ')} failed" unless status.success?
+
+    output
   end
 
-  { 'date' => today, 'categories' => categories }
+  def accordion_content(entries)
+    CATEGORIES.filter_map do |category|
+      category_entries = entries.select { |entry| entry.category == category }
+      next if category_entries.empty?
+
+      "### #{category}\n" + category_entries.map { |entry| "* #{entry.change}" }.join("\n")
+    end.join("\n\n")
+  end
+
+  def accordion_block(today, entries)
+    indent = ' ' * 26 # aligns with '{% include accordion.html '
+    <<~BLOCK
+      {% include accordion.html id="track-#{today}"
+      #{indent}accordion_id="user-key-#{today}"
+      #{indent}title="#{today}"
+      #{indent}content="
+      #{accordion_content(entries)}"
+      %}
+
+    BLOCK
+  end
+
+  def write_release_notes(today, entries)
+    page = File.read(RELEASE_NOTES_FILE)
+    replacement = "\\1#{accordion_block(today, entries)}"
+    File.write(RELEASE_NOTES_FILE, page.sub(ACCORDION_LIST_START, replacement))
+  end
+
+  def commit_release_notes(today)
+    branch = "#{`whoami`.strip}/release-notes/rc-#{today}"
+    git('checkout', '-b', branch)
+    git('add', '_pages/release-notes.md')
+    git('commit', '-m', "Release Notes for RC #{today}")
+    branch
+  end
+
+  def push_branch(branch)
+    puts git('show', '--color=always', 'HEAD')
+    print "\nPush #{branch} to origin? (y/n): "
+    return unless $stdin.gets.to_s.strip.casecmp('y').zero?
+
+    puts git('push', '-u', 'origin', branch)
+  end
 end
 
-def update_release_notes_yaml(entries)
-  data = YAML.load_file(RELEASE_NOTES_FILE)
-  data['releases'].unshift(build_release_entry(Date.today.strftime('%Y-%m-%d'), entries))
-  File.write(RELEASE_NOTES_FILE, data.to_yaml)
-end
-
-def update_dashboard_release_notes(entries)
-  public_entries = entries.reject { |entry| entry.category == 'Internal' }
+def publish_release_notes(entries)
+  excluded_categories = ['Internal', 'Upcoming Features']
+  public_entries = entries.reject { |entry| excluded_categories.include?(entry.category) }
   return if public_entries.empty?
 
-  print "\nUpdate config/release_notes.yml with these release notes? (y/n): "
+  print "\nUpdate #{DevDocs::RELEASE_NOTES_FILE} with these release notes? (y/n): "
   return unless $stdin.gets.to_s.strip.casecmp('y').zero?
 
-  update_release_notes_yaml(public_entries)
+  today = Date.today.strftime('%Y-%m-%d')
+  DevDocs.write_release_notes(today, public_entries)
 
-  puts "\nUpdated #{RELEASE_NOTES_FILE}."
-  puts 'Review the changes and commit them when ready.'
+  branch = DevDocs.commit_release_notes(today)
+  DevDocs.push_branch(branch)
 end
 
 def main
-  tag = previous_tag
-  commits = commits_since(tag)
+  tags = recent_tags
+  abort('No tags found') if tags.empty?
+
+  selected_tags = prompt_tag_selection(tags)
+  range = commit_range(selected_tags, tags)
+  commits = commits_since(range)
   if commits.empty?
-    puts 'No commits found since the latest tag.'
+    puts "No commits found for #{range}."
     return
   end
 
-  selected_commits = prompt_selection(commits, tag)
+  selected_commits = prompt_selection(commits, range)
   entries = build_entries(selected_commits)
   print_release_notes(entries)
-  update_dashboard_release_notes(entries)
+  publish_release_notes(entries)
 end
 
 main if __FILE__ == $0
