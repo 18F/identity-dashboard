@@ -217,7 +217,7 @@ describe 'reporting feature basics' do
         end
 
         it 'displays additional data' do
-          expect(page.text).to match(/successful authentications\s*1,282/i)
+          expect(page.text).to match(/successful authentications\s*672/i)
         end
       end
 

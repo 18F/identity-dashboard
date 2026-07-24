@@ -1,9 +1,9 @@
 {
-  "issuer": "2025-12-10:Howard:test",
+  "issuer": "https://[0000:0000:0000:0000::0000:0001]/cas",
   "provider_information": {
-    "service_provider_name": "2025-12 Howard's migration test",
-    "agency_name": "General Services Administration",
-    "service_provider_id": 6797
+    "service_provider_name": "10.0.23.131",
+    "agency_name": "Japan-United States Friendship Commission",
+    "service_provider_id": 6004
   },
   "report_information": {
     "period_start_date": "2025-08-01 00:00:00 UTC",
@@ -12,13 +12,13 @@
     "report_generated_at": "2026-07-22 19:10:36 UTC"
   },
   "data": {
-    "count_active_users": 0,
+    "count_active_users": 6,
     "count_blocked_attempted_fraud": null,
     "count_newly_created_accounts": 0,
-    "count_existing_accounts": null,
-    "count_identity_verified_users": null,
-    "count_newly_proofed_users": null,
-    "count_preverified_users": null,
+    "count_existing_accounts": 8,
+    "count_identity_verified_users": 8,
+    "count_newly_proofed_users": 0,
+    "count_preverified_users": 8,
     "count_authentications": null,
     "count_registered_blocked_fraud": null,
     "count_blocked_authentic_drivers_license": null,
@@ -60,4 +60,6 @@
     "count_phone_number_record_check_failure": null,
     "count_temporary_technical_issues": null
   }
+}
+
 }

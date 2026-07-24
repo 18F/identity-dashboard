@@ -1,9 +1,9 @@
 {
-  "issuer": "2025-12-10:Howard:test",
+  "issuer": "\turn:gov:gsa:openidconnect.profiles:yes-one-actually-starts-with-a-tab-somehow",
   "provider_information": {
-    "service_provider_name": "2025-12 Howard's migration test",
-    "agency_name": "General Services Administration",
-    "service_provider_id": 6797
+    "service_provider_name": "Anonymized application 255",
+    "agency_name": "Federal Labor Relations Authority",
+    "service_provider_id": 255
   },
   "report_information": {
     "period_start_date": "2025-08-01 00:00:00 UTC",
@@ -12,9 +12,9 @@
     "report_generated_at": "2026-07-22 19:10:36 UTC"
   },
   "data": {
-    "count_active_users": 0,
+    "count_active_users": null,
     "count_blocked_attempted_fraud": null,
-    "count_newly_created_accounts": 0,
+    "count_newly_created_accounts": null,
     "count_existing_accounts": null,
     "count_identity_verified_users": null,
     "count_newly_proofed_users": null,
@@ -61,3 +61,4 @@
     "count_temporary_technical_issues": null
   }
 }
+

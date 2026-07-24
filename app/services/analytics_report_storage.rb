@@ -5,6 +5,7 @@
 # a mapping file to look up the corresponding IDs.
 # It will then use the IDs to tell the backend (S3 or Disk) which filename to fetch.
 class AnalyticsReportStorage
+  REPORT_VERSION = 'v2'
   attr_reader :backend, :issuer, :date
 
   def self.list(criteria = [])
@@ -29,7 +30,7 @@ class AnalyticsReportStorage
   end
 
   def fetch
-    JSON.parse(backend.fetch("v2/#{build_key(issuer_to_id_map[issuer], date)}"))
+    JSON.parse(backend.fetch("#{REPORT_VERSION}/#{build_key(issuer_to_id_map[issuer], date)}"))
   end
 
   def time_interval

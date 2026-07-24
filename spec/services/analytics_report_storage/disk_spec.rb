@@ -12,7 +12,7 @@ RSpec.describe AnalyticsReportStorage::Disk do
     end
 
     it 'returns a valid path to valid files if the folder exists' do
-      valid_path = File.join(file_fixture_path, '..', 'reports')
+      valid_path = File.join(file_fixture_path, '..', 'reports/v2')
       expect(Dir.exist?(valid_path)).to be(true)
       subject = described_class.new({
         root: valid_path,
@@ -28,7 +28,7 @@ RSpec.describe AnalyticsReportStorage::Disk do
       let(:missing_upload1) { 'report1' }
       let(:missing_upload2) { 'report2' }
       let(:valid_upload) { 'report3' }
-      let(:valid_path) { File.join(file_fixture_path, '..', 'reports') }
+      let(:valid_path) { File.join(file_fixture_path, '..', 'reports/v2') }
       let(:empty_filename) { File.join(valid_path, "#{missing_upload1}.json") }
       let(:empty_dirname) { File.join(valid_path, "#{missing_upload2}.json") }
       let(:filename_with_data) { File.join(valid_path, "#{valid_upload}.json") }
