@@ -42,11 +42,7 @@ class ServiceProvidersController < AuthenticatedController
     authorize @service_provider
   end
 
-  def edit
-    return unless IdentityConfig.store.prod_like_env
-
-    redirect_to service_config_wizard_index_path(service_provider: params[:id])
-  end
+  def edit; end
 
   def create
     @service_provider = policy_scope(ServiceProvider).new
@@ -173,6 +169,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def edit_button_to_show
     return nil if moved_to_prod?
+
     return 'wizard' if IdentityConfig.store.edit_button_uses_service_config_wizard
 
     'long_form'
