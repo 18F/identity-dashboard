@@ -194,7 +194,15 @@ module DevDocs
     BLOCK
   end
 
+  def uncommitted_changes?
+    !git('status', '--porcelain').strip.empty?
+  end
+
   def sync_main
+    if uncommitted_changes?
+      abort("#{DIR} has uncommitted changes. Commit or stash them before continuing.")
+    end
+
     git('checkout', 'main')
     git('pull')
   end
@@ -231,7 +239,7 @@ def publish_release_notes(entries)
   print "\nUpdate #{DevDocs::RELEASE_NOTES_FILE} with these release notes? (y/n): "
   return unless $stdin.gets.to_s.strip.casecmp('y').zero?
 
-  today = Time.zone.today.strftime('%Y-%m-%d')
+  today = Date.today.strftime('%Y-%m-%d')
   DevDocs.sync_main
   DevDocs.write_release_notes(today, public_entries)
 
