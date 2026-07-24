@@ -190,15 +190,17 @@ RSpec.describe 'bin/release-notes' do
     end
 
     context 'when the user confirms the update' do
-      it 'publishes only the public-facing entries, then commits and pushes' do
+      it 'syncs main, publishes only the public-facing entries, then commits and pushes' do
         allow($stdin).to receive(:gets).and_return("y\n")
+        allow(DevDocs).to receive(:sync_main)
         allow(DevDocs).to receive(:write_release_notes)
         allow(DevDocs).to receive(:commit_release_notes).and_return('branch-name')
         allow(DevDocs).to receive(:push_branch)
 
         publish_release_notes(entries)
 
-        expect(DevDocs).to have_received(:write_release_notes) do |_today, public_entries|
+        expect(DevDocs).to have_received(:sync_main).ordered
+        expect(DevDocs).to have_received(:write_release_notes).ordered do |_today, public_entries|
           expect(public_entries.map(&:change)).to eq ['Fix one']
         end
         expect(DevDocs).to have_received(:push_branch).with('branch-name')
