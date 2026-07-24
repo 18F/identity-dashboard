@@ -173,8 +173,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def edit_button_to_show
     return nil if moved_to_prod?
-    return 'wizard' if IdentityConfig.store.edit_button_uses_service_config_wizard ||
-                       IdentityConfig.store.prod_like_env
+    return 'wizard' if IdentityConfig.store.edit_button_uses_service_config_wizard
 
     'long_form'
   end
