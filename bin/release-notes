@@ -43,22 +43,14 @@ def commits_since(range)
   end
 end
 
-def render_selectable_list(items, checked, cursor, first_render)
+def render_selectable_list(items, checked, cursor, first_render, &label)
   print "\e[#{items.length}A" unless first_render
 
   items.each_with_index do |item, index|
     pointer = index == cursor ? '>' : ' '
     checkbox = checked[index] ? '[x]' : '[ ]'
-    print "\e[2K\r#{pointer} #{checkbox} #{yield item}\n"
+    print "\e[2K\r#{pointer} #{checkbox} #{label.call(item)}\n"
   end
-end
-
-def render_commit_list(commits, checked, cursor, first_render)
-  render_selectable_list(commits, checked, cursor, first_render) { |commit| "#{commit.sha[0, 8]} #{commit.title}" }
-end
-
-def render_tag_list(tags, checked, cursor, first_render)
-  render_selectable_list(tags, checked, cursor, first_render, &:itself)
 end
 
 def read_key
@@ -70,62 +62,66 @@ def read_key
   key
 end
 
-def prompt_tag_selection(tags)
-  puts "Most recent tags:\n\n"
-  puts "Up/down to move, space to toggle (max 2), enter to confirm, q to quit.\n\n"
-  puts 'Select one tag to gather commits from it to now, or two tags for the commits between them.'
+# Renders an interactive checklist and returns the checked items. Arrow keys move the cursor and
+# enter confirms; any other key is passed to the block along with the checked/cursor state so the
+# caller can decide how it toggles selection (e.g. capping the number of checked items).
+def pick_items(items, header, label: :itself.to_proc)
+  puts header
   puts
 
-  checked = Array.new(tags.length, false)
+  checked = Array.new(items.length, false)
   cursor = 0
-  render_tag_list(tags, checked, cursor, true)
+  render = ->(first_render) { render_selectable_list(items, checked, cursor, first_render, &label) }
+  render.call(true)
 
   loop do
-    case read_key
-    when "\e[A" then cursor = (cursor - 1) % tags.length
-    when "\e[B" then cursor = (cursor + 1) % tags.length
-    when ' '
-      if checked[cursor]
-        checked[cursor] = false
-      elsif checked.count(true) < 2
-        checked[cursor] = true
-      end
+    key = read_key
+    case key
+    when "\e[A" then cursor = (cursor - 1) % items.length
+    when "\e[B" then cursor = (cursor + 1) % items.length
     when "\r", "\n" then break
-    when 'q', "" then abort("\nAborted.")
+    when 'q', "\u0003" then abort("\nAborted.")
+    else yield(key, checked, cursor)
     end
-    render_tag_list(tags, checked, cursor, false)
+    render.call(false)
   end
 
   puts
-  selected = tags.select.with_index { |_, index| checked[index] }
+  items.select.with_index { |_, index| checked[index] }
+end
+
+def prompt_tag_selection(tags)
+  header = "Most recent tags:\n\n" \
+    "Up/down to move, space to toggle (max 2), enter to confirm, q to quit.\n\n" \
+    'Select one tag to gather commits from it to now, or two tags for the commits between them.'
+
+  selected = pick_items(tags, header) do |key, checked, cursor|
+    next unless key == ' '
+
+    if checked[cursor]
+      checked[cursor] = false
+    elsif checked.count(true) < 2
+      checked[cursor] = true
+    end
+  end
+
   abort('Select at least one tag.') if selected.empty?
   selected
 end
 
 def prompt_selection(commits, range)
-  puts "Commits in #{range}:\n\n"
-  puts "Up/down to move, space to toggle, 'a' to toggle all, enter to confirm, q to quit.\n\n"
+  header = "Commits in #{range}:\n\n" \
+    "Up/down to move, space to toggle, 'a' to toggle all, enter to confirm, q to quit.\n\n"
+  label = ->(commit) { "#{commit.sha[0, 8]} #{commit.title}" }
 
-  checked = Array.new(commits.length, false)
-  cursor = 0
-  render_commit_list(commits, checked, cursor, true)
-
-  loop do
-    case read_key
-    when "\e[A" then cursor = (cursor - 1) % commits.length
-    when "\e[B" then cursor = (cursor + 1) % commits.length
+  pick_items(commits, header, label: label) do |key, checked, cursor|
+    case key
     when ' ' then checked[cursor] = !checked[cursor]
     when 'a'
       target = !checked.all?
       checked.map! { target }
-    when "\r", "\n" then break
-    when 'q', "" then abort("\nAborted.")
     end
-    render_commit_list(commits, checked, cursor, false)
   end
-
-  puts
-  commits.select.with_index { |_, index| checked[index] }
 end
 
 def build_entries(commits)
@@ -198,6 +194,11 @@ module DevDocs
     BLOCK
   end
 
+  def sync_main
+    git('checkout', 'main')
+    git('pull')
+  end
+
   def write_release_notes(today, entries)
     page = File.read(RELEASE_NOTES_FILE)
     replacement = "\\1#{accordion_block(today, entries)}"
@@ -230,7 +231,8 @@ def publish_release_notes(entries)
   print "\nUpdate #{DevDocs::RELEASE_NOTES_FILE} with these release notes? (y/n): "
   return unless $stdin.gets.to_s.strip.casecmp('y').zero?
 
-  today = Date.today.strftime('%Y-%m-%d')
+  today = Time.zone.today.strftime('%Y-%m-%d')
+  DevDocs.sync_main
   DevDocs.write_release_notes(today, public_entries)
 
   branch = DevDocs.commit_release_notes(today)
