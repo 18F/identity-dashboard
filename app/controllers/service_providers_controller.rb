@@ -12,7 +12,7 @@ class ServiceProvidersController < AuthenticatedController
                except: :publish # `#publish` is currently an API call only, so no DB scope required
   before_action :log_change, only: %i[destroy]
 
-  helper_method :service_provider, :help_text_presenter, :moved_to_prod?, :edit_button_to_show
+  helper_method :service_provider, :help_text_presenter
 
   rescue_from ActiveRecord::RecordNotFound do
     render file: 'public/404.html', status: :not_found, layout: false
@@ -161,18 +161,6 @@ class ServiceProvidersController < AuthenticatedController
     raise(ActiveRecord::RecordNotFound) if current_user.logingov_staff?
 
     raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
-  end
-
-  def moved_to_prod?
-    !IdentityConfig.store.prod_like_env && service_provider.status == 'moved_to_prod'
-  end
-
-  def edit_button_to_show
-    return nil if moved_to_prod?
-
-    return 'wizard' if IdentityConfig.store.edit_button_uses_service_config_wizard
-
-    'long_form'
   end
 
   def help_text_presenter
