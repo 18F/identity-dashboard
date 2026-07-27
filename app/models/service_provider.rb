@@ -210,6 +210,10 @@ class ServiceProvider < ApplicationRecord
     logo_file&.blob&.download
   end
 
+  def moved_to_prod?
+    status == 'moved_to_prod'
+  end
+
   private
 
   def set_status

@@ -579,4 +579,20 @@ describe ServiceProvider do
       expect(sp.oidc?)
     end
   end
+
+  describe '#moved_to_prod?' do
+    context 'service provider has a status of "moved_to_prod"' do
+      let(:service_provider) { build(:service_provider, :with_moved_to_prod) }
+
+      it 'returns true' do
+        expect(service_provider.moved_to_prod?).to be true
+      end
+    end
+
+    context 'service provider does not have a status of "moved_to_prod"' do
+      it 'returns false' do
+        expect(service_provider.moved_to_prod?).to be false
+      end
+    end
+  end
 end
