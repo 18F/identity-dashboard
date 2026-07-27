@@ -2,17 +2,17 @@ module Report
   # Partner reporting for fraud statistics
   class Fraud < Base
     FRAUD_KEYS = %w[
-      stayed_blocked
-      inauthentic_doc
+      registered_blocked_fraud
+      blocked_authentic_drivers_license
       facial_mismatch
       invalid_attributes_dl_dos
-      ssn_dob_deceased
+      blocked_identity_not_found
       fraud_alert
-      address_other_not_found
       suspicious_phone
       lack_phone_ownership
       wrong_phone_type
       blocked_by_ipp_fraud
+      device_behavior_fraud_signals
     ].map { |key| "count_#{key}" }.freeze
 
     FRAUD_QUEUE_KEYS = ['count_pending_lg99_likely_fraud', 'count_pass_via_lg99'].freeze

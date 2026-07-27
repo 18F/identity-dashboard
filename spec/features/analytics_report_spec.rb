@@ -232,13 +232,13 @@ describe 'reporting feature basics' do
 
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
-        expect(csv_response.length).to eq(39)
+        expect(csv_response.length).to eq(44)
         expect(csv_response[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
         expect(csv_response[1]).to eq(['Start Date', '', '2025-12-01', ''])
-        expect(csv_response[2]).to eq(['Newly Created Accounts', '', '1173', ''])
-        expect(csv_response[6]).to eq(['Inauthentic Doc.', '', '475', ''])
-        expect(csv_response[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
-        expect(csv_response[38]).to eq(['Personal Key', '', '0', ''])
+        expect(csv_response[2]).to eq(['Number of Users Who Accessed Your Services', '', '190', ''])
+        expect(csv_response[6]).to eq(['Identity Verified Users', '', '20', ''])
+        expect(csv_response[30]).to eq(['Voice', '', '12', ''])
+        expect(csv_response[38]).to eq(['Pass via Letter', '', '0', ''])
       end
 
       it 'allows switching between tabs', :js do

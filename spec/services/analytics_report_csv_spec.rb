@@ -45,13 +45,13 @@ describe AnalyticsReportCsv do
 
     it 'outputs expected data' do
       csv = CSV.parse(exported_csv)
-      expect(csv.length).to eq(39)
+      expect(csv.length).to eq(44)
       expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
       expect(csv[1]).to eq(['Start Date', '', '2025-12-01', ''])
-      expect(csv[2]).to eq(['Newly Created Accounts', '', '1173', ''])
-      expect(csv[6]).to eq(['Inauthentic Doc.', '', '475', ''])
-      expect(csv[30]).to eq(['Doc. Auth. Processing Issue', '', '2', ''])
-      expect(csv[38]).to eq(['Personal Key', '', '0', ''])
+      expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '190', ''])
+      expect(csv[6]).to eq(['Identity Verified Users', '', '20', ''])
+      expect(csv[30]).to eq(['Voice', '', '12', ''])
+      expect(csv[38]).to eq(['Pass via Letter', '', '0', ''])
     end
 
     it 'only outputs headers with blank data' do

@@ -3,9 +3,10 @@ require 'rails_helper'
 describe Report::Fraud do
   let(:test_data) do
     {
-      'count_ssn_dob_deceased' => rand(1..1000),
+      'count_blocked_attempted_fraud' => rand(1..1000),
+      'count_blocked_identity_not_found' => rand(1..1000),
       'count_suspicious_phone' => rand(1..1000),
-      'count_inauthentic_doc' => rand(1..1000),
+      'count_blocked_authentic_drivers_license' => rand(1..1000),
       # fraud review queue keys
       'count_pending_lg99_likely_fraud' => rand(1..1000),
       'count_pass_via_lg99' => rand(1..1000),
@@ -21,12 +22,8 @@ describe Report::Fraud do
 
   subject { described_class.new(mock_reports) }
 
-  it '#total sums the fraud event data and nothing else' do
-    expected_total = test_data.values_at(
-      'count_ssn_dob_deceased',
-      'count_suspicious_phone',
-      'count_inauthentic_doc',
-    ).sum
+  it '#total directly pulls from `count_blocked_attempted_fraud`' do
+    expected_total = test_data['count_blocked_attempted_fraud']
     expect(subject.total).to be(expected_total)
   end
 
@@ -110,7 +107,7 @@ describe Report::Fraud do
   describe 'with lots of data' do
     let(:test_data) do
       JSON.parse(Rails.root.join(
-        'spec/fixtures/reports/4388/monthly/2025-04-01.json',
+        'spec/fixtures/reports/v2/4388/monthly/2026-04-01.json',
       ).read)['data']
     end
 
@@ -124,7 +121,7 @@ describe Report::Fraud do
   describe 'when numbers are nil' do
     let(:test_data) do
       JSON.parse(Rails.root.join(
-        'spec/fixtures/reports/6236/monthly/2025-08-01.json',
+        'spec/fixtures/reports/v2/6236/monthly/2025-08-01.json',
       ).read)['data']
     end
 
