@@ -543,10 +543,7 @@ feature 'Service Providers CRUD' do
 
     context 'and Production gate is enabled' do
       before do
-        allow(IdentityConfig.store).to receive_messages(
-          prod_like_env: true,
-          edit_button_uses_service_config_wizard: false,
-        )
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
       it 'does not redirect to new service_config_wizard' do
@@ -595,10 +592,6 @@ feature 'Service Providers CRUD' do
         forgot_password: { en: HelpText::PRESETS['forgot_password'].sample },
       }
       service_provider.save!
-
-      allow(IdentityConfig.store).to receive(
-        :edit_button_uses_service_config_wizard,
-      ).and_return(false)
 
       visit edit_service_provider_path(service_provider)
 
@@ -872,28 +865,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(sp.friendly_name)
       expect(page).to have_content(team)
       expect(page).to_not have_content('All service providers')
-    end
-
-    describe 'the `edit_button_uses_service_config_wizard` flag' do
-      it 'uses the 1-page form when flagged out' do
-        allow(IdentityConfig.store).to receive_messages(
-          edit_button_uses_service_config_wizard: false,
-        )
-        visit service_provider_path(sp)
-        click_on 'Edit'
-        expect(page).to have_current_path(edit_service_provider_path(sp))
-      end
-
-      it 'uses the wizard when flagged in' do
-        allow(IdentityConfig.store).to receive_messages(
-          edit_button_uses_service_config_wizard: true,
-        )
-        visit service_provider_path(sp)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path(:settings))
-        friendly_name = find_by_id('wizard_step_friendly_name').value
-        expect(friendly_name).to eq(sp.friendly_name)
-      end
     end
 
     describe 'with a production configuration' do

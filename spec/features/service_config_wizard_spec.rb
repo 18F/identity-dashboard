@@ -312,10 +312,7 @@ feature 'Service Config Wizard' do
 
     describe 'and Production gate is enabled' do
       before do
-        allow(IdentityConfig.store).to receive_messages(
-          prod_like_env: true,
-          edit_button_uses_service_config_wizard: true,
-        )
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
       it 'allows Login.gov Admin to set initial IAL' do
@@ -572,10 +569,7 @@ feature 'Service Config Wizard' do
 
     describe 'and Production gate is enabled' do
       before do
-        allow(IdentityConfig.store).to receive_messages(
-          prod_like_env: true,
-          edit_button_uses_service_config_wizard: true,
-        )
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
       it 'does not allow new configs' do
