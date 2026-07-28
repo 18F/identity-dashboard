@@ -101,6 +101,38 @@ RSpec.describe 'bin/release-notes' do
     end
   end
 
+  describe '#print_release_notes' do
+    it 'prints a message when there are no entries' do
+      print_release_notes([])
+
+      expect($stdout.string).to include('No changelog entries found in the selected commits.')
+    end
+
+    it 'prints entries grouped by category, in CATEGORIES order, then by subcategory' do
+      entries = [
+        ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix one'),
+        ChangelogEntry.new(category: 'User-Facing Improvements', subcategory: 'Sign In',
+                           change: 'New thing'),
+        ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix two'),
+      ]
+
+      print_release_notes(entries)
+
+      output = $stdout.string
+      expect(output.index('User-Facing Improvements')).to be < output.index('Bug Fixes')
+      expect(output).to include("  Sign In:\n    - New thing")
+      expect(output).to include("  Reports:\n    - Fix one\n    - Fix two")
+    end
+
+    it 'omits categories with no entries' do
+      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix one')]
+
+      print_release_notes(entries)
+
+      expect($stdout.string).to_not include('User-Facing Improvements')
+    end
+  end
+
   describe '#prompt_tag_selection' do
     it 'returns the single selected tag' do
       allow(self).to receive(:read_key).and_return(' ', "\r")
