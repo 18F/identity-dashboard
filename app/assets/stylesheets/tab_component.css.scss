@@ -124,7 +124,6 @@
     @include u-bg('primary-lighter');
 
     @include at-media('tablet') {
-      @include u-padding-x(0);
       @include u-text('center');
       @include u-text(700);
       @include u-bg('transparent');
