@@ -192,6 +192,24 @@ RSpec.describe 'bin/release-notes' do
       end
     end
 
+    describe '.sync_main' do
+      it 'aborts when there are uncommitted changes' do
+        allow(DevDocs).to receive(:uncommitted_changes?).and_return(true)
+
+        expect { DevDocs.sync_main }.to raise_error(SystemExit)
+      end
+
+      it 'checks out and pulls main when there are no uncommitted changes' do
+        allow(DevDocs).to receive(:uncommitted_changes?).and_return(false)
+        allow(DevDocs).to receive(:git)
+
+        DevDocs.sync_main
+
+        expect(DevDocs).to have_received(:git).with('checkout', 'main').ordered
+        expect(DevDocs).to have_received(:git).with('pull').ordered
+      end
+    end
+
     describe '.accordion_block' do
       it 'builds a jekyll accordion include for the given date and entries' do
         entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'X', change: 'Fix one')]
