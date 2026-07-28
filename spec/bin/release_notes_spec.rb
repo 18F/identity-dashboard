@@ -210,6 +210,42 @@ RSpec.describe 'bin/release-notes' do
       end
     end
 
+    describe '.commit_release_notes' do
+      it 'checks out a branch named for the user and date, then commits the release notes file' do
+        allow(Open3).to receive(:capture2).with('whoami').and_return(["iamme\n", nil])
+        allow(DevDocs).to receive(:git)
+
+        branch = DevDocs.commit_release_notes('2026-07-24')
+
+        expect(branch).to eq 'iamme/release-notes/rc-2026-07-24'
+        expect(DevDocs).to have_received(:git).with('checkout', '-b', branch).ordered
+        expect(DevDocs).to have_received(:git).with('add', '_pages/release-notes.md').ordered
+        expect(DevDocs).to have_received(:git)
+          .with('commit', '-m', 'Release Notes for RC 2026-07-24').ordered
+      end
+    end
+
+    describe '.push_branch' do
+      it 'pushes the branch when the user confirms' do
+        allow(DevDocs).to receive(:git).with('show', '--color=always', 'HEAD').and_return('diff')
+        allow(DevDocs).to receive(:git).with('push', '-u', 'origin', 'my-branch').and_return('pushed')
+        allow($stdin).to receive(:gets).and_return("y\n")
+
+        DevDocs.push_branch('my-branch')
+
+        expect(DevDocs).to have_received(:git).with('push', '-u', 'origin', 'my-branch')
+      end
+
+      it 'does not push when the user declines' do
+        allow(DevDocs).to receive(:git).with('show', '--color=always', 'HEAD').and_return('diff')
+        allow($stdin).to receive(:gets).and_return("n\n")
+
+        DevDocs.push_branch('my-branch')
+
+        expect(DevDocs).to_not have_received(:git).with('push', anything, anything, anything)
+      end
+    end
+
     describe '.accordion_block' do
       it 'builds a jekyll accordion include for the given date and entries' do
         entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'X', change: 'Fix one')]
