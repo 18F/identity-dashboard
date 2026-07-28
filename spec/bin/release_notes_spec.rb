@@ -163,6 +163,45 @@ RSpec.describe 'bin/release-notes' do
     end
   end
 
+  describe '#run_release_notes' do
+    it 'aborts when no tags are found' do
+      allow(self).to receive(:recent_tags).and_return([])
+
+      expect { run_release_notes }.to raise_error(SystemExit)
+    end
+
+    it 'prints a message and returns early when no commits are found for the selected range' do
+      allow(self).to receive(:recent_tags).and_return(%w[v2 v1])
+      allow(self).to receive(:prompt_tag_selection).with(%w[v2 v1]).and_return(['v1'])
+      allow(self).to receive(:commit_range).with(['v1'], %w[v2 v1]).and_return('v1..main')
+      allow(self).to receive(:commits_since).with('v1..main').and_return([])
+      allow(self).to receive(:prompt_selection)
+
+      run_release_notes
+
+      expect($stdout.string).to include('No commits found for v1..main.')
+      expect(self).to_not have_received(:prompt_selection)
+    end
+
+    it 'walks tag selection through to publishing when commits are found' do
+      commits = [commit(sha: 'aaa', title: 'First')]
+      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'X', change: 'Fix one')]
+      allow(self).to receive(:recent_tags).and_return(%w[v2 v1])
+      allow(self).to receive(:prompt_tag_selection).with(%w[v2 v1]).and_return(['v1'])
+      allow(self).to receive(:commit_range).with(['v1'], %w[v2 v1]).and_return('v1..main')
+      allow(self).to receive(:commits_since).with('v1..main').and_return(commits)
+      allow(self).to receive(:prompt_selection).with(commits, 'v1..main').and_return(commits)
+      allow(self).to receive(:build_entries).with(commits).and_return(entries)
+      allow(self).to receive(:print_release_notes).with(entries)
+      allow(self).to receive(:publish_release_notes).with(entries)
+
+      run_release_notes
+
+      expect(self).to have_received(:print_release_notes).with(entries)
+      expect(self).to have_received(:publish_release_notes).with(entries)
+    end
+  end
+
   describe DevDocs do
     describe '.accordion_content' do
       it 'groups entries by category, in CATEGORIES order' do
