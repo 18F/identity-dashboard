@@ -178,6 +178,20 @@ RSpec.describe 'bin/release-notes' do
       end
     end
 
+    describe '.uncommitted_changes?' do
+      it 'returns true when git status reports changes' do
+        allow(DevDocs).to receive(:git).with('status', '--porcelain').and_return(" M file.md\n")
+
+        expect(DevDocs.uncommitted_changes?).to eq true
+      end
+
+      it 'returns false when git status is clean' do
+        allow(DevDocs).to receive(:git).with('status', '--porcelain').and_return('')
+
+        expect(DevDocs.uncommitted_changes?).to eq false
+      end
+    end
+
     describe '.accordion_block' do
       it 'builds a jekyll accordion include for the given date and entries' do
         entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'X', change: 'Fix one')]
