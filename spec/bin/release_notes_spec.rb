@@ -40,8 +40,9 @@ RSpec.describe 'bin/release-notes' do
 
   describe '#recent_tags' do
     it 'returns up to the three most recent tags, newest first' do
-      allow(self).to receive(:run_git).with('tag',
-'--sort=-creatordate').and_return("v4\nv3\nv2\nv1\n")
+      allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate').and_return(
+        ["v4\nv3\nv2\nv1\n", instance_double(Process::Status, success?: true)],
+      )
 
       expect(recent_tags).to eq %w[v4 v3 v2]
     end
@@ -67,7 +68,9 @@ RSpec.describe 'bin/release-notes' do
                       body: ['changelog: Bug Fixes, Reports, Fix it']),
         git_log_chunk(sha: 'bbb222', title: 'Add feature'),
       ].join("\n")
-      allow(self).to receive(:run_git).and_return(git_log)
+      allow(Open3).to receive(:capture2).with('git', 'log', anything, 'v1..main').and_return(
+        [git_log, instance_double(Process::Status, success?: true)],
+      )
 
       commits = commits_since('v1..main')
 
@@ -135,13 +138,15 @@ RSpec.describe 'bin/release-notes' do
 
   describe '#prompt_tag_selection' do
     it 'returns the single selected tag' do
-      allow(self).to receive(:read_key).and_return(' ', "\r")
+      allow($stdin).to receive(:getch).and_return(' ', "\r")
 
       expect(prompt_tag_selection(%w[v3 v2 v1])).to eq ['v3']
     end
 
     it 'caps selection at two tags, ignoring further toggles' do
-      allow(self).to receive(:read_key).and_return(' ', "\e[B", ' ', "\e[B", ' ', "\r")
+      allow($stdin).to receive(:getch).and_return(
+        ' ', +"\e", '[', 'B', ' ', +"\e", '[', 'B', ' ', "\r"
+      )
 
       expect(prompt_tag_selection(%w[v3 v2 v1])).to eq %w[v3 v2]
     end
@@ -151,54 +156,72 @@ RSpec.describe 'bin/release-notes' do
     let(:commits) { [commit(sha: 'aaa', title: 'First'), commit(sha: 'bbb', title: 'Second')] }
 
     it 'returns only the checked commits' do
-      allow(self).to receive(:read_key).and_return(' ', "\r")
+      allow($stdin).to receive(:getch).and_return(' ', "\r")
 
       expect(prompt_selection(commits, 'v1..main')).to eq [commits.first]
     end
 
     it "toggles every commit with 'a'" do
-      allow(self).to receive(:read_key).and_return('a', "\r")
+      allow($stdin).to receive(:getch).and_return('a', "\r")
 
       expect(prompt_selection(commits, 'v1..main')).to eq commits
     end
   end
 
   describe '#run_release_notes' do
+    let(:status) { instance_double(Process::Status, success?: true) }
+
     it 'aborts when no tags are found' do
-      allow(self).to receive(:recent_tags).and_return([])
+      allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate')
+        .and_return(['', status])
 
       expect { run_release_notes }.to raise_error(SystemExit)
     end
 
     it 'prints a message and returns early when no commits are found for the selected range' do
-      allow(self).to receive(:recent_tags).and_return(%w[v2 v1])
-      allow(self).to receive(:prompt_tag_selection).with(%w[v2 v1]).and_return(['v1'])
-      allow(self).to receive(:commit_range).with(['v1'], %w[v2 v1]).and_return('v1..main')
-      allow(self).to receive(:commits_since).with('v1..main').and_return([])
-      allow(self).to receive(:prompt_selection)
+      allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate')
+        .and_return(["v2\nv1\n", status])
+      allow(Open3).to receive(:capture2).with('git', 'log', anything, 'v1..main')
+        .and_return(['', status])
+      allow($stdin).to receive(:getch).and_return(+"\e", '[', 'B', ' ', "\r")
 
       run_release_notes
 
       expect($stdout.string).to include('No commits found for v1..main.')
-      expect(self).to_not have_received(:prompt_selection)
     end
 
     it 'walks tag selection through to publishing when commits are found' do
-      commits = [commit(sha: 'aaa', title: 'First')]
-      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'X', change: 'Fix one')]
-      allow(self).to receive(:recent_tags).and_return(%w[v2 v1])
-      allow(self).to receive(:prompt_tag_selection).with(%w[v2 v1]).and_return(['v1'])
-      allow(self).to receive(:commit_range).with(['v1'], %w[v2 v1]).and_return('v1..main')
-      allow(self).to receive(:commits_since).with('v1..main').and_return(commits)
-      allow(self).to receive(:prompt_selection).with(commits, 'v1..main').and_return(commits)
-      allow(self).to receive(:build_entries).with(commits).and_return(entries)
-      allow(self).to receive(:print_release_notes).with(entries)
-      allow(self).to receive(:publish_release_notes).with(entries)
+      git_log = git_log_chunk(
+        sha: 'aaa123', title: 'First', body: ['changelog: Bug Fixes, X, Fix one'],
+      )
+      allow(Open3).to receive(:capture2).and_return(['', status])
+      allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate')
+        .and_return(["v2\nv1\n", status])
+      allow(Open3).to receive(:capture2).with('git', 'log', anything, 'v1..main')
+        .and_return([git_log, status])
+      allow(Open3).to receive(:capture2).with('whoami').and_return(["iamme\n", status])
+      allow($stdin).to receive(:getch).and_return(
+        +"\e", '[', 'B', ' ', "\r", # select the v1 tag
+        ' ', "\r" # select the one commit found
+      )
+      allow($stdin).to receive(:gets).and_return("y\n")
 
-      run_release_notes
+      Tempfile.create(['release-notes', '.md']) do |file|
+        file.write(<<~MD)
+          <dl class="usa-accordion usa-accordion--bordered">
 
-      expect(self).to have_received(:print_release_notes).with(entries)
-      expect(self).to have_received(:publish_release_notes).with(entries)
+          </dl>
+        MD
+        file.flush
+        stub_const('DevDocs::RELEASE_NOTES_FILE', file.path)
+
+        run_release_notes
+
+        output = $stdout.string
+        expect(output).to include('Bug Fixes')
+        expect(output).to include('    - Fix one')
+        expect(File.read(file.path)).to include('* Fix one')
+      end
     end
   end
 

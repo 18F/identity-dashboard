@@ -28,28 +28,30 @@ def commit_range(selected_tags, all_tags)
   "#{older}^..#{newer}"
 end
 
+def parse_commit(chunk)
+  sha_line, rest = chunk.split("\ntitle:", 2)
+  title, body = rest.split("\nbody:", 2)
+  Commit.new(
+    sha: sha_line.delete_prefix('sha:').strip,
+    title: title.strip,
+    commit_messages: body.to_s.split(/[\r\n]/).filter { |line| line != '' },
+  )
+end
+
 def commits_since(range)
   format = '--pretty=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
   log = run_git('log', format, range)
 
-  log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map do |chunk|
-    sha_line, rest = chunk.split("\ntitle:", 2)
-    title, body = rest.split("\nbody:", 2)
-    Commit.new(
-      sha: sha_line.delete_prefix('sha:').strip,
-      title: title.strip,
-      commit_messages: body.to_s.split(/[\r\n]/).filter { |line| line != '' },
-    )
-  end
+  log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map { |chunk| parse_commit(chunk) }
 end
 
-def render_selectable_list(items, checked, cursor, first_render, &label)
+def render_selectable_list(items, checked, cursor, first_render)
   print "\e[#{items.length}A" unless first_render
 
   items.each_with_index do |item, index|
     pointer = index == cursor ? '>' : ' '
     checkbox = checked[index] ? '[x]' : '[ ]'
-    print "\e[2K\r#{pointer} #{checkbox} #{label.call(item)}\n"
+    print "\e[2K\r#{pointer} #{checkbox} #{yield(item)}\n"
   end
 end
 
@@ -65,13 +67,15 @@ end
 # Renders an interactive checklist and returns the checked items. Arrow keys move the cursor and
 # enter confirms; any other key is passed to the block along with the checked/cursor state so the
 # caller can decide how it toggles selection (e.g. capping the number of checked items).
-def pick_items(items, header, label: :itself.to_proc)
+def pick_items(items, header, format_item: :itself.to_proc)
   puts header
   puts
 
   checked = Array.new(items.length, false)
   cursor = 0
-  render = ->(first_render) { render_selectable_list(items, checked, cursor, first_render, &label) }
+  render = lambda { |first_render|
+    render_selectable_list(items, checked, cursor, first_render, &format_item)
+  }
   render.call(true)
 
   loop do
@@ -112,9 +116,9 @@ end
 def prompt_selection(commits, range)
   header = "Commits in #{range}:\n\n" \
     "Up/down to move, space to toggle, 'a' to toggle all, enter to confirm, q to quit.\n\n"
-  label = ->(commit) { "#{commit.sha[0, 8]} #{commit.title}" }
+  format_item = ->(commit) { "#{commit.sha[0, 8]} #{commit.title}" }
 
-  pick_items(commits, header, label: label) do |key, checked, cursor|
+  pick_items(commits, header, format_item: format_item) do |key, checked, cursor|
     case key
     when ' ' then checked[cursor] = !checked[cursor]
     when 'a'
@@ -140,6 +144,15 @@ def build_entries(commits)
   end
 end
 
+def print_category(category, entries)
+  puts "\n#{category}"
+  puts '-' * category.length
+  entries.group_by(&:subcategory).each do |subcategory, subcategory_entries|
+    puts "  #{subcategory}:"
+    subcategory_entries.each { |entry| puts "    - #{entry.change}" }
+  end
+end
+
 def print_release_notes(entries)
   if entries.empty?
     puts "\nNo changelog entries found in the selected commits."
@@ -151,12 +164,7 @@ def print_release_notes(entries)
     category_entries = entries.select { |entry| entry.category == category }
     next if category_entries.empty?
 
-    puts "\n#{category}"
-    puts '-' * category.length
-    category_entries.group_by(&:subcategory).each do |subcategory, subcategory_entries|
-      puts "  #{subcategory}:"
-      subcategory_entries.each { |entry| puts "    - #{entry.change}" }
-    end
+    print_category(category, category_entries)
   end
 end
 
@@ -168,8 +176,8 @@ module DevDocs
 
   module_function
 
-  def git(...)
-    run_git('-C', DIR, ...)
+  def git(*)
+    run_git('-C', DIR, *)
   end
 
   def accordion_content(entries)
@@ -224,11 +232,15 @@ module DevDocs
 
   def push_branch(branch)
     puts git('show', '--color=always', 'HEAD')
-    print "\nPush #{branch} to origin? (y/n): "
-    return unless $stdin.gets.to_s.strip.casecmp('y').zero?
+    return unless confirm?("\nPush #{branch} to origin?")
 
     puts git('push', '-u', 'origin', branch)
   end
+end
+
+def confirm?(message)
+  print "#{message} (y/n): "
+  $stdin.gets.to_s.strip.casecmp('y').zero?
 end
 
 def publish_release_notes(entries)
@@ -236,10 +248,9 @@ def publish_release_notes(entries)
   public_entries = entries.reject { |entry| excluded_categories.include?(entry.category) }
   return if public_entries.empty?
 
-  print "\nUpdate #{DevDocs::RELEASE_NOTES_FILE} with these release notes? (y/n): "
-  return unless $stdin.gets.to_s.strip.casecmp('y').zero?
+  return unless confirm?("\nUpdate #{DevDocs::RELEASE_NOTES_FILE} with these release notes?")
 
-  today = Date.today.strftime('%Y-%m-%d')
+  today = Date.today.strftime('%Y-%m-%d') # rubocop:disable Rails/Date -- standalone script, no Rails/ActiveSupport loaded
   DevDocs.sync_main
   DevDocs.write_release_notes(today, public_entries)
 
@@ -265,4 +276,4 @@ def run_release_notes
   publish_release_notes(entries)
 end
 
-run_release_notes if __FILE__ == $0
+run_release_notes if __FILE__ == $PROGRAM_NAME
