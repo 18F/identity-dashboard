@@ -31,8 +31,8 @@ module Report
       {
         type: :bar_chart,
         data: fraud_data,
-        title: 'Fraudsters Blocks',
         options: chart_options.merge({
+          title: 'Fraudsters Blocks',
           subtitle: 'Users blocked per outcome type',
         }),
       }
@@ -45,14 +45,23 @@ module Report
           '"Adjudicated as legitimate" reflects cases where ' \
             'Login.gov reviewed the case and reversed the block.')
       end
+
+      title = 'Redress – Identity Verification'
       {
         type: :bar_chart,
         data: review_queue_data,
-        title: 'Redress – Identity Verification',
         options: chart_options.merge({
+          title: title,
           subtitle: 'Users who requested redress during this period',
           # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
           colors: ['#ff580a', '#719f2a'],
+          library: {
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: "<h2>#{title}</h2>",
+              }
+            },
+          },
         }),
       }
     end

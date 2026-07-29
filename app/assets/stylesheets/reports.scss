@@ -1,23 +1,5 @@
 @use 'uswds-core' as *;
 
-.report-section__title {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid $theme-color-primary-light;
-
-  & > h2 {
-    margin-right: 2rem;
-  }
-
-  & > button {
-    max-width: max-content;
-  }
-}
-
-
 .data-summary {
   outline: 1px solid $theme-color-primary-light;
   border-radius: 4px;
@@ -42,6 +24,7 @@
   padding: 1rem 1rem;
   outline: 1px solid $theme-color-primary-light;
   border-radius: 4px;
+  --highcharts-background-color: #{color('white')};
 }
 
 

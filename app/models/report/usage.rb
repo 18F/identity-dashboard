@@ -19,14 +19,23 @@ module Report
     end
 
     def chart(chart_options = {})
+      title = 'All Active Users'
       {
         type: :column_chart,
         data: usage_data,
-        title: 'All Active Users',
         options: chart_options.merge({
+          title: title,
           subtitle: 'Unique users who accessed a service',
           description: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
+          colors: ['#18f'],
+          library: {
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: "<h2>#{title}</h2>",
+              }
+            },
+          },
         }),
       }
     end
