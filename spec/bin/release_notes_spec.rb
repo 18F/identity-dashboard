@@ -128,7 +128,8 @@ RSpec.describe 'bin/release-notes' do
     end
 
     it 'omits categories with no entries' do
-      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix one')]
+      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports',
+                                    change: 'Fix one')]
 
       print_release_notes(entries)
 
@@ -290,7 +291,8 @@ RSpec.describe 'bin/release-notes' do
     describe '.push_branch' do
       it 'pushes the branch when the user confirms' do
         allow(DevDocs).to receive(:git).with('show', '--color=always', 'HEAD').and_return('diff')
-        allow(DevDocs).to receive(:git).with('push', '-u', 'origin', 'my-branch').and_return('pushed')
+        allow(DevDocs).to receive(:git).with('push', '-u', 'origin',
+'my-branch').and_return('pushed')
         allow($stdin).to receive(:gets).and_return("y\n")
 
         DevDocs.push_branch('my-branch')
