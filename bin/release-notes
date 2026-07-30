@@ -39,7 +39,7 @@ def parse_commit(chunk)
 end
 
 def commits_since(range)
-  format = '--pretty=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
+  format = '--format=sha:%H%ntitle:%s%nbody:%b%nDELIMITER'
   log = run_git('log', format, range)
 
   log.strip.split('DELIMITER').map(&:strip).reject(&:empty?).map { |chunk| parse_commit(chunk) }
