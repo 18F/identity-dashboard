@@ -15,7 +15,7 @@ class ChartComponent < ViewComponent::Base
   # @option options [String] :description a description that will show up under the chart
   def initialize(type:, data:, options:)
     (@type, @data, @options) = [type, data, options]
-    @subtitle = options.delete(:subtitle)
+    # @subtitle = options.delete(:subtitle)
     @description = options.delete(:description)
   end
 

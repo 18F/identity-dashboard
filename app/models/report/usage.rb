@@ -23,9 +23,8 @@ module Report
       {
         type: :column_chart,
         data: usage_data,
-        options: chart_options.merge({
+        options: merge_options(chart_options, {
           title: title,
-          subtitle: 'Unique users who accessed a service',
           description: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
           colors: ['#18f'],
@@ -33,8 +32,16 @@ module Report
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: "<h2>#{title}</h2>",
-              }
+              },
             },
+            plotOptions: {
+              column:
+                {
+                  animation: false,
+                  color_by_point: true,
+                },
+            },
+            subtitle: { text: 'Unique users who accessed a service' },
           },
         }),
       }

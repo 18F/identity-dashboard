@@ -6,18 +6,24 @@ module Report
       {
         type: :column_chart,
         data: idv_data,
-        options: chart_options.merge({
+        options: merge_options(chart_options, {
           title: title,
-          subtitle: 'Unique users who accessed a service requiring verification',
           description: 'Newly proofed are net new users who verified during this window. ' \
             'Previously proofed are users who completed verification ahead of this window,',
-          colors: '#18f',
+          colors: ['#18f'],
           library: {
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: "<h2>#{title}</h2>",
-              }
+              },
             },
+            plotOptions: {
+              column: {
+                animation: false,
+                color_by_point: true,
+              },
+            },
+            subtitle: { text: 'Unique users who accessed a service requiring verification' },
           },
         }),
       }

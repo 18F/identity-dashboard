@@ -28,12 +28,26 @@ module Report
     end
 
     def chart(chart_options = {})
+      title = 'Fraudsters Blocked'
       {
         type: :bar_chart,
         data: fraud_data,
-        options: chart_options.merge({
-          title: 'Fraudsters Blocks',
-          subtitle: 'Users blocked per outcome type',
+        options: merge_options(chart_options, {
+          title: title,
+          library: {
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: "<h2>#{title}</h2>",
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                color_by_point: true,
+              },
+            },
+            subtitle: { text: 'Users blocked per outcome type' },
+          },
         }),
       }
     end
@@ -50,17 +64,23 @@ module Report
       {
         type: :bar_chart,
         data: review_queue_data,
-        options: chart_options.merge({
+        options: merge_options(chart_options, {
           title: title,
-          subtitle: 'Users who requested redress during this period',
           # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
           colors: ['#ff580a', '#719f2a'],
           library: {
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: "<h2>#{title}</h2>",
-              }
+              },
             },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            subtitle: { text: 'Users who requested redress during this period' },
           },
         }),
       }

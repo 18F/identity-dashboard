@@ -3,6 +3,10 @@ module Report
   class Base
     attr_reader :data
 
+    DEFAULT_OPTIONS = {
+      colors: ['#1188ff', '#ff0000'],
+    }.freeze
+
     def initialize(reports)
       @data = reports.data
     end
@@ -23,6 +27,10 @@ module Report
         label = I18n.t("reports.#{key}")
         results.push([label, data[key]])
       end
+    end
+
+    def merge_options(*chart_options)
+      DEFAULT_OPTIONS.merge(*chart_options)
     end
   end
 end
