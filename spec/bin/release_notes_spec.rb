@@ -38,134 +38,140 @@ RSpec.describe 'bin/release-notes' do
     end
   end
 
-  describe '#recent_tags' do
-    it 'returns up to the three most recent tags, newest first' do
-      allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate').and_return(
-        ["v4\nv3\nv2\nv1\n", instance_double(Process::Status, success?: true)],
-      )
+  describe CommitHistory do
+    describe '.recent_tags' do
+      it 'returns up to the three most recent tags, newest first' do
+        allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate').and_return(
+          ["v4\nv3\nv2\nv1\n", instance_double(Process::Status, success?: true)],
+        )
 
-      expect(recent_tags).to eq %w[v4 v3 v2]
+        expect(CommitHistory.recent_tags).to eq %w[v4 v3 v2]
+      end
+    end
+
+    describe '.commit_range' do
+      let(:tags) { %w[v3 v2 v1] }
+
+      it 'ranges from the tag to main when one tag is selected' do
+        expect(CommitHistory.commit_range(['v2'], tags)).to eq 'v2..main'
+      end
+
+      it 'ranges inclusively between two tags, regardless of selection order' do
+        expect(CommitHistory.commit_range(%w[v1 v3], tags)).to eq 'v1^..v3'
+        expect(CommitHistory.commit_range(%w[v3 v1], tags)).to eq 'v1^..v3'
+      end
+    end
+
+    describe '.commits_since' do
+      it 'parses commits out of the git log output' do
+        git_log = [
+          git_log_chunk(sha: 'aaa111', title: 'Fix bug',
+                        body: ['changelog: Bug Fixes, Reports, Fix it']),
+          git_log_chunk(sha: 'bbb222', title: 'Add feature'),
+        ].join("\n")
+        allow(Open3).to receive(:capture2).with('git', 'log', anything, 'v1..main').and_return(
+          [git_log, instance_double(Process::Status, success?: true)],
+        )
+
+        commits = CommitHistory.commits_since('v1..main')
+
+        expect(commits.length).to eq 2
+        expect(commits.first).to have_attributes(
+          sha: 'aaa111',
+          title: 'Fix bug',
+          commit_messages: ['changelog: Bug Fixes, Reports, Fix it'],
+        )
+        expect(commits.last).to have_attributes(sha: 'bbb222', title: 'Add feature',
+                                                commit_messages: [])
+      end
     end
   end
 
-  describe '#commit_range' do
-    let(:tags) { %w[v3 v2 v1] }
+  describe ChangelogFormatter do
+    describe '.build_entries' do
+      it 'builds a changelog entry from a commit with a valid changelog line' do
+        commits = [
+          commit(title: 'Add thing',
+                 commit_messages: ['changelog: bug fixes, reports, fix the thing']),
+          commit(title: 'No changelog line'),
+        ]
 
-    it 'ranges from the tag to main when one tag is selected' do
-      expect(commit_range(['v2'], tags)).to eq 'v2..main'
+        entries = ChangelogFormatter.build_entries(commits)
+
+        expect(entries.length).to eq 1
+        expect(entries.first).to have_attributes(
+          category: 'Bug Fixes',
+          subcategory: 'Reports',
+          change: 'Fix the thing',
+        )
+      end
     end
 
-    it 'ranges inclusively between two tags, regardless of selection order' do
-      expect(commit_range(%w[v1 v3], tags)).to eq 'v1^..v3'
-      expect(commit_range(%w[v3 v1], tags)).to eq 'v1^..v3'
-    end
-  end
+    describe '.print_release_notes' do
+      it 'prints a message when there are no entries' do
+        ChangelogFormatter.print_release_notes([])
 
-  describe '#commits_since' do
-    it 'parses commits out of the git log output' do
-      git_log = [
-        git_log_chunk(sha: 'aaa111', title: 'Fix bug',
-                      body: ['changelog: Bug Fixes, Reports, Fix it']),
-        git_log_chunk(sha: 'bbb222', title: 'Add feature'),
-      ].join("\n")
-      allow(Open3).to receive(:capture2).with('git', 'log', anything, 'v1..main').and_return(
-        [git_log, instance_double(Process::Status, success?: true)],
-      )
+        expect($stdout.string).to include('No changelog entries found in the selected commits.')
+      end
 
-      commits = commits_since('v1..main')
+      it 'prints entries grouped by category, in CATEGORIES order, then by subcategory' do
+        entries = [
+          ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix one'),
+          ChangelogEntry.new(category: 'User-Facing Improvements', subcategory: 'Sign In',
+                             change: 'New thing'),
+          ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix two'),
+        ]
 
-      expect(commits.length).to eq 2
-      expect(commits.first).to have_attributes(
-        sha: 'aaa111',
-        title: 'Fix bug',
-        commit_messages: ['changelog: Bug Fixes, Reports, Fix it'],
-      )
-      expect(commits.last).to have_attributes(sha: 'bbb222', title: 'Add feature',
-                                              commit_messages: [])
-    end
-  end
+        ChangelogFormatter.print_release_notes(entries)
 
-  describe '#build_entries' do
-    it 'builds a changelog entry from a commit with a valid changelog line' do
-      commits = [
-        commit(title: 'Add thing',
-               commit_messages: ['changelog: bug fixes, reports, fix the thing']),
-        commit(title: 'No changelog line'),
-      ]
+        output = $stdout.string
+        expect(output.index('User-Facing Improvements')).to be < output.index('Bug Fixes')
+        expect(output).to include("  Sign In:\n    - New thing")
+        expect(output).to include("  Reports:\n    - Fix one\n    - Fix two")
+      end
 
-      entries = build_entries(commits)
+      it 'omits categories with no entries' do
+        entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports',
+                                      change: 'Fix one')]
 
-      expect(entries.length).to eq 1
-      expect(entries.first).to have_attributes(
-        category: 'Bug Fixes',
-        subcategory: 'Reports',
-        change: 'Fix the thing',
-      )
+        ChangelogFormatter.print_release_notes(entries)
+
+        expect($stdout.string).to_not include('User-Facing Improvements')
+      end
     end
   end
 
-  describe '#print_release_notes' do
-    it 'prints a message when there are no entries' do
-      print_release_notes([])
+  describe Picker do
+    describe '.prompt_tag_selection' do
+      it 'returns the single selected tag' do
+        allow($stdin).to receive(:getch).and_return(' ', "\r")
 
-      expect($stdout.string).to include('No changelog entries found in the selected commits.')
+        expect(Picker.prompt_tag_selection(%w[v3 v2 v1])).to eq ['v3']
+      end
+
+      it 'caps selection at two tags, ignoring further toggles' do
+        allow($stdin).to receive(:getch).and_return(
+          ' ', +"\e", '[', 'B', ' ', +"\e", '[', 'B', ' ', "\r"
+        )
+
+        expect(Picker.prompt_tag_selection(%w[v3 v2 v1])).to eq %w[v3 v2]
+      end
     end
 
-    it 'prints entries grouped by category, in CATEGORIES order, then by subcategory' do
-      entries = [
-        ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix one'),
-        ChangelogEntry.new(category: 'User-Facing Improvements', subcategory: 'Sign In',
-                           change: 'New thing'),
-        ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports', change: 'Fix two'),
-      ]
+    describe '.prompt_selection' do
+      let(:commits) { [commit(sha: 'aaa', title: 'First'), commit(sha: 'bbb', title: 'Second')] }
 
-      print_release_notes(entries)
+      it 'returns only the checked commits' do
+        allow($stdin).to receive(:getch).and_return(' ', "\r")
 
-      output = $stdout.string
-      expect(output.index('User-Facing Improvements')).to be < output.index('Bug Fixes')
-      expect(output).to include("  Sign In:\n    - New thing")
-      expect(output).to include("  Reports:\n    - Fix one\n    - Fix two")
-    end
+        expect(Picker.prompt_selection(commits, 'v1..main')).to eq [commits.first]
+      end
 
-    it 'omits categories with no entries' do
-      entries = [ChangelogEntry.new(category: 'Bug Fixes', subcategory: 'Reports',
-                                    change: 'Fix one')]
+      it "toggles every commit with 'a'" do
+        allow($stdin).to receive(:getch).and_return('a', "\r")
 
-      print_release_notes(entries)
-
-      expect($stdout.string).to_not include('User-Facing Improvements')
-    end
-  end
-
-  describe '#prompt_tag_selection' do
-    it 'returns the single selected tag' do
-      allow($stdin).to receive(:getch).and_return(' ', "\r")
-
-      expect(prompt_tag_selection(%w[v3 v2 v1])).to eq ['v3']
-    end
-
-    it 'caps selection at two tags, ignoring further toggles' do
-      allow($stdin).to receive(:getch).and_return(
-        ' ', +"\e", '[', 'B', ' ', +"\e", '[', 'B', ' ', "\r"
-      )
-
-      expect(prompt_tag_selection(%w[v3 v2 v1])).to eq %w[v3 v2]
-    end
-  end
-
-  describe '#prompt_selection' do
-    let(:commits) { [commit(sha: 'aaa', title: 'First'), commit(sha: 'bbb', title: 'Second')] }
-
-    it 'returns only the checked commits' do
-      allow($stdin).to receive(:getch).and_return(' ', "\r")
-
-      expect(prompt_selection(commits, 'v1..main')).to eq [commits.first]
-    end
-
-    it "toggles every commit with 'a'" do
-      allow($stdin).to receive(:getch).and_return('a', "\r")
-
-      expect(prompt_selection(commits, 'v1..main')).to eq commits
+        expect(Picker.prompt_selection(commits, 'v1..main')).to eq commits
+      end
     end
   end
 
