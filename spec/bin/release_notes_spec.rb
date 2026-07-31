@@ -12,6 +12,10 @@ RSpec.describe 'bin/release-notes' do
     $stdout = original_stdout
   end
 
+  before do
+    allow(Dir).to receive(:exist?).with(DevDocs::DIR).and_return(true)
+  end
+
   def commit(sha: 'abc12345', title: 'A commit', commit_messages: [])
     Commit.new(sha: sha, title: title, commit_messages: commit_messages)
   end
