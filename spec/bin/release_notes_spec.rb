@@ -178,6 +178,24 @@ RSpec.describe 'bin/release-notes' do
   describe '#run_release_notes' do
     let(:status) { instance_double(Process::Status, success?: true) }
 
+    before do
+      allow(Open3).to receive(:capture2).with('git', '-C', DevDocs::DIR, 'status', '--porcelain')
+        .and_return(['', status])
+    end
+
+    it 'aborts when the dev docs repo is not present' do
+      allow(Dir).to receive(:exist?).with(DevDocs::DIR).and_return(false)
+
+      expect { run_release_notes }.to raise_error(SystemExit)
+    end
+
+    it 'aborts when the dev docs repo has uncommitted changes' do
+      allow(Open3).to receive(:capture2).with('git', '-C', DevDocs::DIR, 'status', '--porcelain')
+        .and_return([' M file.md', status])
+
+      expect { run_release_notes }.to raise_error(SystemExit)
+    end
+
     it 'aborts when no tags are found' do
       allow(Open3).to receive(:capture2).with('git', 'tag', '--sort=-creatordate')
         .and_return(['', status])
@@ -258,6 +276,44 @@ RSpec.describe 'bin/release-notes' do
         allow(DevDocs).to receive(:git).with('status', '--porcelain').and_return('')
 
         expect(DevDocs.uncommitted_changes?).to eq false
+      end
+    end
+
+    describe '.ensure_present!' do
+      it 'aborts when the dev docs directory is not found' do
+        allow(Dir).to receive(:exist?).with(DevDocs::DIR).and_return(false)
+
+        expect { DevDocs.ensure_present! }.to raise_error(SystemExit)
+      end
+
+      it 'does nothing when the dev docs directory is found' do
+        allow(Dir).to receive(:exist?).with(DevDocs::DIR).and_return(true)
+
+        expect { DevDocs.ensure_present! }.to_not raise_error
+      end
+    end
+
+    describe '.ensure_clean!' do
+      it 'aborts when there are uncommitted changes' do
+        allow(DevDocs).to receive(:uncommitted_changes?).and_return(true)
+
+        expect { DevDocs.ensure_clean! }.to raise_error(SystemExit)
+      end
+
+      it 'does nothing when there are no uncommitted changes' do
+        allow(DevDocs).to receive(:uncommitted_changes?).and_return(false)
+
+        expect { DevDocs.ensure_clean! }.to_not raise_error
+      end
+    end
+
+    describe '.ensure_ready!' do
+      it 'aborts without checking for uncommitted changes when not present' do
+        allow(Dir).to receive(:exist?).with(DevDocs::DIR).and_return(false)
+        allow(DevDocs).to receive(:uncommitted_changes?)
+
+        expect { DevDocs.ensure_ready! }.to raise_error(SystemExit)
+        expect(DevDocs).to_not have_received(:uncommitted_changes?)
       end
     end
 

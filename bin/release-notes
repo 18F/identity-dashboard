@@ -226,11 +226,26 @@ module DevDocs
     !git('status', '--porcelain').strip.empty?
   end
 
-  def sync_main
-    if uncommitted_changes?
-      abort("#{DIR} has uncommitted changes. Commit or stash them before continuing.")
-    end
+  def ensure_present!
+    return if Dir.exist?(DIR)
 
+    abort("#{DIR} not found. Expected identity-dev-docs to be a sibling " \
+          'directory of identity-dashboard.')
+  end
+
+  def ensure_clean!
+    return unless uncommitted_changes?
+
+    abort("#{DIR} has uncommitted changes. Commit or stash them before continuing.")
+  end
+
+  def ensure_ready!
+    ensure_present!
+    ensure_clean!
+  end
+
+  def sync_main
+    ensure_ready!
     git('checkout', 'main')
     git('pull')
   end
@@ -274,6 +289,8 @@ def publish_release_notes(entries)
 end
 
 def run_release_notes
+  DevDocs.ensure_ready!
+
   tags = CommitHistory.recent_tags
   abort('No tags found') if tags.empty?
 
