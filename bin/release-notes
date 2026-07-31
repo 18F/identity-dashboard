@@ -8,8 +8,6 @@ require 'open3'
 
 Commit = Struct.new(:sha, :title, :commit_messages, keyword_init: true)
 
-RECENT_TAG_COUNT = 3
-
 def run_git(*args)
   output, status = Open3.capture2('git', *args)
   raise "git #{args.join(' ')} failed" unless status.success?
@@ -24,6 +22,8 @@ end
 
 # Fetches and parses git tags and commits into Commit structs.
 module CommitHistory
+  RECENT_TAG_COUNT = 3
+
   module_function
 
   def recent_tags
