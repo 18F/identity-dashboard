@@ -42,7 +42,11 @@ describe Report::Fraud do
         colors: ['#1188ff', '#ff0000'],
         title: 'Fraudsters Blocked',
         library: {
-          subtitle: { text: 'Users blocked per outcome type' },
+          title: { align: 'left' },
+          subtitle: {
+            align: 'left',
+            text: 'Users blocked per outcome type',
+          },
           accessibility: {
             screenReaderSection: {
               beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
@@ -59,7 +63,7 @@ describe Report::Fraud do
             },
           },
           yAxis: { gridLineColor: '#888' },
-        }
+        },
       },
     })
   end
@@ -77,7 +81,11 @@ describe Report::Fraud do
         colors: ['#ff580a', '#719f2a'],
         title: 'Redress – Identity Verification',
         library: {
-          subtitle: { text: 'Users who requested redress during this period' },
+          title: { align: 'left' },
+          subtitle: { 
+            align: 'left',
+            text: 'Users who requested redress during this period',
+          },
           accessibility: {
             screenReaderSection: {
               beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
@@ -94,7 +102,7 @@ describe Report::Fraud do
             },
           },
           yAxis: { gridLineColor: '#888' },
-        }
+        },
       },
     })
   end
@@ -132,7 +140,11 @@ describe Report::Fraud do
           title: 'Fraudsters Blocked',
           colors: ['#1188ff', '#ff0000'],
           library: {
-            subtitle: { text: 'Users blocked per outcome type' },
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Users blocked per outcome type',
+            },
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
@@ -149,7 +161,7 @@ describe Report::Fraud do
               },
             },
             yAxis: { gridLineColor: '#888' },
-          }
+          },
         },
       })
     end
@@ -162,7 +174,11 @@ describe Report::Fraud do
           title: 'Redress – Identity Verification',
           colors: ['#ff580a', '#719f2a'],
           library: {
-            subtitle: { text: 'Users who requested redress during this period' },
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Users who requested redress during this period',
+            },
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
@@ -179,7 +195,7 @@ describe Report::Fraud do
               },
             },
             yAxis: { gridLineColor: '#888' },
-          }
+          },
         },
       })
     end

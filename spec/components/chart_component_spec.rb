@@ -15,10 +15,9 @@ RSpec.describe ChartComponent, type: :component do
 
   it 'can render with provided values' do
     render = render_inline(described_class.new(
-      title:,
       type: :column_chart,
       data: usage_data,
-      options: { download: true },
+      options: { title: },
     ))
     expect(render).to_not be_blank
     expect(render.text).to include(title)

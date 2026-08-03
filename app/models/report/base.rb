@@ -32,7 +32,11 @@ module Report
     def merge_options(chart_options)
       chart_options[:library] || chart_options[:library] = {}
       chart_options[:library].merge!({
-        subtitle: { text: chart_options.delete(:subtitle) },
+        title: { align: 'left' },
+        subtitle: {
+          align: 'left',
+          text: chart_options.delete(:subtitle),
+        },
         accessibility: {
           screenReaderSection: {
             beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",

@@ -212,7 +212,7 @@ describe 'reporting feature basics' do
       context 'with charts rendering', :js do
         it 'tries to display each chart' do
           expect(page).to have_content('Date range')
-          expect(find_all('canvas').count).to eq(2)
+          expect(find_all('svg').count).to eq(2)
           expect(page).to_not have_content('No data')
         end
 
@@ -245,10 +245,10 @@ describe 'reporting feature basics' do
         expect(page).to have_content 'Fraud Prevention'
         click_on 'Fraud Prevention'
         expect(page).to_not have_content 'SUCCESSFUL AUTHENTICATIONS'
-        expect(page).to have_content 'FRAUDSTERS BLOCKS'
+        expect(page).to have_content 'Fraudsters Blocked'
         click_on 'Usage'
         expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
-        expect(page).to_not have_content 'FRAUDSTERS BLOCKS'
+        expect(page).to_not have_content 'Fraudsters Blocked'
       end
     end
   end
@@ -280,7 +280,7 @@ describe 'reporting feature basics' do
         uuid: partner_sp.uuid,
         date: '2025-12-01',
       ))
-      expect(find_all('canvas').count).to eq(2)
+      expect(find_all('svg').count).to eq(2)
     end
 
     it 'does not show tabs', :js do
@@ -300,7 +300,7 @@ describe 'reporting feature basics' do
         select '2025-08-01', from: 'Date of report'
         click_on 'View report'
 
-        expect(find_all('canvas').count).to eq(1)
+        expect(find_all('svg').count).to eq(1)
         expect(page.text).to match(/BLOCKED USERS\s*Data is currently not available/)
         expect(page.text).to match(/requiring verification\s*Data is currently not available/)
         expect(page).to_not have_button('Export report as CSV')
@@ -320,7 +320,7 @@ describe 'reporting feature basics' do
         date: '2025-08-01',
       )
 
-      expect(find_all('canvas').count).to eq(0)
+      expect(find_all('svg').count).to eq(0)
       expect(page.text).to match(I18n.t('reports.errors.generic'))
     end
 

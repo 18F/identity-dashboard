@@ -32,7 +32,11 @@ describe Report::IdV do
           description: 'Newly proofed are net new users who verified during this window. ' \
           'Previously proofed are users who completed verification ahead of this window,',
           library: {
-            subtitle: { text: 'Unique users who accessed a service requiring verification' },
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Unique users who accessed a service requiring verification',
+            },
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
@@ -49,7 +53,7 @@ describe Report::IdV do
               },
             },
             yAxis: { gridLineColor: '#888' },
-          }
+          },
         },
       })
     end
@@ -78,7 +82,11 @@ describe Report::IdV do
           description: 'Newly proofed are net new users who verified during this window. ' \
           'Previously proofed are users who completed verification ahead of this window,',
           library: {
-            subtitle: { text: 'Unique users who accessed a service requiring verification' },
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Unique users who accessed a service requiring verification',
+            },
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
@@ -95,7 +103,7 @@ describe Report::IdV do
               },
             },
             yAxis: { gridLineColor: '#888' },
-          }
+          },
         },
       })
     end

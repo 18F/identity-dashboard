@@ -11,11 +11,12 @@ class ChartComponent < ViewComponent::Base
   #     this method will too since it passes the data to Chartkick unmodified.
   # @param options [Hash] additional options; any not listed below will go through to Chartkick
 
+  # @option options [String] :title text that will show up at the top of the chart
   # @option options [String] :subtitle text that will show up just under the title
   # @option options [String] :description a description that will show up under the chart
+  # @option options [Array<String>] :colors chart data colors
   def initialize(type:, data:, options:)
     (@type, @data, @options) = [type, data, options]
-    # @subtitle = options.delete(:subtitle)
     @description = options.delete(:description)
   end
 

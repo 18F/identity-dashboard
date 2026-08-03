@@ -40,7 +40,11 @@ describe Report::Usage do
           colors: ['#18f'],
           title: 'All Active Users',
           library: {
-            subtitle: { text: 'Unique users who accessed a service' },
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Unique users who accessed a service',
+            },
             accessibility: {
               screenReaderSection: {
                 beforeChartFormat: '<h2>All Active Users</h2>',
@@ -57,7 +61,7 @@ describe Report::Usage do
               },
             },
             yAxis: { gridLineColor: '#888' },
-          }
+          },
         },
       })
     end
