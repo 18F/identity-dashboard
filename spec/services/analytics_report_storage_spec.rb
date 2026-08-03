@@ -269,6 +269,9 @@ RSpec.describe AnalyticsReportStorage do
       expect(mock_backend).to receive(:fetch).with('issuers_service_provider_id.json')
         .and_return('[]')
       expect(described_class.new.all_issuers).to eq([])
+
+      # Since this populates the mapping cache with the blank data, we now have to clear the cache
+      Rails.cache.delete 'analytics_issuer_to_id_map'
     end
   end
 end

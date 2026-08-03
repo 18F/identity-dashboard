@@ -1,5 +1,8 @@
 # Relevant Ticket or Conversation:
 
+<!-- Link any tickets here. -->
+<!-- Review ticket acceptance criteria. Copy them here if you believe it would help with code review -->
+
 # Description of Changes:
 
 <!-- Insert screenshots here if this includes a UI change -->
