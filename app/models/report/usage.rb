@@ -18,31 +18,16 @@ module Report
       data['count_auth_successful']
     end
 
-    def chart(chart_options = {})
-      title = 'All Active Users'
+    def chart
       {
         type: :column_chart,
         data: usage_data,
-        options: merge_options(chart_options, {
-          title: title,
+        options: merge_options({
+          title: 'All Active Users',
+          subtitle: 'Unique users who accessed a service',
           description: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
           colors: ['#18f'],
-          library: {
-            accessibility: {
-              screenReaderSection: {
-                beforeChartFormat: "<h2>#{title}</h2>",
-              },
-            },
-            plotOptions: {
-              column:
-                {
-                  animation: false,
-                  color_by_point: true,
-                },
-            },
-            subtitle: { text: 'Unique users who accessed a service' },
-          },
         }),
       }
     end

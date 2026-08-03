@@ -27,61 +27,34 @@ module Report
       end
     end
 
-    def chart(chart_options = {})
-      title = 'Fraudsters Blocked'
+    def chart
       {
         type: :bar_chart,
         data: fraud_data,
-        options: merge_options(chart_options, {
-          title: title,
-          library: {
-            accessibility: {
-              screenReaderSection: {
-                beforeChartFormat: "<h2>#{title}</h2>",
-              },
-            },
-            plotOptions: {
-              bar: {
-                animation: false,
-                color_by_point: true,
-              },
-            },
-            subtitle: { text: 'Users blocked per outcome type' },
-          },
+        options: merge_options({
+          title: 'Fraudsters Blocked',
+          subtitle: 'Users blocked per outcome type',
+          colors: ['#1188ff', '#ff0000'],
         }),
       }
     end
 
-    def review_queue_chart(chart_options = {})
+    def review_queue_chart
       # Only explain the "adjudicated" column if we have data
       if review_queue_data.present?
-        chart_options = chart_options.merge(description:
-          '"Adjudicated as legitimate" reflects cases where ' \
-            'Login.gov reviewed the case and reversed the block.')
+        description = '"Adjudicated as legitimate" reflects cases where ' \
+            'Login.gov reviewed the case and reversed the block.'
       end
 
-      title = 'Redress – Identity Verification'
       {
         type: :bar_chart,
         data: review_queue_data,
-        options: merge_options(chart_options, {
-          title: title,
+        options: merge_options({
+          title: 'Redress – Identity Verification',
+          subtitle: { text: 'Users who requested redress during this period' },
+          description: description,
           # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
           colors: ['#ff580a', '#719f2a'],
-          library: {
-            accessibility: {
-              screenReaderSection: {
-                beforeChartFormat: "<h2>#{title}</h2>",
-              },
-            },
-            plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-            },
-            subtitle: { text: 'Users who requested redress during this period' },
-          },
         }),
       }
     end

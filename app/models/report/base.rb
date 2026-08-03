@@ -29,8 +29,28 @@ module Report
       end
     end
 
-    def merge_options(*chart_options)
-      DEFAULT_OPTIONS.merge(*chart_options)
+    def merge_options(chart_options)
+      chart_options[:library] || chart_options[:library] = {}
+      chart_options[:library].merge!({
+        subtitle: { text: chart_options.delete(:subtitle) },
+        accessibility: {
+          screenReaderSection: {
+            beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
+          },
+        },
+        plotOptions: {
+          bar: {
+            animation: false,
+            colorByPoint: true,
+          },
+          column: {
+            animation: false,
+            colorByPoint: true,
+          },
+        },
+        yAxis: { gridLineColor: '#888' },
+      })
+      DEFAULT_OPTIONS.merge(chart_options)
     end
   end
 end

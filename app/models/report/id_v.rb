@@ -1,30 +1,16 @@
 module Report
   # Partner reporting for Identity Validation data
   class IdV < Report::Base
-    def chart(chart_options = {})
-      title = 'Active Identity Verified Users'
+    def chart
       {
         type: :column_chart,
         data: idv_data,
-        options: merge_options(chart_options, {
-          title: title,
+        options: merge_options({
+          title: 'Active Identity Verified Users',
+          subtitle: 'Unique users who accessed a service requiring verification',
           description: 'Newly proofed are net new users who verified during this window. ' \
             'Previously proofed are users who completed verification ahead of this window,',
           colors: ['#18f'],
-          library: {
-            accessibility: {
-              screenReaderSection: {
-                beforeChartFormat: "<h2>#{title}</h2>",
-              },
-            },
-            plotOptions: {
-              column: {
-                animation: false,
-                color_by_point: true,
-              },
-            },
-            subtitle: { text: 'Unique users who accessed a service requiring verification' },
-          },
         }),
       }
     end
