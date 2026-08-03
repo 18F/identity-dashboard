@@ -34,11 +34,30 @@ describe Report::Usage do
           [I18n.t('reports.count_newly_created_accounts'),
            test_data['count_newly_created_accounts']],
         ],
-        title: 'All Active Users',
         options: {
-          subtitle: 'Unique users who accessed a service',
           description: 'New accounts reflect account creation during this window. ' \
                           'Existing accounts reflect accounts created ahead of this window.',
+          colors: ['#18f'],
+          title: 'All Active Users',
+          library: {
+            subtitle: { text: 'Unique users who accessed a service' },
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>All Active Users</h2>',
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+              column: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            yAxis: { gridLineColor: '#888' },
+          }
         },
       })
     end
