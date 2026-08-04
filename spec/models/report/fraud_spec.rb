@@ -82,7 +82,7 @@ describe Report::Fraud do
         title: 'Redress – Identity Verification',
         library: {
           title: { align: 'left' },
-          subtitle: { 
+          subtitle: {
             align: 'left',
             text: 'Users who requested redress during this period',
           },
