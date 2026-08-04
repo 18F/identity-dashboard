@@ -3,6 +3,10 @@ module Report
   class Base
     attr_reader :data
 
+    DEFAULT_OPTIONS = {
+      colors: ['#1188ff', '#ff0000'],
+    }.freeze
+
     def initialize(reports)
       @data = reports.data
     end
@@ -23,6 +27,36 @@ module Report
         label = I18n.t("reports.#{key}")
         results.push([label, data[key]])
       end
+    end
+
+    private
+
+    def merge_options(chart_options)
+      chart_options[:library] || chart_options[:library] = {}
+      chart_options[:library].merge!({
+        title: { align: 'left' },
+        subtitle: {
+          align: 'left',
+          text: chart_options.delete(:subtitle),
+        },
+        accessibility: {
+          screenReaderSection: {
+            beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
+          },
+        },
+        plotOptions: {
+          bar: {
+            animation: false,
+            colorByPoint: true,
+          },
+          column: {
+            animation: false,
+            colorByPoint: true,
+          },
+        },
+        yAxis: { gridLineColor: '#888' },
+      })
+      DEFAULT_OPTIONS.merge(chart_options)
     end
   end
 end

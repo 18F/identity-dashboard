@@ -33,29 +33,76 @@ describe Report::Fraud do
   it 'can return #chart options with correct data' do
     expect(subject.chart).to eq({
       type: :bar_chart,
-      title: 'Fraudsters Blocks',
       data: [
         ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
         ['Rejected for Invalid SSN / DOB, or Deceased', test_data['count_ssn_dob_deceased']],
         ['Suspicious Phone', test_data['count_suspicious_phone']],
       ],
-      options: { subtitle: 'Users blocked per outcome type' },
+      options: {
+        colors: ['#1188ff', '#ff0000'],
+        title: 'Fraudsters Blocked',
+        library: {
+          title: { align: 'left' },
+          subtitle: {
+            align: 'left',
+            text: 'Users blocked per outcome type',
+          },
+          accessibility: {
+            screenReaderSection: {
+              beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
+            },
+          },
+          plotOptions: {
+            bar: {
+              animation: false,
+              colorByPoint: true,
+            },
+            column: {
+              animation: false,
+              colorByPoint: true,
+            },
+          },
+          yAxis: { gridLineColor: '#888' },
+        },
+      },
     })
   end
 
   it 'can return an accurate #review_queue_chart' do
     expect(subject.review_queue_chart).to eq({
       type: :bar_chart,
-      title: 'Redress – Identity Verification',
       data: [
         ['Pending Fraud Review', test_data['count_pending_lg99_likely_fraud']],
         ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
       ],
       options: {
-        subtitle: 'Users who requested redress during this period',
         description: '"Adjudicated as legitimate" reflects cases where ' \
           'Login.gov reviewed the case and reversed the block.',
         colors: ['#ff580a', '#719f2a'],
+        title: 'Redress – Identity Verification',
+        library: {
+          title: { align: 'left' },
+          subtitle: {
+            align: 'left',
+            text: 'Users who requested redress during this period',
+          },
+          accessibility: {
+            screenReaderSection: {
+              beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
+            },
+          },
+          plotOptions: {
+            bar: {
+              animation: false,
+              colorByPoint: true,
+            },
+            column: {
+              animation: false,
+              colorByPoint: true,
+            },
+          },
+          yAxis: { gridLineColor: '#888' },
+        },
       },
     })
   end
@@ -88,21 +135,67 @@ describe Report::Fraud do
     it 'has a #chart with empty data' do
       expect(subject.chart).to eq({
         type: :bar_chart,
-        title: 'Fraudsters Blocks',
         data: [],
-        options: { subtitle: 'Users blocked per outcome type' },
+        options: {
+          title: 'Fraudsters Blocked',
+          colors: ['#1188ff', '#ff0000'],
+          library: {
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Users blocked per outcome type',
+            },
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+              column: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            yAxis: { gridLineColor: '#888' },
+          },
+        },
       })
     end
 
     it 'has a #review_queue_chart with empty data' do
       expect(subject.review_queue_chart).to eq({
         type: :bar_chart,
-        title: 'Redress – Identity Verification',
         data: [],
         options: {
-          subtitle: 'Users who requested redress during this period',
-          # We skip the "adjudicated as legit" text when there's no "adjudicated" line in the chart
+          title: 'Redress – Identity Verification',
           colors: ['#ff580a', '#719f2a'],
+          library: {
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Users who requested redress during this period',
+            },
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+              column: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            yAxis: { gridLineColor: '#888' },
+          },
         },
       })
     end

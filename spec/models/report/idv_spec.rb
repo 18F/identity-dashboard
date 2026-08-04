@@ -26,11 +26,34 @@ describe Report::IdV do
           [I18n.t('reports.count_newly_proofed_users'), test_data['count_newly_proofed_users']],
           [I18n.t('reports.count_preverified_users'), test_data['count_preverified_users']],
         ],
-        title: 'Active Identity Verified Users',
         options: {
-          subtitle: 'Unique users who accessed a service requiring verification',
+          colors: ['#18f'],
+          title: 'Active Identity Verified Users',
           description: 'Newly proofed are net new users who verified during this window. ' \
           'Previously proofed are users who completed verification ahead of this window,',
+          library: {
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Unique users who accessed a service requiring verification',
+            },
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+              column: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            yAxis: { gridLineColor: '#888' },
+          },
         },
       })
     end
@@ -53,11 +76,34 @@ describe Report::IdV do
           [I18n.t('reports.count_newly_proofed_users'), 0],
           [I18n.t('reports.count_preverified_users'), 0],
         ],
-        title: 'Active Identity Verified Users',
         options: {
-          subtitle: 'Unique users who accessed a service requiring verification',
+          colors: ['#18f'],
+          title: 'Active Identity Verified Users',
           description: 'Newly proofed are net new users who verified during this window. ' \
           'Previously proofed are users who completed verification ahead of this window,',
+          library: {
+            title: { align: 'left' },
+            subtitle: {
+              align: 'left',
+              text: 'Unique users who accessed a service requiring verification',
+            },
+            accessibility: {
+              screenReaderSection: {
+                beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
+              },
+            },
+            plotOptions: {
+              bar: {
+                animation: false,
+                colorByPoint: true,
+              },
+              column: {
+                animation: false,
+                colorByPoint: true,
+              },
+            },
+            yAxis: { gridLineColor: '#888' },
+          },
         },
       })
     end
