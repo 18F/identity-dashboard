@@ -29,6 +29,8 @@ module Report
       end
     end
 
+    private
+
     def merge_options(chart_options)
       chart_options[:library] || chart_options[:library] = {}
       chart_options[:library].merge!({
