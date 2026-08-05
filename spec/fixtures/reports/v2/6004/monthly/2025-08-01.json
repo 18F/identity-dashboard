@@ -58,7 +58,20 @@
     "count_selfie_ux": null,
     "count_identity_resolution_attribute_mismatch": null,
     "count_phone_number_record_check_failure": null,
-    "count_temporary_technical_issues": null
+    "count_temporary_technical_issues": null,
+    "pct_proofing_success": 1.0,
+    "pct_authentication_success": 1.0,
+    "pct_mobile_of_auth": 0.0,
+    "pct_desktop_of_auth": 1.0,
+    "pct_webauthn_platform_of_auth": 0.0,
+    "pct_totp_of_auth": 0.0,
+    "pct_piv_cac_of_auth": 0.0,
+    "pct_sms_of_auth": 0.0,
+    "pct_voice_of_auth": 0.0,
+    "pct_backup_code_of_auth": 0.0,
+    "pct_webauthn_of_auth": 0.0,
+    "pct_personal_key_of_auth": 0.0,
+    "pct_account_creation_success": 1.0
   }
 }
 
