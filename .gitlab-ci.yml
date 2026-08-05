@@ -10,6 +10,7 @@ variables:
   IDP_IMAGE_TAG: 'main'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_CI_SHA: 'sha256:27d86d55aad5d29d821ce792436054763269c32835d47675cca8397bb70c2227'
+  KUBECTL_CI_SHA: 'sha256:96a7d245a74d461925a56e3024d2f027c2a7a822b3e9e0117ec558db42de9c35'
   GITLAB_CI: 'true'
   APPLICATION_MANIFEST: 'dockerfiles/application.yaml'
   PROD_LIKE_ENV: false
@@ -332,7 +333,8 @@ review-app:
     - job: build-review-image
   resource_group: $CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
   image:
-    name: dtzar/helm-kubectl:latest
+    name: ${ECR_REGISTRY}/docker-hub/alpine/kubectl@${KUBECTL_CI_SHA}
+    entrypoint: ['']
   script:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
@@ -383,7 +385,8 @@ stop-review-app:
     - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
   stage: review
   image:
-    name: dtzar/helm-kubectl:latest
+    name: ${ECR_REGISTRY}/docker-hub/alpine/kubectl@${KUBECTL_CI_SHA}
+    entrypoint: ['']
   needs:
     - job: review-app
   environment:
