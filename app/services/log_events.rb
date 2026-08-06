@@ -23,6 +23,32 @@ module LogEvents
     track_event('partner_portal_redirect', properties)
   end
 
+  # Fires when a user views a report
+  # @param [String] date Date of the report in "YYYY-MM-DD" format
+  # @param [String] service_provider_issuer The service provider the data belongs to
+  # @param [Integer] team_id the ID of the team
+  def report_viewed(date:, service_provider_issuer:, team_id:)
+    track_event(
+      'partner_portal_report_viewed',
+      date:,
+      service_provider_issuer:,
+      team_id:,
+    )
+  end
+
+  # Fires when a user exports a report
+  # @param [String] date Date of the report in "YYYY-MM-DD" format
+  # @param [String] service_provider_issuer The service provider the data belongs to
+  # @param [Integer] team_id the ID of the team
+  def report_exported(date:, service_provider_issuer:, team_id:)
+    track_event(
+      'partner_portal_report_exported',
+      date:,
+      service_provider_issuer:,
+      team_id:,
+    )
+  end
+
   # Log session duration when user logs out
   # @param session_started_at [Time] When the session started
   # @param session_ended_at [Time] When the session ended

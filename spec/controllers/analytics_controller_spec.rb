@@ -61,31 +61,49 @@ describe AnalyticsController do
 
       describe '#fetch' do
         let(:sp_with_data) do
-          create(:service_provider,
+          create(
+            :service_provider,
             :ready_to_activate,
             issuer:,
-            team: admin_team)
+            team: admin_team,
+          )
+        end
+        let(:date) { '9999-99-99' }
+
+        before do
+          expect(logger_double).to receive(:report_viewed).with(
+            date:,
+            service_provider_issuer: sp_with_data.issuer,
+            team_id: admin_team.id,
+          )
         end
 
-        it 'handles bad post parameters' do
-          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '9999-99-99' }
-          expect(response).to redirect_to(analytics_path(
-            team: admin_team.id,
-            uuid: sp_with_data.uuid,
-            date: '9999-99-99',
-          ))
-          expect(assigns(:error)).to match('The link for that report was not valid.')
+        context 'when the post params are bad' do
+          it 'gracefully handles the parameters' do
+            post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: }
+
+            expect(response).to redirect_to(analytics_path(
+              team: admin_team.id,
+              uuid: sp_with_data.uuid,
+              date:,
+            ))
+            expect(assigns(:error)).to match('The link for that report was not valid.')
+          end
         end
 
-        it 'handles good post parameters' do
-          post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: '2025-12-01' }
-          expect(response).to redirect_to(analytics_path(
-            team: admin_team.id,
-            uuid: sp_with_data.uuid,
-            date: '2025-12-01',
-          ))
-          expect(flash[:error]).to be_blank
-          expect(assigns(:error)).to be_blank
+        context 'when the post parameters are valid' do
+          let(:date) { '2025-12-01' }
+
+          it 'handles good post parameters' do
+            post :fetch, params: { team: admin_team.id, uuid: sp_with_data.uuid, date: }
+            expect(response).to redirect_to(analytics_path(
+              team: admin_team.id,
+              uuid: sp_with_data.uuid,
+              date:,
+            ))
+            expect(flash[:error]).to be_blank
+            expect(assigns(:error)).to be_blank
+          end
         end
       end
 
@@ -96,38 +114,51 @@ describe AnalyticsController do
             issuer:,
             team: admin_team)
         end
+        let(:date) { '2025-12-01' }
 
         before do
-          get :index, as: 'csv', params: { team: admin_team.id, uuid: sp.uuid, date: '2025-12-01' }
+          expect(logger_double).to receive(:report_exported).with(
+            date:,
+            service_provider_issuer: sp.issuer,
+            team_id: sp.team.id,
+          )
         end
 
         it 'returns a valid CSV' do
+          get :index, as: 'csv', params: { team: admin_team.id, uuid: sp.uuid, date: }
           expect(response).to be_ok
           expect(response.content_type).to eq('text/csv')
         end
 
         it 'uses the correct filename' do
+          get :index, as: 'csv', params: { team: admin_team.id, uuid: sp.uuid, date: }
           expect(response).to be_ok
           expect(response.headers['content-disposition']).to match(
             'filename="logingov_dol_lost_and_found_database_20251201.csv',
           )
         end
 
-        it 'does not include extra data' do
-          storage_double = AnalyticsReportStorage::Disk.new
-          data_modified = JSON.parse(storage_double.fetch('4388/monthly/2025-12-01.json'))
-          data_modified['data']['invalid_key'] = rand(1..1000)
-          allow(storage_double).to receive(:fetch).and_call_original
-          allow(storage_double).to receive(:fetch)
-            .with('4388/monthly/2025-12-01.json')
-            .and_return(data_modified.to_json)
-          allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(storage_double)
-          get :index, as: 'csv', params: { uuid: sp.uuid, date: '2025-12-01' }
-          expect(response.body).to_not include('invalid_key')
-          csv_data = CSV.parse(response.body)
-          row_headers = csv_data.map { |row| row[0] }
-          expect(row_headers).to include(I18n.t('reports.count_dob_incorrect'))
-          expect(row_headers.select { |header| header.match(/translation/i) }).to be_empty
+        context 'when extra data is in the report' do
+          let(:storage_double) { AnalyticsReportStorage::Disk.new }
+
+          before do
+            data_modified = JSON.parse(storage_double.fetch('4388/monthly/2025-12-01.json'))
+            data_modified['data']['invalid_key'] = rand(1..1000)
+            allow(storage_double).to receive(:fetch).and_call_original
+            allow(storage_double).to receive(:fetch)
+              .with('4388/monthly/2025-12-01.json')
+              .and_return(data_modified.to_json)
+            allow(AnalyticsReportStorage::Disk).to receive(:new).and_return(storage_double)
+          end
+
+          it 'does not include extra data' do
+            get :index, as: 'csv', params: { uuid: sp.uuid, date: }
+            expect(response.body).to_not include('invalid_key')
+            csv_data = CSV.parse(response.body)
+            row_headers = csv_data.map { |row| row[0] }
+            expect(row_headers).to include(I18n.t('reports.count_dob_incorrect'))
+            expect(row_headers.select { |header| header.match(/translation/i) }).to be_empty
+          end
         end
       end
     end
