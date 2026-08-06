@@ -16,6 +16,8 @@ class AnalyticsController < ApplicationController # :nodoc:
       end
       format.csv do
         report = AnalyticsReportCsv.new(reports)
+
+        track_report_exported
         send_data report.report_data_csv, filename: report.filename
       end
     end
@@ -25,12 +27,30 @@ class AnalyticsController < ApplicationController # :nodoc:
     # TODO: This needs to change to disable or remove the View report button
     return redirect_to analytics_path unless analytic.config
 
+    track_report_viewed
+
     redirect_to analytics_path(team: analytic.config.team,
                                uuid: analytic.config.uuid,
                                date: analytic.date) and return
   end
 
   private
+
+  def track_report_viewed
+    log.report_viewed(
+      service_provider_issuer: analytic.config.issuer,
+      team_id: analytic.config.team.id,
+      date: analytic.date,
+    )
+  end
+
+  def track_report_exported
+    log.report_exported(
+      service_provider_issuer: analytic.config.issuer,
+      team_id: analytic.config.team.id,
+      date: analytic.date,
+    )
+  end
 
   def populate_data_for_html
     @teams = available_service_providers.map(&:team).uniq
