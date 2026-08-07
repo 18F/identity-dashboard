@@ -53,9 +53,8 @@ class WizardStep < ApplicationRecord
 
   validates :step_name, presence: true
 
-  validates :app_name, presence: true, on: 'settings'
-  validates :group_id, presence: true, on: 'settings'
-  validate :group_is_valid, on: 'settings'
+  # Step-specific validations owned by the step object
+  validate :run_step_object_validations, on: 'settings'
 
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
@@ -72,7 +71,6 @@ class WizardStep < ApplicationRecord
 
   ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
   # except for the step contexts
-  validates :friendly_name, presence: true, on: 'settings'
 
   # We can't test uniqueness here with a built-in Rails vaildator because here
   # we have to search through the ServiceProviders table to find conflicts
@@ -249,10 +247,8 @@ class WizardStep < ApplicationRecord
     get_step('authentication').ial
   end
 
-  # prod_config is a Boolean in the DB, but is a string in the form
   def production_ready?
-    prod_config = get_step('settings').prod_config
-    prod_config == 'true' || prod_config == true
+    step_object('settings').production_ready?
   end
 
   def saml?
@@ -290,6 +286,29 @@ class WizardStep < ApplicationRecord
 
   private
 
+  # Step objects hold step-specific behavior and read/write through the WizardStep they wrap.
+  #
+  # @param step_to_find [String] the step whose behavior we want
+  # @return [Object] an instance of the WizardSteps step class
+  def step_object(step_to_find)
+    @step_objects ||= {}
+    @step_objects[step_to_find.to_s] ||= begin
+      record = get_step(step_to_find)
+      WizardSteps::Registry.for_step_name(step_to_find).new(record)
+    end
+  end
+
+  # Runs validations owned by the current step's step object and copies any
+  # resulting errors onto this WizardStep so callers see a single error set.
+  def run_step_object_validations
+    step = step_object(step_name)
+    return if step.valid?
+
+    step.errors.each do |error|
+      errors.add(error.attribute, error.message)
+    end
+  end
+
   def enforce_valid_data(new_data)
     return STEP_DATA[step_name].fields unless new_data.respond_to? :filter!
 
@@ -316,10 +335,6 @@ class WizardStep < ApplicationRecord
     return unless using_idv?
 
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
-  end
-
-  def group_is_valid
-    errors.add(:group_id, :invalid) if Team.where(id: group_id).blank?
   end
 
   def attachment_changes_string_buffer

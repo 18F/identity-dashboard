@@ -27,5 +27,10 @@ module WizardSteps
     def step_classes
       STEP_CLASSES
     end
+
+    # @return [Class, nil] the step class for a given step name
+    def for_step_name(step_name)
+      STEP_CLASSES.find { |klass| klass.step_name == step_name.to_s }
+    end
   end
 end
