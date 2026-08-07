@@ -48,10 +48,10 @@ describe AnalyticsReportCsv do
       expect(csv.length).to eq(44)
       expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
       expect(csv[1]).to eq(['Start Date', '', '2025-12-01', ''])
-      expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '190', ''])
-      expect(csv[6]).to eq(['Identity Verified Users', '', '20', ''])
-      expect(csv[30]).to eq(['Voice', '', '12', ''])
-      expect(csv[38]).to eq(['Pass via Letter', '', '0', ''])
+      expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '143', ''])
+      expect(csv[6]).to eq(['Identity Verified Users', '', '103', ''])
+      expect(csv[30]).to eq(['Phone Number Record Check Failure', '', '0', ''])
+      expect(csv[38]).to eq(['SMS', '', '0.0709', ''])
     end
 
     it 'only outputs headers with blank data' do

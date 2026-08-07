@@ -12,10 +12,9 @@ module Report
       lack_phone_ownership
       wrong_phone_type
       blocked_by_ipp_fraud
-      device_behavior_fraud_signals
     ].map { |key| "count_#{key}" }.freeze
 
-    FRAUD_QUEUE_KEYS = ['count_pending_lg99_likely_fraud', 'count_pass_via_lg99'].freeze
+    FRAUD_QUEUE_KEYS = ['count_device_behavior_fraud_signals', 'count_pass_via_lg99'].freeze
 
     def total
       data['count_blocked_attempted_fraud'].presence

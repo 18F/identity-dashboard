@@ -19,23 +19,23 @@ describe Report::Base do
 
     it 'can return the data #as_array_with_i18n_labels' do
       expected_data = [
-        ["Number of Users Who Accessed Your Services", 190],
-        ["Number of Users blocked for Attempted Fraud", 16], ["Newly Created Accounts", 68],
-        ["Existing Accounts", 120], ["Identity Verified Users", 20], ["Newly Proofed Users", 16],
-        ["Preverified Users", 4], ["Authentications", 898], ["Account Creation", 5],
-        ["Authentic Driver's License", 1], ["Facial Mismatch", 1],
-        ["Invalid Attributes (DL, DOS)", 1], ["Identity Not Found (SSN / DOB / Deceased)", 1],
-        ["Fraud Alert Detected", 0], ["Suspicious Phone", 1], ["Lacking Phone Ownership", 0],
-        ["Wrong Phone Type", 0], ["Failed In-Person and Blocked", 0],
-        ["Device and Behavior Fraud Signals", 0], ["Adjudicated as Legitimate", 2],
-        ["Account Creation Success", 66], ["Authentication Success", 672],
-        ["Device Type Desktop", 595], ["Device Type Mobile", 77], ["Face / Touch", 8],
-        ["Authenticator App", 61], ["PIV / CAC", 15], ["SMS", 507], ["Voice", 12],
-        ["Backup Code", 21], ["Security Key", 0], ["Personal Key", 0], ["Proofing Success", 17],
-        ["Preverified", 0], ["Remote Unattended", 17], ["In-Person Proofed", 0],
-        ["Pass via Letter", 0], ["Blocked at Document Upload UX", 0], ["Selfie UX Issue", 0],
-        ["Identity Resolution Attribute Mismatch", 0], ["Phone Number Record Check Failure", 0],
-        ["Temporary Technical Issue", 0]
+        ['Number of Users Who Accessed Your Services', 143],
+        ['Number of Users blocked for Attempted Fraud', 12], ['Newly Created Accounts', 118],
+        ['Existing Accounts', 23], ['Identity Verified Users', 103], ['Newly Proofed Users', 83],
+        ['Preverified Users', 20], ['Authentications', 1501], ['Account Creation', 1],
+        ["Authentic Driver's License", 1], ['Facial Mismatch', 2],
+        ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
+        ['Fraud Alert Detected', 1], ['Suspicious Phone', 1], ['Lacking Phone Ownership', 0],
+        ['Wrong Phone Type', 0], ['Failed In-Person and Blocked', 1], ['Pending Fraud Review', 0],
+        ['Adjudicated as Legitimate', 0], ['Proofing Success', 83], ['Preverified', 2],
+        ['Remote Unattended', 81], ['In-Person Proofed', 0], ['Pass via Letter', 0],
+        ['Blocked at Document Upload UX', 0], ['Selfie UX Issue', 0],
+        ['Identity Resolution Attribute Mismatch', 0], ['Phone Number Record Check Failure', 0],
+        ['Temporary Technical Issue', 0], ['Authentication Success', 0.9644],
+        ['Device Type Mobile', 0.036], ['Device Type Desktop', 0.964], ['Face / Touch', 0.0466],
+        ['Authenticator App', 0.7561], ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0],
+        ['Backup Code', 0.0039], ['Security Key', 0.0], ['Personal Key', 0.0],
+        ['Account Creation Success', 1.0]
       ]
       expect(subject.as_array_with_i18n_labels).to eq(expected_data)
     end

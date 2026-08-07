@@ -61,7 +61,10 @@ describe Report::Usage do
                 colorByPoint: true,
               },
             },
-            yAxis: { gridLineColor: '#888' },
+            yAxis: {
+              gridLineColor: '#888',
+              minTickInterval: 1,
+            },
           },
         },
       })

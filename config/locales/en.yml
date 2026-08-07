@@ -194,7 +194,7 @@ en:
     count_blocked_authentic_drivers_license: Authentic Driver's License
     count_blocked_by_ipp_fraud: Failed In-Person and Blocked
     count_blocked_identity_not_found: Identity Not Found (SSN / DOB / Deceased)
-    count_device_behavior_fraud_signals: Device and Behavior Fraud Signals
+    count_device_behavior_fraud_signals: Pending Fraud Review
     count_facial_mismatch: Facial Mismatch
     count_fraud_alert: Fraud Alert Detected
     count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
@@ -204,18 +204,18 @@ en:
     count_wrong_phone_type: Wrong Phone Type
     count_pass_via_lg99: Adjudicated as Legitimate
     # Authentication
-    count_backup_code_successful: Backup Code
-    count_desktop_successful: Device Type Desktop
-    count_mobile_successful: Device Type Mobile
-    count_personal_key_successful: Personal Key
-    count_piv_cac_successful: PIV / CAC
-    count_sms_successful: SMS
-    count_auth_successful: Authentication Success
-    count_creation_successful: Account Creation Success
-    count_totp_successful: Authenticator App
-    count_voice_successful: Voice
-    count_webauthn_platform_successful: Face / Touch
-    count_webauthn_successful: Security Key
+    pct_backup_code_of_auth: Backup Code
+    pct_desktop_of_auth: Device Type Desktop
+    pct_mobile_of_auth: Device Type Mobile
+    pct_personal_key_of_auth: Personal Key
+    pct_piv_cac_of_auth: PIV / CAC
+    pct_sms_of_auth: SMS
+    pct_authentication_success: Authentication Success
+    pct_account_creation_success: Account Creation Success
+    pct_totp_of_auth: Authenticator App
+    pct_voice_of_auth: Voice
+    pct_webauthn_platform_of_auth: Face / Touch
+    pct_webauthn_of_auth: Security Key
     # Identity Verification
     count_blocked_document_upload_ux: Blocked at Document Upload UX
     count_identity_resolution_attribute_mismatch: Identity Resolution Attribute Mismatch

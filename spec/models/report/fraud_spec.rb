@@ -8,7 +8,7 @@ describe Report::Fraud do
       'count_suspicious_phone' => rand(1..1000),
       'count_blocked_authentic_drivers_license' => rand(1..1000),
       # fraud review queue keys
-      'count_pending_lg99_likely_fraud' => rand(1..1000),
+      'count_device_behavior_fraud_signals' => rand(1..1000),
       'count_pass_via_lg99' => rand(1..1000),
       # A valid key that is not a fraud key, so should get skipped over
       'count_preverified_users' => rand(1..1000),
@@ -31,8 +31,9 @@ describe Report::Fraud do
     expect(subject.chart).to eq({
       type: :bar_chart,
       data: [
-        ['Inauthentic Doc.', test_data['count_inauthentic_doc']],
-        ['Rejected for Invalid SSN / DOB, or Deceased', test_data['count_ssn_dob_deceased']],
+        ["Authentic Driver's License", test_data['count_blocked_authentic_drivers_license']],
+        ['Identity Not Found (SSN / DOB / Deceased)',
+         test_data['count_blocked_identity_not_found']],
         ['Suspicious Phone', test_data['count_suspicious_phone']],
       ],
       options: {
@@ -59,7 +60,10 @@ describe Report::Fraud do
               colorByPoint: true,
             },
           },
-          yAxis: { gridLineColor: '#888' },
+          yAxis: {
+            gridLineColor: '#888',
+            minTickInterval: 1,
+          },
         },
       },
     })
@@ -69,7 +73,7 @@ describe Report::Fraud do
     expect(subject.review_queue_chart).to eq({
       type: :bar_chart,
       data: [
-        ['Pending Fraud Review', test_data['count_pending_lg99_likely_fraud']],
+        ['Pending Fraud Review', test_data['count_device_behavior_fraud_signals']],
         ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
       ],
       options: {
@@ -98,7 +102,10 @@ describe Report::Fraud do
               colorByPoint: true,
             },
           },
-          yAxis: { gridLineColor: '#888' },
+          yAxis: {
+            gridLineColor: '#888',
+            minTickInterval: 1,
+          },
         },
       },
     })
@@ -157,7 +164,10 @@ describe Report::Fraud do
                 colorByPoint: true,
               },
             },
-            yAxis: { gridLineColor: '#888' },
+            yAxis: {
+              gridLineColor: '#888',
+              minTickInterval: 1,
+            },
           },
         },
       })
@@ -191,7 +201,10 @@ describe Report::Fraud do
                 colorByPoint: true,
               },
             },
-            yAxis: { gridLineColor: '#888' },
+            yAxis: {
+              gridLineColor: '#888',
+              minTickInterval: 1,
+            },
           },
         },
       })

@@ -5,7 +5,7 @@
 # a mapping file to look up the corresponding IDs.
 # It will then use the IDs to tell the backend (S3 or Disk) which filename to fetch.
 class AnalyticsReportStorage
-  REPORT_VERSION = 'v2'
+  REPORT_VERSION = 'v2'.freeze
   attr_reader :backend, :issuer, :date
 
   def self.list(criteria = [])
