@@ -14,74 +14,19 @@ class WizardStep < ApplicationRecord
     end
   end
 
-  DEFAULT_SAML_ENCRYPTION = ServiceProvider.block_encryptions.keys.last
-
-  # A list of steps and their attributes
+  # A list of steps and their attributes.
   #
   # Generally, you won't want to access this list directly outside of the WizardStep class itself.
   # This list contains fields that should get preserved when editing an existing config
   # but we do not want to show up in the UI. This constant is an implementation detail.
   #
-  # Instead, use `STEP` constant to get a list of the non-hidden steps or
+  # Instead, use `STEPS` constant to get a list of the non-hidden steps or
   # use a method in this class that encapsulates the implementation.
-  STEP_DATA = {
-    intro: WizardStep::Definition.new,
-    settings: WizardStep::Definition.new({
-      app_name: '',
-      description: '',
-      friendly_name: '',
-      group_id: nil,
-      prod_config: false,
-    }),
-    protocol: WizardStep::Definition.new({
-      identity_protocol: ServiceProvider.identity_protocols.keys.first,
-    }),
-    authentication: WizardStep::Definition.new({
-      attribute_bundle: [],
-      default_aal: 0,
-      ial: '1',
-    }),
-    issuer: WizardStep::Definition.new({
-      issuer: '',
-    }),
-    logo_and_cert: WizardStep::Definition.new({
-      certs: [],
-      logo_name: '',
-      remote_logo_key: '',
-    }),
-    redirects: WizardStep::Definition.new({
-      acs_url: '',
-      assertion_consumer_logout_service_url: '',
-      block_encryption: DEFAULT_SAML_ENCRYPTION,
-      failure_to_proof_url: '',
-      post_idv_follow_up_url: nil,
-      push_notification_url: '',
-      redirect_uris: [],
-      return_to_sp_url: '',
-      signed_response_message_requested: true,
-      sp_initiated_login_url: '',
-    }),
-    help_text: WizardStep::Definition.new({
-      help_text: {
-        sign_in: { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-        sign_up: { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-        forgot_password: { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
-      },
-    }),
-    # Unless we are editing an existing config, this extra step should not get created.
-    hidden: WizardStep::Definition.new({
-      active: false,
-      agency_id: nil,
-      allow_prompt_login: false,
-      approved: false,
-      email_nameid_format_allowed: nil,
-      metadata_url: nil,
-      service_provider_id: nil,
-      service_provider_user_id: nil,
-    }),
-  }.with_indifferent_access.freeze
+  STEP_DATA = WizardSteps::Registry.step_classes.each_with_object({}) do |step_class, hash|
+    hash[step_class.step_name] = WizardStep::Definition.new(step_class.fields)
+  end.with_indifferent_access.freeze
 
-  STEPS = (STEP_DATA.keys - ['hidden']).freeze
+  STEPS = (STEP_DATA.keys - [WizardSteps::Registry::HIDDEN_STEP_NAME]).freeze
 
   # A reverse lookup, answers the question:
   #     Given an attribute, which step does it belong to?
