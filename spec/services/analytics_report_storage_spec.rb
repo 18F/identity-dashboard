@@ -84,7 +84,7 @@ RSpec.describe AnalyticsReportStorage do
         result = described_class.fetch(real_issuer, test_date)
 
         expect(result['issuer']).to eq(real_issuer)
-        expect(result['data'].keys.count).to eq(52)
+        expect(result['data'].keys.count).to eq(60)
       end
 
       it 'returns an empty result for a  non-existent file' do
@@ -204,7 +204,7 @@ RSpec.describe AnalyticsReportStorage do
               JSON
             )))
           allow(s3_client_with_stubs).to receive(:get_object)
-            .with(bucket: bucket_name, key: "int/portal/#{expected_s3_key}")
+            .with(bucket: bucket_name, key: "int/portal/v2/#{expected_s3_key}")
             .and_return(double(body: s3_body))
         end
 
@@ -218,7 +218,7 @@ RSpec.describe AnalyticsReportStorage do
           described_class.fetch(test_issuer, test_date)
 
           expect(s3_client_with_stubs).to have_received(:get_object)
-            .with(bucket: bucket_name, key: "int/portal/#{expected_s3_key}")
+            .with(bucket: bucket_name, key: "int/portal/v2/#{expected_s3_key}")
             .once
         end
       end

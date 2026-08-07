@@ -12,6 +12,7 @@ describe Report::Usage do
   describe 'with valid data' do
     let(:test_data) do
       {
+        'count_active_users' => rand(1..1000),
         'count_newly_created_accounts' => rand(1..1000),
         'count_auth_successful' => rand(1..1000),
         # A valid key that does not count toward usage
@@ -20,7 +21,7 @@ describe Report::Usage do
     end
 
     it 'returns a #total' do
-      expect(subject.total).to eq(test_data['count_newly_created_accounts'])
+      expect(subject.total).to eq(test_data['count_active_users'])
     end
 
     it 'returns #succesful_auths' do
@@ -60,7 +61,10 @@ describe Report::Usage do
                 colorByPoint: true,
               },
             },
-            yAxis: { gridLineColor: '#888' },
+            yAxis: {
+              gridLineColor: '#888',
+              minTickInterval: 1,
+            },
           },
         },
       })
@@ -94,6 +98,7 @@ describe Report::Usage do
   describe 'with zeroed data' do
     let(:test_data) do
       {
+        'count_active_users' => 0,
         'count_newly_created_accounts' => 0,
         'count_existing_accounts' => 0,
         'count_auth_successful' => 0,
@@ -106,8 +111,8 @@ describe Report::Usage do
       expect(subject.total).to be(0)
     end
 
-    it 'returns zero #succesful_auths' do
-      expect(subject.total).to be(0)
+    it 'returns zero #successful_auths' do
+      expect(subject.successful_auths).to be(0)
     end
 
     it 'returns a zeroed #chart' do

@@ -19,8 +19,8 @@ describe Reports do
       )
       analytic.date = '2025-12-01'
       subject = described_class.new(analytic)
-      expect(subject.data['count_newly_proofed_users']).to be(17)
-      expect(subject.data['count_preverified_users']).to be(30)
+      expect(subject.data['count_newly_proofed_users']).to eq(83)
+      expect(subject.data['count_preverified_users']).to eq(20)
     end
   end
 
