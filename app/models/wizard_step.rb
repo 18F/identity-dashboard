@@ -25,31 +25,31 @@ class WizardStep < ApplicationRecord
   # Instead, use `STEP` constant to get a list of the non-hidden steps or
   # use a method in this class that encapsulates the implementation.
   STEP_DATA = {
-    intro: WizardStep::Definition.new,
-    settings: WizardStep::Definition.new({
+    intro: WizardSteps::Intro.new,
+    settings: WizardSteps::Settings.new({
       app_name: '',
       description: '',
       friendly_name: '',
       group_id: nil,
       prod_config: false,
     }),
-    protocol: WizardStep::Definition.new({
+    protocol: WizardSteps::Protocol.new({
       identity_protocol: ServiceProvider.identity_protocols.keys.first,
     }),
-    authentication: WizardStep::Definition.new({
+    authentication: WizardSteps::Authentication.new({
       attribute_bundle: [],
       default_aal: 0,
       ial: '1',
     }),
-    issuer: WizardStep::Definition.new({
+    issuer: WizardSteps::Issuer.new({
       issuer: '',
     }),
-    logo_and_cert: WizardStep::Definition.new({
+    logo_and_cert: WizardSteps::LogoAndCert.new({
       certs: [],
       logo_name: '',
       remote_logo_key: '',
     }),
-    redirects: WizardStep::Definition.new({
+    redirects: WizardSteps::Redirects.new({
       acs_url: '',
       assertion_consumer_logout_service_url: '',
       block_encryption: DEFAULT_SAML_ENCRYPTION,
@@ -61,7 +61,7 @@ class WizardStep < ApplicationRecord
       signed_response_message_requested: true,
       sp_initiated_login_url: '',
     }),
-    help_text: WizardStep::Definition.new({
+    help_text: WizardSteps::HelpText.new({
       help_text: {
         sign_in: { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
         sign_up: { 'en' => '', 'es' => '', 'fr' => '', 'zh' => '' },
@@ -69,7 +69,7 @@ class WizardStep < ApplicationRecord
       },
     }),
     # Unless we are editing an existing config, this extra step should not get created.
-    hidden: WizardStep::Definition.new({
+    hidden: WizardSteps::Hidden.new({
       active: false,
       agency_id: nil,
       allow_prompt_login: false,
@@ -107,10 +107,6 @@ class WizardStep < ApplicationRecord
   has_one_attached :logo_file
 
   validates :step_name, presence: true
-
-  validates :app_name, presence: true, on: 'settings'
-  validates :group_id, presence: true, on: 'settings'
-  validate :group_is_valid, on: 'settings'
 
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
