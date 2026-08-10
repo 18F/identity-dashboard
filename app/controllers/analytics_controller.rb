@@ -93,7 +93,8 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def permitted_teams
-    teams = current_user.scoped_teams.includes([:service_providers]).filter do |team|
+    scoped_teams = current_user.logingov_staff? ? Team.all : current_user.scoped_teams
+    teams = scoped_teams.includes([:service_providers]).filter do |team|
       team.service_providers.present?
     end
     return teams if current_user.logingov_staff?
