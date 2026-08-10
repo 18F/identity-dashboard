@@ -27,6 +27,14 @@ class User < ApplicationRecord
     end
   end
 
+  def report_scoped_teams
+    if logingov_staff?
+      Team.all
+    else
+      scoped_teams
+    end
+  end
+
   def scoped_service_providers(scope: nil)
     scope ||= ServiceProvider.all
     user_scope = logingov_admin ? scope : scope.where(id: service_providers)
