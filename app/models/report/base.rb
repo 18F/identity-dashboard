@@ -57,13 +57,14 @@ module Report
             animation: false,
             colorByPoint: true,
           },
-          series: chart_options.dig(:library, :plotOptions, :series),
         },
         yAxis: {
           gridLineColor: '#888',
           minTickInterval: 1,
         },
       })
+      seriesOpts = chart_options.dig(:library, :plotOptions, :series)
+      chart_options[:library][:plotOptions][:series] = seriesOpts if seriesOpts
       DEFAULT_OPTIONS.merge(chart_options)
     end
   end
