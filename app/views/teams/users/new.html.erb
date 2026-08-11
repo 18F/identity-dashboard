@@ -18,7 +18,7 @@
   <% if policy(:airtable).index? && @remove_partner_admin %>
     <p class="margin-bottom-5">In order to give <strong><%=
       t('role_names.production.partner_admin')
-    %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link" %> with OAuth.</p>
+    %></strong> role, you must first connect with <%= link_to "Airtable", @oauth_url, class: "usa-link usa-link--external" %> with OAuth.</p>
   <% end %>
   
   <div class="usa-accordion usa-accordion__heading usa-accordion--bordered margin-bottom-3">

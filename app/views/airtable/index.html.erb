@@ -2,7 +2,7 @@
 
 <% if Rails.cache.read("#{current_user.uuid}.airtable_oauth_token").blank? %>
   
-  <%= link_to "Connect with Airtable", @oauth_url, class: 'usa-button usa-button--outline' %>
+  <%= link_to "Connect with Airtable", @oauth_url, class: 'usa-button usa-button--outline usa-link--external' %>
 
 <% else %>
   <dl class="usa-definitions">
