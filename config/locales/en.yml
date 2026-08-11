@@ -221,12 +221,13 @@ en:
     count_identity_resolution_attribute_mismatch: Identity Resolution Attribute Mismatch
     count_pass_ipp: In-Person Proofed
     count_pass_online_finalization: Remote Unattended
-    count_pass_sum: Proofing Success
     count_pass_via_letter: Pass via Letter
     count_phone_number_record_check_failure: Phone Number Record Check Failure
     count_selfie_ux: Selfie UX Issue
     count_skip_preverified_finalization: Preverified
     count_temporary_technical_issues: Temporary Technical Issue
+    pct_path_to_access: Path to Access Rate
+    pct_proofing_success: Overall Proofing Success Rate
     # General
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
     errors:

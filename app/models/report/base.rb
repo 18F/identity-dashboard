@@ -53,6 +53,11 @@ module Report
             animation: false,
             colorByPoint: true,
           },
+          pie: {
+            animation: false,
+            colorByPoint: true,
+          },
+          series: chart_options.dig(:library, :plotOptions, :series),
         },
         yAxis: {
           gridLineColor: '#888',
