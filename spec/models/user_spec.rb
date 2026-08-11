@@ -111,6 +111,32 @@ describe User do
     end
   end
 
+  describe '#report_scoped_teams' do
+    it 'returns all teams for logingov admin' do
+      user = create(:user, :logingov_admin)
+      create_list(:team, 2)
+
+      expect(user.report_scoped_teams).to eq(Team.all)
+    end
+
+    it 'returns all teams for logingov readonly' do
+      user = create(:user, :logingov_readonly)
+      create_list(:team, 2)
+
+      expect(user.report_scoped_teams).to eq(Team.all)
+    end
+
+    it "returns collection of users' team memberships for partner admin" do
+      user = create(:user, :partner_admin)
+      team = create(:team)
+      _ignored_team = create(:team)
+      user.teams = [team]
+      user.save
+
+      expect(user.report_scoped_teams).to eq([team])
+    end
+  end
+
   describe 'validates' do
     it 'uniqueness of email address' do
       email = 'joe@gsa.gov'

@@ -193,6 +193,18 @@ describe AnalyticsController do
           get :index
           expect(response).to be_ok
         end
+
+        it 'includes all teams with configs' do
+          team0 = create(:team)
+          team1 = create(:team)
+          create(:service_provider, issuer:, team: admin_team)
+          create(:service_provider, issuer: issuer0, team: team1)
+
+          get :index
+          teams = assigns(:teams)
+          expect(teams).to include(admin_team, team1)
+          expect(teams).to_not include(team0)
+        end
       end
     end
 
