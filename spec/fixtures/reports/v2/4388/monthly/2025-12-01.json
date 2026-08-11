@@ -61,6 +61,7 @@
     "count_temporary_technical_issues": 0,
     "pct_proofing_success": 0.914,
     "pct_authentication_success": 0.9644,
+    "pct_path_to_access": 0.9259,
     "pct_mobile_of_auth": 0.036,
     "pct_desktop_of_auth": 0.964,
     "pct_webauthn_platform_of_auth": 0.0466,

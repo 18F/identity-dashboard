@@ -16,8 +16,6 @@ module Report
       pass_via_letter
     ].map { |key| "count_#{key}" }.freeze
 
-    ACCESS_PATH_KEYS = ['count_deadend_sum', 'count_stage_onboarding'].freeze
-
     def proofing_success_chart
       {
         type: :pie_chart,
@@ -40,13 +38,18 @@ module Report
         data: access_path_data,
         options: merge_options({
           title: 'Path to Access Rate',
-          subtitle: 'Percentage of users who attempted verification, how many had a way forward' \
-            ' during this window',
-          description: 'This is counting  1 - (users who dead-ended / users who attempted). It' \
-            " shows, out of all users who attempted, who weren't dead-ended.",
+          subtitle: 'Percentage of users who attempted verification, how many had a way forward ' \
+            'during this window',
+          description: 'This is counting  1 - (users who dead-ended / users who attempted). It ' \
+            "shows, out of all users who attempted, who weren't dead-ended.",
           colors: ['#18f', '#e21c3d'],
           library: {
             plotOptions: { series: { stacking: 'percent' } },
+            series: [{
+              dataMapping: { y: 'Path Forward' },
+            }, {
+              dataMapping: { y: 'Dead End' },
+            }],
           },
         }),
       }
@@ -61,10 +64,10 @@ module Report
           subtitle: 'How users verified their identity during this window',
           description: 'Channels through which users verified their identity credentials. ' \
             'Preverified = A user created a verification profile (passed proofing) elsewhere ' \
-            'prior to this window. Remote unattended = Users who went through the online proofing' \
-            ' process. IPP = users who completed their proofing process through in person ' \
-            'verification. Physical letter = users who completed their address verification ' \
-            'through receiving a letter from the Post Office.',
+            'prior to this window. Remote unattended = Users who went through the online ' \
+            'proofing process. IPP = users who completed their proofing process through in ' \
+            'person verification. Physical letter = users who completed their address ' \
+            'verification through receiving a letter from the Post Office.',
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
         }),
@@ -99,25 +102,23 @@ module Report
     end
 
     def access_path_data
-      return [] unless data.values_at(*ACCESS_PATH_KEYS).any?
+      return [] unless data.values_at('pct_path_to_access').any?
 
-      # This mimics the data value to be added by Team Data
-      pct_path_to_access = 1.0 - (data['count_deadend_sum'].to_f / data['count_stage_onboarding'])
       [
-        ['Path Forward', pct_path_to_access],
-        ['Dead End', 1 - pct_path_to_access],
+        ['Path Forward', data['pct_path_to_access']],
+        ['Dead End', 1 - data['pct_path_to_access']],
       ]
     end
 
     def channels_data
       return [] unless data.values_at(*VERIFICATION_CHANNEL_KEYS).any?
 
-      total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |key| key }.sum().to_f
+      total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |key| key }.sum
       [
-        ['Remote Unattended', data['count_pass_online_finalization'] / total],
-        ['Preverified', data['count_skip_preverified_finalization'] / total],
-        ['In-Person Proofing', data['count_pass_ipp'] / total],
-        ['Physical Letter', data['count_pass_via_letter'] / total],
+        ['Remote Unattended', divide_and_round('count_pass_online_finalization', total)],
+        ['Preverified', divide_and_round('count_skip_preverified_finalization', total)],
+        ['In-Person Proofing', divide_and_round('count_pass_ipp', total)],
+        ['Physical Letter', divide_and_round('count_pass_via_letter', total)],
       ]
     end
 
@@ -128,11 +129,15 @@ module Report
         ['Document Upload UX', data['count_blocked_docuemnt_upload_ux']],
         ['Selfie UX Issue', data['count_selfie_ux']],
         ['Identity Resolution Attribute Mismatch',
-          data['count_identity_resolution_attribute_mismatch']],
+         data['count_identity_resolution_attribute_mismatch']],
         ['Phone Number Record Check Failure',
-          data['count_phone_number_record_check_failure']],
+         data['count_phone_number_record_check_failure']],
         ['Temporary Technical Issue', data['count_temporary_technical_issue']],
       ]
+    end
+
+    def divide_and_round(numerator, denominator)
+      (data[numerator] / denominator.to_f).round(4)
     end
   end
 end
