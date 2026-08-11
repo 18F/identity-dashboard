@@ -250,6 +250,13 @@ describe 'reporting feature basics' do
         expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
         expect(page).to_not have_content 'Fraudsters Blocked'
       end
+
+      it 'can switch to the Authentication tab', :js do
+        click_on 'Authentication'
+        expect(page).to have_content('Percentage of successful new accounts')
+        expect(page).to have_text(/account creation success rate\s*100.0%/i)
+        expect(page).to have_text(/authentication success rate\s*96.4%/i)
+      end
     end
   end
 
