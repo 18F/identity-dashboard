@@ -31,7 +31,7 @@
         <% end %>
 
         <% if status.host %>
-          <%= link_to status.short_name, status.host, class: 'usa-link--external' %> —
+          <%= link_to status.short_name, status.host %> —
         <% else %>
           <%= status.short_name %> —
         <% end %>
@@ -39,10 +39,10 @@
         <% if status.error %>
           <%= status.error %>
         <% else %>
-          <%= status.branch %> @ <%= link_to status.short_sha, status.commit_url, class: 'usa-link--external' %> —
+          <%= status.branch %> @ <%= link_to status.short_sha, status.commit_url %> —
           <%= t 'home.deployed_by_html',
               time: time_ago_in_words(status.timestamp),
-              href: link_to(t('links.pending_changes'), status.pending_url, class: 'usa-link--external') %>
+              href: link_to(t('links.pending_changes'), status.pending_url) %>
         <% end %>
       </div>
     <% end %>
