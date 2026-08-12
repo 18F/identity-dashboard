@@ -283,17 +283,12 @@ describe 'reporting feature basics' do
       expect(find_all('svg').count).to eq(2)
     end
 
-    it 'allows switching between tabs', :js do
+    it 'does not show tabs', :js do
       select partner_sp.friendly_name, from: 'Application'
       select '2025-12-01', from: 'Date of report'
       click_on 'View report'
-      expect(page).to have_content 'Fraud Prevention'
-      click_on 'Fraud Prevention'
-      expect(page).to_not have_content 'SUCCESSFUL AUTHENTICATIONS'
-      expect(page).to have_content 'Fraudsters Blocked'
-      click_on 'Usage'
       expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
-      expect(page).to_not have_content 'Fraudsters Blocked'
+      expect(page).to_not have_content 'Fraud Prevention'
     end
 
     context 'with mostly missing data' do
