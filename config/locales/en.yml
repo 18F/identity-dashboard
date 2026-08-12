@@ -181,53 +181,43 @@ en:
     logout_fail: Logout failed
     logout_ok: Successfully logged out
   reports:
-    # Usage
-    count_active_users: Number of Users Who Accessed Your Services
-    count_authentications: Authentications
-    count_existing_accounts: Existing Accounts
-    count_identity_verified_users: Identity Verified Users
-    count_newly_created_accounts: Newly Created Accounts
-    count_newly_proofed_users: Newly Proofed Users
-    count_preverified_users: Preverified Users
-    # Fraud Prevention
-    count_blocked_attempted_fraud: Number of Users blocked for Attempted Fraud
-    count_blocked_authentic_drivers_license: Authentic Driver's License
+    count_address_other_not_found: Address / Not Found / Other
+    count_backup_code_successful: Backup Code
     count_blocked_by_ipp_fraud: Failed In-Person and Blocked
-    count_blocked_identity_not_found: Identity Not Found (SSN / DOB / Deceased)
-    count_device_behavior_fraud_signals: Pending Fraud Review
+    count_friction_during_otp: Friction during OTP
+    count_dob_incorrect: DOB Incorrect
+    count_doc_auth_processing_issue: Doc. Auth. Processing Issue
+    count_doc_auth_technical_issue: Doc. Auth. Technical Issue
+    count_doc_auth_ux: Doc. Auth. UX Issue
+    count_existing_accounts: Existing Accounts
     count_facial_mismatch: Facial Mismatch
     count_fraud_alert: Fraud Alert Detected
     count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
+    count_identity_not_found: Identity Not Found
+    count_inauthentic_doc: Inauthentic Doc.
     count_lack_phone_ownership: Lacking Phone Ownership
-    count_registered_blocked_fraud: Account Creation
-    count_suspicious_phone: Suspicious Phone
-    count_wrong_phone_type: Wrong Phone Type
-    count_pass_via_lg99: Adjudicated as Legitimate
-    # Authentication
-    pct_backup_code_of_auth: Backup Code
-    pct_desktop_of_auth: Device Type Desktop
-    pct_mobile_of_auth: Device Type Mobile
-    pct_personal_key_of_auth: Personal Key
-    pct_piv_cac_of_auth: PIV / CAC
-    pct_sms_of_auth: SMS
-    pct_authentication_success: Authentication Success
-    pct_account_creation_success: Account Creation Success
-    pct_totp_of_auth: Authenticator App
-    pct_voice_of_auth: Voice
-    pct_webauthn_platform_of_auth: Face / Touch
-    pct_webauthn_of_auth: Security Key
-    # Identity Verification
-    count_blocked_document_upload_ux: Blocked at Document Upload UX
-    count_identity_resolution_attribute_mismatch: Identity Resolution Attribute Mismatch
-    count_pass_ipp: In-Person Proofed
-    count_pass_online_finalization: Remote Unattended
-    count_pass_sum: Proofing Success
+    count_newly_created_accounts: Newly Created Accounts
+    count_newly_proofed_users: Newly Proofed
+    count_pass_online_finalization: Pass Online
+    count_pass_ipp_online_portion: Pass IPP (Online Portion)
     count_pass_via_letter: Pass via Letter
-    count_phone_number_record_check_failure: Phone Number Record Check Failure
+    count_pass_via_lg99: Adjudicated as Legitimate
+    count_pending_lg99_likely_fraud: Pending Fraud Review
+    count_personal_key_successful: Personal Key
+    count_piv_cac_successful: PIV / CAC
+    count_preverified_users: Previously Proofed
+    count_resolution_technical_issues: Other Technical Issues
     count_selfie_ux: Selfie UX Issue
-    count_skip_preverified_finalization: Preverified
-    count_temporary_technical_issues: Temporary Technical Issue
-    # General
+    count_sms_successful: SMS
+    count_ssn_dob_deceased: Rejected for Invalid SSN / DOB, or Deceased
+    count_ssn_incorrect: SSN Incorrect
+    count_stayed_blocked: Stayed Blocked After Suspected Fraud
+    count_suspicious_phone: Suspicious Phone
+    count_totp_successful: Authenticator App
+    count_voice_successful: Voice
+    count_webauthn_successful: Security Key
+    count_webauthn_platform_successful: Face / Touch
+    count_wrong_phone_type: Wrong Phone Type
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
     errors:
       generic: The link for that report was not valid. You can select a different report from the options below.

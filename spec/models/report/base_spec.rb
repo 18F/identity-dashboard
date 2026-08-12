@@ -19,23 +19,20 @@ describe Report::Base do
 
     it 'can return the data #as_array_with_i18n_labels' do
       expected_data = [
-        ['Number of Users Who Accessed Your Services', 143],
-        ['Number of Users blocked for Attempted Fraud', 12], ['Newly Created Accounts', 118],
-        ['Existing Accounts', 23], ['Identity Verified Users', 103], ['Newly Proofed Users', 83],
-        ['Preverified Users', 20], ['Authentications', 1501], ['Account Creation', 1],
-        ["Authentic Driver's License", 1], ['Facial Mismatch', 2],
-        ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
-        ['Fraud Alert Detected', 1], ['Suspicious Phone', 1], ['Lacking Phone Ownership', 0],
-        ['Wrong Phone Type', 0], ['Failed In-Person and Blocked', 1], ['Pending Fraud Review', 0],
-        ['Adjudicated as Legitimate', 0], ['Proofing Success', 83], ['Preverified', 2],
-        ['Remote Unattended', 81], ['In-Person Proofed', 0], ['Pass via Letter', 0],
-        ['Blocked at Document Upload UX', 0], ['Selfie UX Issue', 0],
-        ['Identity Resolution Attribute Mismatch', 0], ['Phone Number Record Check Failure', 0],
-        ['Temporary Technical Issue', 0], ['Authentication Success', 0.9644],
-        ['Device Type Mobile', 0.036], ['Device Type Desktop', 0.964], ['Face / Touch', 0.0466],
-        ['Authenticator App', 0.7561], ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0],
-        ['Backup Code', 0.0039], ['Security Key', 0.0], ['Personal Key', 0.0],
-        ['Account Creation Success', 1.0]
+        ['Newly Created Accounts', 1173], ['Existing Accounts', 346], ['Newly Proofed', 17],
+        ['Previously Proofed', 30], ['Inauthentic Doc.', 475], ['Facial Mismatch', 82],
+        ['Invalid Attributes (DL, DOS)', 500], ['Rejected for Invalid SSN / DOB, or Deceased', 12],
+        ['Address / Not Found / Other', 163], ['Pending Fraud Review', 24],
+        ['Stayed Blocked After Suspected Fraud', 27], ['Fraud Alert Detected', 2],
+        ['Suspicious Phone', 1567], ['Lacking Phone Ownership', 1288], ['Wrong Phone Type', 317],
+        ['Failed In-Person and Blocked', 0], ['Adjudicated as Legitimate', 22],
+        ['Pass Online', 22330], ['Pass IPP (Online Portion)', 319], ['Pass via Letter', 0],
+        ['Doc. Auth. UX Issue', 0], ['Selfie UX Issue', 54], ['DOB Incorrect', 65],
+        ['SSN Incorrect', 186], ['Identity Not Found', 6], ['Friction during OTP', 59],
+        ['Doc. Auth. Technical Issue', 0], ['Other Technical Issues', 0],
+        ['Doc. Auth. Processing Issue', 2], ['Face / Touch', 38], ['Authenticator App', 71],
+        ['PIV / CAC', 93], ['SMS', 284], ['Voice', 4], ['Backup Code', 2],
+        ['Security Key', 8], ['Personal Key', 0]
       ]
       expect(subject.as_array_with_i18n_labels).to eq(expected_data)
     end
@@ -48,13 +45,13 @@ describe Report::Base do
         .and_return(storage_mock)
       allow(storage_mock).to receive(:fetch).and_return(
         { 'data' => {
-          'count_blocked_attempted_fraud' => expected_count,
+          'count_stayed_blocked' => expected_count,
           'invalid_key' => rand(100..10_000),
           'count_other_invalid_key' => rand(10..1000),
         } },
       )
       expect(subject.as_array_with_i18n_labels).to eq(
-        [[I18n.t('reports.count_blocked_attempted_fraud'), expected_count]],
+        [[I18n.t('reports.count_stayed_blocked'), expected_count]],
       )
     end
 

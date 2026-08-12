@@ -52,10 +52,7 @@ describe Report::IdV do
                 colorByPoint: true,
               },
             },
-            yAxis: {
-              gridLineColor: '#888',
-              minTickInterval: 1,
-            },
+            yAxis: { gridLineColor: '#888' },
           },
         },
       })
@@ -105,10 +102,7 @@ describe Report::IdV do
                 colorByPoint: true,
               },
             },
-            yAxis: {
-              gridLineColor: '#888',
-              minTickInterval: 1,
-            },
+            yAxis: { gridLineColor: '#888' },
           },
         },
       })

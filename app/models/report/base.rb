@@ -54,10 +54,7 @@ module Report
             colorByPoint: true,
           },
         },
-        yAxis: {
-          gridLineColor: '#888',
-          minTickInterval: 1,
-        },
+        yAxis: { gridLineColor: '#888' },
       })
       DEFAULT_OPTIONS.merge(chart_options)
     end

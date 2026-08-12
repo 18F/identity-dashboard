@@ -156,7 +156,7 @@ describe AnalyticsController do
             expect(response.body).to_not include('invalid_key')
             csv_data = CSV.parse(response.body)
             row_headers = csv_data.map { |row| row[0] }
-            expect(row_headers).to include(I18n.t('reports.count_active_users'))
+            expect(row_headers).to include(I18n.t('reports.count_dob_incorrect'))
             expect(row_headers.select { |header| header.match(/translation/i) }).to be_empty
           end
         end

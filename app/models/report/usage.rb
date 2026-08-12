@@ -7,11 +7,15 @@ module Report
     ].freeze
 
     def total
-      data['count_active_users'].presence
+      return unless data.values_at(*USAGE_KEYS).any?
+
+      USAGE_KEYS.sum { |key| data[key].to_i }
     end
 
     def successful_auths
-      data['count_auth_successful'].presence
+      return unless data['count_auth_successful'].present?
+
+      data['count_auth_successful']
     end
 
     def chart
