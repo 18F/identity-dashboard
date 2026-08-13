@@ -735,6 +735,38 @@ feature 'Service Providers CRUD' do
   describe 'Update' do
     let(:user_to_log_in_as) { user }
 
+    context 'as logingov admin in prod' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      let(:user_to_log_in_as) { logingov_admin }
+
+      scenario 'allows update for IAL' do
+        config = create(:service_provider,
+                                :ready_to_activate_ial_1,
+                                with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        select_el = page.find('#service_provider_ial')
+        expect(select_el.disabled?).to be(false)
+      end
+    end
+
+    context 'user in prod' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      scenario 'does not allow update for IAL' do
+        config = create(:service_provider,
+                                :ready_to_activate_ial_1,
+                                with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        select_el = page.find('#service_provider_ial')
+        expect(select_el.disabled?).to be(true)
+      end
+    end
+
     scenario 'user updates service provider' do
       config = create(:service_provider, with_team_from_user: user)
 

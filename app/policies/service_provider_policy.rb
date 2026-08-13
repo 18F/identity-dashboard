@@ -37,11 +37,15 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   ]).freeze
 
   def permitted_attributes
-    return ADMIN_PARAMS if user_has_login_admin_role?
-
     params = BASE_PARAMS.dup
-    params.delete(:ial) if ial_readonly?
     params.delete(:post_idv_follow_up_url) unless edit_idv_follow_up?
+
+    return params unless IdentityConfig.store.prod_like_env
+
+    if existing_config && ServiceProviderPolicy.new(user, existing_config).ial_readonly?
+      params.delete(:ial)
+    end
+
     params
   end
 
