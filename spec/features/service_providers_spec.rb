@@ -757,6 +757,12 @@ feature 'Service Providers CRUD' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
 
+      scenario 'prod_config attribute is not visible' do
+        config = create(:service_provider, with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        expect(page).to_not have_content('Ready for Production')
+      end
+
       scenario 'does not allow update for IAL' do
         config = create(:service_provider,
                                 :ready_to_activate_ial_1,
