@@ -540,6 +540,7 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content('Version History')
       end
     end
+    # rubocop:enable Layout/LineLength
   end
 
   context 'when login.gov admin' do
