@@ -97,6 +97,4 @@ describe Report::Authentication do
       })
     end
   end
-
-  context
 end
