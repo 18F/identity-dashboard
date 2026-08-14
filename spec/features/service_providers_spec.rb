@@ -750,6 +750,12 @@ feature 'Service Providers CRUD' do
         select_el = page.find('#service_provider_ial')
         expect(select_el.disabled?).to be(false)
       end
+
+      scenario 'prod_config attribute is not visible' do
+        config = create(:service_provider, with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        expect(page).to_not have_content('Ready for Production')
+      end
     end
 
     context 'user in prod' do
