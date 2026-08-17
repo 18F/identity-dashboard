@@ -121,6 +121,9 @@
           </div>
         </div>
         <div class="padding-x-1 mobile-lg:margin-top-2">
+          <%= render(ChartComponent.new(**@reports.authentication.device_type_chart)) %>
+        </div>
+        <div class="padding-x-1 mobile-lg:margin-top-2">
           <%= render(ChartComponent.new(**@reports.authentication.mfa_chart)) %>
         </div>
       <% end # capture %>

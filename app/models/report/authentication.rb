@@ -15,6 +15,11 @@ module Report
       pct_personal_key_of_auth
     ].freeze
 
+    DEVICE_PERCENTAGES = %w[
+      pct_mobile_of_auth
+      pct_desktop_of_auth
+    ].freeze
+
     def success_rate
       return nil unless data['pct_authentication_success']
 
@@ -42,6 +47,22 @@ module Report
       }
     end
 
+    def device_type_chart
+      {
+        type: :pie_chart,
+        data: device_type_data,
+        options: merge_options({
+          title: 'Device Type',
+          subtitle: 'How users accessed your service during this window',
+          description:
+            'Percentage of successful sign-ins from device type, out of all successful attempts.',
+          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
+          donut: true,
+          suffix: '%',
+        }),
+      }
+    end
+
     private
 
     def mfa_type_data
@@ -50,6 +71,14 @@ module Report
       mfa_ratios = as_array_with_i18n_labels(MFA_PERCENTAGES.select { |key| data.key?(key) })
       # Turn ratios into rounded percentages
       mfa_ratios.map { |(key, value)| [key, rounded_percentage(value)] }
+    end
+
+    def device_type_data
+      return [] unless data.values_at(*DEVICE_PERCENTAGES).any?
+
+      device_ratios = as_array_with_i18n_labels(DEVICE_PERCENTAGES.select { |key| data.key?(key) })
+      # Turn ratios into rounded percentages
+      device_ratios.map { |(key, value)| [key, rounded_percentage(value)] }
     end
 
     def rounded_percentage(float)
