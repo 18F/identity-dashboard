@@ -70,7 +70,7 @@ describe ToolsController do
           msg = <<~EOS.squish
             You have passed a logout request. Currently, this tool is for
             Authentication requests only. Please try this
-            <a href="https://www.samltool.com/validate_logout_req.php" target="_blank">tool</a>
+            <a href="https://www.samltool.com/validate_logout_req.php" target="_blank" class="usa-link--external">tool</a>
             to validate logout requests.
           EOS
 
