@@ -42,10 +42,18 @@ module Report
             'during this window',
           description: 'This is counting  1 - (users who dead-ended / users who attempted). It ' \
             "shows, out of all users who attempted, who weren't dead-ended.",
-          colors: ['#18f', '#e21c3d'],
           stacked: true,
           max: 100,
           suffix: '%',
+          colors: ['#e21c3d', '#18f'],
+          library: {
+            plotOptions: {
+              series: {
+                animation: false,
+                colorByPoint: false,
+              },
+            },
+          },
         }),
       }
     end
@@ -100,8 +108,12 @@ module Report
       return [] unless data.values_at('pct_path_to_access').any?
 
       [
-        { name: 'Path Forward', data: [['', 100 * data['pct_path_to_access']]] },
-        { name: 'Dead End', data: [['', 100 * (1 - data['pct_path_to_access'])]] },
+        { name: 'Dead End',
+          data: [['', 100 * (1 - data['pct_path_to_access'])]],
+        },
+        { name: 'Path Forward',
+          data: [['', 100 * data['pct_path_to_access']]],
+        },
       ]
     end
 

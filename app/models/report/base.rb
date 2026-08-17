@@ -33,6 +33,8 @@ module Report
 
     def merge_options(chart_options)
       chart_options[:library] || chart_options[:library] = {}
+      plot_opts = chart_options.dig(:library, :plotOptions)
+
       chart_options[:library].merge!({
         title: { align: 'left' },
         subtitle: {
@@ -55,8 +57,7 @@ module Report
           minTickInterval: 1,
         },
       })
-      series_opts = chart_options.dig(:library, :plotOptions, :series)
-      chart_options[:library][:plotOptions][:series] = series_opts if series_opts
+      chart_options[:library][:plotOptions].merge!(plot_opts) if plot_opts
       DEFAULT_OPTIONS.merge(chart_options)
     end
   end
