@@ -147,5 +147,8 @@
 
   &__panel {
     content-visibility: auto;
+    div:last-of-type {
+      @include u-padding-bottom(1);
+    }
   }
 }

@@ -49,12 +49,12 @@ class HelpText
 
   # HelpText.lookup returns a HelpText instance that represents all the chosen help text
   #
-  # If you provide `params` as well as `service_provider`, the vaules in `params` will be used with
-  # the `service_provider` only relevant for filling in friendly names in the help text or when
+  # If you provide `params` as well as `service_provider`, the values in `params` will be used first
+  # with the `service_provider` only relevant for filling in friendly names in the help text or when
   # using `#revert_unless_presets_only`.
   #
-  # A service provider is required because, without a service provider reference,
-  # the localizations won't have enough context.
+  # A service provider is always required because the localizations are parameterized and expect
+  # friendly name strings from a service provider for those parameters.
   def self.lookup(service_provider:, params: nil)
     raise ArgumentError, '`HelpText.lookup`: nothing to look up' unless params || service_provider
 

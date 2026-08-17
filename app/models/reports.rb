@@ -65,6 +65,10 @@ class Reports
     @usage ||= Report::Usage.new(self)
   end
 
+  def authentication
+    @authentication ||= Report::Authentication.new(self)
+  end
+
   def idv
     @idv ||= Report::IdV.new(self)
   end
