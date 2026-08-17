@@ -42,7 +42,6 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
     params = BASE_PARAMS.dup
     params.delete(:ial) if ial_readonly?
     params.delete(:post_idv_follow_up_url) unless edit_idv_follow_up?
-
     params
   end
 
