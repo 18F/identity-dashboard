@@ -14,7 +14,7 @@ class ToolsController < AuthenticatedController # :nodoc:
       flash[:warning] = 'You have passed a logout request. Currently, this tool is for ' \
         'Authentication requests only. Please try this ' \
         '<a href="https://www.samltool.com/validate_logout_req.php" ' \
-        'target="_blank">tool</a> to validate logout requests.'
+        'target="_blank" class="usa-link--external">tool</a> to validate logout requests.'
 
       @validation_attempted = false
       render 'saml_request' and return
