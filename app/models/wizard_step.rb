@@ -54,7 +54,7 @@ class WizardStep < ApplicationRecord
   validates :step_name, presence: true
 
   # Step-specific validations owned by the step object
-  validate :run_step_object_validations, on: 'settings'
+  validate :run_step_object_validations, on: ['settings', 'issuer']
 
   # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
   # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
@@ -72,13 +72,6 @@ class WizardStep < ApplicationRecord
   ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
   # except for the step contexts
 
-  # We can't test uniqueness here with a built-in Rails vaildator because here
-  # we have to search through the ServiceProviders table to find conflicts
-  validates :issuer, presence: true, on: 'issuer'
-
-  validates :issuer,
-            format: { with: IdentityValidations::ServiceProviderValidation::ISSUER_FORMAT_REGEXP },
-            on: 'issuer'
   validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
   # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
@@ -106,7 +99,6 @@ class WizardStep < ApplicationRecord
 
   ### end of validations copied from IdentityValidations::ServiceProviderValidation
 
-  validate :issuer_service_provider_uniqueness, on: 'issuer'
   validate :failure_to_proof_url_for_idv, on: 'redirects'
 
   # SimpleForm uses this
@@ -279,15 +271,6 @@ class WizardStep < ApplicationRecord
     logo_file&.blob&.download
   end
 
-  def existing_service_provider?
-    !!original_service_provider
-  end
-
-  def original_service_provider
-    id = WizardStep.find_by(step_name: 'hidden', user: user)&.service_provider_id
-    id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
-  end
-
   def using_idv?
     ial.to_i > 1
   end
@@ -331,12 +314,6 @@ class WizardStep < ApplicationRecord
       not_before: time,
       not_after: time,
     )
-  end
-
-  def issuer_service_provider_uniqueness
-    return if existing_service_provider? && original_service_provider.issuer == issuer
-
-    errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer:).any?
   end
 
   def failure_to_proof_url_for_idv
