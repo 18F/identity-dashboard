@@ -45,15 +45,7 @@ module Report
           },
         },
         plotOptions: {
-          bar: {
-            animation: false,
-            colorByPoint: true,
-          },
-          column: {
-            animation: false,
-            colorByPoint: true,
-          },
-          pie: {
+          series: {
             animation: false,
             colorByPoint: true,
           },
@@ -63,8 +55,8 @@ module Report
           minTickInterval: 1,
         },
       })
-      seriesOpts = chart_options.dig(:library, :plotOptions, :series)
-      chart_options[:library][:plotOptions][:series] = seriesOpts if seriesOpts
+      series_opts = chart_options.dig(:library, :plotOptions, :series)
+      chart_options[:library][:plotOptions][:series] = series_opts if series_opts
       DEFAULT_OPTIONS.merge(chart_options)
     end
   end

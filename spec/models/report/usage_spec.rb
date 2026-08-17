@@ -54,15 +54,7 @@ describe Report::Usage do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
-                animation: false,
-                colorByPoint: true,
-              },
-              pie: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
@@ -100,15 +92,7 @@ describe Report::Usage do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
-                animation: false,
-                colorByPoint: true,
-              },
-              pie: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
@@ -206,18 +190,10 @@ describe Report::Usage do
               },
             },
             plotOptions: {
-              bar: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
-              column: {
-                animation: false,
-                colorByPoint: true,
-              },
-              pie: {
-                animation: false,
-                colorByPoint: true,
-              }
             },
             yAxis: {
               gridLineColor: '#888',

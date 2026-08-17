@@ -43,11 +43,7 @@ describe Report::IdV do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
@@ -96,11 +92,7 @@ describe Report::IdV do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
