@@ -32,7 +32,7 @@ describe Report::Base do
         ['Blocked at Document Upload UX', 0], ['Selfie UX Issue', 0],
         ['Identity Resolution Attribute Mismatch', 0], ['Phone Number Record Check Failure', 0],
         ['Temporary Technical Issue', 0], ['Authentication Success', 0.9644],
-        ['Device Type Mobile', 0.036], ['Device Type Desktop', 0.964], ['Face / Touch', 0.0466],
+        ['Mobile', 0.036], ['Desktop', 0.964], ['Face / Touch', 0.0466],
         ['Authenticator App', 0.7561], ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0],
         ['Backup Code', 0.0039], ['Security Key', 0.0], ['Personal Key', 0.0],
         ['Account Creation Success', 1.0]
