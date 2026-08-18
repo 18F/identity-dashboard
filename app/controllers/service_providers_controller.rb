@@ -42,11 +42,7 @@ class ServiceProvidersController < AuthenticatedController
     authorize @service_provider
   end
 
-  def edit
-    return unless IdentityConfig.store.prod_like_env
-
-    redirect_to service_config_wizard_index_path(service_provider: params[:id])
-  end
+  def edit; end
 
   def create
     @service_provider = policy_scope(ServiceProvider).new

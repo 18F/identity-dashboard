@@ -540,30 +540,6 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content('Version History')
       end
     end
-
-    context 'and Production gate is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive_messages(
-          prod_like_env: true,
-          edit_button_uses_service_config_wizard: false,
-        )
-      end
-
-      it 'does not redirect to new service_config_wizard' do
-        visit new_service_provider_path
-
-        expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
-        expect(page).to have_current_path(service_providers_path)
-      end
-
-      it 'redirects to edit service_config_wizard' do
-        team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
-        sp = create(:service_provider, team: team_membership.team)
-        visit edit_service_provider_path(id: sp)
-
-        expect(page).to have_current_path(service_config_wizard_index_path(service_provider: sp.id))
-      end
-    end
     # rubocop:enable Layout/LineLength
   end
 
@@ -734,6 +710,40 @@ feature 'Service Providers CRUD' do
 
   describe 'Update' do
     let(:user_to_log_in_as) { user }
+
+    describe 'in Prod' do
+      before do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      end
+
+      scenario 'prod_config attribute is not visible' do
+        config = create(:service_provider, with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        expect(page).to_not have_content('Ready for Production')
+      end
+
+      scenario 'does not allow update for IAL' do
+        config = create(:service_provider,
+                                  :ready_to_activate_ial_1,
+                                  with_team_from_user: user_to_log_in_as)
+        visit edit_service_provider_path(config)
+        select_el = page.find('#service_provider_ial')
+        expect(select_el.disabled?).to be(true)
+      end
+
+      context 'as logingov admin' do
+        let(:user_to_log_in_as) { logingov_admin }
+
+        scenario 'allows update for IAL' do
+          config = create(:service_provider,
+                                  :ready_to_activate_ial_1,
+                                  with_team_from_user: user_to_log_in_as)
+          visit edit_service_provider_path(config)
+          select_el = page.find('#service_provider_ial')
+          expect(select_el.disabled?).to be(false)
+        end
+      end
+    end
 
     scenario 'user updates service provider' do
       config = create(:service_provider, with_team_from_user: user)
