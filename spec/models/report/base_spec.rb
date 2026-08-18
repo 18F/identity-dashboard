@@ -27,15 +27,15 @@ describe Report::Base do
         ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
         ['Fraud Alert Detected', 1], ['Suspicious Phone', 1], ['Lacking Phone Ownership', 0],
         ['Wrong Phone Type', 0], ['Failed In-Person and Blocked', 1], ['Pending Fraud Review', 0],
-        ['Adjudicated as Legitimate', 0], ['Proofing Success', 83], ['Preverified', 2],
-        ['Remote Unattended', 81], ['In-Person Proofed', 0], ['Pass via Letter', 0],
-        ['Blocked at Document Upload UX', 0], ['Selfie UX Issue', 0],
-        ['Identity Resolution Attribute Mismatch', 0], ['Phone Number Record Check Failure', 0],
-        ['Temporary Technical Issue', 0], ['Authentication Success', 0.9644],
-        ['Mobile', 0.036], ['Desktop', 0.964], ['Face / Touch', 0.0466],
-        ['Authenticator App', 0.7561], ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0],
-        ['Backup Code', 0.0039], ['Security Key', 0.0], ['Personal Key', 0.0],
-        ['Account Creation Success', 1.0]
+        ['Adjudicated as Legitimate', 0], ['Preverified', 2], ['Remote Unattended', 61],
+        ['In-Person Proofed', 3], ['Pass via Letter', 9], ['Blocked at Document Upload UX', 3],
+        ['Selfie UX Issue', 1], ['Identity Resolution Attribute Mismatch', 2],
+        ['Phone Number Record Check Failure', 1], ['Temporary Technical Issue', 0],
+        ['Overall Proofing Success Rate', 0.914], ['Authentication Success', 0.9644],
+        ['Path to Access Rate', 0.9259], ['Device Type Mobile', 0.036],
+        ['Device Type Desktop', 0.964], ['Face / Touch', 0.0466], ['Authenticator App', 0.7561],
+        ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0], ['Backup Code', 0.0039],
+        ['Security Key', 0.0], ['Personal Key', 0.0], ['Account Creation Success', 1.0]
       ]
       expect(subject.as_array_with_i18n_labels).to eq(expected_data)
     end
@@ -56,6 +56,14 @@ describe Report::Base do
       expect(subject.as_array_with_i18n_labels).to eq(
         [[I18n.t('reports.count_blocked_attempted_fraud'), expected_count]],
       )
+    end
+
+    it '#rounded_percentage' do
+      float0 = 0.672755877
+      float1 = 0.3
+
+      expect(subject.rounded_percentage(float0)).to eq(67.28)
+      expect(subject.rounded_percentage(float1)).to eq(30.0)
     end
 
     it 'raises a NotImplementedError for #chart' do

@@ -99,7 +99,7 @@ module Report
 
     def proofing_success_data
       return [] unless data.values_at('pct_proofing_success').any? &&
-        data['pct_proofing_success'] > 0
+                       data['pct_proofing_success'].positive?
 
       [
         ['Pass', rounded_percentage(data['pct_proofing_success'])],
@@ -109,15 +109,13 @@ module Report
 
     def access_path_data
       return [] unless data.values_at('pct_path_to_access').any? &&
-        data['pct_path_to_access'] > 0
+                       data['pct_path_to_access'].positive?
 
       [
         { name: 'Dead End',
-          data: [['', rounded_percentage(1 - data['pct_path_to_access'])]],
-        },
+          data: [['', rounded_percentage(1 - data['pct_path_to_access'])]] },
         { name: 'Path Forward',
-          data: [['', rounded_percentage(data['pct_path_to_access'])]],
-        },
+          data: [['', rounded_percentage(data['pct_path_to_access'])]] },
       ]
     end
 
@@ -148,7 +146,7 @@ module Report
     end
 
     def divide_and_round(numerator, denominator)
-      return 0 unless data[numerator] && denominator > 0
+      return 0 unless data[numerator] && denominator.positive?
 
       rounded_percentage(data[numerator] / denominator.to_f)
     end
