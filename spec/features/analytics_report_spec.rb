@@ -232,13 +232,13 @@ describe 'reporting feature basics' do
 
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
-        expect(csv_response.length).to eq(44)
+        expect(csv_response.length).to eq(45)
         expect(csv_response[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
         expect(csv_response[1]).to eq(['Start Date', '', '2025-12-01', ''])
         expect(csv_response[2]).to eq(['Number of Users Who Accessed Your Services', '', '143', ''])
         expect(csv_response[6]).to eq(['Identity Verified Users', '', '103', ''])
-        expect(csv_response[30]).to eq(['Phone Number Record Check Failure', '', '0', ''])
-        expect(csv_response[38]).to eq(['SMS', '', '0.0709', ''])
+        expect(csv_response[29]).to eq(['Phone Number Record Check Failure', '', '1', ''])
+        expect(csv_response[39]).to eq(['SMS', '', '0.0709', ''])
       end
 
       it 'allows switching between tabs', :js do
@@ -249,6 +249,14 @@ describe 'reporting feature basics' do
         click_on 'Usage'
         expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
         expect(page).to_not have_content 'Fraudsters Blocked'
+      end
+
+      it 'can switch to the Identity Verification tab', :js do
+        click_on 'Identity Verification'
+        expect(page).to have_content('Proofing Success Rate')
+        expect(page).to have_content('Path to Access Rate')
+        expect(page).to have_content('Identity Verification Channels')
+        expect(page).to have_content('Points of User Friction')
       end
 
       it 'can show Authentication tab data', :js do

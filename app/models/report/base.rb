@@ -29,6 +29,10 @@ module Report
       end
     end
 
+    def rounded_percentage(float)
+      (float * 100.0).round(2)
+    end
+
     private
 
     def merge_options(chart_options)

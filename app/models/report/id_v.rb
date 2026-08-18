@@ -28,6 +28,7 @@ module Report
             'credentials out of total users attempting, controlling for fraud and abandonment.',
           colors: ['#18f', '#e21c3d'],
           donut: true,
+          suffix: '%',
         }),
       }
     end
@@ -40,7 +41,7 @@ module Report
           title: 'Path to Access Rate',
           subtitle: 'Percentage of users who attempted verification, how many had a way forward ' \
             'during this window',
-          description: 'This is counting  1 - (users who dead-ended / users who attempted). It ' \
+          description: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
             "shows, out of all users who attempted, who weren't dead-ended.",
           stacked: true,
           max: 100,
@@ -73,6 +74,7 @@ module Report
             'verification through receiving a letter from the Post Office.',
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
+          suffix: '%',
         }),
       }
     end
@@ -96,23 +98,25 @@ module Report
     private
 
     def proofing_success_data
-      return [] unless data.values_at('pct_proofing_success').any?
+      return [] unless data.values_at('pct_proofing_success').any? &&
+        data['pct_proofing_success'] > 0
 
       [
-        ['Pass', data['pct_proofing_success']],
-        ['Not Pass', 1.0 - data['pct_proofing_success']],
+        ['Pass', rounded_percentage(data['pct_proofing_success'])],
+        ['Not Pass', rounded_percentage(1.0 - data['pct_proofing_success'])],
       ]
     end
 
     def access_path_data
-      return [] unless data.values_at('pct_path_to_access').any?
+      return [] unless data.values_at('pct_path_to_access').any? &&
+        data['pct_path_to_access'] > 0
 
       [
         { name: 'Dead End',
-          data: [['', 100 * (1 - data['pct_path_to_access'])]],
+          data: [['', rounded_percentage(1 - data['pct_path_to_access'])]],
         },
         { name: 'Path Forward',
-          data: [['', 100 * data['pct_path_to_access']]],
+          data: [['', rounded_percentage(data['pct_path_to_access'])]],
         },
       ]
     end
@@ -133,18 +137,20 @@ module Report
       return [] unless data.values_at(*FRICTION_POINT_KEYS).any?
 
       [
-        ['Document Upload UX', data['count_blocked_docuemnt_upload_ux']],
+        ['Document Upload UX', data['count_blocked_document_upload_ux']],
         ['Selfie UX Issue', data['count_selfie_ux']],
         ['Identity Resolution Attribute Mismatch',
          data['count_identity_resolution_attribute_mismatch']],
         ['Phone Number Record Check Failure',
          data['count_phone_number_record_check_failure']],
-        ['Temporary Technical Issue', data['count_temporary_technical_issue']],
+        ['Temporary Technical Issue', data['count_temporary_technical_issues']],
       ]
     end
 
     def divide_and_round(numerator, denominator)
-      (data[numerator] / denominator.to_f).round(4)
+      return 0 unless data[numerator] && denominator > 0
+
+      rounded_percentage(data[numerator] / denominator.to_f)
     end
   end
 end
