@@ -98,7 +98,7 @@ module Report
     private
 
     def proofing_success_data
-      return [] unless data.values_at('pct_proofing_success').any? &&
+      return [] unless data['pct_proofing_success'].present? &&
                        data['pct_proofing_success'].positive?
 
       [
@@ -108,7 +108,7 @@ module Report
     end
 
     def access_path_data
-      return [] unless data.values_at('pct_path_to_access').any? &&
+      return [] unless data['pct_path_to_access'].present? &&
                        data['pct_path_to_access'].positive?
 
       [
@@ -122,7 +122,7 @@ module Report
     def channels_data
       return [] unless data.values_at(*VERIFICATION_CHANNEL_KEYS).any?
 
-      total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |key| key }.sum
+      total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |val| val }.sum
       verification_channels = as_array_with_i18n_labels(
         VERIFICATION_CHANNEL_KEYS.select { |key| data.key?(key) },
       )
