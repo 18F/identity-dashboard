@@ -36,6 +36,9 @@ feature 'Analytics page', :js do
 
       click_on('Authentication')
       expect_page_to_have_no_accessibility_violations(page)
+
+      click_on('Identity Verification')
+      expect_page_to_have_no_accessibility_violations(page)
     end
   end
 end

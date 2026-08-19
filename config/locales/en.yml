@@ -217,7 +217,7 @@ en:
     pct_webauthn_platform_of_auth: Face / Touch
     pct_webauthn_of_auth: Security Key
     # Identity Verification
-    count_blocked_document_upload_ux: Blocked at Document Upload UX
+    count_blocked_document_upload_ux: Document Upload UX
     count_identity_resolution_attribute_mismatch: Identity Resolution Attribute Mismatch
     count_pass_ipp: In-Person Proofed
     count_pass_online_finalization: Remote Unattended

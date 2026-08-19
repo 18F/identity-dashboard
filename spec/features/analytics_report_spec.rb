@@ -251,12 +251,38 @@ describe 'reporting feature basics' do
         expect(page).to_not have_content 'Fraudsters Blocked'
       end
 
-      it 'can switch to the Identity Verification tab', :js do
+      it 'can show Identity Verification tab data', :js do
         click_on 'Identity Verification'
-        expect(page).to have_content('Proofing Success Rate')
-        expect(page).to have_content('Path to Access Rate')
-        expect(page).to have_content('Identity Verification Channels')
-        expect(page).to have_content('Points of User Friction')
+
+        charts = find_all('svg')
+        proofing_success = charts.first
+        access_path = charts[1]
+        channels = charts[2]
+        friction = charts[3]
+
+        expect(proofing_success.text).to start_with('Proofing Success Rate')
+        expect(access_path.text).to start_with('Path to Access Rate')
+        expect(channels.text).to start_with('Identity Verification Channels')
+        expect(friction.text).to start_with('Points of User Friction')
+
+        proofing_success_labels = proofing_success.find_all('text > tspan')
+        access_path_labels = access_path.find_all('text')
+        channels_labels = channels.find_all('text > tspan')
+        friction_labels = friction.find_all('.highcharts-xaxis-labels > text')
+
+        expect(proofing_success_labels.map(&:text)).to eq(['Pass', 'Not Pass'])
+        expect(access_path_labels[2].text).to eq('Dead End')
+        expect(access_path_labels[3].text).to eq('Path Forward')
+        expect(channels_labels.map(&:text)).to eq([
+          'Remote Unattended', 'Preverified', 'In-Person Proofing', 'Physical Letter',
+        ])
+        expect(friction_labels.map(&:text)).to eq([
+          'Document Upload UX',
+          'Selfie UX Issue',
+          'Identity Resolution AttributeMismatch',
+          'Phone Number Record Check Failure',
+          'Temporary Technical Issue',
+        ])
       end
 
       it 'can show Authentication tab data', :js do

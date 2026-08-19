@@ -4,14 +4,14 @@ module Report
     FRICTION_POINT_KEYS = %w[
       blocked_document_upload_ux
       selfie_ux
-      identity_resolution_atribute_mismatch
+      identity_resolution_attribute_mismatch
       phone_number_record_check_failure
       temporary_technical_issues
     ].map { |key| "count_#{key}" }.freeze
 
     VERIFICATION_CHANNEL_KEYS = %w[
-      skip_preverified_finalization
       pass_online_finalization
+      skip_preverified_finalization
       pass_ipp
       pass_via_letter
     ].map { |key| "count_#{key}" }.freeze
@@ -123,32 +123,26 @@ module Report
       return [] unless data.values_at(*VERIFICATION_CHANNEL_KEYS).any?
 
       total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |key| key }.sum
-      [
-        ['Remote Unattended', divide_and_round('count_pass_online_finalization', total)],
-        ['Preverified', divide_and_round('count_skip_preverified_finalization', total)],
-        ['In-Person Proofing', divide_and_round('count_pass_ipp', total)],
-        ['Physical Letter', divide_and_round('count_pass_via_letter', total)],
-      ]
+      verification_channels = as_array_with_i18n_labels(
+        VERIFICATION_CHANNEL_KEYS.select { |key| data.key?(key) }
+      )
+      # Turn integers into rounded percentages
+      verification_channels.map { |(key, value)| [key, divide_and_round(value, total)] }
     end
 
     def friction_data
       return [] unless data.values_at(*FRICTION_POINT_KEYS).any?
 
-      [
-        ['Document Upload UX', data['count_blocked_document_upload_ux']],
-        ['Selfie UX Issue', data['count_selfie_ux']],
-        ['Identity Resolution Attribute Mismatch',
-         data['count_identity_resolution_attribute_mismatch']],
-        ['Phone Number Record Check Failure',
-         data['count_phone_number_record_check_failure']],
-        ['Temporary Technical Issue', data['count_temporary_technical_issues']],
-      ]
+      friction_points = as_array_with_i18n_labels(
+        FRICTION_POINT_KEYS.select { |key| data.key?(key) }
+      )
+      friction_points.to_a
     end
 
     def divide_and_round(numerator, denominator)
-      return 0 unless data[numerator] && denominator.positive?
+      return 0 unless numerator && denominator.positive?
 
-      rounded_percentage(data[numerator] / denominator.to_f)
+      rounded_percentage(numerator / denominator.to_f)
     end
   end
 end
