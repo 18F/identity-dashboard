@@ -238,7 +238,7 @@ accessibility-specs:
   stage: test
   needs:
     - job: install
-  parallel: 3
+  parallel: 4
   cache:
     - <<: *ruby_cache
     - <<: *npm_cache
