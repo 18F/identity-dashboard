@@ -274,15 +274,18 @@ describe 'reporting feature basics' do
         expect(access_path_labels[2].text).to eq('Dead End')
         expect(access_path_labels[3].text).to eq('Path Forward')
         expect(channels_labels.map(&:text)).to eq([
-          'Remote Unattended', 'Preverified', 'In-Person Proofing', 'Physical Letter',
-        ])
+                                                    'Remote Unattended',
+                                                    'Preverified',
+                                                    'In-Person Proofing',
+                                                    'Physical Letter',
+                                                  ])
         expect(friction_labels.map(&:text)).to eq([
-          'Document Upload UX',
-          'Selfie UX Issue',
-          'Identity Resolution AttributeMismatch',
-          'Phone Number Record Check Failure',
-          'Temporary Technical Issue',
-        ])
+                                                    'Document Upload UX',
+                                                    'Selfie UX Issue',
+                                                    'Identity Resolution AttributeMismatch',
+                                                    'Phone Number Record Check Failure',
+                                                    'Temporary Technical Issue',
+                                                  ])
       end
 
       it 'can show Authentication tab data', :js do

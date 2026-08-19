@@ -124,7 +124,7 @@ module Report
 
       total = data.values_at(*VERIFICATION_CHANNEL_KEYS).filter { |key| key }.sum
       verification_channels = as_array_with_i18n_labels(
-        VERIFICATION_CHANNEL_KEYS.select { |key| data.key?(key) }
+        VERIFICATION_CHANNEL_KEYS.select { |key| data.key?(key) },
       )
       # Turn integers into rounded percentages
       verification_channels.map { |(key, value)| [key, divide_and_round(value, total)] }
@@ -134,7 +134,7 @@ module Report
       return [] unless data.values_at(*FRICTION_POINT_KEYS).any?
 
       friction_points = as_array_with_i18n_labels(
-        FRICTION_POINT_KEYS.select { |key| data.key?(key) }
+        FRICTION_POINT_KEYS.select { |key| data.key?(key) },
       )
       friction_points.to_a
     end
