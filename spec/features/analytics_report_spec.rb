@@ -255,7 +255,11 @@ describe 'reporting feature basics' do
         click_on 'Authentication'
         expect(page).to have_content('Percentage of successful new accounts')
         expect(page).to have_text(/account creation success rate\s*100.0%/i)
-        expect(page).to have_text(/authentication success rate\s*96.4%/i)
+        success_summary = find_all('div.data-summary')[3]
+        expect(success_summary).to have_text(/authentication success rate\s*96.4%/i)
+        expect(success_summary).to have_text(
+          'out of total attempts excluding where users were already signed in',
+        )
       end
     end
   end
