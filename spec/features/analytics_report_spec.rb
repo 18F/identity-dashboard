@@ -251,7 +251,7 @@ describe 'reporting feature basics' do
         expect(page).to_not have_content 'Fraudsters Blocked'
       end
 
-      it 'can switch to the Authentication tab', :js do
+      it 'can show Authentication tab data', :js do
         click_on 'Authentication'
         expect(page).to have_content('Percentage of successful new accounts')
         expect(page).to have_text(/account creation success rate\s*100.0%/i)
@@ -260,6 +260,12 @@ describe 'reporting feature basics' do
         expect(success_summary).to have_text(
           'out of total attempts excluding where users were already signed in',
         )
+
+        charts = find_all('svg')
+        expect(charts.first.text).to start_with('Device Type')
+        device_chart = charts.first
+        labels = device_chart.find_all('text > tspan')
+        expect(labels.map(&:text)).to eq(['Mobile', 'Desktop'])
       end
     end
   end

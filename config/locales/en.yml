@@ -205,8 +205,8 @@ en:
     count_pass_via_lg99: Adjudicated as Legitimate
     # Authentication
     pct_backup_code_of_auth: Backup Code
-    pct_desktop_of_auth: Device Type Desktop
-    pct_mobile_of_auth: Device Type Mobile
+    pct_desktop_of_auth: Desktop
+    pct_mobile_of_auth: Mobile
     pct_personal_key_of_auth: Personal Key
     pct_piv_cac_of_auth: PIV / CAC
     pct_sms_of_auth: SMS
