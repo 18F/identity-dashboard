@@ -45,7 +45,8 @@ module Report
     private
 
     def idv_data
-      if data.blank? || data['count_newly_proofed_users'].blank? && data['count_preverified_users'].blank?
+      if data.blank? ||
+         (data['count_newly_proofed_users'].blank? && data['count_preverified_users'].blank?)
         return []
       end
 
