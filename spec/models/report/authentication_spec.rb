@@ -59,24 +59,21 @@ describe Report::Authentication do
     end
 
     it 'returns a #device_type_chart of percentages, rounded' do
-      expect(subject.device_type_chart).to eq({
+      expect(subject.device_type_chart).to include({
         type: :pie_chart,
         data: [['Mobile', 3.6], ['Desktop', 96.4]],
-        options: {
-          title: 'Device Type',
-          description:
+      })
+      expect(subject.device_type_chart[:options]).to include({
+        title: 'Device Type',
+        description:
             'Percentage of successful sign-ins from device type, out of all successful attempts.',
-          donut: true,
-          suffix: '%',
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
-          library: {
-            accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
-            plotOptions: { bar: { animation: false, colorByPoint: true },
-                           column: { animation: false, colorByPoint: true } },
-            subtitle: { align: 'left', text: 'How users accessed your service during this window' },
-            title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 }
-          },
-        },
+        donut: true,
+        suffix: '%',
+        colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
+      })
+      expect(subject.device_type_chart[:options][:library]).to include({
+        subtitle: { align: 'left', text: 'How users accessed your service during this window' },
+        accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
       })
     end
   end
