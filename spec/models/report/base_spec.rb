@@ -23,19 +23,19 @@ describe Report::Base do
         ['Number of Users blocked for Attempted Fraud', 12], ['Newly Created Accounts', 118],
         ['Existing Accounts', 23], ['Identity Verified Users', 103], ['Newly Proofed Users', 83],
         ['Preverified Users', 20], ['Authentications', 1501], ['Account Creation', 1],
-        ["Authentic Driver's License", 1], ['Facial Mismatch', 2],
+        ['Authentic Driver\'s License', 1], ['Facial Mismatch', 2],
         ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
         ['Fraud Alert Detected', 1], ['Suspicious Phone', 1], ['Lacking Phone Ownership', 0],
         ['Wrong Phone Type', 0], ['Failed In-Person and Blocked', 1], ['Pending Fraud Review', 0],
         ['Adjudicated as Legitimate', 0], ['Preverified', 2], ['Remote Unattended', 61],
-        ['In-Person Proofed', 3], ['Pass via Letter', 9], ['Blocked at Document Upload UX', 3],
+        ['In-Person Proofing', 3], ['Physical Letter', 9], ['Document Upload UX', 3],
         ['Selfie UX Issue', 1], ['Identity Resolution Attribute Mismatch', 2],
         ['Phone Number Record Check Failure', 1], ['Temporary Technical Issue', 0],
         ['Overall Proofing Success Rate', 0.914], ['Authentication Success', 0.9644],
-        ['Path to Access Rate', 0.9259], ['Device Type Mobile', 0.036],
-        ['Device Type Desktop', 0.964], ['Face / Touch', 0.0466], ['Authenticator App', 0.7561],
-        ['PIV / CAC', 0.0068], ['SMS', 0.0709], ['Voice', 0.0], ['Backup Code', 0.0039],
-        ['Security Key', 0.0], ['Personal Key', 0.0], ['Account Creation Success', 1.0]
+        ['Path to Access Rate', 0.9259], ['Mobile', 0.036], ['Desktop', 0.964],
+        ['Face / Touch', 0.0466], ['Authenticator App', 0.7561], ['PIV / CAC', 0.0068],
+        ['SMS', 0.0709], ['Voice', 0.0], ['Backup Code', 0.0039], ['Security Key', 0.0],
+        ['Personal Key', 0.0], ['Account Creation Success', 1.0]
       ]
       expect(subject.as_array_with_i18n_labels).to eq(expected_data)
     end

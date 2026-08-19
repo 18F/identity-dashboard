@@ -127,8 +127,7 @@ describe Report::Authentication do
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           library: {
             accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
-            plotOptions: { bar: { animation: false, colorByPoint: true },
-                           column: { animation: false, colorByPoint: true } },
+            plotOptions: { series: { animation: false, colorByPoint: true } },
             subtitle: { align: 'left', text: 'How users accessed your service during this window' },
             title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 }
           },
