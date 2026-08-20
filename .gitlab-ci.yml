@@ -238,6 +238,7 @@ accessibility-specs:
   stage: test
   needs:
     - job: install
+  parallel: 4
   cache:
     - <<: *ruby_cache
     - <<: *npm_cache
@@ -268,14 +269,16 @@ accessibility-specs:
     - cp config/application.yml.default config/application.yml
     - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\" > config/application.yml"
     - bundle exec rake db:setup
-    - bundle exec rspec --pattern "spec/features/accessibility/*_spec.rb" --format documentation --format RspecJunitFormatter --out rspec.xml
+    - specs=$(ls spec/features/accessibility/*_spec.rb | sed -n "${CI_NODE_INDEX}~${CI_NODE_TOTAL}p" | tr '\n' ' ')
+    - echo "bundle exec rspec $specs --format documentation --format RspecJunitFormatter --out rspec-${CI_NODE_INDEX}.xml"
+    - bundle exec rspec $specs --format documentation --format RspecJunitFormatter --out "rspec-${CI_NODE_INDEX}.xml"
   artifacts:
     when: always
     reports:
-      junit: rspec.xml
+      junit: "rspec-${CI_NODE_INDEX}.xml"
     expire_in: 31d
     paths:
-      - rspec.xml
+      - "rspec-${CI_NODE_INDEX}.xml"
 
 other-specs:
   stage: test
