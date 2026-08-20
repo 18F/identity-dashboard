@@ -282,7 +282,7 @@ describe 'reporting feature basics' do
         expect(friction_labels.map(&:text)).to eq([
                                                     'Document Upload UX',
                                                     'Selfie UX Issue',
-                                                    'Identity Resolution AttributeMismatch',
+                                                    'Identity Resolution Attribute Mismatch',
                                                     'Phone Number Record Check Failure',
                                                     'Temporary Technical Issue',
                                                   ])
