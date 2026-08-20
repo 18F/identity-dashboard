@@ -80,9 +80,5 @@ module Report
       # Turn ratios into rounded percentages
       device_ratios.map { |(key, value)| [key, rounded_percentage(value)] }
     end
-
-    def rounded_percentage(float)
-      (float * 100.0).round(2)
-    end
   end
 end

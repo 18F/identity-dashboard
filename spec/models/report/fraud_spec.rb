@@ -51,11 +51,7 @@ describe Report::Fraud do
             },
           },
           plotOptions: {
-            bar: {
-              animation: false,
-              colorByPoint: true,
-            },
-            column: {
+            series: {
               animation: false,
               colorByPoint: true,
             },
@@ -93,11 +89,7 @@ describe Report::Fraud do
             },
           },
           plotOptions: {
-            bar: {
-              animation: false,
-              colorByPoint: true,
-            },
-            column: {
+            series: {
               animation: false,
               colorByPoint: true,
             },
@@ -155,11 +147,7 @@ describe Report::Fraud do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },
@@ -192,11 +180,7 @@ describe Report::Fraud do
               },
             },
             plotOptions: {
-              bar: {
-                animation: false,
-                colorByPoint: true,
-              },
-              column: {
+              series: {
                 animation: false,
                 colorByPoint: true,
               },

@@ -29,10 +29,16 @@ module Report
       end
     end
 
+    def rounded_percentage(float)
+      (float * 100.0).round(2)
+    end
+
     private
 
     def merge_options(chart_options)
       chart_options[:library] || chart_options[:library] = {}
+      plot_opts = chart_options.dig(:library, :plotOptions)
+
       chart_options[:library].merge!({
         title: { align: 'left' },
         subtitle: {
@@ -45,11 +51,7 @@ module Report
           },
         },
         plotOptions: {
-          bar: {
-            animation: false,
-            colorByPoint: true,
-          },
-          column: {
+          series: {
             animation: false,
             colorByPoint: true,
           },
@@ -59,6 +61,7 @@ module Report
           minTickInterval: 1,
         },
       })
+      chart_options[:library][:plotOptions].merge!(plot_opts) if plot_opts
       DEFAULT_OPTIONS.merge(chart_options)
     end
   end

@@ -66,10 +66,10 @@
     <% capture do %>
       <div class="grid-row grid-gap padding-x-1">
         <div class="tablet-lg:grid-col-6 margin-top-2">
-          <%= render(ChartComponent.new(**@reports.usage.chart)) %>
+          <%= render(ChartComponent.new(**@reports.usage.overall_chart)) %>
         </div>
         <div class="tablet-lg:grid-col-6 margin-top-2">
-          <%= render(ChartComponent.new(**@reports.idv.chart)) %>
+          <%= render(ChartComponent.new(**@reports.usage.idv_chart)) %>
         </div>
       </div>
       <div class="grid-row grid-gap padding-x-1 margin-2">
@@ -85,12 +85,12 @@
   <% end %>
   <% tab_component.add_tab(title: 'Fraud Prevention', id: 'fraud-prevention') do %>
     <% capture do %>
-        <div class="padding-x-1 margin-top-2">
-          <%= render(ChartComponent.new(**@reports.fraud.chart)) %>
-        </div>
-        <div class="padding-x-1 margin-top-2">
-          <%= render(ChartComponent.new(**@reports.fraud.review_queue_chart)) %>
-        </div>
+      <div class="padding-x-1 margin-top-2">
+        <%= render(ChartComponent.new(**@reports.fraud.chart)) %>
+      </div>
+      <div class="padding-x-1 margin-top-2">
+        <%= render(ChartComponent.new(**@reports.fraud.review_queue_chart)) %>
+      </div>
     <% end %>
   <% end %>
   <% if current_user.logingov_admin? %>
@@ -125,6 +125,22 @@
         </div>
         <div class="padding-x-1 margin-top-2">
           <%= render(ChartComponent.new(**@reports.authentication.mfa_chart)) %>
+        </div>
+      <% end # capture %>
+    <% end # add_tab %>
+    <% tab_component.add_tab(title: 'Identity Verification', id: 'idv') do %>
+      <% capture do %>
+        <div class="padding-x-1 margin-top-2">
+          <%= render(ChartComponent.new(**@reports.idv.proofing_success_chart)) %>
+        </div>
+        <div class="padding-x-1 margin-top-2">
+          <%= render(ChartComponent.new(**@reports.idv.access_path_chart)) %>
+        </div>
+        <div class="padding-x-1 margin-top-2">
+          <%= render(ChartComponent.new(**@reports.idv.channels_chart)) %>
+        </div>
+        <div class="padding-x-1 margin-top-2">
+          <%= render(ChartComponent.new(**@reports.idv.friction_chart)) %>
         </div>
       <% end # capture %>
     <% end # add_tab %>

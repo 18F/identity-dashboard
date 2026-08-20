@@ -232,13 +232,13 @@ describe 'reporting feature basics' do
 
         expect(response_headers['content-type']).to start_with('text/csv')
         csv_response = CSV.parse(body)
-        expect(csv_response.length).to eq(44)
+        expect(csv_response.length).to eq(45)
         expect(csv_response[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
         expect(csv_response[1]).to eq(['Start Date', '', '2025-12-01', ''])
         expect(csv_response[2]).to eq(['Number of Users Who Accessed Your Services', '', '143', ''])
         expect(csv_response[6]).to eq(['Identity Verified Users', '', '103', ''])
-        expect(csv_response[30]).to eq(['Phone Number Record Check Failure', '', '0', ''])
-        expect(csv_response[38]).to eq(['SMS', '', '0.0709', ''])
+        expect(csv_response[29]).to eq(['Phone Number Record Check Failure', '', '1', ''])
+        expect(csv_response[39]).to eq(['SMS', '', '0.0709', ''])
       end
 
       it 'allows switching between tabs', :js do
@@ -249,6 +249,43 @@ describe 'reporting feature basics' do
         click_on 'Usage'
         expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
         expect(page).to_not have_content 'Fraudsters Blocked'
+      end
+
+      it 'can show Identity Verification tab data', :js do
+        click_on 'Identity Verification'
+
+        charts = find_all('svg')
+        proofing_success = charts.first
+        access_path = charts[1]
+        channels = charts[2]
+        friction = charts[3]
+
+        expect(proofing_success.text).to start_with('Proofing Success Rate')
+        expect(access_path.text).to start_with('Path to Access Rate')
+        expect(channels.text).to start_with('Identity Verification Channels')
+        expect(friction.text).to start_with('Points of User Friction')
+
+        proofing_success_labels = proofing_success.find_all('text > tspan')
+        access_path_labels = access_path.find_all('text')
+        channels_labels = channels.find_all('text > tspan')
+        friction_labels = friction.find_all('.highcharts-xaxis-labels > text')
+
+        expect(proofing_success_labels.map(&:text)).to eq(['Pass', 'Not Pass'])
+        expect(access_path_labels[2].text).to eq('Dead End')
+        expect(access_path_labels[3].text).to eq('Path Forward')
+        expect(channels_labels.map(&:text)).to eq([
+                                                    'Remote Unattended',
+                                                    'Preverified',
+                                                    'In-Person Proofing',
+                                                    'Physical Letter',
+                                                  ])
+        expect(friction_labels.map(&:text)).to eq([
+                                                    'Document Upload UX',
+                                                    'Selfie UX Issue',
+                                                    'Identity Resolution Attribute Mismatch',
+                                                    'Phone Number Record Check Failure',
+                                                    'Temporary Technical Issue',
+                                                  ])
       end
 
       it 'can show Authentication tab data', :js do
