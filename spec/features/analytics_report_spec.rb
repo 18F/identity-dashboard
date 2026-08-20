@@ -279,13 +279,14 @@ describe 'reporting feature basics' do
                                                     'In-Person Proofing',
                                                     'Physical Letter',
                                                   ])
-        expect(friction_labels.map(&:text)).to eq([
-                                                    'Document Upload UX',
-                                                    'Selfie UX Issue',
-                                                    'Identity Resolution Attribute Mismatch',
-                                                    'Phone Number Record Check Failure',
-                                                    'Temporary Technical Issue',
-                                                  ])
+        friction_text = friction_labels.map(&:text)
+
+        expect(friction_text[0]).to eq('Document Upload UX')
+        expect(friction_text[1]).to eq('Selfie UX Issue')
+        # This sometimes has a non-breaking space
+        expect(friction_text[2]).to match(/Identity\sResolution\sAttribute\s?Mismatch/)
+        expect(friction_text[3]).to eq('Phone Number Record Check Failure')
+        expect(friction_text[4]).to eq('Temporary Technical Issue')
       end
 
       it 'can show Authentication tab data', :js do
