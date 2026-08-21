@@ -9,6 +9,8 @@ describe User do
   end
 
   let(:user) { build(:user) }
+  let(:logingov_admin) { create(:logingov_admin) }
+  let(:logingov_readonly) { create(:logingov_readonly) }
 
   describe '#uuid' do
     it 'does not assign uuid on create' do
@@ -61,10 +63,15 @@ describe User do
   end
 
   describe '#scoped_service_providers' do
-    it 'returns only the users team sps regardless of who created them' do
-      team = create(:team)
+    let!(:team) { create(:team) }
+    let(:other_team) { build(:team) }
+
+    before do
       user.teams = [team]
       user.save
+    end
+
+    it 'returns only the users team sps regardless of who created them' do
       team_sp = create(:service_provider, team:)
       user_and_team_sp = create(:service_provider, user:, team:)
       _user_only_sp = create(:service_provider, user:)
@@ -74,9 +81,6 @@ describe User do
     end
 
     it "alphabetizes the list user's team sps" do
-      team = create(:team)
-      user.teams = [team]
-      user.save
       sp = {}
       %i[a G c I e].shuffle.each do |prefix|
         sp[prefix.downcase] = create(:service_provider,
@@ -85,11 +89,35 @@ describe User do
                                      friendly_name: "#{prefix}_service_provider")
       end
       %i[f B h D j].shuffle.each do |prefix|
-        sp[prefix.downcase] = create(:service_provider,
-                                     team: team,
-                                     friendly_name: "#{prefix}_service_provider")
+        create(:service_provider,
+               team: other_team,
+               friendly_name: "#{prefix}_service_provider")
       end
       expect(user.scoped_service_providers).to eq(sp.keys.sort.map { |k| sp[k] })
+    end
+
+    it 'returns all team SPs for Logingov Admins' do
+      sp = {}
+      %i[f B h D j].shuffle.each do |prefix|
+        sp[prefix.downcase] = create(:service_provider,
+                                     team: other_team,
+                                     friendly_name: "#{prefix}_service_provider")
+      end
+      expect(logingov_admin.scoped_service_providers).to eq(sp.keys.sort.map { |k|
+        sp[k]
+      })
+    end
+
+    it 'returns all team SPs for Logingov Readonly' do
+      sp = {}
+      %i[f B h D j].shuffle.each do |prefix|
+        sp[prefix.downcase] = create(:service_provider,
+                                     team: other_team,
+                                     friendly_name: "#{prefix}_service_provider")
+      end
+      expect(logingov_readonly.scoped_service_providers).to eq(sp.keys.sort.map { |k|
+        sp[k]
+      })
     end
   end
 

@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   def scoped_service_providers(scope: nil)
     scope ||= ServiceProvider.all
-    user_scope = logingov_admin ? scope : scope.where(id: service_providers)
+    user_scope = logingov_staff? ? scope : scope.where(id: service_providers)
     user_scope.order('lower(friendly_name)')
   end
 
