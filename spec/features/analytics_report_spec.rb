@@ -127,19 +127,42 @@ describe 'reporting feature basics' do
           expect(all_hidden_apps.count).to eq(0)
         end
 
-        it 'shows the correct dates for a chosen application' do
-          select second_sp.friendly_name, from: 'Application'
+        context 'with dates computed from created_at' do
+          around { |example| travel_to(Date.new(2025, 12, 15)) { example.run } }
 
-          all_hidden_dates = page.find_all('#analytic_date .display-none')
+          let(:test_sp) do
+            create(
+              :service_provider,
+              :ready_to_activate,
+              issuer: issuer_with_lots_of_test_data,
+              user: logingov_admin,
+              team: logingov_admin.teams.first,
+              created_at: Date.new(2025, 8, 1),
+            )
+          end
+          let(:second_sp) do
+            create(:service_provider,
+                    :ready_to_activate,
+                    issuer: issuer_with_a_little_test_data,
+                    user: logingov_admin,
+                    team: second_team,
+                    created_at: Date.new(2025, 10, 15))
+          end
 
-          expect(page).to have_content('2025-04-01')
-          expect(page).to have_content('2025-08-01')
-          expect(page).to have_content('2025-12-01')
+          it 'shows the correct dates for a chosen application' do
+            select second_sp.friendly_name, from: 'Application'
 
-          expect(all_hidden_dates.count).to eq(1)
-          expect(all_hidden_dates.map(&:text)).to_not include('2025-04-01')
-          expect(all_hidden_dates.map(&:text)).to_not include('2025-08-01')
-          expect(all_hidden_dates.map(&:text)).to include('2025-12-01')
+            all_hidden_dates = page.find_all('#analytic_date .display-none')
+
+            expect(page).to have_content('2025-10-01')
+            expect(page).to have_content('2025-11-01')
+            expect(page).to have_content('2025-12-01')
+
+            expect(all_hidden_dates.count).to eq(1)
+            expect(all_hidden_dates.map(&:text)).to include('2025-10-01')
+            expect(all_hidden_dates.map(&:text)).to_not include('2025-11-01')
+            expect(all_hidden_dates.map(&:text)).to_not include('2025-12-01')
+          end
         end
       end
 
@@ -368,7 +391,7 @@ describe 'reporting feature basics' do
 
       it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
-        select '2025-08-01', from: 'Date of report'
+        select '2025-10-01', from: 'Date of report'
         click_on 'View report'
 
         expect(find_all('svg').count).to eq(1)
