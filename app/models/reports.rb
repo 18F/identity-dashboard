@@ -19,11 +19,9 @@ class Reports
     configs.index_by(&:issuer).transform_values { |sp| monthly_dates_for(sp) }
   end
 
-  def self.monthly_dates_for(service_provider)
-    start_date = [
-      service_provider.created_at.to_date.beginning_of_month + 1.month,
-      EARLIEST_REPORT_DATE,
-    ].max
+  # @return [Array<String>] monthly date strings (newest first) from the
+  #   current month back through start_date
+  def self.monthly_dates_since(start_date)
     current = Date.current.beginning_of_month
     dates = []
     while current >= start_date
@@ -31,6 +29,14 @@ class Reports
       current = current.prev_month
     end
     dates
+  end
+
+  def self.monthly_dates_for(service_provider)
+    start_date = [
+      service_provider.created_at.to_date.beginning_of_month + 1.month,
+      EARLIEST_REPORT_DATE,
+    ].max
+    monthly_dates_since(start_date)
   end
   private_class_method :monthly_dates_for
 
