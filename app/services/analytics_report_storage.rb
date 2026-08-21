@@ -8,14 +8,6 @@ class AnalyticsReportStorage
   REPORT_VERSION = 'v2'.freeze
   attr_reader :backend, :issuer, :date
 
-  def self.list(criteria = [])
-    new.list(Array(criteria))
-  end
-
-  def self.list_by_issuer(criteria = [])
-    new.list_by_issuer(Array(criteria))
-  end
-
   def self.fetch(issuer, date)
     new(issuer, date).fetch
   end
@@ -41,28 +33,6 @@ class AnalyticsReportStorage
     issuer_to_id_map.keys
   end
 
-  # @param criteria [Array<String>] to limit list results
-  # @return [Array<Object>] AWS object metadata
-  def list(criteria)
-    backend.list(issuer_to_id_map.values_at(*criteria).compact)
-  end
-
-  # @param criteria [Array<String>] to limit list results
-  # @return [Hash<String,Array<Object>>] (issuer, list of file metadata objects)
-  def list_by_issuer(criteria)
-    # create a hash of issuer string => empty array
-    issuer_to_file_map = criteria.index_with { |_c| [] }
-    # list files and associate with issuer in the above map
-    list(criteria).each do |file|
-      file_map_key = issuer_to_file_map[
-        issuer_to_id_map.key(sp_identifier(file)),
-      ]
-      file_map_key&.push(file)
-    end
-
-    issuer_to_file_map
-  end
-
   private
 
   def build_key(qualifier, date)
@@ -86,10 +56,5 @@ class AnalyticsReportStorage
         {}
       end
     end
-  end
-
-  def sp_identifier(file)
-    match = /(\d*)\/monthly\/.*\.json/.match(file.key)
-    match && match[1].to_i
   end
 end
