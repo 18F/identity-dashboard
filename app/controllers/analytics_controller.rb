@@ -1,6 +1,5 @@
 class AnalyticsController < ApplicationController # :nodoc:
   DEFAULT_GRAPH_OPTIONS = { download: true }.freeze
-  EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
 
   before_action -> { authorize analytic }
   before_action :validate_and_compile_errors
@@ -111,15 +110,15 @@ class AnalyticsController < ApplicationController # :nodoc:
 
   def available_report_dates
     @available_report_dates ||= begin
-      dates = Reports.available_dates(available_service_providers, current_user)
-      dates.values.flatten.uniq.presence || fallback_report_dates
+      dates = Reports.available_dates(available_service_providers)
+      dates.values.flatten.uniq.sort.reverse.presence || fallback_report_dates
     end
   end
 
   def fallback_report_dates
     current = Date.current.beginning_of_month
     dates = []
-    while current >= EARLIEST_REPORT_DATE
+    while current >= Reports::EARLIEST_REPORT_DATE
       dates << current.strftime('%F')
       current = current.prev_month
     end
