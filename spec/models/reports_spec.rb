@@ -66,6 +66,22 @@ describe Reports do
     end
   end
 
+  describe '.monthly_dates_since' do
+    it 'returns monthly dates from the current month back through start_date' do
+      travel_to Date.new(2026, 3, 15) do
+        expect(described_class.monthly_dates_since(Date.new(2026, 1, 1))).to eq(
+          %w[2026-03-01 2026-02-01 2026-01-01],
+        )
+      end
+    end
+
+    it 'returns an empty array when start_date is after the current month' do
+      travel_to Date.new(2026, 3, 15) do
+        expect(described_class.monthly_dates_since(Date.new(2026, 4, 1))).to eq([])
+      end
+    end
+  end
+
   describe '#unwrap' do
     let(:analytic) { Analytic.new(date: '2025-12-01', config: sp) }
     let(:report_hash) { { 'data' => { 'count_newly_created_accounts' => 42 } } }
