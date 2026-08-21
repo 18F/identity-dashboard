@@ -7,19 +7,16 @@ class Reports
   # This is here to enable errors
   include ActiveModel::Model
 
+  EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
+
   attr_reader :issuer, :chosen_date
 
   # @param configs [Array] of ServiceProvider records
-  # @param user [User] usually the `current_user`
-  def self.available_dates(configs, user)
-    issuers = configs.map(&:issuer)
-    reports = list_all_reports(user).filter { |key| issuers.include?(key) }
-
-    reports.transform_values do |values|
-      values.map do |report|
-        File.basename(report.key, File.extname(report.key))
-      end
-    end.to_h
+  # @return [Hash<String, Array<String>>] issuer => monthly report date strings
+  #   (newest first), computed from each service provider's first full month
+  #   on the prod portal
+  def self.available_dates(configs)
+    configs.index_by(&:issuer).transform_values { |sp| monthly_dates_for(sp) }
   end
 
   def self.list_all_reports(user)
@@ -27,7 +24,20 @@ class Reports
     AnalyticsReportStorage.list_by_issuer(issuers)
   end
 
-  private_class_method :list_all_reports
+  def self.monthly_dates_for(service_provider)
+    start_date = [
+      service_provider.created_at.to_date.beginning_of_month + 1.month,
+      EARLIEST_REPORT_DATE,
+    ].max
+    current = Date.current.beginning_of_month
+    dates = []
+    while current >= start_date
+      dates << current.strftime('%F')
+      current = current.prev_month
+    end
+    dates
+  end
+  private_class_method :monthly_dates_for
 
   def initialize(analytic)
     @issuer = analytic.config&.issuer

@@ -32,10 +32,13 @@ describe AnalyticsController do
           expect(response).to be_ok
         end
 
-        it 'populates dates from S3 when reports exist' do
-          create(:service_provider, issuer:, team: admin_team)
+        it 'populates dates computed from the service provider created_at' do
+          create(:service_provider, issuer:, team: admin_team, created_at: Date.new(2025, 8, 1))
           get :index
-          expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
+          expect(assigns(:dates)).to include(
+            '2025-10-01', Date.current.beginning_of_month.strftime('%F')
+          )
+          expect(assigns(:dates)).to_not include('2025-08-01', '2025-09-01')
         end
 
         it 'falls back to monthly dates when no reports exist' do
@@ -303,6 +306,28 @@ describe AnalyticsController do
       get :index
 
       expect(response).to be_unauthorized
+    end
+  end
+
+  describe 'GET #index' do
+    let(:user) { create(:user, :logingov_admin) }
+    let(:team) { create(:team) }
+
+    before do
+      sign_in user
+      create(:team_membership, user:, team:, role_name: 'partner_admin')
+    end
+
+    it 'orders the date dropdown with the most recent month first and does not fetch report data' do
+      travel_to Date.new(2026, 3, 15) do
+        create(:service_provider, team:, issuer: 'issuer_one', created_at: Date.new(2025, 9, 1))
+
+        expect(AnalyticsReportStorage).to_not receive(:fetch)
+
+        get :index
+
+        expect(assigns(:dates).first).to eq('2026-03-01')
+      end
     end
   end
 end
