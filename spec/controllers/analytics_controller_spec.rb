@@ -49,6 +49,18 @@ describe AnalyticsController do
           expect(dates.last).to eq('2025-10-01')
         end
 
+        it 'orders the date dropdown with the most recent month first and does not fetch data' do
+          travel_to Date.new(2026, 3, 15) do
+            create(:service_provider, team: admin_team, issuer:, created_at: Date.new(2025, 9, 1))
+
+            expect(AnalyticsReportStorage).to_not receive(:fetch)
+
+            get :index
+
+            expect(assigns(:dates).first).to eq('2026-03-01')
+          end
+        end
+
         it 'includes all teams with configs' do
           team0 = create(:team)
           team1 = create(:team)
@@ -306,28 +318,6 @@ describe AnalyticsController do
       get :index
 
       expect(response).to be_unauthorized
-    end
-  end
-
-  describe 'GET #index' do
-    let(:user) { create(:user, :logingov_admin) }
-    let(:team) { create(:team) }
-
-    before do
-      sign_in user
-      create(:team_membership, user:, team:, role_name: 'partner_admin')
-    end
-
-    it 'orders the date dropdown with the most recent month first and does not fetch report data' do
-      travel_to Date.new(2026, 3, 15) do
-        create(:service_provider, team:, issuer: 'issuer_one', created_at: Date.new(2025, 9, 1))
-
-        expect(AnalyticsReportStorage).to_not receive(:fetch)
-
-        get :index
-
-        expect(assigns(:dates).first).to eq('2026-03-01')
-      end
     end
   end
 end
