@@ -37,8 +37,14 @@ class User < ApplicationRecord
 
   def scoped_service_providers(scope: nil)
     scope ||= ServiceProvider.all
-    user_scope = logingov_admin ? scope : scope.where(id: service_providers)
+    user_scope = scope.where(id: service_providers)
     user_scope.order('lower(friendly_name)')
+  end
+
+  def report_scoped_sps
+    return ServiceProvider.order('lower(friendly_name)') if logingov_staff?
+
+    scoped_service_providers
   end
 
   def user_deletion_history

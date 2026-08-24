@@ -42,7 +42,7 @@ describe AnalyticsController do
           get :index
           dates = assigns(:dates)
           expect(dates).to include('2025-10-01')
-          expect(dates.first).to eq(Date.current.beginning_of_month.strftime('%F'))
+          expect(dates.first).to eq(Date.current.prev_month.beginning_of_month.strftime('%F'))
           expect(dates.last).to eq('2025-10-01')
         end
 

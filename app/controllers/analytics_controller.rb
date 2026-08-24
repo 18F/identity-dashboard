@@ -119,9 +119,10 @@ class AnalyticsController < ApplicationController # :nodoc:
   def fallback_report_dates
     current = Date.current.beginning_of_month
     dates = []
-    while current >= EARLIEST_REPORT_DATE
-      dates << current.strftime('%F')
+    # We never have monthly reports for the current month
+    while current > EARLIEST_REPORT_DATE
       current = current.prev_month
+      dates << current.strftime('%F')
     end
     dates
   end

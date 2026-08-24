@@ -23,7 +23,7 @@ class Reports
   end
 
   def self.list_all_reports(user)
-    issuers = user.scoped_service_providers.map(&:issuer)
+    issuers = user.report_scoped_sps.map(&:issuer)
     AnalyticsReportStorage.list_by_issuer(issuers)
   end
 
