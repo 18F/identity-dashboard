@@ -42,9 +42,7 @@ class User < ApplicationRecord
   end
 
   def report_scoped_sps
-    if self.logingov_staff?
-      return ServiceProvider.all.order('lower(friendly_name)')
-    end
+    return ServiceProvider.order('lower(friendly_name)') if logingov_staff?
 
     scoped_service_providers
   end
