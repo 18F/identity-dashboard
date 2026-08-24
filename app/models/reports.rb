@@ -16,7 +16,9 @@ class Reports
   #   (newest first), computed from each service provider's first full month
   #   on the prod portal
   def self.available_dates(configs)
-    configs.index_by(&:issuer).transform_values { |sp| monthly_dates_for(sp) }
+    configs.index_by(&:issuer).transform_values do |sp|
+      monthly_dates_since(start_date_for(sp))
+    end
   end
 
   def self.list_all_reports(user)
@@ -36,14 +38,15 @@ class Reports
     dates
   end
 
-  def self.monthly_dates_for(service_provider)
-    start_date = [
+  # @return [Date] the first full month a service provider has data for,
+  #   floored at EARLIEST_REPORT_DATE
+  def self.start_date_for(service_provider)
+    [
       service_provider.created_at.to_date.beginning_of_month + 1.month,
       EARLIEST_REPORT_DATE,
     ].max
-    monthly_dates_since(start_date)
   end
-  private_class_method :monthly_dates_for
+  private_class_method :start_date_for
 
   def initialize(analytic)
     @issuer = analytic.config&.issuer
