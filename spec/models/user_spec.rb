@@ -11,6 +11,7 @@ describe User do
   let(:user) { build(:user) }
   let(:logingov_admin) { create(:logingov_admin) }
   let(:logingov_readonly) { create(:logingov_readonly) }
+  let(:partner_admin) { create(:user, :partner_admin) }
 
   describe '#uuid' do
     it 'does not assign uuid on create' do
@@ -95,6 +96,16 @@ describe User do
       end
       expect(user.scoped_service_providers).to eq(sp.keys.sort.map { |k| sp[k] })
     end
+  end
+
+  describe '#report_scoped_sps' do
+    let!(:team) { create(:team) }
+    let(:other_team) { build(:team) }
+
+    before do
+      user.teams = [team]
+      user.save
+    end
 
     it 'returns all team SPs for Logingov Admins' do
       sp = {}
@@ -103,7 +114,7 @@ describe User do
                                      team: other_team,
                                      friendly_name: "#{prefix}_service_provider")
       end
-      expect(logingov_admin.scoped_service_providers).to eq(sp.keys.sort.map { |k|
+      expect(logingov_admin.report_scoped_sps).to eq(sp.keys.sort.map { |k|
         sp[k]
       })
     end
@@ -115,9 +126,22 @@ describe User do
                                      team: other_team,
                                      friendly_name: "#{prefix}_service_provider")
       end
-      expect(logingov_readonly.scoped_service_providers).to eq(sp.keys.sort.map { |k|
+      expect(logingov_readonly.report_scoped_sps).to eq(sp.keys.sort.map { |k|
         sp[k]
       })
+    end
+
+    it 'returns #scoped_service_providers for all partners' do
+      allow(partner_admin).to receive(:scoped_service_providers).and_return([])
+
+      sp = {}
+      %i[f B h D j].shuffle.each do |prefix|
+        sp[prefix.downcase] = create(:service_provider,
+                                     team: other_team,
+                                     friendly_name: "#{prefix}_service_provider")
+      end
+      expect(partner_admin).to receive(:scoped_service_providers)
+      partner_admin.report_scoped_sps
     end
   end
 
@@ -133,35 +157,31 @@ describe User do
 
     it 'returns all team memberships for admins' do
       create_list(:team, 2)
-      user = create(:user, :logingov_admin)
 
-      expect(user.scoped_teams).to eq(Team.all)
+      expect(logingov_admin.scoped_teams).to eq(Team.all)
     end
   end
 
   describe '#report_scoped_teams' do
     it 'returns all teams for logingov admin' do
-      user = create(:user, :logingov_admin)
       create_list(:team, 2)
 
-      expect(user.report_scoped_teams).to eq(Team.all)
+      expect(logingov_admin.report_scoped_teams).to eq(Team.all)
     end
 
     it 'returns all teams for logingov readonly' do
-      user = create(:user, :logingov_readonly)
       create_list(:team, 2)
 
-      expect(user.report_scoped_teams).to eq(Team.all)
+      expect(logingov_readonly.report_scoped_teams).to eq(Team.all)
     end
 
     it "returns collection of users' team memberships for partner admin" do
-      user = create(:user, :partner_admin)
       team = create(:team)
       _ignored_team = create(:team)
-      user.teams = [team]
-      user.save
+      partner_admin.teams = [team]
+      partner_admin.save
 
-      expect(user.report_scoped_teams).to eq([team])
+      expect(partner_admin.report_scoped_teams).to eq([team])
     end
   end
 
@@ -260,39 +280,32 @@ describe User do
 
   describe '#logingov_admin?' do
     it 'returns true when user is logingov_admin' do
-      user = create(:user, :logingov_admin)
-      expect(user.logingov_admin?).to be_truthy
+      expect(logingov_admin.logingov_admin?).to be_truthy
     end
 
     it 'returns false when user is not logingov_admin' do
-      user = create(:user, :team_member)
-      expect(user.logingov_admin?).to be_falsy
+      expect(partner_admin.logingov_admin?).to be_falsy
     end
   end
 
   describe '#logingov_readonly?' do
     it 'returns true when user is logingov_readonly' do
-      user = create(:user, :logingov_readonly)
-      expect(user.logingov_readonly?).to be_truthy
+      expect(logingov_readonly.logingov_readonly?).to be_truthy
     end
 
     it 'returns false when user is not logingov_readonly' do
-      user = create(:user, :team_member)
-      expect(user.logingov_readonly?).to be_falsy
+      expect(partner_admin.logingov_readonly?).to be_falsy
     end
   end
 
   describe '#logingov_staff?' do
     it 'returns true when user is logingov_staff' do
-      admin = create(:user, :logingov_admin)
-      readonly = create(:user, :logingov_readonly)
-      expect(admin.logingov_staff?).to be_truthy
-      expect(readonly.logingov_staff?).to be_truthy
+      expect(logingov_admin.logingov_staff?).to be_truthy
+      expect(logingov_readonly.logingov_staff?).to be_truthy
     end
 
     it 'returns false when user is not logingov_staff' do
-      user = create(:user, :team_member)
-      expect(user.logingov_staff?).to be_falsy
+      expect(partner_admin.logingov_staff?).to be_falsy
     end
   end
 
@@ -323,7 +336,7 @@ describe User do
 
   describe '#auth_token' do
     it 'always picks the latest one' do
-      logingov_admin = create(:user, :logingov_admin) # only admins can access tokens
+      # only admins can access tokens
       _first_token_record = create(:auth_token, user: logingov_admin)
       second_token_record = create(:auth_token, user: logingov_admin)
       expect(logingov_admin.auth_token).to eq(second_token_record)
