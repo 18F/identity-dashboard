@@ -128,9 +128,7 @@ describe 'reporting feature basics' do
         end
 
         context 'with dates computed from created_at' do
-          before { travel_to(Date.new(2025, 12, 15)) }
-
-          around(&:run)
+          around { |example| travel_to(Date.new(2026, 1, 15)) { example.run } }
 
           let(:test_sp) do
             create(

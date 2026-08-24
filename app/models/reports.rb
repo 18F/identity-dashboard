@@ -26,10 +26,11 @@ class Reports
     AnalyticsReportStorage.list_by_issuer(issuers)
   end
 
-  # @return [Array<String>] monthly date strings (newest first) from the
-  #   current month back through start_date
+  # @return [Array<String>] monthly date strings (newest first) from last
+  #   month back through start_date. The current month is never included
+  #   since it hasn't completed yet and so has no report data.
   def self.monthly_dates_since(start_date)
-    current = Date.current.beginning_of_month
+    current = Date.current.beginning_of_month.prev_month
     dates = []
     while current >= start_date
       dates << current.strftime('%F')

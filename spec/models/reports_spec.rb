@@ -25,12 +25,12 @@ describe Reports do
   end
 
   describe '.available_dates' do
-    it 'returns monthly dates from the month after created_at through the current month' do
+    it 'returns monthly dates from the month after created_at through last month' do
       travel_to Date.new(2026, 3, 15) do
         sp = build(:service_provider, issuer: 'issuer_one', created_at: Date.new(2025, 12, 10))
 
         expect(described_class.available_dates([sp])).to eq(
-          'issuer_one' => %w[2026-03-01 2026-02-01 2026-01-01],
+          'issuer_one' => %w[2026-02-01 2026-01-01],
         )
       end
     end
@@ -40,7 +40,7 @@ describe Reports do
         sp = build(:service_provider, issuer: 'issuer_two', created_at: Date.new(2024, 1, 1))
 
         expect(described_class.available_dates([sp])).to eq(
-          'issuer_two' => %w[2025-12-01 2025-11-01 2025-10-01],
+          'issuer_two' => %w[2025-11-01 2025-10-01],
         )
       end
     end
@@ -56,21 +56,21 @@ describe Reports do
     it 'keys the result by issuer for multiple service providers' do
       travel_to Date.new(2026, 1, 15) do
         sp1 = build(:service_provider, issuer: 'issuer_one', created_at: Date.new(2025, 10, 1))
-        sp2 = build(:service_provider, issuer: 'issuer_two', created_at: Date.new(2025, 12, 20))
+        sp2 = build(:service_provider, issuer: 'issuer_two', created_at: Date.new(2025, 11, 20))
 
         result = described_class.available_dates([sp1, sp2])
 
         expect(result.keys).to contain_exactly('issuer_one', 'issuer_two')
-        expect(result['issuer_two']).to eq(['2026-01-01'])
+        expect(result['issuer_two']).to eq(['2025-12-01'])
       end
     end
   end
 
   describe '.monthly_dates_since' do
-    it 'returns monthly dates from the current month back through start_date' do
+    it 'returns monthly dates from last month back through start_date' do
       travel_to Date.new(2026, 3, 15) do
         expect(described_class.monthly_dates_since(Date.new(2026, 1, 1))).to eq(
-          %w[2026-03-01 2026-02-01 2026-01-01],
+          %w[2026-02-01 2026-01-01],
         )
       end
     end

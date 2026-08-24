@@ -133,7 +133,7 @@ describe AnalyticsHelper do
 
           result = service_providers_collection_for_select([sp])
 
-          expect(result.first[:controls]).to eq('2026-01-01,2025-12-01,2025-11-01,2025-10-01')
+          expect(result.first[:controls]).to eq('2025-12-01,2025-11-01,2025-10-01')
         end
       end
     end
