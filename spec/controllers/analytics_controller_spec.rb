@@ -32,18 +32,35 @@ describe AnalyticsController do
           expect(response).to be_ok
         end
 
-        it 'populates dates from S3 when reports exist' do
-          create(:service_provider, issuer:, team: admin_team)
+        it 'populates dates computed from the service provider created_at' do
+          create(:service_provider, issuer:, team: admin_team, created_at: Date.new(2025, 8, 1))
           get :index
-          expect(assigns(:dates)).to include('2025-04-01', '2025-08-01', '2025-12-01')
+          expect(assigns(:dates)).to include(
+            '2025-10-01', Date.current.beginning_of_month.prev_month.strftime('%F')
+          )
+          expect(assigns(:dates)).to_not include(
+            '2025-08-01', '2025-09-01', Date.current.beginning_of_month.strftime('%F')
+          )
         end
 
         it 'falls back to monthly dates when no reports exist' do
           get :index
           dates = assigns(:dates)
           expect(dates).to include('2025-10-01')
-          expect(dates.first).to eq(Date.current.prev_month.beginning_of_month.strftime('%F'))
+          expect(dates.first).to eq(Date.current.beginning_of_month.prev_month.strftime('%F'))
           expect(dates.last).to eq('2025-10-01')
+        end
+
+        it 'orders the date dropdown with the most recent month first and does not fetch data' do
+          travel_to Date.new(2026, 3, 15) do
+            create(:service_provider, team: admin_team, issuer:, created_at: Date.new(2025, 9, 1))
+
+            expect(AnalyticsReportStorage).to_not receive(:fetch)
+
+            get :index
+
+            expect(assigns(:dates).first).to eq('2026-02-01')
+          end
         end
 
         it 'includes all teams with configs' do

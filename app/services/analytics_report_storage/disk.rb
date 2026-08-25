@@ -3,8 +3,6 @@ class AnalyticsReportStorage
   class Disk
     attr_reader :service_config
 
-    ReportFile = Struct.new(:key, :file_size, :last_modified, keyword_init: true)
-
     def self.default_config
       {
         root: IdentityConfig.store.local_reports_folder || Rails.root.join('spec/fixtures/reports'),
@@ -13,20 +11,6 @@ class AnalyticsReportStorage
 
     def initialize(service_config = nil)
       @service_config = service_config || Disk.default_config
-    end
-
-    def list(criteria = ['/'])
-      return [] unless root_path.exist?
-
-      Dir.glob('**/*', base: root_path).filter_map do |filename|
-        file = File.new(File.join(root_path, filename))
-
-        next unless valid_file?(file)
-        next unless criteria.any? { |criterion| filename.include?(criterion.to_s) }
-
-        # Return the relative filename here so it can be passed back in to `#fetch`
-        ReportFile.new(key: filename, file_size: file.size, last_modified: file.mtime)
-      end
     end
 
     # @param key [String] the relative file path.
@@ -42,13 +26,6 @@ class AnalyticsReportStorage
     end
 
     private
-
-    def valid_file?(file_handle)
-      # Skip directories
-      return false if Dir.exist?(file_handle)
-
-      file_handle.size.positive?
-    end
 
     def root_path
       Pathname.new(service_config[:root])

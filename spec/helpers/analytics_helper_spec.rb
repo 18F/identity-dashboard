@@ -94,8 +94,6 @@ describe AnalyticsHelper do
   end
 
   describe '#service_providers_collection_for_select' do
-    let(:current_user) { create(:user, :logingov_admin) }
-
     describe 'no sps are passed in' do
       it 'returns an empty array' do
         expect(service_providers_collection_for_select([])).to eq([])
@@ -125,6 +123,18 @@ describe AnalyticsHelper do
             { title: sp.friendly_name, id: sp.uuid, controls: '' },
           ],
         )
+      end
+    end
+
+    describe 'an sp created before the earliest report date' do
+      it 'includes its computed monthly dates in controls' do
+        travel_to Date.new(2026, 1, 15) do
+          sp = create(:service_provider, :ready_to_activate, created_at: Date.new(2025, 9, 1))
+
+          result = service_providers_collection_for_select([sp])
+
+          expect(result.first[:controls]).to eq('2025-12-01,2025-11-01,2025-10-01')
+        end
       end
     end
   end

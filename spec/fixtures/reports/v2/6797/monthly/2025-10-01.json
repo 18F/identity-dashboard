@@ -6,8 +6,8 @@
     "service_provider_id": 6797
   },
   "report_information": {
-    "period_start_date": "2025-08-01 00:00:00 UTC",
-    "period_calendar_id": 20250801,
+    "period_start_date": "2025-10-01 00:00:00 UTC",
+    "period_calendar_id": 20251001,
     "report_cadence": "monthly",
     "report_generated_at": "2026-07-22 19:10:36 UTC"
   },

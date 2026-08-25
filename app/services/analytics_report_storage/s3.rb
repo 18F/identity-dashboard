@@ -15,20 +15,6 @@ class AnalyticsReportStorage
       @service_config = service_config || S3.default_config
     end
 
-    def list(criteria)
-      s3_criteria = criteria
-      s3_criteria = [''] if s3_criteria.blank?
-      s3_criteria.flat_map do |criterion|
-        # returns metadata of files: etag, key, last_modified, size, storage_class
-        s3_client.list_objects_v2(
-          bucket: service_config[:bucket],
-          prefix: "#{service_config[:prefix]}/#{criterion}",
-        ).contents
-      end
-    rescue Aws::S3::Errors::NoSuchKey
-      []
-    end
-
     # @param key [String] example: '1234/monthly/2026-04-01.json'
     def fetch(key)
       s3_client.get_object(

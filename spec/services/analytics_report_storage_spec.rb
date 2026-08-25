@@ -26,53 +26,6 @@ RSpec.describe AnalyticsReportStorage do
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
-    describe '#list' do
-      before do
-        expect(AnalyticsReportStorage::Disk).to receive(:default_config).and_return(
-          { root: storage_root },
-        )
-      end
-
-      context 'when directory is empty' do
-        it 'returns an empty array' do
-          expect(described_class.list).to eq([])
-        end
-      end
-
-      context 'when directory has files' do
-        let(:file1) { 'id1.json' }
-        let(:file2) { 'id2.json' }
-        let(:issuer1) { 'issuer1' }
-        let(:issuer2) { 'issuer2' }
-
-        before do
-          File.write(storage_root.join(file1), '{}')
-          File.write(storage_root.join(file2), '{}')
-          File.write(
-            storage_root.join('issuers_service_provider_id.json'),
-            <<~JSON,
-              {
-                "issuer1": {"id": "#{file1}"},
-                "issuer2": {"id": "#{file2}"}
-              }
-            JSON
-          )
-        end
-
-        it 'returns file info for each file' do
-          result = described_class.list([issuer1, issuer2])
-          expect(result.length).to eq(2)
-          expect(result.map(&:key)).to contain_exactly(file1.to_s, file2.to_s)
-        end
-
-        it 'includes file_size and last_modified' do
-          result = described_class.list([issuer1]).first
-          expect(result.file_size).to be_a(Integer)
-          expect(result.last_modified).to be_a(Time)
-        end
-      end
-    end
-
     describe '#fetch' do
       it 'returns parsed JSON content' do
         mock_data_location = File.join(file_fixture_path, '..', 'reports')
@@ -121,62 +74,6 @@ RSpec.describe AnalyticsReportStorage do
       Rails.cache.delete 'analytics_issuer_to_id_map'
     end
 
-    describe '#list' do
-      let(:s3_objects) do
-        [
-          double(key: 'report1.json', size: 1024, last_modified: Time.current),
-          double(key: 'report2.json', size: 2048, last_modified: 1.day.ago),
-        ]
-      end
-
-      before do
-        allow(s3_client_with_stubs).to receive(:list_objects_v2)
-          .with(bucket: bucket_name, prefix: "#{bucket_prefix}/")
-          .and_return(double(contents: s3_objects))
-      end
-
-      it 'returns objects from S3 bucket' do
-        result = described_class.list
-
-        expect(result.map(&:key)).to contain_exactly('report1.json', 'report2.json')
-      end
-
-      it 'calls S3 with correct bucket' do
-        described_class.list
-
-        expect(s3_client_with_stubs).to have_received(:list_objects_v2).with(
-          bucket: bucket_name, prefix: "#{bucket_prefix}/",
-        ).at_least(:once)
-      end
-    end
-
-    describe '#list_by_issuer' do
-      let(:ars) { AnalyticsReportStorage.new }
-      let(:s3_objects) do
-        [
-          double(key: '6797/monthly/2025-08-01.json', size: 1024, last_modified: Time.current),
-          double(key: '3062/monthly/2025-08-01.json', size: 2048, last_modified: 1.day.ago),
-        ]
-      end
-      let(:issuer_list) { ['2025-12-10:Howard:test', 'urn:amazon:cognito:sp:us-east-1_AbCd01234'] }
-
-      before do
-        allow(ars).to receive(:list).with(issuer_list)
-          .and_return(s3_objects)
-      end
-
-      it 'returns a hash with arrays of S3 metadata objects' do
-        list_hash = ars.list_by_issuer(issuer_list)
-
-        expected_result = {}
-        [0, 1].each do |i|
-          expected_result[issuer_list[i]] = [s3_objects[i]]
-        end
-
-        expect(list_hash).to eq(expected_result)
-      end
-    end
-
     describe '#fetch' do
       context 'via S3' do
         let(:report_data) { [{ 'a_json_key' => 'a_json_value' }] }
@@ -189,8 +86,8 @@ RSpec.describe AnalyticsReportStorage do
             bucket: 'test-reports-bucket', prefix: 'int/portal/',
           ).and_return(double(
             contents: [
-              AnalyticsReportStorage::Disk::ReportFile.new(key: 'issuers_service_provider_id.json'),
-              AnalyticsReportStorage::Disk::ReportFile.new(key: expected_s3_key),
+              double(key: 'issuers_service_provider_id.json'),
+              double(key: expected_s3_key),
             ],
           ))
           allow(s3_client_with_stubs).to receive(:get_object).with(any_args) do |args|
