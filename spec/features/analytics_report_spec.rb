@@ -128,7 +128,10 @@ describe 'reporting feature basics' do
         end
 
         context 'with dates computed from created_at' do
-          before { travel_to(Date.new(2026, 1, 15)) }
+          before do
+            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+            travel_to(Date.new(2026, 1, 15))
+          end
 
           around(&:run)
 
