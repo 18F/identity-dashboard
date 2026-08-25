@@ -27,7 +27,7 @@ class Reports
     AnalyticsReportStorage.list_by_issuer(issuers)
   end
 
-  private_class_method :list_all_reports
+  private_class_method :list_all_reports 
 
   def initialize(analytic)
     @issuer = analytic.config&.issuer
