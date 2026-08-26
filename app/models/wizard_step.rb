@@ -203,10 +203,20 @@ class WizardStep < ApplicationRecord
       end
   end
 
+  # This method fills out steps based on an existing service provider.
+  # It was previously used in production. It is currently only referenced in the test suite.
+  #
+  # It's useful for setting up tests based on factory examples, and is
+  # also a useful tool for debugging.
   def self.populate_data(service_provider, user)
     generate_steps(service_provider, user).each(&:save)
   end
 
+  # This method fills out steps based on an existing service provider.
+  # It was previously used in production. It is currently only referenced in the test suite.
+  #
+  # It's useful for setting up tests based on factory examples, and is
+  # also a useful tool for debugging.
   def self.generate_steps(service_provider, user)
     steps = STEP_DATA.keys.each_with_object(Hash.new) do |step_name, hash|
       hash[step_name] = find_or_initialize_by(step_name:, user:)
