@@ -94,12 +94,10 @@ feature 'Service Config Wizard' do
       end
       click_on 'Create configuration' # details page
       click_on 'Edit'
-      expect(page).to have_current_path(service_config_wizard_path('settings'))
-      visit service_config_wizard_path('help_text')
       HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
           expect(
-            find("#wizard_step_help_text_#{context}_#{locale}").value,
+            find("#service_provider_help_text_#{context}_#{locale}").value,
           ).to eq(help_text[context][locale])
         end
       end
@@ -251,65 +249,6 @@ feature 'Service Config Wizard' do
       expect(actual_error_message).to eq(expected_error_message)
     end
 
-    it 'can edit an existing configuration' do
-      existing_config = create(:service_provider, :ready_to_activate_ial_1)
-      visit service_provider_path(existing_config)
-      click_on 'Edit'
-      expect(find_field('Configuration name').value).to eq(existing_config.app_name)
-      click_on 'Next'
-      # Skip making changes to protocol options
-      click_on 'Next'
-      # Skip making changes to auth options
-      click_on 'Next'
-      issuer_field = find('#wizard_step_issuer')
-      expect(issuer_field.value).to eq(existing_config.issuer)
-      expect(issuer_field).to be_disabled
-
-      # If we can't edit the issuer, 'Next' shouldn't be a form submission
-      expect(has_no_button?('Next')).to be_truthy
-      expect(has_link?('Next')).to be_truthy
-      click_on 'Next'
-
-      attach_file('Choose a cert file', 'spec/fixtures/files/testcert.pem')
-      click_on 'Next'
-      expected_push_url = "https://localhost/#{rand(1..1000)}"
-      fill_in('Push notification URL', with: expected_push_url)
-      click_on 'Next'
-      # Skip making changes to help text
-      click_on 'Update configuration'
-      existing_config.reload
-      expect(existing_config.push_notification_url).to eq(expected_push_url)
-    end
-
-    it 'saves standard Help text on edit' do
-      existing_config = create(:service_provider,
-                               :ready_to_activate,
-                               help_text: standard_help_text)
-      visit service_provider_path(existing_config)
-      click_on 'Edit'
-      expect(page).to have_current_path(service_config_wizard_path('settings'))
-      visit service_config_wizard_path('help_text')
-      click_on 'Update configuration'
-      # rubocop:disable Layout/LineLength
-      content = "help_text: sign_in: en: '' es: '' fr: '' zh: '' sign_up: en: First time here from #{existing_config.friendly_name}? Your old #{existing_config.friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously. es: ¿Es la primera vez que visita #{existing_config.friendly_name}? Su antiguo nombre de usuario y contraseña de #{existing_config.friendly_name} ya no funcionan. Cree una cuenta en Login.gov con el mismo correo electrónico que usó anteriormente. fr: C’est la première fois que vous vous connectez à #{existing_config.friendly_name}? Vos anciens nom d’utilisateur et mot de passe pour accéder à #{existing_config.friendly_name} ne fonctionneront pas. Créez un compte Login.gov avec la même adresse e-mail que celle utilisée antérieurement. zh: 第一次从 #{existing_config.friendly_name} 来到这里？您的旧 #{existing_config.friendly_name} 用户名和密码将不起作用。用之前使用的同一电子邮件地址 来设立一个 Login.gov帐户。 forgot_password: en: '' es: '' fr: '' zh: ''"
-      # rubocop:enable Layout/LineLength
-      expect(page).to have_content(content)
-    end
-
-    it 'shows an error when user updates a config but service provider updater fails' do
-      allow(ServiceProviderUpdater).to receive(:post_update).and_return(false)
-      existing_config = create(:service_provider, :ready_to_activate_ial_1)
-      visit service_provider_path(existing_config)
-      click_on 'Edit'
-      expect(page).to have_current_path(service_config_wizard_path('settings'))
-      fill_in('Friendly name', with: "Edited name #{rand(1..1000)}")
-      click_on 'Next'
-      visit service_config_wizard_path('help_text')
-      click_on 'Update configuration'
-
-      expect(page).to have_content('Configuration saved, but sandbox deployment')
-    end
-
     describe 'and Production gate is enabled' do
       before do
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
@@ -321,18 +260,6 @@ feature 'Service Config Wizard' do
         fill_in('Configuration name', with: "name#{rand(1..1000)}")
         fill_in('Friendly name', with: "Test name #{rand(1..1000)}")
         click_on 'Next'
-        visit service_config_wizard_path('authentication')
-        expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
-        expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
-      end
-
-      it 'allows Login.gov Admin to update IAL' do
-        existing_config = create(:service_provider,
-                                 :ready_to_activate_ial_1,
-                                 team: logingov_admin.teams[0])
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
@@ -458,24 +385,20 @@ feature 'Service Config Wizard' do
 
     context 'when on Redirects page' do
       it 'renders Failure to proof URL input if IAL2 is selected' do
-        existing_config = create(:service_provider,
+        config_basis = build(:service_provider,
                                  :ready_to_activate_ial_2,
                                  team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
+        WizardStep.populate_data(config_basis, user)
         visit service_config_wizard_path('redirects')
 
         expect(page).to have_content(t('simple_form.labels.service_provider.failure_to_proof_url'))
       end
 
       it 'does not render Failure to proof URL input if IAL1 is selected' do
-        existing_config = create(:service_provider,
+        config_basis = build(:service_provider,
                                  :ready_to_activate_ial_1,
                                  team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
+        WizardStep.populate_data(config_basis, user)
         visit service_config_wizard_path('redirects')
 
         expect(page).to_not have_content(
@@ -484,12 +407,11 @@ feature 'Service Config Wizard' do
       end
 
       it 'validates Failure to proof URL input' do
-        existing_config = create(:service_provider,
+        config_basis = build(:service_provider,
                                  :ready_to_activate_ial_2,
                                  team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
+        WizardStep.populate_data(config_basis, user)
+
         visit service_config_wizard_path('redirects')
 
         fill_in(t('simple_form.labels.service_provider.failure_to_proof_url'), with: '')
@@ -532,37 +454,18 @@ feature 'Service Config Wizard' do
       # rubocop:enable  Layout/LineLength
     end
 
-    it 'renders read-only with custom Help text' do
-      existing_config = create(:service_provider,
-                               :ready_to_activate,
-                               help_text: custom_help_text,
-                               team: team)
-      visit service_provider_path(existing_config)
-      click_on 'Edit'
-      expect(page).to have_current_path(service_config_wizard_path('settings'))
-      visit service_config_wizard_path('help_text')
-
-      HelpText::UI_CONTEXTS.each do |context|
-        HelpText::LOCALES.each do |locale|
-          expect(page).to have_content(custom_help_text[context][locale])
-        end
-      end
-    end
-
     it 'does not allow promote to prod with existing localhost URLs' do
-      existing_config = create(:service_provider,
+      config_basis = build(:service_provider,
                                :ready_to_activate,
                                :with_sandbox,
                                :with_localhost,
                                team:)
-
-      visit service_provider_path(existing_config)
-      click_on 'Edit'
-      expect(page).to have_current_path(service_config_wizard_path('settings'))
+      WizardStep.populate_data(config_basis, user)
+      visit service_config_wizard_path('settings')
       choose I18n.t 'simple_form.labels.service_provider.production'
       click_on 'Next'
       visit service_config_wizard_path(WizardStep::STEPS.last)
-      click_on 'Update configuration'
+      click_on 'Create configuration'
 
       expect(page).to have_content('Portal Configuration cannot be Production with localhost URLs')
     end
@@ -588,112 +491,6 @@ feature 'Service Config Wizard' do
         visit service_config_wizard_path('authentication')
         expect(page.find('#wizard_step_ial_1').disabled?).to be(false)
         expect(page.find('#wizard_step_ial_2').disabled?).to be(false)
-      end
-
-      it 'does not allow Partners to edit IAL' do
-        existing_config = create(:service_provider,
-                                 :ready_to_activate_ial_1,
-                                 team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to_not have_content('Not authorized')
-        visit service_config_wizard_path('authentication')
-        expect(page.find('#wizard_step_ial_1').disabled?).to be(true)
-        expect(page.find('#wizard_step_ial_2').disabled?).to be(true)
-      end
-
-      it 'does not show prod_configuration field' do
-        existing_config = create(:service_provider,
-                                 :ready_to_activate,
-                                 :with_prod_config,
-                                 team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        visit service_config_wizard_path('settings')
-        expect(page).to_not have_css('#wizard_step_prod_config_false')
-        expect(page).to_not have_css('#wizard_step_prod_config_true')
-      end
-
-      it 'does not allow sandbox configurations' do
-        existing_config = create(:service_provider,
-                                 :ready_to_activate,
-                                 :with_sandbox,
-                                 team:)
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
-        visit service_config_wizard_path(WizardStep::STEPS.last)
-        click_on 'Update configuration'
-
-        expect(page).to have_content('Error(s) found in these fields:')
-        expect(page.body).to include(
-          "<li>#{I18n.t('service_provider_form.title.prod_config')}",
-        )
-      end
-
-      it 'can edit post_idv_follow_up_url if it already exists' do
-        starting_idv_url = "https://localhost:#{rand(1..9000)}/"
-        existing_config = create(
-          :service_provider,
-          :ready_to_activate_ial_2,
-          :with_prod_config,
-          team: team,
-          # We want to add `failure_to_proof_url` to the `ready_to_activate_ial_2` trait
-          failure_to_proof_url: "https://login.gov:#{rand(1..9000)}",
-          post_idv_follow_up_url: starting_idv_url,
-        )
-        visit service_provider_path(existing_config)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path('settings'))
-        visit service_config_wizard_path('redirects')
-        idv_input = find('input#wizard_step_post_idv_follow_up_url')
-        expect(idv_input.value).to eq(starting_idv_url)
-
-        new_url = "https://int-identity-oidc-sinatra.app.cloud.gov:#{rand(1..9000)}/"
-        fill_in 'wizard_step_post_idv_follow_up_url', with: new_url
-        click_on 'Next'
-        expect(page).to have_text('Help text')
-        click_on 'Update configuration'
-        expect(page).to have_current_path(service_provider_path(existing_config))
-        expect(page).to have_text("Post IdV Follow-up URL: #{new_url}")
-        expect(page).to_not have_text(starting_idv_url)
-      end
-
-      context 'localhost URLs' do
-        it 'are not allowed to be added' do
-          existing_config = create(:service_provider,
-                                   :ready_to_activate_ial_2,
-                                   :with_oidc_jwt,
-                                   :with_prod_config,
-                                   team:)
-
-          visit service_provider_path(existing_config)
-          click_on 'Edit'
-          expect(page).to have_current_path(service_config_wizard_path('settings'))
-          visit service_config_wizard_path('redirects')
-          fill_in 'wizard_step_push_notification_url', with: 'http://localhost:0000'
-          click_on 'Next'
-
-          expect(page).to have_content(
-            "Push notification url 'localhost' is not allowed on Production",
-          )
-        end
-
-        it 'are allowed to remain' do
-          existing_config = create(:service_provider,
-                                   :ready_to_activate_ial_2,
-                                   :with_oidc_jwt,
-                                   :with_prod_config,
-                                   :with_localhost,
-                                   team:)
-
-          visit service_provider_path(existing_config)
-          click_on 'Edit'
-          visit service_config_wizard_path(WizardStep::STEPS.last)
-          click_on 'Update configuration'
-
-          expect(page).to_not have_content('Error(s) found in these fields:')
-        end
       end
     end
   end
