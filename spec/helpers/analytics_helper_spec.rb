@@ -104,11 +104,13 @@ describe AnalyticsHelper do
       let(:sp) { create(:service_provider, :ready_to_activate) }
 
       it 'returns an array where the first object contains the sp name, uuid, and valid dates' do
-        expect(service_providers_collection_for_select([sp])).to eq(
-          [
-            { title: sp.friendly_name, id: sp.uuid, controls: '' },
-          ],
-        )
+        travel_to(Reports::EARLIEST_REPORT_DATE) do
+          expect(service_providers_collection_for_select([sp])).to eq(
+            [
+              { title: sp.friendly_name, id: sp.uuid, controls: '' },
+            ],
+          )
+        end
       end
     end
 
@@ -117,12 +119,14 @@ describe AnalyticsHelper do
       let(:sp1) { create(:service_provider, :ready_to_activate, friendly_name: 'Alpha Service') }
 
       it 'returns an array of objects sorted alphabetically by friendly_name' do
-        expect(service_providers_collection_for_select([sp, sp1])).to eq(
-          [
-            { title: sp1.friendly_name, id: sp1.uuid, controls: '' },
-            { title: sp.friendly_name, id: sp.uuid, controls: '' },
-          ],
-        )
+        travel_to(Reports::EARLIEST_REPORT_DATE) do
+          expect(service_providers_collection_for_select([sp, sp1])).to eq(
+            [
+              { title: sp1.friendly_name, id: sp1.uuid, controls: '' },
+              { title: sp.friendly_name, id: sp.uuid, controls: '' },
+            ],
+          )
+        end
       end
     end
 
