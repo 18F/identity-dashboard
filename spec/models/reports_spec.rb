@@ -25,8 +25,11 @@ describe Reports do
   end
 
   describe '.available_dates' do
-    context 'in a prod_like_env' do
-      before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
+    context 'when reports are backed by S3' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_reports_bucket).and_return('bucket')
+        allow(IdentityConfig.store).to receive(:aws_reports_path).and_return('prefix')
+      end
 
       it 'returns monthly dates from the month after created_at through last month' do
         travel_to Date.new(2026, 3, 15) do
@@ -69,8 +72,8 @@ describe Reports do
       end
     end
 
-    context 'outside a prod_like_env' do
-      before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
+    context 'when reports are backed by local disk' do
+      before { allow(IdentityConfig.store).to receive(:aws_reports_bucket).and_return(nil) }
 
       it 'ignores created_at and returns all dates back to EARLIEST_REPORT_DATE' do
         travel_to Date.new(2026, 1, 15) do

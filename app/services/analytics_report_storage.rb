@@ -12,9 +12,13 @@ class AnalyticsReportStorage
     new(issuer, date).fetch
   end
 
+  def self.use_s3?
+    S3.default_config[:bucket] && S3.default_config[:prefix]
+  end
+
   def initialize(issuer = nil, date = nil)
     (@issuer, @date) = issuer, date
-    @backend = if use_s3?
+    @backend = if self.class.use_s3?
                  AnalyticsReportStorage::S3.new
                else
                  AnalyticsReportStorage::Disk.new
@@ -37,10 +41,6 @@ class AnalyticsReportStorage
 
   def build_key(qualifier, date)
     "#{qualifier}/monthly/#{date}.json"
-  end
-
-  def use_s3?
-    S3.default_config[:bucket] && S3.default_config[:prefix]
   end
 
   def fetch_id_map
