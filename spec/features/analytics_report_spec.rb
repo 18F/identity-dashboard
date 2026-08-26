@@ -129,7 +129,8 @@ describe 'reporting feature basics' do
 
         context 'with dates computed from created_at' do
           before do
-            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+            allow(IdentityConfig.store).to receive(:aws_reports_bucket).and_return('bucket')
+            allow(IdentityConfig.store).to receive(:aws_reports_path).and_return('prefix')
             travel_to(Date.new(2026, 1, 15))
             visit analytics_path
           end
