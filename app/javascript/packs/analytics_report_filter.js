@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter the child options
     nextOptions.forEach((option) => {
       if (optIds.indexOf(option.value) < 0) {
-        option.classList.add('display-none');
+        option.disabled = true;
       } else {
-        option.classList.remove('display-none');
+        option.disabled = false;
         // Set the child select value, and cascade if App
         if (optNeedsSetting || !nextValueIsSet) {
           if (optNeedsSetting && !nextValueIsSet) {
@@ -35,6 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+    // select next available option if current is disabled
+    const currentOption = nextSelect.querySelector(`option[value="${nextSelect.value}"]`)
+    if (currentOption.disabled) {
+      nextOptions[
+        (nextOptions.indexOf(currentOption) + 1) % nextOptions.length
+      ].selected = true
+    }
   };
 
   teamSelect.addEventListener('change', onSelectChange);

@@ -159,7 +159,7 @@ describe 'reporting feature basics' do
           it 'shows the correct dates for a chosen application' do
             select second_sp.friendly_name, from: 'Application'
 
-            all_hidden_dates = page.find_all('#analytic_date .display-none')
+            all_hidden_dates = page.find_all('#analytic_date [disabled]')
 
             expect(page).to have_content('2025-10-01')
             expect(page).to have_content('2025-11-01')
