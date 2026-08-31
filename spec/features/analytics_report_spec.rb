@@ -105,7 +105,7 @@ describe 'reporting feature basics' do
         it 'shows the correct apps for a chosen team' do
           select second_team.name, from: 'Team'
 
-          all_hidden_apps = page.find_all('#analytic_uuid .display-none')
+          all_hidden_apps = page.find_all('#analytic_uuid [disabled]')
 
           expect(page).to have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
@@ -119,7 +119,7 @@ describe 'reporting feature basics' do
           select second_team.name, from: 'Team'
           select '- All Teams-', from: 'Team'
 
-          all_hidden_apps = page.find_all('#analytic_uuid .display-none')
+          all_hidden_apps = page.find_all('#analytic_uuid [disabled]')
 
           expect(page).to have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
