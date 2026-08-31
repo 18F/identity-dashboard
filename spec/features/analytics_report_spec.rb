@@ -288,8 +288,6 @@ describe 'reporting feature basics' do
         end
 
         it 'can show Identity Verification tab data', :js do
-          pending('Login Readonly not yet permitted') if role_name == 'readonly'
-
           click_on 'Identity Verification'
 
           charts = find_all('svg')
@@ -328,8 +326,6 @@ describe 'reporting feature basics' do
         end
 
         it 'can show Authentication tab data', :js do
-          pending('Login Readonly not yet permitted') if role_name == 'readonly'
-
           click_on 'Authentication'
           expect(page).to have_content('Percentage of successful new accounts')
           expect(page).to have_text(/account creation success rate\s*100.0%/i)
@@ -390,6 +386,24 @@ describe 'reporting feature basics' do
       click_on 'Usage'
       expect(page).to have_content 'SUCCESSFUL AUTHENTICATIONS'
       expect(page).to_not have_content 'Fraudsters Blocked'
+    end
+
+    it 'can show Authentication tab data', :js do
+      select partner_sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
+      click_on 'Authentication'
+
+      expect(find_all('svg').count).to eq(2)
+    end
+
+    it 'can show Identity Verification tab data', :js do
+      select partner_sp.friendly_name, from: 'Application'
+      select '2025-12-01', from: 'Date of report'
+      click_on 'View report'
+      click_on 'Identity Verification'
+
+      expect(find_all('svg').count).to eq(4)
     end
 
     context 'with mostly missing data' do
