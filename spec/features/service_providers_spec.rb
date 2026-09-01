@@ -911,14 +911,11 @@ feature 'Service Providers CRUD' do
 
       it 'displays the production call to action links' do
         prod_url = documentation_path(destination: 'production')
-        zendesk_ticket = 'https://zendesk.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332'
 
         expect(page).to have_css("a[href='#{prod_url}']")
-        expect(page).to have_css("a[href='#{zendesk_ticket}']")
       end
 
-      # TODO: remove following when Zendesk form is fixed
-      xit 'displays the production call to action button' do
+      it 'displays the production call to action button' do
         expect(page).to have_css("button[aria-controls='additional-data-modal']")
       end
     end
