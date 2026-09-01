@@ -44,7 +44,7 @@ class Reports
   #   service provider's creation date is ignored so all dates back to
   #   EARLIEST_REPORT_DATE are available.
   def self.start_date_for(service_provider)
-    # return EARLIEST_REPORT_DATE unless AnalyticsReportStorage.use_s3?
+    return EARLIEST_REPORT_DATE unless AnalyticsReportStorage.use_s3?
 
     [
       service_provider.created_at.to_date.beginning_of_month + 1.month,
