@@ -553,14 +553,14 @@ allow_label_click: true)
         allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
       end
 
-      it 'does not redirect to new service_config_wizard' do
+      it 'uses long form for new' do
         visit new_service_provider_path
 
         expect(page).to_not have_current_path(service_config_wizard_path(WizardStep::STEPS[0]))
         expect(page).to have_current_path(service_providers_path)
       end
 
-      it 'redirects to long form for edit' do
+      it 'uses long form for edit' do
         team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
         sp = create(:service_provider, team: team_membership.team)
         visit edit_service_provider_path(id: sp)
