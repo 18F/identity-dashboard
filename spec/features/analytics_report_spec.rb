@@ -105,26 +105,16 @@ describe 'reporting feature basics' do
         it 'shows the correct apps for a chosen team' do
           select second_team.name, from: 'Team'
 
-          all_hidden_apps = page.find_all('#analytic_uuid [disabled]')
-
-          expect(page).to have_content(test_sp.friendly_name)
+          expect(page).to_not have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
-
-          expect(all_hidden_apps.count).to eq(1)
-          expect(all_hidden_apps.map(&:text)).to include(test_sp.friendly_name)
-          expect(all_hidden_apps.map(&:text)).to_not include(second_sp.friendly_name)
         end
 
         it 'shows the correct apps when reselecting All teams' do
           select second_team.name, from: 'Team'
           select '- All Teams-', from: 'Team'
 
-          all_hidden_apps = page.find_all('#analytic_uuid [disabled]')
-
           expect(page).to have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
-
-          expect(all_hidden_apps.count).to eq(0)
         end
 
         context 'with dates computed from created_at' do
@@ -159,16 +149,9 @@ describe 'reporting feature basics' do
           it 'shows the correct dates for a chosen application' do
             select second_sp.friendly_name, from: 'Application'
 
-            all_hidden_dates = page.find_all('#analytic_date [disabled]')
-
-            expect(page).to have_content('2025-10-01')
+            expect(page).to_not have_content('2025-10-01')
             expect(page).to have_content('2025-11-01')
             expect(page).to have_content('2025-12-01')
-
-            expect(all_hidden_dates.count).to eq(1)
-            expect(all_hidden_dates.map(&:text)).to include('2025-10-01')
-            expect(all_hidden_dates.map(&:text)).to_not include('2025-11-01')
-            expect(all_hidden_dates.map(&:text)).to_not include('2025-12-01')
           end
         end
       end
