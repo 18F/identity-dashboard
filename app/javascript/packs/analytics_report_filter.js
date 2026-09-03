@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const allSelects = document.getElementById('reports_form').querySelectorAll('select');
   const teamSelect = document.getElementById('analytic_team');
   const appSelect = document.getElementById('analytic_uuid');
+  const dateSelect = document.getElementById('analytic_date');
+  const allAppOptions = new Array(...appSelect.getElementsByTagName('option'));
+  const allDateOptions = new Array(...dateSelect.getElementsByTagName('option'));
 
   const onSelectChange = (ev) => {
     // Parent select element and children
@@ -13,25 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const optIds = opt.dataset.controls.split(',');
     // Child select element and children
     const nextSelect = allSelects[[...allSelects].indexOf(select) + 1];
-    const nextOptions = nextSelect.querySelectorAll('option');
-    const nextValueIsSet = opt.dataset.controls.includes(nextSelect.value);
+    const nextOptions = nextSelect === appSelect ? allAppOptions : allDateOptions;
+    const nextValue = nextSelect.value;
+    const nextValueIsSet = !!opt.dataset.controls.includes(nextValue);
     // Unless a specific option is selected, don't select a new option on child
     let optNeedsSetting = !!select.value.length;
     // Filter the child options
+    nextSelect.innerHTML = '';
     nextOptions.forEach((option) => {
-      if (optIds.indexOf(option.value) < 0) {
-        option.disabled = true;
-      } else {
-        option.disabled = false;
+      if (optIds.indexOf(option.value) >= 0) {
+        nextSelect.appendChild(option);
         // Set the child select value, and cascade if App
         if (optNeedsSetting || !nextValueIsSet) {
           if (optNeedsSetting && !nextValueIsSet) {
             nextSelect.value = option.value;
           }
-          if (nextSelect === appSelect) {
+          if (!nextValueIsSet && nextSelect === appSelect) {
             nextSelect.dispatchEvent(new Event('change'));
           }
           optNeedsSetting = false;
+        }
+        if (nextValue === option.value && nextValueIsSet) {
+          nextSelect.value = option.value;
+          nextSelect.dispatchEvent(new Event('change'));
         }
       }
     });
