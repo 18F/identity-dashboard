@@ -1,6 +1,21 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
 
+# Resolve the chromedriver binary. When one is provided explicitly via
+# CHROMEDRIVER_PATH or is on PATH (e.g. from devenv/Nix or CI), point Selenium
+# at it. Otherwise this returns nil and Selenium falls back to its bundled
+# `selenium-manager` helper, which downloads a chromedriver matching the
+# installed Chrome (the typical path on local macOS). Note: selenium-manager
+# ships a macOS universal binary (x86_64 + arm64) but only an x86_64 build for
+# Linux, so on aarch64-linux it cannot execute. Those environments must provide
+# chromedriver on PATH or use devenv.
+def chromedriver_service
+  path = ENV['CHROMEDRIVER_PATH'].presence || `command -v chromedriver 2>/dev/null`.strip.presence
+  return nil if path.nil?
+
+  Selenium::WebDriver::Service.chrome(path: path)
+end
+
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--headless'
@@ -9,7 +24,8 @@ Capybara.register_driver :headless_chrome do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: browser_options
+                                 options: browser_options,
+                                 service: chromedriver_service
 end
 
 Capybara.register_driver(:accessibility_driver) do |app|
