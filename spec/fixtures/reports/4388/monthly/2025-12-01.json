@@ -15,7 +15,7 @@
     "count_newly_created_accounts": 1173,
     "count_existing_accounts": 346,
     "count_newly_proofed_users": 17,
-    "count_preverified_users": 30,
+    "count_previously_proofed": 30,
     "count_authentications": 1435,
     "count_pass_sum": 0,
     "count_newly_verified_sum": 0,

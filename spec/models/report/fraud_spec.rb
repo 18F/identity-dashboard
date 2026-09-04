@@ -11,7 +11,7 @@ describe Report::Fraud do
       'count_device_behavior_fraud_signals' => rand(1..1000),
       'count_pass_via_lg99' => rand(1..1000),
       # A valid key that is not a fraud key, so should get skipped over
-      'count_preverified_users' => rand(1..1000),
+      'count_previously_proofed' => rand(1..1000),
     }
   end
   let(:mock_reports) do
