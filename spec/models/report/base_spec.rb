@@ -21,9 +21,9 @@ describe Report::Base do
       expected_data = [
         ['Number of Users Who Accessed Your Services', 143],
         ['Number of Users blocked for Attempted Fraud', 12], ['Newly Created Accounts', 118],
-        ['Existing Accounts', 23], ['Identity Verified Users', 103], ['Newly Proofed Users', 83],
-        ['Preverified Users', 20], ['Authentications', 1501], ['Account Creation', 1],
-        ['Authentic Driver\'s License', 1], ['Facial Matching Check', 2],
+        ['Existing Accounts', 23], ['Identity Verified Users', 103], ['Newly Proofed', 83],
+        ['Previously Proofed', 20], ['Authentications', 1501], ['Account Creation', 1],
+        ['Authentic Driver\'s License', 1], ['Facial Mismatch', 2],
         ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
         ['Under Active Fraud Alert', 1], ['Suspicious Phone', 1], ['Phone Account Ownership', 0],
         ['Wrong Phone Type', 0], ['Rejected at Post Office', 1], ['Pending Fraud Review', 0],
