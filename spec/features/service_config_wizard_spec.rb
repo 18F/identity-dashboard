@@ -251,6 +251,13 @@ feature 'Service Config Wizard' do
       expect(actual_error_message).to eq(expected_error_message)
     end
 
+    it 'shows an error and does not crash when a non-PEM file is uploaded as a cert' do
+      visit service_config_wizard_path('logo_and_cert')
+      attach_file('Choose a cert file', 'spec/fixtures/files/logo.png')
+      expect { click_on 'Next' }.to_not(change { WizardStep.count })
+      expect(page).to have_content('Certificate is not PEM-encoded')
+    end
+
     it 'can edit an existing configuration' do
       existing_config = create(:service_provider, :ready_to_activate_ial_1)
       visit service_provider_path(existing_config)
