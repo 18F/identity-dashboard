@@ -187,8 +187,8 @@ en:
     count_existing_accounts: Existing Accounts
     count_identity_verified_users: Identity Verified Users
     count_newly_created_accounts: Newly Created Accounts
-    count_newly_proofed_users: Newly Proofed Users
-    count_preverified_users: Preverified Users
+    count_newly_proofed: Newly Proofed
+    count_previously_proofed: Previously Proofed
     # Fraud Prevention
     count_blocked_attempted_fraud: Number of Users blocked for Attempted Fraud
     count_blocked_authentic_drivers_license: Authentic Driver's License

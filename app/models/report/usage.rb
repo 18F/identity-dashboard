@@ -46,14 +46,14 @@ module Report
 
     def idv_data
       if data.blank? ||
-         (data['count_newly_proofed_users'].blank? && data['count_preverified_users'].blank?)
+         (data['count_newly_proofed'].blank? && data['count_previously_proofed'].blank?)
         return []
       end
 
-      [[I18n.t('reports.count_newly_proofed_users'),
-        data['count_newly_proofed_users']],
-       [I18n.t('reports.count_preverified_users'),
-        data['count_preverified_users']]]
+      [[I18n.t('reports.count_newly_proofed'),
+        data['count_newly_proofed']],
+       [I18n.t('reports.count_previously_proofed'),
+        data['count_previously_proofed']]]
     end
 
     def usage_data
