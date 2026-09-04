@@ -26,31 +26,29 @@ document.addEventListener('DOMContentLoaded', () => {
     nextOptions.forEach((option) => {
       if (optIds.indexOf(option.value) >= 0) {
         nextSelect.appendChild(option);
-        // Set the child select value, and cascade if App
+        // Set the child select value, and cascade if App select
         if (optNeedsSetting || !nextValueIsSet) {
+          // condition: no default
           if (optNeedsSetting && !nextValueIsSet) {
             nextSelect.value = option.value;
           }
+          // if the next Select element is Application, also update Dates
           if (!nextValueIsSet && nextSelect === appSelect) {
             nextSelect.dispatchEvent(new Event('change'));
           }
+          // We updated selected option, so it doesn't need to be set again.
           optNeedsSetting = false;
         }
+        // If the next value is preselected (ie by URL), set it and base the next
+        // set of options on this value.
         if (nextValue === option.value && nextValueIsSet) {
           nextSelect.value = option.value;
           nextSelect.dispatchEvent(new Event('change'));
         }
       }
     });
-    // select next available option if current is disabled
-    const currentOption = nextSelect.querySelector(`option[value="${nextSelect.value}"]`)
-    if (currentOption.disabled) {
-      nextOptions[
-        (nextOptions.indexOf(currentOption) + 1) % nextOptions.length
-      ].selected = true
-    }
   };
-
+  // Listen for changes to Team and Application Selects
   teamSelect.addEventListener('change', onSelectChange);
   appSelect.addEventListener('change', onSelectChange);
   // Filter URL-defined report on page load
