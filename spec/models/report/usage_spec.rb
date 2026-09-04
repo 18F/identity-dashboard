@@ -72,8 +72,8 @@ describe Report::Usage do
       expect(subject.idv_chart).to eq({
         type: :column_chart,
         data: [
-          [I18n.t('reports.count_newly_proofed_users'), test_data['count_newly_proofed_users']],
-          [I18n.t('reports.count_preverified_users'), test_data['count_preverified_users']],
+          [I18n.t('reports.count_newly_proofed'), test_data['count_newly_proofed']],
+          [I18n.t('reports.count_previously_proofed'), test_data['count_previously_proofed']],
         ],
         options: {
           colors: ['#18f'],
@@ -170,8 +170,8 @@ describe Report::Usage do
       expect(subject.idv_chart).to eq({
         type: :column_chart,
         data: [
-          [I18n.t('reports.count_newly_proofed_users'), 0],
-          [I18n.t('reports.count_preverified_users'), 0],
+          [I18n.t('reports.count_newly_proofed'), 0],
+          [I18n.t('reports.count_previously_proofed'), 0],
         ],
         options: {
           colors: ['#18f'],
