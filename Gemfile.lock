@@ -581,7 +581,7 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     ruby_regex (0.2.1)
-    rubyzip (3.1.0)
+    rubyzip (3.4.0)
     secure_headers (7.3.0)
       cgi (>= 0.1)
     securerandom (0.4.1)
