@@ -25,6 +25,8 @@
   outline: 1px solid $theme-color-primary-light;
   border-radius: 4px;
   --highcharts-background-color: #{color('white')};
+
+  & p:empty { display: none; }
 }
 
 

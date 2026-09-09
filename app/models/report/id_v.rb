@@ -24,11 +24,16 @@ module Report
           title: 'Proofing Success Rate',
           subtitle: 'Percentage of users who were successfully redirected to the application ' \
             'during this window',
-          description: 'Percentage of users who successfully completed identity verification ' \
-            'credentials out of total users attempting, controlling for fraud and abandonment.',
           colors: ['#18f', '#e21c3d'],
           donut: true,
           suffix: '%',
+          library: {
+            caption: {
+              text: 'Percentage of users who successfully completed identity verification ' \
+                'credentials out of total users attempting, controlling for fraud and ' \
+                'abandonment.',
+            },
+          },
         }),
       }
     end
@@ -41,13 +46,15 @@ module Report
           title: 'Path to Access Rate',
           subtitle: 'Percentage of users who attempted verification, how many had a way forward ' \
             'during this window',
-          description: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
-            "shows, out of all users who attempted, who weren't dead-ended.",
           stacked: true,
           max: 100,
           suffix: '%',
           colors: ['#e21c3d', '#18f'],
           library: {
+            caption: {
+              text: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
+                "shows, out of all users who attempted, who weren't dead-ended.",
+            },
             plotOptions: {
               series: {
                 animation: false,
@@ -66,15 +73,21 @@ module Report
         options: merge_options({
           title: 'Identity Verification Channels',
           subtitle: 'How users verified their identity during this window',
-          description: 'Channels through which users verified their identity credentials. ' \
-            'Preverified = A user created a verification profile (passed proofing) elsewhere ' \
-            'prior to this window. Remote unattended = Users who went through the online ' \
-            'proofing process. IPP = users who completed their proofing process through in ' \
-            'person verification. Physical letter = users who completed their address ' \
-            'verification through receiving a letter from the Post Office.',
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
           suffix: '%',
+          library: {
+            caption: {
+              useHTML: true,
+              text: 'Channels through which users verified their identity credentials.<br/>
+<b>• Preverified</b>: A user created a verification profile (passed proofing) elsewhere prior ' \
+'to this window.<br/>
+<b>• Remote unattended</b>: Users who went through the online proofing process.<br/>
+<b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
+<b>• Physical letter</b>: users who completed their address verification through receiving a ' \
+'letter from the Post Office.',
+            }
+          }
         }),
       }
     end
@@ -87,10 +100,14 @@ module Report
           title: 'Points of User Friction',
           subtitle: 'Where users experienced the most difficulty completing verification during ' \
             'this window',
-          description: 'Counts represent users who hit given friction points across document ' \
-            'authentication, identity resolution, and address verification steps and did not ' \
-            'get past the block in the reporting window.',
           colors: ['#18f', '#e21c3d'],
+          library: {
+            caption: {
+              text: 'Counts represent users who hit given friction points across document ' \
+                'authentication, identity resolution, and address verification steps and did ' \
+                'not get past the block in the reporting window.',
+            }
+          },
         }),
       }
     end
