@@ -73,8 +73,6 @@ describe Report::Fraud do
         ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
       ],
       options: {
-        description: '"Adjudicated as legitimate" reflects cases where ' \
-          'Login.gov reviewed the case and reversed the block.',
         colors: ['#ff580a', '#719f2a'],
         title: 'Redress – Identity Verification',
         library: {
@@ -82,6 +80,10 @@ describe Report::Fraud do
           subtitle: {
             align: 'left',
             text: 'Users who requested redress during this period',
+          },
+          caption: {
+            text: '"Adjudicated as legitimate" reflects cases where ' \
+              'Login.gov reviewed the case and reversed the block.',
           },
           accessibility: {
             screenReaderSection: {
