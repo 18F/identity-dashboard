@@ -46,7 +46,6 @@ class ServiceProviderForm < SimpleDelegator
     valid_saml_settings?
     valid_sandbox_config?
     valid_prod_config? unless current_user.logingov_admin?
-    sanitize_error_messages!
 
     log_errors && return if errors.any?
 
@@ -87,6 +86,7 @@ class ServiceProviderForm < SimpleDelegator
   end
 
   def log_errors
+    sanitize_error_messages!
     log.sp_errors(errors: errors.to_hash)
   end
 
