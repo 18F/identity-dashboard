@@ -40,7 +40,7 @@ module Report
           title: 'Multi-Factor Authentication (MFA) Type',
           subtitle: 'How users authenticated during this window',
           description: 'Percentage of successful sign-ins from MFA type, ' \
-            'out of all successful attempts',
+            'out of all successful attempts.',
           max: 100,
           suffix: '%',
         ),
