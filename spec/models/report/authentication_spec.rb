@@ -40,7 +40,7 @@ describe Report::Authentication do
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
           description: 'Percentage of successful sign-ins from MFA type' \
-              ', out of all successful attempts',
+              ', out of all successful attempts.',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',
@@ -97,7 +97,7 @@ describe Report::Authentication do
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
           description: 'Percentage of successful sign-ins from MFA type' \
-              ', out of all successful attempts',
+              ', out of all successful attempts.',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',

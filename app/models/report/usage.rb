@@ -22,7 +22,7 @@ module Report
           title: 'Active Identity Verified Users',
           subtitle: 'Unique users who accessed a service requiring verification',
           description: 'Newly proofed are net new users who verified during this window. ' \
-            'Previously proofed are users who completed verification ahead of this window,',
+            'Previously proofed are users who completed verification ahead of this window.',
           colors: ['#18f'],
         }),
       }
