@@ -192,13 +192,13 @@ en:
     # Fraud Prevention
     count_blocked_attempted_fraud: Number of Users blocked for Attempted Fraud
     count_blocked_authentic_drivers_license: Authentic Driver's License
-    count_blocked_by_ipp_fraud: Failed In-Person and Blocked
+    count_blocked_by_ipp_fraud: Rejected at Post Office
     count_blocked_identity_not_found: Identity Not Found (SSN / DOB / Deceased)
     count_device_behavior_fraud_signals: Pending Fraud Review
-    count_facial_mismatch: Facial Mismatch
-    count_fraud_alert: Fraud Alert Detected
-    count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
-    count_lack_phone_ownership: Lacking Phone Ownership
+    count_facial_mismatch: Facial Matching Check
+    count_fraud_alert: Under Active Fraud Alert
+    count_invalid_attributes_dl_dos: Valid Drivers License / Passport / etc.
+    count_lack_phone_ownership: Phone Account Ownership
     count_registered_blocked_fraud: Account Creation
     count_suspicious_phone: Suspicious Phone
     count_wrong_phone_type: Wrong Phone Type
