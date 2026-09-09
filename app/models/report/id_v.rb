@@ -86,8 +86,8 @@ module Report
 <b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
 <b>• Physical letter</b>: users who completed their address verification through receiving a ' \
 'letter from the Post Office.',
-            }
-          }
+            },
+          },
         }),
       }
     end
@@ -106,7 +106,7 @@ module Report
               text: 'Counts represent users who hit given friction points across document ' \
                 'authentication, identity resolution, and address verification steps and did ' \
                 'not get past the block in the reporting window.',
-            }
+            },
           },
         }),
       }
