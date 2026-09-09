@@ -63,8 +63,7 @@ module Report
           suffix: '%',
           library: {
             caption: {
-              text:
-                'Percentage of successful sign-ins from device type, out ' \
+              text: 'Percentage of successful sign-ins from device type, out ' \
                 'of all successful attempts.',
             },
           },

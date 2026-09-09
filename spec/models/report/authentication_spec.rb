@@ -131,8 +131,9 @@ describe Report::Authentication do
             subtitle: { align: 'left', text: 'How users accessed your service during this window' },
             title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 },
             caption: {
-              text: 'Percentage of successful sign-ins from device type, out of all successful attempts.',
-            },
+              text: 'Percentage of successful sign-ins from device type, out of all successful ' \
+                'attempts.',
+            }
           },
         },
       })
