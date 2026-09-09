@@ -79,7 +79,7 @@ describe Report::Usage do
           colors: ['#18f'],
           title: 'Active Identity Verified Users',
           description: 'Newly proofed are net new users who verified during this window. ' \
-          'Previously proofed are users who completed verification ahead of this window,',
+          'Previously proofed are users who completed verification ahead of this window.',
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -177,7 +177,7 @@ describe Report::Usage do
           colors: ['#18f'],
           title: 'Active Identity Verified Users',
           description: 'Newly proofed are net new users who verified during this window. ' \
-          'Previously proofed are users who completed verification ahead of this window,',
+          'Previously proofed are users who completed verification ahead of this window.',
           library: {
             title: { align: 'left' },
             subtitle: {
