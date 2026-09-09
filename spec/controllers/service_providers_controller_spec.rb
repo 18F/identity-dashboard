@@ -28,6 +28,28 @@ describe ServiceProvidersController do
     allow(EventLogger).to receive(:new).and_return(logger_double)
   end
 
+  describe '#new' do
+    context 'in production' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
+      end
+
+      it 'is not allowed and redirects to #index' do
+        expect(user.logingov_staff?).to be_falsey
+        sign_in user
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(service_providers_url)
+      end
+
+      it 'redirects to the wizard if the user is an admin' do
+        sign_in logingov_admin
+        get :new
+        expect(response).to be_redirect
+        expect(response.redirect_url).to eq(new_service_config_wizard_url)
+      end
+    end
+  end
   describe '#create' do
     before do
       sign_in(user)
