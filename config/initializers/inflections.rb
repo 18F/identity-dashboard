@@ -15,6 +15,7 @@
 #   inflect.acronym 'AAL'
 #   inflect.acronym 'ACS'
 #   inflect.acronym 'IAL'
+#   inflect.acronym "RESTful"
 #   inflect.acronym 'SP'
 #   inflect.acronym 'URI'
 #   inflect.acronym 'URL'
