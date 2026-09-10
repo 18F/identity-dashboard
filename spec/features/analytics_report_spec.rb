@@ -278,11 +278,15 @@ describe 'reporting feature basics' do
           access_path = charts[1]
           channels = charts[2]
           friction = charts[3]
+          proofing_title = proofing_success.find_all('text')[0].text
+          access_title = access_path.find_all('text')[0].text
+          channels_title = channels.find_all('text')[0].text
+          friction_title = friction.find_all('text')[0].text
 
-          expect(proofing_success.text).to start_with('Proofing Success Rate')
-          expect(access_path.text).to start_with('Path to Access Rate')
-          expect(channels.text).to start_with('Identity Verification Channels')
-          expect(friction.text).to start_with('Points of User Friction')
+          expect(proofing_title).to eq('Proofing Success Rate')
+          expect(access_title).to eq('Path to Access Rate')
+          expect(channels_title).to eq('Identity Verification Channels')
+          expect(friction_title).to eq('Points of User Friction')
 
           proofing_success_labels = proofing_success.find_all('text > tspan')
           access_path_labels = access_path.find_all('text')
@@ -319,10 +323,27 @@ describe 'reporting feature basics' do
           )
 
           charts = find_all('svg')
-          expect(charts.first.text).to start_with('Device Type')
           device_chart = charts.first
-          labels = device_chart.find_all('text > tspan')
-          expect(labels.map(&:text)).to eq(['Mobile', 'Desktop'])
+          mfa_chart = charts[1]
+          device_title = device_chart.find_all('text')[0].text
+          mfa_title = mfa_chart.find_all('text')[0].text
+
+          expect(device_title).to eq('Device Type')
+          expect(mfa_title).to eq('Multi-Factor Authentication (MFA) Type')
+
+          device_labels = device_chart.find_all('text > tspan')
+          mfa_y_labels = mfa_chart.find('.highcharts-xaxis-labels').find_all('text')
+          expect(device_labels.map(&:text)).to eq(['Mobile', 'Desktop'])
+          expect(mfa_y_labels.map(&:text)).to eq([
+                                                   'Face / Touch',
+                                                   'Authenticator App',
+                                                   'PIV / CAC',
+                                                   'SMS',
+                                                   'Voice',
+                                                   'Backup Code',
+                                                   'Security Key',
+                                                   'Personal Key',
+                                                 ])
         end
       end
     end

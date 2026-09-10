@@ -33,23 +33,23 @@ module Report
     end
 
     def review_queue_chart
-      chart = {
+      # Only explain the "adjudicated" column if we have data
+      if review_queue_data.present?
+        caption = '"Adjudicated as legitimate" reflects cases where ' \
+            'Login.gov reviewed the case and reversed the block.'
+      end
+
+      {
         type: :bar_chart,
         data: review_queue_data,
         options: merge_options({
           title: 'Redress – Identity Verification',
           subtitle: 'Users who requested redress during this period',
+          caption: caption,
           # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
           colors: ['#ff580a', '#719f2a'],
         }),
       }
-
-      # Only explain the "adjudicated" column if we have data
-      if review_queue_data.present?
-        chart[:options][:description] = '"Adjudicated as legitimate" reflects cases where ' \
-            'Login.gov reviewed the case and reversed the block.'
-      end
-      chart
     end
 
     private

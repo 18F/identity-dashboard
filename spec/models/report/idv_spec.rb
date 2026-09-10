@@ -26,8 +26,6 @@ describe Report::IdV do
         options: {
           colors: ['#18f', '#e21c3d'],
           title: 'Proofing Success Rate',
-          description: 'Percentage of users who successfully completed identity verification ' \
-            'credentials out of total users attempting, controlling for fraud and abandonment.',
           donut: true,
           suffix: '%',
           library: {
@@ -36,6 +34,12 @@ describe Report::IdV do
               align: 'left',
               text: 'Percentage of users who were successfully redirected to the application ' \
                 'during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Percentage of users who successfully completed identity verification ' \
+                'credentials out of total users attempting, controlling for fraud and ' \
+                'abandonment.',
             },
             accessibility: {
               screenReaderSection: {
@@ -67,8 +71,6 @@ describe Report::IdV do
         options: {
           colors: ['#e21c3d', '#18f'],
           title: 'Path to Access Rate',
-          description: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
-            'shows, out of all users who attempted, who weren\'t dead-ended.',
           stacked: true,
           max: 100,
           suffix: '%',
@@ -78,6 +80,11 @@ describe Report::IdV do
               align: 'left',
               text: 'Percentage of users who attempted verification, how many had a way forward ' \
                 'during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
+                'shows, out of all users who attempted, who weren\'t dead-ended.',
             },
             accessibility: {
               screenReaderSection: {
@@ -111,12 +118,6 @@ describe Report::IdV do
         options: {
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           title: 'Identity Verification Channels',
-          description: 'Channels through which users verified their identity credentials. ' \
-            'Preverified = A user created a verification profile (passed proofing) elsewhere ' \
-            'prior to this window. Remote unattended = Users who went through the online ' \
-            'proofing process. IPP = users who completed their proofing process through in ' \
-            'person verification. Physical letter = users who completed their address ' \
-            'verification through receiving a letter from the Post Office.',
           donut: true,
           suffix: '%',
           library: {
@@ -124,6 +125,16 @@ describe Report::IdV do
             subtitle: {
               align: 'left',
               text: 'How users verified their identity during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Channels through which users verified their identity credentials.<br/>
+<b>• Preverified</b>: A user created a verification profile (passed proofing) elsewhere prior ' \
+'to this window.<br/>
+<b>• Remote unattended</b>: Users who went through the online proofing process.<br/>
+<b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
+<b>• Physical letter</b>: users who completed their address verification through receiving a ' \
+'letter from the Post Office.',
             },
             accessibility: {
               screenReaderSection: {
@@ -158,15 +169,18 @@ describe Report::IdV do
         options: {
           colors: ['#18f', '#e21c3d'],
           title: 'Points of User Friction',
-          description: 'Counts represent users who hit given friction points across document ' \
-            'authentication, identity resolution, and address verification steps and did not ' \
-            'get past the block in the reporting window.',
           library: {
             title: { align: 'left' },
             subtitle: {
               align: 'left',
               text: 'Where users experienced the most difficulty completing verification ' \
                 'during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Counts represent users who hit given friction points across document ' \
+                'authentication, identity resolution, and address verification steps and did ' \
+                'not get past the block in the reporting window.',
             },
             accessibility: {
               screenReaderSection: {
@@ -228,12 +242,6 @@ describe Report::IdV do
         options: {
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           title: 'Identity Verification Channels',
-          description: 'Channels through which users verified their identity credentials. ' \
-            'Preverified = A user created a verification profile (passed proofing) elsewhere ' \
-            'prior to this window. Remote unattended = Users who went through the online ' \
-            'proofing process. IPP = users who completed their proofing process through in ' \
-            'person verification. Physical letter = users who completed their address ' \
-            'verification through receiving a letter from the Post Office.',
           donut: true,
           suffix: '%',
           library: {
@@ -241,6 +249,16 @@ describe Report::IdV do
             subtitle: {
               align: 'left',
               text: 'How users verified their identity during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Channels through which users verified their identity credentials.<br/>
+<b>• Preverified</b>: A user created a verification profile (passed proofing) elsewhere prior ' \
+'to this window.<br/>
+<b>• Remote unattended</b>: Users who went through the online proofing process.<br/>
+<b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
+<b>• Physical letter</b>: users who completed their address verification through receiving a ' \
+'letter from the Post Office.',
             },
             accessibility: {
               screenReaderSection: {
@@ -275,15 +293,18 @@ describe Report::IdV do
         options: {
           colors: ['#18f', '#e21c3d'],
           title: 'Points of User Friction',
-          description: 'Counts represent users who hit given friction points across document ' \
-            'authentication, identity resolution, and address verification steps and did not ' \
-            'get past the block in the reporting window.',
           library: {
             title: { align: 'left' },
             subtitle: {
               align: 'left',
               text: 'Where users experienced the most difficulty completing verification ' \
                 'during this window',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Counts represent users who hit given friction points across document ' \
+                'authentication, identity resolution, and address verification steps and did ' \
+                'not get past the block in the reporting window.',
             },
             accessibility: {
               screenReaderSection: {

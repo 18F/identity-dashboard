@@ -21,7 +21,7 @@ module Report
         options: merge_options({
           title: 'Active Identity Verified Users',
           subtitle: 'Unique users who accessed a service requiring verification',
-          description: 'Newly proofed are net new users who verified during this window. ' \
+          caption: 'Newly proofed are net new users who verified during this window. ' \
             'Previously proofed are users who completed verification ahead of this window.',
           colors: ['#18f'],
         }),
@@ -35,7 +35,7 @@ module Report
         options: merge_options({
           title: 'All Active Users',
           subtitle: 'Unique users who accessed a service',
-          description: 'New accounts reflect account creation during this window. ' \
+          caption: 'New accounts reflect account creation during this window. ' \
             'Existing accounts reflect accounts created ahead of this window.',
           colors: ['#18f'],
         }),

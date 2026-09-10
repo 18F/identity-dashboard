@@ -38,8 +38,6 @@ describe Report::Usage do
            test_data['count_newly_created_accounts']],
         ],
         options: {
-          description: 'New accounts reflect account creation during this window. ' \
-                          'Existing accounts reflect accounts created ahead of this window.',
           colors: ['#18f'],
           title: 'All Active Users',
           library: {
@@ -47,6 +45,11 @@ describe Report::Usage do
             subtitle: {
               align: 'left',
               text: 'Unique users who accessed a service',
+            },
+            caption: {
+              useHTML: true,
+              text: 'New accounts reflect account creation during this window. ' \
+                'Existing accounts reflect accounts created ahead of this window.',
             },
             accessibility: {
               screenReaderSection: {
@@ -78,13 +81,16 @@ describe Report::Usage do
         options: {
           colors: ['#18f'],
           title: 'Active Identity Verified Users',
-          description: 'Newly proofed are net new users who verified during this window. ' \
-          'Previously proofed are users who completed verification ahead of this window.',
           library: {
             title: { align: 'left' },
             subtitle: {
               align: 'left',
               text: 'Unique users who accessed a service requiring verification',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Newly proofed are net new users who verified during this window. ' \
+          'Previously proofed are users who completed verification ahead of this window.',
             },
             accessibility: {
               screenReaderSection: {
@@ -176,13 +182,16 @@ describe Report::Usage do
         options: {
           colors: ['#18f'],
           title: 'Active Identity Verified Users',
-          description: 'Newly proofed are net new users who verified during this window. ' \
-          'Previously proofed are users who completed verification ahead of this window.',
           library: {
             title: { align: 'left' },
             subtitle: {
               align: 'left',
               text: 'Unique users who accessed a service requiring verification',
+            },
+            caption: {
+              useHTML: true,
+              text: 'Newly proofed are net new users who verified during this window. ' \
+                'Previously proofed are users who completed verification ahead of this window.',
             },
             accessibility: {
               screenReaderSection: {

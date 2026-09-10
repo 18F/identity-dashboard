@@ -39,14 +39,17 @@ describe Report::Authentication do
         ],
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
-          description: 'Percentage of successful sign-ins from MFA type' \
-              ', out of all successful attempts.',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',
             } },
             subtitle: { align: 'left', text: 'How users authenticated during this window' },
             title: { align: 'left' },
+            caption: {
+              useHTML: true,
+              text: 'Percentage of successful sign-ins from MFA type' \
+                ', out of all successful attempts.',
+            },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
@@ -64,8 +67,6 @@ describe Report::Authentication do
       })
       expect(subject.device_type_chart[:options]).to include({
         title: 'Device Type',
-        description:
-            'Percentage of successful sign-ins from device type, out of all successful attempts.',
         donut: true,
         suffix: '%',
         colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
@@ -96,14 +97,17 @@ describe Report::Authentication do
         data: [],
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
-          description: 'Percentage of successful sign-ins from MFA type' \
-              ', out of all successful attempts.',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',
             } },
             subtitle: { align: 'left', text: 'How users authenticated during this window' },
             title: { align: 'left' },
+            caption: {
+              useHTML: true,
+              text: 'Percentage of successful sign-ins from MFA type' \
+                ', out of all successful attempts.',
+            },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
@@ -120,8 +124,6 @@ describe Report::Authentication do
         data: [],
         options: {
           title: 'Device Type',
-          description:
-            'Percentage of successful sign-ins from device type, out of all successful attempts.',
           donut: true,
           suffix: '%',
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
@@ -129,7 +131,12 @@ describe Report::Authentication do
             accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             subtitle: { align: 'left', text: 'How users accessed your service during this window' },
-            title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 }
+            title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 },
+            caption: {
+              useHTML: true,
+              text: 'Percentage of successful sign-ins from device type, out of all successful ' \
+                'attempts.',
+            }
           },
         },
       })
