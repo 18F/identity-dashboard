@@ -25,11 +25,15 @@ describe Report::Base do
         ['Preverified Users', 20], ['Authentications', 1501], ['Account Creation', 1],
         ['Authentic Driver\'s License', 1], ['Facial Matching Check', 2],
 <<<<<<< HEAD
+<<<<<<< HEAD
         ['Valid Drivers License / Passport / etc.', 1],
         ['Identity Not Found (SSN / DOB / Deceased)', 3],
 =======
         ['Valid Drivers License / Passport / etc.', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
 >>>>>>> e167d36d (update test)
+=======
+        ['Invalid Attributes (DL, DOS)', 1], ['Identity Not Found (SSN / DOB / Deceased)', 3],
+>>>>>>> 76532758 (update invalid_att_dl_dos to plain language reccomendations doc)
         ['Under Active Fraud Alert', 1], ['Suspicious Phone', 1], ['Phone Account Ownership', 0],
         ['Wrong Phone Type', 0], ['Rejected at Post Office', 1], ['Pending Fraud Review', 0],
         ['Adjudicated as Legitimate', 0], ['Preverified', 2], ['Remote Unattended', 61],
