@@ -451,11 +451,11 @@ feature 'Service Providers CRUD' do
       expect(page).to_not have_css('input#service_provider_email_nameid_format_allowed')
     end
 
-    # rubocop:disable Layout/LineLength
     scenario 'can select default help text options for new configurations' do
       friendly_name = '<Application Friendly Name>'
       agency = '<Agency>'
 
+      # rubocop:disable Layout/LineLength
       # taken from service_providers.en.yml
       default_help_text_options = ['Leave blank',
                                    "First time here from #{friendly_name}? Your old #{friendly_name} username and password won’t work. Create a Login.gov account with the same email used previously.",
@@ -464,6 +464,7 @@ feature 'Service Providers CRUD' do
                                    "Create a Login.gov account using your #{agency} email.",
                                    'Create a Login.gov account using the same email provided on your application.',
                                    'If you are having trouble accessing your Login.gov account, visit the Login.gov help center for support.']
+      # rubocop:enable Layout/LineLength
 
       visit new_service_provider_path
 
@@ -479,22 +480,27 @@ feature 'Service Providers CRUD' do
       choose('service_provider_identity_protocol_saml', allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url
+           block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
 
-      # Redirect URIs (for oidc) is found in Additional Redirect URIs (saml) so instead we assert that
-      # the oidc hint label is not found since the content there is dissimilar enough
-      expect(page).to_not have_content(t('simple_form.labels.service_provider.redirect_uris_oidc_label'))
+      # Redirect URIs (for oidc) is found in Additional Redirect URIs (saml) so instead we assert
+      # that the oidc hint label is not found since the content there is dissimilar enough
+      expect(page).to_not have_content(t(
+        'simple_form.labels.service_provider.redirect_uris_oidc_label',
+      ))
     end
 
     scenario 'oidc fields are shown when oidc is selected', :js do
       visit new_service_provider_path
-      choose('service_provider_identity_protocol_openid_connect_private_key_jwt', allow_label_click: true)
+      choose('service_provider_identity_protocol_openid_connect_private_key_jwt',
+allow_label_click: true)
 
       saml_attributes =
-        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url block_encryption signed_response_message_requested]
+        %w[acs_url assertion_consumer_logout_service_url sp_initiated_login_url return_to_sp_url
+           block_encryption signed_response_message_requested]
       saml_attributes.each do |atr|
         expect(page).to_not have_content(t("simple_form.labels.service_provider.#{atr}"))
       end
@@ -524,7 +530,8 @@ feature 'Service Providers CRUD' do
       select(I18n.t('service_provider_form.ial_option_2'), from: 'Level of Service')
 
       attributes =
-        %w[email all_emails verified_at x509_subject x509_presented first_name last_name dob ssn address1 address2 city state zipcode phone]
+        %w[email all_emails verified_at x509_subject x509_presented first_name last_name dob ssn
+           address1 address2 city state zipcode phone]
 
       attributes.each do |atr|
         selector = "[for=service_provider_attribute_bundle_#{atr}]"
@@ -540,7 +547,19 @@ feature 'Service Providers CRUD' do
         expect(page).to_not have_content('Version History')
       end
     end
-    # rubocop:enable Layout/LineLength
+
+    context 'and Production gate is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(prod_like_env: true)
+      end
+
+      it 'uses long form for edit' do
+        team_membership = create(:team_membership, :partner_developer, user: user_to_log_in_as)
+        sp = create(:service_provider, team: team_membership.team)
+        visit edit_service_provider_path(id: sp)
+        expect(page).to have_current_path(edit_service_provider_path(sp))
+      end
+    end
   end
 
   context 'when login.gov admin' do
@@ -571,10 +590,6 @@ feature 'Service Providers CRUD' do
         forgot_password: { en: HelpText::PRESETS['forgot_password'].sample },
       }
       service_provider.save!
-
-      allow(IdentityConfig.store).to receive(
-        :edit_button_uses_service_config_wizard,
-      ).and_return(false)
 
       visit edit_service_provider_path(service_provider)
 
@@ -882,28 +897,6 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(sp.friendly_name)
       expect(page).to have_content(team)
       expect(page).to_not have_content('All service providers')
-    end
-
-    describe 'the `edit_button_uses_service_config_wizard` flag' do
-      it 'uses the 1-page form when flagged out' do
-        allow(IdentityConfig.store).to receive_messages(
-          edit_button_uses_service_config_wizard: false,
-        )
-        visit service_provider_path(sp)
-        click_on 'Edit'
-        expect(page).to have_current_path(edit_service_provider_path(sp))
-      end
-
-      it 'uses the wizard when flagged in' do
-        allow(IdentityConfig.store).to receive_messages(
-          edit_button_uses_service_config_wizard: true,
-        )
-        visit service_provider_path(sp)
-        click_on 'Edit'
-        expect(page).to have_current_path(service_config_wizard_path(:settings))
-        friendly_name = find_by_id('wizard_step_friendly_name').value
-        expect(friendly_name).to eq(sp.friendly_name)
-      end
     end
 
     describe 'with a production configuration' do

@@ -2,11 +2,11 @@
 <%= link_to 'View configs', '/service_providers', :class => 'usa-link' %>
 
 <h1 class="usa-display">Details for "<%= service_provider.friendly_name %>"</h1>
-<% if moved_to_prod? %>
+<% if service_provider.moved_to_prod? %>
   <%= render partial: 'moved_to_prod_notice' %>
 <% end %>
 
-<% if service_provider.prod_config? && !moved_to_prod? %>
+<% if service_provider.prod_config? && !service_provider.moved_to_prod? %>
   <%= render partial: 'prod_config_call_to_action' %>
 <% end %>
 
@@ -221,22 +221,17 @@
 <% end %>
 
 <% if policy(current_user).above_readonly_role? %>
-  <% if edit_button_to_show == 'wizard' %>
-    <%= button_to t('forms.buttons.edit_service_provider'),
-      service_config_wizard_index_path(service_provider:),
-      class: 'usa-button float-left',
-      method: :post %>
-  <% elsif edit_button_to_show == 'long_form' %>
+  <% unless service_provider.moved_to_prod? %>
     <%= button_to t('forms.buttons.edit_service_provider'),
       edit_service_provider_path(service_provider),
       class: 'usa-button float-left',
       method: :get %>
-  <% end %>
-  <% if policy(service_provider).destroy? %>
-    <%= button_to t('forms.buttons.delete_service_provider'),
-      service_provider_path(service_provider),
-      class: 'usa-button usa-button--outline float-left',
-      method: :delete, data: { confirm: t('forms.confirm_service_provider') } %>
+    <% if policy(service_provider).destroy? %>
+      <%= button_to t('forms.buttons.delete_service_provider'),
+        service_provider_path(service_provider),
+        class: 'usa-button usa-button--outline float-left',
+        method: :delete, data: { confirm: t('forms.confirm_service_provider') } %>
+    <% end %>
   <% end %>
 <% end %>
 
