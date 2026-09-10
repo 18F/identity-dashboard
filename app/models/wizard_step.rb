@@ -161,8 +161,6 @@ class WizardStep < ApplicationRecord
                  attribute: :assertion_consumer_logout_service_url,
                  on: 'redirects'
 
-  validates_with IdentityValidations::CertsAreX509Validator, on: 'logo_and_cert'
-  #
   ### end of validations copied from IdentityValidations::ServiceProviderValidation
 
   validate :issuer_service_provider_uniqueness, on: 'issuer'

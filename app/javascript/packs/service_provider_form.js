@@ -124,17 +124,25 @@ function certificateUploadSetup() {
     }
   };
 
+  const rejectFile = (message) => {
+    setPemError(message);
+    pemInput.value = '';
+    pemFilename.textContent = null;
+  };
+
   const handleUploadedCert = () => {
     const file = pemInput.files[0];
 
     pemFilename.textContent = file ? file.name : null;
 
-    if (file && file.text) {
+    if (file && file.size > (50 * 1024)) { // file.size returns bytes
+      rejectFile('Certificate file must not be larger than 50kB.');
+    } else if (file && file.text) {
       file.text().then((content) => {
         if (content.includes('PRIVATE')) {
-          setPemError('This is a private key, upload the public key instead');
+          rejectFile('This is a private key, upload the public key instead');
         } else if (!content.includes('-----BEGIN CERTIFICATE-----')) {
-          setPemError('This file does not appear to be PEM encoded');
+          rejectFile('This file does not appear to be PEM encoded');
         } else {
           setPemError(null);
         }

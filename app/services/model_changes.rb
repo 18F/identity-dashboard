@@ -14,12 +14,29 @@ module ModelChanges
       next if k == 'updated_at'
 
       changes[k] = {
-        'old' => v[0],
-        'new' => v[1],
+        'old' => sanitize_for_log(v[0]),
+        'new' => sanitize_for_log(v[1]),
       }
     end
 
     changes['id'] = record.id
     changes
+  end
+
+  private
+
+  # An attribute's pending value can be arbitrary user-supplied content (e.g. the raw bytes
+  # of an uploaded cert file) that isn't valid UTF-8, which would otherwise raise when the
+  # logger tries to JSON-encode it.
+  def sanitize_for_log(value)
+    case value
+    when String
+      value = value.dup.force_encoding('UTF-8') unless value.encoding == Encoding::UTF_8
+      value.valid_encoding? ? value : value.scrub
+    when Array
+      value.map { |v| sanitize_for_log(v) }
+    else
+      value
+    end
   end
 end

@@ -530,6 +530,9 @@ describe ServiceProvidersController do
         id: sp.id,
         service_provider: { issuer: sp.issuer, cert: image_file },
       }
+
+      expect(response).to render_template(:edit)
+      expect(response.body).to_not include('Null Certificate')
     end
 
     it 'does not update cert array when cert data is null/empty' do

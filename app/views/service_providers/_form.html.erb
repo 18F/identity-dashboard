@@ -161,7 +161,7 @@
     </p>
 
 
-    <% service_provider.certificates.each do |certificate| %>
+    <% service_provider.certificates.select { |c| c.is_a?(ServiceProviderCertificate) }.each do |certificate| %>
       <%= render 'certificate', certificate: certificate do %>
         <div class="usa-alert usa-alert--warning usa-alert--no-icon" >
           <div class="usa-alert__body">

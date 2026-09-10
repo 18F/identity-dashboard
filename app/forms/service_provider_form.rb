@@ -86,19 +86,29 @@ class ServiceProviderForm < SimpleDelegator
   end
 
   def log_errors
-    sanitized_errors = errors.to_hash
+    sanitize_error_messages!
+    log.sp_errors(errors: errors.to_hash)
+  end
 
-    # Some errors inherited from IdentityValidations::ServiceProviderValidation may attempt
-    # to include an entire invalid attached file.
-    # Truncate long errors to the message at the end. This keeps the message legible and prevents
-    # exceptions getting thrown when trying to encode an entire file the log message.
-    sanitized_errors.keys.each do |key|
-      sanitized_errors[key] = sanitized_errors[key].map do |error_string|
-        error_string.length > 256 ? error_string.last(70) : error_string
-      end
+  # Some errors inherited from IdentityValidations::ServiceProviderValidation may attempt
+  # to include an entire invalid attached file (e.g. raw bytes of an uploaded cert) verbatim
+  # in the message. Truncate long errors down to the message at the end, and fix up invalid
+  # encodings. This keeps messages legible and prevents exceptions when logging or rendering
+  # the error, e.g. in JSON encoding or ERB template rendering.
+  def sanitize_error_messages!
+    errors.attribute_names.each do |attribute|
+      messages = errors[attribute].map { |message| sanitize_error_message(message) }
+
+      next if messages == errors[attribute]
+
+      errors.delete(attribute)
+      messages.each { |message| errors.add(attribute, message) }
     end
+  end
 
-    log.sp_errors(errors: sanitized_errors)
+  def sanitize_error_message(message)
+    message = message.last(70) if message.length > 256
+    message.valid_encoding? ? message : message.dup.force_encoding('UTF-8').scrub
   end
 
   def clear_formatting
