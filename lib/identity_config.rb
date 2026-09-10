@@ -39,6 +39,8 @@ class IdentityConfig
       config.add(:rack_timeout_service_timeout_seconds, type: :integer)
       config.add(:redis_pool_size, type: :integer)
       config.add(:redis_url, type: :string)
+      config.add(:requests_per_ip_limit, type: :integer)
+      config.add(:requests_per_ip_period, type: :integer)
       config.add(:saml_sp_issuer, type: :string)
       config.add(:saml_sp_private_key, type: :string)
       config.add(:saml_sp_private_key_password, type: :string)

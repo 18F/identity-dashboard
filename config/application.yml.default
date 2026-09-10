@@ -22,6 +22,8 @@ prod_like_env: false
 rack_timeout_service_timeout_seconds: '15'
 redis_pool_size: 5
 redis_url: redis://localhost:6379/0
+requests_per_ip_limit: 100
+requests_per_ip_period: 60
 secret_key_base: changeme
 serve_static_files: 'false'
 users_per_page: 100
