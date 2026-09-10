@@ -45,6 +45,10 @@ module Report
           align: 'left',
           text: chart_options.delete(:subtitle),
         },
+        caption: {
+          useHTML: true,
+          text: chart_options.delete(:caption),
+        },
         accessibility: {
           screenReaderSection: {
             beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",

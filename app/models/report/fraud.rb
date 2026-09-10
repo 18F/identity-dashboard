@@ -46,10 +46,8 @@ module Report
 
       # Only explain the "adjudicated" column if we have data
       if review_queue_data.present?
-        chart[:options][:library][:caption] = {
-          text: '"Adjudicated as legitimate" reflects cases where ' \
-            'Login.gov reviewed the case and reversed the block.',
-        }
+        chart[:options][:caption] = '"Adjudicated as legitimate" reflects cases where ' \
+            'Login.gov reviewed the case and reversed the block.'
       end
       chart
     end

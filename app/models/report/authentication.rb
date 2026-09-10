@@ -39,14 +39,10 @@ module Report
         options: merge_options(
           title: 'Multi-Factor Authentication (MFA) Type',
           subtitle: 'How users authenticated during this window',
+          caption: 'Percentage of successful sign-ins from MFA type, ' \
+            'out of all successful attempts.',
           max: 100,
           suffix: '%',
-          library: {
-            caption: {
-              text: 'Percentage of successful sign-ins from MFA type, ' \
-                'out of all successful attempts.',
-            },
-          },
         ),
       }
     end
@@ -58,15 +54,11 @@ module Report
         options: merge_options({
           title: 'Device Type',
           subtitle: 'How users accessed your service during this window',
+          caption:
+            'Percentage of successful sign-ins from device type, out of all successful attempts.',
           colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
           suffix: '%',
-          library: {
-            caption: {
-              text: 'Percentage of successful sign-ins from device type, out ' \
-                'of all successful attempts.',
-            },
-          },
         }),
       }
     end
