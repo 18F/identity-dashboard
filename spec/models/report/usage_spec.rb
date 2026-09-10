@@ -47,6 +47,7 @@ describe Report::Usage do
               text: 'Unique users who accessed a service',
             },
             caption: {
+              useHTML: true,
               text: 'New accounts reflect account creation during this window. ' \
                 'Existing accounts reflect accounts created ahead of this window.',
             },
@@ -87,6 +88,7 @@ describe Report::Usage do
               text: 'Unique users who accessed a service requiring verification',
             },
             caption: {
+              useHTML: true,
               text: 'Newly proofed are net new users who verified during this window. ' \
           'Previously proofed are users who completed verification ahead of this window.',
             },
@@ -187,6 +189,7 @@ describe Report::Usage do
               text: 'Unique users who accessed a service requiring verification',
             },
             caption: {
+              useHTML: true,
               text: 'Newly proofed are net new users who verified during this window. ' \
                 'Previously proofed are users who completed verification ahead of this window.',
             },

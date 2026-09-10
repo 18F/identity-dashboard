@@ -36,6 +36,7 @@ describe Report::IdV do
                 'during this window',
             },
             caption: {
+              useHTML: true,
               text: 'Percentage of users who successfully completed identity verification ' \
                 'credentials out of total users attempting, controlling for fraud and ' \
                 'abandonment.',
@@ -81,6 +82,7 @@ describe Report::IdV do
                 'during this window',
             },
             caption: {
+              useHTML: true,
               text: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
                 'shows, out of all users who attempted, who weren\'t dead-ended.',
             },
@@ -175,6 +177,7 @@ describe Report::IdV do
                 'during this window',
             },
             caption: {
+              useHTML: true,
               text: 'Counts represent users who hit given friction points across document ' \
                 'authentication, identity resolution, and address verification steps and did ' \
                 'not get past the block in the reporting window.',
@@ -298,6 +301,7 @@ describe Report::IdV do
                 'during this window',
             },
             caption: {
+              useHTML: true,
               text: 'Counts represent users who hit given friction points across document ' \
                 'authentication, identity resolution, and address verification steps and did ' \
                 'not get past the block in the reporting window.',

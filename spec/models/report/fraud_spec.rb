@@ -50,6 +50,10 @@ describe Report::Fraud do
               beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
             },
           },
+          caption: {
+            useHTML: true,
+            text: nil,
+          },
           plotOptions: {
             series: {
               animation: false,
@@ -82,6 +86,7 @@ describe Report::Fraud do
             text: 'Users who requested redress during this period',
           },
           caption: {
+            useHTML: true,
             text: '"Adjudicated as legitimate" reflects cases where ' \
               'Login.gov reviewed the case and reversed the block.',
           },
@@ -148,6 +153,10 @@ describe Report::Fraud do
                 beforeChartFormat: '<h2>Fraudsters Blocked</h2>',
               },
             },
+            caption: {
+              useHTML: true,
+              text: nil,
+            },
             plotOptions: {
               series: {
                 animation: false,
@@ -180,6 +189,10 @@ describe Report::Fraud do
               screenReaderSection: {
                 beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
               },
+            },
+            caption: {
+              useHTML: true,
+              text: nil,
             },
             plotOptions: {
               series: {

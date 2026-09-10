@@ -46,6 +46,7 @@ describe Report::Authentication do
             subtitle: { align: 'left', text: 'How users authenticated during this window' },
             title: { align: 'left' },
             caption: {
+              useHTML: true,
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
@@ -103,6 +104,7 @@ describe Report::Authentication do
             subtitle: { align: 'left', text: 'How users authenticated during this window' },
             title: { align: 'left' },
             caption: {
+              useHTML: true,
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
@@ -131,6 +133,7 @@ describe Report::Authentication do
             subtitle: { align: 'left', text: 'How users accessed your service during this window' },
             title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 },
             caption: {
+              useHTML: true,
               text: 'Percentage of successful sign-ins from device type, out of all successful ' \
                 'attempts.',
             }
