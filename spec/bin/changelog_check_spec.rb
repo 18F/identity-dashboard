@@ -1,5 +1,5 @@
 require 'spec_helper'
-load File.expand_path('../../bin/changelog_check.rb', __dir__)
+require File.expand_path('../../bin/changelog_check.rb', __dir__)
 
 RSpec.describe 'bin/changelog_check.rb' do
   def commit_log(title:, body: [])
