@@ -43,6 +43,7 @@ RSpec.describe Role, type: :model do
           'partner_admin' => 'Sandbox Partner Admin',
           'partner_developer' => 'Sandbox Team Dev',
           'partner_readonly' => 'Team Readonly',
+          'partner_reports_readonly' => 'Team Reports Readonly',
         }
         expect(Role.active_roles_names).to eq(roles_hash)
       end
@@ -62,6 +63,7 @@ RSpec.describe Role, type: :model do
           'partner_admin' => 'Production Team Admin',
           'partner_developer' => 'Production Team Dev',
           'partner_readonly' => 'Team Readonly',
+          'partner_reports_readonly' => 'Team Reports Readonly',
         }
         expect(Role.active_roles_names).to eq(roles_hash)
       end

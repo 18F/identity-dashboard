@@ -23,6 +23,7 @@ class Role < ApplicationRecord
     partner_admin
     partner_developer
     partner_readonly
+    partner_reports_readonly
   ]
 
   LOGINGOV_ADMIN = Role.find_by(name: :logingov_admin)
