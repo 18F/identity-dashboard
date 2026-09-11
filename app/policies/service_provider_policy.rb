@@ -134,11 +134,11 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   private
 
   def partner_readonly?
-    team_membership.role == Role.find_by(name: 'partner_readonly')
+    team_membership.role == PARTNER_READONLY
   end
 
   def partner_admin?
-    team_membership.role == Role.find_by(name: 'partner_admin')
+    team_membership.role == PARTNER_ADMIN
   end
 
   def team_member_or_admin?
