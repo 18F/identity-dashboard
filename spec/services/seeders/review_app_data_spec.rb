@@ -20,19 +20,21 @@ RSpec.describe Seeders::ReviewAppData do
     end
 
     it 'seeds users' do
-      expect { described_class.new.seed }.to change { User.count }.by 5
+      expect { described_class.new.seed }.to change { User.count }.by 6
 
       expect(User.find_by(email: 'logingov-admin@gsa.gov')).to be_present
       expect(User.find_by(email: 'logingov-readonly@gsa.gov')).to be_present
       expect(User.find_by(email: 'partner-admin@gsa.gov')).to be_present
       expect(User.find_by(email: 'partner-developer@gsa.gov')).to be_present
       expect(User.find_by(email: 'partner-readonly@gsa.gov')).to be_present
+      expect(User.find_by(email: 'partner-reports-readonly@gsa.gov')).to be_present
 
       expect(logger).to have_received(:info).with('Created user: logingov-admin@gsa.gov')
       expect(logger).to have_received(:info).with('Created user: logingov-readonly@gsa.gov')
       expect(logger).to have_received(:info).with('Created user: partner-admin@gsa.gov')
       expect(logger).to have_received(:info).with('Created user: partner-developer@gsa.gov')
       expect(logger).to have_received(:info).with('Created user: partner-readonly@gsa.gov')
+      expect(logger).to have_received(:info).with('Created user: partner-reports-readonly@gsa.gov')
     end
 
     it 'seeds teams' do

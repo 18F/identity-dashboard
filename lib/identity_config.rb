@@ -54,6 +54,7 @@ class IdentityConfig
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:api_token_required_enabled, type: :boolean)
       config.add(:salesforce_api_enabled, type: :boolean, allow_nil: true)
+      config.add(:allow_role_report_read_only, type: :boolean, allow_nil: true)
     end
     @store = Identity::Hostdata.config
     # rubocop:enable Metrics/BlockLength

@@ -92,6 +92,8 @@ en:
     partner_developer_prod_description: Can edit and submit existing configs
     partner_readonly_description: Can view existing configurations but cannot make changes
     partner_readonly_prod_description: Can view existing configurations but cannot make changes
+    partner_reports_readonly_description: Can view reports but cannot see configurations
+    partner_reports_readonly_prod_description: Can view reports but cannot see configurations
   role_names:
     sandbox:
       logingov_admin: Login.gov Admin
@@ -99,6 +101,7 @@ en:
       partner_admin: Sandbox Partner Admin
       partner_developer: Sandbox Team Dev
       partner_readonly: Team Readonly
+      partner_reports_readonly: Team Reports Readonly
       global_default: Sandbox Partner
     production:
       logingov_admin: Login.gov Admin
@@ -106,6 +109,7 @@ en:
       partner_admin: Production Team Admin
       partner_developer: Production Team Dev
       partner_readonly: Team Readonly
+      partner_reports_readonly: Team Reports Readonly
       global_default: Production Partner
     global:
       logingov_admin: Login.gov Admin
