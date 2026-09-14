@@ -32,10 +32,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-validations.git
-  revision: 4c6b389f62b8428c4a8a73c6a8a1a5a8abde1b74
-  branch: hmm/rails8
+  revision: 5b9a538bcb1a97ec92c96aa1d44fcf3c980bd9da
+  tag: v0.9.1
   specs:
-    identity_validations (0.8.0)
+    identity_validations (0.9.1)
       activemodel (>= 7.1)
 
 GIT
