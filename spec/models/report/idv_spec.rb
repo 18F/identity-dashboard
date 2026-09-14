@@ -131,9 +131,10 @@ describe Report::IdV do
               text: 'Channels through which users verified their identity credentials.<br/>
 <b>• Preverified</b>: A user created a verification profile (passed proofing) elsewhere prior ' \
 'to this window.<br/>
-<b>• Remote unattended</b>: Users who went through the online proofing process.<br/>
-<b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
-<b>• Physical letter</b>: users who completed their address verification through receiving a ' \
+<b>• Remote Unattended</b>: Users who went through the online proofing process.<br/>
+<b>• In-Person Proofing</b>: users who completed their proofing process through in person ' \
+'verification.<br/>
+<b>• Physical Letter</b>: users who completed their address verification through receiving a ' \
 'letter from the Post Office.',
             },
             accessibility: {
@@ -255,9 +256,10 @@ describe Report::IdV do
               text: 'Channels through which users verified their identity credentials.<br/>
 <b>• Preverified</b>: A user created a verification profile (passed proofing) elsewhere prior ' \
 'to this window.<br/>
-<b>• Remote unattended</b>: Users who went through the online proofing process.<br/>
-<b>• IPP</b>: users who completed their proofing process through in person verification.<br/>
-<b>• Physical letter</b>: users who completed their address verification through receiving a ' \
+<b>• Remote Unattended</b>: Users who went through the online proofing process.<br/>
+<b>• In-Person Proofing</b>: users who completed their proofing process through in person ' \
+'verification.<br/>
+<b>• Physical Letter</b>: users who completed their address verification through receiving a ' \
 'letter from the Post Office.',
             },
             accessibility: {
