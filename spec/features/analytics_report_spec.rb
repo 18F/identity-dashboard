@@ -78,6 +78,7 @@ describe 'reporting feature basics' do
         visit analytics_path
         expect(page).to have_content('Choose from the dropdowns to see a report.')
         expect(page).to_not have_content('Date range')
+        expect(page).to_not have_content('Issuer')
         expect(page).to_not have_link('Export report as CSV')
       end
 
@@ -152,6 +153,13 @@ describe 'reporting feature basics' do
             expect(page).to_not have_content('2025-10-01')
             expect(page).to have_content('2025-11-01')
             expect(page).to have_content('2025-12-01')
+          end
+
+          it 'shows the correct issuer for a chosen application' do
+            select second_sp.friendly_name, from: 'Application'
+
+            expect(page).to_not have_content(issuer_with_lots_of_test_data)
+            expect(page).to have_content(issuer_with_a_little_test_data)
           end
         end
       end
@@ -229,6 +237,7 @@ describe 'reporting feature basics' do
 
         context 'with charts rendering', :js do
           it 'tries to display each chart' do
+            expect(page).to have_content('Issuer')
             expect(page).to have_content('Date range')
             expect(find_all('svg').count).to eq(2)
             expect(page).to_not have_content('No data')
