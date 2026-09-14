@@ -98,6 +98,11 @@
                           <%= link_to 'Connect with Airtable', airtable_path %>
                         </li>
                       <% end %>
+                      <% if policy(:salesforce).index? %>
+                        <li class="usa-nav__submenu-item">
+                          <%= link_to 'Salesforce connection', salesforce_path %>
+                        </li>
+                      <% end %>
                     <% else %>
                       <li class="usa-nav__submenu-item">
                         <%= link_to 'Configuration extraction', extracts_path %>

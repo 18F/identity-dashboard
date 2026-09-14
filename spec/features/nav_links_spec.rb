@@ -158,6 +158,21 @@ feature 'Nav links' do
     scenario 'should not see an Airtable link' do
       expect(page).to_not have_link('Connect with Airtable')
     end
+
+    context 'when login.gov admin' do
+      before do
+        login_as(logingov_admin)
+        visit root_path
+      end
+
+      scenario 'should show a Salesforce connection link' do
+        expect(page).to have_link('Salesforce connection')
+      end
+
+      scenario 'should not show a Connect with Airtable link' do
+        expect(page).to_not have_link('Connect with Airtable')
+      end
+    end
   end
 
   context 'on production environments' do
