@@ -36,7 +36,7 @@ class Role < ApplicationRecord
   end
 
   def self.active_roles_names
-    @active_roles_names || ROLES_NAMES.map do |role|
+    @active_roles_names ||= ROLES_NAMES.map do |role|
       [role, I18n.t("#{roles_i18n_bucket}.#{role}")]
     end.to_h
   end
