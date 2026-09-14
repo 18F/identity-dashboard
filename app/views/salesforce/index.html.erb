@@ -1,0 +1,66 @@
+<%= page_heading 'Salesforce connection' %>
+
+<% if @connection_error %>
+  <div class="usa-alert usa-alert--error margin-bottom-2">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text"><%= @connection_error %></p>
+    </div>
+  </div>
+<% else %>
+  <dl class="usa-definitions">
+    <dt>Instance URL:</dt>
+    <dd><%= IdentityConfig.store.salesforce_instance_url %></dd>
+    <dt>Status:</dt>
+    <dd>Connected</dd>
+    <dt>Token:</dt>
+    <dd class="token"><%= @token %></dd>
+  </dl>
+<% end %>
+
+<h2>Look up Application Contacts by team</h2>
+
+<%= form_with url: salesforce_path, method: :get, local: true do %>
+  <label class="usa-label" for="team_id">Team</label>
+  <select class="usa-select" name="team_id" id="team_id">
+    <option value="">Select a team</option>
+    <% @teams.each do |team| %>
+      <option value="<%= team.id %>" <%= 'selected' if @team&.id == team.id %>><%= team.name %></option>
+    <% end %>
+  </select>
+  <button class="usa-button margin-top-2" type="submit">Run query</button>
+<% end %>
+
+<% if @team %>
+  <% if @soql %>
+    <p><strong>SOQL:</strong> <code><%= @soql %></code></p>
+  <% end %>
+
+  <% if @records.blank? %>
+    <p>No Application Contact records found for <%= @team.name %>'s service provider UUIDs.</p>
+  <% else %>
+    <table class="usa-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th>Application</th>
+          <th>Team UUID</th>
+          <th>Portal Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @records.each do |record| %>
+          <tr>
+            <td><%= record['Name'] %></td>
+            <td><%= record.dig('LDGCRM_contact__r', 'Name') %></td>
+            <td><%= record['LDGCRM_Email__c'] %></td>
+            <td><%= record.dig('LDGCRM_Application__r', 'Name') %></td>
+            <td><%= record['LDGCRM_P3_Team_UUID__c'] %></td>
+            <td><%= record['LGDCRM_P3_Partner_Portal_Admin__c'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>
