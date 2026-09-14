@@ -26,11 +26,19 @@ class Rack::Attack
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
   # Safelist localhost when running the test suite, since the test suite will otherwise fail
   if Rails.env.test?
-    throttle('req/ip', limit: 100, period: 1.minute) do |req|
+    throttle(
+      'req/ip',
+      limit: IdentityConfig.store.requests_per_ip_limit,
+      period: IdentityConfig.store.requests_per_ip_period,
+    ) do |req|
       req.ip if req.ip != '127.0.0.1' && req.ip != '::1'
     end
   else
-    throttle('req/ip', limit: 100, period: 1.minute) do |req| # rubocop:disable Style/SymbolProc
+    throttle(
+      'req/ip',
+      limit: IdentityConfig.store.requests_per_ip_limit,
+      period: IdentityConfig.store.requests_per_ip_period,
+    ) do |req| # rubocop:disable Style/SymbolProc
       req.ip # unless req.path.start_with?('/assets')
     end
   end

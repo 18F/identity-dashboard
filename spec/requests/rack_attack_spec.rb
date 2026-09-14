@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'limiting suspicious requests' do
   let(:logger) { instance_double(ActiveSupport::Logger) }
+  let(:requests_per_ip_limit) { IdentityConfig.store.requests_per_ip_limit }
+  let(:requests_per_ip_period) { IdentityConfig.store.requests_per_ip_period }
 
   before do
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
@@ -9,6 +11,55 @@ RSpec.describe 'limiting suspicious requests' do
     allow(logger).to receive(:formatter=)
     allow(logger).to receive(:info)
     allow(ActiveSupport::Logger).to receive(:new).and_return(logger)
+  end
+
+  context 'with high requests per ip' do
+    it 'reads the limit and period from ENV vars' do
+      get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+      throttle_data = request.env['rack.attack.throttle_data']['req/ip']
+
+      expect(throttle_data[:count]).to eq(1)
+      expect(throttle_data[:limit]).to eq(requests_per_ip_limit)
+      expect(throttle_data[:period]).to eq(requests_per_ip_period)
+    end
+
+    context 'when the number of requests is lower than the limit' do
+      it 'does not throttle' do
+        (requests_per_ip_limit - 1).times do
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when the number of requests is higher than the limit inside the period' do
+      before { freeze_time }
+
+      around(&:run)
+
+      it 'throttles with a custom response' do
+        (requests_per_ip_limit + 1).times do
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(response).to have_http_status(:too_many_requests)
+      end
+    end
+
+    context 'when the number of requests is higher than the limit outside the period' do
+      it 'does not throttle' do
+        (requests_per_ip_limit - 1).times do
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+        travel(requests_per_ip_period + 1) do
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   context 'with an invalid token' do
