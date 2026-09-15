@@ -2,17 +2,24 @@ require 'rails_helper'
 
 RSpec.describe Salesforce do
   let(:salesforce) { Salesforce.new }
-  let(:instance_url) { IdentityConfig.store.salesforce_instance_url }
+  let(:instance_url) { 'https://localhost:1234' }
+  let(:consumer_key) { 'fake_consumer_key' }
+  let(:consumer_secret) { 'fake_consumer_secret' }
 
-  before { Rails.cache.delete(Salesforce::TOKEN_CACHE_KEY) }
+  before do
+    Rails.cache.delete(Salesforce::TOKEN_CACHE_KEY)
+    allow(IdentityConfig.store).to receive(:salesforce_instance_url).and_return(instance_url)
+    allow(IdentityConfig.store).to receive(:salesforce_consumer_key).and_return(consumer_key)
+    allow(IdentityConfig.store).to receive(:salesforce_consumer_secret).and_return(consumer_secret)
+  end
 
   describe '#token' do
     it 'fetches and caches an access token' do
       stub_request(:post, "#{instance_url}/services/oauth2/token")
         .with(body: hash_including(
           'grant_type' => 'client_credentials',
-          'client_id' => IdentityConfig.store.salesforce_consumer_key,
-          'client_secret' => IdentityConfig.store.salesforce_consumer_secret,
+          'client_id' => consumer_key,
+          'client_secret' => consumer_secret,
         ))
         .to_return(
           status: 200,
