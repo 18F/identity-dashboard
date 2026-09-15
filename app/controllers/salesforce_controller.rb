@@ -7,6 +7,8 @@ class SalesforceController < AuthenticatedController
     @token = salesforce_api.token
     @teams = Team.order(:name)
     load_query_results if params[:team_id].present?
+  rescue ActiveRecord::RecordNotFound
+    @connection_error = "Team #{params[:team_id]} not found."
   rescue StandardError => err
     @connection_error = err.message
   end
@@ -15,7 +17,7 @@ class SalesforceController < AuthenticatedController
 
   def load_query_results
     @team = Team.find(params[:team_id])
-    team_uuids = @team.service_providers.filter_map(&:uuid)
+    team_uuids = @team.uuids_string.split(',')
     @records = salesforce_api.application_contacts_for_team_uuids(team_uuids)
     @soql = salesforce_api.last_soql
   end
