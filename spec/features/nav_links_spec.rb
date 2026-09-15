@@ -155,8 +155,9 @@ feature 'Nav links' do
       allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
     end
 
-    scenario 'should not see an Airtable link' do
+    scenario 'should not see an Airtable or Salesforce link' do
       expect(page).to_not have_link('Connect with Airtable')
+      expect(page).to_not have_link('Salesforce connection')
     end
 
     context 'when login.gov admin' do
