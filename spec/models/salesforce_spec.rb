@@ -9,7 +9,11 @@ RSpec.describe Salesforce do
   describe '#token' do
     it 'fetches and caches an access token' do
       stub_request(:post, "#{instance_url}/services/oauth2/token")
-        .with(body: hash_including('grant_type' => 'client_credentials'))
+        .with(body: hash_including(
+          'grant_type' => 'client_credentials',
+          'client_id' => IdentityConfig.store.salesforce_consumer_key,
+          'client_secret' => IdentityConfig.store.salesforce_consumer_secret,
+        ))
         .to_return(
           status: 200,
           body: { access_token: 'mock_access_token' }.to_json,
@@ -32,7 +36,7 @@ RSpec.describe Salesforce do
           headers: {},
         )
 
-      expect { salesforce.token }.to raise_error(/invalid_client_id/)
+      expect { salesforce.token }.to raise_error(a_string_including('invalid_client_id'))
     end
   end
 
@@ -49,7 +53,7 @@ RSpec.describe Salesforce do
       stub_request(:get, "#{instance_url}/services/data/#{Salesforce::API_VERSION}/query")
         .with(
           query: hash_including(
-            'q' => a_string_matching(/WHERE LDGCRM_P3_Team_UUID__c IN \('uuid-1', 'uuid-2'\)/),
+            'q' => a_string_including("WHERE LDGCRM_P3_Team_UUID__c IN ('uuid-1', 'uuid-2')"),
           ),
           headers: { 'Authorization' => 'Bearer mock_access_token' },
         )
@@ -70,14 +74,14 @@ RSpec.describe Salesforce do
         )
 
       expect { salesforce.application_contacts_for_team_uuids(%w[uuid-1]) }
-        .to raise_error(/No such column/)
+        .to raise_error(a_string_including('No such column'))
     end
 
     it 'escapes a quote in a uuid before building the SOQL' do
       stub_request(:get, "#{instance_url}/services/data/#{Salesforce::API_VERSION}/query")
         .with(
           query: hash_including(
-            'q' => a_string_matching(/IN \('o\\'brien'\)/),
+            'q' => a_string_including("IN ('o\\'brien')"),
           ),
         )
         .to_return(status: 200, body: { records: [] }.to_json, headers: {})
