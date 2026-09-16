@@ -37,14 +37,13 @@ RSpec.describe SalesforceController do
         let(:team) { create(:team) }
 
         before do
-          create(:service_provider, team: team, uuid: 'sp-uuid-1')
           allow_any_instance_of(Salesforce).to receive(:token).and_return('mock_access_token')
         end
 
-        it 'queries Salesforce using the team service provider uuids' do
+        it "queries Salesforce using the team's own uuid" do
           records = [{ 'Name' => 'LDGAC-1' }]
           expect_any_instance_of(Salesforce).to receive(:application_contacts_for_team_uuids)
-            .with(['sp-uuid-1']).and_return(records)
+            .with([team.uuid]).and_return(records)
 
           get :index, params: { team_id: team.id }
 
