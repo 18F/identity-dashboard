@@ -12,14 +12,16 @@ class Salesforce
 
   APPLICATION_CONTACT_OBJECT = 'LDGCRM_Application_Contact__c'.freeze
 
-  APPLICATION_CONTACT_FIELDS = %w[
-    Id
-    Name
-    LDGCRM_Email__c
-    LDGCRM_P3_Team_UUID__c
-    LGDCRM_P3_Partner_Portal_Admin__c
-    LDGCRM_contact__r.Name
-    LDGCRM_Application__r.Name
+  TEAM_UUID_FIELD = 'LDGCRM_P3_Team_UUID__c'.freeze
+
+  APPLICATION_CONTACT_FIELDS = [
+    'Id',
+    'Name',
+    'LDGCRM_Email__c',
+    TEAM_UUID_FIELD,
+    'LGDCRM_P3_Partner_Portal_Admin__c',
+    'LDGCRM_contact__r.Name',
+    'LDGCRM_Application__r.Name',
   ].freeze
 
   attr_reader :last_soql
@@ -45,7 +47,7 @@ class Salesforce
   def soql_for_team_uuids(team_uuids)
     quoted = team_uuids.map { |uuid| "'#{escape_literal(uuid)}'" }.join(', ')
     @last_soql = "SELECT #{APPLICATION_CONTACT_FIELDS.join(', ')} " \
-      "FROM #{APPLICATION_CONTACT_OBJECT} WHERE LDGCRM_P3_Team_UUID__c IN (#{quoted})"
+      "FROM #{APPLICATION_CONTACT_OBJECT} WHERE #{TEAM_UUID_FIELD} IN (#{quoted})"
   end
 
   # A team UUID never contains a quote or backslash in practice, but this is
