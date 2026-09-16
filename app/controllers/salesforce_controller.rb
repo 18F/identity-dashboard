@@ -17,8 +17,7 @@ class SalesforceController < AuthenticatedController
 
   def load_query_results
     @team = Team.find(params[:team_id])
-    team_uuids = @team.uuids_string.split(',')
-    @records = salesforce_api.application_contacts_for_team_uuids(team_uuids)
+    @records = salesforce_api.application_contacts_for_team_uuids([@team.uuid])
     @soql = salesforce_api.last_soql
   end
 
