@@ -15,7 +15,7 @@ RSpec.describe SalesforceController do
 
     describe 'GET #index' do
       it 'fetches a token and renders successfully' do
-        expect_any_instance_of(Salesforce).to receive(:token).and_return('mock_access_token')
+        expect_any_instance_of(SalesforceService).to receive(:token).and_return('mock_access_token')
 
         get :index
 
@@ -25,7 +25,7 @@ RSpec.describe SalesforceController do
       end
 
       it 'assigns a connection error when the token fetch fails' do
-        allow_any_instance_of(Salesforce).to receive(:token).and_raise('boom')
+        allow_any_instance_of(SalesforceService).to receive(:token).and_raise('boom')
 
         get :index
 
@@ -37,12 +37,13 @@ RSpec.describe SalesforceController do
         let(:team) { create(:team) }
 
         before do
-          allow_any_instance_of(Salesforce).to receive(:token).and_return('mock_access_token')
+          allow_any_instance_of(SalesforceService).to receive(:token)
+            .and_return('mock_access_token')
         end
 
         it "queries Salesforce using the team's own uuid" do
           records = [{ 'Name' => 'LDGAC-1' }]
-          expect_any_instance_of(Salesforce).to receive(:application_contacts_for_team_uuids)
+          expect_any_instance_of(SalesforceService).to receive(:application_contacts_for_team_uuids)
             .with([team.uuid]).and_return(records)
 
           get :index, params: { team_id: team.id }

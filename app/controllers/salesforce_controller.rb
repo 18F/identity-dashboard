@@ -1,7 +1,7 @@
 # SalesforceController shows the status of the app's Salesforce connection
 # and lets an admin run an ad-hoc lookup by team.
 class SalesforceController < AuthenticatedController
-  before_action -> { authorize Salesforce }
+  before_action -> { authorize SalesforceService }
 
   def index
     @token = salesforce_api.token
@@ -25,6 +25,6 @@ class SalesforceController < AuthenticatedController
   end
 
   def salesforce_api
-    @salesforce_api ||= Salesforce.new
+    @salesforce_api ||= SalesforceService.new
   end
 end

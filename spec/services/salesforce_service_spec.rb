@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Salesforce do
-  let(:salesforce) { Salesforce.new }
+RSpec.describe SalesforceService do
+  let(:salesforce) { SalesforceService.new }
   let(:instance_url) { 'https://localhost:1234' }
   let(:consumer_key) { 'fake_consumer_key' }
   let(:consumer_secret) { 'fake_consumer_secret' }
 
   before do
-    Rails.cache.delete(Salesforce::TOKEN_CACHE_KEY)
+    Rails.cache.delete(SalesforceService::TOKEN_CACHE_KEY)
     allow(IdentityConfig.store).to receive(:salesforce_instance_url).and_return(instance_url)
     allow(IdentityConfig.store).to receive(:salesforce_consumer_key).and_return(consumer_key)
     allow(IdentityConfig.store).to receive(:salesforce_consumer_secret).and_return(consumer_secret)
@@ -48,7 +48,7 @@ RSpec.describe Salesforce do
   end
 
   describe '#application_contacts_for_team_uuids' do
-    before { Rails.cache.write(Salesforce::TOKEN_CACHE_KEY, 'mock_access_token') }
+    before { Rails.cache.write(SalesforceService::TOKEN_CACHE_KEY, 'mock_access_token') }
 
     it 'returns [] without a request when there are no uuids' do
       expect(salesforce.application_contacts_for_team_uuids([])).to eq([])
@@ -57,7 +57,7 @@ RSpec.describe Salesforce do
     it 'queries by the given team uuids and returns the records' do
       records = [{ 'Name' => 'LDGAC-1', 'LDGCRM_P3_Team_UUID__c' => 'uuid-1' }]
 
-      stub_request(:get, "#{instance_url}/services/data/#{Salesforce::API_VERSION}/query")
+      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
         .with(
           query: hash_including(
             'q' => a_string_including("WHERE LDGCRM_P3_Team_UUID__c IN ('uuid-1', 'uuid-2')"),
@@ -72,7 +72,7 @@ RSpec.describe Salesforce do
     end
 
     it 'raises when Salesforce returns an error array' do
-      stub_request(:get, "#{instance_url}/services/data/#{Salesforce::API_VERSION}/query")
+      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
         .with(query: hash_including('q' => anything))
         .to_return(
           status: 400,
@@ -85,7 +85,7 @@ RSpec.describe Salesforce do
     end
 
     it 'escapes a quote in a uuid before building the SOQL' do
-      stub_request(:get, "#{instance_url}/services/data/#{Salesforce::API_VERSION}/query")
+      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
         .with(
           query: hash_including(
             'q' => a_string_including("IN ('o\\'brien')"),

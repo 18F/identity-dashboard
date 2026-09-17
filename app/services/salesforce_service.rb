@@ -1,8 +1,6 @@
-# The Salesforce model handles the client credentials connection to
+# SalesforceService handles the client credentials connection to
 # Salesforce and sending requests to the Salesforce REST API.
-class Salesforce
-  include ActiveModel::Model
-
+class SalesforceService
   TOKEN_CACHE_KEY = 'salesforce_oauth_token'.freeze
   # Salesforce does not report an expiration for the client credentials
   # grant, so this is a conservative guess rather than a real TTL.
