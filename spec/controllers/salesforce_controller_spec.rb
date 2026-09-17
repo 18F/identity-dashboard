@@ -51,6 +51,14 @@ RSpec.describe SalesforceController do
           expect(assigns(:team)).to eq(team)
           expect(assigns(:records)).to eq(records)
         end
+
+        it 'assigns a connection error when the team is not found' do
+          get :index, params: { team_id: 'nonexistent' }
+
+          expect(response).to be_successful
+          expect(assigns(:team)).to be_nil
+          expect(assigns(:connection_error)).to eq('Team nonexistent not found.')
+        end
       end
     end
   end
