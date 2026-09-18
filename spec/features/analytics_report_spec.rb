@@ -78,6 +78,7 @@ describe 'reporting feature basics' do
         visit analytics_path
         expect(page).to have_content('Choose from the dropdowns to see a report.')
         expect(page).to_not have_content('Date range')
+        expect(page).to_not have_content('Issuer')
         expect(page).to_not have_link('Export report as CSV')
       end
 
@@ -229,7 +230,10 @@ describe 'reporting feature basics' do
 
         context 'with charts rendering', :js do
           it 'tries to display each chart' do
+            expect(page).to have_content('Issuer')
+            expect(page).to have_content(issuer_with_lots_of_test_data)
             expect(page).to have_content('Date range')
+            expect(page).to have_content('2025-12-01')
             expect(find_all('svg').count).to eq(2)
             expect(page).to_not have_content('No data')
           end
