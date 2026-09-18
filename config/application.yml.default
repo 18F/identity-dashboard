@@ -24,6 +24,9 @@ redis_pool_size: 5
 redis_url: redis://localhost:6379/0
 requests_per_ip_limit: 100
 requests_per_ip_period: 60
+salesforce_consumer_key: ''
+salesforce_consumer_secret: ''
+salesforce_instance_url: ''
 secret_key_base: changeme
 serve_static_files: 'false'
 users_per_page: 100
