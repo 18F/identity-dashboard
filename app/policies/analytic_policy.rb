@@ -3,7 +3,9 @@ class AnalyticPolicy < BasePolicy
   def index?
     return false unless user
 
-    user.logingov_staff? || user.team_memberships.exists?(role_name: 'partner_admin')
+    user.logingov_staff? || user.team_memberships.exists?(
+      role_name: ['partner_admin', 'partner_reports_readonly'],
+    )
   end
 
   def fetch?
