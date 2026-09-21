@@ -187,15 +187,15 @@ en:
     count_existing_accounts: Existing Accounts
     count_identity_verified_users: Identity Verified Users
     count_newly_created_accounts: Newly Created Accounts
-    count_newly_proofed_users: Newly Proofed Users
-    count_preverified_users: Preverified Users
+    count_newly_proofed_users: Newly Proofed
+    count_preverified_users: Previously Proofed
     # Fraud Prevention
     count_blocked_attempted_fraud: Number of Users blocked for Attempted Fraud
     count_blocked_authentic_drivers_license: Authentic Driver's License
     count_blocked_by_ipp_fraud: Rejected at Post Office
     count_blocked_identity_not_found: Identity Not Found (SSN / DOB / Deceased)
     count_device_behavior_fraud_signals: Pending Fraud Review
-    count_facial_mismatch: Facial Matching Check
+    count_facial_mismatch: Facial Mismatch
     count_fraud_alert: Under Active Fraud Alert
     count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
     count_lack_phone_ownership: Phone Account Ownership
