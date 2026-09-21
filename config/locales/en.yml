@@ -195,7 +195,7 @@ en:
     count_blocked_by_ipp_fraud: Rejected at Post Office
     count_blocked_identity_not_found: Identity Not Found (SSN / DOB / Deceased)
     count_device_behavior_fraud_signals: Pending Fraud Review
-    count_facial_mismatch: Facial Matching Check
+    count_facial_mismatch: Facial Mismatch
     count_fraud_alert: Under Active Fraud Alert
     count_invalid_attributes_dl_dos: Invalid Attributes (DL, DOS)
     count_lack_phone_ownership: Phone Account Ownership
