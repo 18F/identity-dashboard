@@ -17,8 +17,8 @@
       label: 'Application',
       collection: service_providers_collection_for_select(@available_service_providers),
       required: true,
-      selected: @analytic.config&.uuid,
-      prompt: @application_count.zero? ? '- No Applications-' : nil,
+      selected: @analytic ? @analytic.config&.uuid : '',
+      prompt: @application_count.zero? ? '- No Applications-' : '- Select an App-',
     } %>
     <%= render partial: 'report_select_input', locals: {
       name: 'date',

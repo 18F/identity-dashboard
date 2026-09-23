@@ -83,7 +83,7 @@ class AnalyticsController < ApplicationController # :nodoc:
   end
 
   def service_provider
-    return available_service_providers.first unless analytic_params.present?
+    return nil unless analytic_params.present?
 
     available_service_providers.find_by(
       uuid: analytic_params[:uuid],
