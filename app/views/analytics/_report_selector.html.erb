@@ -10,7 +10,7 @@
       all_controls: all_app_options_string(@teams),
       required: false,
       selected: @team,
-      prompt: '- All Teams-',
+      prompt: 'All teams',
     } %>
     <%= render partial: 'report_select_input', locals: {
       name: 'uuid',
@@ -18,7 +18,7 @@
       collection: service_providers_collection_for_select(@available_service_providers),
       required: true,
       selected: @analytic ? @analytic.config&.uuid : '',
-      prompt: @application_count.zero? ? '- No Applications-' : '- Select an App-',
+      prompt: @application_count.zero? ? '- No applications -' : '- Select application -',
     } %>
     <%= render partial: 'report_select_input', locals: {
       name: 'date',
@@ -26,6 +26,7 @@
       collection: dates_collection_for_select(@dates),
       required: true,
       selected: @analytic.date,
+      prompt: '- Select date of report -'
     } %>
   </div>
 </fieldset>
