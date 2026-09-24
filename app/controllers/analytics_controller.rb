@@ -97,7 +97,7 @@ class AnalyticsController < ApplicationController # :nodoc:
     return teams if current_user.logingov_staff?
 
     current_user.team_memberships.where(
-      role: 'partner_admin',
+      role: ['partner_admin', 'partner_reports_readonly'],
       team: [teams],
     ).map(&:team)
   end

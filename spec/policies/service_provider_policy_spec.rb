@@ -7,12 +7,17 @@ describe ServiceProviderPolicy do
   let(:partner_admin) { create(:team_membership, :partner_admin, team:).user }
   let(:partner_developer) { create(:team_membership, :partner_developer, team:).user }
   let(:partner_readonly) { create(:team_membership, :partner_readonly, team:).user }
+  let(:partner_reports_readonly) { create(:team_membership, :partner_reports_readonly, team:).user }
   let(:user_not_on_team) { create(:user) }
   let(:config) { create(:service_provider, team:) }
 
   shared_examples_for 'allows all team members except Admin/Partner Readonly for `object`' do
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids Partner Reports Readonly' do
+      expect(described_class).to_not permit(partner_reports_readonly, object)
     end
 
     it 'forbids logingov_readonly' do
@@ -57,6 +62,10 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(partner_readonly, object)
     end
 
+    it 'forbids Partner Reports Readonly' do
+      expect(described_class).to_not permit(partner_reports_readonly, object)
+    end
+
     it 'forbids non-team-member users' do
       expect(described_class).to_not permit(user_not_on_team, object)
     end
@@ -81,6 +90,10 @@ describe ServiceProviderPolicy do
 
     it 'forbids Partner Readonly' do
       expect(described_class).to_not permit(partner_readonly, object)
+    end
+
+    it 'forbids Partner Reports Readonly' do
+      expect(described_class).to_not permit(partner_reports_readonly, object)
     end
 
     it 'forbids non-team-member users' do
@@ -118,6 +131,10 @@ describe ServiceProviderPolicy do
   permissions :show? do
     it 'forbids non-team-member users' do
       expect(described_class).to_not permit(user_not_on_team, config)
+    end
+
+    it 'forbids Reports Readonly' do
+      expect(described_class).to_not permit(partner_reports_readonly, config)
     end
 
     it 'allows Login Admin' do
@@ -190,6 +207,10 @@ describe ServiceProviderPolicy do
       expect(described_class).to_not permit(logingov_readonly, object)
     end
 
+    it 'forbids Partner Reports Readonly' do
+      expect(described_class).to_not permit(partner_reports_readonly, object)
+    end
+
     it 'forbids non-team-member users' do
       expect(described_class).to_not permit(user_not_on_team, object)
     end
@@ -227,6 +248,7 @@ describe ServiceProviderPolicy do
         expect(described_class).to_not permit(partner_readonly, object)
         expect(described_class).to_not permit(partner_admin, object)
         expect(described_class).to_not permit(logingov_readonly, object)
+        expect(described_class).to_not permit(partner_reports_readonly, object)
       end
     end
 
