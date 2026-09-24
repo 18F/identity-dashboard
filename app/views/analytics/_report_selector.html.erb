@@ -5,28 +5,28 @@
   <div class="grid-row grid-gap-2">
     <%= render partial: 'report_select_input', locals: {
       name: 'team',
-      label: 'Team',
+      label: I18n.t('reports.inputs.labels.team'),
       collection: teams_collection_for_select(@teams),
       all_controls: all_app_options_string(@teams),
       required: false,
       selected: @team,
-      prompt: 'All teams',
+      prompt: I18n.t('reports.inputs.prompts.team'),
     } %>
     <%= render partial: 'report_select_input', locals: {
       name: 'uuid',
-      label: 'Application',
+      label: I18n.t('reports.inputs.labels.app'),
       collection: service_providers_collection_for_select(@available_service_providers),
       required: true,
       selected: @analytic ? @analytic.config&.uuid : '',
-      prompt: @application_count.zero? ? '- No applications -' : '- Select application -',
+      prompt: @application_count.zero? ? I18n.t('reports.inputs.prompts.no_app') : I18n.t('reports.inputs.prompts.app')
     } %>
     <%= render partial: 'report_select_input', locals: {
       name: 'date',
-      label: 'Date of report',
+      label: I18n.t('reports.inputs.labels.date'),
       collection: dates_collection_for_select(@dates),
       required: true,
       selected: @analytic.date,
-      prompt: '- Select date of report -'
+      prompt: I18n.t('reports.inputs.prompts.date')
     } %>
   </div>
 </fieldset>

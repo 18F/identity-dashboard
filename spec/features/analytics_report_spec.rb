@@ -44,7 +44,7 @@ describe 'reporting feature basics' do
       )
       sp_options = find_all('select#analytic_uuid > option')
       expect(sp_options.count).to be(1)
-      expect(sp_options[0].text).to eq('- No Applications-')
+      expect(sp_options[0].text).to eq(t('reports.inputs.prompts.no_app'))
     end
   end
 
@@ -112,7 +112,7 @@ describe 'reporting feature basics' do
 
         it 'shows the correct apps when reselecting All teams' do
           select second_team.name, from: 'Team'
-          select '- All Teams-', from: 'Team'
+          select t('reports.inputs.prompts.team'), from: 'Team'
 
           expect(page).to have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
@@ -166,7 +166,7 @@ describe 'reporting feature basics' do
 
         select second_sp.friendly_name, from: 'Application'
         select test_sp.friendly_name, from: 'Application'
-        select '2025-12-01', from: 'Date of report'
+        select '2025-12-01', from: t('reports.inputs.labels.date')
         click_on 'View report'
         expect(page).to have_current_path(analytics_path(
           team: test_sp.team.id,
@@ -182,7 +182,7 @@ describe 'reporting feature basics' do
             uuid: test_sp.uuid,
             date: '2025-12-01',
           )
-          expect(page).to have_content('- All Teams-')
+          expect(page).to have_content(t('reports.inputs.prompts.team'))
         end
 
         it 'handles a bad config UUID param' do
@@ -214,7 +214,7 @@ describe 'reporting feature basics' do
           visit analytics_path
           select test_sp.team.name, from: 'Team'
           select test_sp.friendly_name, from: 'Application'
-          select '2025-12-01', from: 'Date of report'
+          select '2025-12-01', from: t('reports.inputs.labels.date')
           click_on 'View report'
         end
 
@@ -373,7 +373,7 @@ describe 'reporting feature basics' do
 
     it 'can display charts', :js do
       select partner_sp.friendly_name, from: 'Application'
-      select '2025-12-01', from: 'Date of report'
+      select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       expect(page).to have_current_path(analytics_path(
         team: partner_sp.team.id,
@@ -385,7 +385,7 @@ describe 'reporting feature basics' do
 
     it 'allows switching between tabs', :js do
       select partner_sp.friendly_name, from: 'Application'
-      select '2025-12-01', from: 'Date of report'
+      select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       expect(page).to have_content 'Fraud Prevention'
       click_on 'Fraud Prevention'
@@ -398,7 +398,7 @@ describe 'reporting feature basics' do
 
     it 'can show Authentication tab data', :js do
       select partner_sp.friendly_name, from: 'Application'
-      select '2025-12-01', from: 'Date of report'
+      select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       click_on 'Authentication'
 
@@ -407,7 +407,7 @@ describe 'reporting feature basics' do
 
     it 'can show Identity Verification tab data', :js do
       select partner_sp.friendly_name, from: 'Application'
-      select '2025-12-01', from: 'Date of report'
+      select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       click_on 'Identity Verification'
 
@@ -420,7 +420,7 @@ describe 'reporting feature basics' do
 
       it 'will display charts and unavailable messages', :js do
         select partner_sp.friendly_name, from: 'Application'
-        select '2025-10-01', from: 'Date of report'
+        select '2025-10-01', from: t('reports.inputs.labels.date')
         click_on 'View report'
 
         expect(find_all('svg').count).to eq(1)
