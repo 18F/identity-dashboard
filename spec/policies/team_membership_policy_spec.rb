@@ -226,14 +226,37 @@ describe TeamMembershipPolicy do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
       end
 
-      it 'is everything but Login Staff for Partner Admins' do
-        team_membership = [partner_developer_membership, partner_readonly_membership].sample
-        expected_roles = Role.all - [
-          Role::LOGINGOV_ADMIN,
-          Role::LOGINGOV_READONLY,
-        ]
-        expect(described_class.new(partner_admin, team_membership).roles_for_edit)
-          .to eq(expected_roles)
+      context 'with reports readonly' do
+        before do
+          allow(IdentityConfig.store).to receive(:allow_role_report_read_only).and_return(true)
+        end
+
+        it 'is everything but Login Staff for Partner Admins' do
+          team_membership = [partner_developer_membership, partner_readonly_membership].sample
+          expected_roles = Role.all - [
+            Role::LOGINGOV_ADMIN,
+            Role::LOGINGOV_READONLY,
+          ]
+          expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+            .to eq(expected_roles)
+        end
+      end
+
+      context 'without reports readonly' do
+        before do
+          allow(IdentityConfig.store).to receive(:allow_role_report_read_only).and_return(false)
+        end
+
+        it 'is everything but Login Staff and Reports Readonly for Partner Admins' do
+          team_membership = [partner_developer_membership, partner_readonly_membership].sample
+          expected_roles = Role.all - [
+            Role::LOGINGOV_ADMIN,
+            Role::LOGINGOV_READONLY,
+            Role.find_by(name: 'partner_reports_readonly'),
+          ]
+          expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+            .to eq(expected_roles)
+        end
       end
     end
 
@@ -242,15 +265,38 @@ describe TeamMembershipPolicy do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       end
 
-      it 'is everything but Login Staff for Partner Admins' do
-        team_membership = [partner_developer_membership, partner_readonly_membership].sample
-        expected_roles = Role.all - [
-          Role::LOGINGOV_ADMIN,
-          Role::LOGINGOV_READONLY,
-          Role.find_by(name: 'partner_admin'),
-        ]
-        expect(described_class.new(partner_admin, team_membership).roles_for_edit)
-          .to eq(expected_roles)
+      context 'with reports readonly' do
+        before do
+          allow(IdentityConfig.store).to receive(:allow_role_report_read_only).and_return(true)
+        end
+
+        it 'is everything but Login Staff for Partner Admins' do
+          team_membership = [partner_developer_membership, partner_readonly_membership].sample
+          expected_roles = Role.all - [
+            Role::LOGINGOV_ADMIN,
+            Role::LOGINGOV_READONLY,
+            Role.find_by(name: 'partner_admin'),
+          ]
+          expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+            .to eq(expected_roles)
+        end
+      end
+      context 'without reports readonly' do
+        before do
+          allow(IdentityConfig.store).to receive(:allow_role_report_read_only).and_return(false)
+        end
+
+        it 'is everything but Login Staff and Report Readonly for Partner Admins' do
+          team_membership = [partner_developer_membership, partner_readonly_membership].sample
+          expected_roles = Role.all - [
+            Role::LOGINGOV_ADMIN,
+            Role::LOGINGOV_READONLY,
+            Role.find_by(name: 'partner_reports_readonly'),
+            Role.find_by(name: 'partner_admin'),
+          ]
+          expect(described_class.new(partner_admin, team_membership).roles_for_edit)
+            .to eq(expected_roles)
+        end
       end
     end
   end

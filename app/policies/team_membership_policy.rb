@@ -32,19 +32,24 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
   end
 
   def roles_for_edit
-    return roles_for_internal_team_edit if record.team == Team.internal_team
     return Role.none unless edit?
+    return roles_for_internal_team_edit if record.team == Team.internal_team
     return Role.where.not(name: [:logingov_admin, :logingov_readonly]) if user_has_login_admin_role?
 
-    role_options = %i[logingov_admin logingov_readonly]
-    role_options.push(:partner_admin) if IdentityConfig.store.prod_like_env
-    Role.where.not(name: role_options)
+    roles_for_partner_team_edit
   end
 
   def roles_for_internal_team_edit
     return Role.none unless user_has_login_admin_role?
 
     Role.where(name: [:logingov_admin, :logingov_readonly])
+  end
+
+  def roles_for_partner_team_edit
+    role_options = %i[partner_developer partner_readonly]
+    role_options.push(:partner_admin) unless IdentityConfig.store.prod_like_env
+    role_options.push(:partner_reports_readonly) if IdentityConfig.store.allow_role_report_read_only
+    Role.where(name: role_options)
   end
 
   class Scope < BasePolicy::Scope
