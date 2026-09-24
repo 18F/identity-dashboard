@@ -371,6 +371,11 @@ describe 'reporting feature basics' do
       visit analytics_path
     end
 
+    it 'defaults to showing prompts for App and Date', :js do
+      expect(page.find('#analytic_uuid').value).to eq('')
+      expect(page.find('#analytic_date').value).to eq('')
+    end
+
     it 'can display charts', :js do
       select partner_sp.friendly_name, from: 'Application'
       select '2025-12-01', from: t('reports.inputs.labels.date')
