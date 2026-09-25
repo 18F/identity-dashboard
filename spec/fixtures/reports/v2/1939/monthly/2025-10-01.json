@@ -14,7 +14,7 @@
   "data": {
     "count_active_users": 13,
     "count_blocked_attempted_fraud": null,
-    "count_newly_created_accounts": 5,
+    "count_newly_created_accounts": null,
     "count_existing_accounts": 7,
     "count_identity_verified_users": 0,
     "count_newly_proofed_users": 0,
@@ -32,8 +32,8 @@
     "count_blocked_by_ipp_fraud": null,
     "count_device_behavior_fraud_signals": null,
     "count_pass_via_lg99": null,
-    "count_creation_successful": 4,
-    "count_total_creations": 4,
+    "count_creation_successful": null,
+    "count_total_creations": null,
     "count_auth_successful": 181,
     "count_total_auths": 190,
     "count_desktop_successful": 181,
@@ -72,6 +72,6 @@
     "pct_backup_code_of_auth": 0.0,
     "pct_webauthn_of_auth": 0.0,
     "pct_personal_key_of_auth": 0.0,
-    "pct_account_creation_success": 1.0
+    "pct_account_creation_success": null
   }
 }
