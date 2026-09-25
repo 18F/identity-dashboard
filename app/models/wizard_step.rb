@@ -54,11 +54,7 @@ class WizardStep < ApplicationRecord
   validates :step_name, presence: true
 
   # Step-specific validations owned by the step object
-  validate :run_step_object_validations, on: %w[settings issuer authentication]
-
-  validates_with CertsArePemsValidator, on: 'logo_and_cert'
-  validates_with SamlCertsPresentValidator, on: 'logo_and_cert'
-  validates_with LogoValidator, on: 'logo_and_cert'
+  validate :run_step_object_validations, on: %w[settings issuer authentication logo_and_cert]
 
   ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
   # except for the step contexts
@@ -185,39 +181,6 @@ class WizardStep < ApplicationRecord
     id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
   end
 
-  # @return [Array<ServiceProviderCertificate>]
-  # @raise [NameError] if this step doesn't have certs
-  def certificates
-    @certificates ||= Array(certs).map do |cert|
-      ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
-    rescue OpenSSL::X509::CertificateError
-      null_certificate
-    end
-  end
-
-  def remove_certificate(serial)
-    certs.delete_if do |cert|
-      OpenSSL::X509::Certificate.new(cert).serial.to_s == serial.to_s
-    rescue OpenSSL::X509::CertificateError
-      nil
-    end
-
-    # clear memoization for #certificates
-    @certificates = nil
-
-    serial
-  end
-
-  def attach_logo(logo_data)
-    return unless step_name == 'logo_and_cert'
-
-    self.logo_file = logo_data
-    self.wizard_form_data = wizard_form_data.merge({
-      logo_name: logo_file.filename.to_s,
-      remote_logo_key: logo_file.key,
-    })
-  end
-
   def method_missing(name, *args, &block)
     if STEP_DATA.has_key?(step_name) && STEP_DATA[step_name].has_field?(name)
       wizard_form_data[name.to_s] ||= STEP_DATA[step_name].fields[name].dup
@@ -260,13 +223,6 @@ class WizardStep < ApplicationRecord
       errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
     end
     errors.empty?
-  end
-
-  def pending_or_current_logo_data
-    return false unless step_name == 'logo_and_cert'
-    return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
-
-    logo_file&.blob&.download
   end
 
   def using_idv?
