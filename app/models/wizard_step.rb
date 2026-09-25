@@ -187,6 +187,15 @@ class WizardStep < ApplicationRecord
     end
   end
 
+  def existing_service_provider?
+    !!original_service_provider
+  end
+
+  def original_service_provider
+    id = get_step('hidden')&.service_provider_id
+    id && ServiceProviderPolicy::Scope.new(user, ServiceProvider).resolve.find(id)
+  end
+
   # @return [Array<ServiceProviderCertificate>]
   # @raise [NameError] if this step doesn't have certs
   def certificates

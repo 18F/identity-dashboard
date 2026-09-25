@@ -24,18 +24,13 @@ module WizardSteps
     end
 
     def issuer_service_provider_uniqueness
-      return if existing_service_provider? && original_service_provider.issuer == issuer
+      return if existing_config_is_this_one?
 
       errors.add(:issuer, 'already in use') if ServiceProvider.where(issuer:).any?
     end
 
-    def existing_service_provider?
-      !!original_service_provider
-    end
-
-    def original_service_provider
-      id = @wizard_step.get_step('hidden')&.service_provider_id
-      id && ServiceProviderPolicy::Scope.new(@wizard_step.user, ServiceProvider).resolve.find(id)
+    def existing_config_is_this_one?
+      @wizard_step.original_service_provider&.issuer == issuer
     end
   end
 end
