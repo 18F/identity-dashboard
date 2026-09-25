@@ -52,6 +52,10 @@ RSpec.describe WizardSteps::AuthenticationStep do
     describe 'when ial is set to 2' do
       let(:ial) { '2' }
 
+      it 'is valid' do
+        expect(subject.valid?).to be true
+      end
+
       describe 'when the protocol is SAML' do
         before do
           create(:wizard_step, user:, step_name: 'protocol', wizard_form_data: {
@@ -71,6 +75,20 @@ RSpec.describe WizardSteps::AuthenticationStep do
         it 'is valid' do
           expect(subject.valid?).to be true
         end
+      end
+    end
+
+    describe 'when ial is set to 1' do
+      it 'is valid' do
+        expect(subject.valid?).to be true
+      end
+    end
+
+    describe 'when ial is set to an invalid value' do
+      let(:ial) { '4' }
+
+      it 'is not valid' do
+        expect(subject.valid?).to be false
       end
     end
 

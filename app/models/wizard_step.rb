@@ -63,8 +63,6 @@ class WizardStep < ApplicationRecord
   ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
   # except for the step contexts
 
-  validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
-
   # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
   validates_with RedirectsValidator,
                  attribute: :redirect_uris,

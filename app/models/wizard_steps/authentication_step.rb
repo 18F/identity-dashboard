@@ -25,6 +25,7 @@ module WizardSteps
     before_validation :remove_blank_attributes
 
     validates_with AttributeBundleValidator
+    validates :ial, inclusion: { in: [1, 2, '1', '2'] }, allow_nil: true
 
     # @param wizard_step [WizardStep] the record this step reads and writes through
     def initialize(wizard_step)
