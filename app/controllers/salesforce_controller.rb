@@ -1,3 +1,4 @@
+# SalesforceController shows the status of the app's Salesforce connection
 class SalesforceController < AuthenticatedController
   before_action -> { authorize SalesforceService }
 
