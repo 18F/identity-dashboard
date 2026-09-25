@@ -54,17 +54,8 @@ class WizardStep < ApplicationRecord
   validates :step_name, presence: true
 
   # Step-specific validations owned by the step object
-  validate :run_step_object_validations, on: ['settings', 'issuer']
+  validate :run_step_object_validations, on: %w[settings issuer authentication]
 
-  # This is in ServiceProvider, too, because Rails forms regularly put an initial, hidden, and
-  # blank entry for various inputs so that a fallback blank exists if anything fails or gets skipped
-  before_validation(on: 'authentication') do
-    if attribute_bundle.present?
-      wizard_form_data['attribute_bundle'] = attribute_bundle.reject(&:blank?)
-    end
-  end
-
-  validates_with AttributeBundleValidator, on: 'authentication'
   validates_with CertsArePemsValidator, on: 'logo_and_cert'
   validates_with SamlCertsPresentValidator, on: 'logo_and_cert'
   validates_with LogoValidator, on: 'logo_and_cert'
