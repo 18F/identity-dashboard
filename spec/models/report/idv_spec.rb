@@ -204,6 +204,33 @@ describe Report::IdV do
     end
   end
 
+  # When no users pass, but none are blocked, path to access is 100%, but this
+  # is confusing to the user, who will expect No Data.
+  describe 'with only an abandoning user' do
+    let(:test_data) do
+      {
+        'pct_proofing_success' => nil,
+        'pct_path_to_access' => 1.0,
+        'count_pass_online_finalization' => 0,
+        'count_skip_preverified_finalization' => 0,
+        'count_pass_ipp' => 0,
+        'count_pass_via_letter' => 0,
+        'count_blocked_document_upload_ux' => 0,
+        'count_selfie_ux' => 0,
+        'count_identity_resolution_attribute_mismatch' => 0,
+        'count_phone_number_record_check_failure' => 0,
+        'count_temporary_technical_issues' => 0,
+        # A valid key that does not count toward IdV data
+        'count_auth_successful' => 0,
+      }
+    end
+
+    it 'returns empty data in both #proofing_success_chart and #access_path_chart' do
+      expect(subject.proofing_success_chart[:data]).to eq([])
+      expect(subject.access_path_chart[:data]).to eq([])
+    end
+  end
+
   describe 'with zeroed data' do
     let(:test_data) do
       {

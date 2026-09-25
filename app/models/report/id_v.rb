@@ -111,7 +111,8 @@ module Report
 
     def access_path_data
       return [] unless data['pct_path_to_access'].present? &&
-                       data['pct_path_to_access'].positive?
+                       data['pct_path_to_access'].positive? &&
+                       data['pct_proofing_success'].present?
 
       [
         { name: 'Dead End',
