@@ -25,6 +25,26 @@ describe 'users' do
     team.save!
   end
 
+  def add_team_user(target_team, email:, role_friendly_name: nil)
+    visit new_team_user_path(target_team)
+    fill_in 'Email', with: email
+    select role_friendly_name, from: 'users_0_role_name' if role_friendly_name
+    click_on 'Add to team'
+  end
+
+  def team_membership_for(email, target_team)
+    TeamMembership.find_by(user: User.find_by(email:), team: target_team)
+  end
+
+  def edit_team_membership_role(target_team, target_user, role_friendly_name:, button: 'Update')
+    visit team_users_path(target_team)
+    within('tr', text: target_user.email) do
+      click_on 'Edit'
+    end
+    choose role_friendly_name
+    click_on button
+  end
+
   feature 'add team user page access' do
     scenario 'access permitted to Partner Admin team member' do
       login_as partner_admin_team_member
@@ -68,8 +88,7 @@ describe 'users' do
       fill_in 'Email', with: email_to_add
       click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: email_to_add))
-      new_team_membership = TeamMembership.find_by(user: User.find_by(email: email_to_add),
-                                                   team: team)
+      new_team_membership = team_membership_for(email_to_add, team)
       expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
@@ -97,8 +116,7 @@ describe 'users' do
       fill_in 'Email', with: user.email
       click_on 'Add to team'
       expect(page).to have_content(I18n.t('teams.users.create.success', email: user.email))
-      new_team_membership = TeamMembership.find_by(user: User.find_by(email: user.email),
-                                                   team: team)
+      new_team_membership = team_membership_for(user.email, team)
       expect(new_team_membership.role.name).to eq('partner_developer')
     end
 
@@ -116,7 +134,7 @@ describe 'users' do
       select 'Sandbox Team Dev', from: 'users_0_role_name'
       click_on 'Add to team'
 
-      membership = TeamMembership.find_by(user: User.find_by(email: 'newuser@gsa.gov'), team: team)
+      membership = team_membership_for('newuser@gsa.gov', team)
       expect(membership.role_name).to eq('partner_developer')
     end
 
@@ -146,7 +164,7 @@ describe 'users' do
         expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
         expect(find('tr', text: random_email))
           .to have_content(I18n.t('role_names.sandbox.partner_readonly'))
-        new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
+        new_membership = team_membership_for(random_email, team)
         expect(new_membership.role_name).to eq 'partner_readonly'
       end
       scenario 'user defaults to Partner Developer in non-prod envs' do
@@ -160,7 +178,7 @@ describe 'users' do
         expect(
           find('tr', text: random_email),
         ).to have_content(I18n.t('role_names.sandbox.partner_developer'))
-        new_membership = TeamMembership.find_by(team: team, user: User.find_by(email: random_email))
+        new_membership = team_membership_for(random_email, team)
         expect(new_membership.role_name).to eq 'partner_developer'
       end
     end
@@ -182,11 +200,138 @@ describe 'users' do
       expect(page).to have_content(I18n.t('teams.users.create.success', email: random_email))
       expect(find('tr', text: random_email))
         .to have_content(I18n.t('role_names.sandbox.partner_admin'))
-      new_team_membership = TeamMembership.find_by(
-        user: User.find_by(email: random_email),
-        team: empty_team,
-      )
+      new_team_membership = team_membership_for(random_email, empty_team)
       expect(new_team_membership.role.name).to eq('partner_admin')
+    end
+  end
+
+  describe 'adding a user directly as partner admin' do
+    let(:new_email) { 'partner_admin_candidate@gsa.gov' }
+    let(:partner_admin_role) { Role.find_by!(name: 'partner_admin') }
+
+    before do
+      login_as logingov_admin
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      create(:service_provider, team:)
+    end
+
+    context 'mock Salesforce response' do
+      let(:salesforce_double) { instance_double(SalesforceService) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+        allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+      end
+
+      it 'adds the user when verified as a partner admin in Salesforce' do
+        allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(true)
+
+        add_team_user(team, email: new_email, role_friendly_name: partner_admin_role.friendly_name)
+
+        expect(page).to have_content(I18n.t('teams.users.create.success', email: new_email))
+        new_membership = team_membership_for(new_email, team)
+        expect(new_membership.role_name).to eq('partner_admin')
+      end
+
+      it 'holds the user for confirmation, then adds them once confirmed' do
+        allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
+
+        add_team_user(team, email: new_email, role_friendly_name: partner_admin_role.friendly_name)
+
+        expect(page).to have_content('are not verified')
+        expect(team_membership_for(new_email, team)).to be_nil
+
+        click_on 'Confirm and add anyway'
+
+        expect(page).to have_content(I18n.t('teams.users.create.success', email: new_email))
+        new_membership = team_membership_for(new_email, team)
+        expect(new_membership.role_name).to eq('partner_admin')
+      end
+
+      it 'holds the user for confirmation (fails closed) on a Salesforce error' do
+        allow(salesforce_double).to receive(:partner_admin_for_team?).and_raise('boom')
+
+        add_team_user(team, email: new_email, role_friendly_name: partner_admin_role.friendly_name)
+
+        expect(page).to have_content('are not verified')
+        expect(team_membership_for(new_email, team)).to be_nil
+      end
+
+      it 'holds only the unverified partner admin for confirmation, then adds both once confirmed',
+         js: true do
+        allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
+        dev_email = 'dev@gsa.gov'
+
+        visit new_team_user_path(team)
+        fill_in 'users_0_email', with: dev_email
+        select Role.find_by!(name: 'partner_developer').friendly_name, from: 'users_0_role_name'
+        click_on 'Add another user'
+        fill_in 'users_1_email', with: new_email
+        select partner_admin_role.friendly_name, from: 'users_1_role_name'
+        click_on 'Add to team'
+
+        expect(page).to have_content('are not verified')
+        expect(page).to have_content(new_email)
+        expect(team_membership_for(dev_email, team)).to be_nil
+        expect(team_membership_for(new_email, team)).to be_nil
+
+        click_on 'Confirm and add anyway'
+
+        expect(page).to have_content(
+          I18n.t('teams.users.create.success', email: "#{dev_email}, #{new_email}"),
+        )
+        dev_membership = team_membership_for(dev_email, team)
+        admin_membership = team_membership_for(new_email, team)
+        expect(dev_membership.role_name).to eq('partner_developer')
+        expect(admin_membership.role_name).to eq('partner_admin')
+      end
+    end
+
+    context 'when Salesforce is disabled' do
+      let(:airtable_double) { instance_double(Airtable) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
+        allow(Airtable).to receive(:new).and_return(airtable_double)
+        allow(airtable_double).to receive(:has_token?).and_return(true)
+      end
+
+      it 'adds the user as partner admin without any create-time verification' do
+        add_team_user(team, email: new_email, role_friendly_name: partner_admin_role.friendly_name)
+
+        expect(page).to have_content(I18n.t('teams.users.create.success', email: new_email))
+        new_membership = team_membership_for(new_email, team)
+        expect(new_membership.role_name).to eq('partner_admin')
+      end
+    end
+  end
+
+  describe 'adding a partner admin to a team with no service providers' do
+    let(:new_team) { create(:team) }
+    let(:new_email) { 'wizard_partner_admin@gsa.gov' }
+    let(:partner_admin_role) { Role.find_by!(name: 'partner_admin') }
+    let(:salesforce_double) { instance_double(SalesforceService) }
+
+    before do
+      login_as logingov_admin
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+      allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+    end
+
+    it 'holds the user for confirmation, then adds them once confirmed' do
+      add_team_user(
+        new_team, email: new_email, role_friendly_name: partner_admin_role.friendly_name
+      )
+
+      expect(page).to have_content('are not verified')
+      expect(team_membership_for(new_email, new_team)).to be_nil
+
+      click_on 'Confirm and add anyway'
+
+      expect(page).to have_content(I18n.t('teams.users.create.success', email: new_email))
+      new_membership = team_membership_for(new_email, new_team)
+      expect(new_membership.role_name).to eq('partner_admin')
     end
   end
 
@@ -301,6 +446,8 @@ describe 'users' do
   end
 
   feature 'modifying team user permissions' do
+    let(:partner_admin_role) { Role.find_by!(name: 'partner_admin') }
+
     context 'when login.gov admin' do
       before do
         logingov_readonly # initialize for the Internal Team
@@ -496,7 +643,6 @@ describe 'users' do
           allow(airtable_double).to receive(:needs_refreshed_token?).and_return(false)
           allow(airtable_double).to receive(:refresh_token_if_needed).and_return(true)
           allow(airtable_double).to receive(:get_matching_records).and_return({ test: true })
-          allow_any_instance_of(Teams::UsersController)
         end
 
         it 'does not require confirmation when email is in Airtable' do
@@ -504,13 +650,9 @@ describe 'users' do
 
           create(:service_provider, team:)
           membership = TeamMembership.find_by(user: readonly_team_member, team: team)
-          visit team_users_path(team)
-          within('tr', text: readonly_team_member.email) do
-            click_on 'Edit'
-          end
-          partner_admin_role = Role.find_by!(name: 'partner_admin')
-          choose partner_admin_role.friendly_name
-          click_on 'Update'
+          edit_team_membership_role(
+            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
+          )
 
           expect(page).to have_current_path(team_users_path(team))
           expect(page).to_not have_content(
@@ -524,13 +666,78 @@ describe 'users' do
 
           create(:service_provider, team:)
           membership = TeamMembership.find_by(user: readonly_team_member, team: team)
-          visit team_users_path(team)
-          within('tr', text: readonly_team_member.email) do
-            click_on 'Edit'
-          end
-          partner_admin_role = Role.find_by!(name: 'partner_admin')
+          edit_team_membership_role(
+            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
+          )
+
+          expect(page).to have_current_path(
+            edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
+          )
+          expect(page).to have_content(
+            'Please verify with the appropriate Account Manager that this user should',
+          )
+          expect(membership.reload.role_name).to eq('partner_readonly')
+        end
+      end
+
+      context('mock Salesforce response') do
+        let(:salesforce_double) { instance_double(SalesforceService) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+          allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+          allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+        end
+
+        it 'does not require confirmation when email is a partner admin in Salesforce' do
+          allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(true)
+
+          create(:service_provider, team:)
+          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
+          edit_team_membership_role(
+            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
+          )
+
+          expect(page).to have_current_path(team_users_path(team))
+          expect(page).to_not have_content(
+            'Please verify with the appropriate Account Manager that this user should',
+          )
+          expect(membership.reload.role_name).to eq('partner_admin')
+        end
+
+        it 'requires confirmation when not a partner admin in Salesforce, ' \
+           'and Confirm Change overrides it' do
+          allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
+
+          create(:service_provider, team:)
+          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
+          edit_team_membership_role(
+            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
+          )
+
+          expect(page).to have_current_path(
+            edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
+          )
+          expect(page).to have_content(
+            'Please verify with the appropriate Account Manager that this user should',
+          )
+          expect(membership.reload.role_name).to eq('partner_readonly')
+
           choose partner_admin_role.friendly_name
-          click_on 'Update'
+          click_on 'Confirm Change'
+
+          expect(page).to have_current_path(team_users_path(team))
+          expect(membership.reload.role_name).to eq('partner_admin')
+        end
+
+        it 'requires confirmation (fails closed) when the Salesforce check raises an error' do
+          allow(salesforce_double).to receive(:partner_admin_for_team?).and_raise('boom')
+
+          create(:service_provider, team:)
+          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
+          edit_team_membership_role(
+            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
+          )
 
           expect(page).to have_current_path(
             edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
@@ -715,6 +922,20 @@ describe 'users' do
         end
 
         expect(page).to have_content('Can add and delete users and teams')
+      end
+
+      it 'does not show the Airtable message or contact Airtable when Salesforce is enabled' do
+        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+        member_email = partner_admin_team_member.email
+        expect(Airtable).to_not receive(:new)
+
+        visit team_users_path(team)
+        within('tr', text: member_email) do
+          click_on 'Edit'
+        end
+
+        expect(page).to_not have_content('connect with Airtable')
       end
     end
   end

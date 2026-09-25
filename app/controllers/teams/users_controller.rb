@@ -34,6 +34,7 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def edit
+    @needs_to_confirm_partner_admin = params[:need_to_confirm_role].present?
     verify_airtable_connection
 
     authorize team_membership
@@ -44,48 +45,19 @@ class Teams::UsersController < AuthenticatedController
     users_params = params.require(:users).map { |u| u.permit(:email, :role_name) }
     @errors = []
     @users_data = users_params.map(&:to_h)
-    created_memberships = []
     team
     authorize TeamMembership.new(team:), :create?
 
-    users_params.each do |user_entry|
-      membership = build_team_membership(user_entry)
-      next unless membership
+    needs_confirmation = confirmation_needed_entries(users_params)
+    created_memberships = needs_confirmation.empty? ? save_team_memberships(users_params) : []
 
-      if membership.save
-        created_memberships << membership
-      else
-        @errors << { messages: membership_error_messages(membership) }
-      end
+    if @errors.any? || needs_confirmation.any?
+      render_new_with_confirmation(needs_confirmation) and return
     end
 
-    if @errors.any?
-      @show_wizard = params[:wizard].present?
-      @steps = TeamsController::WIZARD_STEPS
-      render :new and return
-    end
-
-    emails = created_memberships.map { |m| m.user.email }.join(', ')
-    flash[:success] = I18n.t('teams.users.create.success', email: emails)
-    if params[:wizard].present?
-      redirect_to team_path(team, wizard: true)
-    else
-      redirect_to team_users_path(team)
-    end
+    redirect_after_create(created_memberships)
   rescue ActiveRecord::RecordInvalid => err
-    email_taken_error = [:user_id, :taken]
-    error_messages = err.record.errors.map do |record_error|
-      if email_taken_error == [record_error.attribute, record_error.type]
-        I18n.t(
-          'activerecord.errors.models.team_membership.attributes.user_id.taken',
-          value: "<strong>#{err.record.user.email}</strong>",
-        )
-      else
-        record_error
-      end
-    end.join(', ')
-    flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
-    redirect_to new_team_user_path
+    redirect_with_duplicate_email_error(err)
   end
 
   def update
@@ -93,12 +65,7 @@ class Teams::UsersController < AuthenticatedController
     authorize team_membership
 
     if IdentityConfig.store.prod_like_env && partner_admin_confirmation_needed?
-      flash[:error] =
-        "User #{team_membership.user.email} is not a #{
-            t('role_names.production.partner_admin')
-          } in Airtable.
-          Please verify with the appropriate Account Manager that this user should
-          be given the #{t('role_names.production.partner_admin')} role."
+      flash[:error] = partner_admin_not_verified_message(team_membership.user.email)
 
       redirect_to edit_team_user_path(team, team_membership.user,
                                       need_to_confirm_role: true) and return
@@ -139,7 +106,7 @@ class Teams::UsersController < AuthenticatedController
   def roles_for_options
     membership = team_membership || policy_scope(TeamMembership).build(team: team)
     roles = policy(membership).roles_for_edit
-    if IdentityConfig.store.prod_like_env && !Airtable.new(current_user.uuid).has_token?
+    if IdentityConfig.store.prod_like_env && !partner_admin_role_available?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end
     roles.map { |r| [r.friendly_name, r.name] }
@@ -150,6 +117,60 @@ class Teams::UsersController < AuthenticatedController
   end
 
   private
+
+  def confirmation_needed_entries(users_params)
+    return [] if params[:confirm_partner_admin].present?
+
+    users_params.select { |u| partner_admin_confirmation_needed_for_create?(u) }
+  end
+
+  def save_team_memberships(users_params)
+    created_memberships = []
+    users_params.each do |user_entry|
+      membership = build_team_membership(user_entry)
+      next unless membership
+
+      if membership.save
+        created_memberships << membership
+      else
+        @errors << { messages: membership_error_messages(membership) }
+      end
+    end
+    created_memberships
+  end
+
+  def render_new_with_confirmation(needs_confirmation)
+    @show_wizard = params[:wizard].present?
+    @steps = TeamsController::WIZARD_STEPS
+    @needs_confirmation = needs_confirmation
+    render :new
+  end
+
+  def redirect_after_create(created_memberships)
+    emails = created_memberships.map { |m| m.user.email }.join(', ')
+    flash[:success] = I18n.t('teams.users.create.success', email: emails)
+    if params[:wizard].present?
+      redirect_to team_path(team, wizard: true)
+    else
+      redirect_to team_users_path(team)
+    end
+  end
+
+  def redirect_with_duplicate_email_error(err)
+    email_taken_error = [:user_id, :taken]
+    error_messages = err.record.errors.map do |record_error|
+      if email_taken_error == [record_error.attribute, record_error.type]
+        I18n.t(
+          'activerecord.errors.models.team_membership.attributes.user_id.taken',
+          value: "<strong>#{err.record.user.email}</strong>",
+        )
+      else
+        record_error
+      end
+    end.join(', ')
+    flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
+    redirect_to new_team_user_path
+  end
 
   def build_team_membership(user_entry)
     email = user_entry[:email]&.downcase
@@ -237,7 +258,31 @@ class Teams::UsersController < AuthenticatedController
     )
   end
 
-  def verified_partner_admin?
+  def partner_admin_role_available?
+    return true if IdentityConfig.store.salesforce_api_enabled
+
+    Airtable.new(current_user.uuid).has_token?
+  end
+
+  def verified_partner_admin?(email)
+    if IdentityConfig.store.salesforce_api_enabled
+      verified_partner_admin_in_salesforce?(email)
+    else
+      verified_partner_admin_in_airtable?(email)
+    end
+  end
+
+  def verified_partner_admin_in_salesforce?(email)
+    salesforce_service.partner_admin_for_team?(team.uuid, email)
+  rescue StandardError
+    false
+  end
+
+  def salesforce_service
+    @salesforce_service ||= SalesforceService.new
+  end
+
+  def verified_partner_admin_in_airtable?(email)
     airtable_api = Airtable.new(current_user.uuid)
     airtable_api.refresh_token_if_needed(request)
     issuers = []
@@ -250,7 +295,7 @@ class Teams::UsersController < AuthenticatedController
     return false if matched_records.empty?
 
     matched_records.any? do |record|
-      airtable_api.new_partner_admin_in_airtable?(user.email, record)
+      airtable_api.new_partner_admin_in_airtable?(email, record)
     end
   end
 
@@ -258,33 +303,51 @@ class Teams::UsersController < AuthenticatedController
     # Logingov Admin is confirming now
     return false if params[:confirm_partner_admin].present?
 
-    # Only check with Airtable in Prod Like Environments
+    # Only check with Airtable/Salesforce in Prod Like Environments
     return false unless IdentityConfig.store.prod_like_env
 
     # More checks needed if role is being set to partner_admin.
     if team_membership.role_name == 'partner_admin'
-      # Confirmation needed when there is no service providers associated
-      # with the team.
-      return true if team.service_providers.empty?
-      # Confirmation needed if the edited user is not a listed Partner
-      # Admin in Airtable for the Service Providers associated with the team
-      return true unless verified_partner_admin?
+      return partner_admin_confirmation_needed_for_email?(team_membership.user.email)
     end
+
     false
+  end
+
+  def partner_admin_confirmation_needed_for_create?(user_entry)
+    return false unless IdentityConfig.store.prod_like_env
+    return false unless IdentityConfig.store.salesforce_api_enabled
+    return false unless user_entry[:role_name] == 'partner_admin'
+    return false if user_entry[:email].blank?
+
+    partner_admin_confirmation_needed_for_email?(user_entry[:email])
+  end
+
+  def partner_admin_confirmation_needed_for_email?(email)
+    return true if team.service_providers.empty?
+
+    !verified_partner_admin?(email.downcase)
+  end
+
+  def partner_admin_not_verified_message(email)
+    external_provider = IdentityConfig.store.salesforce_api_enabled ? 'Salesforce' : 'Airtable'
+    partner_admin_name = t('role_names.production.partner_admin')
+
+    "User #{email} is not a verified #{partner_admin_name} in #{external_provider}. " \
+      'Please verify with the appropriate Account Manager that this user should ' \
+      "be given the #{partner_admin_name} role."
   end
 
   def verify_airtable_connection
     return unless policy(:airtable).index?
 
     airtable_api = Airtable.new(current_user.uuid)
-    if airtable_api.has_token?
-      @needs_to_confirm_partner_admin = true if params[:need_to_confirm_role]
-    else
-      @remove_partner_admin = true
-      airtable_api.refresh_token_if_needed(request)
+    return if airtable_api.has_token?
 
-      base_url = "#{request.protocol}#{request.host_with_port}"
-      @oauth_url = airtable_api.generate_oauth_url(base_url)
-    end
+    @remove_partner_admin = true
+    airtable_api.refresh_token_if_needed(request)
+
+    base_url = "#{request.protocol}#{request.host_with_port}"
+    @oauth_url = airtable_api.generate_oauth_url(base_url)
   end
 end

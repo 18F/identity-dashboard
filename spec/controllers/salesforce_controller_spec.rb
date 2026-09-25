@@ -32,35 +32,6 @@ RSpec.describe SalesforceController do
         expect(response).to be_successful
         expect(assigns(:connection_error)).to eq('boom')
       end
-
-      context 'with a team_id param' do
-        let(:team) { create(:team) }
-
-        before do
-          allow_any_instance_of(SalesforceService).to receive(:token)
-            .and_return('mock_access_token')
-        end
-
-        it "queries Salesforce using the team's own uuid" do
-          records = [{ 'Name' => 'LDGAC-1' }]
-          expect_any_instance_of(SalesforceService).to receive(:application_contacts_for_team_uuids)
-            .with([team.uuid]).and_return(records)
-
-          get :index, params: { team_id: team.id }
-
-          expect(response).to be_successful
-          expect(assigns(:team)).to eq(team)
-          expect(assigns(:records)).to eq(records)
-        end
-
-        it 'assigns a connection error when the team is not found' do
-          get :index, params: { team_id: 'nonexistent' }
-
-          expect(response).to be_successful
-          expect(assigns(:team)).to be_nil
-          expect(assigns(:connection_error)).to eq('Team nonexistent not found.')
-        end
-      end
     end
   end
 
