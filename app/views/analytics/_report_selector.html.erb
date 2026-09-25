@@ -17,7 +17,7 @@
       label: I18n.t('reports.inputs.labels.app'),
       collection: service_providers_collection_for_select(@available_service_providers),
       required: true,
-      selected: @analytic ? @analytic.config&.uuid : '',
+      selected: @analytic.config ? @analytic.config&.uuid : '',
       prompt: @application_count.zero? ? I18n.t('reports.inputs.prompts.no_app') : I18n.t('reports.inputs.prompts.app')
     } %>
     <%= render partial: 'report_select_input', locals: {

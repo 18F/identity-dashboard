@@ -371,9 +371,22 @@ describe 'reporting feature basics' do
       visit analytics_path
     end
 
-    it 'defaults to showing prompts for App and Date', :js do
-      expect(page.find('#analytic_uuid').value).to eq('')
-      expect(page.find('#analytic_date').value).to eq('')
+    it 'defaults to showing prompt for App', :js do
+      app_select = page.find('#analytic_uuid')
+      app_option0 = app_select.find_all('option').first
+
+      expect(app_select.value).to eq('')
+      expect(app_option0.value).to eq('')
+      expect(app_option0.text).to eq(t('reports.inputs.prompts.app'))
+    end
+
+    it 'defaults to showing prompt for Date', :js do
+      date_select = page.find('#analytic_date')
+      date_option0 = date_select.find_all('option').first
+
+      expect(date_select.value).to eq('')
+      expect(date_option0.value).to eq('')
+      expect(date_option0.text).to eq(t('reports.inputs.prompts.date'))
     end
 
     it 'uses the most recent date when none is selected', :js do

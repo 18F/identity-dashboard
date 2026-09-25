@@ -78,13 +78,14 @@ class AnalyticsController < ApplicationController # :nodoc:
     return @analytic unless current_user
 
     @analytic.config = service_provider
-    @analytic.date = analytic_params[:date].presence || available_report_dates.first
+    @analytic.date = if service_provider
+                       analytic_params[:date].presence || available_report_dates.first
+                     end
+
     @analytic
   end
 
   def service_provider
-    return nil unless analytic_params.present?
-
     available_service_providers.find_by(
       uuid: analytic_params[:uuid],
     )
