@@ -104,15 +104,15 @@ describe 'reporting feature basics' do
         end
 
         it 'shows the correct apps for a chosen team' do
-          select second_team.name, from: 'Team'
+          select second_team.name, from: t('reports.inputs.labels.team')
 
           expect(page).to_not have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
         end
 
         it 'shows the correct apps when reselecting All teams' do
-          select second_team.name, from: 'Team'
-          select t('reports.inputs.prompts.team'), from: 'Team'
+          select second_team.name, from: t('reports.inputs.labels.team')
+          select t('reports.inputs.prompts.team'), from: t('reports.inputs.labels.team')
 
           expect(page).to have_content(test_sp.friendly_name)
           expect(page).to have_content(second_sp.friendly_name)
@@ -148,7 +148,7 @@ describe 'reporting feature basics' do
           end
 
           it 'shows the correct dates for a chosen application' do
-            select second_sp.friendly_name, from: 'Application'
+            select second_sp.friendly_name, from: t('reports.inputs.labels.app')
 
             expect(page).to_not have_content('2025-10-01')
             expect(page).to have_content('2025-11-01')
@@ -164,8 +164,8 @@ describe 'reporting feature basics' do
           team: logingov_admin.teams.first)
         visit analytics_path
 
-        select second_sp.friendly_name, from: 'Application'
-        select test_sp.friendly_name, from: 'Application'
+        select second_sp.friendly_name, from: t('reports.inputs.labels.app')
+        select test_sp.friendly_name, from: t('reports.inputs.labels.app')
         select '2025-12-01', from: t('reports.inputs.labels.date')
         click_on 'View report'
         expect(page).to have_current_path(analytics_path(
@@ -212,8 +212,8 @@ describe 'reporting feature basics' do
       context 'with a report loaded' do
         before do
           visit analytics_path
-          select test_sp.team.name, from: 'Team'
-          select test_sp.friendly_name, from: 'Application'
+          select test_sp.team.name, from: t('reports.inputs.labels.team')
+          select test_sp.friendly_name, from: t('reports.inputs.labels.app')
           select '2025-12-01', from: t('reports.inputs.labels.date')
           click_on 'View report'
         end
@@ -376,8 +376,18 @@ describe 'reporting feature basics' do
       expect(page.find('#analytic_date').value).to eq('')
     end
 
+    it 'uses the most recent date when none is selected', :js do
+      select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
+      click_on 'View report'
+      expect(page).to have_current_path(analytics_path(
+        team: partner_sp.team.id,
+        uuid: partner_sp.uuid,
+        date: Date.current.beginning_of_month.prev_month.strftime('%F'),
+      ))
+    end
+
     it 'can display charts', :js do
-      select partner_sp.friendly_name, from: 'Application'
+      select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
       select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       expect(page).to have_current_path(analytics_path(
@@ -389,7 +399,7 @@ describe 'reporting feature basics' do
     end
 
     it 'allows switching between tabs', :js do
-      select partner_sp.friendly_name, from: 'Application'
+      select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
       select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       expect(page).to have_content 'Fraud Prevention'
@@ -402,7 +412,7 @@ describe 'reporting feature basics' do
     end
 
     it 'can show Authentication tab data', :js do
-      select partner_sp.friendly_name, from: 'Application'
+      select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
       select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       click_on 'Authentication'
@@ -411,7 +421,7 @@ describe 'reporting feature basics' do
     end
 
     it 'can show Identity Verification tab data', :js do
-      select partner_sp.friendly_name, from: 'Application'
+      select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
       select '2025-12-01', from: t('reports.inputs.labels.date')
       click_on 'View report'
       click_on 'Identity Verification'
@@ -424,7 +434,7 @@ describe 'reporting feature basics' do
       let(:issuer) { '2025-12-10:Howard:test' }
 
       it 'will display charts and unavailable messages', :js do
-        select partner_sp.friendly_name, from: 'Application'
+        select partner_sp.friendly_name, from: t('reports.inputs.labels.app')
         select '2025-10-01', from: t('reports.inputs.labels.date')
         click_on 'View report'
 
