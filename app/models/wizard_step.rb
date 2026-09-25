@@ -252,7 +252,7 @@ class WizardStep < ApplicationRecord
   end
 
   def saml?
-    get_step('protocol').identity_protocol == 'saml'
+    step_object('protocol').saml?
   end
 
   def saml_settings_present?

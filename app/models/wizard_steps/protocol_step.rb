@@ -10,5 +10,16 @@ module WizardSteps
     def self.step_name
       'protocol'
     end
+
+    delegate :identity_protocol, to: :@wizard_step
+
+    # @param wizard_step [WizardStep] the record this step reads and writes through
+    def initialize(wizard_step)
+      @wizard_step = wizard_step
+    end
+
+    def saml?
+      identity_protocol == 'saml'
+    end
   end
 end
