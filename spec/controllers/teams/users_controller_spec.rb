@@ -203,6 +203,48 @@ describe Teams::UsersController do
             error_messages = assigns(:errors).flat_map { |e| e[:messages] }
             expect(error_messages.join).to include('is already a member of the team')
           end
+
+          context 'when one entry needs partner admin confirmation' do
+            before do
+              allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+              allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+              create(:service_provider, team:)
+              salesforce_double = instance_double(SalesforceService)
+              allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+              allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
+            end
+
+            it 'does not save any users until confirmed' do
+              post :create, params: {
+                team_id: team.id,
+                users: [
+                  { email: 'dev@gsa.gov', role_name: 'partner_developer' },
+                  { email: 'admin@gsa.gov', role_name: 'partner_admin' },
+                ],
+              }
+
+              expect(response).to render_template(:new)
+              expect(team.reload.users.map(&:email)).to_not include('dev@gsa.gov', 'admin@gsa.gov')
+              expect(assigns(:needs_confirmation).map(&:to_h)).to eq(
+                [{ 'email' => 'admin@gsa.gov', 'role_name' => 'partner_admin' }],
+              )
+            end
+
+            it 'saves both users once confirmed' do
+              post :create, params: {
+                team_id: team.id,
+                confirm_partner_admin: true,
+                users: [
+                  { email: 'dev@gsa.gov', role_name: 'partner_developer' },
+                  { email: 'admin@gsa.gov', role_name: 'partner_admin' },
+                ],
+              }
+
+              expect(response).to redirect_to(team_users_path(team))
+              saved_emails = team.reload.users.map(&:email)
+              expect(saved_emails).to include('dev@gsa.gov', 'admin@gsa.gov')
+            end
+          end
         end
       end
 
@@ -445,6 +487,21 @@ describe Teams::UsersController do
       before do
         user.save!
         TeamMembership.find_or_build_logingov_admin(user).save!
+      end
+
+      describe '#new' do
+        context 'when Salesforce is enabled and there is no Airtable token' do
+          before do
+            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+            allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+          end
+
+          it 'offers partner_admin as a role option' do
+            get :new, params: { team_id: team.id }
+            role_names = controller.roles_for_options.map(&:last)
+            expect(role_names).to include('partner_admin')
+          end
+        end
       end
 
       describe '#remove_confirm' do

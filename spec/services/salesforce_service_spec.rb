@@ -5,6 +5,7 @@ RSpec.describe SalesforceService do
   let(:instance_url) { 'https://localhost:1234' }
   let(:consumer_key) { 'fake_consumer_key' }
   let(:consumer_secret) { 'fake_consumer_secret' }
+  let(:query_url) { "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query" }
 
   before do
     Rails.cache.delete(SalesforceService::TOKEN_CACHE_KEY)
@@ -57,7 +58,7 @@ RSpec.describe SalesforceService do
     it 'queries by the given team uuids and returns the records' do
       records = [{ 'Name' => 'LDGAC-1', 'LDGCRM_P3_Team_UUID__c' => 'uuid-1' }]
 
-      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
+      stub_request(:get, query_url)
         .with(
           query: hash_including(
             'q' => a_string_including("WHERE LDGCRM_P3_Team_UUID__c IN ('uuid-1', 'uuid-2')"),
@@ -72,7 +73,7 @@ RSpec.describe SalesforceService do
     end
 
     it 'raises when Salesforce returns an error array' do
-      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
+      stub_request(:get, query_url)
         .with(query: hash_including('q' => anything))
         .to_return(
           status: 400,
@@ -85,7 +86,7 @@ RSpec.describe SalesforceService do
     end
 
     it 'escapes a quote in a uuid before building the SOQL' do
-      stub_request(:get, "#{instance_url}/services/data/#{SalesforceService::API_VERSION}/query")
+      stub_request(:get, query_url)
         .with(
           query: hash_including(
             'q' => a_string_including("IN ('o\\'brien')"),
@@ -94,6 +95,86 @@ RSpec.describe SalesforceService do
         .to_return(status: 200, body: { records: [] }.to_json, headers: {})
 
       salesforce.application_contacts_for_team_uuids(["o'brien"])
+    end
+  end
+
+  describe '#partner_admin_for_team?' do
+    before { Rails.cache.write(SalesforceService::TOKEN_CACHE_KEY, 'mock_access_token') }
+
+    it 'returns false without a request when the email is blank' do
+      stub = stub_request(:get, query_url)
+
+      expect(salesforce.partner_admin_for_team?('uuid-1', nil)).to eq(false)
+      expect(stub).to_not have_been_requested
+    end
+
+    it 'returns true when a matching record lists the email as a partner portal admin' do
+      records = [
+        {
+          'LDGCRM_Email__c' => 'admin@example.com',
+          'LGDCRM_P3_Partner_Portal_Admin__c' => true,
+        },
+      ]
+      stub_request(:get, query_url)
+        .with(query: hash_including('q' => anything))
+        .to_return(status: 200, body: { records: records }.to_json, headers: {})
+
+      expect(salesforce.partner_admin_for_team?('uuid-1', 'admin@example.com')).to eq(true)
+    end
+
+    it 'matches the email case-insensitively' do
+      records = [
+        {
+          'LDGCRM_Email__c' => 'Admin@Example.com',
+          'LGDCRM_P3_Partner_Portal_Admin__c' => true,
+        },
+      ]
+      stub_request(:get, query_url)
+        .with(query: hash_including('q' => anything))
+        .to_return(status: 200, body: { records: records }.to_json, headers: {})
+
+      expect(salesforce.partner_admin_for_team?('uuid-1', 'admin@example.com')).to eq(true)
+    end
+
+    it 'only queries once when checking multiple emails against the same team' do
+      records = [
+        {
+          'LDGCRM_Email__c' => 'admin@example.com',
+          'LGDCRM_P3_Partner_Portal_Admin__c' => true,
+        },
+      ]
+      stub = stub_request(
+        :get, query_url
+      ).with(query: hash_including('q' => anything))
+        .to_return(status: 200, body: { records: records }.to_json, headers: {})
+
+      salesforce.partner_admin_for_team?('uuid-1', 'admin@example.com')
+      salesforce.partner_admin_for_team?('uuid-1', 'someone-else@example.com')
+
+      expect(stub).to have_been_requested.once
+    end
+
+    it 'does not raise when a record has no email' do
+      records = [{ 'LGDCRM_P3_Partner_Portal_Admin__c' => true }]
+      stub_request(:get, query_url)
+        .with(query: hash_including('q' => anything))
+        .to_return(status: 200, body: { records: records }.to_json, headers: {})
+
+      expect(salesforce.partner_admin_for_team?('uuid-1', 'admin@example.com')).to eq(false)
+    end
+
+    it 'returns false when no matching record lists the email as a partner portal admin' do
+      records = [
+        {
+          'LDGCRM_Email__c' => 'admin@example.com',
+          'LGDCRM_P3_Partner_Portal_Admin__c' => false,
+        },
+      ]
+      stub_request(:get, query_url)
+        .with(query: hash_including('q' => anything))
+        .to_return(status: 200, body: { records: records }.to_json, headers: {})
+
+      expect(salesforce.partner_admin_for_team?('uuid-1', 'admin@example.com')).to eq(false)
     end
   end
 end
