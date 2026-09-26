@@ -64,7 +64,7 @@ class Teams::UsersController < AuthenticatedController
     team_membership.assign_attributes(team_membership_params)
     authorize team_membership
 
-    if IdentityConfig.store.prod_like_env && partner_admin_confirmation_needed?
+    if IdentityConfig.store.prod_like_env && partner_admin_confirmation_needed_for_update?
       flash[:error] = partner_admin_not_verified_message(team_membership.user.email)
 
       redirect_to edit_team_user_path(team, team_membership.user,
@@ -106,7 +106,7 @@ class Teams::UsersController < AuthenticatedController
   def roles_for_options
     membership = team_membership || policy_scope(TeamMembership).build(team: team)
     roles = policy(membership).roles_for_edit
-    if IdentityConfig.store.prod_like_env && !partner_admin_role_available?
+    if IdentityConfig.store.prod_like_env && needs_airtable_token?
       roles = roles.reject { |role| role.name == 'partner_admin' }
     end
     roles.map { |r| [r.friendly_name, r.name] }
@@ -120,6 +120,8 @@ class Teams::UsersController < AuthenticatedController
 
   def confirmation_needed_entries(users_params)
     return [] if params[:confirm_partner_admin].present?
+    return [] unless IdentityConfig.store.prod_like_env
+    return [] unless IdentityConfig.store.salesforce_api_enabled
 
     users_params.select { |u| partner_admin_confirmation_needed_for_create?(u) }
   end
@@ -140,8 +142,10 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def render_new_with_confirmation(needs_confirmation)
-    @show_wizard = params[:wizard].present?
-    @steps = TeamsController::WIZARD_STEPS
+    if params[:wizard].present?
+      @show_wizard = true
+      @steps = TeamsController::WIZARD_STEPS
+    end
     @needs_confirmation = needs_confirmation
     render :new
   end
@@ -258,10 +262,10 @@ class Teams::UsersController < AuthenticatedController
     )
   end
 
-  def partner_admin_role_available?
-    return true if IdentityConfig.store.salesforce_api_enabled
+  def needs_airtable_token?
+    return false if IdentityConfig.store.salesforce_api_enabled
 
-    Airtable.new(current_user.uuid).has_token?
+    !Airtable.new(current_user.uuid).has_token?
   end
 
   def verified_partner_admin?(email)
@@ -299,31 +303,29 @@ class Teams::UsersController < AuthenticatedController
     end
   end
 
-  def partner_admin_confirmation_needed?
+  def partner_admin_confirmation_needed_for_update?
     # Logingov Admin is confirming now
     return false if params[:confirm_partner_admin].present?
 
-    # Only check with Airtable/Salesforce in Prod Like Environments
+    # Only check with the Partnerships CRM in Prod Like Environments
     return false unless IdentityConfig.store.prod_like_env
 
     # More checks needed if role is being set to partner_admin.
     if team_membership.role_name == 'partner_admin'
-      return partner_admin_confirmation_needed_for_email?(team_membership.user.email)
+      return partner_admin_not_verified?(team_membership.user.email)
     end
 
     false
   end
 
   def partner_admin_confirmation_needed_for_create?(user_entry)
-    return false unless IdentityConfig.store.prod_like_env
-    return false unless IdentityConfig.store.salesforce_api_enabled
     return false unless user_entry[:role_name] == 'partner_admin'
     return false if user_entry[:email].blank?
 
-    partner_admin_confirmation_needed_for_email?(user_entry[:email])
+    partner_admin_not_verified?(user_entry[:email])
   end
 
-  def partner_admin_confirmation_needed_for_email?(email)
+  def partner_admin_not_verified?(email)
     return true if team.service_providers.empty?
 
     !verified_partner_admin?(email.downcase)
