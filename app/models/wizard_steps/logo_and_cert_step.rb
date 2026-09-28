@@ -13,10 +13,20 @@ module WizardSteps
     def self.step_name
       'logo_and_cert'
     end
+    # delegates to the wizard_step model object
+    delegate :certs,
+      :logo_name,
+      :remote_logo_key,
+      :logo_file,
+      :changes,
+      :attachment_changes,
+      :wizard_form_data,
+      :saml?,
+      to: :@wizard_step
 
-    validates_with CertsArePemsValidator, on: 'logo_and_cert'
-    validates_with SamlCertsPresentValidator, on: 'logo_and_cert'
-    validates_with LogoValidator, on: 'logo_and_cert'
+    validates_with CertsArePemsValidator
+    validates_with SamlCertsPresentValidator
+    validates_with LogoValidator, wizard: true
 
     # @param wizard_step [WizardStep] the record this step reads and writes through
     def initialize(wizard_step)
@@ -58,6 +68,22 @@ module WizardSteps
       return attachment_changes_string_buffer if attachment_changes['logo_file'].present?
 
       logo_file&.blob&.download
+    end
+
+    def null_certificate
+      time = Time.zone.at(0)
+      OpenStruct.new(
+        issuer: 'Null Certificate',
+        not_before: time,
+        not_after: time,
+      )
+    end
+
+    def attachment_changes_string_buffer
+      attachable = attachment_changes['logo_file'].attachable
+      return attachable.download if attachable.respond_to?(:download)
+
+      File.read(attachable.open)
     end
   end
 end

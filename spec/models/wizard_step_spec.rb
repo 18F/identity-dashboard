@@ -180,105 +180,10 @@ RSpec.describe WizardStep, type: :model do
   context 'step "logo_and_cert"' do
     let(:good_logo) { fixture_file_upload('logo.svg', 'image/svg+xml') }
 
-    describe '#certificates' do
-      let(:certs) { nil }
-
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: { certs: }) }
-
-      context 'with nil' do
-        let(:certs) { nil }
-
-        it 'is an empty array' do
-          expect(subject.certificates).to eq([])
-        end
-      end
-
-      context 'with invalid PEM data' do
-        let(:certs) { ['i-am-not-a-pem'] }
-
-        it 'is a null certificate' do
-          expect(subject.certificates.first.issuer).to eq('Null Certificate')
-        end
-      end
-
-      context 'with multiple certs' do
-        let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
-
-        it 'wraps them as ServiceProviderCertificates' do
-          wrapped = certs.map do |cert|
-            ServiceProviderCertificate.new(OpenSSL::X509::Certificate.new(cert))
-          end
-
-          expect(subject.certificates).to eq(wrapped)
-        end
-
-        it 'can remove one and retain the other' do
-          serial_to_remove = [200, 300].sample
-          removed_serial = subject.remove_certificate(serial_to_remove)
-          expect(removed_serial).to be(serial_to_remove)
-          expect(subject.certs.count).to be(1)
-          remaining_serial = OpenSSL::X509::Certificate.new(subject.certs.first).serial
-          expected_remaining_serial = ([200, 300] - [serial_to_remove]).first
-          expect(remaining_serial.to_i).to be(expected_remaining_serial)
-        end
-      end
-
-      context 'with an existing logo' do
-        let(:good_logo) { fixture_file_upload('logo.svg') }
-        let(:good_logo_checksum) do
-          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('logo.svg').read)
-        end
-        let(:empty_string_checksum) { OpenSSL::Digest.base64digest('MD5', '') }
-        let(:unsized_logo) { fixture_file_upload('../logo_without_size.svg') }
-        let(:unsized_logo_checksum) do
-          OpenSSL::Digest.base64digest('MD5', fixture_file_upload('../logo_without_size.svg').read)
-        end
-
-        let(:step_with_logo) do
-          this_step = create(:wizard_step, step_name: 'logo_and_cert')
-          this_step.attach_logo(good_logo)
-          this_step.save!
-          this_step
-        end
-
-        it 'will not replace a good logo with a bad logo' do
-          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
-          step_with_logo.attach_logo(unsized_logo)
-          expect(step_with_logo).to_not be_valid
-          step_with_logo.reload
-          step_with_logo.logo_file.reload
-          expect(step_with_logo.logo_file.checksum).to_not eq(empty_string_checksum)
-          expect(step_with_logo.logo_file.checksum).to eq(good_logo_checksum)
-          expect(step_with_logo.logo_name).to eq('logo.svg')
-        end
-      end
-    end
-
-    describe '#remove_certificate' do
-      subject { build(:wizard_step, step_name: 'logo_and_cert', wizard_form_data: { certs: }) }
-      let(:certs) { nil }
-
-      context 'when removing a serial that matches in the certs array' do
-        let(:certs) { [build_pem(serial: 100), build_pem(serial: 200), build_pem(serial: 300)] }
-
-        it 'removes that cert' do
-          expect { subject.remove_certificate(200) }
-            .to(change { subject.certificates.size }.from(3).to(2))
-
-          has_serial = subject.certificates.any? { |c| c.serial.to_s == '200' }
-          expect(has_serial).to eq(false)
-        end
-      end
-
-      context 'when removing a serial that does not exist' do
-        let(:certs) { [build_pem(serial: 200), build_pem(serial: 300)] }
-
-        it 'does not remove anything' do
-          expect { subject.remove_certificate(100) }.to_not(change { subject.certificates.size })
-        end
-      end
-    end
-
+    # Behavior of #certificates, #remove_certificate, #attach_logo, and
+    # #pending_or_current_logo_data lives in WizardSteps::LogoAndCertStep and is
+    # covered in spec/models/wizard_steps/logo_and_cert_spec.rb. These examples
+    # only cover that WizardStep delegates validation to that step object.
     describe '#valid?' do
       subject { build(:wizard_step, step_name: 'logo_and_cert') }
 
@@ -289,64 +194,11 @@ RSpec.describe WizardStep, type: :model do
         expect(subject).to be_valid
       end
 
-      it 'is valid with good certs and uploads' do
-        subject.attach_logo(good_logo)
-        subject.certs << build_pem
-        expect(subject.wizard_form_data['certs']).to_not be_empty
-        expect(subject.wizard_form_data['logo_name']).to_not be_empty
-        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
-        expect(subject).to be_valid
-      end
-
-      it 'is valid with a good upload that has been persisted' do
-        subject.attach_logo(good_logo)
-        subject.certs << build_pem
-        subject.save!
-        subject.valid?
-        expect(subject.wizard_form_data['certs']).to_not be_empty
-        expect(subject.wizard_form_data['logo_name']).to_not be_empty
-        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
-        expect(subject).to be_valid
-      end
-
-      it 'has errors with bad certs and bad uploads' do
+      it 'surfaces cert errors from the step object' do
         subject.certs << 'invalid cert'
-        subject.attach_logo(fixture_file_upload('testcert.pem', 'image/svg+xml'))
-        expect(subject.wizard_form_data['certs']).to_not be_empty
-        expect(subject.wizard_form_data['logo_name']).to_not be_empty
-        expect(subject.wizard_form_data['remote_logo_key']).to_not be_empty
+
         expect(subject).to_not be_valid
-        expect(subject.errors[:certs]).to_not be_blank
-        expect(subject.errors[:logo_file])
-          .to eq(['The file you uploaded (testcert.pem) is not a PNG or SVG'])
-      end
-    end
-
-    describe '#pending_or_current_logo_data' do
-      it 'returns false if the step is not "logo_and_cert"' do
-        not_logo_step = (WizardStep::STEP_DATA.keys - ['logo_and_cert']).sample
-        subject = build(:wizard_step, step_name: not_logo_step)
-        expect(subject.pending_or_current_logo_data).to be_falsey
-        expect { subject.logo_name }.to raise_error(NoMethodError)
-        expect { subject.remote_logo_key }.to raise_error(NoMethodError)
-      end
-
-      it 'returns the data if the logo has been attached' do
-        logo_step = build(:wizard_step, step_name: 'logo_and_cert')
-        logo_step.attach_logo(good_logo)
-        expect(logo_step.pending_or_current_logo_data).to eq(good_logo.read)
-      end
-    end
-
-    describe '#attach_logo' do
-      # Other behavior of `#attach_logo` is covered in the `#valid?` tests
-      it 'does nothing if the step is not "logo_and_cert"' do
-        not_logo_step = (WizardStep::STEP_DATA.keys - ['logo_and_cert']).sample
-        subject = build(:wizard_step, step_name: not_logo_step)
-        subject.attach_logo(good_logo)
-        expect(subject.logo_file.blob).to be_nil
-        expect { subject.logo_name }.to raise_error(NoMethodError)
-        expect { subject.remote_logo_key }.to raise_error(NoMethodError)
+        expect(subject.errors[:certs]).to eq(['Certificate is not PEM-encoded'])
       end
     end
   end

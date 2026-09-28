@@ -261,25 +261,9 @@ class WizardStep < ApplicationRecord
     STEP_DATA[step_name].fields.merge(new_data)
   end
 
-  def null_certificate
-    time = Time.zone.at(0)
-    OpenStruct.new(
-      issuer: 'Null Certificate',
-      not_before: time,
-      not_after: time,
-    )
-  end
-
   def failure_to_proof_url_for_idv
     return unless using_idv?
 
     errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
-  end
-
-  def attachment_changes_string_buffer
-    attachable = attachment_changes['logo_file'].attachable
-    return attachable.download if attachable.respond_to?(:download)
-
-    File.read(attachable.open)
   end
 end
