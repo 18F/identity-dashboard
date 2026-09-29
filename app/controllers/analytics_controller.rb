@@ -77,8 +77,9 @@ class AnalyticsController < ApplicationController # :nodoc:
     @analytic = Analytic.new
     return @analytic unless current_user
 
-    @analytic.config = service_provider
-    @analytic.date = if service_provider
+    sp = service_provider
+    @analytic.config = sp
+    @analytic.date = if sp
                        analytic_params[:date].presence || available_report_dates.first
                      end
 
