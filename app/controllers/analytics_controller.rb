@@ -79,9 +79,7 @@ class AnalyticsController < ApplicationController # :nodoc:
 
     sp = service_provider
     @analytic.config = sp
-    @analytic.date = if sp
-                       analytic_params[:date].presence || available_report_dates.first
-                     end
+    @analytic.date = (analytic_params[:date].presence || available_report_dates.first if sp)
 
     @analytic
   end
