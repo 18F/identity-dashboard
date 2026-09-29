@@ -198,6 +198,12 @@ class WizardStep < ApplicationRecord
     ial.to_i > 1
   end
 
+  def certificates
+    return wizard_form_data['certs'] if step_name == 'logo_and_cert'
+
+    get_step('logo_and_cert').certificates
+  end
+
   private
 
   # Step objects hold step-specific behavior and read/write through the WizardStep they wrap.
