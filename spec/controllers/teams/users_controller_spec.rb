@@ -204,6 +204,39 @@ describe Teams::UsersController do
             expect(error_messages.join).to include('is already a member of the team')
           end
 
+          context 'when saving raises ActiveRecord::RecordInvalid' do
+            it 'shows a friendly message for a duplicate user_id error' do
+              existing_user = create(:team_membership, team:).user
+              invalid_membership = TeamMembership.new(user: existing_user, team:)
+              invalid_membership.errors.add(:user_id, :taken)
+              allow_any_instance_of(TeamMembership).to receive(:save)
+                .and_raise(ActiveRecord::RecordInvalid.new(invalid_membership))
+
+              post :create, params: {
+                team_id: team.id,
+                users: [{ email: existing_user.email, role_name: 'partner_developer' }],
+              }
+
+              expect(response).to redirect_to(new_team_user_path)
+              expect(flash[:error]).to include("<strong>#{existing_user.email}</strong>")
+            end
+
+            it 'shows the full validation message for any other error' do
+              invalid_membership = TeamMembership.new
+              invalid_membership.errors.add(:role_name, :invalid, message: 'is not valid')
+              allow_any_instance_of(TeamMembership).to receive(:save)
+                .and_raise(ActiveRecord::RecordInvalid.new(invalid_membership))
+
+              post :create, params: {
+                team_id: team.id,
+                users: [{ email: 'someone@gsa.gov', role_name: 'partner_developer' }],
+              }
+
+              expect(response).to redirect_to(new_team_user_path)
+              expect(flash[:error]).to include('Role name is not valid')
+            end
+          end
+
           context 'when one entry needs partner admin confirmation' do
             before do
               allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)

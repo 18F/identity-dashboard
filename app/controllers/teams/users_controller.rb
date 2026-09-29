@@ -169,7 +169,7 @@ class Teams::UsersController < AuthenticatedController
           value: "<strong>#{err.record.user.email}</strong>",
         )
       else
-        record_error
+        record_error.full_message
       end
     end.join(', ')
     flash[:error] = "<p class='usa-alert__text'>#{error_messages}</p>"
