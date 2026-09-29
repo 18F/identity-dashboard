@@ -54,37 +54,15 @@ class WizardStep < ApplicationRecord
   validates :step_name, presence: true
 
   # Step-specific validations owned by the step object
-  validate :run_step_object_validations, on: %w[settings issuer authentication logo_and_cert]
-
-  ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
-  # except for the step contexts
-
-  # validates_with IdentityValidations::AllowedRedirectsValidator, on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :redirect_uris,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :failure_to_proof_url,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :push_notification_url,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :acs_url,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :sp_initiated_login_url,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :return_to_sp_url,
-                 on: 'redirects'
-  validates_with RedirectsValidator,
-                 attribute: :assertion_consumer_logout_service_url,
-                 on: 'redirects'
+  validate :run_step_object_validations, on: %w[
+    settings
+    issuer
+    authentication
+    logo_and_cert
+    redirects
+  ]
 
   ### end of validations copied from IdentityValidations::ServiceProviderValidation
-
-  validate :failure_to_proof_url_for_idv, on: 'redirects'
 
   # SimpleForm uses this
   def self.reflect_on_association(relation)
@@ -216,15 +194,6 @@ class WizardStep < ApplicationRecord
     step_object('protocol').saml?
   end
 
-  def saml_settings_present?
-    ['acs_url', 'return_to_sp_url'].each do |attr|
-      return true unless saml?
-
-      errors.add(attr.to_sym, ' can\'t be blank') if wizard_form_data[attr].blank?
-    end
-    errors.empty?
-  end
-
   def using_idv?
     ial.to_i > 1
   end
@@ -259,11 +228,5 @@ class WizardStep < ApplicationRecord
 
     new_data.filter! { |key, _v| STEP_DATA[step_name].has_field? key }
     STEP_DATA[step_name].fields.merge(new_data)
-  end
-
-  def failure_to_proof_url_for_idv
-    return unless using_idv?
-
-    errors.add(:failure_to_proof_url, :empty) if failure_to_proof_url.blank?
   end
 end

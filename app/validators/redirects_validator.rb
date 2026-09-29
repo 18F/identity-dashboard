@@ -28,7 +28,7 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
   private
 
   def attribute_unchanged(attribute)
-    if wizard?
+    if options[:wizard]
       changed_form_data = @record.changes['wizard_form_data']
       attr_key = attribute.to_s
 
@@ -72,9 +72,5 @@ class RedirectsValidator < IdentityValidations::AllowedRedirectsValidator
 
   def localhost_uri?(uri)
     uri.host&.match(/(localhost|127\.0\.0)/) || uri.scheme == 'localhost'
-  end
-
-  def wizard?
-    @record.instance_of?(::WizardStep)
   end
 end

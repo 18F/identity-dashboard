@@ -26,6 +26,7 @@ module WizardSteps
     validates :group_id, presence: true
     validate :group_is_valid
 
+    delegate :prod_config, to: :@wizard_step
     # @param wizard_step [WizardStep] the record this step reads and writes through
     def initialize(wizard_step)
       @wizard_step = wizard_step
@@ -33,7 +34,6 @@ module WizardSteps
 
     # prod_config is a Boolean in the DB, but is a string in the form
     def production_ready?
-      prod_config = @wizard_step.get_step('settings').prod_config
       ['true', true].include?(prod_config)
     end
 
