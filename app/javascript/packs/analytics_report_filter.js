@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter the child options
     nextSelect.innerHTML = '';
     nextOptions.forEach((option) => {
-      if (optIds.indexOf(option.value) >= 0) {
+      if (optIds.indexOf(option.value) >= 0 || !option.value.length) {
         nextSelect.appendChild(option);
         // Set the child select value, and cascade if App select
         if (optNeedsSetting || !nextValueIsSet) {

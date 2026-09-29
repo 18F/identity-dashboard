@@ -234,6 +234,16 @@ en:
     pct_proofing_success: Overall Proofing Success Rate
     # General
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
+    inputs:
+      labels:
+        team: Team
+        app: Application
+        date: Date of report
+      prompts:
+        team: All teams
+        app: '- Select application -'
+        no_app: '- No applications -'
+        date: '- Select date of report -'
     errors:
       generic: The link for that report was not valid. You can select a different report from the options below.
       no_data: We couldn't retrieve data matching your application and date. We're continually adding new data, so check back soon.

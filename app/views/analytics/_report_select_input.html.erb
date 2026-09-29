@@ -35,7 +35,8 @@
       <% collection.each do |col| %>
         <option value="<%= col[:id] %>"
                 <%= 'selected' if defined?(selected) && selected == col[:id].to_s %>
-                data-controls="<%= col[:controls] %>">
+                <%# adding an empty item allows for placeholder options %>
+                data-controls="<%= col[:controls] + ',' %>">
           <%= col[:title] %>
         </option>
       <% end %>
