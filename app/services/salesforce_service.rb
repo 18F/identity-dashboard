@@ -12,17 +12,19 @@ class SalesforceService
 
   TEAM_UUID_FIELD = 'LDGCRM_P3_Team_UUID__c'.freeze
 
+  PARTNER_PORTAL_ADMIN_FIELD = 'LGDCRM_P3_Partner_Portal_Admin__c'.freeze
+
+  EMAIL_FIELD = 'LDGCRM_Email__c'.freeze
+
   APPLICATION_CONTACT_FIELDS = [
     'Id',
     'Name',
-    'LDGCRM_Email__c',
+    EMAIL_FIELD,
     TEAM_UUID_FIELD,
-    'LGDCRM_P3_Partner_Portal_Admin__c',
+    PARTNER_PORTAL_ADMIN_FIELD,
     'LDGCRM_contact__r.Name',
     'LDGCRM_Application__r.Name',
   ].freeze
-
-  attr_reader :last_soql
 
   def initialize
     @conn = Faraday.new(url: IdentityConfig.store.salesforce_instance_url)
@@ -40,11 +42,24 @@ class SalesforceService
     Array(query(soql_for_team_uuids(team_uuids))['records'])
   end
 
+  def partner_admin_for_team?(team_uuid, email)
+    return false if email.blank?
+
+    contacts_for_team(team_uuid).any? do |record|
+      record[EMAIL_FIELD]&.casecmp?(email) && record[PARTNER_PORTAL_ADMIN_FIELD]
+    end
+  end
+
   private
+
+  def contacts_for_team(team_uuid)
+    @contacts_for_team ||= {}
+    @contacts_for_team[team_uuid] ||= application_contacts_for_team_uuids([team_uuid])
+  end
 
   def soql_for_team_uuids(team_uuids)
     quoted = team_uuids.map { |uuid| "'#{escape_literal(uuid)}'" }.join(', ')
-    @last_soql = "SELECT #{APPLICATION_CONTACT_FIELDS.join(', ')} " \
+    "SELECT #{APPLICATION_CONTACT_FIELDS.join(', ')} " \
       "FROM #{APPLICATION_CONTACT_OBJECT} WHERE #{TEAM_UUID_FIELD} IN (#{quoted})"
   end
 

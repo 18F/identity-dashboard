@@ -45,4 +45,28 @@
   </div>
 <% end %>
 
+<% if @needs_confirmation&.any? %>
+  <div class="usa-alert usa-alert--warning margin-bottom-2">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <%= t('teams.users.create.confirm_partner_admin_warning') %>
+      </p>
+      <ul class="usa-list">
+        <% @needs_confirmation.each do |entry| %>
+          <li><%= entry[:email] %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <%= form_with url: team_users_path(@team, wizard: @show_wizard.presence), method: :post, local: true do %>
+    <% @users_data.each do |entry| %>
+      <%= hidden_field_tag 'users[][email]', entry[:email] %>
+      <%= hidden_field_tag 'users[][role_name]', entry[:role_name] %>
+    <% end %>
+    <%= hidden_field_tag :confirm_partner_admin, true %>
+    <%= submit_tag t('teams.users.create.confirm_partner_admin_button'), class: 'usa-button' %>
+  <% end %>
+<% end %>
+
 <%= render 'form' %>
