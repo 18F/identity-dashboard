@@ -26,7 +26,7 @@ module IdentityDashboard
     IdentityConfig.build_store(app_root: Rails.root, rails_env: Rails.env)
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.0
     config.active_support.cache_format_version = 7.1
     config.assets.unknown_asset_fallback = true
     config.action_view.button_to_generates_button_tag = false
