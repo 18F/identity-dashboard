@@ -11,7 +11,7 @@
     "lint": "eslint . --ignore-pattern public --ignore-pattern doc --ignore-pattern vendor --ignore-pattern app/assets/builds --ignore-pattern coverage"
   },
   "dependencies": {
-    "@18f/identity-build-sass": "^3.1.0",
+    "@18f/identity-build-sass": "^3.2.0",
     "@18f/identity-design-system": "9.6.0",
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.27.1",
