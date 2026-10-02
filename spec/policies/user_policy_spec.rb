@@ -71,7 +71,7 @@ describe UserPolicy do
       expect(UserPolicy).to_not permit(partner_readonly, user_record)
     end
 
-    it 'forbids access to a partner readonly' do
+    it 'forbids access to a partner in reports readonly' do
       expect(UserPolicy).to_not permit(partner_reports_readonly, user_record)
     end
 

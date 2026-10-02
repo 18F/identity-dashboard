@@ -325,7 +325,6 @@ describe AnalyticsController do
     context '#index' do
       let(:team0) { create(:team) }
       let(:team1) { create(:team) }
-      let(:team2) { create(:team) }
       let!(:sp0) do
         create(:service_provider,
                         :ready_to_activate,
