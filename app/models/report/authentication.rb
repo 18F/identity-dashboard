@@ -70,7 +70,7 @@ module Report
 
       mfa_ratios = as_array_with_i18n_labels(MFA_PERCENTAGES.select { |key| data.key?(key) })
       # Turn ratios into rounded percentages
-      mfa_ratios.map { |(key, value)| [key, rounded_percentage(value)] }
+      mfa_ratios.map { |(key, value)| [key, nil_if_zero(rounded_percentage(value))] }
     end
 
     def device_type_data
@@ -78,7 +78,7 @@ module Report
 
       device_ratios = as_array_with_i18n_labels(DEVICE_PERCENTAGES.select { |key| data.key?(key) })
       # Turn ratios into rounded percentages
-      device_ratios.map { |(key, value)| [key, rounded_percentage(value)] }
+      device_ratios.map { |(key, value)| [key, nil_if_zero(rounded_percentage(value))] }
     end
   end
 end

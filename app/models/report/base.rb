@@ -33,6 +33,17 @@ module Report
       (float * 100.0).round(2)
     end
 
+    # Highcharts renders zero-value pie/donut slices as thin, hard-to-select
+    # slivers that look non-zero at a glance. Using nil instead excludes the
+    # slice from the chart while keeping it in the legend.
+    def nil_if_zero(value)
+      value&.nonzero?
+    end
+
+    def nil_zero_values(pairs)
+      pairs.map { |(label, value)| [label, nil_if_zero(value)] }
+    end
+
     private
 
     def merge_options(chart_options)

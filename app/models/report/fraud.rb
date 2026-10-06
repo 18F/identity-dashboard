@@ -58,15 +58,15 @@ module Report
       return [] unless data.values_at(*FRAUD_KEYS).any?
 
       # This chart has lots of categories, so we don't want to show categories that have no data
-      as_array_with_i18n_labels(FRAUD_KEYS.select { |key| data.key?(key) })
+      nil_zero_values(as_array_with_i18n_labels(FRAUD_KEYS.select { |key| data.key?(key) }))
     end
 
     def review_queue_data
       return [] unless data.values_at(*FRAUD_QUEUE_KEYS).all?
 
-      # This chart has only two categories, so we want to show a blank category as being zero
+      # This chart has only two categories, so we want to show both category labels
       # even if we have no data for it
-      as_array_with_i18n_labels(FRAUD_QUEUE_KEYS)
+      nil_zero_values(as_array_with_i18n_labels(FRAUD_QUEUE_KEYS))
     end
   end
 end

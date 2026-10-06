@@ -166,8 +166,8 @@ describe Report::Usage do
     it 'returns a zeroed #overall_chart' do
       expect(subject.overall_chart[:data]).to eq(
         [
-          [I18n.t('reports.count_newly_created_accounts'), 0],
-          [I18n.t('reports.count_existing_accounts'), 0],
+          [I18n.t('reports.count_newly_created_accounts'), nil],
+          [I18n.t('reports.count_existing_accounts'), nil],
         ],
       )
     end
@@ -176,8 +176,8 @@ describe Report::Usage do
       expect(subject.idv_chart).to eq({
         type: :column_chart,
         data: [
-          [I18n.t('reports.count_newly_proofed_users'), 0],
-          [I18n.t('reports.count_preverified_users'), 0],
+          [I18n.t('reports.count_newly_proofed_users'), nil],
+          [I18n.t('reports.count_preverified_users'), nil],
         ],
         options: {
           colors: ['#18f'],

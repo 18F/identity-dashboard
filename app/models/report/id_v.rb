@@ -104,8 +104,8 @@ module Report
                        data['pct_proofing_success'].positive?
 
       [
-        ['Pass', rounded_percentage(data['pct_proofing_success'])],
-        ['Not Pass', rounded_percentage(1.0 - data['pct_proofing_success'])],
+        ['Pass', nil_if_zero(rounded_percentage(data['pct_proofing_success']))],
+        ['Not Pass', nil_if_zero(rounded_percentage(1.0 - data['pct_proofing_success']))],
       ]
     end
 
@@ -115,7 +115,7 @@ module Report
 
       [
         { name: 'Dead End',
-          data: [['', rounded_percentage(1 - data['pct_path_to_access'])]] },
+          data: [['', nil_if_zero(rounded_percentage(1 - data['pct_path_to_access']))]] },
         { name: 'Path Forward',
           data: [['', rounded_percentage(data['pct_path_to_access'])]] },
       ]
@@ -129,16 +129,17 @@ module Report
         VERIFICATION_CHANNEL_KEYS.select { |key| data.key?(key) },
       )
       # Turn integers into rounded percentages
-      verification_channels.map { |(key, value)| [key, divide_and_round(value, total)] }
+      verification_channels.map do |(key, value)|
+        [key, nil_if_zero(divide_and_round(value, total))]
+      end
     end
 
     def friction_data
       return [] unless data.values_at(*FRICTION_POINT_KEYS).any?
 
-      friction_points = as_array_with_i18n_labels(
-        FRICTION_POINT_KEYS.select { |key| data.key?(key) },
+      nil_zero_values(
+        as_array_with_i18n_labels(FRICTION_POINT_KEYS.select { |key| data.key?(key) }),
       )
-      friction_points.to_a
     end
 
     def divide_and_round(numerator, denominator)
