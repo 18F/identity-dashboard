@@ -231,6 +231,7 @@ describe TeamMembershipPolicy do
         expected_roles = Role.all - [
           Role::LOGINGOV_ADMIN,
           Role::LOGINGOV_READONLY,
+          Role.find_by(name: 'partner_reports_readonly'),
         ]
         expect(described_class.new(partner_admin, team_membership).roles_for_edit)
           .to eq(expected_roles)
