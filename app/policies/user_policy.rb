@@ -14,7 +14,9 @@ class UserPolicy < BasePolicy # :nodoc:
   end
 
   def above_readonly_role?
-    permitted_roles = Role::ROLES_NAMES - %w[logingov_readonly partner_readonly]
+    permitted_roles = Role::ROLES_NAMES - %w[
+      logingov_readonly partner_readonly partner_reports_readonly
+    ]
     permitted_roles.include? user.primary_role.name
   end
 

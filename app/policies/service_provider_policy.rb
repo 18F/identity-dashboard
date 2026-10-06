@@ -50,7 +50,7 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def show?
-    team_member_or_staff?
+    team_member_or_staff? && !partner_reports_readonly?
   end
 
   def new?
@@ -134,7 +134,11 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   private
 
   def partner_readonly?
-    team_membership.role == Role.find_by(name: 'partner_readonly')
+    team_membership.role == Role.find_by(name: 'partner_readonly') || partner_reports_readonly?
+  end
+
+  def partner_reports_readonly?
+    team_membership && team_membership.role == Role.find_by(name: 'partner_reports_readonly')
   end
 
   def partner_admin?

@@ -9,6 +9,7 @@ describe UserPolicy do
   let(:partner_admin) { build(:user, :partner_admin) }
   let(:partner_developer) { build(:user, :partner_developer) }
   let(:partner_readonly) { build(:user, :partner_readonly) }
+  let(:partner_reports_readonly) { build(:user, :partner_reports_readonly) }
 
   require 'rails_helper'
 
@@ -68,6 +69,10 @@ describe UserPolicy do
 
     it 'forbids access to a partner readonly' do
       expect(UserPolicy).to_not permit(partner_readonly, user_record)
+    end
+
+    it 'forbids access to a partner in reports readonly' do
+      expect(UserPolicy).to_not permit(partner_reports_readonly, user_record)
     end
 
     it 'gives access to login.gov admin' do

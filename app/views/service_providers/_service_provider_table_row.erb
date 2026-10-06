@@ -1,6 +1,10 @@
 <tr>
   <th scope="row">
-    <%= link_to(app.friendly_name, service_provider_path(app), class: 'usa-link') %>
+    <% if policy(app).show? %>
+      <%= link_to(app.friendly_name, service_provider_path(app), class: 'usa-link') %>
+    <% else %>
+      <%= app.friendly_name %>
+    <% end %>
   </th>
   <td class="text-wrap"><%= app.issuer %></td>
   <td><%= app.ial_friendly %></td>

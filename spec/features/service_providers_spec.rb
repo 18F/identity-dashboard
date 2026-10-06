@@ -52,11 +52,15 @@ feature 'Service Providers CRUD' do
       expect(page).to have_content(I18n.t('service_provider_form.aal_option_2'))
     end
 
-    scenario 'cannot see link to analytics path' do
+    scenario 'can see config links but not analytics path' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      partner_developer = create(:user, :partner_developer)
+      visible_config = create(:service_provider, team:)
+      partner_developer = create(:team_membership, :partner_developer, team:).user
       login_as partner_developer
       visit service_providers_path
+      expect(page).to have_link(
+        visible_config.friendly_name, href: service_provider_path(visible_config)
+      )
       expect(page).to_not have_link('Reports')
     end
 
@@ -559,6 +563,21 @@ allow_label_click: true)
         visit edit_service_provider_path(id: sp)
         expect(page).to have_current_path(edit_service_provider_path(sp))
       end
+    end
+  end
+
+  context 'as a reports readonly user' do
+    let(:user_membership) do
+      create(:team_membership, :partner_reports_readonly, team:)
+    end
+
+    it 'can see analytics path but not config links' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      visible_config = create(:service_provider, team:)
+      visit service_providers_path
+      expect(page).to have_link('Reports')
+      expect(page).to have_content(visible_config.friendly_name)
+      expect(page).to_not have_link(href: service_provider_path(visible_config))
     end
   end
 

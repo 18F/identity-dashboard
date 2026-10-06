@@ -436,7 +436,11 @@ feature 'TeamMembership CRUD' do
 
     scenario 'readonly user attempts to edit a team' do
       team = create(:team)
-      user = create(:team_membership, :partner_readonly, team:).user
+      user = create(
+        :team_membership,
+        [:partner_readonly, :partner_reports_readonly].sample,
+        team:,
+      ).user
 
       login_as(user)
 
@@ -469,6 +473,7 @@ feature 'TeamMembership CRUD' do
     scenario 'regular user views own team' do
       user = create(:user, :team_member)
       team = user.teams.first
+      sp = create(:service_provider, team:)
 
       login_as(user)
 
@@ -476,9 +481,35 @@ feature 'TeamMembership CRUD' do
 
       expect(page).to have_content(team.name)
       expect(page).to_not have_content('Not authorized')
+
       # Team UUID is not displayed
       expect(page).to_not have_content(team.uuid)
       expect(page).to_not have_content('copy UUID to clipboard')
+
+      # Link to SP is displayed
+      expect(page).to have_content(sp.friendly_name)
+      expect(page).to have_link(sp.friendly_name)
+    end
+
+    scenario 'reports readonly user attempts to view own team' do
+      user = create(:team_membership, :partner_reports_readonly).user
+      team = user.teams.last
+      sp = create(:service_provider, team:)
+
+      login_as user
+
+      visit team_path(team)
+
+      expect(page).to have_content(team.name)
+      expect(page).to_not have_content('Not authorized')
+
+      # Team UUID is not displayed
+      expect(page).to_not have_content(team.uuid)
+      expect(page).to_not have_content('copy UUID to clipboard')
+
+      # SP is displayed without link
+      expect(page).to have_content(sp.friendly_name)
+      expect(page).to_not have_link(sp.friendly_name)
     end
   end
 

@@ -52,6 +52,10 @@ FactoryBot.define do
       team_memberships { [association(:team_membership, :partner_readonly)] }
     end
 
+    trait :partner_reports_readonly do
+      team_memberships { [association(:team_membership, :partner_reports_readonly)] }
+    end
+
     factory :restricted_ic do
       sequence(:email) { |n| "user#{n}@example.com" }
     end

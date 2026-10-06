@@ -6,6 +6,8 @@ describe AnalyticsController do
   let(:partner_admin) { create(:user, :partner_admin) }
   let(:partner_developer) { create(:user, :partner_developer) }
   let(:partner_readonly) { create(:user, :partner_readonly) }
+  let(:partner_reports_readonly) { create(:user, :partner_reports_readonly) }
+
   let(:logger_double) { instance_double(EventLogger) }
   let(:issuer) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:dol_test' }
   let(:issuer0) { 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:jonathan_demo' }
@@ -311,6 +313,53 @@ describe AnalyticsController do
         get :index
         expect(response).to be_unauthorized
         expect(logger_double).to have_received(:unauthorized_access_attempt)
+      end
+    end
+  end
+
+  describe 'Partner reports readonly user' do
+    before do
+      sign_in partner_reports_readonly
+    end
+
+    context '#index' do
+      let(:team0) { create(:team) }
+      let(:team1) { create(:team) }
+      let!(:sp0) do
+        create(:service_provider,
+                        :ready_to_activate,
+                        team: team0,
+                        issuer: issuer0)
+      end
+      let!(:sp1) do
+        create(:service_provider,
+                        :ready_to_activate,
+                        team: team1,
+                        issuer: issuer)
+      end
+
+      before do
+        create(:team_membership,
+          :partner_reports_readonly,
+          user: partner_reports_readonly,
+          team: team0)
+      end
+
+      it 'has GET access' do
+        get :index
+        expect(response).to be_ok
+      end
+
+      it 'returns all teams with configs where partner has permissions' do
+        get :index
+        teams = assigns(:teams)
+        expect(teams).to eq([team0])
+      end
+
+      it 'returns all apps with reports where partner has permissions' do
+        get :index
+        apps = assigns(:available_service_providers)
+        expect(apps).to eq([sp0])
       end
     end
   end

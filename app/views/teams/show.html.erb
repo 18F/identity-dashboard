@@ -39,10 +39,15 @@
 
 <h2>Configurations: (<%= @team.service_providers.count %>)</h2>
 <ul class="font-mono-xs margin-top-0 usa-list usa-list--unstyled">
-  <% @team.service_providers.each do |a| %>
-    <li><%= link_to a.friendly_name,
-      service_provider_path(a),
-      { class: 'usa-link' } %>
+  <% @team.service_providers.each do |app| %>
+    <li>
+      <% if policy(app).show? %>
+        <%= link_to app.friendly_name,
+          service_provider_path(app),
+          { class: 'usa-link' } %>
+      <% else %>
+        <%= app.friendly_name %>
+      <% end %>
     </li>
   <% end %>
 </ul>
