@@ -194,6 +194,11 @@ abbr.text-no-underline[title] {
   }
 }
 
+.no-tbody-highlight tbody th {
+  font-weight: inherit;
+  background-color: inherit;
+}
+
 // TODO: We'll need to revisit this when adding Highcharts
 .chart-sized {
   height: 10.5rem;
