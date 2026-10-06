@@ -50,16 +50,16 @@ module Report
         return []
       end
 
-      [[I18n.t('reports.count_newly_proofed_users'),
-        data['count_newly_proofed_users']],
-       [I18n.t('reports.count_preverified_users'),
-        data['count_preverified_users']]]
+      nil_zero_values(
+        [[I18n.t('reports.count_newly_proofed_users'), data['count_newly_proofed_users']],
+         [I18n.t('reports.count_preverified_users'), data['count_preverified_users']]],
+      )
     end
 
     def usage_data
       return [] unless data.values_at(*USAGE_KEYS).any?
 
-      as_array_with_i18n_labels(data.keys.select { |key| USAGE_KEYS.include? key })
+      nil_zero_values(as_array_with_i18n_labels(data.keys.select { |key| USAGE_KEYS.include? key }))
     end
   end
 end

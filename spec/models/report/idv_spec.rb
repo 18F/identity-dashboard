@@ -166,7 +166,7 @@ describe Report::IdV do
           ['Selfie UX Issue', 1],
           ['Identity Resolution Attribute Mismatch', 2],
           ['Phone Number Record Check Failure', 1],
-          ['Temporary Technical Issue', 0],
+          ['Temporary Technical Issue', nil],
         ],
         options: {
           title: 'Points of User Friction',
@@ -236,10 +236,10 @@ describe Report::IdV do
       expect(subject.channels_chart).to eq({
         type: :pie_chart,
         data: [
-          ['Remote Unattended', 0],
-          ['Preverified', 0],
-          ['In-Person Proofing', 0],
-          ['Physical Letter', 0],
+          ['Remote Unattended', nil],
+          ['Preverified', nil],
+          ['In-Person Proofing', nil],
+          ['Physical Letter', nil],
         ],
         options: {
           title: 'Identity Verification Channels',
@@ -287,11 +287,11 @@ describe Report::IdV do
       expect(subject.friction_chart).to eq({
         type: :bar_chart,
         data: [
-          ['Document Upload UX', 0],
-          ['Selfie UX Issue', 0],
-          ['Identity Resolution Attribute Mismatch', 0],
-          ['Phone Number Record Check Failure', 0],
-          ['Temporary Technical Issue', 0],
+          ['Document Upload UX', nil],
+          ['Selfie UX Issue', nil],
+          ['Identity Resolution Attribute Mismatch', nil],
+          ['Phone Number Record Check Failure', nil],
+          ['Temporary Technical Issue', nil],
         ],
         options: {
           title: 'Points of User Friction',
