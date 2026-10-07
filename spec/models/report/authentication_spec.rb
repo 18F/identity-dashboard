@@ -50,10 +50,10 @@ describe Report::Authentication do
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
-          colors: ['#1188ff', '#ff0000'],
           max: 100,
           suffix: '%',
         },
@@ -63,17 +63,17 @@ describe Report::Authentication do
     it 'returns a #device_type_chart of percentages, rounded' do
       expect(subject.device_type_chart).to include({
         type: :pie_chart,
-        data: [['Mobile', 3.6], ['Desktop', 96.4]],
+        data: [['Desktop', 96.4], ['Mobile', 3.6]],
       })
       expect(subject.device_type_chart[:options]).to include({
         title: 'Device Type',
         donut: true,
         suffix: '%',
-        colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
       })
       expect(subject.device_type_chart[:options][:library]).to include({
         subtitle: { align: 'left', text: 'How users accessed your service during this window' },
         accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
+        chart: { colorCount: 4, styledMode: true },
       })
     end
   end
@@ -108,10 +108,10 @@ describe Report::Authentication do
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
-          colors: ['#1188ff', '#ff0000'],
           max: 100,
           suffix: '%',
         },
@@ -126,9 +126,9 @@ describe Report::Authentication do
           title: 'Device Type',
           donut: true,
           suffix: '%',
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           library: {
             accessibility: { screenReaderSection: { beforeChartFormat: '<h2>Device Type</h2>' } },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             subtitle: { align: 'left', text: 'How users accessed your service during this window' },
             title: { align: 'left' }, yAxis: { gridLineColor: '#888', minTickInterval: 1 },

@@ -1,4 +1,4 @@
-<div class="data-graph--container">
+<div class="data-graph--container <%= @style_class %>">
   <% if data_unavailable? %>
     <p class="data-graph__title">
       <span class="data-graph__headline"><%= options[:title] %></span>

@@ -3,8 +3,18 @@ module Report
   class Base
     attr_reader :data
 
-    DEFAULT_OPTIONS = {
-      colors: ['#1188ff', '#ff0000'],
+    DEFAULT_LIBRARY_OPTIONS = {
+      chart: { styledMode: true, colorCount: 4 },
+      plotOptions: {
+        series: {
+          animation: false,
+          colorByPoint: true,
+        },
+      },
+      yAxis: {
+        gridLineColor: '#888',
+        minTickInterval: 1,
+      },
     }.freeze
 
     def initialize(reports)
@@ -36,37 +46,40 @@ module Report
     private
 
     def merge_options(chart_options)
-      chart_options[:library] || chart_options[:library] = {}
-      plot_opts = chart_options.dig(:library, :plotOptions)
+      chart_options[:library] ||= {}
+      chart_options[:library] = merge_separately(chart_options[:library], [:plotOptions, :chart]) do
+        {
+          title: { align: 'left' },
+          subtitle: {
+            align: 'left',
+            text: chart_options.delete(:subtitle),
+          },
+          caption: {
+            useHTML: true,
+            text: chart_options.delete(:caption),
+          },
+          accessibility: {
+            screenReaderSection: {
+              beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
+            },
+          },
+          **DEFAULT_LIBRARY_OPTIONS,
+        }
+      end
+      chart_options
+    end
 
-      chart_options[:library].merge!({
-        title: { align: 'left' },
-        subtitle: {
-          align: 'left',
-          text: chart_options.delete(:subtitle),
-        },
-        caption: {
-          useHTML: true,
-          text: chart_options.delete(:caption),
-        },
-        accessibility: {
-          screenReaderSection: {
-            beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
-          },
-        },
-        plotOptions: {
-          series: {
-            animation: false,
-            colorByPoint: true,
-          },
-        },
-        yAxis: {
-          gridLineColor: '#888',
-          minTickInterval: 1,
-        },
-      })
-      chart_options[:library][:plotOptions].merge!(plot_opts) if plot_opts
-      DEFAULT_OPTIONS.merge(chart_options)
+    def merge_separately(options, keys, &)
+      later_options = {}
+      keys.each do |key|
+        later_options[key] = options[key] || {}
+      end
+      result = options.merge!(yield)
+      keys.each do |key|
+        result[key] ||= {}
+        result[key] = result[key].merge(later_options[key])
+      end
+      result
     end
   end
 end

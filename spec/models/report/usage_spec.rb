@@ -38,7 +38,6 @@ describe Report::Usage do
            test_data['count_newly_created_accounts']],
         ],
         options: {
-          colors: ['#18f'],
           title: 'All Active Users',
           library: {
             title: { align: 'left' },
@@ -56,6 +55,7 @@ describe Report::Usage do
                 beforeChartFormat: '<h2>All Active Users</h2>',
               },
             },
+            chart: { colorCount: 1, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -79,7 +79,6 @@ describe Report::Usage do
           [I18n.t('reports.count_preverified_users'), test_data['count_preverified_users']],
         ],
         options: {
-          colors: ['#18f'],
           title: 'Active Identity Verified Users',
           library: {
             title: { align: 'left' },
@@ -97,6 +96,7 @@ describe Report::Usage do
                 beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
               },
             },
+            chart: { colorCount: 1, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -180,7 +180,6 @@ describe Report::Usage do
           [I18n.t('reports.count_preverified_users'), 0],
         ],
         options: {
-          colors: ['#18f'],
           title: 'Active Identity Verified Users',
           library: {
             title: { align: 'left' },
@@ -198,6 +197,7 @@ describe Report::Usage do
                 beforeChartFormat: '<h2>Active Identity Verified Users</h2>',
               },
             },
+            chart: { colorCount: 1, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,

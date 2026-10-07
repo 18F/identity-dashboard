@@ -24,7 +24,6 @@ describe Report::IdV do
           ['Not Pass', 8.6],
         ],
         options: {
-          colors: ['#18f', '#e21c3d'],
           title: 'Proofing Success Rate',
           donut: true,
           suffix: '%',
@@ -46,6 +45,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Proofing Success Rate</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -69,11 +69,11 @@ describe Report::IdV do
           { name: 'Path Forward', data: [['', 92.59]] },
         ],
         options: {
-          colors: ['#e21c3d', '#18f'],
           title: 'Path to Access Rate',
           stacked: true,
           max: 100,
           suffix: '%',
+          style_class: 'data-graph__color-swapped',
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -91,6 +91,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Path to Access Rate</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -116,7 +117,6 @@ describe Report::IdV do
           ['Physical Letter', 12.0],
         ],
         options: {
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           title: 'Identity Verification Channels',
           donut: true,
           suffix: '%',
@@ -142,6 +142,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Identity Verification Channels</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -168,7 +169,6 @@ describe Report::IdV do
           ['Temporary Technical Issue', 0],
         ],
         options: {
-          colors: ['#18f', '#e21c3d'],
           title: 'Points of User Friction',
           library: {
             title: { align: 'left' },
@@ -188,6 +188,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Points of User Friction</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -241,7 +242,6 @@ describe Report::IdV do
           ['Physical Letter', 0],
         ],
         options: {
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           title: 'Identity Verification Channels',
           donut: true,
           suffix: '%',
@@ -267,6 +267,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Identity Verification Channels</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -293,7 +294,6 @@ describe Report::IdV do
           ['Temporary Technical Issue', 0],
         ],
         options: {
-          colors: ['#18f', '#e21c3d'],
           title: 'Points of User Friction',
           library: {
             title: { align: 'left' },
@@ -313,6 +313,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Points of User Friction</h2>',
               },
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,

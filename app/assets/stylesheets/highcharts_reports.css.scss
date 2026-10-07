@@ -1,0 +1,15 @@
+@use '../../../node_modules/highcharts/css/highcharts';
+
+:root {
+  --highcharts-color-0: #112e51; /* $theme-color-primary-darker; */
+  --highcharts-color-1: #e21c3d; /* $theme-color-secondary; */
+  --highcharts-color-2: #e28f3c;
+  --highcharts-color-3: #0071bb; /* $theme-color-primary; */
+}
+
+.data-graph__color-swapped {
+  --highcharts-color-0: #e21c3d; /* $theme-color-secondary; */
+  --highcharts-color-1: #112e51; /* $theme-color-primary-darker; */
+  --highcharts-color-2: #0071bb; /* $theme-color-primary; */
+  --highcharts-color-3: #e28f3c;
+}
