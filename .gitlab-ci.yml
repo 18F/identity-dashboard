@@ -625,9 +625,10 @@ update_ursula_staging:
   stage: update_branches
   # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
   script:
-    - git checkout hmm/portal-613/test-stagestages/ursula
-    - git pull
+    - git fetch
+    - git checkout hmm/portal-613/test-stage/ursula
     - git merge origin/main --ff-only
+    - git remote --verbose
     - git push -u origin
 
 update_ursula_pato:
@@ -636,9 +637,11 @@ update_ursula_pato:
   stage: update_branches
   # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
   script:
+    - git remote --verbose
+    - git fetch
     - git checkout hmm/portal-613/test-stage/ursulapato
-    - git pull
     - git merge origin/main --ff-only
+    - git remote --verbose
     - git push -u origin
 
 
