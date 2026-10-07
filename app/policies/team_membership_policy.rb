@@ -47,8 +47,11 @@ class TeamMembershipPolicy < BasePolicy # :nodoc: all
 
   def roles_for_partner_team_edit
     role_options = %i[partner_developer partner_readonly]
-    role_options.push(:partner_admin) unless IdentityConfig.store.prod_like_env
-    role_options.push(:partner_reports_readonly) if IdentityConfig.store.allow_role_report_read_only
+    if IdentityConfig.store.prod_like_env
+      role_options.push(:partner_reports_readonly)
+    else
+      role_options.push(:partner_admin)
+    end
     Role.where(name: role_options)
   end
 
