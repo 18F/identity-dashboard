@@ -27,7 +27,6 @@ module Report
         options: merge_options({
           title: 'Fraudsters Blocked',
           subtitle: 'Users blocked per outcome type',
-          colors: ['#1188ff', '#ff0000'],
         }),
       }
     end
@@ -46,8 +45,7 @@ module Report
           title: 'Redress – Identity Verification',
           subtitle: 'Users who requested redress during this period',
           caption: caption,
-          # USWDS colors 'orange-warm-40v' and 'green-40v' (for now)
-          colors: ['#ff580a', '#719f2a'],
+          library: { chart: { colorCount: 1 } },
         }),
       }
     end

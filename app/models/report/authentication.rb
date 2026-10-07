@@ -16,8 +16,8 @@ module Report
     ].freeze
 
     DEVICE_PERCENTAGES = %w[
-      pct_mobile_of_auth
       pct_desktop_of_auth
+      pct_mobile_of_auth
     ].freeze
 
     def success_rate
@@ -56,7 +56,6 @@ module Report
           subtitle: 'How users accessed your service during this window',
           caption:
             'Percentage of successful sign-ins from device type, out of all successful attempts.',
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
           suffix: '%',
         }),
