@@ -778,7 +778,8 @@ describe 'users' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
         visit edit_team_user_path(team, team_member)
         input_item_strings = find_all(:xpath, '//li[.//input]').map(&:text)
-        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY, Role.find_by(name: 'partner_reports_readonly')])
+        expected_roles = (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY,
+                                      Role.find_by(name: 'partner_reports_readonly')])
         expect(input_item_strings.count).to eq(expected_roles.count)
         expected_roles.each_with_index do |role, index|
           expect(input_item_strings[index]).to include(role.friendly_name)
