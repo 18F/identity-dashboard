@@ -625,11 +625,11 @@ update_ursula_staging:
   stage: update_branches
   # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
   script:
-    - git fetch
-    - git checkout hmm/portal-613/test-stage/ursula
-    - git merge origin/main --ff-only
-    - git remote --verbose
-    - git push -u origin
+    - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
+    - git fetch ci-origin
+    - git checkout --track ci-origin/hmm/portal-613/test-stage/ursula
+    - git merge ci-origin/main --ff-only
+    - git push -u ci-origin
 
 update_ursula_pato:
   # rules:
@@ -637,12 +637,11 @@ update_ursula_pato:
   stage: update_branches
   # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
   script:
-    - git remote --verbose
-    - git fetch
-    - git checkout hmm/portal-613/test-stage/ursulapato
-    - git merge origin/main --ff-only
-    - git remote --verbose
-    - git push -u origin
+    - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
+    - git fetch ci-origin
+    - git checkout --track ci-origin/hmm/portal-613/test-stage/ursulapato
+    - git merge ci-origin/main --ff-only
+    - git push -u ci-origin
 
 
 ## Scheduled/auditing tasks
