@@ -627,7 +627,7 @@ update_ursula_staging:
   script:
     - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
     - git fetch ci-origin
-    - git checkout --track ci-origin/hmm/portal-613/test-stage/ursula
+    - git checkout --track ci-origin/stages/ursula
     - git merge ci-origin/main --ff-only
     - git push -u ci-origin
 
@@ -639,7 +639,7 @@ update_ursula_pato:
   script:
     - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
     - git fetch ci-origin
-    - git checkout --track ci-origin/hmm/portal-613/test-stage/ursulapato
+    - git checkout --track ci-origin/stages/ursulapato
     - git merge ci-origin/main --ff-only
     - git push -u ci-origin
 
