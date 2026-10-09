@@ -6,6 +6,8 @@ An admin dashboard for the Identity project.
 
 These instructions assume [`identity-idp`](https://github.com/18F/identity-idp) is also running locally at `http://localhost:3000`. This dashboard is configured to run on `http://localhost:3001`.
 
+You will need at least v22 of Node.js to build the assets locally. The latest long-term stable release of v24 should also work.
+
 1. Make sure Postgres is running. For example, on macOS:
 
   ```
