@@ -68,6 +68,7 @@ stages:
   - review
   - scan
   - deploy_eks
+  - update_branches
 
 workflow:
   rules:
@@ -616,6 +617,32 @@ deploy_eks:
     IMAGE_TAG: $CI_COMMIT_SHA
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+# Update Ursula and UrsulaPATO branches on successful merge to main
+update_ursula_staging:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  stage: update_branches
+  # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
+  script:
+    - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
+    - git fetch ci-origin
+    - git checkout --track ci-origin/stages/ursula
+    - git merge ci-origin/main --ff-only
+    - git push -u ci-origin
+
+update_ursula_pato:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  stage: update_branches
+  # If `needs` keyword is omitted, this should run if and only if the previous stage succeeds
+  script:
+    - git remote add ci-origin https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg/identity-dashboard.git
+    - git fetch ci-origin
+    - git checkout --track ci-origin/stages/ursulapato
+    - git merge ci-origin/main --ff-only
+    - git push -u ci-origin
+
 
 ## Scheduled/auditing tasks
 
