@@ -45,9 +45,11 @@ class SalesforceService
   def partner_admin_for_team?(team_uuid, email)
     return false if email.blank?
 
-    contacts_for_team(team_uuid).any? do |record|
+    is_admin = contacts_for_team(team_uuid).any? do |record|
       record[EMAIL_FIELD]&.casecmp?(email) && record[PARTNER_PORTAL_ADMIN_FIELD]
     end
+    log_locally { "Salesforce partner admin check for #{email} on team #{team_uuid}: #{is_admin}" }
+    is_admin
   end
 
   private
@@ -75,6 +77,9 @@ class SalesforceService
       req.headers['Authorization'] = "Bearer #{token}"
       req.params['q'] = soql
     end
+    log_locally do
+      "Salesforce query: #{soql}\nSalesforce response (HTTP #{resp.status}): #{resp.body}"
+    end
     parsed = JSON.parse(resp.body)
 
     # Query errors come back as a JSON array of objects, not a hash.
@@ -82,6 +87,11 @@ class SalesforceService
       resp.status == 200
 
     parsed
+  end
+
+  # Logged data includes contact names and emails, so this stays local-only.
+  def log_locally(&)
+    Rails.logger.debug(&) if Rails.env.development?
   end
 
   def query_error_detail(parsed)
