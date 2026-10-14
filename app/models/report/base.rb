@@ -3,6 +3,8 @@ module Report
   class Base
     attr_reader :data
 
+    # These are "library" options, because they're Highcharts-specific and Hicharts is
+    # the library we're using with Chartkick.
     DEFAULT_LIBRARY_OPTIONS = {
       chart: { styledMode: true, colorCount: 4 },
       plotOptions: {
@@ -16,6 +18,11 @@ module Report
         minTickInterval: 1,
       },
     }.freeze
+
+    # These are Highcharts-specific options that we regularly need to override for specific charts.
+    # If we're overriding them, the overrides need to be preserved and then merged in after
+    # applying the `DEFAULT_LIBRAY_OPTIONS` above.
+    LIBRARY_MERGE_KEYS = %i[chart plotOptions].freeze
 
     def initialize(reports)
       @data = reports.data
@@ -45,41 +52,33 @@ module Report
 
     private
 
-    def merge_options(chart_options)
-      chart_options[:library] ||= {}
-      chart_options[:library] = merge_separately(chart_options[:library], [:plotOptions, :chart]) do
-        {
-          title: { align: 'left' },
-          subtitle: {
-            align: 'left',
-            text: chart_options.delete(:subtitle),
-          },
-          caption: {
-            useHTML: true,
-            text: chart_options.delete(:caption),
-          },
-          accessibility: {
-            screenReaderSection: {
-              beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
-            },
-          },
-          **DEFAULT_LIBRARY_OPTIONS,
-        }
-      end
-      chart_options
-    end
+    def merge_options(options)
+      options[:library] ||= {}
+      starting_library = options[:library].dup
 
-    def merge_separately(options, keys, &)
-      later_options = {}
-      keys.each do |key|
-        later_options[key] = options[key] || {}
+      options[:library].merge!({
+        title: { align: 'left' },
+        subtitle: {
+          align: 'left',
+          text: options.delete(:subtitle),
+        },
+        caption: {
+          useHTML: true,
+          text: options.delete(:caption),
+        },
+        accessibility: {
+          screenReaderSection: {
+            beforeChartFormat: "<h2>#{options[:title]}</h2>",
+          },
+        },
+        **DEFAULT_LIBRARY_OPTIONS,
+      })
+
+      LIBRARY_MERGE_KEYS.each do |key|
+        options[:library][key] = options[:library][key].merge(starting_library[key] || {})
       end
-      result = options.merge!(yield)
-      keys.each do |key|
-        result[key] ||= {}
-        result[key] = result[key].merge(later_options[key])
-      end
-      result
+
+      options
     end
   end
 end
