@@ -236,10 +236,11 @@ describe 'reporting feature basics' do
             expect(page).to have_content('2025-12-01')
             expect(find_all('svg').count).to eq(2)
             expect(page).to_not have_content('No data')
+            expect(page).to_not have_content('not available')
           end
 
           it 'displays additional data' do
-            expect(page.text).to match(/successful authentications\s*1,029/i)
+            expect(page).to have_content(/successful authentications\s*1,029/i)
           end
         end
 
