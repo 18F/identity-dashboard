@@ -317,9 +317,10 @@ describe 'users' do
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
       allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
       allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+      allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
     end
 
-    it 'holds the user for confirmation, then adds them once confirmed' do
+    it 'holds an unverified user for confirmation, then adds them once confirmed' do
       add_team_user(
         new_team, email: new_email, role_friendly_name: partner_admin_role.friendly_name
       )

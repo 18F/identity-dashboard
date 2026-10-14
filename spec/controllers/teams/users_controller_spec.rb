@@ -278,6 +278,26 @@ describe Teams::UsersController do
               expect(saved_emails).to include('dev@gsa.gov', 'admin@gsa.gov')
             end
           end
+
+          context 'when a verified partner admin is added to a team without service providers' do
+            before do
+              allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+              allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+              salesforce_double = instance_double(SalesforceService)
+              allow(SalesforceService).to receive(:new).and_return(salesforce_double)
+              allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(true)
+            end
+
+            it 'saves the user without confirmation' do
+              post :create, params: {
+                team_id: team.id,
+                users: [{ email: 'admin@gsa.gov', role_name: 'partner_admin' }],
+              }
+
+              expect(response).to redirect_to(team_users_path(team))
+              expect(team.reload.users.map(&:email)).to include('admin@gsa.gov')
+            end
+          end
         end
       end
 
