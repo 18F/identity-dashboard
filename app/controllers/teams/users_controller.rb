@@ -326,8 +326,6 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def partner_admin_not_verified?(email)
-    return true if team.service_providers.empty?
-
     !verified_partner_admin?(email.downcase)
   end
 
