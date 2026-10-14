@@ -287,6 +287,8 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def verified_partner_admin_in_airtable?(email)
+    return false if team.service_providers.empty?
+
     airtable_api = Airtable.new(current_user.uuid)
     airtable_api.refresh_token_if_needed(request)
     issuers = []
