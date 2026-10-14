@@ -1,7 +1,7 @@
 # This class encapsulates the boilerplate and standard styling we want around most Chartkick charts
 class ChartComponent < ViewComponent::Base
   # Chartkick is very good about this module only including the chart type methods
-  attr_reader :type, :data, :subtitle, :description, :options
+  attr_reader :type, :data, :subtitle, :description, :style_class, :options
 
   # @param type [Symbol|String] a valid Chartkick chart type
   # @param data data appropriate for the Chartkick chart type chosen.
@@ -18,6 +18,7 @@ class ChartComponent < ViewComponent::Base
   def initialize(type:, data:, options:)
     (@type, @data, @options) = [type, data, options]
     @description = options.delete(:description)
+    @style_class = options.delete(:style_class)
   end
 
   def data_unavailable?

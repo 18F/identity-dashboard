@@ -26,7 +26,6 @@ module Report
             'during this window',
           caption: 'Percentage of users who successfully completed identity verification ' \
             'credentials out of total users attempting, controlling for fraud and abandonment.',
-          colors: ['#18f', '#e21c3d'],
           donut: true,
           suffix: '%',
         }),
@@ -44,9 +43,9 @@ module Report
           caption: 'This is counting 1 - (users who dead-ended / users who attempted). It ' \
             "shows, out of all users who attempted, who weren't dead-ended.",
           stacked: true,
+          style_class: 'data-graph__color-swapped',
           max: 100,
           suffix: '%',
-          colors: ['#e21c3d', '#18f'],
           library: {
             plotOptions: {
               series: {
@@ -74,7 +73,6 @@ module Report
 'verification.<br/>
 <b>• Physical Letter</b>: users who completed their address verification through receiving a ' \
 'letter from the Post Office.',
-          colors: ['#18f', '#e21c3d', '#f09436', '#40892d'],
           donut: true,
           suffix: '%',
         }),
@@ -92,7 +90,7 @@ module Report
           caption: 'Counts represent users who hit given friction points across document ' \
             'authentication, identity resolution, and address verification steps and did not ' \
             'get past the block in the reporting window.',
-          colors: ['#18f', '#e21c3d'],
+          library: { chart: { colorCount: 4 } },
         }),
       }
     end

@@ -37,7 +37,6 @@ describe Report::Fraud do
         ['Suspicious Phone', test_data['count_suspicious_phone']],
       ],
       options: {
-        colors: ['#1188ff', '#ff0000'],
         title: 'Fraudsters Blocked',
         library: {
           title: { align: 'left' },
@@ -54,6 +53,7 @@ describe Report::Fraud do
             useHTML: true,
             text: nil,
           },
+          chart: { colorCount: 4, styledMode: true },
           plotOptions: {
             series: {
               animation: false,
@@ -77,7 +77,6 @@ describe Report::Fraud do
         ['Adjudicated as Legitimate', test_data['count_pass_via_lg99']],
       ],
       options: {
-        colors: ['#ff580a', '#719f2a'],
         title: 'Redress – Identity Verification',
         library: {
           title: { align: 'left' },
@@ -95,6 +94,7 @@ describe Report::Fraud do
               beforeChartFormat: '<h2>Redress – Identity Verification</h2>',
             },
           },
+          chart: { colorCount: 1, styledMode: true },
           plotOptions: {
             series: {
               animation: false,
@@ -141,7 +141,6 @@ describe Report::Fraud do
         data: [],
         options: {
           title: 'Fraudsters Blocked',
-          colors: ['#1188ff', '#ff0000'],
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -157,6 +156,7 @@ describe Report::Fraud do
               useHTML: true,
               text: nil,
             },
+            chart: { colorCount: 4, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -178,7 +178,6 @@ describe Report::Fraud do
         data: [],
         options: {
           title: 'Redress – Identity Verification',
-          colors: ['#ff580a', '#719f2a'],
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -194,6 +193,7 @@ describe Report::Fraud do
               useHTML: true,
               text: nil,
             },
+            chart: { colorCount: 1, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,

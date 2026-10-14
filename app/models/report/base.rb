@@ -3,9 +3,26 @@ module Report
   class Base
     attr_reader :data
 
-    DEFAULT_OPTIONS = {
-      colors: ['#1188ff', '#ff0000'],
+    # These are "library" options, because they're Highcharts-specific and Hicharts is
+    # the library we're using with Chartkick.
+    DEFAULT_LIBRARY_OPTIONS = {
+      chart: { styledMode: true, colorCount: 4 },
+      plotOptions: {
+        series: {
+          animation: false,
+          colorByPoint: true,
+        },
+      },
+      yAxis: {
+        gridLineColor: '#888',
+        minTickInterval: 1,
+      },
     }.freeze
+
+    # These are Highcharts-specific options that we regularly need to override for specific charts.
+    # If we're overriding them, the overrides need to be preserved and then merged in after
+    # applying the `DEFAULT_LIBRAY_OPTIONS` above.
+    LIBRARY_MERGE_KEYS = %i[chart plotOptions].freeze
 
     def initialize(reports)
       @data = reports.data
@@ -35,38 +52,33 @@ module Report
 
     private
 
-    def merge_options(chart_options)
-      chart_options[:library] || chart_options[:library] = {}
-      plot_opts = chart_options.dig(:library, :plotOptions)
+    def merge_options(options)
+      options[:library] ||= {}
+      starting_library = options[:library].dup
 
-      chart_options[:library].merge!({
+      options[:library].merge!({
         title: { align: 'left' },
         subtitle: {
           align: 'left',
-          text: chart_options.delete(:subtitle),
+          text: options.delete(:subtitle),
         },
         caption: {
           useHTML: true,
-          text: chart_options.delete(:caption),
+          text: options.delete(:caption),
         },
         accessibility: {
           screenReaderSection: {
-            beforeChartFormat: "<h2>#{chart_options[:title]}</h2>",
+            beforeChartFormat: "<h2>#{options[:title]}</h2>",
           },
         },
-        plotOptions: {
-          series: {
-            animation: false,
-            colorByPoint: true,
-          },
-        },
-        yAxis: {
-          gridLineColor: '#888',
-          minTickInterval: 1,
-        },
+        **DEFAULT_LIBRARY_OPTIONS,
       })
-      chart_options[:library][:plotOptions].merge!(plot_opts) if plot_opts
-      DEFAULT_OPTIONS.merge(chart_options)
+
+      LIBRARY_MERGE_KEYS.each do |key|
+        options[:library][key] = options[:library][key].merge(starting_library[key] || {})
+      end
+
+      options
     end
   end
 end

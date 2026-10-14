@@ -236,10 +236,11 @@ describe 'reporting feature basics' do
             expect(page).to have_content('2025-12-01')
             expect(find_all('svg').count).to eq(2)
             expect(page).to_not have_content('No data')
+            expect(page).to_not have_content('not available')
           end
 
           it 'displays additional data' do
-            expect(page.text).to match(/successful authentications\s*1,029/i)
+            expect(page).to have_content(/successful authentications\s*1,029/i)
           end
         end
 
@@ -292,14 +293,21 @@ describe 'reporting feature basics' do
           expect(channels_title).to eq('Identity Verification Channels')
           expect(friction_title).to eq('Points of User Friction')
 
-          proofing_success_labels = proofing_success.find_all('text > tspan')
-          access_path_labels = access_path.find_all('text')
-          channels_labels = channels.find_all('text > tspan')
+          channels_labels = channels.find_all('.highcharts-data-label')
+          proofing_success_labels = proofing_success.find_all('.highcharts-data-label')
           friction_labels = friction.find_all('.highcharts-xaxis-labels > text')
 
+          # Labels on stacked bar charts are different:
+          # * It has `.highcharts-data-label`s but they're hidden by default
+          # * Selecting hidden SVG elements often completely breaks
+          # * In theory we could hover over each bar to show the hidden ones
+          # * Selecting the correct bar and hovering over it in Capybara is messy
+          # * It's easiest to look for the legend label text instead
+          access_path_labels = access_path.find_all('.highcharts-legend-item')
+
           expect(proofing_success_labels.map(&:text)).to eq(['Pass', 'Not Pass'])
-          expect(access_path_labels[2].text).to eq('Dead End')
-          expect(access_path_labels[3].text).to eq('Path Forward')
+          expect(access_path_labels[0].text).to eq('Dead End')
+          expect(access_path_labels[1].text).to eq('Path Forward')
           expect(channels_labels.map(&:text)).to eq([
                                                       'Remote Unattended',
                                                       'Preverified',
@@ -309,11 +317,11 @@ describe 'reporting feature basics' do
           friction_text = friction_labels.map(&:text)
 
           expect(friction_text[0]).to eq('Document Upload UX')
-          expect(friction_text[1]).to eq('Selfie UX Issue')
-          # This sometimes has a non-breaking space
-          expect(friction_text[2]).to match(/Identity\sResolution\sAttribute\s?Mismatch/)
-          expect(friction_text[3]).to eq('Phone Number Record Check Failure')
-          expect(friction_text[4]).to eq('Temporary Technical Issue')
+          expect(friction_text[1]).to eq('Temporary Technical Issue')
+          expect(friction_text[2]).to eq('Selfie UX Issue')
+          # These sometime have a zero-width space. It varies based on the chromdriver window size
+          expect(friction_text[3]).to match(/Identity\sResolution\sAttribute\s?Mismatch/)
+          expect(friction_text[4]).to match(/Phone Number Record Check\s?Failure/)
         end
 
         it 'can show Authentication tab data', :js do
@@ -335,18 +343,18 @@ describe 'reporting feature basics' do
           expect(device_title).to eq('Device Type')
           expect(mfa_title).to eq('Multi-Factor Authentication (MFA) Type')
 
-          device_labels = device_chart.find_all('text > tspan')
+          device_labels = device_chart.find_all('.highcharts-data-label')
           mfa_y_labels = mfa_chart.find('.highcharts-xaxis-labels').find_all('text')
-          expect(device_labels.map(&:text)).to eq(['Mobile', 'Desktop'])
+          expect(device_labels.map(&:text)).to eq(['Desktop', 'Mobile'])
           expect(mfa_y_labels.map(&:text)).to eq([
                                                    'Face / Touch',
+                                                   'Personal Key',
                                                    'Authenticator App',
                                                    'PIV / CAC',
                                                    'SMS',
                                                    'Voice',
                                                    'Backup Code',
                                                    'Security Key',
-                                                   'Personal Key',
                                                  ])
         end
       end
