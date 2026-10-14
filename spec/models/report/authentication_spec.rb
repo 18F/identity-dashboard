@@ -32,10 +32,10 @@ describe Report::Authentication do
           ['Authenticator App', 75.61],
           ['PIV / CAC', 0.68],
           ['SMS', 7.09],
-          ['Voice', 0.0],
+          ['Voice', nil],
           ['Backup Code', 0.39],
-          ['Security Key', 0.0],
-          ['Personal Key', 0.0],
+          ['Security Key', nil],
+          ['Personal Key', nil],
         ],
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
