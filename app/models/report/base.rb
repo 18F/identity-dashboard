@@ -37,13 +37,7 @@ module Report
     end
 
     def as_array_with_i18n_labels(keys = nil)
-      keys ||= data.keys
-      keys.each_with_object([]) do |key, results|
-        next unless I18n.exists?("reports.#{key}")
-
-        label = I18n.t("reports.#{key}")
-        results.push([label, data[key]])
-      end
+      labeled_keys(keys).map { |key| [I18n.t("reports.#{key}"), data[key]] }
     end
 
     def rounded_percentage(float)
@@ -62,6 +56,10 @@ module Report
     end
 
     private
+
+    def labeled_keys(keys = nil)
+      (keys || data.keys).select { |key| I18n.exists?("reports.#{key}") }
+    end
 
     def merge_options(options)
       options[:library] ||= {}
