@@ -10,6 +10,7 @@ class ToolPolicy < BasePolicy # :nodoc:
   def in_team?
     return false unless record.present?
 
-    record.team.users.include?(user)
+    membership = record.team.team_memberships.find_by(user:)
+    membership && membership.role_name != 'partner_reports_readonly'
   end
 end
