@@ -92,6 +92,7 @@ describe Report::IdV do
               },
             },
             chart: { colorCount: 4, styledMode: true },
+            legend: { reversed: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -170,6 +171,7 @@ describe Report::IdV do
         ],
         options: {
           title: 'Points of User Friction',
+          style_class: 'data-graph__color-reduced',
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -188,7 +190,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Points of User Friction</h2>',
               },
             },
-            chart: { colorCount: 4, styledMode: true },
+            chart: { colorCount: 2, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -295,6 +297,7 @@ describe Report::IdV do
         ],
         options: {
           title: 'Points of User Friction',
+          style_class: 'data-graph__color-reduced',
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -313,7 +316,7 @@ describe Report::IdV do
                 beforeChartFormat: '<h2>Points of User Friction</h2>',
               },
             },
-            chart: { colorCount: 4, styledMode: true },
+            chart: { colorCount: 2, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,

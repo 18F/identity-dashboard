@@ -26,7 +26,9 @@ module Report
         data: fraud_data,
         options: merge_options({
           title: 'Fraudsters Blocked',
+          style_class: 'data-graph__color-reduced',
           subtitle: 'Users blocked per outcome type',
+          library: { chart: { colorCount: 2 } },
         }),
       }
     end

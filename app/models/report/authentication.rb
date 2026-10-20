@@ -39,10 +39,12 @@ module Report
         options: merge_options(
           title: 'Multi-Factor Authentication (MFA) Type',
           subtitle: 'How users authenticated during this window',
+          style_class: 'data-graph__color-reduced',
           caption: 'Percentage of successful sign-ins from MFA type, ' \
             'out of all successful attempts.',
           max: 100,
           suffix: '%',
+          library: { chart: { colorCount: 2 } },
         ),
       }
     end
