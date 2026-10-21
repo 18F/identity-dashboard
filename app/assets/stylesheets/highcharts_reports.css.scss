@@ -1,3 +1,4 @@
+@use 'uswds-core' as *;
 @use '../../../node_modules/highcharts/css/highcharts';
 
 :root {
@@ -5,6 +6,13 @@
   --highcharts-color-1: #e21c3d; /* $theme-color-secondary; */
   --highcharts-color-2: #e28f3c;
   --highcharts-color-3: #0071bb; /* $theme-color-primary; */
+  --highcharts-neutral-color-60: #4f4f4f; /* chart subtitle color */
+  --highcharts-neutral-color-80: #454545; /* chart text color */
+}
+
+.highcharts-container {
+  font-family: font-family('sans');
+  color-scheme: light;
 }
 
 .data-graph__color-swapped {
