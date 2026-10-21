@@ -96,6 +96,22 @@ describe Reports do
       end
     end
 
+    it 'excludes last month before the turnover day' do
+      travel_to Date.new(2026, 3, 3) do
+        expect(described_class.monthly_dates_since(Date.new(2026, 1, 1))).to eq(
+          %w[2026-01-01],
+        )
+      end
+    end
+
+    it 'includes last month on the turnover day' do
+      travel_to Date.new(2026, 3, 4) do
+        expect(described_class.monthly_dates_since(Date.new(2026, 1, 1))).to eq(
+          %w[2026-02-01 2026-01-01],
+        )
+      end
+    end
+
     it 'returns an empty array when start_date is after the current month' do
       travel_to Date.new(2026, 3, 15) do
         expect(described_class.monthly_dates_since(Date.new(2026, 4, 1))).to eq([])
