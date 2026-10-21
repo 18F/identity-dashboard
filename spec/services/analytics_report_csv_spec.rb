@@ -73,6 +73,20 @@ describe AnalyticsReportCsv do
       )
     end
 
+    context 'when a metric has no description' do
+      before do
+        I18n.backend.eager_load!
+        I18n.backend.store_translations(:en, reports: { descriptions: { count_active_users: nil } })
+      end
+
+      after { I18n.reload! }
+
+      it 'leaves the description blank' do
+        csv = CSV.parse(exported_csv)
+        expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '', '143', ''])
+      end
+    end
+
     it 'only outputs headers with blank data' do
       blank_report = Reports.new(Analytic.new)
       blank_subject = described_class.new(blank_report)

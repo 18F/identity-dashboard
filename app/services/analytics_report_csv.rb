@@ -34,7 +34,7 @@ class AnalyticsReportCsv < Report::Base
 
     CSV.generate(headers: true) do |csv|
       csv << HEADER_ROW
-      csv << ['Start Date', description('period_date_id'), '', monthly_start_date, '']
+      csv << ['Start Date', description('start_date'), '', monthly_start_date, '']
       labeled_keys.each do |key|
         csv << [I18n.t("reports.#{key}"), description(key), '', data[key], '']
       end

@@ -238,8 +238,9 @@ en:
     pct_proofing_success: Overall Proofing Success Rate
     # General
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
+    # Descriptions are set to match https://docs.google.com/spreadsheets/d/1oWjzz0CwqSJYa6eARZcc3bhOJCSN43o5/edit?gid=1819238353#gid=1819238353
     descriptions:
-      period_date_id: First day of the reporting month
+      start_date: First day of the reporting month
       # Usage
       count_active_users: Total number of users that accessed services via Login.gov
       count_authentications: Total number of successful authentications
