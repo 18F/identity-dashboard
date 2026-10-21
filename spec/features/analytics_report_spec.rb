@@ -303,8 +303,8 @@ describe 'reporting feature basics' do
           access_path_labels = access_path.find_all('.highcharts-legend-item')
 
           expect(proofing_success_labels.map(&:text)).to eq(['Pass', 'Not Pass'])
-          expect(access_path_labels[0].text).to eq('Dead End')
-          expect(access_path_labels[1].text).to eq('Path Forward')
+          expect(access_path_labels[0].text).to eq('Path Forward')
+          expect(access_path_labels[1].text).to eq('Dead End')
           expect(channels_labels.map(&:text)).to eq([
                                                       'Remote Unattended',
                                                       'Preverified',

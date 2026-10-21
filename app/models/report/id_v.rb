@@ -47,6 +47,9 @@ module Report
           max: 100,
           suffix: '%',
           library: {
+            # For some reason, the legend in Highcharts for stacked horizontal bar charts defaults
+            # to the opposite direction in which the bars are stacked.
+            legend: { reversed: true },
             plotOptions: {
               series: {
                 animation: false,
@@ -85,12 +88,13 @@ module Report
         data: friction_data,
         options: merge_options({
           title: 'Points of User Friction',
+          style_class: 'data-graph__color-reduced',
           subtitle: 'Where users experienced the most difficulty completing verification during ' \
             'this window',
           caption: 'Counts represent users who hit given friction points across document ' \
             'authentication, identity resolution, and address verification steps and did not ' \
             'get past the block in the reporting window.',
-          library: { chart: { colorCount: 4 } },
+          library: { chart: { colorCount: 2 } },
         }),
       }
     end

@@ -38,6 +38,7 @@ describe Report::Fraud do
       ],
       options: {
         title: 'Fraudsters Blocked',
+        style_class: 'data-graph__color-reduced',
         library: {
           title: { align: 'left' },
           subtitle: {
@@ -53,7 +54,7 @@ describe Report::Fraud do
             useHTML: true,
             text: nil,
           },
-          chart: { colorCount: 4, styledMode: true },
+          chart: { colorCount: 2, styledMode: true },
           plotOptions: {
             series: {
               animation: false,
@@ -141,6 +142,7 @@ describe Report::Fraud do
         data: [],
         options: {
           title: 'Fraudsters Blocked',
+          style_class: 'data-graph__color-reduced',
           library: {
             title: { align: 'left' },
             subtitle: {
@@ -156,7 +158,7 @@ describe Report::Fraud do
               useHTML: true,
               text: nil,
             },
-            chart: { colorCount: 4, styledMode: true },
+            chart: { colorCount: 2, styledMode: true },
             plotOptions: {
               series: {
                 animation: false,

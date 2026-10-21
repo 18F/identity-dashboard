@@ -15,9 +15,15 @@
   color-scheme: light;
 }
 
-.data-graph__color-swapped {
-  --highcharts-color-0: #e21c3d; /* $theme-color-secondary; */
-  --highcharts-color-1: #112e51; /* $theme-color-primary-darker; */
-  --highcharts-color-2: #0071bb; /* $theme-color-primary; */
-  --highcharts-color-3: #e28f3c;
+.data-graph {
+  &__color-swapped {
+    --highcharts-color-0: #e21c3d; /* $theme-color-secondary; */
+    --highcharts-color-1: #112e51; /* $theme-color-primary-darker; */
+    --highcharts-color-2: #0071bb; /* $theme-color-primary; */
+    --highcharts-color-3: #e28f3c;
+  }
+  &__color-reduced {
+    --highcharts-color-0: #112e51; /* $theme-color-primary-darker; */
+    --highcharts-color-1: #0071bb; /* $theme-color-primary; */
+  }
 }

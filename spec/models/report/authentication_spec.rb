@@ -39,6 +39,7 @@ describe Report::Authentication do
         ],
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
+          style_class: 'data-graph__color-reduced',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',
@@ -50,7 +51,7 @@ describe Report::Authentication do
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
-            chart: { colorCount: 4, styledMode: true },
+            chart: { colorCount: 2, styledMode: true },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
@@ -97,6 +98,7 @@ describe Report::Authentication do
         data: [],
         options: {
           title: 'Multi-Factor Authentication (MFA) Type',
+          style_class: 'data-graph__color-reduced',
           library: {
             accessibility: { screenReaderSection: {
               beforeChartFormat: '<h2>Multi-Factor Authentication (MFA) Type</h2>',
@@ -108,7 +110,7 @@ describe Report::Authentication do
               text: 'Percentage of successful sign-ins from MFA type' \
                 ', out of all successful attempts.',
             },
-            chart: { colorCount: 4, styledMode: true },
+            chart: { colorCount: 2, styledMode: true },
             plotOptions: { series: { animation: false, colorByPoint: true } },
             yAxis: { gridLineColor: '#888', minTickInterval: 1 },
           },
