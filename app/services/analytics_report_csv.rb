@@ -1,6 +1,6 @@
 # Creates and renders a CSV of Analytics data for an Issuer by Month
 class AnalyticsReportCsv < Report::Base
-  HEADER_ROW = ['', 'Quarterly', 'Monthly', 'Weekly'].freeze
+  HEADER_ROW = ['', 'Description', 'Quarterly', 'Monthly', 'Weekly'].freeze
   attr_reader :report_data
 
   def initialize(report_data)
@@ -34,10 +34,14 @@ class AnalyticsReportCsv < Report::Base
 
     CSV.generate(headers: true) do |csv|
       csv << HEADER_ROW
-      csv << ['Start Date', '', monthly_start_date, '']
-      as_array_with_i18n_labels.each do |arr|
-        csv << [arr[0], '', arr[1], '']
+      csv << ['Start Date', description('start_date'), '', monthly_start_date, '']
+      labeled_keys.each do |key|
+        csv << [I18n.t("reports.#{key}"), description(key), '', data[key], '']
       end
     end
+  end
+
+  def description(key)
+    I18n.t("reports.descriptions.#{key}", default: '')
   end
 end

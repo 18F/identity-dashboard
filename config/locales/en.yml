@@ -238,6 +238,56 @@ en:
     pct_proofing_success: Overall Proofing Success Rate
     # General
     info_alert: The report is not representative of billed usage. For billing details refer to the monthly invoice.
+    # Descriptions are set to match https://docs.google.com/spreadsheets/d/1oWjzz0CwqSJYa6eARZcc3bhOJCSN43o5/edit?gid=1819238353#gid=1819238353
+    descriptions:
+      start_date: First day of the reporting month
+      # Usage
+      count_active_users: Total number of users that accessed services via Login.gov
+      count_authentications: Total number of successful authentications
+      count_existing_accounts: Number of existing accounts that were active
+      count_identity_verified_users: Total number of identity verified users (new and preverified)
+      count_newly_created_accounts: Number of newly created user accounts
+      count_newly_proofed_users: Number of users who completed identity verification for the first time
+      count_preverified_users: Number of users who verified with another service previously and reused their proofing credentials
+      # Fraud Prevention
+      count_blocked_attempted_fraud: Number of account creation attempts blocked for suspected fraud
+      count_blocked_authentic_drivers_license: Number of attempts blocked because the ID appeared fraudulent
+      count_blocked_by_ipp_fraud: Number of users blocked during in-person proofing due to suspected fraud
+      count_blocked_identity_not_found: Number of attempts blocked because user's identity could not be verified
+      count_device_behavior_fraud_signals: Number of attempts blocked because the device's behavior signaled fraud
+      count_facial_mismatch: Number of attempts blocked because the selfie did not match the photo ID
+      count_fraud_alert: Number of attempts blocked due to triggering fraud alerts
+      count_invalid_attributes_dl_dos: Number of attempts blocked due to invalid ID information
+      count_lack_phone_ownership: Number of attempts blocked due to inability to associate the phone ownership
+      count_registered_blocked_fraud: Number of account creation attempts blocked for fraud during registration
+      count_suspicious_phone: Number of attempts blocked due to suspicious phone activity
+      count_wrong_phone_type: Number of attempts blocked because the phone type was not supported
+      count_pass_via_lg99: Number of users who passed via LG99 adjudication process
+      # Authentication
+      pct_backup_code_of_auth: Proportion of successful authentications using backup codes
+      pct_desktop_of_auth: Proportion of successful authentications performed on desktop devices
+      pct_mobile_of_auth: Proportion of successful authentications performed on mobile devices
+      pct_personal_key_of_auth: Proportion of successful authentications using personal keys
+      pct_piv_cac_of_auth: Proportion of successful authentications using PIV/CAC
+      pct_sms_of_auth: Proportion of successful authentications using SMS
+      pct_authentication_success: Authentication success rate
+      pct_account_creation_success: Account creation success rate
+      pct_totp_of_auth: Proportion of successful authentications using TOTP (Authenticator App)
+      pct_voice_of_auth: Proportion of successful authentications using voice
+      pct_webauthn_platform_of_auth: Proportion of successful authentications using WebAuthn platform (Face/Touch ID)
+      pct_webauthn_of_auth: Proportion of successful authentications using WebAuthn security keys
+      # Identity Verification
+      count_blocked_document_upload_ux: Number of users who experienced friction during the document upload step and did not complete identity verification afterward
+      count_identity_resolution_attribute_mismatch: Number of attempts, not attributed to fraud, with attribute mismatches during identity resolution
+      count_pass_ipp: Number of users who passed through IPP (In-Person Proofing)
+      count_pass_online_finalization: Number of users who successfully passed online finalization
+      count_pass_via_letter: Number of users who passed address verification via letter
+      count_phone_number_record_check_failure: Number of attempts blocked due to phone number record check failure during address verification
+      count_selfie_ux: Number of attempts where the user was unable to submit a selfie of acceptable quality
+      count_skip_preverified_finalization: Number of users who skipped finalization due to being preverified
+      count_temporary_technical_issues: Number of attempts where the user was unable to complete document authentication due to a temporary technical issue
+      pct_proofing_success: Identity verification success rate
+      pct_path_to_access: Proportion of users that had a clear path to proof and did not encounter any friction points
     inputs:
       labels:
         team: Team

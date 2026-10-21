@@ -46,12 +46,45 @@ describe AnalyticsReportCsv do
     it 'outputs expected data' do
       csv = CSV.parse(exported_csv)
       expect(csv.length).to eq(45)
-      expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
-      expect(csv[1]).to eq(['Start Date', '', '2025-12-01', ''])
-      expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '143', ''])
-      expect(csv[6]).to eq(['Identity Verified Users', '', '103', ''])
-      expect(csv[29]).to eq(['Phone Number Record Check Failure', '', '1', ''])
-      expect(csv[39]).to eq(['SMS', '', '0.0709', ''])
+      expect(csv[0]).to eq(['', 'Description', 'Quarterly', 'Monthly', 'Weekly'])
+      expect(csv[1]).to eq(['Start Date', 'First day of the reporting month', '', '2025-12-01', ''])
+      expect(csv[2]).to eq(
+        [
+          'Number of Users Who Accessed Your Services',
+          'Total number of users that accessed services via Login.gov',
+          '',
+          '143',
+          '',
+        ],
+      )
+      expect(csv[6]).to eq(
+        [
+          'Identity Verified Users',
+          'Total number of identity verified users (new and preverified)',
+          '',
+          '103',
+          '',
+        ],
+      )
+      expect(csv[29][0]).to eq('Phone Number Record Check Failure')
+      expect(csv[29][3]).to eq('1')
+      expect(csv[39]).to eq(
+        ['SMS', 'Proportion of successful authentications using SMS', '', '0.0709', ''],
+      )
+    end
+
+    context 'when a metric has no description' do
+      before do
+        I18n.backend.eager_load!
+        I18n.backend.store_translations(:en, reports: { descriptions: { count_active_users: nil } })
+      end
+
+      after { I18n.reload! }
+
+      it 'leaves the description blank' do
+        csv = CSV.parse(exported_csv)
+        expect(csv[2]).to eq(['Number of Users Who Accessed Your Services', '', '', '143', ''])
+      end
     end
 
     it 'only outputs headers with blank data' do
@@ -59,7 +92,7 @@ describe AnalyticsReportCsv do
       blank_subject = described_class.new(blank_report)
       csv = CSV.parse(blank_subject.report_data_csv)
       expect(csv.length).to be(1)
-      expect(csv[0]).to eq(['', 'Quarterly', 'Monthly', 'Weekly'])
+      expect(csv[0]).to eq(['', 'Description', 'Quarterly', 'Monthly', 'Weekly'])
     end
   end
 
