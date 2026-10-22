@@ -26,11 +26,13 @@ class Reports
     AnalyticsReportStorage.list_by_issuer(issuers)
   end
 
-  # @return [Array<String>] monthly date strings (newest first) from last
-  #   month back through start_date. The current month is never included
-  #   since it hasn't completed yet and so has no report data.
+  # @return [Array<String>] monthly date strings (newest first) from the most
+  #   recently available month back through start_date. The current month is
+  #   never included since it hasn't completed yet and so has no report data.
+  #   Last month is only included on or after the configured report_turnover_day.
   def self.monthly_dates_since(start_date)
     current = Date.current.beginning_of_month.prev_month
+    current = current.prev_month if Date.current.day < IdentityConfig.store.report_turnover_day
     dates = []
     while current >= start_date
       dates << current.strftime('%F')
