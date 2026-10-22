@@ -8,8 +8,6 @@ class Reports
   include ActiveModel::Model
 
   EARLIEST_REPORT_DATE = Date.new(2025, 10, 1).freeze
-  # Day of the month on which the previous month's report becomes available
-  REPORT_TURNOVER_DAY = 4
 
   attr_reader :issuer, :chosen_date
 
@@ -31,10 +29,10 @@ class Reports
   # @return [Array<String>] monthly date strings (newest first) from the most
   #   recently available month back through start_date. The current month is
   #   never included since it hasn't completed yet and so has no report data.
-  #   Last month is only included on or after REPORT_TURNOVER_DAY.
+  #   Last month is only included on or after the configured report_turnover_day.
   def self.monthly_dates_since(start_date)
     current = Date.current.beginning_of_month.prev_month
-    current = current.prev_month if Date.current.day < REPORT_TURNOVER_DAY
+    current = current.prev_month if Date.current.day < IdentityConfig.store.report_turnover_day
     dates = []
     while current >= start_date
       dates << current.strftime('%F')

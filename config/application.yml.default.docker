@@ -13,6 +13,7 @@ production:
   dp_reaping_frequency: '10'
   newrelic_license_key: changeme
   rack_timeout_service_timeout_seconds: '15'
+  report_turnover_day: 4
   secret_key_base: changeme
   serve_static_files: 'false'
   dashboard_api_token: ['env', 'DASHBOARD_API_TOKEN']
