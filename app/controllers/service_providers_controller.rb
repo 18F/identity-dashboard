@@ -132,7 +132,7 @@ class ServiceProvidersController < AuthenticatedController
       })
     end
 
-    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
+    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each_key do |key|
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
@@ -165,7 +165,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def help_text_presenter
     @help_text_presenter ||= begin
-      if params.has_key?(:service_provider)
+      if params.key?(:service_provider)
         text_params = permitted_attributes(service_provider)[:help_text]
       end
       HelpTextPresenter.new(

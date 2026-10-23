@@ -2,8 +2,8 @@ require 'rails'
 
 # Zendesk ticket Request to deploy configuration to Production
 class ZendeskRequest
-  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
-  ZENDESK_POST_PATH = '/api/v2/requests.json'
+  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'.freeze
+  ZENDESK_POST_PATH = '/api/v2/requests.json'.freeze
 
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
