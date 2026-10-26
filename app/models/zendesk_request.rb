@@ -154,15 +154,11 @@ class ZendeskRequest
       ticket_id = response.dig('request', 'id')
       { success: true, ticket_id: ticket_id }
     else
-      errors = response.dig('details', 'base')
-      if errors
-        parsed_errors = []
-        errors.each do |e|
-          parsed_errors.push(e['description'])
-        end
-        return { success: false, errors: parsed_errors }
-      end
-      { success: false, errors: [] }
+      errors = ZendeskErrors.new(response.dig('details', 'base'))
+      return { success: false, errors: errors } if errors.any?
+
+      errors = ZendeskErrors.new([response.slice('description')])
+      { success: false, errors: errors }
     end
   end
 

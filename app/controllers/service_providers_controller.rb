@@ -140,13 +140,7 @@ class ServiceProvidersController < AuthenticatedController
 
     creation_status = zendesk_request.create_ticket(ticket_data)
 
-    if creation_status[:success] == true
-      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
-        has been created on your behalf, replies will be sent to #{current_user.email}."
-    else
-      flash[:error] =
-        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
-    end
+    flash_zendesk_status(creation_status)
     redirect_to action: 'show', id: @service_provider.id
   end
 
@@ -265,6 +259,17 @@ class ServiceProvidersController < AuthenticatedController
     end
 
     dsp
+  end
+
+  def flash_zendesk_status(creation_status)
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
+    else
+      errors = creation_status[:errors]
+      flash[:error] = helpers.wrap_in_p_tag(errors.initial_text, css_class: 'usa-alert__text') +
+                      helpers.wrap_in_p_tag(errors.remaining_text)
+    end
   end
 
   def log_change
