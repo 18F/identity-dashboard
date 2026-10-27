@@ -74,8 +74,8 @@ class ZendeskErrors
   def final_message
     return 'Please try again.' if any? && unrecoverable_errors.none?
 
-    'You can create a request manually through
-    <a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> instead.'
+    'You can create a request manually through ' \
+      '<a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> instead.'
   end
 
   private
