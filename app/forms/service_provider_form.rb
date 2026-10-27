@@ -43,6 +43,8 @@ class ServiceProviderForm < SimpleDelegator
     clear_formatting
 
     valid?
+    validates_with OidcRedirectUrisPresentValidator
+    validates_with PrivateKeyJwtCertsPresentValidator
     valid_saml_settings?
     valid_sandbox_config?
     valid_prod_config? unless current_user.logingov_admin?

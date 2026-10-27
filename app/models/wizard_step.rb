@@ -123,6 +123,8 @@ class WizardStep < ApplicationRecord
   validates_with AttributeBundleValidator, on: 'authentication'
   validates_with CertsArePemsValidator, on: 'logo_and_cert'
   validates_with SamlCertsPresentValidator, on: 'logo_and_cert'
+  validates_with PrivateKeyJwtCertsPresentValidator, on: 'logo_and_cert'
+  validates_with OidcRedirectUrisPresentValidator, on: 'redirects'
   validates_with LogoValidator, on: 'logo_and_cert'
 
   ### These should be more or less identical to IdentityValidations::ServiceProviderValidation
@@ -320,6 +322,14 @@ class WizardStep < ApplicationRecord
 
   def saml?
     get_step('protocol').identity_protocol == 'saml'
+  end
+
+  def oidc?
+    !saml?
+  end
+
+  def openid_connect_private_key_jwt?
+    get_step('protocol').identity_protocol == 'openid_connect_private_key_jwt'
   end
 
   def saml_settings_present?

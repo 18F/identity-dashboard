@@ -73,6 +73,7 @@ describe 'SamlRequest' do
 
     describe 'if there are no certs' do
       let(:cert) { '' }
+      let(:dash_sp) { create(:service_provider, certs: nil) }
 
       it 'returns false' do
         expect(subject.valid_signature).to be false

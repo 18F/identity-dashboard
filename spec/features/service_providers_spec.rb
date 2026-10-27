@@ -35,6 +35,7 @@ feature 'Service Providers CRUD' do
       check 'email'
       check 'first_name'
       check 'verified_at'
+      fill_in 'service_provider_redirect_uris', with: 'https://example.gov/auth/result'
 
       Tempfile.create(['cert', '.crt']) do |tmp|
         File.write(tmp.path, build_pem)
@@ -133,7 +134,7 @@ feature 'Service Providers CRUD' do
     scenario 'can update service provider team' do
       other_team_membershp = create(:team_membership, :partner_admin, user:)
       other_team = other_team_membershp.team
-      service_provider = create(:service_provider, team:)
+      service_provider = create(:service_provider, team:, redirect_uris: [])
 
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
@@ -146,7 +147,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
-      service_provider = create(:service_provider, team:)
+      service_provider = create(:service_provider, team:, redirect_uris: [])
 
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
@@ -254,7 +255,7 @@ feature 'Service Providers CRUD' do
     end
 
     describe 'Redirects are validated' do
-      let(:service_provider) { create(:service_provider, :saml, team:) }
+      let(:service_provider) { create(:service_provider, :saml, team:, redirect_uris: []) }
 
       before do
         visit edit_service_provider_path(service_provider)
@@ -340,7 +341,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
-      service_provider = create(:service_provider, :saml, team:)
+      service_provider = create(:service_provider, :saml, team:, redirect_uris: [])
 
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
@@ -654,6 +655,8 @@ allow_label_click: true)
                         match: :prefer_exact
       check 'email'
       check 'verified_at'
+      choose 'OpenID Connect PKCE'
+      fill_in 'service_provider_redirect_uris', with: 'https://example.gov/auth/result'
       click_on 'Create'
 
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
@@ -835,6 +838,7 @@ allow_label_click: true)
 
       let(:sp) do
         create(:service_provider,
+               :with_oidc_pkce,
                team: team,
                certs: [build_pem(serial: existing_serial)])
       end

@@ -35,7 +35,7 @@ describe ServiceProviderForm do
       mock
     end
     let(:service_provider) do
-      sp = ServiceProvider.new
+      sp = ServiceProvider.new(identity_protocol: :openid_connect_private_key_jwt)
       sp.user = current_user
       sp
     end
@@ -48,10 +48,12 @@ describe ServiceProviderForm do
       expect(service_provider.errors).to be_present
       expect(log_mock).to have_received(:sp_errors).with({
         errors:
-         { friendly_name: ["can't be blank"],
+         { certs: [I18n.t('service_provider_form.errors.certs.private_key_jwt_no_cert')],
+           friendly_name: ["can't be blank"],
            issuer:
            ["can't be blank",
             'is not formatted correctly. The issuer must be a unique string with no spaces.'],
+           redirect_uris: ["can't be blank"],
            team: ['must exist'] },
       })
     end
