@@ -44,6 +44,9 @@
           value: value,
         } %>
       <% end %>
+      <% form.object.errors.where(model_method, :blank).each do |error| %>
+        <p class="usa-error-message"><%= error.message %></p>
+      <% end %>
       <button type="button"
               id="add-redirect-uri-input"
               class="usa-button usa-button--unstyled">

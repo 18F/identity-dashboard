@@ -24,6 +24,7 @@ en:
         has_script_tag: "The logo file you uploaded (%{filename}) contains one or more script tags. Please remove all script tags and re-upload"
       certs:
         saml_no_cert: "Certificate is required for SAML"
+        private_key_jwt_no_cert: "Certificate is required for OIDC private_key_jwt"
     app_name_html: "The name of your application as it appears in the signed <a href='/documentation?destination=production/#confirm-interagency-agreement-iaa' target='_blank' class='usa-link usa-link--external'>Inter-Agency Agreement (IAA)</a> with Login.gov. Ex: DHS-CSP"
     app_name_guided_html: The application name listed in your signed <a href='/documentation?destination=production/#confirm-interagency-agreement-iaa' target='_blank' class='usa-link usa-link--external'>Inter-Agency Agreement (IAA)</a> with Login.gov. Ask your Login.gov Account Manager if you aren't sure what this is.
     friendly_name: "The name of your app that will be displayed to users when logging in. Example: DHS Customer Service Portal"

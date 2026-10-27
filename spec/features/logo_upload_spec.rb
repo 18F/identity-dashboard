@@ -12,6 +12,8 @@ feature 'Logo upload' do
       fill_in 'Issuer', with: 'urn:gov:gsa:openidconnect.profiles:sp:sso:GSA:app-prod'
       select user.teams[0].name, from: 'service_provider_group_id'
       check 'email'
+      choose 'OpenID Connect PKCE'
+      fill_in 'service_provider_redirect_uris', with: 'https://example.gov/auth/result'
     end
 
     it 'saves the logo' do

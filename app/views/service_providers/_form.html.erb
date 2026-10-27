@@ -154,7 +154,10 @@
   <%= render 'logo_upload', form: form, service_provider: service_provider %>
 
   <fieldset class="usa-fieldset" id="certificate-container">
-    <div class="usa-label">Certificates</div>
+    <div class="usa-label">
+      Certificates
+      <span class="private-key-jwt-fields"><%= t('simple_form.required.html') %></span>
+    </div>
 
     <p>
       <%= I18n.t('service_provider_form.certificate') %>
@@ -281,9 +284,9 @@ B7xxt8BVc69rHV15A0qyx77CLSj3tCx2IUXVqRs5mlvA==
                     hint: I18n.t('service_provider_form.post_idv_follow_up_url') %>
     <% end %>
     <div class="usa-hint oidc-fields">
-      <%= form.label :redirect_uris,
-                     label: 'Redirect URIs',
-                     class: 'usa-label' %>
+      <%= form.label :redirect_uris, class: 'usa-label usa-input-required' do %>
+        Redirect URIs <%= t('simple_form.required.html') %>
+      <% end %>
       <% service_provider.errors[:redirect_uris].each do |error| %>
         <span class="usa-error-message js-bundle-input-error-message">
           <%= error %>

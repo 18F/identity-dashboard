@@ -51,6 +51,10 @@ describe ServiceProvidersController do
     end
   end
   describe '#create' do
+    let(:oidc_params) do
+      { identity_protocol: 'openid_connect_pkce', redirect_uris: ['https://example.gov/auth/result'] }
+    end
+
     before do
       sign_in(user)
     end
@@ -62,6 +66,7 @@ describe ServiceProvidersController do
                          sign_up: { en: 'blank' },
                          forgot_password: { en: 'blank' } }
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
@@ -99,6 +104,7 @@ describe ServiceProvidersController do
                          sign_up: { en: sign_up_key },
                          forgot_password: { en: forgot_password_key } }
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
@@ -184,6 +190,7 @@ describe ServiceProvidersController do
                          sign_up: { en: sign_up_key },
                          forgot_password: { en: forgot_password_key } }
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
@@ -266,6 +273,7 @@ describe ServiceProvidersController do
 
       it('allows Login Admin users to set Email NameID Format') do
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
@@ -278,6 +286,7 @@ describe ServiceProvidersController do
     describe 'logging' do
       it 'logs the creation before save' do
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'log.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'Log',
@@ -294,6 +303,7 @@ describe ServiceProvidersController do
     describe 'UUID assignment' do
       it 'assigns a UUID to the service provider' do
         post :create, params: { service_provider: {
+          **oidc_params,
           issuer: 'uuid.test.issuer',
           group_id: user.teams.first.id,
           friendly_name: 'UUID Test',
@@ -563,11 +573,12 @@ describe ServiceProvidersController do
         original_filename: 'my-cert.crt',
       )
 
-      put :update, params: {
-        id: sp.id,
-        service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params },
-      }
-      expect(sp.reload.certs&.size).to equal(0)
+      expect do
+        put :update, params: {
+          id: sp.id,
+          service_provider: { issuer: sp.issuer, cert: empty_file, help_text: init_help_params },
+        }
+      end.to_not(change { sp.reload.certs })
     end
 
     it 'sends a serialized service provider to the IDP' do
