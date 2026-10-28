@@ -10,7 +10,7 @@ RSpec.describe ZendeskErrors do
       expect(subject.messages).to eq([])
     end
 
-    it 'does something' do
+    it 'returns some message in case of a failure state with no known errors' do
       expect(subject.initial_text).to eq('An unknown error occurred.')
       expect(subject.remaining_text).to eq(
         'You can create a request manually through ' \
