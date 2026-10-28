@@ -59,13 +59,6 @@ gem 'uglifier'
 gem 'view_component', '>= 4.9.0'
 gem 'wicked', '~> 2.0'
 
-group :deploy do
-  gem 'capistrano'
-  gem 'capistrano-npm'
-  gem 'capistrano-passenger'
-  gem 'capistrano-rails'
-end
-
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
