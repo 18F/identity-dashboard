@@ -15,6 +15,8 @@ module Users
     end
 
     def failure
+      return redirect_to root_path if params[:message] == 'callback_access_denied'
+
       render layout: false, file: 'public/idp_503.html', status: :service_unavailable
     end
 
