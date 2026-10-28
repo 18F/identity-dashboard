@@ -32,7 +32,7 @@ class ZendeskRequest
       placeholder: nil,
       input_type: 'select',
       options: [
-        { label: 'Ganeral public', value: 'general_public' },
+        { label: 'General public', value: 'general_public' },
         { label: 'Federal civilian employee', value: 'federal_civilian_employee' },
         { label: 'Active duty U.S. military', value: 'active_duty_u.s._military' },
         { label: 'U.S. veteran', value: 'u.s._veteran' },

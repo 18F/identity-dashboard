@@ -10,7 +10,8 @@ module ApplicationHelper # :nodoc:
     content_tag(:h1, title, class: 'usa-display')
   end
 
-  # TODO: This should be removed in favor of having an error component
+  # TODO: This should be removed in favor of having an error component for flash messages.
+  # Don't use this.
   def wrap_in_p_tag(text, css_class: nil)
     content_tag(:p, sanitize(text).html_safe, class: css_class) # rubocop:disable Rails/OutputSafety
   end

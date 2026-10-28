@@ -17,7 +17,7 @@ class ZendeskErrors
 
   # @return Boolean
   def any?
-    errors.present? && errors.any?
+    errors.present? && parsed_errors.any?
   end
 
   # @return Array
@@ -81,6 +81,6 @@ class ZendeskErrors
   private
 
   def parsed_errors
-    errors.map { |e| e['description'] }
+    errors.filter_map { |e| e['description'] }
   end
 end

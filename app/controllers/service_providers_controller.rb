@@ -3,8 +3,10 @@
 class ServiceProvidersController < AuthenticatedController
   include ModelChanges
 
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
+  # TODO: prod_request should be moved to a separate controller
+  before_action -> { authorize prod_request_service_provider }, only: :prod_request
   before_action :verify_environment_permissions, only: %i[new create]
 
   after_action :verify_authorized
@@ -115,6 +117,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = deleted_service_providers
   end
 
+  # TODO: prod_request should be moved to a separate controller
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(
@@ -155,6 +158,11 @@ class ServiceProvidersController < AuthenticatedController
     raise(ActiveRecord::RecordNotFound) if current_user.logingov_staff?
 
     raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
+  end
+
+  # TODO: prod_request should be moved to a separate controller
+  def prod_request_service_provider
+    policy_scope(ServiceProvider).find_by_id_or_uuid(params[:service_provider][:id]) # rubocop:disable Rails/DynamicFindBy
   end
 
   def help_text_presenter
