@@ -3,8 +3,10 @@
 class ServiceProvidersController < AuthenticatedController
   include ModelChanges
 
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
+  # TODO: prod_request should be moved to a separate controller
+  before_action -> { authorize prod_request_service_provider }, only: :prod_request
   before_action :verify_environment_permissions, only: %i[new create]
 
   after_action :verify_authorized
@@ -115,6 +117,7 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = deleted_service_providers
   end
 
+  # TODO: prod_request should be moved to a separate controller
   def prod_request
     @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
     portal_url = Rails.application.routes.url_helpers.service_provider_url(
@@ -132,7 +135,7 @@ class ServiceProvidersController < AuthenticatedController
       })
     end
 
-    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
+    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each_key do |key|
       ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
     end
 
@@ -140,13 +143,7 @@ class ServiceProvidersController < AuthenticatedController
 
     creation_status = zendesk_request.create_ticket(ticket_data)
 
-    if creation_status[:success] == true
-      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
-        has been created on your behalf, replies will be sent to #{current_user.email}."
-    else
-      flash[:error] =
-        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
-    end
+    flash_zendesk_status(creation_status)
     redirect_to action: 'show', id: @service_provider.id
   end
 
@@ -163,9 +160,14 @@ class ServiceProvidersController < AuthenticatedController
     raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
   end
 
+  # TODO: prod_request should be moved to a separate controller
+  def prod_request_service_provider
+    policy_scope(ServiceProvider).find_by_id_or_uuid(params[:service_provider][:id]) # rubocop:disable Rails/DynamicFindBy
+  end
+
   def help_text_presenter
     @help_text_presenter ||= begin
-      if params.has_key?(:service_provider)
+      if params.key?(:service_provider)
         text_params = permitted_attributes(service_provider)[:help_text]
       end
       HelpTextPresenter.new(
@@ -265,6 +267,17 @@ class ServiceProvidersController < AuthenticatedController
     end
 
     dsp
+  end
+
+  def flash_zendesk_status(creation_status)
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
+    else
+      errors = creation_status[:errors]
+      flash[:error] = helpers.wrap_in_p_tag(errors.initial_text, css_class: 'usa-alert__text') +
+                      helpers.wrap_in_p_tag(errors.remaining_text)
+    end
   end
 
   def log_change
