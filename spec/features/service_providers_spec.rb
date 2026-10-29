@@ -227,6 +227,7 @@ feature 'Service Providers CRUD' do
 
         submit_btn = find('input[name="commit"]')
         submit_btn.click
+        expect(page).to have_current_path(service_provider_path(service_provider))
         expect(page).to_not have_content("can't be blank")
         expect(page).to_not have_css('.usa-error-message')
       end
@@ -249,6 +250,7 @@ feature 'Service Providers CRUD' do
 
         submit_btn = find('input[name="commit"]')
         submit_btn.click
+        expect(page).to have_current_path(service_provider_path(service_provider))
         expect(page).to_not have_css('.usa-error-message')
       end
     end
