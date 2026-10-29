@@ -311,9 +311,19 @@ describe ServiceProvider do
       expect(file_uri_sp).to_not be_valid
     end
 
-    it 'allows redirect_uris to be empty' do
-      sp = build(:service_provider, redirect_uris: [])
+    it 'requires redirect_uris for OIDC' do
+      sp = build(:service_provider, :with_oidc_pkce, redirect_uris: [])
+      expect(sp).to_not be_valid
+    end
+
+    it 'allows redirect_uris to be empty for SAML' do
+      sp = build(:service_provider, :saml, redirect_uris: [])
       expect(sp).to be_valid
+    end
+
+    it 'requires certs for OIDC private_key_jwt' do
+      sp = build(:service_provider, :with_oidc_jwt, certs: [])
+      expect(sp).to_not be_valid
     end
 
     it 'validates the value of ial' do

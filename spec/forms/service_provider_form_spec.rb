@@ -68,6 +68,8 @@ describe ServiceProviderForm do
         <li>Friendly name</li>
         <li>Issuer</li>
         <li>Team</li>
+        <li>Redirect URIs</li>
+        <li>Public Certificates</li>
         </ul>
       ERROR_SNIPPET
       expected_html.tr!("\n", '')
