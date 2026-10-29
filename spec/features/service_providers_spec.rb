@@ -134,10 +134,9 @@ feature 'Service Providers CRUD' do
     scenario 'can update service provider team' do
       other_team_membershp = create(:team_membership, :partner_admin, user:)
       other_team = other_team_membershp.team
-      service_provider = create(:service_provider, team:, redirect_uris: [])
+      service_provider = create(:service_provider, team:)
 
       visit edit_service_provider_path(service_provider)
-      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       select other_team.name, from: 'service_provider_group_id'
       click_on 'Update'
 
@@ -147,10 +146,10 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update oidc service provider with multiple redirect uris', :js do
-      service_provider = create(:service_provider, team:, redirect_uris: [])
+      service_provider = create(:service_provider, team:)
 
       visit edit_service_provider_path(service_provider)
-      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
+      page.first('[name="service_provider[redirect_uris][]"]').set 'https://foo.com'
       click_on 'Update'
       expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
