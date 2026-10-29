@@ -325,7 +325,11 @@ class WizardStep < ApplicationRecord
   end
 
   def oidc?
-    !saml?
+    openid_connect_pkce? || openid_connect_private_key_jwt?
+  end
+
+  def openid_connect_pkce?
+    get_step('protocol').identity_protocol == 'openid_connect_pkce'
   end
 
   def openid_connect_private_key_jwt?
