@@ -158,6 +158,8 @@ class ServiceProviderPolicy < BasePolicy # :nodoc: all
   end
 
   def team_membership
+    return false unless record.respond_to?(:team)
+
     team = record.team
     team && TeamMembership.find_by(team:, user:)
   end
