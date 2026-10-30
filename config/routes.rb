@@ -34,8 +34,8 @@ Rails.application.routes.draw do
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'
   post '/service_providers/publish' => 'service_providers#publish'
-  post '/service_providers/prod_request' => 'service_providers#prod_request'
   resources :service_providers
+  resources :promotion_requests, only: :create
 
   get '/security_events/all' => 'security_events#all'
   post '/security_events/search' => 'security_events#search'
