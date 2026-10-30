@@ -1,11 +1,11 @@
 # Handle requests to Zendesk for specific ServiceProvider records
-class PromotionRequestController < AuthenticatedController
+class PromotionRequestsController < AuthenticatedController
   before_action -> { authorize(service_provider || ServiceProvider, :prod_request?) }
 
   after_action :verify_authorized
   after_action :verify_policy_scoped
 
-  def update
+  def create
     zendesk_status = make_zendesk_request(params)
 
     flash_zendesk_status(zendesk_status)
@@ -15,7 +15,9 @@ class PromotionRequestController < AuthenticatedController
   private
 
   def service_provider
-    @service_provider ||= policy_scope(ServiceProvider).find_by_id_or_uuid(params[:service_provider][:id]) # rubocop:disable Rails/DynamicFindBy
+    @service_provider ||= policy_scope(ServiceProvider).find_by_id_or_uuid( # rubocop:disable Rails/DynamicFindBy
+      params[:service_provider][:id],
+    )
   end
 
   def make_zendesk_request(params)
