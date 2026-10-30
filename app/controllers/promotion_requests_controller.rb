@@ -6,13 +6,23 @@ class PromotionRequestsController < AuthenticatedController
   after_action :verify_policy_scoped
 
   def create
-    zendesk_status = make_zendesk_request(params)
+    zendesk_status = make_zendesk_request({ service_provider: create_params })
 
     flash_zendesk_status(zendesk_status)
     redirect_to service_provider_path(@service_provider.id)
   end
 
   private
+
+  def create_params
+    params.require(:service_provider).permit(
+      :id,
+      ZendeskRequest::ZENDESK_PORTAL_URL_ID.to_s,
+      ZendeskRequest::ZENDESK_IAL_VALUE_ID.to_s,
+      *ZendeskRequest::ZENDESK_TICKET_FIELD_FUNCTIONS.keys.map(&:to_s),
+      *ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.map(&:to_s),
+    )
+  end
 
   def service_provider
     @service_provider ||= policy_scope(ServiceProvider).find_by_id_or_uuid( # rubocop:disable Rails/DynamicFindBy
