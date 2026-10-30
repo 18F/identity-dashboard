@@ -168,7 +168,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def show_oidc_options?
-    !show_saml_options?
+    @model.oidc?
   end
 
   def certs_required?
