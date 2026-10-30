@@ -514,6 +514,17 @@ allow_label_click: true)
       expect(page).to have_content(strip_tags(t('service_provider_form.redirect_uris_oidc_html')))
     end
 
+    scenario 'certificates are required only for oidc private_key_jwt', :js do
+      visit new_service_provider_path
+
+      choose('service_provider_identity_protocol_openid_connect_private_key_jwt',
+             allow_label_click: true)
+      expect(page).to have_css('#certificates-label.usa-input-required')
+
+      choose('service_provider_identity_protocol_openid_connect_pkce', allow_label_click: true)
+      expect(page).to_not have_css('#certificates-label.usa-input-required')
+    end
+
     scenario 'IAL1 attributes shown when IAL1 is selected', :js do
       visit new_service_provider_path
       select(I18n.t('service_provider_form.ial_option_1'), from: 'Level of Service')
