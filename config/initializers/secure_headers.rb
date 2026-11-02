@@ -12,7 +12,7 @@ SecureHeaders::Configuration.default do |config|
                   ["'self'", '*.identitysandbox.gov']
                 end
   form_action << %w[localhost:3000] if Rails.env.development?
-  connect_src = ["'self'", 'https://www.google-analytics.com']
+  connect_src = ["'self'", 'https://gov1.siteintercept.qualtrics.com', 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
   script_src = [
     "'self'",
@@ -21,6 +21,8 @@ SecureHeaders::Configuration.default do |config|
     'https://dap.digitalgov.gov',
     'https://www.google-analytics.com',
     'https://www.googletagmanager.com',
+    'https://gov1.siteintercept.qualtrics.com',
+    'https://zn9nrfjcczye6sz4r-cemgsa.gov1.siteintercept.qualtrics.com',
   ]
   style_src = ["'self'"]
   img_src = ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"]
