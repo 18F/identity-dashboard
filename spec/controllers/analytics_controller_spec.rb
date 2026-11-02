@@ -38,7 +38,7 @@ describe AnalyticsController do
           create(:service_provider, issuer:, team: admin_team, created_at: Date.new(2025, 8, 1))
           get :index
           expect(assigns(:dates)).to include(
-            '2025-10-01', Date.current.beginning_of_month.prev_month.strftime('%F')
+            '2025-10-01', most_recent_report_date
           )
           expect(assigns(:dates)).to_not include(
             '2025-08-01', '2025-09-01', Date.current.beginning_of_month.strftime('%F')
@@ -49,7 +49,7 @@ describe AnalyticsController do
           get :index
           dates = assigns(:dates)
           expect(dates).to include('2025-10-01')
-          expect(dates.first).to eq(Date.current.beginning_of_month.prev_month.strftime('%F'))
+          expect(dates.first).to eq(most_recent_report_date)
           expect(dates.last).to eq('2025-10-01')
         end
 
