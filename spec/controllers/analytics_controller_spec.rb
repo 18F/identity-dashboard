@@ -38,7 +38,7 @@ describe AnalyticsController do
           create(:service_provider, issuer:, team: admin_team, created_at: Date.new(2025, 8, 1))
           get :index
           expect(assigns(:dates)).to include(
-            '2025-10-01', Date.current.beginning_of_month.prev_month.strftime('%F')
+            '2025-10-01', most_recent_report_date
           )
           expect(assigns(:dates)).to_not include(
             '2025-08-01', '2025-09-01', Date.current.beginning_of_month.strftime('%F')
@@ -49,8 +49,24 @@ describe AnalyticsController do
           get :index
           dates = assigns(:dates)
           expect(dates).to include('2025-10-01')
-          expect(dates.first).to eq(Date.current.beginning_of_month.prev_month.strftime('%F'))
+          expect(dates.first).to eq(most_recent_report_date)
           expect(dates.last).to eq('2025-10-01')
+        end
+
+        it 'uses last month as the most recent date after the report turnover day' do
+          travel_to Date.new(2026, 3, 15) do
+            get :index
+            expect(assigns(:dates).first).to eq(most_recent_report_date)
+            expect(most_recent_report_date).to eq('2026-02-01')
+          end
+        end
+
+        it 'uses the month before last as the most recent date before the report turnover day' do
+          travel_to Date.new(2026, 3, 2) do
+            get :index
+            expect(assigns(:dates).first).to eq(most_recent_report_date)
+            expect(most_recent_report_date).to eq('2026-01-01')
+          end
         end
 
         it 'orders the date dropdown with the most recent month first and does not fetch data' do

@@ -400,7 +400,7 @@ describe 'reporting feature basics' do
       expect(page).to have_current_path(analytics_path(
         team: partner_sp.team.id,
         uuid: partner_sp.uuid,
-        date: Date.current.beginning_of_month.prev_month.strftime('%F'),
+        date: most_recent_report_date,
       ))
     end
 
