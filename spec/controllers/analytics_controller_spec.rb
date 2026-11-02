@@ -53,6 +53,14 @@ describe AnalyticsController do
           expect(dates.last).to eq('2025-10-01')
         end
 
+        it 'uses last month as the most recent date after the report turnover day' do
+          travel_to Date.new(2026, 3, 15) do
+            get :index
+            expect(assigns(:dates).first).to eq(most_recent_report_date)
+            expect(most_recent_report_date).to eq('2026-02-01')
+          end
+        end
+
         it 'orders the date dropdown with the most recent month first and does not fetch data' do
           travel_to Date.new(2026, 3, 15) do
             create(:service_provider, team: admin_team, issuer:, created_at: Date.new(2025, 9, 1))
