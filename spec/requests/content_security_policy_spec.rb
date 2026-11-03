@@ -5,7 +5,7 @@ describe 'Content Security Policy' do
     get '/'
 
     csp = response.headers['Content-Security-Policy']
-    expect(csp).to include("frame-src 'self' feedback.gsa.gov")
-    expect(csp).to include("child-src 'self' feedback.gsa.gov")
+    expect(csp).to include("frame-src 'self' https://*.qualtrics.com'")
+    expect(csp).to include("child-src 'self' https://*.qualtrics.com'")
   end
 end
