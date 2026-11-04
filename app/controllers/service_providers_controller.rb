@@ -183,9 +183,11 @@ class ServiceProvidersController < AuthenticatedController
     form.validate_and_save
 
     if form.saved?
-      # this is not accessible from P3, but publish must be disabled if
-      # this becomes accessible on prod
-      publish_service_provider(initial_action)
+      if IdentityConfig.store.prod_like_env
+        flash[:notice] = I18n.t('notices.service_provider_saved', issuer: service_provider.issuer)
+      else
+        publish_service_provider(initial_action)
+      end
       redirect_to service_provider_path(service_provider)
     else
       flash[:error] = form.compile_errors
