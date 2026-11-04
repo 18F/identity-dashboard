@@ -84,7 +84,7 @@ feature 'Service provider pages', :js do
       end
 
       context 'edit page' do
-        context 'switching to a a SAML config' do
+        context 'switching to a SAML config' do
           before do
             visit edit_service_provider_path(config)
             find('label[for=service_provider_identity_protocol_saml]').click
