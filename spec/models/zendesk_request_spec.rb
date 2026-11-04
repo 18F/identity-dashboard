@@ -46,7 +46,9 @@ describe ZendeskRequest do
     { request: {
       requester: { name: "#{user.first_name} #{user.last_name}", email: user.email },
       subject: "Deploy #{sp.friendly_name} to Production",
-      comment: { body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment" },
+      comment: {
+        body: "Please deploy #{sp.friendly_name} to the Login.gov Production Environment",
+      },
       ticket_form_id: 5663417357332,
       custom_fields:,
     } }
