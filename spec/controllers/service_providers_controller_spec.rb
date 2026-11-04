@@ -570,7 +570,7 @@ describe ServiceProvidersController do
       expect(sp.reload.certs&.size).to equal(0)
     end
 
-    it 'sends a serialized service provider to the IDP' do
+    it 'sends a serialized service provider to the IDP when not in a prod-like env' do
       allow(ServiceProviderSerializer).to receive(:new).and_return('attributes')
       allow(ServiceProviderUpdater).to receive(:post_update).and_call_original
       put :update, params: {
@@ -581,6 +581,18 @@ describe ServiceProvidersController do
       expect(ServiceProviderUpdater).to have_received(:post_update).with(
         { service_provider: 'attributes' },
       )
+    end
+
+    it 'does not send the service provider to the IDP in a prod-like env' do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(ServiceProviderUpdater).to receive(:post_update)
+      put :update, params: {
+        id: sp.id,
+        service_provider: { issuer: sp.issuer, prod_config: true, help_text: init_help_params },
+      }
+
+      expect(ServiceProviderUpdater).to_not have_received(:post_update)
+      expect(flash[:notice]).to eq(I18n.t('notices.service_provider_saved', issuer: sp.issuer))
     end
 
     context 'help_text config' do
