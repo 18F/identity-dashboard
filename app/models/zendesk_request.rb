@@ -134,6 +134,8 @@ class ZendeskRequest
     }
   end
 
+  # @return [Hash<Symbol=>Symbol,String>] Always includes a `status:` key that has value `:success`
+  # if the ticket was created.
   def create_ticket
     resp = connection.post(ZENDESK_POST_PATH) { |req| req.body = fields.to_json }
     response = JSON.parse(resp.body)
