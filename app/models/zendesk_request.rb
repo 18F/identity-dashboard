@@ -140,13 +140,13 @@ class ZendeskRequest
 
     if resp.status == 201
       ticket_id = response.dig('request', 'id')
-      { success: true, ticket_id: ticket_id }
+      { status: :success, ticket_id: ticket_id }
     else
       errors = ZendeskErrors.new(response.dig('details', 'base'))
-      return { success: false, errors: errors } if errors.any?
+      return { status: :error, errors: errors } if errors.any?
 
       errors = ZendeskErrors.new([response.slice('description')])
-      { success: false, errors: errors }
+      { status: :error, errors: errors }
     end
   end
 

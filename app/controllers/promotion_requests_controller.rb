@@ -6,9 +6,10 @@ class PromotionRequestsController < AuthenticatedController
   after_action :verify_policy_scoped
 
   def create
-    zendesk_status = make_zendesk_request({ service_provider: create_params })
+    zendesk_response = make_zendesk_request({ service_provider: create_params })
 
-    flash_zendesk_status(zendesk_status)
+    log.zendesk_response(zendesk_response)
+    flash_zendesk_status(zendesk_response)
     redirect_to service_provider_path(@service_provider.id)
   end
 
@@ -44,12 +45,12 @@ class PromotionRequestsController < AuthenticatedController
     )
   end
 
-  def flash_zendesk_status(creation_status)
-    if creation_status[:success] == true
-      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+  def flash_zendesk_status(zendesk_response)
+    if zendesk_response[:status] == :success
+      flash[:success] = "Request submitted successfully. Ticket ##{zendesk_response[:ticket_id]} \
         has been created on your behalf, replies will be sent to #{current_user.email}."
     else
-      errors = creation_status[:errors]
+      errors = zendesk_response[:errors]
       flash[:error] = helpers.wrap_in_p_tag(errors.initial_text, css_class: 'usa-alert__text') +
                       helpers.wrap_in_p_tag(errors.remaining_text)
     end

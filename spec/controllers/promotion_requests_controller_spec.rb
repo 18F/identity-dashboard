@@ -55,7 +55,7 @@ RSpec.describe PromotionRequestsController do
       it 'can redirect with a success response' do
         expect(request_mock).to receive(:create_ticket)
           .with(no_args)
-          .and_return({ success: true, ticket_id: expected_ticket_id })
+          .and_return({ status: :success, ticket_id: expected_ticket_id })
 
         post :create, params: test_params
 
@@ -72,7 +72,7 @@ RSpec.describe PromotionRequestsController do
         expect(request_mock).to receive(:create_ticket)
           .with(no_args)
           .and_return({
-            success: false,
+            status: :error,
             errors: ZendeskErrors.new([{ 'description' => 'Application URL: is invalid' }]),
           })
 

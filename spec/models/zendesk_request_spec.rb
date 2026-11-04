@@ -139,7 +139,7 @@ describe ZendeskRequest do
       end
 
       zendesk_request.add_fields_from_params({ service_provider: sample_params })
-      expect(zendesk_request.create_ticket).to eq({ success: true, ticket_id: 1 })
+      expect(zendesk_request.create_ticket).to eq({ status: :success, ticket_id: 1 })
       faraday_stubs.verify_stubbed_calls
     end
 
