@@ -52,19 +52,17 @@ class ZendeskErrors
 
   # @return String
   def initial_text
-    if unrecoverable_errors.any?
-      return 'We are unable to submit requests through this form right now.'
-    end
+    return 'errors.zendesk.unavailable' if unrecoverable_errors.any?
 
-    return 'An unknown error occurred.' unless any?
+    return 'errors.zendesk.unknown' unless any?
 
-    'Please fix the following problems with your configuration before submitting a request.'
+    'errors.zendesk.service_provider_fix'
   end
 
   # @return String
   def remaining_text
     # Zendesk error messages do not end with a period, so we can join them with one
-    [*messages, final_message].join('. ')
+    [*messages, final_message]
   end
 
   # This is a closing message with instructions on what the user can do next.
@@ -72,10 +70,9 @@ class ZendeskErrors
   #
   # @return String
   def final_message
-    return 'Please try again.' if any? && unrecoverable_errors.none?
+    return 'errors.zendesk.try_again' if any? && unrecoverable_errors.none?
 
-    'You can create a request manually through ' \
-      '<a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> instead.'
+    'errors.zendesk.try_manually_html'
   end
 
   private

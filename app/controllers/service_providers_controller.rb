@@ -5,8 +5,6 @@ class ServiceProvidersController < AuthenticatedController
 
   before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
-  # TODO: prod_request should be moved to a separate controller
-  before_action -> { authorize prod_request_service_provider }, only: :prod_request
   before_action :verify_environment_permissions, only: %i[new create]
 
   after_action :verify_authorized
@@ -31,6 +29,26 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def show
+    errors = flash[:error]
+
+    # This works around flaky limitations of long flash strings that don't show up in the test suite
+    # TODO: refactor this into a component that replaces the `_messages.html.erb` template
+    if errors.present? && errors.respond_to?(:each_with_object)
+      initial = errors.shift
+      # fall back to the literal value if a string doesn't exist
+      initial = helpers.wrap_in_p_tag(
+        I18n.t(initial, default: initial),
+        css_class: 'usa-alert__text',
+      )
+      rest = errors.map do |str|
+        I18n.t(str)
+      rescue I18n::MissingTranslationData
+        # To be safe, don't mark `html_safe` strings from outside our locale file
+        ERB::Util.html_escape str
+      end.join('. ').html_safe
+      flash.now[:error] = initial + helpers.wrap_in_p_tag(rest)
+    end
+
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
     @show_status_indicator = IdentityConfig.store.prod_like_env &&
                              service_provider.prod_config? &&
@@ -117,36 +135,6 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = deleted_service_providers
   end
 
-  # TODO: prod_request should be moved to a separate controller
-  def prod_request
-    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
-    portal_url = Rails.application.routes.url_helpers.service_provider_url(
-      @service_provider,
-      host: request.host,
-    )
-
-    zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
-
-    ticket_custom_fields = []
-    zendesk_request.ticket_field_functions.each_with_object({}) do |(id, func), _result|
-      ticket_custom_fields.push({
-        id: id,
-        value: func.to_proc.call(@service_provider),
-      })
-    end
-
-    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each_key do |key|
-      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
-    end
-
-    ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
-
-    creation_status = zendesk_request.create_ticket(ticket_data)
-
-    flash_zendesk_status(creation_status)
-    redirect_to action: 'show', id: @service_provider.id
-  end
-
   private
 
   def service_provider
@@ -158,11 +146,6 @@ class ServiceProvidersController < AuthenticatedController
     raise(ActiveRecord::RecordNotFound) if current_user.logingov_staff?
 
     raise(Pundit::NotAuthorizedError, I18n.t('errors.not_authorized'))
-  end
-
-  # TODO: prod_request should be moved to a separate controller
-  def prod_request_service_provider
-    policy_scope(ServiceProvider).find_by_id_or_uuid(params[:service_provider][:id]) # rubocop:disable Rails/DynamicFindBy
   end
 
   def help_text_presenter
@@ -269,17 +252,6 @@ class ServiceProvidersController < AuthenticatedController
     end
 
     dsp
-  end
-
-  def flash_zendesk_status(creation_status)
-    if creation_status[:success] == true
-      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
-        has been created on your behalf, replies will be sent to #{current_user.email}."
-    else
-      errors = creation_status[:errors]
-      flash[:error] = helpers.wrap_in_p_tag(errors.initial_text, css_class: 'usa-alert__text') +
-                      helpers.wrap_in_p_tag(errors.remaining_text)
-    end
   end
 
   def log_change

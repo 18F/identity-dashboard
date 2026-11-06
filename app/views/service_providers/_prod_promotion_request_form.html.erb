@@ -10,7 +10,7 @@
         <h2 class="usa-modal__heading" id="modal-1-heading">
           Please enter the information below to submit your request to deploy.
         </h2>
-        <%= form_with model: @service_provider, url: service_providers_prod_request_path(@service_provider), method: :post do |form| %>
+        <%= form_with model: @service_provider, url: promotion_requests_path, method: :post do |form| %>
           <%= form.hidden_field :id, value: @service_provider.id %>
           <% ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
             <div class="form-group">
