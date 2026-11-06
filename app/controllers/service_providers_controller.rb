@@ -29,6 +29,26 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def show
+    errors = flash[:error]
+
+    # This works around flaky limitations of long flash strings that don't show up in the test suite
+    # TODO: refactor this into a component that replaces the `_messages.html.erb` template
+    if errors.present? && errors.respond_to?(:each_with_object)
+      initial = errors.shift
+      # fall back to the literal value if a string doesn't exist
+      initial = helpers.wrap_in_p_tag(
+        I18n.t(initial, default: initial),
+        css_class: 'usa-alert__text',
+      )
+      rest = errors.map do |str|
+        I18n.t(str)
+      rescue I18n::MissingTranslationData
+        # To be safe, don't mark `html_safe` strings from outside our locale file
+        ERB::Util.html_escape str
+      end.join('. ').html_safe
+      flash.now[:error] = initial + helpers.wrap_in_p_tag(rest)
+    end
+
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
     @show_status_indicator = IdentityConfig.store.prod_like_env &&
                              service_provider.prod_config? &&

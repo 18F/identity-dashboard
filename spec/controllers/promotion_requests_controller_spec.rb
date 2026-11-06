@@ -82,7 +82,9 @@ RSpec.describe PromotionRequestsController do
         expect(redirect_to_url).to eq(service_provider_url(sp))
 
         expect(flash[:error]).to include(
-          'Please fix the following problems with your configuration before submitting a request.',
+          ['errors.zendesk.service_provider_fix',
+           'Application URL: is invalid',
+           'errors.zendesk.try_again'],
         )
         expect(flash[:error]).to include(
           'Application URL: is invalid. Please try again.',

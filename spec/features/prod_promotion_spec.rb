@@ -79,6 +79,38 @@ feature 'requesting a promotion to production' do
       expect(page).to have_content('You can create a request manually through')
       expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new')
     end
+
+    it 'handles a failure on our side', :js do
+      stub_request(:post, "#{ZendeskRequest::ZENDESK_BASE_URL}#{ZendeskRequest::ZENDESK_POST_PATH}")
+        .with(
+          body: expected_body_with_reasonable_data(partner_admin, sp),
+        ).to_return(
+          status: 500,
+          body: {
+            'error' => 'RecordInvalid', 'description' => 'Record validation errors',
+            'details' => { 'base' => [
+              {
+                'description' => 'Portal Configuration URL (Sandbox): is invalid',
+                'error' => 'InvalidValue',
+                'field_key' => 4417940288916,
+              },
+            ] }
+          }.to_json,
+        )
+
+      click_on 'Submit a request'
+      expect(page).to have_content('Please enter the information below')
+
+      fill_in_reasonable_data
+      click_on 'Submit Request'
+
+      expect(page).to have_content('We are unable to submit requests through this form right now.')
+      expect(page).to have_content('You can create a request manually through')
+
+      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new')
+
+      expect(page).to have_current_path(service_provider_path(sp))
+    end
   end
 
   def fill_in_reasonable_data # rubocop:disable Metrics/MethodLength

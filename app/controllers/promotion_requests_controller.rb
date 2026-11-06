@@ -51,8 +51,8 @@ class PromotionRequestsController < AuthenticatedController
         has been created on your behalf, replies will be sent to #{current_user.email}."
     else
       errors = zendesk_response[:errors]
-      flash[:error] = helpers.wrap_in_p_tag(errors.initial_text, css_class: 'usa-alert__text') +
-                      helpers.wrap_in_p_tag(errors.remaining_text)
+      test_value = [errors.initial_text, *errors.remaining_text]
+      flash[:error] = test_value
     end
   end
 end
