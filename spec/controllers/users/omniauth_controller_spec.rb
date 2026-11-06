@@ -124,9 +124,19 @@ describe Users::OmniauthController do
   end
 
   describe '#failure' do
-    it 'redirects to IdP 503 page' do
+    it 'redirects to the landing page when the user cancels at the IdP' do
       get :failure, params: {
         message: 'callback_access_denied',
+        origin: 'http://test.host/system-use?',
+        strategy: 'logindotgov',
+      }
+
+      expect(response).to redirect_to(root_path)
+    end
+
+    it 'renders the IdP 503 page for other failures' do
+      get :failure, params: {
+        message: 'openid_discovery',
         origin: 'http://test.host/system-use?',
         strategy: 'logindotgov',
       }
