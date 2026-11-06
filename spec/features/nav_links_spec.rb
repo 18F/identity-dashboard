@@ -137,41 +137,10 @@ feature 'Nav links' do
         scenario 'should not show a Configuration extraction link' do
           expect(page).to_not have_link('Configuration extraction')
         end
-
-        scenario 'should not show a Connect with Airtable link' do
-          expect(page).to_not have_link('Connect with Airtable')
-        end
       end
 
       scenario 'should see a sign out page link' do
         expect(page).to have_link('Sign out')
-      end
-    end
-  end
-
-  context 'on production environments with salesforce enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
-    end
-
-    scenario 'should not see an Airtable or Salesforce link' do
-      expect(page).to_not have_link('Connect with Airtable')
-      expect(page).to_not have_link('Salesforce connection')
-    end
-
-    context 'when login.gov admin' do
-      before do
-        login_as(logingov_admin)
-        visit root_path
-      end
-
-      scenario 'should show a Salesforce connection link' do
-        expect(page).to have_link('Salesforce connection')
-      end
-
-      scenario 'should not show a Connect with Airtable link' do
-        expect(page).to_not have_link('Connect with Airtable')
       end
     end
   end
@@ -192,8 +161,8 @@ feature 'Nav links' do
       end
 
       describe('the Admin menu') do
-        scenario 'should show a Connect with Airtable link' do
-          expect(page).to have_link('Connect with Airtable')
+        scenario 'should show a Salesforce connection link' do
+          expect(page).to have_link('Salesforce connection')
         end
 
         scenario 'should not show a Configuration extraction link' do
@@ -232,10 +201,6 @@ feature 'Nav links' do
       describe('the Admin menu') do
         scenario 'should show a Configuration extraction link' do
           expect(page).to have_link('Configuration extraction')
-        end
-
-        scenario 'should not show a Connect with Airtable link' do
-          expect(page).to_not have_link('Connect with Airtable')
         end
       end
     end
@@ -324,10 +289,6 @@ feature 'Nav links' do
 
       scenario 'should not show a Configuration extraction link' do
         expect(page).to_not have_link('Configuration extraction')
-      end
-
-      scenario 'should not show a Connect with Airtable link' do
-        expect(page).to_not have_link('Connect with Airtable')
       end
     end
 

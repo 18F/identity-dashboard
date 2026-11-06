@@ -93,7 +93,6 @@ Lint/UselessMethodDefinition:
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
-    - 'app/controllers/airtable_controller.rb'
     - 'app/controllers/extracts_controller.rb'
     - 'app/controllers/internal_reports_controller.rb'
     - 'app/controllers/service_config_wizard_controller.rb'
@@ -103,7 +102,6 @@ Metrics/AbcSize:
     - 'app/helpers/banner_helper.rb'
     - 'app/helpers/pagination_helper.rb'
     - 'app/helpers/service_provider_helper.rb'
-    - 'app/models/airtable.rb'
     - 'app/models/service_provider.rb'
     - 'app/models/team_audit_event.rb'
     - 'app/models/tools/saml_request.rb'
@@ -258,8 +256,6 @@ Performance/TimesMap:
 # Configuration parameters: Inferences.
 RSpecRails/InferredSpecType:
   Exclude:
-    - 'spec/controllers/airtable_controller_spec.rb'
-    - 'spec/models/airtable_spec.rb'
     - 'spec/models/auth_token_spec.rb'
     - 'spec/models/banner_spec.rb'
     - 'spec/models/role_spec.rb'
@@ -460,7 +456,6 @@ Style/MultipleComparison:
 Style/MutableConstant:
   Exclude:
     - 'app/controllers/service_config_wizard_controller.rb'
-    - 'app/models/airtable.rb'
     - 'app/models/role.rb'
     - 'app/services/user_permissions_csv.rb'
 

@@ -25,8 +25,6 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def new
-    verify_airtable_connection
-
     authorize current_team_membership
     @user = policy_scope(User).new
     @show_wizard = params[:wizard].present?
@@ -35,7 +33,6 @@ class Teams::UsersController < AuthenticatedController
 
   def edit
     @needs_to_confirm_partner_admin = params[:need_to_confirm_role].present?
-    verify_airtable_connection
 
     authorize team_membership
     @user = team_membership.user
@@ -105,11 +102,7 @@ class Teams::UsersController < AuthenticatedController
 
   def roles_for_options
     membership = team_membership || policy_scope(TeamMembership).build(team: team)
-    roles = policy(membership).roles_for_edit
-    if IdentityConfig.store.prod_like_env && needs_airtable_token?
-      roles = roles.reject { |role| role.name == 'partner_admin' }
-    end
-    roles.map { |r| [r.friendly_name, r.name] }
+    policy(membership).roles_for_edit.map { |r| [r.friendly_name, r.name] }
   end
 
   def show_actions?
@@ -121,7 +114,6 @@ class Teams::UsersController < AuthenticatedController
   def confirmation_needed_entries(users_params)
     return [] if params[:confirm_partner_admin].present?
     return [] unless IdentityConfig.store.prod_like_env
-    return [] unless IdentityConfig.store.salesforce_api_enabled
 
     users_params.select { |u| partner_admin_confirmation_needed_for_create?(u) }
   end
@@ -262,21 +254,7 @@ class Teams::UsersController < AuthenticatedController
     )
   end
 
-  def needs_airtable_token?
-    return false if IdentityConfig.store.salesforce_api_enabled
-
-    !Airtable.new(current_user.uuid).has_token?
-  end
-
   def verified_partner_admin?(email)
-    if IdentityConfig.store.salesforce_api_enabled
-      verified_partner_admin_in_salesforce?(email)
-    else
-      verified_partner_admin_in_airtable?(email)
-    end
-  end
-
-  def verified_partner_admin_in_salesforce?(email)
     salesforce_service.partner_admin_for_team?(team.uuid, email)
   rescue StandardError
     false
@@ -284,25 +262,6 @@ class Teams::UsersController < AuthenticatedController
 
   def salesforce_service
     @salesforce_service ||= SalesforceService.new
-  end
-
-  def verified_partner_admin_in_airtable?(email)
-    return false if team.service_providers.empty?
-
-    airtable_api = Airtable.new(current_user.uuid)
-    airtable_api.refresh_token_if_needed(request)
-    issuers = []
-    ServiceProvider.where(team: team).each do |sp|
-      issuers.push(sp.issuer)
-    end
-
-    matched_records = airtable_api.get_matching_records(issuers)
-
-    return false if matched_records.empty?
-
-    matched_records.any? do |record|
-      airtable_api.new_partner_admin_in_airtable?(email, record)
-    end
   end
 
   def partner_admin_confirmation_needed_for_update?
@@ -332,24 +291,10 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def partner_admin_not_verified_message(email)
-    external_provider = IdentityConfig.store.salesforce_api_enabled ? 'Salesforce' : 'Airtable'
     partner_admin_name = t('role_names.production.partner_admin')
 
-    "User #{email} is not a verified #{partner_admin_name} in #{external_provider}. " \
+    "User #{email} is not a verified #{partner_admin_name} in Salesforce. " \
       'Please verify with the appropriate Account Manager that this user should ' \
       "be given the #{partner_admin_name} role."
-  end
-
-  def verify_airtable_connection
-    return unless policy(:airtable).index?
-
-    airtable_api = Airtable.new(current_user.uuid)
-    return if airtable_api.has_token?
-
-    @remove_partner_admin = true
-    airtable_api.refresh_token_if_needed(request)
-
-    base_url = "#{request.protocol}#{request.host_with_port}"
-    @oauth_url = airtable_api.generate_oauth_url(base_url)
   end
 end

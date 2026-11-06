@@ -81,8 +81,8 @@ feature 'Home' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         visit root_path
         click_on 'Admin'
-        airtable_link = find_link 'Connect with Airtable'
-        expect(airtable_link['href']).to eq(airtable_path)
+        salesforce_link = find_link 'Salesforce connection'
+        expect(salesforce_link['href']).to eq(salesforce_path)
       end
     end
   end
