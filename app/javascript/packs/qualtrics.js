@@ -6,5 +6,5 @@
         this.start = function () { var t = this; "complete" !== document.readyState ? window.addEventListener ? window.addEventListener("load", function () { t.go() }, !1) : window.attachEvent && window.attachEvent("onload", function () { t.go() }) : t.go() };
     };
 
-    try { (new g("https://zn9nrfjcczye6sz4r-cemgsa.gov1.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_9NrFJCCzyE6sZ4R")).start() } catch (i) { }
+    try { (new g("https://zn9nrfjcczye6sz4r-cemgsa.gov1.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_9NrFJCCzyE6sZ4R")).start() } catch { }
 })();
