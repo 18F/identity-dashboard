@@ -11,14 +11,15 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: bdf8e1f93707e413ecbd0f48d803e18812e19f90
-  tag: 0.23.5-18f
+  revision: 944d7bea0974094b0cfe8e2e4b2cfd519abeec2a
+  tag: v0.25.3-18f
   specs:
-    saml_idp (0.23.5.pre.18f)
-      activesupport
+    saml_idp (0.25.3.pre.18f)
+      activesupport (>= 7.2.3)
       builder
-      faraday
-      nokogiri (>= 1.10.2)
+      faraday (>= 2.14.1)
+      nokogiri (>= 1.19.4)
+      ostruct
       pkcs11
 
 GIT
@@ -180,7 +181,7 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (4.1.2)
+    bigdecimal (4.1.3)
     bindata (2.5.1)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
@@ -214,7 +215,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (1.1.0)
-    concurrent-ruby (1.3.7)
+    concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crack (1.0.0)
       bigdecimal
@@ -253,13 +254,13 @@ GEM
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
     fakefs (2.5.0)
-    faraday (2.14.3)
-      faraday-net_http (>= 2.0, < 3.5)
+    faraday (2.15.1)
+      faraday-net_http (>= 2.0, < 3.6)
       json
       logger
     faraday-follow_redirects (0.3.0)
       faraday (>= 1, < 3)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.5.0)
       net-http (~> 0.5)
     ffi (1.17.1)
     globalid (1.2.1)
@@ -271,7 +272,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.7)
       domain_name (~> 0.5)
-    i18n (1.14.8)
+    i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.14)
       activesupport (>= 4.0.2)
@@ -347,7 +348,9 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitar (1.1.0)
-    minitest (5.27.0)
+    minitest (6.1.0)
+      drb (~> 2.0)
+      prism (>= 1.5, < 3)
     multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
@@ -385,7 +388,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
-    pkcs11 (0.3.4)
+    pkcs11 (0.4.0)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -605,7 +608,7 @@ GEM
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
     uniform_notifier (1.16.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     view_component (4.19.0)
       actionview (>= 7.1.0)
