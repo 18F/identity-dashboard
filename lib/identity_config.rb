@@ -51,6 +51,7 @@ class IdentityConfig
 
       # Feature Flags, options expected to be higher churn than the above settings
       config.add(:api_token_required_enabled, type: :boolean)
+      config.add(:use_zendesk_modal_form, type: :boolean)
     end
     @store = Identity::Hostdata.config
     # rubocop:enable Metrics/BlockLength

@@ -45,7 +45,6 @@ class ServiceProvidersController < AuthenticatedController
 
           I18n.t(str)
         else
-
           # To be safe, don't mark `html_safe` strings from outside our locale file
           ERB::Util.html_escape(str)
         end

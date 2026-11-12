@@ -936,6 +936,7 @@ allow_label_click: true)
 
     describe 'with a production configuration' do
       let(:sp) { create(:service_provider, team: team, prod_config: true) }
+      let(:zendesk_link) { 'https://partners.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332' }
 
       it 'displays the production call to action links' do
         prod_url = documentation_path(destination: 'production')
@@ -943,8 +944,18 @@ allow_label_click: true)
         expect(page).to have_css("a[href='#{prod_url}']")
       end
 
-      it 'displays the production call to action button' do
+      it 'displays the production form button when its feature flag is on' do
+        allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(true)
+        visit service_provider_path(sp)
         expect(page).to have_css("button[aria-controls='additional-data-modal']")
+        expect(page).to_not have_css("a[href='#{zendesk_link}']")
+      end
+
+      it 'displays the production call to action link when the modal flag is off' do
+        allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(false)
+        visit service_provider_path(sp)
+        expect(page).to have_css("a[href='#{zendesk_link}']")
+        expect(page).to_not have_css("button[aria-controls='additional-data-modal']")
       end
     end
 
