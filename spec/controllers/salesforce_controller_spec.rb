@@ -7,8 +7,11 @@ RSpec.describe SalesforceController do
     sign_in logingov_admin
   end
 
-  context 'in prod_like_env' do
-    before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
+  context 'in prod_like_env with salesforce enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+    end
 
     describe 'GET #index' do
       it 'fetches a token and renders successfully' do
@@ -32,8 +35,26 @@ RSpec.describe SalesforceController do
     end
   end
 
+  context 'in prod_like_env with salesforce disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
+    end
+
+    describe 'GET #index' do
+      it 'is unauthorized' do
+        get :index
+
+        expect(response).to be_unauthorized
+      end
+    end
+  end
+
   context 'in non prod_like_env' do
-    before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false) }
+    before do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
+      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
+    end
 
     describe 'GET #index' do
       it 'is unauthorized' do
