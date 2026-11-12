@@ -8,6 +8,7 @@ feature 'requesting a promotion to production' do
 
   context 'as a partner looking at a service provider config' do
     before do
+      allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(true)
       login_as partner_admin
       visit service_provider_path(sp)
     end

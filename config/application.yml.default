@@ -30,6 +30,7 @@ users_per_page: 100
 
 # Feature Flags, options expected to be higher churn than the above settings
 api_token_required_enabled: false
+use_zendesk_modal_form: false
 
 development:
   dashboard_api_token: test_token
