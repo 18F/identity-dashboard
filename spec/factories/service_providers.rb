@@ -9,6 +9,8 @@ FactoryBot.define do
     sequence(:description) { |n| "test service_provider description #{n}" }
     association :user
     association :agency
+    redirect_uris { ['https://example.gov/auth/result'] }
+    certs { [Rails.root.join('spec/fixtures/files/testcert.pem').read] }
     help_text do
       {
         sign_in: { en: '<b>Some sign-in help text</b>', es: '', fr: '', zh: '' },

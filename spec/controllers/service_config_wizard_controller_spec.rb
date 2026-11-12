@@ -192,6 +192,12 @@ RSpec.describe ServiceConfigWizardController do
       let(:good_logo) { fixture_file_upload('logo.svg', 'image/svg+xml') }
       let(:good_cert) { fixture_file_upload('testcert.pem') }
 
+      before do
+        put :update, params: { id: 'protocol', wizard_step: {
+          identity_protocol: 'openid_connect_pkce',
+        } }
+      end
+
       it 'allows blank info' do
         expect do
           put :update, params: { id: 'logo_and_cert' }
@@ -232,6 +238,22 @@ RSpec.describe ServiceConfigWizardController do
           expect(response).to_not be_redirect
           actual_error = assigns[:model].errors[:certs].to_sentence
           expected_error = I18n.t('service_provider_form.errors.certs.saml_no_cert')
+
+          expect(actual_error).to eq(expected_error)
+        end
+
+        it 'errors when OIDC private_key_jwt has no cert' do
+          put :update, params: { id: 'protocol', wizard_step: {
+            identity_protocol: 'openid_connect_private_key_jwt',
+          } }
+
+          expect do
+            put :update, params: { id: 'logo_and_cert', wizard_step: {} }
+          end.to_not(change { WizardStep.count })
+
+          expect(response).to_not be_redirect
+          actual_error = assigns[:model].errors[:certs].to_sentence
+          expected_error = I18n.t('service_provider_form.errors.certs.private_key_jwt_no_cert')
 
           expect(actual_error).to eq(expected_error)
         end
@@ -372,7 +394,9 @@ RSpec.describe ServiceConfigWizardController do
     describe 'step "redirects"' do
       it 'can post' do
         expect do
-          put :update, params: { id: 'redirects', wizard_step: { active: false } }
+          put :update, params: { id: 'redirects', wizard_step: {
+            redirect_uris: ['https://example.gov/auth/result'],
+          } }
         end.to(change { WizardStep.count }.by(1))
         expect(logger_double).to have_received(:wizard_step_updated).with(
           { step_name: 'redirects' },
@@ -380,6 +404,15 @@ RSpec.describe ServiceConfigWizardController do
 
         next_step = ServiceConfigWizardController::STEPS[step_index('redirects') + 1]
         expect(response.redirect_url).to eq(service_config_wizard_url(next_step))
+      end
+
+      it 'errors when OIDC has no redirect URIs' do
+        expect do
+          put :update, params: { id: 'redirects', wizard_step: { redirect_uris: [''] } }
+        end.to_not(change { WizardStep.count })
+
+        expect(response).to_not be_redirect
+        expect(assigns[:model].errors[:redirect_uris]).to eq(["can't be blank"])
       end
     end
 
