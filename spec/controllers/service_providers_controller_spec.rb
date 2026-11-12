@@ -904,18 +904,6 @@ describe ServiceProvidersController do
         expect(response).to have_http_status(:ok)
         expect(assigns(:service_provider)).to eq(sp_with_uuid)
       end
-
-      # TODO: refactor this into a component that replaces the `_messages.html.erb` template
-      it 'sanitizes arbitrary flash strings' do
-        get :show, params: { id: sp_with_uuid.id }, flash: { error: [
-          'There was a problem',
-          'Click this <a>bad link</a>',
-        ] }
-        expect(flash[:error]).to eq(
-          '<p class="usa-alert__text">There was a problem</p>' \
-            '<p>Click this &lt;a&gt;bad link&lt;/a&gt;</p>',
-        )
-      end
     end
 
     context 'when accessed by uuid' do

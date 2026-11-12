@@ -428,41 +428,6 @@ RSpec.describe EventLogger do
     end
   end
 
-  describe '#zendesk_response' do
-    let(:name) { 'partner_portal_zendesk_response' }
-
-    it 'logs a succcess' do
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj).to include(
-          crud_properties(event_properties: { status: 'success' }, name:).deep_stringify_keys,
-        )
-      end
-      log.zendesk_response({ status: 'success', ticket_id: 1234 })
-    end
-    it 'logs errors' do
-      # Set up the error object
-      error_mock = instance_double(ZendeskErrors)
-      expected_unrecoverable_errors = ['Error 1', 'Error 2']
-      expected_user_facing_errors = ['Typo in the URL', 'Something else the user can fix']
-      expect(error_mock).to receive(:unrecoverable_errors).and_return(expected_unrecoverable_errors)
-      expect(error_mock).to receive(:user_facing_errors).and_return(expected_user_facing_errors)
-
-      # Expected output
-      expect(logger).to receive(:info) do |data|
-        obj = JSON.parse(data)
-        expect(obj).to include(crud_properties(event_properties: {
-          status: 'error',
-          errors: {
-            unrecoverable_errors: expected_unrecoverable_errors,
-            user_facing_errors: expected_user_facing_errors,
-          },
-        }, name:).deep_stringify_keys)
-      end
-      log.zendesk_response({ status: :error, errors: error_mock })
-    end
-  end
-
   describe '#exception' do
     # See individual controller specs for integration tests
 

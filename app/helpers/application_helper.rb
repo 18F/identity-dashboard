@@ -13,6 +13,6 @@ module ApplicationHelper # :nodoc:
   # TODO: This should be removed in favor of having an error component for flash messages.
   # Don't use this.
   def wrap_in_p_tag(text, css_class: nil)
-    content_tag(:p, text, class: css_class).html_safe # rubocop:disable Rails/OutputSafety
+    content_tag(:p, sanitize(text).html_safe, class: css_class) # rubocop:disable Rails/OutputSafety
   end
 end

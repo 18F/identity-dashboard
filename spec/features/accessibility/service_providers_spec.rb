@@ -114,10 +114,6 @@ feature 'Service provider pages', :js do
     let(:sp) { create(:service_provider, :ready_to_activate, team: team, prod_config: true) }
 
     scenario 'opening the prod promotion form' do
-      skip <<~REASON
-        This test is flaky due to the checks sometimes firing before the modal has finished drawing. When this occurs, the colors are incorrect.
-        We should fix this when we can figure out how to ensure the proper wait time.
-      REASON
       login_as partner_admin
       visit service_provider_path(sp)
       click_on 'Submit a request'
