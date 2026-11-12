@@ -41,14 +41,10 @@ class ServiceProvidersController < AuthenticatedController
         css_class: 'usa-alert__text',
       )
       rest = errors.map do |str|
-        if I18n.exists?(str)
-
-          I18n.t(str)
-        else
-
-          # To be safe, don't mark `html_safe` strings from outside our locale file
-          ERB::Util.html_escape(str)
-        end
+        I18n.t(str)
+      rescue I18n::MissingTranslationData
+        # To be safe, don't mark `html_safe` strings from outside our locale file
+        ERB::Util.html_escape str
       end.join('. ').html_safe
       flash.now[:error] = initial + helpers.wrap_in_p_tag(rest)
     end

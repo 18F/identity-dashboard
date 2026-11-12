@@ -50,7 +50,6 @@ describe ServiceProvidersController do
       end
     end
   end
-
   describe '#create' do
     let(:oidc_params) do
       { identity_protocol: 'openid_connect_pkce', redirect_uris: ['https://example.gov/auth/result'] }
