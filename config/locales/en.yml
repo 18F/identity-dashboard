@@ -10,7 +10,7 @@ en:
     zendesk:
       service_provider_fix: 'Please fix the following problems with your configuration before submitting a request.'
       try_again: Please try again.
-      try_manually_html: You can create a request manually through <a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> instead.
+      try_manually_html: You can create a request manually through <a href="%{url}">this contact form</a> instead.
       unavailable: We are unable to submit requests through this form right now.
       unknown: An unknown error occurred.
   footer:
