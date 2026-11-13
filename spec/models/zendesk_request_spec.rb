@@ -124,7 +124,7 @@ describe ZendeskRequest do
       faraday_stubs.verify_stubbed_calls
     end
 
-    it 'generates errors on failure' do
+    it 'returns unrecoverable error list when an unrecoverble error happens' do
       faraday_stubs.post('/api/v2/requests.json', custom_fields.to_json) do |_env|
         [
           422,
@@ -135,11 +135,41 @@ describe ZendeskRequest do
         ]
       end
 
-      expect(zendesk_request.create_ticket(custom_fields)).to eq({
-        success: false,
-        errors: ['Application URL: is invalid', 'Partner Portal Configuration URL: is invalid'],
-      })
+      result = zendesk_request.create_ticket(custom_fields)
+      expect(result[:success]).to be_falsey
+      expect(result[:errors].messages).to eq(['Partner Portal Configuration URL: is invalid'])
       faraday_stubs.verify_stubbed_calls
+    end
+
+    it 'returns a full error list when errors are all recoverable' do
+      faraday_stubs.post('/api/v2/requests.json', custom_fields.to_json) do |_env|
+        [
+          422,
+          { 'Content-Type' => 'application/json' },
+          # rubocop:disable Layout/LineLength
+          '{"error":"RecordInvalid","description":"Record validation errors","details":{"base":[{"description":"Application URL: is invalid","error":"InvalidValue","field_key":4417940288916},{"description":"Application Description: is invalid","error":"InvalidValue","field_key":5064895580308}]}}',
+          # rubocop:enable Layout/LineLength
+        ]
+      end
+
+      result = zendesk_request.create_ticket(custom_fields)
+      expect(result[:success]).to be_falsey
+      expect(result[:errors].messages).to eq(['Application URL: is invalid',
+                                              'Application Description: is invalid'])
+      faraday_stubs.verify_stubbed_calls
+    end
+
+    it 'handles a rate limit error as unrecoverable' do
+      faraday_stubs.post('/api/v2/requests.json', custom_fields.to_json) do |_env|
+        [
+          429,
+          { 'Content-Type' => 'application/json' },
+          '{"error":"TooManyRequests","description":"Rate limit exceeded"}',
+        ]
+      end
+      result = zendesk_request.create_ticket(custom_fields)
+      expect(result[:success]).to be_falsey
+      expect(result[:errors].messages).to eq(['Rate limit exceeded'])
     end
   end
 end

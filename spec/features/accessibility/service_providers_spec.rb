@@ -107,4 +107,19 @@ feature 'Service provider pages', :js do
       end
     end
   end
+
+  describe 'zendesk form', :js do
+    let(:partner_admin) { create(:team_membership, :partner_admin).user }
+    let(:team) { partner_admin.teams.last }
+    let(:sp) { create(:service_provider, :ready_to_activate, team: team, prod_config: true) }
+
+    scenario 'opening the prod promotion form' do
+      login_as partner_admin
+      visit service_provider_path(sp)
+      click_on 'Submit a request'
+      expect(page).to have_content('Please enter the information below')
+      expect(page).to have_content('Estimated Annual Registrations')
+      expect_page_to_have_no_accessibility_violations(page)
+    end
+  end
 end

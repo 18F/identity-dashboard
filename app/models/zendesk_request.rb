@@ -2,8 +2,8 @@ require 'rails'
 
 # Zendesk ticket Request to deploy configuration to Production
 class ZendeskRequest
-  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
-  ZENDESK_POST_PATH = '/api/v2/requests.json'
+  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'.freeze
+  ZENDESK_POST_PATH = '/api/v2/requests.json'.freeze
 
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
@@ -32,7 +32,7 @@ class ZendeskRequest
       placeholder: nil,
       input_type: 'select',
       options: [
-        { label: 'Ganeral public', value: 'general_public' },
+        { label: 'General public', value: 'general_public' },
         { label: 'Federal civilian employee', value: 'federal_civilian_employee' },
         { label: 'Active duty U.S. military', value: 'active_duty_u.s._military' },
         { label: 'U.S. veteran', value: 'u.s._veteran' },
@@ -154,15 +154,11 @@ class ZendeskRequest
       ticket_id = response.dig('request', 'id')
       { success: true, ticket_id: ticket_id }
     else
-      errors = response.dig('details', 'base')
-      if errors
-        parsed_errors = []
-        errors.each do |e|
-          parsed_errors.push(e['description'])
-        end
-        return { success: false, errors: parsed_errors }
-      end
-      { success: false, errors: [] }
+      errors = ZendeskErrors.new(response.dig('details', 'base'))
+      return { success: false, errors: errors } if errors.any?
+
+      errors = ZendeskErrors.new([response.slice('description')])
+      { success: false, errors: errors }
     end
   end
 

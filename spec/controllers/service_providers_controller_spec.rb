@@ -62,15 +62,15 @@ describe ServiceProvidersController do
     context 'help_text config' do
       # group_id (team) is necessary to create a ServiceProvider.
       it('fills selected default options: blank set') do
-        help_params_0 = { sign_in: { en: 'blank' },
-                          sign_up: { en: 'blank' },
-                          forgot_password: { en: 'blank' } }
+        help_params0 = { sign_in: { en: 'blank' },
+                         sign_up: { en: 'blank' },
+                         forgot_password: { en: 'blank' } }
         post :create, params: { service_provider: {
           **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
-          help_text: help_params_0,
+          help_text: help_params0,
         } }
         sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
 
@@ -100,15 +100,15 @@ describe ServiceProvidersController do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
-        help_params_1 = { sign_in: { en: sign_in_key },
-                          sign_up: { en: sign_up_key },
-                          forgot_password: { en: forgot_password_key } }
+        help_params1 = { sign_in: { en: sign_in_key },
+                         sign_up: { en: sign_up_key },
+                         forgot_password: { en: forgot_password_key } }
         post :create, params: { service_provider: {
           **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
-          help_text: help_params_1,
+          help_text: help_params1,
         } }
         sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
 
@@ -186,15 +186,15 @@ describe ServiceProvidersController do
         sign_in_key = 'piv_cac'
         sign_up_key = 'agency_email'
         forgot_password_key = 'blank'
-        help_params_2 = { sign_in: { en: sign_in_key },
-                          sign_up: { en: sign_up_key },
-                          forgot_password: { en: forgot_password_key } }
+        help_params2 = { sign_in: { en: sign_in_key },
+                         sign_up: { en: sign_up_key },
+                         forgot_password: { en: forgot_password_key } }
         post :create, params: { service_provider: {
           **oidc_params,
           issuer: 'my.issuer.string',
           group_id: user.teams.first.id,
           friendly_name: 'ABC',
-          help_text: help_params_2,
+          help_text: help_params2,
         } }
         sp_help = ServiceProvider.find_by(issuer: 'my.issuer.string')
 
@@ -611,12 +611,12 @@ describe ServiceProvidersController do
         sign_in_key = 'first_time'
         sign_up_key = 'first_time'
         forgot_password_key = 'troubleshoot_html'
-        help_params_1 = { sign_in: { en: sign_in_key },
-                          sign_up: { en: sign_up_key },
-                          forgot_password: { en: forgot_password_key } }
+        help_params1 = { sign_in: { en: sign_in_key },
+                         sign_up: { en: sign_up_key },
+                         forgot_password: { en: forgot_password_key } }
         put :update, params: {
           id: sp.id,
-          service_provider: { issuer: sp.issuer, help_text: help_params_1 },
+          service_provider: { issuer: sp.issuer, help_text: help_params1 },
         }
         sp.reload
 
