@@ -11,12 +11,8 @@ RSpec.describe ZendeskErrors do
     end
 
     it 'returns some message in case of a failure state with no known errors' do
-      expect(subject.initial_text).to eq('An unknown error occurred.')
-      expect(subject.remaining_text).to eq(
-        'You can create a request manually through ' \
-        '<a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> ' \
-        'instead.',
-      )
+      expect(subject.initial_text).to eq('errors.zendesk.unknown')
+      expect(subject.remaining_text).to eq(['errors.zendesk.try_manually_html'])
     end
   end
 
@@ -39,11 +35,13 @@ RSpec.describe ZendeskErrors do
                                                 'Application Description: is invalid'])
       expect(subject.messages).to eq(['Application URL: is invalid',
                                       'Application Description: is invalid'])
-      expect(subject.initial_text).to eq(
-        'Please fix the following problems with your configuration before submitting a request.',
-      )
+      expect(subject.initial_text).to eq('errors.zendesk.service_provider_fix')
       expect(subject.remaining_text).to eq(
-        'Application URL: is invalid. Application Description: is invalid. Please try again.',
+        [
+          'Application URL: is invalid',
+          'Application Description: is invalid',
+          'errors.zendesk.try_again',
+        ],
       )
     end
   end
@@ -66,12 +64,9 @@ RSpec.describe ZendeskErrors do
     it 'returns unrecoverable error information' do
       expect(subject.unrecoverable_errors).to eq(['Partner Portal Configuration URL: is invalid'])
       expect(subject.messages).to eq(['Partner Portal Configuration URL: is invalid'])
-      expect(subject.initial_text).to eq(
-        'We are unable to submit requests through this form right now.',
-      )
+      expect(subject.initial_text).to eq('errors.zendesk.unavailable')
       expect(subject.remaining_text).to eq(
-        'Partner Portal Configuration URL: is invalid. You can create a request manually through ' \
-        '<a href="https://partners.login.gov/hc/en-us/requests/new">this contact form</a> instead.',
+        ['Partner Portal Configuration URL: is invalid', 'errors.zendesk.try_manually_html'],
       )
     end
   end
