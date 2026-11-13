@@ -255,7 +255,8 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.2.1)
-    hashie (5.0.0)
+    hashie (6.0.0)
+      logger
     highline (3.1.2)
       reline
     http-accept (1.7.0)
@@ -364,11 +365,12 @@ GEM
     nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    omniauth (2.1.2)
-      hashie (>= 3.4.6)
-      rack (>= 2.2.3)
-      rack-protection
-    omniauth-rails_csrf_protection (2.0.0)
+    omniauth (2.3.1)
+      hashie (>= 3.5.2)
+      logger
+      rack (>= 2.2.8)
+      rack-protection (>= 2.2.0)
+    omniauth-rails_csrf_protection (2.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
