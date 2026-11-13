@@ -21,7 +21,6 @@ class ServiceConfigWizardController < AuthenticatedController
     draft_service_provider
     show_saml_options?
     show_oidc_options?
-    certs_required?
     show_idv_redirect_urls?
     help_text_presenter
   ]
@@ -168,11 +167,7 @@ class ServiceConfigWizardController < AuthenticatedController
   end
 
   def show_oidc_options?
-    @model.oidc?
-  end
-
-  def certs_required?
-    @model.saml? || @model.openid_connect_private_key_jwt?
+    !show_saml_options?
   end
 
   def show_idv_redirect_urls?

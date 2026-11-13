@@ -2,8 +2,8 @@ require 'rails'
 
 # Zendesk ticket Request to deploy configuration to Production
 class ZendeskRequest
-  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'.freeze
-  ZENDESK_POST_PATH = '/api/v2/requests.json'.freeze
+  ZENDESK_BASE_URL = 'https://logingov.zendesk.com'
+  ZENDESK_POST_PATH = '/api/v2/requests.json'
 
   ZENDESK_TICKET_FORM_ID = 5663417357332
 
@@ -32,7 +32,7 @@ class ZendeskRequest
       placeholder: nil,
       input_type: 'select',
       options: [
-        { label: 'General public', value: 'general_public' },
+        { label: 'Ganeral public', value: 'general_public' },
         { label: 'Federal civilian employee', value: 'federal_civilian_employee' },
         { label: 'Active duty U.S. military', value: 'active_duty_u.s._military' },
         { label: 'U.S. veteran', value: 'u.s._veteran' },
@@ -92,31 +92,21 @@ class ZendeskRequest
     },
   }.freeze
 
-  attr_reader :portal_url, :requestor, :service_provider, :custom_fields
+  attr_accessor :portal_url, :requestor, :service_provider
 
   def initialize(user, portal_url, service_provider)
     @requestor = user
     @portal_url = portal_url
-    @custom_fields = {}
-    add_fields_from_config(service_provider)
-  end
-
-  def add_fields_from_config(service_provider)
     @service_provider = service_provider
-    ZendeskRequest::ZENDESK_TICKET_FIELD_FUNCTIONS.each do |id, proc|
-      @custom_fields[id] = proc.call(service_provider)
-    end
-    @custom_fields[ZENDESK_IAL_VALUE_ID] = ial_value
   end
 
-  def add_fields_from_params(params)
-    ZENDESK_TICKET_FIELD_INFORMATION.each_key do |key|
-      @custom_fields[key] = params[:service_provider][key.to_s.to_sym]
-    end
+  def ticket_field_functions
+    ZENDESK_TICKET_FIELD_FUNCTIONS
   end
 
-  def fields
-    @custom_fields[ZENDESK_PORTAL_URL_ID] = portal_url
+  def build_zendesk_ticket(custom_fields)
+    custom_fields << portal_url_value
+    custom_fields << ial_value
 
     {
       request: {
@@ -129,37 +119,10 @@ class ZendeskRequest
           body: ticket_body,
         },
         ticket_form_id: ZENDESK_TICKET_FORM_ID,
-        custom_fields: custom_fields.map { |id, value| { id:, value: } },
+        custom_fields: custom_fields,
       },
     }
   end
-
-  # @return [Hash<Symbol=>Symbol,String>] Always includes a `status:` key that has value `:success`
-  # if the ticket was created.
-  def create_ticket
-    resp = connection.post(ZENDESK_POST_PATH) { |req| req.body = fields.to_json }
-    response = JSON.parse(resp.body)
-
-    if resp.status == 201
-      ticket_id = response.dig('request', 'id')
-      { status: :success, ticket_id: ticket_id }
-    else
-      errors = ZendeskErrors.new(response.dig('details', 'base'))
-      return { status: :error, errors: errors } if errors.any?
-
-      errors = ZendeskErrors.new([response.slice('description')])
-      { status: :error, errors: errors }
-    end
-  end
-
-  def connection
-    @connection ||= Faraday.new(
-      url: ZENDESK_BASE_URL,
-      headers: { 'Content-Type' => 'application/json' },
-    )
-  end
-
-  private
 
   def ticket_subject
     "Deploy #{@service_provider.friendly_name} to Production"
@@ -169,12 +132,44 @@ class ZendeskRequest
     "Please deploy #{@service_provider.friendly_name} to the Login.gov Production Environment"
   end
 
+  def portal_url_value
+    { id: ZENDESK_PORTAL_URL_ID, value: @portal_url }
+  end
+
   def ial_value
-    case service_provider.ial
-    when 1, nil
-      I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
-    when 2
-      I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
+    ial_value = case @service_provider.ial
+                when 1, nil
+                  I18n.t('service_provider_form.zendesk_ticket.ial_option_1')
+                when 2
+                  I18n.t('service_provider_form.zendesk_ticket.ial_option_2')
+                end
+    { id: ZENDESK_IAL_VALUE_ID, value: ial_value }
+  end
+
+  def create_ticket(ticket_data)
+    resp = connection.post(ZENDESK_POST_PATH) { |req| req.body = ticket_data.to_json }
+    response = JSON.parse(resp.body)
+
+    if resp.status == 201
+      ticket_id = response.dig('request', 'id')
+      { success: true, ticket_id: ticket_id }
+    else
+      errors = response.dig('details', 'base')
+      if errors
+        parsed_errors = []
+        errors.each do |e|
+          parsed_errors.push(e['description'])
+        end
+        return { success: false, errors: parsed_errors }
+      end
+      { success: false, errors: [] }
     end
+  end
+
+  def connection
+    @connection ||= Faraday.new(
+      url: ZENDESK_BASE_URL,
+      headers: { 'Content-Type' => 'application/json' },
+    )
   end
 end

@@ -3,18 +3,18 @@
     class="usa-modal usa-modal--lg"
     id="additional-data-modal"
     aria-labelledby="modal-1-heading"
-    aria-describedby="modal-1-heading"
+    aria-describedby="modal-1-description"
   >
     <div class="usa-modal__content">
       <div class="usa-modal__main">
         <h2 class="usa-modal__heading" id="modal-1-heading">
           Please enter the information below to submit your request to deploy.
         </h2>
-        <%= form_with model: @service_provider, url: promotion_requests_path, method: :post do |form| %>
+        <%= form_with model: @service_provider, url: service_providers_prod_request_path(@service_provider), method: :post do |form| %>
           <%= form.hidden_field :id, value: @service_provider.id %>
           <% ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.each do |id, field_info| %>
             <div class="form-group">
-              <label class="<%= "usa-label required" %>" for="<%= "#{form.object_name}_#{id}" %>">
+              <label class="<%= "usa-label required" %>">
                 <%= t("service_provider_form.zendesk_ticket.#{field_info[:label]}.label") %>
                 <%= t('simple_form.required.html') %>
               </label>

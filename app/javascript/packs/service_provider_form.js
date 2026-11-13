@@ -62,8 +62,6 @@ function protocolOptionSetup() {
   const activeIdProtocol = document.querySelector('input[name="service_provider[identity_protocol]"]:checked');
   const samlFields = document.querySelectorAll('.saml-fields');
   const oidcFields = document.querySelectorAll('.oidc-fields');
-  const privateKeyJwtFields = document.querySelectorAll('.private-key-jwt-fields');
-  const certificatesLabel = document.getElementById('certificates-label');
   const spAcsUrl = document.getElementById('service_provider_acs_url');
   const returnToSpUrl = document.getElementById('service_provider_return_to_sp_url');
 
@@ -81,9 +79,6 @@ function protocolOptionSetup() {
   };
 
   const toggleFormFields = (protocol) => {
-    const isPrivateKeyJwt = protocol === 'openid_connect_private_key_jwt';
-    privateKeyJwtFields.forEach(isPrivateKeyJwt ? showElement : hideElement);
-    certificatesLabel.classList.toggle('usa-input-required', isPrivateKeyJwt);
     switch (protocol) {
       case 'openid_connect_private_key_jwt':
       case 'openid_connect_pkce':

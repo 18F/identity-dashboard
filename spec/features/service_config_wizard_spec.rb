@@ -78,13 +78,11 @@ feature 'Service Config Wizard' do
       expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
       expect(find('#wizard_step_friendly_name').value).to eq(test_name)
       click_on 'Next' # /protocol
-      choose 'OpenID Connect PKCE'
       click_on 'Next' # /authentication
       click_on 'Next' # /issuer
       fill_in('Issuer', with: issuer_name)
       click_on 'Next' # /logo_and_cert
       click_on 'Next' # /redirects
-      fill_in('wizard_step[redirect_uris][]', with: 'https://example.gov/auth/result')
       click_on 'Next' # /help_text
       HelpText::UI_CONTEXTS.each do |context|
         HelpText::LOCALES.each do |locale|
@@ -308,13 +306,11 @@ feature 'Service Config Wizard' do
         expect(current_step.text).to match(t('service_provider_form.wizard_steps.settings'))
         expect(find('#wizard_step_friendly_name').value).to eq(test_name)
         click_on 'Next' # /protocol
-        choose 'OpenID Connect PKCE'
         click_on 'Next' # /authentication
         click_on 'Next' # /issuer
         fill_in('Issuer', with: issuer_name)
         click_on 'Next' # /logo_and_cert
         click_on 'Next' # /redirects
-        fill_in('wizard_step[redirect_uris][]', with: 'https://example.gov/auth/result')
         click_on 'Next' # /help_text
         HelpText::UI_CONTEXTS.each do |context|
           HelpText::LOCALES.each do |locale|
@@ -532,7 +528,7 @@ feature 'Service Config Wizard' do
       fill_in('Friendly name', with: test_name)
       click_on 'Next'
       visit service_config_wizard_path('protocol')
-      choose 'OpenID Connect PKCE'
+      choose ['OpenID Connect Private Key JWT', 'OpenID Connect PKCE'].sample
       click_on 'Next'
     end
 

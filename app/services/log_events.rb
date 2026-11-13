@@ -171,18 +171,4 @@ module LogEvents
   def wizard_step_updated(step_name:)
     track_event('partner_portal_wizard_step_updated', step_name:)
   end
-
-  # Log zendesk responses
-  # @param response [Hash<Symbol,Symbol|ZendeskErrors>]
-  def zendesk_response(response)
-    status, errors = response.values_at(:status, :errors)
-    details = {}
-    if errors
-      details[:errors] = {
-        user_facing_errors: errors.user_facing_errors,
-        unrecoverable_errors: errors.unrecoverable_errors,
-      }
-    end
-    track_event('partner_portal_zendesk_response', { status: }.merge(details))
-  end
 end

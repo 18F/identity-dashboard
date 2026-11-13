@@ -34,8 +34,8 @@ Rails.application.routes.draw do
   get '/service_providers/all' => 'service_providers#all'
   get '/service_providers/deleted' => 'service_providers#deleted'
   post '/service_providers/publish' => 'service_providers#publish'
+  post '/service_providers/prod_request' => 'service_providers#prod_request'
   resources :service_providers
-  resources :promotion_requests, only: :create
 
   get '/security_events/all' => 'security_events#all'
   post '/security_events/search' => 'security_events#search'
@@ -55,6 +55,13 @@ Rails.application.routes.draw do
 
   # preserve old Groups route
   get '/groups/:id', to: redirect('/teams/%{id}')
+
+  # airtable
+  get '/airtable' => 'airtable#index'
+  get '/airtable/get_partner_admins_for_issuer' => 'airtable#issuer_lookup'
+  get '/airtable/oauth/redirect' => 'airtable#oauth_redirect'
+  get '/airtable/oauth/refresh_token' => 'airtable#refresh_token'
+  get '/airtable/oauth/clear_token' => 'airtable#clear_token'
 
   # salesforce
   get '/salesforce' => 'salesforce#index'

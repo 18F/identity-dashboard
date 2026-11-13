@@ -3,7 +3,7 @@
 class ServiceProvidersController < AuthenticatedController
   include ModelChanges
 
-  before_action -> { authorize ServiceProvider }, only: %i[index all deleted]
+  before_action -> { authorize ServiceProvider }, only: %i[index all deleted prod_request]
   before_action -> { authorize service_provider }, only: %i[show edit update destroy]
   before_action :verify_environment_permissions, only: %i[new create]
 
@@ -29,30 +29,6 @@ class ServiceProvidersController < AuthenticatedController
   end
 
   def show
-    errors = flash[:error]
-
-    # This works around flaky limitations of long flash strings that don't show up in the test suite
-    # TODO: refactor this into a component that replaces the `_messages.html.erb` template
-    if errors.present? && errors.respond_to?(:each_with_object)
-      initial = errors.shift
-      # fall back to the literal value if a string doesn't exist
-      initial = helpers.wrap_in_p_tag(
-        I18n.t(initial, default: initial),
-        css_class: 'usa-alert__text',
-      )
-      rest = errors.map do |str|
-        if I18n.exists?(str)
-
-          I18n.t(str)
-        else
-
-          # To be safe, don't mark `html_safe` strings from outside our locale file
-          ERB::Util.html_escape(str)
-        end
-      end.join('. ').html_safe
-      flash.now[:error] = initial + helpers.wrap_in_p_tag(rest)
-    end
-
     @service_provider_versions = policy_scope(@service_provider.versions).reverse_order
     @show_status_indicator = IdentityConfig.store.prod_like_env &&
                              service_provider.prod_config? &&
@@ -139,6 +115,41 @@ class ServiceProvidersController < AuthenticatedController
     @service_providers = deleted_service_providers
   end
 
+  def prod_request
+    @service_provider ||= policy_scope(ServiceProvider).find_by(id: params[:service_provider][:id])
+    portal_url = Rails.application.routes.url_helpers.service_provider_url(
+      @service_provider,
+      host: request.host,
+    )
+
+    zendesk_request = ZendeskRequest.new(current_user, portal_url, @service_provider)
+
+    ticket_custom_fields = []
+    zendesk_request.ticket_field_functions.each_with_object({}) do |(id, func), _result|
+      ticket_custom_fields.push({
+        id: id,
+        value: func.to_proc.call(@service_provider),
+      })
+    end
+
+    ZendeskRequest::ZENDESK_TICKET_FIELD_INFORMATION.keys.each do |key|
+      ticket_custom_fields.push({ id: key, value: params[:service_provider][key.to_s.to_sym] })
+    end
+
+    ticket_data = zendesk_request.build_zendesk_ticket(ticket_custom_fields)
+
+    creation_status = zendesk_request.create_ticket(ticket_data)
+
+    if creation_status[:success] == true
+      flash[:success] = "Request submitted successfully. Ticket ##{creation_status[:ticket_id]} \
+        has been created on your behalf, replies will be sent to #{current_user.email}."
+    else
+      flash[:error] =
+        "Unable to submit request. #{creation_status[:errors].join(', ')}. Please try again."
+    end
+    redirect_to action: 'show', id: @service_provider.id
+  end
+
   private
 
   def service_provider
@@ -154,7 +165,7 @@ class ServiceProvidersController < AuthenticatedController
 
   def help_text_presenter
     @help_text_presenter ||= begin
-      if params.key?(:service_provider)
+      if params.has_key?(:service_provider)
         text_params = permitted_attributes(service_provider)[:help_text]
       end
       HelpTextPresenter.new(
