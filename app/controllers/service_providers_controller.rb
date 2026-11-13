@@ -32,7 +32,8 @@ class ServiceProvidersController < AuthenticatedController
     errors = flash[:error]
 
     # This works around flaky limitations of long flash strings that don't show up in the test suite
-    # TODO: refactor this into a component that replaces the `_messages.html.erb` template
+    # TODO: refactor this error handlinginto a component that replaces
+    #       the `_messages.html.erb` template
     if errors.present? && errors.respond_to?(:each_with_object)
       initial = errors.shift
       # fall back to the literal value if a string doesn't exist
@@ -43,7 +44,7 @@ class ServiceProvidersController < AuthenticatedController
       rest = errors.map do |str|
         if I18n.exists?(str)
 
-          I18n.t(str)
+          I18n.t(str, url: ZendeskRequest.link_to_show_partners)
         else
           # To be safe, don't mark `html_safe` strings from outside our locale file
           ERB::Util.html_escape(str)

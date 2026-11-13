@@ -78,7 +78,33 @@ feature 'requesting a promotion to production' do
 
       expect(page).to have_content('An unknown error occurred.')
       expect(page).to have_content('You can create a request manually through')
-      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new')
+      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332')
+    end
+
+    it 'uses different form info in prod_like_env', :js do
+      allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+      expected_body = expected_body_with_reasonable_data(partner_admin, sp)
+      change_type = expected_body[:request][:custom_fields].find do |field|
+        field[:id] == 4417169610388
+      end
+      change_type[:value] = 'integration_change'
+      stub_request(:post, "#{ZendeskRequest::ZENDESK_BASE_URL}#{ZendeskRequest::ZENDESK_POST_PATH}")
+        .with(
+          body: expected_body,
+        ).to_return(
+          status: 500,
+          body: '{"error":"something weird happened"}',
+        )
+
+      click_on 'Submit a request'
+      expect(page).to have_content('Please enter the information below')
+
+      fill_in_reasonable_data
+      click_on 'Submit Request'
+
+      expect(page).to have_content('An unknown error occurred.')
+      expect(page).to have_content('You can create a request manually through')
+      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new?ticket_form_id=5664085973908')
     end
 
     it 'handles a failure on our side', :js do
@@ -108,7 +134,7 @@ feature 'requesting a promotion to production' do
       expect(page).to have_content('We are unable to submit requests through this form right now.')
       expect(page).to have_content('You can create a request manually through')
 
-      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new')
+      expect(page).to have_link('this contact form', href: 'https://partners.login.gov/hc/en-us/requests/new?ticket_form_id=5663417357332')
 
       expect(page).to have_current_path(service_provider_path(sp))
     end

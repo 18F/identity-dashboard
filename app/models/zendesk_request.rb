@@ -5,7 +5,8 @@ class ZendeskRequest
   ZENDESK_BASE_URL = 'https://logingov.zendesk.com'.freeze
   ZENDESK_POST_PATH = '/api/v2/requests.json'.freeze
 
-  ZENDESK_TICKET_FORM_ID = 5663417357332
+  ZENDESK_NEW_DEPLOY_FORM_ID = 5663417357332
+  ZENDESK_TICKET_UPDATE_EXISTING_FORM_ID = 5664085973908
 
   ZENDESK_TICKET_FIELD_FUNCTIONS = {
     4418412738836 => ->(record) { record.agency.name.parameterize.underscore }, # Agency
@@ -94,6 +95,16 @@ class ZendeskRequest
 
   attr_reader :portal_url, :requestor, :service_provider, :custom_fields
 
+  def self.link_to_show_partners
+    "https://partners.login.gov/hc/en-us/requests/new?ticket_form_id=#{
+      if IdentityConfig.store.prod_like_env
+        ZENDESK_TICKET_UPDATE_EXISTING_FORM_ID
+      else
+        ZENDESK_NEW_DEPLOY_FORM_ID
+      end
+    }"
+  end
+
   def initialize(user, portal_url, service_provider)
     @requestor = user
     @portal_url = portal_url
@@ -128,7 +139,7 @@ class ZendeskRequest
         comment: {
           body: ticket_body,
         },
-        ticket_form_id: ZENDESK_TICKET_FORM_ID,
+        ticket_form_id: ZENDESK_NEW_DEPLOY_FORM_ID,
         custom_fields: custom_fields.map { |id, value| { id:, value: } },
       },
     }
