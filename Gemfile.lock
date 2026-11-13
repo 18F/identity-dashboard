@@ -178,7 +178,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
-    browser (6.0.0)
+    browser (6.2.0)
     builder (3.3.0)
     bullet (8.2.0)
       activesupport (>= 3.0.0)
