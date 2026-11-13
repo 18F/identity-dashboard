@@ -240,7 +240,6 @@ describe Teams::UsersController do
           context 'when one entry needs partner admin confirmation' do
             before do
               allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-              allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
               create(:service_provider, team:)
               salesforce_double = instance_double(SalesforceService)
               allow(SalesforceService).to receive(:new).and_return(salesforce_double)
@@ -282,7 +281,6 @@ describe Teams::UsersController do
           context 'when a verified partner admin is added to a team without service providers' do
             before do
               allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-              allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
               salesforce_double = instance_double(SalesforceService)
               allow(SalesforceService).to receive(:new).and_return(salesforce_double)
               allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(true)
@@ -543,11 +541,8 @@ describe Teams::UsersController do
       end
 
       describe '#new' do
-        context 'when Salesforce is enabled and there is no Airtable token' do
-          before do
-            allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-            allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
-          end
+        context 'in prod_like_env' do
+          before { allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true) }
 
           it 'offers partner_admin as a role option' do
             get :new, params: { team_id: team.id }

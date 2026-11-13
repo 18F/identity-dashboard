@@ -35,6 +35,7 @@ feature 'Service Providers CRUD' do
       check 'email'
       check 'first_name'
       check 'verified_at'
+      fill_in 'service_provider_redirect_uris', with: 'https://example.gov/auth/result'
 
       Tempfile.create(['cert', '.crt']) do |tmp|
         File.write(tmp.path, build_pem)
@@ -136,7 +137,6 @@ feature 'Service Providers CRUD' do
       service_provider = create(:service_provider, team:)
 
       visit edit_service_provider_path(service_provider)
-      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
       select other_team.name, from: 'service_provider_group_id'
       click_on 'Update'
 
@@ -149,7 +149,7 @@ feature 'Service Providers CRUD' do
       service_provider = create(:service_provider, team:)
 
       visit edit_service_provider_path(service_provider)
-      fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
+      page.first('[name="service_provider[redirect_uris][]"]').set 'https://foo.com'
       click_on 'Update'
       expect(page).to have_current_path(service_provider_path(service_provider))
       expect(page).to have_content 'https://foo.com'
@@ -227,6 +227,7 @@ feature 'Service Providers CRUD' do
 
         submit_btn = find('input[name="commit"]')
         submit_btn.click
+        expect(page).to have_current_path(service_provider_path(service_provider))
         expect(page).to_not have_content("can't be blank")
         expect(page).to_not have_css('.usa-error-message')
       end
@@ -249,12 +250,13 @@ feature 'Service Providers CRUD' do
 
         submit_btn = find('input[name="commit"]')
         submit_btn.click
+        expect(page).to have_current_path(service_provider_path(service_provider))
         expect(page).to_not have_css('.usa-error-message')
       end
     end
 
     describe 'Redirects are validated' do
-      let(:service_provider) { create(:service_provider, :saml, team:) }
+      let(:service_provider) { create(:service_provider, :saml, team:, redirect_uris: []) }
 
       before do
         visit edit_service_provider_path(service_provider)
@@ -340,7 +342,7 @@ feature 'Service Providers CRUD' do
     end
 
     scenario 'can update saml service provider with multiple redirect uris', :js do
-      service_provider = create(:service_provider, :saml, team:)
+      service_provider = create(:service_provider, :saml, team:, redirect_uris: [])
 
       visit edit_service_provider_path(service_provider)
       fill_in 'service_provider_redirect_uris', with: 'https://foo.com'
@@ -512,6 +514,17 @@ allow_label_click: true)
       expect(page).to have_content(strip_tags(t('service_provider_form.redirect_uris_oidc_html')))
     end
 
+    scenario 'certificates are required only for oidc private_key_jwt', :js do
+      visit new_service_provider_path
+
+      choose('service_provider_identity_protocol_openid_connect_private_key_jwt',
+             allow_label_click: true)
+      expect(page).to have_css('#certificates-label.usa-input-required')
+
+      choose('service_provider_identity_protocol_openid_connect_pkce', allow_label_click: true)
+      expect(page).to_not have_css('#certificates-label.usa-input-required')
+    end
+
     scenario 'IAL1 attributes shown when IAL1 is selected', :js do
       visit new_service_provider_path
       select(I18n.t('service_provider_form.ial_option_1'), from: 'Level of Service')
@@ -654,6 +667,8 @@ allow_label_click: true)
                         match: :prefer_exact
       check 'email'
       check 'verified_at'
+      choose 'OpenID Connect PKCE'
+      fill_in 'service_provider_redirect_uris', with: 'https://example.gov/auth/result'
       click_on 'Create'
 
       expect(page).to have_content(I18n.t('notices.service_providers_refreshed_new'))
@@ -835,6 +850,7 @@ allow_label_click: true)
 
       let(:sp) do
         create(:service_provider,
+               :with_oidc_pkce,
                team: team,
                certs: [build_pem(serial: existing_serial)])
       end

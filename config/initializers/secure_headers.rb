@@ -12,7 +12,7 @@ SecureHeaders::Configuration.default do |config|
                   ["'self'", '*.identitysandbox.gov']
                 end
   form_action << %w[localhost:3000] if Rails.env.development?
-  connect_src = ["'self'", 'https://www.google-analytics.com']
+  connect_src = ["'self'", 'https://*.qualtrics.com', 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
   script_src = [
     "'self'",
@@ -21,9 +21,10 @@ SecureHeaders::Configuration.default do |config|
     'https://dap.digitalgov.gov',
     'https://www.google-analytics.com',
     'https://www.googletagmanager.com',
+    'https://*.siteintercept.qualtrics.com',
   ]
   style_src = ["'self'"]
-  img_src = ["'self'", 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"]
+  img_src = ["'self'", 'https://*.qualtrics.com', 'data:', "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com"]
 
   if Rails.env.development?
     script_src.push('ajax.googleapis.com')
@@ -35,8 +36,8 @@ SecureHeaders::Configuration.default do |config|
 
   config.csp = {
     default_src: ["'self'"],
-    frame_src: ["'self'", 'https://feedback.gsa.gov'], # deprecated in CSP 2.0
-    child_src: ["'self'", 'https://feedback.gsa.gov'], # CSP 2.0 only; replaces frame_src
+    frame_src: ["'self'", 'https://*.qualtrics.com'], # deprecated in CSP 2.0
+    child_src: ["'self'", 'https://*.qualtrics.com'], # CSP 2.0 only; replaces frame_src
     form_action: form_action.flatten,
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:'],

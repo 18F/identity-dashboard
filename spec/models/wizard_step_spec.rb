@@ -79,6 +79,28 @@ RSpec.describe WizardStep, type: :model do
     end
   end
 
+  describe '#oidc?' do
+    subject { build(:wizard_step, step_name: 'protocol', wizard_form_data: { identity_protocol: }) }
+
+    context 'with openid_connect_pkce' do
+      let(:identity_protocol) { 'openid_connect_pkce' }
+
+      it { is_expected.to be_oidc }
+    end
+
+    context 'with openid_connect_private_key_jwt' do
+      let(:identity_protocol) { 'openid_connect_private_key_jwt' }
+
+      it { is_expected.to be_oidc }
+    end
+
+    context 'with saml' do
+      let(:identity_protocol) { 'saml' }
+
+      it { is_expected.to_not be_oidc }
+    end
+  end
+
   context 'step "settings"' do
     subject { build(:wizard_step, step_name: 'settings') }
 
@@ -283,6 +305,10 @@ RSpec.describe WizardStep, type: :model do
       subject { build(:wizard_step, step_name: 'logo_and_cert') }
 
       it 'is valid with blank wizard_form_data' do
+        create(:wizard_step, user: subject.user, step_name: 'protocol', wizard_form_data: {
+          identity_protocol: 'openid_connect_pkce',
+        })
+
         expect(subject.wizard_form_data['certs']).to be_empty
         expect(subject.wizard_form_data['logo_name']).to be_empty
         expect(subject.wizard_form_data['remote_logo_key']).to be_empty
@@ -364,6 +390,12 @@ RSpec.describe WizardStep, type: :model do
     end
 
     describe '#valid?' do
+      before do
+        create(:wizard_step, user: redirects_user, step_name: 'protocol', wizard_form_data: {
+          identity_protocol: 'saml',
+        })
+      end
+
       it 'validates good URLs' do
         subject.wizard_form_data = {
           push_notification_url: 'https://good.gov/',

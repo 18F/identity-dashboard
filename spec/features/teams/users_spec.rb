@@ -218,10 +218,7 @@ describe 'users' do
     context 'mock Salesforce response' do
       let(:salesforce_double) { instance_double(SalesforceService) }
 
-      before do
-        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
-        allow(SalesforceService).to receive(:new).and_return(salesforce_double)
-      end
+      before { allow(SalesforceService).to receive(:new).and_return(salesforce_double) }
 
       it 'adds the user when verified as a partner admin in Salesforce' do
         allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(true)
@@ -286,24 +283,6 @@ describe 'users' do
         expect(admin_membership.role_name).to eq('partner_admin')
       end
     end
-
-    context 'when Salesforce is disabled' do
-      let(:airtable_double) { instance_double(Airtable) }
-
-      before do
-        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
-        allow(Airtable).to receive(:new).and_return(airtable_double)
-        allow(airtable_double).to receive(:has_token?).and_return(true)
-      end
-
-      it 'adds the user as partner admin without any create-time verification' do
-        add_team_user(team, email: new_email, role_friendly_name: partner_admin_role.friendly_name)
-
-        expect(page).to have_content(I18n.t('teams.users.create.success', email: new_email))
-        new_membership = team_membership_for(new_email, team)
-        expect(new_membership.role_name).to eq('partner_admin')
-      end
-    end
   end
 
   describe 'adding a partner admin to a team with no service providers' do
@@ -315,7 +294,6 @@ describe 'users' do
     before do
       login_as logingov_admin
       allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-      allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
       allow(SalesforceService).to receive(:new).and_return(salesforce_double)
       allow(salesforce_double).to receive(:partner_admin_for_team?).and_return(false)
     end
@@ -453,9 +431,6 @@ describe 'users' do
       before do
         logingov_readonly # initialize for the Internal Team
         login_as logingov_admin
-        allow(Rails.cache).to receive(:read)
-          .with("#{partner_admin_team_member.uuid}.airtable_oauth_token")
-          .and_return('access_token')
       end
 
       context 'on production' do
@@ -549,26 +524,6 @@ describe 'users' do
         expect(actual_unchanged_role).to eq(expected_unchanged_role)
       end
 
-      it 'requires confirmation when no service providers associated with team' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        membership = TeamMembership.find_by(user: readonly_team_member, team: team)
-        visit team_users_path(team)
-        within('tr', text: readonly_team_member.email) do
-          click_on 'Edit'
-        end
-        partner_admin_role = Role.find_by!(name: 'partner_admin')
-        choose partner_admin_role.friendly_name
-        click_on 'Update'
-
-        expect(page).to have_current_path(
-          edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
-        )
-        expect(page).to have_content(
-          'Please verify with the appropriate Account Manager that this user should',
-        )
-        expect(membership.reload.role_name).to eq('partner_readonly')
-      end
-
       it 'requires confirmation when user is not a verified partner admin' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
         allow_any_instance_of(Teams::UsersController)
@@ -632,61 +587,11 @@ describe 'users' do
         expect(membership.reload.role_name).to eq('partner_admin')
       end
 
-      context('mock Airtable response') do
-        let(:airtable_double) { instance_double(Airtable) }
-
-        before do
-          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-          allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(false)
-          allow(Airtable).to receive(:new).and_return(airtable_double)
-          allow(airtable_double).to receive(:has_token?).and_return(true)
-          allow(airtable_double).to receive(:build_redirect_uri).and_return('some/path/')
-          allow(airtable_double).to receive(:needs_refreshed_token?).and_return(false)
-          allow(airtable_double).to receive(:refresh_token_if_needed).and_return(true)
-          allow(airtable_double).to receive(:get_matching_records).and_return({ test: true })
-        end
-
-        it 'does not require confirmation when email is in Airtable' do
-          allow(airtable_double).to receive(:new_partner_admin_in_airtable?).and_return(true)
-
-          create(:service_provider, team:)
-          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
-          edit_team_membership_role(
-            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
-          )
-
-          expect(page).to have_current_path(team_users_path(team))
-          expect(page).to_not have_content(
-            'Please verify with the appropriate Account Manager that this user should',
-          )
-          expect(membership.reload.role_name).to eq('partner_admin')
-        end
-
-        it 'does requires confirmation when email is missing from Airtable' do
-          allow(airtable_double).to receive(:new_partner_admin_in_airtable?).and_return(false)
-
-          create(:service_provider, team:)
-          membership = TeamMembership.find_by(user: readonly_team_member, team: team)
-          edit_team_membership_role(
-            team, readonly_team_member, role_friendly_name: partner_admin_role.friendly_name
-          )
-
-          expect(page).to have_current_path(
-            edit_team_user_path(team, readonly_team_member, need_to_confirm_role: true),
-          )
-          expect(page).to have_content(
-            'Please verify with the appropriate Account Manager that this user should',
-          )
-          expect(membership.reload.role_name).to eq('partner_readonly')
-        end
-      end
-
       context('mock Salesforce response') do
         let(:salesforce_double) { instance_double(SalesforceService) }
 
         before do
           allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-          allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
           allow(SalesforceService).to receive(:new).and_return(salesforce_double)
         end
 
@@ -753,14 +658,6 @@ describe 'users' do
 
     context 'when partner admin' do
       before { login_as partner_admin_team_member }
-
-      it 'does not show Airtable OAuth message on team/users/edit in prod_like_env' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-
-        visit edit_team_user_path(team, team_member)
-
-        expect(page).to_not have_content('you must first connect with Airtable')
-      end
 
       it 'does not show edit button for self' do
         editable_user = [team_member, readonly_team_member].sample
@@ -839,33 +736,10 @@ describe 'users' do
       end
     end
 
-    context 'user has not connected with airtable' do
-      before do
-        login_as logingov_admin
-        Rails.cache.clear
-      end
+    context 'when login.gov admin on sandbox' do
+      before { login_as logingov_admin }
 
-      it 'requirements to connect with airtable before allowing partner admin in prod_like_env' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        team_users = [partner_admin_team_member, readonly_team_member]
-
-        user_to_change = team_users.sample
-        old_role = TeamMembership.find_by(user: user_to_change, team: team).role
-        (Role.all - [Role::LOGINGOV_ADMIN, Role::LOGINGOV_READONLY, old_role]).sample
-
-        user_to_not_change = (team_users - [user_to_change]).first
-        TeamMembership.find_by(user: user_to_not_change, team: team).role
-
-        visit team_users_path(team)
-
-        within('tr', text: user_to_change.email) do
-          click_on 'Edit'
-        end
-
-        expect(page).to have_content('you must first connect with Airtable')
-      end
-
-      it 'allows partner admin in non prod_like_env without airtable' do
+      it 'allows partner admin in non prod_like_env' do
         allow(IdentityConfig.store).to receive(:prod_like_env).and_return(false)
         team_users = [partner_admin_team_member, readonly_team_member]
 
@@ -883,20 +757,6 @@ describe 'users' do
         end
 
         expect(page).to have_content('Can add and delete users and teams')
-      end
-
-      it 'does not show the Airtable message or contact Airtable when Salesforce is enabled' do
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        allow(IdentityConfig.store).to receive(:salesforce_api_enabled).and_return(true)
-        member_email = partner_admin_team_member.email
-        expect(Airtable).to_not receive(:new)
-
-        visit team_users_path(team)
-        within('tr', text: member_email) do
-          click_on 'Edit'
-        end
-
-        expect(page).to_not have_content('connect with Airtable')
       end
     end
   end
