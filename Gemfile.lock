@@ -483,9 +483,9 @@ GEM
       tsort
     redacted_struct (2.0.0)
     redcarpet (3.6.1)
-    redis (5.4.1)
-      redis-client (>= 0.22.0)
-    redis-client (0.26.1)
+    redis (6.0.0)
+      redis-client (= 0.30.1)
+    redis-client (0.30.1)
       connection_pool
     regexp_parser (2.11.3)
     reline (0.7.0)
