@@ -11,6 +11,9 @@ SecureHeaders::Configuration.default do |config|
                 else
                   ["'self'", '*.identitysandbox.gov']
                 end
+  # The Qualtrics site intercept injects a form into this page that POSTs the
+  # survey to feedback.gsa.gov.
+  form_action << 'https://feedback.gsa.gov'
   form_action << %w[localhost:3000] if Rails.env.development?
   connect_src = ["'self'", 'https://*.qualtrics.com', 'https://www.google-analytics.com']
   connect_src << %w[ws://localhost:3036 http://localhost:3036] if Rails.env.development?
