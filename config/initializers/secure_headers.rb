@@ -36,8 +36,8 @@ SecureHeaders::Configuration.default do |config|
 
   config.csp = {
     default_src: ["'self'"],
-    frame_src: ["'self'", 'https://*.qualtrics.com'], # deprecated in CSP 2.0
-    child_src: ["'self'", 'https://*.qualtrics.com'], # CSP 2.0 only; replaces frame_src
+    frame_src: ["'self'", 'https://*.qualtrics.com', 'https://feedback.gsa.gov'], # deprecated in CSP 2.0
+    child_src: ["'self'", 'https://*.qualtrics.com', 'https://feedback.gsa.gov'], # CSP 2.0 only; replaces frame_src
     form_action: form_action.flatten,
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:'],
