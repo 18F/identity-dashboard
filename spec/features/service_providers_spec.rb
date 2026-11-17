@@ -945,29 +945,38 @@ allow_label_click: true)
         expect(page).to have_css("a[href='#{prod_url}']")
       end
 
-      it 'displays the production form button when its feature flag is on' do
-        allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(true)
-        visit service_provider_path(sp)
-        expect(page).to have_css("button[aria-controls='additional-data-modal']")
-        expect(page).to_not have_css("a[href='#{zendesk_update_link}']")
-        expect(page).to_not have_css("a[href='#{zendesk_migrate_link}']")
+      context 'with zendesk modal feature flag off' do
+        before do
+          allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(false)
+        end
+
+        it 'displays the production call to action link' do
+          visit service_provider_path(sp)
+          expect(page).to have_css("a[href='#{zendesk_migrate_link}']")
+          expect(page).to_not have_css("a[href='#{zendesk_update_link}']")
+          expect(page).to_not have_css("button[aria-controls='additional-data-modal']")
+        end
+
+        it 'links to a different Zendesk form when in a prod_like_env' do
+          allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
+          visit service_provider_path(sp)
+          expect(page).to have_css("a[href='#{zendesk_update_link}']")
+          expect(page).to_not have_css("a[href='#{zendesk_migrate_link}']")
+          expect(page).to_not have_css("button[aria-controls='additional-data-modal']")
+        end
       end
 
-      it 'displays the production call to action link when the modal flag is off' do
-        allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(false)
-        visit service_provider_path(sp)
-        expect(page).to have_css("a[href='#{zendesk_migrate_link}']")
-        expect(page).to_not have_css("a[href='#{zendesk_update_link}']")
-        expect(page).to_not have_css("button[aria-controls='additional-data-modal']")
-      end
+      context 'with zendesk modal feature flag on' do
+        before do
+          allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(true)
+        end
 
-      it 'displays the alternate form when in a prod_like_env and the modal is off' do
-        allow(IdentityConfig.store).to receive(:use_zendesk_modal_form).and_return(false)
-        allow(IdentityConfig.store).to receive(:prod_like_env).and_return(true)
-        visit service_provider_path(sp)
-        expect(page).to have_css("a[href='#{zendesk_update_link}']")
-        expect(page).to_not have_css("a[href='#{zendesk_migrate_link}']")
-        expect(page).to_not have_css("button[aria-controls='additional-data-modal']")
+        it 'displays the production form button' do
+          visit service_provider_path(sp)
+          expect(page).to have_css("button[aria-controls='additional-data-modal']")
+          expect(page).to_not have_css("a[href='#{zendesk_update_link}']")
+          expect(page).to_not have_css("a[href='#{zendesk_migrate_link}']")
+        end
       end
     end
 
