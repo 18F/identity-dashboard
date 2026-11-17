@@ -127,7 +127,9 @@ class User < ApplicationRecord
   private
 
   def logingov_admin
-    @logingov_admin ||= TeamMembership.find_by(
+    return @logingov_admin if defined?(@logingov_admin)
+
+    @logingov_admin = TeamMembership.find_by(
       user: self,
       team: Team.internal_team,
       role: Role::LOGINGOV_ADMIN,
@@ -135,7 +137,9 @@ class User < ApplicationRecord
   end
 
   def logingov_readonly
-    @logingov_readonly ||= TeamMembership.find_by(
+    return @logingov_readonly if defined?(@logingov_readonly)
+
+    @logingov_readonly = TeamMembership.find_by(
       user: self,
       team: Team.internal_team,
       role: Role::LOGINGOV_READONLY,

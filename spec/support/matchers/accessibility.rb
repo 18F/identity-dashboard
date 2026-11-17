@@ -232,7 +232,7 @@ class AccessibleName
       &.map { |label_id| page.find("##{label_id}")&.text }
       &.compact
 
-    valid_labels.join('') if valid_labels.present?
+    valid_labels.presence&.join('')
   end
 
   def aria_label_name(element)

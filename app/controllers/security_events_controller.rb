@@ -8,7 +8,7 @@ class SecurityEventsController < ApplicationController # :nodoc:
 
   def index
     @security_events = current_user.security_events
-      .order('issued_at DESC')
+      .order(issued_at: :desc)
       .page(params[:page])
 
     assign_pagination
@@ -22,7 +22,7 @@ class SecurityEventsController < ApplicationController # :nodoc:
     end
 
     @security_events = scope
-      .order('issued_at DESC')
+      .order(issued_at: :desc)
       .page(params[:page])
 
     assign_pagination

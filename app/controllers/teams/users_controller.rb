@@ -213,7 +213,9 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def user
-    @user ||= team.users.find_by(id: params[:id])
+    return @user if defined?(@user)
+
+    @user = team.users.find_by(id: params[:id])
   end
 
   def user_present_not_current_user(user)
@@ -236,7 +238,9 @@ class Teams::UsersController < AuthenticatedController
   end
 
   def team_membership
-    @team_membership ||= policy_scope(TeamMembership).find_by(user:, team:)
+    return @team_membership if defined?(@team_membership)
+
+    @team_membership = policy_scope(TeamMembership).find_by(user:, team:)
   end
 
   def log_change

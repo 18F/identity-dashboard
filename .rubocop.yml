@@ -511,7 +511,7 @@ RSpec/MultipleExpectations:
 RSpec/RedundantPredicateMatcher:
   Enabled: true
 
-RSpec/StringAsInstanceDoubleConstant:
+RSpec/VerifiedDoubleReference:
   Enabled: true
 
 # Security/JSONLoad:

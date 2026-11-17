@@ -19,7 +19,7 @@ class AuthTokensController < AuthenticatedController # :nodoc:
     if @auth_token.save
       render 'index'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

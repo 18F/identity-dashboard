@@ -101,9 +101,7 @@ class ServiceConfigWizardController < AuthenticatedController
     @model.existing_service_provider?
   end
 
-  def production_ready?
-    @model.production_ready?
-  end
+  delegate :production_ready?, to: :@model
 
   def draft_service_provider
     @service_provider ||= begin

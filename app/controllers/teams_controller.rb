@@ -75,7 +75,7 @@ class TeamsController < AuthenticatedController
     end
 
     flash[:warning] = I18n.t('notices.team_delete_failed')
-    redirect_back(fallback_location: get_return_path)
+    redirect_back_or_to(get_return_path)
   end
 
   def all

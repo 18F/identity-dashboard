@@ -1,7 +1,5 @@
 module MailerSpecHelper
-  def deliveries
-    ActionMailer::Base.deliveries
-  end
+  delegate :deliveries, to: :'ActionMailer::Base'
 end
 
 RSpec.configure do |config|

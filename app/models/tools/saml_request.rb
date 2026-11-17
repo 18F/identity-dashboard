@@ -51,7 +51,9 @@ module Tools
     end
 
     def sp
-      @sp ||= ServiceProvider.find_by(issuer: auth_request&.issuer)
+      return @sp if defined?(@sp)
+
+      @sp = ServiceProvider.find_by(issuer: auth_request&.issuer)
     end
 
     private

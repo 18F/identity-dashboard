@@ -27,7 +27,7 @@ class BannersController < ApplicationController
     if @banner.save
       redirect_to banners_path, notice: 'Banner was successfully created.'
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -36,7 +36,7 @@ class BannersController < ApplicationController
     if @banner.update(banner_params)
       redirect_to banners_path, notice: 'Banner was successfully updated.', status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
