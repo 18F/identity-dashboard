@@ -347,7 +347,7 @@ GEM
     mime-types-data (3.2024.1001)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitar (1.1.0)
+    minitar (1.2.0)
     minitest (6.1.0)
       drb (~> 2.0)
       prism (>= 1.5, < 3)
@@ -371,10 +371,11 @@ GEM
     nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    omniauth (2.1.2)
-      hashie (>= 3.4.6)
-      rack (>= 2.2.3)
-      rack-protection
+    omniauth (2.4.1)
+      hashie (>= 3.5.2)
+      logger
+      rack (>= 2.2.8)
+      rack-protection (>= 2.2.0)
     omniauth-rails_csrf_protection (2.0.0)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
@@ -410,7 +411,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (8.0.2)
+    puma (8.1.1)
       nio4r (~> 2.0)
     pundit (2.4.0)
       activesupport (>= 3.0.0)
