@@ -96,7 +96,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.22.0'
   gem 'simplecov-cobertura'
-  gem 'sinatra', '~> 4.2.0'
+  gem 'sinatra', '~> 4.2.2'
   gem 'timecop'
   gem 'webmock'
   gem 'websocket-driver', '>= 0.8.2'
