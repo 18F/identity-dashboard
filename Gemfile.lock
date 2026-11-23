@@ -585,7 +585,7 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    sinatra (4.2.1)
+    sinatra (4.2.2)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
@@ -722,7 +722,7 @@ DEPENDENCIES
   simple_form (~> 5.3, >= 5.3.0)
   simplecov (~> 0.22.0)
   simplecov-cobertura
-  sinatra (~> 4.2.0)
+  sinatra (~> 4.2.2)
   timecop
   uglifier
   view_component (>= 4.9.0)
